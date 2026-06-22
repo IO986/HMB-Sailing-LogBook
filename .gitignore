@@ -20,6 +20,14 @@ build/
 **/android/key.properties
 *.jks
 
+# Flutter builds
+build/
+.dart_tool/
+
+# Android APKs
+*.apk
+exports/*.apk
+
 # iOS
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
