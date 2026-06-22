@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(run)",
+      "Bash(flutter analyze *)",
+      "Bash(flutter build *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(flutter run *)",
+      "PowerShell($file = \"C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--dev-sailing-logbook\\\\8f4e95f9-7015-4619-8fc2-fa4a7c1e71f9\\\\tasks\\\\bjrpsf8pr.output\"; $prev = 0; $start = Get-Date; while \\(\\(\\(Get-Date\\) - $start\\).TotalSeconds -lt 240\\) { $lines = Get-Content $file -ErrorAction SilentlyContinue; $count = $lines.Count; if \\($count -gt $prev\\) { $lines[$prev..\\($count-1\\)]; $prev = $count }; if \\($lines[-1] -match 'Flutter run key commands|error:|EXCEPTION|Syncing files|Installed build'\\) { break }; Start-Sleep 5 })",
+      "PowerShell($proc = Get-Process -Name \"flutter\" -ErrorAction SilentlyContinue; if \\($proc\\) { \"flutter process found: $\\($proc.Id\\)\" } else { \"no flutter process\" })",
+      "PowerShell($file = \"C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--dev-sailing-logbook\\\\8f4e95f9-7015-4619-8fc2-fa4a7c1e71f9\\\\tasks\\\\bhmomnu7s.output\"; $start = Get-Date; while \\(\\(\\(Get-Date\\) - $start\\).TotalSeconds -lt 180\\) { $lines = Get-Content $file -ErrorAction SilentlyContinue; $last = if \\($lines\\) { $lines[-1] } else { \"\" }; if \\($last -match 'Flutter run key commands|error:|EXCEPTION|✓ Built'\\) { $lines | Select-Object -Last 20; break }; Start-Sleep 5 })",
+      "Bash(ping -n 20 127.0.0.1)",
+      "Bash(flutter pub *)",
+      "Bash(flutter gen-l10n *)",
+      "Bash(dir \".dart_tool\\\\flutter_gen\\\\gen_l10n\\\\\" 2>&1 | head -20)"
+    ]
+  }
+}

@@ -1,0 +1,1489 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_de.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_sk.dart';
+import 'app_localizations_uk.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('sk'),
+    Locale('uk')
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'HMB Sailing Log'**
+  String get appTitle;
+
+  /// No description provided for @languageName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slovenčina'**
+  String get languageName;
+
+  /// No description provided for @navMap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapa'**
+  String get navMap;
+
+  /// No description provided for @navTracking.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking'**
+  String get navTracking;
+
+  /// No description provided for @navLogbook.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník'**
+  String get navLogbook;
+
+  /// No description provided for @navWeather.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie'**
+  String get navWeather;
+
+  /// No description provided for @navSafety.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnosť'**
+  String get navSafety;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastavenia'**
+  String get navSettings;
+
+  /// No description provided for @cancel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zrušiť'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upraviť'**
+  String get edit;
+
+  /// No description provided for @save.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložiť'**
+  String get save;
+
+  /// No description provided for @yes.
+  ///
+  /// In sk, this message translates to:
+  /// **'Áno'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nie'**
+  String get no;
+
+  /// No description provided for @ok.
+  ///
+  /// In sk, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @close.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zavrieť'**
+  String get close;
+
+  /// No description provided for @retry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @share.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zdieľať'**
+  String get share;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať všetko'**
+  String get selectAll;
+
+  /// No description provided for @error.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chyba'**
+  String get error;
+
+  /// No description provided for @errorMsg.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chyba: {msg}'**
+  String errorMsg(String msg);
+
+  /// No description provided for @pressBackToExit.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stlač Späť ešte raz pre ukončenie'**
+  String get pressBackToExit;
+
+  /// No description provided for @trackingRunningTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking beží'**
+  String get trackingRunningTitle;
+
+  /// No description provided for @trackingRunningContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking je aktívny. Čo chceš urobiť?'**
+  String get trackingRunningContent;
+
+  /// No description provided for @stopAndExit.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zastaviť a ukončiť'**
+  String get stopAndExit;
+
+  /// No description provided for @keepRunning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nechať bežať'**
+  String get keepRunning;
+
+  /// No description provided for @marineInstrumentsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Lodné inštrumenty'**
+  String get marineInstrumentsTitle;
+
+  /// No description provided for @marineInstrumentsPrompt.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chceš pripojiť aplikáciu k lodným inštrumentom (napr. Raymarine cez WiFi gateway)? Aplikácia potom bude čítať GPS, vietor, hĺbku a ďalšie údaje priamo z lode.\n\nBez pripojenia sa použije GPS telefónu a predpoveď počasia z internetu – kedykoľvek to vieš zmeniť v Nastaveniach.'**
+  String get marineInstrumentsPrompt;
+
+  /// No description provided for @notNow.
+  ///
+  /// In sk, this message translates to:
+  /// **'Teraz nie'**
+  String get notNow;
+
+  /// No description provided for @setupConnection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastaviť pripojenie'**
+  String get setupConnection;
+
+  /// No description provided for @trackingActiveTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking aktívny'**
+  String get trackingActiveTitle;
+
+  /// No description provided for @trackingTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking'**
+  String get trackingTitle;
+
+  /// No description provided for @waitingForGps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čakám na GPS...'**
+  String get waitingForGps;
+
+  /// No description provided for @gpsUnavailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS nedostupné'**
+  String get gpsUnavailable;
+
+  /// No description provided for @lastKnownPosition.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posledná známa poloha'**
+  String get lastKnownPosition;
+
+  /// No description provided for @accuracy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Presnosť'**
+  String get accuracy;
+
+  /// No description provided for @logbookBtn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník'**
+  String get logbookBtn;
+
+  /// No description provided for @stop.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zastaviť'**
+  String get stop;
+
+  /// No description provided for @startVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spustiť plavbu'**
+  String get startVoyage;
+
+  /// No description provided for @starting.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spúšťam...'**
+  String get starting;
+
+  /// No description provided for @newVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nová plavba'**
+  String get newVoyage;
+
+  /// No description provided for @multiday.
+  ///
+  /// In sk, this message translates to:
+  /// **'Viacdenná'**
+  String get multiday;
+
+  /// No description provided for @standalone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Samostatný'**
+  String get standalone;
+
+  /// No description provided for @voyageName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Názov plavby'**
+  String get voyageName;
+
+  /// No description provided for @voyageNameOptional.
+  ///
+  /// In sk, this message translates to:
+  /// **'Názov (voliteľné)'**
+  String get voyageNameOptional;
+
+  /// No description provided for @voyageNameHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. Výlet do zátoky'**
+  String get voyageNameHint;
+
+  /// No description provided for @existingVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Existujúca plavba'**
+  String get existingVoyage;
+
+  /// No description provided for @newVoyageDropdown.
+  ///
+  /// In sk, this message translates to:
+  /// **'— Nová plavba —'**
+  String get newVoyageDropdown;
+
+  /// No description provided for @firstVoyageHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prvá plavba – vyplň základné info:'**
+  String get firstVoyageHint;
+
+  /// No description provided for @estimatedDays.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpokladaný počet dní:'**
+  String get estimatedDays;
+
+  /// No description provided for @logFrequency.
+  ///
+  /// In sk, this message translates to:
+  /// **'Frekvencia zápisov do denníka'**
+  String get logFrequency;
+
+  /// No description provided for @startTracking.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spustiť tracking'**
+  String get startTracking;
+
+  /// No description provided for @dayNofTotal.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deň {n} z {total}'**
+  String dayNofTotal(int n, int total);
+
+  /// No description provided for @newDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'(nový deň)'**
+  String get newDay;
+
+  /// No description provided for @endVoyageTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Koniec plavby?'**
+  String get endVoyageTitle;
+
+  /// No description provided for @endVoyageContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dosiahli ste posledný plánovaný deň plavby.\n\nBude plavba pokračovať aj zajtra?'**
+  String get endVoyageContent;
+
+  /// No description provided for @decideLayer.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neskôr rozhodnem'**
+  String get decideLayer;
+
+  /// No description provided for @continuesTomorrow.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračuje zajtra'**
+  String get continuesTomorrow;
+
+  /// No description provided for @endVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ukončiť plavbu'**
+  String get endVoyage;
+
+  /// No description provided for @newMultidayVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nová viacdenná plavba'**
+  String get newMultidayVoyage;
+
+  /// No description provided for @deleteCharterTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať charter?'**
+  String get deleteCharterTitle;
+
+  /// No description provided for @deleteCharterContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmažú sa všetky dni a záznamy.'**
+  String get deleteCharterContent;
+
+  /// No description provided for @noVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne plavby'**
+  String get noVoyages;
+
+  /// No description provided for @createFirstCharter.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vytvor svoj prvý charter'**
+  String get createFirstCharter;
+
+  /// No description provided for @briefingDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Briefing ✓'**
+  String get briefingDone;
+
+  /// No description provided for @checkInDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Check-in ✓'**
+  String get checkInDone;
+
+  /// No description provided for @checkOutDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Check-out ✓'**
+  String get checkOutDone;
+
+  /// No description provided for @voyageNotFound.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba nenájdená'**
+  String get voyageNotFound;
+
+  /// No description provided for @unknownVessel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neznáma loď'**
+  String get unknownVessel;
+
+  /// No description provided for @captain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kapitán'**
+  String get captain;
+
+  /// No description provided for @crew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posádka'**
+  String get crew;
+
+  /// No description provided for @total.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celkom'**
+  String get total;
+
+  /// No description provided for @voyageDaysCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dni plavby ({n})'**
+  String voyageDaysCount(int n);
+
+  /// No description provided for @bulkDelete.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hromadné mazanie'**
+  String get bulkDelete;
+
+  /// No description provided for @noDays.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne dni.\nSpusti tracking a prvý deň sa vytvorí automaticky.'**
+  String get noDays;
+
+  /// No description provided for @deleteDayTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať deň?'**
+  String get deleteDayTitle;
+
+  /// No description provided for @deleteDayContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmažú sa všetky záznamy pre {day}.'**
+  String deleteDayContent(String day);
+
+  /// No description provided for @exportPdf.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export PDF'**
+  String get exportPdf;
+
+  /// No description provided for @selectDaysTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať dni na mazanie'**
+  String get selectDaysTitle;
+
+  /// No description provided for @deleteCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať ({n})'**
+  String deleteCount(int n);
+
+  /// No description provided for @safety.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnosť'**
+  String get safety;
+
+  /// No description provided for @mobHoldToActivate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podržte pre aktiváciu'**
+  String get mobHoldToActivate;
+
+  /// No description provided for @mobActive.
+  ///
+  /// In sk, this message translates to:
+  /// **'⚠️ MOB AKTÍVNY'**
+  String get mobActive;
+
+  /// No description provided for @mobTime.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čas'**
+  String get mobTime;
+
+  /// No description provided for @mobDistance.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vzdialenosť'**
+  String get mobDistance;
+
+  /// No description provided for @mobDirection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Smer'**
+  String get mobDirection;
+
+  /// No description provided for @navigateToMob.
+  ///
+  /// In sk, this message translates to:
+  /// **'Naviguj k MOB'**
+  String get navigateToMob;
+
+  /// No description provided for @gpsPositionNotAvailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS pozícia nie je dostupná!'**
+  String get gpsPositionNotAvailable;
+
+  /// No description provided for @anchorAlarm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Anchor Alarm'**
+  String get anchorAlarm;
+
+  /// No description provided for @drifting.
+  ///
+  /// In sk, this message translates to:
+  /// **'DRIFTUJE'**
+  String get drifting;
+
+  /// No description provided for @anchorRadiusLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Polomer kotevníka'**
+  String get anchorRadiusLabel;
+
+  /// No description provided for @activate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aktivovať'**
+  String get activate;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deaktivovať'**
+  String get deactivate;
+
+  /// No description provided for @safetyBriefingCard.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety Briefing'**
+  String get safetyBriefingCard;
+
+  /// No description provided for @maydayCard.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mayday karta'**
+  String get maydayCard;
+
+  /// No description provided for @yachtHandover.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdanie jachty'**
+  String get yachtHandover;
+
+  /// No description provided for @gearList.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zoznam vybavenia'**
+  String get gearList;
+
+  /// No description provided for @colreg.
+  ///
+  /// In sk, this message translates to:
+  /// **'COLREG'**
+  String get colreg;
+
+  /// No description provided for @emergencyContacts.
+  ///
+  /// In sk, this message translates to:
+  /// **'Núdzové kontakty'**
+  String get emergencyContacts;
+
+  /// No description provided for @backToToc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Späť na obsah'**
+  String get backToToc;
+
+  /// No description provided for @weatherTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie a more'**
+  String get weatherTitle;
+
+  /// No description provided for @updateForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aktualizovať predpoveď'**
+  String get updateForecast;
+
+  /// No description provided for @gpsNotAvailableTracking.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS nie je dostupné – zapnite tracking'**
+  String get gpsNotAvailableTracking;
+
+  /// No description provided for @downloadingForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Sťahujem predpoveď...'**
+  String get downloadingForecast;
+
+  /// No description provided for @loadingForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Načítavam predpoveď...'**
+  String get loadingForecast;
+
+  /// No description provided for @noConnection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nie je dostupné spojenie'**
+  String get noConnection;
+
+  /// No description provided for @pressRefreshWhenOnline.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stlačte refresh keď ste online'**
+  String get pressRefreshWhenOnline;
+
+  /// No description provided for @noWeatherData.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne dáta počasia'**
+  String get noWeatherData;
+
+  /// No description provided for @forecastAutoDownload.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď sa stiahne automaticky po spustení trackingu, alebo stlačte Refresh.'**
+  String get forecastAutoDownload;
+
+  /// No description provided for @enableGpsFirst.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zapnite GPS / tracking najprv'**
+  String get enableGpsFirst;
+
+  /// No description provided for @downloadForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuť predpoveď'**
+  String get downloadForecast;
+
+  /// No description provided for @downloadError.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chyba sťahovania: {error}'**
+  String downloadError(String error);
+
+  /// No description provided for @liveInstrumentData.
+  ///
+  /// In sk, this message translates to:
+  /// **'Živé dáta z lodných inštrumentov'**
+  String get liveInstrumentData;
+
+  /// No description provided for @windRelative.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor (rel.)'**
+  String get windRelative;
+
+  /// No description provided for @windTrue.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor (skut.)'**
+  String get windTrue;
+
+  /// No description provided for @depthLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hĺbka'**
+  String get depthLabel;
+
+  /// No description provided for @waterTempLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Teplota vody'**
+  String get waterTempLabel;
+
+  /// No description provided for @courseTrue.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kurz (skut.)'**
+  String get courseTrue;
+
+  /// No description provided for @courseMag.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kurz (mag.)'**
+  String get courseMag;
+
+  /// No description provided for @engineLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motor'**
+  String get engineLabel;
+
+  /// No description provided for @wavesLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlny'**
+  String get wavesLabel;
+
+  /// No description provided for @pressureLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tlak'**
+  String get pressureLabel;
+
+  /// No description provided for @airTempLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vzduch'**
+  String get airTempLabel;
+
+  /// No description provided for @waterLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Voda'**
+  String get waterLabel;
+
+  /// No description provided for @wind24h.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor – 24h'**
+  String get wind24h;
+
+  /// No description provided for @waves24h.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlny – 24h'**
+  String get waves24h;
+
+  /// No description provided for @hourlyForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hodinová predpoveď'**
+  String get hourlyForecast;
+
+  /// No description provided for @timeCol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čas'**
+  String get timeCol;
+
+  /// No description provided for @windCol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor'**
+  String get windCol;
+
+  /// No description provided for @wavesCol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlny'**
+  String get wavesCol;
+
+  /// No description provided for @beaufort0.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezvetrie'**
+  String get beaufort0;
+
+  /// No description provided for @beaufort1.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tichý vánok'**
+  String get beaufort1;
+
+  /// No description provided for @beaufort2.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slabý vietor'**
+  String get beaufort2;
+
+  /// No description provided for @beaufort3.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slabý vietor'**
+  String get beaufort3;
+
+  /// No description provided for @beaufort4.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mierny vietor'**
+  String get beaufort4;
+
+  /// No description provided for @beaufort5.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dosť čerstvý'**
+  String get beaufort5;
+
+  /// No description provided for @beaufort6.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čerstvý vietor'**
+  String get beaufort6;
+
+  /// No description provided for @beaufort7.
+  ///
+  /// In sk, this message translates to:
+  /// **'Silný vietor'**
+  String get beaufort7;
+
+  /// No description provided for @beaufort8.
+  ///
+  /// In sk, this message translates to:
+  /// **'Búrlivý vietor'**
+  String get beaufort8;
+
+  /// No description provided for @beaufort9.
+  ///
+  /// In sk, this message translates to:
+  /// **'Búrka'**
+  String get beaufort9;
+
+  /// No description provided for @beaufort10.
+  ///
+  /// In sk, this message translates to:
+  /// **'Silná búrka'**
+  String get beaufort10;
+
+  /// No description provided for @beaufort11.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mimoriadna búrka'**
+  String get beaufort11;
+
+  /// No description provided for @beaufort12.
+  ///
+  /// In sk, this message translates to:
+  /// **'Orkán'**
+  String get beaufort12;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastavenia'**
+  String get settingsTitle;
+
+  /// No description provided for @measurementUnits.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jednotky merania'**
+  String get measurementUnits;
+
+  /// No description provided for @temperature.
+  ///
+  /// In sk, this message translates to:
+  /// **'Teplota'**
+  String get temperature;
+
+  /// No description provided for @depthWaves.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hĺbka / vlny'**
+  String get depthWaves;
+
+  /// No description provided for @wind.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor'**
+  String get wind;
+
+  /// No description provided for @language.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jazyk'**
+  String get language;
+
+  /// No description provided for @appLanguage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jazyk aplikácie'**
+  String get appLanguage;
+
+  /// No description provided for @languageDialogTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jazyk / Language'**
+  String get languageDialogTitle;
+
+  /// No description provided for @aboutApp.
+  ///
+  /// In sk, this message translates to:
+  /// **'O aplikácii'**
+  String get aboutApp;
+
+  /// No description provided for @connectionConnected.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojené'**
+  String get connectionConnected;
+
+  /// No description provided for @connectionConnecting.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripájam sa...'**
+  String get connectionConnecting;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chyba pripojenia'**
+  String get connectionError;
+
+  /// No description provided for @connectionDisconnected.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nepripojené (používa sa telefón GPS / predpoveď)'**
+  String get connectionDisconnected;
+
+  /// No description provided for @ipAddressLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'IP adresa gateway'**
+  String get ipAddressLabel;
+
+  /// No description provided for @portLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Port'**
+  String get portLabel;
+
+  /// No description provided for @autoConnectLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Automaticky pripojiť pri spustení'**
+  String get autoConnectLabel;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odpojiť'**
+  String get disconnect;
+
+  /// No description provided for @connect.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojiť'**
+  String get connect;
+
+  /// No description provided for @gatewayHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripoj telefón na WiFi sieť lodného gateway (Raymarine WiFi-1, RayNet a podobné typicky bežia na 10.0.0.1, port 2000). Bez pripojenia aplikácia automaticky používa GPS telefónu a predpoveď počasia z internetu.'**
+  String get gatewayHint;
+
+  /// No description provided for @connectedToHost.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojené na {host}:{port}'**
+  String connectedToHost(String host, int port);
+
+  /// No description provided for @enterIpAddress.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zadajte IP adresu gateway'**
+  String get enterIpAddress;
+
+  /// No description provided for @connectionFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nepodarilo sa pripojiť: {error}'**
+  String connectionFailed(String error);
+
+  /// No description provided for @liveWind.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor'**
+  String get liveWind;
+
+  /// No description provided for @liveDepth.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hĺbka'**
+  String get liveDepth;
+
+  /// No description provided for @liveWaterTemp.
+  ///
+  /// In sk, this message translates to:
+  /// **'Teplota vody'**
+  String get liveWaterTemp;
+
+  /// No description provided for @liveCompass.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kompas'**
+  String get liveCompass;
+
+  /// No description provided for @liveEngine.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motor'**
+  String get liveEngine;
+
+  /// No description provided for @dayNotFound.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deň nenájdený'**
+  String get dayNotFound;
+
+  /// No description provided for @saved.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložené'**
+  String get saved;
+
+  /// No description provided for @trackingThisDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking beží pre tento deň'**
+  String get trackingThisDay;
+
+  /// No description provided for @trackingOtherDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking beží pre iný deň'**
+  String get trackingOtherDay;
+
+  /// No description provided for @recordCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} záznamov'**
+  String recordCount(int n);
+
+  /// No description provided for @addManual.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať manuálny'**
+  String get addManual;
+
+  /// No description provided for @noEntries.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne záznamy'**
+  String get noEntries;
+
+  /// No description provided for @entriesAutoAdded.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznamy sa pridávajú automaticky počas trackingu'**
+  String get entriesAutoAdded;
+
+  /// No description provided for @deleteEntryTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať záznam?'**
+  String get deleteEntryTitle;
+
+  /// No description provided for @autoRecord.
+  ///
+  /// In sk, this message translates to:
+  /// **'Automatický záznam'**
+  String get autoRecord;
+
+  /// No description provided for @routeSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Trasa'**
+  String get routeSection;
+
+  /// No description provided for @fromPort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odkiaľ'**
+  String get fromPort;
+
+  /// No description provided for @toPort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kam'**
+  String get toPort;
+
+  /// No description provided for @distance.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vzdialenosť'**
+  String get distance;
+
+  /// No description provided for @vessel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Loď / čln'**
+  String get vessel;
+
+  /// No description provided for @weatherSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie'**
+  String get weatherSection;
+
+  /// No description provided for @morning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ráno'**
+  String get morning;
+
+  /// No description provided for @noon.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poludnie'**
+  String get noon;
+
+  /// No description provided for @evening.
+  ///
+  /// In sk, this message translates to:
+  /// **'Večer'**
+  String get evening;
+
+  /// No description provided for @windDir.
+  ///
+  /// In sk, this message translates to:
+  /// **'Smer vetra'**
+  String get windDir;
+
+  /// No description provided for @seaState.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stav mora'**
+  String get seaState;
+
+  /// No description provided for @waveHeight.
+  ///
+  /// In sk, this message translates to:
+  /// **'Výška vĺn'**
+  String get waveHeight;
+
+  /// No description provided for @dailyNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Správa dňa'**
+  String get dailyNote;
+
+  /// No description provided for @dailyNoteHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Popis plavby, zaujímavosti, udalosti dňa...'**
+  String get dailyNoteHint;
+
+  /// No description provided for @seaCalm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokojné'**
+  String get seaCalm;
+
+  /// No description provided for @seaLight.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mierne'**
+  String get seaLight;
+
+  /// No description provided for @seaModerate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stredné'**
+  String get seaModerate;
+
+  /// No description provided for @seaRough.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rozbúrené'**
+  String get seaRough;
+
+  /// No description provided for @seaStormy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Búrlivé'**
+  String get seaStormy;
+
+  /// No description provided for @editEntry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upraviť záznam'**
+  String get editEntry;
+
+  /// No description provided for @newEntry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nový záznam'**
+  String get newEntry;
+
+  /// No description provided for @sailMode.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spôsob plavby'**
+  String get sailMode;
+
+  /// No description provided for @sailMain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hlavná'**
+  String get sailMain;
+
+  /// No description provided for @navigationSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Navigácia'**
+  String get navigationSection;
+
+  /// No description provided for @latitude.
+  ///
+  /// In sk, this message translates to:
+  /// **'Šírka'**
+  String get latitude;
+
+  /// No description provided for @longitude.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dĺžka'**
+  String get longitude;
+
+  /// No description provided for @weatherSeaSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie a more'**
+  String get weatherSeaSection;
+
+  /// No description provided for @windSpeed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor'**
+  String get windSpeed;
+
+  /// No description provided for @windDirection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Smer'**
+  String get windDirection;
+
+  /// No description provided for @waveHeight2.
+  ///
+  /// In sk, this message translates to:
+  /// **'Výška vĺn'**
+  String get waveHeight2;
+
+  /// No description provided for @engineSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motor'**
+  String get engineSection;
+
+  /// No description provided for @engineHours.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motohodiny'**
+  String get engineHours;
+
+  /// No description provided for @fuel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Palivo'**
+  String get fuel;
+
+  /// No description provided for @noteSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poznámka'**
+  String get noteSection;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podmienky plavby, udalosti, zmena posádky...'**
+  String get noteHint;
+
+  /// No description provided for @exportDayTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export dňa'**
+  String get exportDayTitle;
+
+  /// No description provided for @exportCharterTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export chartera'**
+  String get exportCharterTitle;
+
+  /// No description provided for @loadingData.
+  ///
+  /// In sk, this message translates to:
+  /// **'Načítavam dáta...'**
+  String get loadingData;
+
+  /// No description provided for @mapsReady.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapy pripravené – môžeš exportovať'**
+  String get mapsReady;
+
+  /// No description provided for @generatingMaps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Generujem náhľady máp ({current}/{total})...'**
+  String generatingMaps(int current, int total);
+
+  /// No description provided for @exportDayBtn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exportovať deň'**
+  String get exportDayBtn;
+
+  /// No description provided for @exportCharterBtn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exportovať charter'**
+  String get exportCharterBtn;
+
+  /// No description provided for @entriesLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznamy'**
+  String get entriesLabel;
+
+  /// No description provided for @routePoints.
+  ///
+  /// In sk, this message translates to:
+  /// **'Body trasy'**
+  String get routePoints;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['de', 'en', 'es', 'sk', 'uk'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'sk':
+      return AppLocalizationsSk();
+    case 'uk':
+      return AppLocalizationsUk();
+  }
+
+  throw FlutterError(
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
+}
