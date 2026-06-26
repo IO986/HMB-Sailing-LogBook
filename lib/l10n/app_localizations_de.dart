@@ -169,6 +169,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get startTracking => 'Tracking starten';
 
   @override
+  String get trackingInProgress => 'Fahrt aufzeichnen';
+
+  @override
   String dayNofTotal(int n, int total) {
     return 'Tag $n von $total';
   }
@@ -447,6 +450,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hourlyForecast => '3-Tage-Vorhersage';
 
   @override
+  String get dailyForecast => 'Tagestemperatur';
+
+  @override
   String get timeCol => 'Zeit';
 
   @override
@@ -454,6 +460,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wavesCol => 'Wellen';
+
+  @override
+  String get rainCol => 'Regen';
 
   @override
   String get beaufort0 => 'Windstille';
@@ -1177,6 +1186,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get closeWithoutSaving => 'Schließen ohne Speichern';
 
   @override
+  String get saveToDevice => 'Auf Gerät speichern';
+
+  @override
   String get saveAndShare => 'Speichern & teilen';
 
   @override
@@ -1190,4 +1202,102 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get mainsail => 'Großsegel';
+
+  @override
+  String get weatherConditionTitle => 'Wetterbedingungen';
+
+  @override
+  String get weatherConditionLabel => 'Bedingungen';
+
+  @override
+  String get wcSunny => 'Sonnig';
+
+  @override
+  String get wcPartlyCloudy => 'Teilweise bewölkt';
+
+  @override
+  String get wcOvercast => 'Bedeckt';
+
+  @override
+  String get wcLightRain => 'Leichter Regen';
+
+  @override
+  String get wcRain => 'Regen';
+
+  @override
+  String get wcHeavyRain => 'Starker Regen';
+
+  @override
+  String get wcDrizzle => 'Nieselregen';
+
+  @override
+  String get wcThunderstorm => 'Gewitter';
+
+  @override
+  String get wcIsoThunderstorm => 'Vereinzelte Gewitter';
+
+  @override
+  String get wcHail => 'Hagel';
+
+  @override
+  String get wcDust => 'Staub';
+
+  @override
+  String get wcFoggy => 'Nebelig';
+
+  @override
+  String get wcWindy => 'Windig';
+
+  @override
+  String get wcCold => 'Kalt';
+
+  @override
+  String get photoSection => 'Foto';
+
+  @override
+  String get camera => 'Kamera';
+
+  @override
+  String get gallery => 'Galerie';
+
+  @override
+  String get addPhoto => 'Foto hinzufügen';
+
+  @override
+  String get photoAddedToEntry => 'Foto angehängt';
+
+  @override
+  String get voyageStart => 'Reisebeginn';
+
+  @override
+  String get voyageEnd => 'Reiseende';
+
+  @override
+  String get onlineAccount => 'Online-Konto';
+
+  @override
+  String get onlineAccountDesc =>
+      'Logbuch mit logbook.hmba.boats synchronisieren';
+
+  @override
+  String get register => 'Registrieren';
+
+  @override
+  String get login => 'Anmelden';
+
+  @override
+  String get logout => 'Abmelden';
+
+  @override
+  String get logoutConfirm =>
+      'Sie werden abgemeldet. Lokale Daten bleiben erhalten.';
+
+  @override
+  String get notLoggedIn => 'Nicht angemeldet';
+
+  @override
+  String get fullName => 'Vollständiger Name';
+
+  @override
+  String get password => 'Passwort';
 }

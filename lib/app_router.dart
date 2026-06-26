@@ -8,7 +8,6 @@ import 'features/charter/presentation/screens/charter_detail_screen.dart';
 import 'features/charter/presentation/screens/day_log_screen.dart';
 import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
-import 'features/tracking/presentation/screens/tracking_screen.dart';
 import 'features/weather/presentation/screens/weather_screen.dart';
 import 'features/safety/presentation/screens/safety_screen.dart';
 import 'features/safety/presentation/screens/colreg_screen.dart';
@@ -33,7 +32,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (c, s, child) => MainScaffold(child: child),
         routes: [
           GoRoute(path: '/map', builder: (c, s) => const MapScreen()),
-          GoRoute(path: '/tracking', builder: (c, s) => const TrackingScreen()),
           GoRoute(
             path: '/logbook',
             builder: (c, s) => const CharterListScreen(),

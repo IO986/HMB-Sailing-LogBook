@@ -8,6 +8,9 @@ class WeatherData {
   final double airTemp;
   final double waterTemp;
   final double cloudCover;
+  final int? weatherCode;
+  final int? precipitationProbability;  // 0–100 %
+  final double? precipitation;          // mm
 
   const WeatherData({
     required this.time,
@@ -19,6 +22,9 @@ class WeatherData {
     required this.airTemp,
     required this.waterTemp,
     required this.cloudCover,
+    this.weatherCode,
+    this.precipitationProbability,
+    this.precipitation,
   });
 
   int get beaufort {

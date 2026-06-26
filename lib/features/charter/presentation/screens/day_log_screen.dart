@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -264,6 +265,51 @@ class _TrackingStatusCard extends ConsumerWidget {
   }
 }
 
+// ── Weather condition emoji lookup (mirrors logbook_entry_screen) ──
+
+String? _wcEmoji(String? key) {
+  const map = {
+    'sunny': '☀️', 'partly_cloudy': '⛅', 'overcast': '☁️',
+    'light_rain': '🌦', 'rain': '🌧', 'heavy_rain': '🌧',
+    'drizzle': '🌂', 'thunderstorm': '⛈', 'iso_thunder': '🌩',
+    'hail': '🌨', 'dust': '🌫', 'foggy': '🌁', 'windy': '💨', 'cold': '❄️',
+  };
+  return key == null ? null : map[key];
+}
+
+// ── helpers ───────────────────────────────────────────────────
+
+/// Parse [mode1,mode2] prefix from skipperNote, return (modes, cleanNote)
+({Set<String> modes, String note}) _parseNote(String? raw) {
+  if (raw == null) return (modes: {}, note: '');
+  final m = RegExp(r'^\[([^\]]*)\]\s*').firstMatch(raw);
+  if (m == null) return (modes: {}, note: raw);
+  return (
+    modes: m.group(1)!.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toSet(),
+    note: raw.substring(m.end),
+  );
+}
+
+Widget _modeIcon(Set<String> modes) {
+  if (modes.contains('motor') && modes.length == 1) {
+    return const _BigIcon(Icons.settings, Colors.orange);
+  }
+  if (modes.contains('motor')) {
+    return const _BigIcon(Icons.settings, Colors.deepOrange);
+  }
+  return const _BigIcon(Icons.sailing, Colors.blue);
+}
+
+class _BigIcon extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  const _BigIcon(this.icon, this.color);
+  @override
+  Widget build(BuildContext context) => Icon(icon, size: 32, color: color);
+}
+
+// ── Entry tile ────────────────────────────────────────────────
+
 class _EntryTile extends StatelessWidget {
   final LogbookEntry entry;
   final VoidCallback onDelete, onTap;
@@ -271,20 +317,20 @@ class _EntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final fmt = DateFormat('HH:mm');
     final isFirst = entry.skipperNote == 'Voyage start' || entry.skipperNote == 'Začiatok plavby';
-    final isLast = entry.skipperNote == 'Voyage end' || entry.skipperNote == 'Koniec plavby';
-    final isAuto = entry.isAutoEntry;
+    final isLast  = entry.skipperNote == 'Voyage end'   || entry.skipperNote == 'Koniec plavby';
+    final isAuto  = entry.isAutoEntry;
+    final parsed  = _parseNote(entry.skipperNote);
+    final note    = isFirst ? '' : (isLast ? '' : parsed.note);
 
     Color? bgColor;
-    IconData noteIcon = Icons.radio_button_unchecked;
-    if (isFirst) {
-      bgColor = Colors.green.shade800.withOpacity(0.2);
-      noteIcon = Icons.play_arrow;
-    } else if (isLast) {
-      bgColor = Colors.red.shade800.withOpacity(0.2);
-      noteIcon = Icons.stop;
-    }
+    if (isFirst) bgColor = Colors.green.shade800.withValues(alpha: 0.12);
+    if (isLast)  bgColor = Colors.red.shade800.withValues(alpha: 0.12);
+
+    // Photo thumbnail
+    final hasPhoto = entry.photoPath != null && File(entry.photoPath!).existsSync();
 
     return Dismissible(
       key: Key('entry_${entry.id}'),
@@ -295,62 +341,129 @@ class _EntryTile extends StatelessWidget {
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
-      confirmDismiss: (_) async {
-        final l = AppLocalizations.of(context);
-        return await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(l.deleteEntryTitle),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: () => Navigator.pop(ctx, true),
-                child: Text(l.delete),
-              ),
-            ],
-          ),
-        ) ?? false;
-      },
-      onDismissed: (_) => onDelete(),
-      child: ListTile(
-        tileColor: bgColor,
-        onTap: onTap,
-        leading: CircleAvatar(
-          radius: 20,
-          backgroundColor: isFirst ? Colors.green.shade700
-              : isLast ? Colors.red.shade700
-              : isAuto ? Theme.of(context).colorScheme.surfaceVariant
-              : Theme.of(context).colorScheme.primaryContainer,
-          child: Icon(noteIcon, size: 16,
-              color: (isFirst || isLast) ? Colors.white
-                  : Theme.of(context).colorScheme.onSurface),
+      confirmDismiss: (_) async => await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l.deleteEntryTitle),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.delete),
+            ),
+          ],
         ),
-        title: Row(children: [
-          Text(fmt.format(entry.timestamp),
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(width: 8),
-          if (entry.sog != null)
-            Text('${entry.sog!.toStringAsFixed(1)} kn',
-                style: const TextStyle(fontSize: 13)),
-          if (entry.cog != null)
-            Text('  ${entry.cog!.toStringAsFixed(0)}°',
-                style: const TextStyle(fontSize: 13, color: Colors.grey)),
-        ]),
-        subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (entry.windSpeed != null)
-            Text('💨 ${entry.windSpeed!.toStringAsFixed(0)} kn'
-                '${entry.waveHeight != null ? "  🌊 ${entry.waveHeight!.toStringAsFixed(1)} m" : ""}',
-                style: const TextStyle(fontSize: 12)),
-          if (entry.skipperNote != null && entry.skipperNote!.isNotEmpty)
-            Text(entry.skipperNote!,
-                maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12)),
-        ]),
-        trailing: isAuto
-            ? Tooltip(message: AppLocalizations.of(context).autoRecord,
-                child: const Icon(Icons.autorenew, size: 16, color: Colors.grey))
-            : const Icon(Icons.chevron_right),
+      ) ?? false,
+      onDismissed: (_) => onDelete(),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          color: bgColor,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            // ── Left: time + mode icon ──
+            SizedBox(width: 52, child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(fmt.format(entry.timestamp.toLocal()),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                const SizedBox(height: 4),
+                if (isFirst)
+                  const _BigIcon(Icons.play_arrow, Colors.green)
+                else if (isLast)
+                  const _BigIcon(Icons.stop, Colors.red)
+                else if (isAuto)
+                  const Icon(Icons.autorenew, size: 26, color: Colors.grey)
+                else
+                  _modeIcon(parsed.modes),
+              ],
+            )),
+
+            const SizedBox(width: 10),
+
+            // ── Centre: data ──
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // SOG + COG row
+                if (entry.sog != null || entry.cog != null)
+                  Row(children: [
+                    if (entry.sog != null) ...[
+                      const Icon(Icons.speed, size: 13, color: Colors.grey),
+                      const SizedBox(width: 2),
+                      Text('${entry.sog!.toStringAsFixed(1)} kn',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const SizedBox(width: 8),
+                    ],
+                    if (entry.cog != null) ...[
+                      const Icon(Icons.navigation, size: 13, color: Colors.grey),
+                      const SizedBox(width: 2),
+                      Text('${entry.cog!.toStringAsFixed(0)}°',
+                          style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                    ],
+                  ]),
+
+                // Weather icon row
+                if (entry.windSpeed != null || entry.waveHeight != null || entry.weatherCondition != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Row(children: [
+                      if (entry.weatherCondition != null) ...[
+                        Text(_wcEmoji(entry.weatherCondition) ?? '',
+                            style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                      ],
+                      if (entry.windSpeed != null) ...[
+                        const Icon(Icons.air, size: 13, color: Colors.blueGrey),
+                        const SizedBox(width: 2),
+                        Text('${entry.windSpeed!.toStringAsFixed(0)} kn',
+                            style: const TextStyle(fontSize: 12)),
+                        const SizedBox(width: 6),
+                      ],
+                      if (entry.waveHeight != null) ...[
+                        const Text('🌊', style: TextStyle(fontSize: 12)),
+                        Text(' ${entry.waveHeight!.toStringAsFixed(1)} m',
+                            style: const TextStyle(fontSize: 12)),
+                      ],
+                    ]),
+                  ),
+
+                // Note
+                if (note.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(note,
+                        maxLines: 2, overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        )),
+                  ),
+
+                // Start/End label
+                if (isFirst)
+                  Text(l.voyageStart, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green))
+                else if (isLast)
+                  Text(l.voyageEnd, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red)),
+              ],
+            )),
+
+            const SizedBox(width: 8),
+
+            // ── Right: photo thumbnail ──
+            if (hasPhoto)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.file(File(entry.photoPath!),
+                    width: 56, height: 56, fit: BoxFit.cover),
+              )
+            else
+              const Icon(Icons.chevron_right, color: Colors.grey),
+          ]),
+        ),
       ),
     );
   }

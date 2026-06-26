@@ -238,7 +238,9 @@ class _WeatherContent extends ConsumerWidget {
         const SizedBox(height: 12),
         _WaveChart(forecast: forecast),
         const SizedBox(height: 12),
-        _HourlyTable(forecast: forecast.where((w) => w.time.hour % 3 == 0).toList()),
+        _DailyTempCard(forecast: forecast),
+        const SizedBox(height: 12),
+        _HourlyTable(forecast: forecast),
       ],
     );
   }
@@ -519,29 +521,160 @@ class _WaveChart extends StatelessWidget {
       );
 }
 
+class _DailyTempCard extends StatelessWidget {
+  final List<WeatherData> forecast;
+  const _DailyTempCard({required this.forecast});
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final dayFmt = DateFormat('EEE\nd.M.', locale);
+
+    // Group by calendar day, compute min/max temp and dominant rain probability
+    final Map<String, List<WeatherData>> byDay = {};
+    for (final w in forecast) {
+      final key = '${w.time.year}-${w.time.month}-${w.time.day}';
+      (byDay[key] ??= []).add(w);
+    }
+
+    final days = byDay.entries.toList();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppLocalizations.of(context).dailyForecast,
+                style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: days.map((entry) {
+                final samples = entry.value;
+                final date = samples.first.time;
+                final maxT = samples.map((w) => w.airTemp).reduce((a, b) => a > b ? a : b);
+                final minT = samples.map((w) => w.airTemp).reduce((a, b) => a < b ? a : b);
+                // Night hours (21–06): use entries in that range for night temp
+                final nightSamples = samples.where((w) => w.time.hour >= 21 || w.time.hour < 6).toList();
+                final nightT = nightSamples.isNotEmpty
+                    ? nightSamples.map((w) => w.airTemp).reduce((a, b) => a < b ? a : b)
+                    : minT;
+                // Max rain probability for the day
+                final maxRain = samples
+                    .map((w) => w.precipitationProbability ?? 0)
+                    .reduce((a, b) => a > b ? a : b);
+
+                final isToday = _isToday(date);
+                return Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                    decoration: BoxDecoration(
+                      color: isToday
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(dayFmt.format(date),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: isToday ? FontWeight.bold : null,
+                                color: isToday
+                                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                                    : null)),
+                        const SizedBox(height: 6),
+                        // Max (day) temp
+                        Text('${maxT.toStringAsFixed(0)}°',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: _tempColor(maxT))),
+                        // Night/min temp
+                        Text('${nightT.toStringAsFixed(0)}°',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                        const SizedBox(height: 4),
+                        // Rain probability icon
+                        if (maxRain > 0)
+                          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            Icon(Icons.water_drop,
+                                size: 11,
+                                color: maxRain >= 50
+                                    ? Colors.blue.shade700
+                                    : Colors.blue.shade300),
+                            Text(' $maxRain%',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: maxRain >= 50
+                                        ? Colors.blue.shade700
+                                        : Colors.blue.shade400)),
+                          ]),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _isToday(DateTime d) {
+    final now = DateTime.now();
+    return d.year == now.year && d.month == now.month && d.day == now.day;
+  }
+
+  Color _tempColor(double t) {
+    if (t >= 30) return Colors.deepOrange;
+    if (t >= 22) return Colors.orange;
+    if (t >= 15) return Colors.green;
+    if (t >= 8) return Colors.teal;
+    return Colors.blue;
+  }
+}
+
 class _HourlyTable extends StatelessWidget {
   final List<WeatherData> forecast;
   const _HourlyTable({required this.forecast});
+
+  // Deduplicate by hour — keeps first occurrence of each (date+hour) combo
+  List<WeatherData> get _deduped {
+    final seen = <String>{};
+    return forecast.where((w) {
+      final key = '${w.time.year}-${w.time.month}-${w.time.day}-${w.time.hour}';
+      return seen.add(key);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
     final timeFmt = DateFormat('HH:mm', locale);
-    final dayFmt = DateFormat('EEEE', locale);
+    final dayFmt = DateFormat('EEEE d.M.', locale);
+
+    final data = _deduped;
 
     // Build rows with day separators
     final rows = <TableRow>[];
     DateTime? lastDay;
-    for (final w in forecast) {
+    for (final w in data) {
       final day = DateTime(w.time.year, w.time.month, w.time.day);
-      if (lastDay == null || day != lastDay) {
+      if (lastDay == null || !_sameDay(day, lastDay)) {
         lastDay = day;
         rows.add(TableRow(
           decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer),
-          children: List.generate(4, (_) => Padding(
+          children: List.generate(5, (i) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: _ == 0
+            child: i == 0
                 ? Text(dayFmt.format(w.time),
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11,
                         color: Theme.of(context).colorScheme.onSecondaryContainer))
@@ -549,11 +682,30 @@ class _HourlyTable extends StatelessWidget {
           )),
         ));
       }
+
+      final rainPct = w.precipitationProbability;
+      final rainMm = w.precipitation ?? 0.0;
+      final rainStr = rainPct != null
+          ? '$rainPct%${rainMm > 0 ? ' ${rainMm.toStringAsFixed(1)}mm' : ''}'
+          : '-';
+      final rainColor = rainPct != null && rainPct >= 50
+          ? Colors.blue.shade700
+          : rainPct != null && rainPct >= 20
+              ? Colors.blue.shade400
+              : null;
+
       rows.add(TableRow(children: [
         _cell(timeFmt.format(w.time)),
         _cell('${w.windSpeed.toStringAsFixed(0)} kn ${w.windDirectionLabel}'),
         _cell('${w.waveHeight.toStringAsFixed(1)} m'),
-        _cell('${w.airPressure.toStringAsFixed(0)} hPa'),
+        _cell('${w.airPressure.toStringAsFixed(0)}'),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(rainStr,
+              style: TextStyle(fontSize: 12,
+                  fontWeight: (rainPct ?? 0) >= 50 ? FontWeight.bold : null,
+                  color: rainColor)),
+        ),
       ]));
     }
 
@@ -567,21 +719,22 @@ class _HourlyTable extends StatelessWidget {
             const SizedBox(height: 8),
             Table(
               columnWidths: const {
-                0: FlexColumnWidth(1.5),
-                1: FlexColumnWidth(2.5),
-                2: FlexColumnWidth(1.5),
-                3: FlexColumnWidth(2),
+                0: FlexColumnWidth(1.4),
+                1: FlexColumnWidth(2.4),
+                2: FlexColumnWidth(1.3),
+                3: FlexColumnWidth(1.4),
+                4: FlexColumnWidth(1.5),
               },
               children: [
                 TableRow(
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer),
-                  children: [l.timeCol, l.windCol, l.wavesCol, l.pressureLabel]
+                  children: [l.timeCol, l.windCol, l.wavesCol, 'hPa', l.rainCol]
                       .map((h) => Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(h,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12)),
+                                    fontWeight: FontWeight.bold, fontSize: 11)),
                           ))
                       .toList(),
                 ),
@@ -593,6 +746,9 @@ class _HourlyTable extends StatelessWidget {
       ),
     );
   }
+
+  bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   Widget _cell(String t) => Padding(
         padding: const EdgeInsets.all(8),

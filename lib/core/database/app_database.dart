@@ -26,6 +26,8 @@ class Charters extends Table {
   BoolColumn get checkInDone => boolean().withDefault(const Constant(false))();
   BoolColumn get checkOutDone => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
+  TextColumn get remoteId => text().nullable()();       // UUID na serveri
+  DateTimeColumn get syncedAt => dateTime().nullable()(); // posledná úspešná sync
 }
 
 /// Jeden deň plavby
@@ -79,6 +81,8 @@ class LogbookEntries extends Table {
   TextColumn get crewNames => text().nullable()();
   TextColumn get skipperNote => text().nullable()();
   BoolColumn get isAutoEntry => boolean().withDefault(const Constant(false))();
+  TextColumn get weatherCondition => text().nullable()();
+  TextColumn get photoPath => text().nullable()();
 }
 
 /// GPS track pointy
@@ -135,6 +139,9 @@ class WeatherSnapshots extends Table {
   RealColumn get airTemp => real().nullable()();
   RealColumn get waterTemp => real().nullable()();
   RealColumn get cloudCover => real().nullable()();
+  IntColumn get weatherCode => integer().nullable()();
+  IntColumn get precipitationProbability => integer().nullable()();  // 0–100 %
+  RealColumn get precipitation => real().nullable()();               // mm
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -149,7 +156,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -157,12 +164,21 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
     },
     onUpgrade: (m, from, to) async {
-      // Schéma sa zmenila - zmaž všetko a vytvor odznova
-      await m.createAll();
+      if (from < 2) {
+        await m.addColumn(logbookEntries, logbookEntries.weatherCondition);
+        await m.addColumn(logbookEntries, logbookEntries.photoPath);
+        await m.addColumn(weatherSnapshots, weatherSnapshots.weatherCode);
+      }
+      if (from < 3) {
+        await m.addColumn(weatherSnapshots, weatherSnapshots.precipitationProbability);
+        await m.addColumn(weatherSnapshots, weatherSnapshots.precipitation);
+      }
+      if (from < 4) {
+        await m.addColumn(charters, charters.remoteId);
+        await m.addColumn(charters, charters.syncedAt);
+      }
     },
-    beforeOpen: (details) async {
-      // Foreign keys enabled by default in newer drift versions
-    },
+    beforeOpen: (details) async {},
   );
 
   // ── Charters ────────────────────────────────────────────────
@@ -177,6 +193,15 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> updateCharter(ChartersCompanion c) =>
       (update(charters)..where((t) => t.id.equals(c.id.value))).write(c);
+
+  Future<void> updateCharterSync(int id,
+      {required String remoteId, required DateTime syncedAt}) =>
+      (update(charters)..where((t) => t.id.equals(id))).write(
+        ChartersCompanion(
+          remoteId: Value(remoteId),
+          syncedAt: Value(syncedAt),
+        ),
+      );
 
   Future<void> deleteCharter(int id) async {
     // Skontroluj či nemá aktívnu session
@@ -325,6 +350,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> insertWeatherSnapshot(WeatherSnapshotsCompanion e) =>
       into(weatherSnapshots).insert(e);
+
+  Future<void> clearAllWeather() => delete(weatherSnapshots).go();
 
   Future<void> clearOldWeather() =>
       (delete(weatherSnapshots)

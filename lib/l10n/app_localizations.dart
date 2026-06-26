@@ -416,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Spustiť tracking'**
   String get startTracking;
 
+  /// No description provided for @trackingInProgress.
+  ///
+  /// In sk, this message translates to:
+  /// **'Sledovanie plavby'**
+  String get trackingInProgress;
+
   /// No description provided for @dayNofTotal.
   ///
   /// In sk, this message translates to:
@@ -938,6 +944,12 @@ abstract class AppLocalizations {
   /// **'Predpoveď na 3 dni'**
   String get hourlyForecast;
 
+  /// No description provided for @dailyForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denná teplota'**
+  String get dailyForecast;
+
   /// No description provided for @timeCol.
   ///
   /// In sk, this message translates to:
@@ -955,6 +967,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Vlny'**
   String get wavesCol;
+
+  /// No description provided for @rainCol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dážď'**
+  String get rainCol;
 
   /// No description provided for @beaufort0.
   ///
@@ -2330,6 +2348,12 @@ abstract class AppLocalizations {
   /// **'Zavrieť bez uloženia'**
   String get closeWithoutSaving;
 
+  /// No description provided for @saveToDevice.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložiť do zariadenia'**
+  String get saveToDevice;
+
   /// No description provided for @saveAndShare.
   ///
   /// In sk, this message translates to:
@@ -2353,6 +2377,198 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Hlavná'**
   String get mainsail;
+
+  /// No description provided for @weatherConditionTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stav počasia'**
+  String get weatherConditionTitle;
+
+  /// No description provided for @weatherConditionLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podmienky'**
+  String get weatherConditionLabel;
+
+  /// No description provided for @wcSunny.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slnečno'**
+  String get wcSunny;
+
+  /// No description provided for @wcPartlyCloudy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čiastočne oblačno'**
+  String get wcPartlyCloudy;
+
+  /// No description provided for @wcOvercast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zamračené'**
+  String get wcOvercast;
+
+  /// No description provided for @wcLightRain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slabý dážď'**
+  String get wcLightRain;
+
+  /// No description provided for @wcRain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dážď'**
+  String get wcRain;
+
+  /// No description provided for @wcHeavyRain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Silný dážď'**
+  String get wcHeavyRain;
+
+  /// No description provided for @wcDrizzle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mrholenie'**
+  String get wcDrizzle;
+
+  /// No description provided for @wcThunderstorm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Búrka'**
+  String get wcThunderstorm;
+
+  /// No description provided for @wcIsoThunderstorm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ojedinelé búrky'**
+  String get wcIsoThunderstorm;
+
+  /// No description provided for @wcHail.
+  ///
+  /// In sk, this message translates to:
+  /// **'Krúpy'**
+  String get wcHail;
+
+  /// No description provided for @wcDust.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prach'**
+  String get wcDust;
+
+  /// No description provided for @wcFoggy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hmla'**
+  String get wcFoggy;
+
+  /// No description provided for @wcWindy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Veterné'**
+  String get wcWindy;
+
+  /// No description provided for @wcCold.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mráz'**
+  String get wcCold;
+
+  /// No description provided for @photoSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fotografia'**
+  String get photoSection;
+
+  /// No description provided for @camera.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fotoaparát'**
+  String get camera;
+
+  /// No description provided for @gallery.
+  ///
+  /// In sk, this message translates to:
+  /// **'Galéria'**
+  String get gallery;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať fotku'**
+  String get addPhoto;
+
+  /// No description provided for @photoAddedToEntry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fotografia priložená'**
+  String get photoAddedToEntry;
+
+  /// No description provided for @voyageStart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Začiatok plavby'**
+  String get voyageStart;
+
+  /// No description provided for @voyageEnd.
+  ///
+  /// In sk, this message translates to:
+  /// **'Koniec plavby'**
+  String get voyageEnd;
+
+  /// No description provided for @onlineAccount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Online účet'**
+  String get onlineAccount;
+
+  /// No description provided for @onlineAccountDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Synchronizuj denník na logbook.hmba.boats'**
+  String get onlineAccountDesc;
+
+  /// No description provided for @register.
+  ///
+  /// In sk, this message translates to:
+  /// **'Registrovať'**
+  String get register;
+
+  /// No description provided for @login.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prihlásiť'**
+  String get login;
+
+  /// No description provided for @logout.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odhlásiť'**
+  String get logout;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Budete odhlásený. Dáta uložené v zariadení zostanú.'**
+  String get logoutConfirm;
+
+  /// No description provided for @notLoggedIn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neprihlásený'**
+  String get notLoggedIn;
+
+  /// No description provided for @fullName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celé meno'**
+  String get fullName;
+
+  /// No description provided for @password.
+  ///
+  /// In sk, this message translates to:
+  /// **'Heslo'**
+  String get password;
 }
 
 class _AppLocalizationsDelegate

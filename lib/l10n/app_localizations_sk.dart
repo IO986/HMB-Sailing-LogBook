@@ -168,6 +168,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get startTracking => 'Spustiť tracking';
 
   @override
+  String get trackingInProgress => 'Sledovanie plavby';
+
+  @override
   String dayNofTotal(int n, int total) {
     return 'Deň $n z $total';
   }
@@ -446,6 +449,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get hourlyForecast => 'Predpoveď na 3 dni';
 
   @override
+  String get dailyForecast => 'Denná teplota';
+
+  @override
   String get timeCol => 'Čas';
 
   @override
@@ -453,6 +459,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get wavesCol => 'Vlny';
+
+  @override
+  String get rainCol => 'Dážď';
 
   @override
   String get beaufort0 => 'Bezvetrie';
@@ -1171,6 +1180,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get closeWithoutSaving => 'Zavrieť bez uloženia';
 
   @override
+  String get saveToDevice => 'Uložiť do zariadenia';
+
+  @override
   String get saveAndShare => 'Uložiť a zdieľať';
 
   @override
@@ -1183,4 +1195,101 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get mainsail => 'Hlavná';
+
+  @override
+  String get weatherConditionTitle => 'Stav počasia';
+
+  @override
+  String get weatherConditionLabel => 'Podmienky';
+
+  @override
+  String get wcSunny => 'Slnečno';
+
+  @override
+  String get wcPartlyCloudy => 'Čiastočne oblačno';
+
+  @override
+  String get wcOvercast => 'Zamračené';
+
+  @override
+  String get wcLightRain => 'Slabý dážď';
+
+  @override
+  String get wcRain => 'Dážď';
+
+  @override
+  String get wcHeavyRain => 'Silný dážď';
+
+  @override
+  String get wcDrizzle => 'Mrholenie';
+
+  @override
+  String get wcThunderstorm => 'Búrka';
+
+  @override
+  String get wcIsoThunderstorm => 'Ojedinelé búrky';
+
+  @override
+  String get wcHail => 'Krúpy';
+
+  @override
+  String get wcDust => 'Prach';
+
+  @override
+  String get wcFoggy => 'Hmla';
+
+  @override
+  String get wcWindy => 'Veterné';
+
+  @override
+  String get wcCold => 'Mráz';
+
+  @override
+  String get photoSection => 'Fotografia';
+
+  @override
+  String get camera => 'Fotoaparát';
+
+  @override
+  String get gallery => 'Galéria';
+
+  @override
+  String get addPhoto => 'Pridať fotku';
+
+  @override
+  String get photoAddedToEntry => 'Fotografia priložená';
+
+  @override
+  String get voyageStart => 'Začiatok plavby';
+
+  @override
+  String get voyageEnd => 'Koniec plavby';
+
+  @override
+  String get onlineAccount => 'Online účet';
+
+  @override
+  String get onlineAccountDesc => 'Synchronizuj denník na logbook.hmba.boats';
+
+  @override
+  String get register => 'Registrovať';
+
+  @override
+  String get login => 'Prihlásiť';
+
+  @override
+  String get logout => 'Odhlásiť';
+
+  @override
+  String get logoutConfirm =>
+      'Budete odhlásený. Dáta uložené v zariadení zostanú.';
+
+  @override
+  String get notLoggedIn => 'Neprihlásený';
+
+  @override
+  String get fullName => 'Celé meno';
+
+  @override
+  String get password => 'Heslo';
 }

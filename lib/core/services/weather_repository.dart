@@ -17,7 +17,7 @@ class WeatherRepository {
   Future<void> syncWeather({required double lat, required double lon}) async {
     final db = _db;
     if (db == null) return;
-    await db.clearOldWeather();
+    await db.clearAllWeather();
 
     final forecast = await _forecast.fetchForecast(lat: lat, lon: lon);
     final marine = await _marine.fetchMarine(lat: lat, lon: lon);
@@ -38,9 +38,12 @@ class WeatherRepository {
         airPressure: drift.Value((fh['surface_pressure'][i] as num?)?.toDouble()),
         airTemp: drift.Value((fh['temperature_2m'][i] as num?)?.toDouble()),
         cloudCover: drift.Value((fh['cloud_cover'][i] as num?)?.toDouble()),
+        weatherCode: drift.Value((fh['weather_code'][i] as num?)?.toInt()),
         waveHeight: mi >= 0 ? drift.Value((mh['wave_height'][mi] as num?)?.toDouble()) : const drift.Value.absent(),
         wavePeriod: mi >= 0 ? drift.Value((mh['wave_period'][mi] as num?)?.toDouble()) : const drift.Value.absent(),
         waterTemp: mi >= 0 ? drift.Value((mh['sea_surface_temperature'][mi] as num?)?.toDouble()) : const drift.Value.absent(),
+        precipitationProbability: drift.Value((fh['precipitation_probability']?[i] as num?)?.toInt()),
+        precipitation: drift.Value((fh['precipitation']?[i] as num?)?.toDouble()),
       ));
     }
   }

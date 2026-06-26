@@ -170,6 +170,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get startTracking => 'Розпочати трекінг';
 
   @override
+  String get trackingInProgress => 'Відстеження плавання';
+
+  @override
   String dayNofTotal(int n, int total) {
     return 'День $n з $total';
   }
@@ -448,6 +451,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get hourlyForecast => 'Прогноз на 3 дні';
 
   @override
+  String get dailyForecast => 'Денна температура';
+
+  @override
   String get timeCol => 'Час';
 
   @override
@@ -455,6 +461,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get wavesCol => 'Хвилі';
+
+  @override
+  String get rainCol => 'Дощ';
 
   @override
   String get beaufort0 => 'Штиль';
@@ -1175,6 +1184,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get closeWithoutSaving => 'Закрити без збереження';
 
   @override
+  String get saveToDevice => 'Зберегти на пристрій';
+
+  @override
   String get saveAndShare => 'Зберегти та поділитися';
 
   @override
@@ -1187,4 +1199,101 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get mainsail => 'Грот';
+
+  @override
+  String get weatherConditionTitle => 'Стан погоди';
+
+  @override
+  String get weatherConditionLabel => 'Умови';
+
+  @override
+  String get wcSunny => 'Сонячно';
+
+  @override
+  String get wcPartlyCloudy => 'Мінлива хмарність';
+
+  @override
+  String get wcOvercast => 'Похмуро';
+
+  @override
+  String get wcLightRain => 'Слабкий дощ';
+
+  @override
+  String get wcRain => 'Дощ';
+
+  @override
+  String get wcHeavyRain => 'Сильний дощ';
+
+  @override
+  String get wcDrizzle => 'Мряка';
+
+  @override
+  String get wcThunderstorm => 'Гроза';
+
+  @override
+  String get wcIsoThunderstorm => 'Поодинокі грози';
+
+  @override
+  String get wcHail => 'Град';
+
+  @override
+  String get wcDust => 'Пил';
+
+  @override
+  String get wcFoggy => 'Туман';
+
+  @override
+  String get wcWindy => 'Вітряно';
+
+  @override
+  String get wcCold => 'Мороз';
+
+  @override
+  String get photoSection => 'Фото';
+
+  @override
+  String get camera => 'Камера';
+
+  @override
+  String get gallery => 'Галерея';
+
+  @override
+  String get addPhoto => 'Додати фото';
+
+  @override
+  String get photoAddedToEntry => 'Фото додано';
+
+  @override
+  String get voyageStart => 'Початок плавання';
+
+  @override
+  String get voyageEnd => 'Кінець плавання';
+
+  @override
+  String get onlineAccount => 'Онлайн-акаунт';
+
+  @override
+  String get onlineAccountDesc => 'Синхронізуйте журнал з logbook.hmba.boats';
+
+  @override
+  String get register => 'Зареєструватися';
+
+  @override
+  String get login => 'Увійти';
+
+  @override
+  String get logout => 'Вийти';
+
+  @override
+  String get logoutConfirm =>
+      'Ви вийдете з акаунту. Дані на пристрої залишаться.';
+
+  @override
+  String get notLoggedIn => 'Не авторизовано';
+
+  @override
+  String get fullName => 'Повне ім\'я';
+
+  @override
+  String get password => 'Пароль';
 }

@@ -14,6 +14,8 @@ import 'core/services/location_service.dart';
 import 'core/services/raymarine_connection_service.dart';
 import 'core/services/weather_repository.dart';
 import 'core/services/weather_service.dart';
+import 'core/services/account_service.dart';
+import 'core/services/sync_service.dart';
 import 'features/export/services/export_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/theme/app_theme.dart';
@@ -44,6 +46,8 @@ Future<void> main() async {
   WeatherService().setDatabase(db);
   WeatherRepository().setDatabase(db);
   ExportService().setDatabase(db);
+  SyncService().setDatabase(db);
+  await AccountService().init();
 
   await BackgroundService.init();
 

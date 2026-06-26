@@ -169,6 +169,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startTracking => 'Start tracking';
 
   @override
+  String get trackingInProgress => 'Track your voyage';
+
+  @override
   String dayNofTotal(int n, int total) {
     return 'Day $n of $total';
   }
@@ -446,6 +449,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hourlyForecast => '3-Day Forecast';
 
   @override
+  String get dailyForecast => 'Daily temperature';
+
+  @override
   String get timeCol => 'Time';
 
   @override
@@ -453,6 +459,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wavesCol => 'Waves';
+
+  @override
+  String get rainCol => 'Rain';
 
   @override
   String get beaufort0 => 'Calm';
@@ -1172,6 +1181,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get closeWithoutSaving => 'Close without saving';
 
   @override
+  String get saveToDevice => 'Save to device';
+
+  @override
   String get saveAndShare => 'Save & share';
 
   @override
@@ -1184,4 +1196,101 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mainsail => 'Main';
+
+  @override
+  String get weatherConditionTitle => 'Weather condition';
+
+  @override
+  String get weatherConditionLabel => 'Condition';
+
+  @override
+  String get wcSunny => 'Sunny';
+
+  @override
+  String get wcPartlyCloudy => 'Partly cloudy';
+
+  @override
+  String get wcOvercast => 'Overcast';
+
+  @override
+  String get wcLightRain => 'Light rain';
+
+  @override
+  String get wcRain => 'Rain';
+
+  @override
+  String get wcHeavyRain => 'Heavy rain';
+
+  @override
+  String get wcDrizzle => 'Drizzle';
+
+  @override
+  String get wcThunderstorm => 'Thunderstorms';
+
+  @override
+  String get wcIsoThunderstorm => 'Isolated thunderstorms';
+
+  @override
+  String get wcHail => 'Hail';
+
+  @override
+  String get wcDust => 'Dust';
+
+  @override
+  String get wcFoggy => 'Foggy';
+
+  @override
+  String get wcWindy => 'Windy';
+
+  @override
+  String get wcCold => 'Cold';
+
+  @override
+  String get photoSection => 'Photo';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get photoAddedToEntry => 'Photo attached';
+
+  @override
+  String get voyageStart => 'Voyage start';
+
+  @override
+  String get voyageEnd => 'Voyage end';
+
+  @override
+  String get onlineAccount => 'Online account';
+
+  @override
+  String get onlineAccountDesc => 'Sync your logbook to logbook.hmba.boats';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get login => 'Log in';
+
+  @override
+  String get logout => 'Log out';
+
+  @override
+  String get logoutConfirm =>
+      'You will be logged out. Data saved on the device will remain.';
+
+  @override
+  String get notLoggedIn => 'Not logged in';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get password => 'Password';
 }

@@ -74,21 +74,10 @@ class ExportService {
       final savedGpx = await _saveLocally(gpx, charter.title, charterTitle: charter.title);
 
       _closeDialog(dialogCtx);
-
-      if (context.mounted) {
-        final l = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l.exportSavedMsg(_shortPath(savedPdf.path))),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: l.share,
-            onPressed: () => Share.shareXFiles(
-              [XFile(savedPdf.path), XFile(savedGpx.path)],
-              subject: 'HMB Sailing Log – ${charter.title}',
-            ),
-          ),
-        ));
-      }
+      await Share.shareXFiles(
+        [XFile(savedPdf.path), XFile(savedGpx.path)],
+        subject: 'HMB Sailing Log – ${charter.title}',
+      );
     } catch (e) {
       _closeDialog(dialogCtx);
       if (context.mounted) {
@@ -162,22 +151,10 @@ class ExportService {
       }
 
       _closeDialog(dialogCtx);
-
-      if (context.mounted) {
-        final l = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l.exportSavedMsg(_shortPath(savedPdf.path))),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: l.share,
-            onPressed: () => Share.shareXFiles(
-              shareFiles,
-              subject:
-                  'HMB Sailing Log – $dateStr: ${day.portFrom ?? ""} → ${day.portTo ?? ""}',
-            ),
-          ),
-        ));
-      }
+      await Share.shareXFiles(
+        shareFiles,
+        subject: 'HMB Sailing Log – $dateStr: ${day.portFrom ?? ""} → ${day.portTo ?? ""}',
+      );
     } catch (e) {
       _closeDialog(dialogCtx);
       if (context.mounted) {
@@ -238,20 +215,10 @@ class ExportService {
       }
 
       _closeDialog(dialogCtx);
-      if (context.mounted) {
-        final l = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l.exportSavedMsg(_shortPath(pdfFile.path))),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: l.share,
-            onPressed: () => Share.shareXFiles(
-              shareFiles,
-              subject: 'HMB Sailing Log – $dateStr: ${day.portFrom ?? ""} → ${day.portTo ?? ""}',
-            ),
-          ),
-        ));
-      }
+      await Share.shareXFiles(
+        shareFiles,
+        subject: 'HMB Sailing Log – $dateStr: ${day.portFrom ?? ""} → ${day.portTo ?? ""}',
+      );
     } catch (e) {
       _closeDialog(dialogCtx);
       if (context.mounted) {
@@ -310,20 +277,10 @@ class ExportService {
       shareFiles.add(XFile(gpxFile.path));
 
       _closeDialog(dialogCtx);
-      if (context.mounted) {
-        final l = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l.exportSavedMsg(_shortPath(pdfFile.path))),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: l.share,
-            onPressed: () => Share.shareXFiles(
-              shareFiles,
-              subject: 'HMB Sailing Log – ${charter.title}',
-            ),
-          ),
-        ));
-      }
+      await Share.shareXFiles(
+        shareFiles,
+        subject: 'HMB Sailing Log – ${charter.title}',
+      );
     } catch (e) {
       _closeDialog(dialogCtx);
       if (context.mounted) {

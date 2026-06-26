@@ -18,6 +18,9 @@ class WeatherService {
       wavePeriod: e.wavePeriod ?? 0, airPressure: e.airPressure ?? 0,
       airTemp: e.airTemp ?? 0, waterTemp: e.waterTemp ?? 0,
       cloudCover: e.cloudCover ?? 0,
+      weatherCode: e.weatherCode,
+      precipitationProbability: e.precipitationProbability,
+      precipitation: e.precipitation,
     )).toList();
   }
 
