@@ -1302,111 +1302,68 @@ class AppLocalizationsDe extends AppLocalizations {
   String get password => 'Passwort';
 
   @override
-  String get userGuide => 'Handbuch';
+  String get userGuide => 'Benutzerhandbuch';
 
   @override
-  String get guideQuickStart => 'Schnellstart';
+  String get guideQuickStart => 'Schnellstart – 5 Schritte';
 
   @override
   String get guideQuickStartBody =>
-      'Vor jeder Fahrt:\n'
-      '1. Wettervorhersage prüfen\n'
-      '2. Sicherheitseinweisung mit der Crew durchführen\n'
-      '3. Check-in-Liste abarbeiten\n'
-      '4. Schiffsidentifikation in Einstellungen ausfüllen\n'
-      '5. Logbuch → + → Tracking starten\n'
-      '6. Gute Fahrt!';
+      '1. Logbuch öffnen → + tippen → \"Neue Reise\" wählen\n2. Bootsname und geschätzte Tagesanzahl eingeben\n3. Tracking startet automatisch – Handy in die Tasche\n4. Einträge tagsüber hinzufügen: Uhrzeit, Position, Notiz\n5. Am Reiseende: Einstellungen → PDF exportieren';
 
   @override
   String get guideMapTitle => 'Karte';
 
   @override
   String get guideMapBody =>
-      'Zeigt Ihre aktuelle GPS-Position und die Fahrtroute.\n\n'
-      'Sie können Wegpunkte hinzufügen – Interessenspunkte wie Häfen oder Ankerplätze. '
-      'Tippen Sie im Instrumente-Bildschirm auf das VMG-WP-Panel, '
-      'um einen aktiven Wegpunkt für die Navigation auszuwählen.';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)';
 
   @override
-  String get guideInstrTitle => 'Instrumente';
+  String get guideInstrTitle => 'Marine-Instrumente';
 
   @override
   String get guideInstrBody =>
-      'Digitales Navigationspanel mit Live-Daten:\n\n'
-      '• SOG – Fahrtgeschwindigkeit in Knoten (1 Knoten = 1,85 km/h)\n'
-      '• TWS – wahre Windgeschwindigkeit\n'
-      '• TWA – Windwinkel zur Bootsachse (grün = Steuerbord, rot = Backbord)\n'
-      '• DEPTH – Wassertiefe; Rotalarm unter 5 m\n'
-      '• VMG WP – Annäherungsgeschwindigkeit an Wegpunkt\n\n'
-      'Der große Kompass zeigt Kurs und Windrichtung. Das Badge oben rechts '
-      'zeigt, ob Daten vom Telefon-GPS oder von Raymarine stammen.';
+      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zum Wegpunkt\n\nDatenquelle: Telefon-GPS oder Raymarine (WiFi-Gateway).\nVerbindungseinstellungen: Einstellungen → Instrumente.';
 
   @override
-  String get guideLogbookTitle => 'Logbuch & Fahrt starten';
+  String get guideLogbookTitle => 'Fahrtenbuch';
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch speichert alle Aufzeichnungen. Eine Fahrt wird durch Tippen auf + unten rechts gestartet.\n\n'
-      'Fahrtypen:\n'
-      '• Mehrtägig – Charter über mehrere Tage, Einträge nach Tagen sortiert\n'
-      '• Einzelfahrt – Tagesausflug\n\n'
-      'Einträge werden während des Trackings automatisch erfasst. '
-      'Manuelle Einträge mit „Manuell hinzufügen" – enthält Position, Wind, Wellen, Motorstunden, Notiz und Foto.\n\n'
-      'Tracking läuft im Hintergrund weiter, auch wenn Sie die App schließen.';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• + (FAB) tippen → \"Neue Reise\" zum Erstellen eines Charters\n• Tracking startet aus diesem Dialog – Position wird automatisch erfasst\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden\n• Export als PDF über das Tagesmenü';
 
   @override
   String get guideWeatherTitle => 'Wetter';
 
   @override
   String get guideWeatherBody =>
-      '3-Tages-Vorhersage für Ihre GPS-Position mit stündlicher Tabelle für Wind, Wellen und Niederschlag. '
-      'Enthält Wind- und Wellendiagramme und Tagestemperaturen.\n\n'
-      'Beaufort-Skala: 0 = Windstille, 6 = starker Wind (≈50 km/h), 8–9 = Sturm.\n\n'
-      'Bei Verbindung mit Raymarine werden Live-Daten der Bordelektronik angezeigt.';
+      'Die Wetter-Registerkarte zeigt die Vorhersage für deine aktuelle Position.\n\n• Aktualisiert sich automatisch bei Positionsänderung\n• Wind, Wellen, Temperatur und Bedingungen für die kommenden Stunden\n• Offline: letzte gespeicherte Vorhersage wird angezeigt';
 
   @override
-  String get guideSafetyMobTitle => 'MOB – Mann über Bord';
+  String get guideSafetyMobTitle => 'MOB & Anker';
 
   @override
   String get guideSafetyMobBody =>
-      'Halten Sie die rote MOB-Taste gedrückt, um zu aktivieren. '
-      'Die App zeichnet die GPS-Position auf und zeigt Entfernung, Peilung und Zeit. '
-      'Die Schaltfläche „Zu MOB navigieren" öffnet die Karte.\n\n'
-      'Ankeralarm: Nach dem Ankern Radius einstellen (mind. 50 m) und Aktivieren tippen. '
-      'Der Alarm ertönt, wenn das Boot den Bereich verlässt.';
+      'Die Sicherheits-Registerkarte enthält Notfallfunktionen.\n\nMOB (Mann über Bord):\n• Roten MOB-Knopf gedrückt halten zum Aktivieren\n• App speichert GPS-Position und misst Zeit und Entfernung\n• Navigation zurück zum Fallpunkt\n\nAnkeralarm:\n• Ankerradius einstellen (empfohlen: 2× Kettenlänge)\n• Alarm vibriert, wenn das Boot den erlaubten Radius verlässt';
 
   @override
-  String get guideSafetyBriefingTitle => 'Einweisung, MAYDAY & mehr';
+  String get guideSafetyBriefingTitle => 'Sicherheitseinweisung & MAYDAY';
 
   @override
   String get guideSafetyBriefingBody =>
-      'Sicherheitseinweisung – 12-Punkte-Checkliste für die Crew vor der Abfahrt.\n\n'
-      'MAYDAY-Karte – DSC-Notrufverfahren und Sprachskript für VHF-Kanal 16. '
-      'Anzahl der Personen und Art des Notfalls vorher ausfüllen. '
-      'Rufzeichen und MMSI werden automatisch aus den Einstellungen eingetragen.\n\n'
-      'Check-in / Check-out – Listen für die Übernahme und Rückgabe eines Charterboots.\n\n'
-      'Ausrüstungsliste – Ihre persönliche Packliste.';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte';
 
   @override
   String get guideSettingsTitle => 'Einstellungen';
 
   @override
   String get guideSettingsBody =>
-      'Einheiten: Temperatur (°C / °F), Tiefe & Wellen (m / ft), Wind (Knoten / m/s / Beaufort).\n\n'
-      'Sprache: Slovenčina, English, Deutsch, Español, Українська.\n\n'
-      'Schiffsidentifikation: Rufzeichen und MMSI – werden automatisch in die MAYDAY-Karte eingetragen.\n\n'
-      'Raymarine: IP-Adresse und Port des WLAN-Gateways (typisch 10.0.0.1 : 2000). '
-      'Telefon zuerst mit dem Bord-WLAN verbinden.\n\n'
-      'Online-Konto: Logbuch mit logbook.hmba.boats synchronisieren.';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt';
 
   @override
-  String get guideExportTitle => 'PDF-Export';
+  String get guideExportTitle => 'Logbuch-Export';
 
   @override
   String get guideExportBody =>
-      'Für jede Fahrt oder jeden Tag ein PDF-Logbuch mit Routenkarte erstellen.\n\n'
-      'Vorgang: Logbuch → Fahrt → PDF exportieren → Kartengenerierung abwarten → '
-      'mit Finger unterschreiben → Unterschreiben & exportieren.\n\n'
-      'Das PDF enthält Titelseite, Routenkarten, Eintragtabellen und die Unterschrift des Skippers. '
-      'Auf dem Gerät speichern oder per E-Mail / WhatsApp teilen.';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Tage auswählen, die einbezogen werden sollen\n4. PDF enthält: Route, Einträge, Fotos und Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern';
 }

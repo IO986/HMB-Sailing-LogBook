@@ -1299,110 +1299,68 @@ class AppLocalizationsEs extends AppLocalizations {
   String get password => 'Contraseña';
 
   @override
-  String get userGuide => 'Manual';
+  String get userGuide => 'Guía del usuario';
 
   @override
-  String get guideQuickStart => 'Inicio rápido';
+  String get guideQuickStart => 'Inicio rápido – 5 pasos';
 
   @override
   String get guideQuickStartBody =>
-      'Antes de cada travesía:\n'
-      '1. Consultar la previsión meteorológica\n'
-      '2. Completar el briefing de seguridad con la tripulación\n'
-      '3. Revisar la lista de Check-in\n'
-      '4. Rellenar la identificación del buque en Ajustes\n'
-      '5. Diario → + → Iniciar tracking\n'
-      '6. ¡Buen viento!';
+      '1. Abrir Diario → pulsar + → seleccionar \"Nueva travesía\"\n2. Introducir nombre del barco y días estimados\n3. El rastreo se inicia automáticamente – guarda el teléfono en el bolsillo\n4. Añadir entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF';
 
   @override
   String get guideMapTitle => 'Mapa';
 
   @override
   String get guideMapBody =>
-      'Muestra su posición GPS actual y la ruta de la travesía.\n\n'
-      'Puede añadir waypoints – puntos de interés como puertos o fondeos. '
-      'Pulse el panel VMG WP en Instrumentos para seleccionar un waypoint activo.';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)';
 
   @override
-  String get guideInstrTitle => 'Instrumentos';
+  String get guideInstrTitle => 'Instrumentos marinos';
 
   @override
   String get guideInstrBody =>
-      'Panel de navegación digital con datos en tiempo real:\n\n'
-      '• SOG – velocidad del barco en nudos (1 nudo = 1,85 km/h)\n'
-      '• TWS – velocidad real del viento\n'
-      '• TWA – ángulo del viento (verde = estribor, rojo = babor)\n'
-      '• DEPTH – profundidad; alerta roja por debajo de 5 m\n'
-      '• VMG WP – velocidad de aproximación al waypoint\n\n'
-      'La gran brújula muestra el rumbo y la dirección del viento. '
-      'El indicador superior derecho muestra si los datos provienen del GPS o de Raymarine.';
+      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia el waypoint\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi).\nConfiguración de conexión en Ajustes → Instrumentos.';
 
   @override
-  String get guideLogbookTitle => 'Diario e inicio de travesía';
+  String get guideLogbookTitle => 'Diario de navegación';
 
   @override
   String get guideLogbookBody =>
-      'El Diario almacena todos los registros. Una travesía se inicia pulsando + en la esquina inferior derecha.\n\n'
-      'Tipos de travesía:\n'
-      '• Varios días – charter de varios días, entradas ordenadas por día\n'
-      '• Individual – excursión de un día\n\n'
-      'Las entradas se registran automáticamente durante el tracking. '
-      'Añada una entrada manual con "Añadir manual" – incluye posición, viento, olas, motor, nota y foto.\n\n'
-      'El tracking continúa en segundo plano aunque cierre la aplicación.';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día\n• Exportar a PDF desde el menú del día';
 
   @override
-  String get guideWeatherTitle => 'Meteorología';
+  String get guideWeatherTitle => 'Tiempo';
 
   @override
   String get guideWeatherBody =>
-      'Previsión de 3 días para su posición GPS con tabla horaria de viento, olas y precipitación. '
-      'Incluye gráficos de viento y olas y temperaturas diarias.\n\n'
-      'Escala Beaufort: 0 = calma, 6 = viento fuerte (≈50 km/h), 8–9 = temporal.\n\n'
-      'Con Raymarine conectado se muestran datos en directo de la electrónica del barco.';
+      'La pestaña Tiempo muestra el pronóstico según tu posición actual.\n\n• Se actualiza automáticamente al cambiar de posición\n• Muestra viento, oleaje, temperatura y condiciones para las próximas horas\n• Sin conexión: se muestra el último pronóstico guardado';
 
   @override
-  String get guideSafetyMobTitle => 'MOB – Hombre al agua';
+  String get guideSafetyMobTitle => 'MOB y ancla';
 
   @override
   String get guideSafetyMobBody =>
-      'Mantenga pulsado el botón rojo MOB para activar. '
-      'La aplicación registra la posición GPS y muestra distancia, rumbo y tiempo. '
-      'El botón "Navegar a MOB" abre el mapa.\n\n'
-      'Alarma de fondeo: fondee el barco, configure el radio (50+ m recomendado) y pulse Activar. '
-      'La alarma suena si el barco sale del perímetro.';
+      'La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido';
 
   @override
-  String get guideSafetyBriefingTitle => 'Briefing, MAYDAY y más';
+  String get guideSafetyBriefingTitle => 'Briefing de seguridad y MAYDAY';
 
   @override
   String get guideSafetyBriefingBody =>
-      'Briefing de seguridad – lista de 12 puntos para la tripulación antes de zarpar.\n\n'
-      'Tarjeta MAYDAY – procedimiento DSC y guión de voz para VHF canal 16. '
-      'Rellene el número de personas y la naturaleza de la emergencia de antemano. '
-      'El indicativo y el MMSI se rellenan automáticamente desde Ajustes.\n\n'
-      'Check-in / Check-out – listas para recibir y devolver un barco de charter.\n\n'
-      'Lista de equipaje – su lista personal de cosas para llevar a bordo.';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia';
 
   @override
   String get guideSettingsTitle => 'Ajustes';
 
   @override
   String get guideSettingsBody =>
-      'Unidades: temperatura (°C / °F), profundidad y olas (m / ft), viento (nudos / m/s / Beaufort).\n\n'
-      'Idioma: Slovenčina, English, Deutsch, Español, Українська.\n\n'
-      'Identificación del buque: indicativo y MMSI – se rellenan automáticamente en la tarjeta MAYDAY.\n\n'
-      'Raymarine: dirección IP y puerto del gateway WiFi (normalmente 10.0.0.1 : 2000). '
-      'Conecte el teléfono a la red WiFi del barco primero.\n\n'
-      'Cuenta online: sincronizar el diario con logbook.hmba.boats.';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
 
   @override
-  String get guideExportTitle => 'Exportar PDF';
+  String get guideExportTitle => 'Exportar diario';
 
   @override
   String get guideExportBody =>
-      'Genere un diario PDF con mapa de ruta para cualquier travesía o día.\n\n'
-      'Proceso: Diario → travesía → Exportar PDF → esperar la generación de mapas → '
-      'firmar con el dedo → Firmar y exportar.\n\n'
-      'El PDF contiene portada, mapas de ruta, tablas de entradas y la firma del patrón. '
-      'Guarde en el dispositivo o comparta por correo / WhatsApp.';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Elegir los días a incluir\n4. El PDF incluye: ruta, entradas, fotos y firmas\n5. Compartir por email, imprimir o guardar en el teléfono';
 }

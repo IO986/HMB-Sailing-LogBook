@@ -451,5 +451,25 @@
   "logoutConfirm": "You will be logged out. Data saved on the device will remain.",
   "notLoggedIn": "Not logged in",
   "fullName": "Full name",
-  "password": "Password"
+  "password": "Password",
+
+  "userGuide": "User Guide",
+  "guideQuickStart": "Quick Start – 5 Steps",
+  "guideQuickStartBody": "1. Open Logbook → tap + → select \"New voyage\"\n2. Enter boat name and estimated number of days\n3. Tracking starts automatically – put the phone in your pocket\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF",
+  "guideMapTitle": "Map",
+  "guideMapBody": "The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Anchor icon = anchoring position (only when anchor alarm is active)",
+  "guideInstrTitle": "Marine Instruments",
+  "guideInstrBody": "The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (WiFi gateway).\nConnection settings are in Settings → Instruments.",
+  "guideLogbookTitle": "Voyage Logbook",
+  "guideLogbookBody": "The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day\n• The logbook can be exported to PDF via the day menu",
+  "guideWeatherTitle": "Weather",
+  "guideWeatherBody": "The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• Shows wind, waves, temperature and conditions for the coming hours\n• If offline, the last saved forecast is displayed",
+  "guideSafetyMobTitle": "MOB & Anchor",
+  "guideSafetyMobBody": "The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius",
+  "guideSafetyBriefingTitle": "Safety Briefing & MAYDAY",
+  "guideSafetyBriefingBody": "The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts",
+  "guideSettingsTitle": "Settings",
+  "guideSettingsBody": "• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Export – PDF or CSV\n• About – version and contact",
+  "guideExportTitle": "Logbook Export",
+  "guideExportBody": "The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Choose which days to include\n4. PDF includes: track, log entries, photos and signatures\n5. Share via email, print or save to phone"
 }

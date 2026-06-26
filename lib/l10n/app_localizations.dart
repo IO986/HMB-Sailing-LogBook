@@ -2570,24 +2570,118 @@ abstract class AppLocalizations {
   /// **'Heslo'**
   String get password;
 
+  /// No description provided for @userGuide.
+  ///
+  /// In sk, this message translates to:
+  /// **'Používateľská príručka'**
   String get userGuide;
+
+  /// No description provided for @guideQuickStart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rýchly štart – 5 krokov'**
   String get guideQuickStart;
+
+  /// No description provided for @guideQuickStartBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'1. Otvor Denník → stlač + → vyber \"Nová plavba\"\n2. Vyplň názov lode a zadaj predpokladaný počet dní\n3. Tracking štartuje automaticky – telefón si ulož do vrecka\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF'**
   String get guideQuickStartBody;
+
+  /// No description provided for @guideMapTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapa'**
   String get guideMapTitle;
+
+  /// No description provided for @guideMapBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)'**
   String get guideMapBody;
+
+  /// No description provided for @guideInstrTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Námorné prístroje'**
   String get guideInstrTitle;
+
+  /// No description provided for @guideInstrBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k cieľovému bodu\n\nZdroj dát: telefónne GPS alebo Raymarine (WiFi gateway).\nNastavenia pripojenia nájdeš v Nastavenia → Prístroje.'**
   String get guideInstrBody;
+
+  /// No description provided for @guideLogbookTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník plavby'**
   String get guideLogbookTitle;
+
+  /// No description provided for @guideLogbookBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa\n• Denník možno exportovať do PDF cez menu dňa'**
   String get guideLogbookBody;
+
+  /// No description provided for @guideWeatherTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie'**
   String get guideWeatherTitle;
+
+  /// No description provided for @guideWeatherBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď'**
   String get guideWeatherBody;
+
+  /// No description provided for @guideSafetyMobTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'MOB a kotva'**
   String get guideSafetyMobTitle;
+
+  /// No description provided for @guideSafetyMobBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záložka Bezpečnosť obsahuje núdzové funkcie.\n\nMOB (Človek cez palubu):\n• Podržte červené tlačidlo MOB pre aktiváciu\n• Aplikácia zaznamená GPS polohu a meria čas a vzdialenosť\n• Navigácia späť k miestu pádu\n\nKotva:\n• Nastav polomer kotvenia (odporúčané: 2× dĺžka kotevného lana)\n• Alarm zavibruje, ak sa loď vzdiali z povoleného okruhu'**
   String get guideSafetyMobBody;
+
+  /// No description provided for @guideSafetyBriefingTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnostný brífing a MAYDAY'**
   String get guideSafetyBriefingTitle;
+
+  /// No description provided for @guideSafetyBriefingBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty'**
   String get guideSafetyBriefingBody;
+
+  /// No description provided for @guideSettingsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastavenia'**
   String get guideSettingsTitle;
+
+  /// No description provided for @guideSettingsBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvenciu zápisov do denníka\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
   String get guideSettingsBody;
+
+  /// No description provided for @guideExportTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export denníka'**
   String get guideExportTitle;
+
+  /// No description provided for @guideExportBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Zvol dni, ktoré chceš zahrnúť\n4. PDF obsahuje: trasu, záznamy, fotky a podpisy\n5. Zdieľaj cez email, tlač alebo ulož do telefónu'**
   String get guideExportBody;
 }
 

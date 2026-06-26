@@ -1294,109 +1294,68 @@ class AppLocalizationsSk extends AppLocalizations {
   String get password => 'Heslo';
 
   @override
-  String get userGuide => 'Príručka';
+  String get userGuide => 'Používateľská príručka';
 
   @override
-  String get guideQuickStart => 'Rýchly štart';
+  String get guideQuickStart => 'Rýchly štart – 5 krokov';
 
   @override
   String get guideQuickStartBody =>
-      'Pred každou plavbou:\n'
-      '1. Skontroluj predpoveď počasia\n'
-      '2. Vyplň Bezpečnostný brífing s posádkou\n'
-      '3. Prejdi Check-in zoznam\n'
-      '4. Vyplň identifikáciu plavidla v Nastaveniach\n'
-      '5. Logbook → + → Spustiť tracking\n'
-      '6. Dobrý vietor!';
+      '1. Otvor Denník → stlač + → vyber \"Nová plavba\"\n2. Vyplň názov lode a zadaj predpokladaný počet dní\n3. Tracking štartuje automaticky – telefón si ulož do vrecka\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF';
 
   @override
   String get guideMapTitle => 'Mapa';
 
   @override
   String get guideMapBody =>
-      'Zobrazuje aktuálnu GPS polohu a trasu plavby.\n\n'
-      'Môžeš tu pridávať waypointy – body záujmu ako prístavy alebo kotviská. '
-      'Klepnutím na panel VMG WP v Nástrojoch vybereš aktívny waypoint pre navigáciu.';
+      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)';
 
   @override
-  String get guideInstrTitle => 'Nástroje (Instruments)';
+  String get guideInstrTitle => 'Námorné prístroje';
 
   @override
   String get guideInstrBody =>
-      'Digitálny navigačný panel s live dátami:\n\n'
-      '• SOG – rýchlosť lode v uzloch (1 uzol = 1,85 km/h)\n'
-      '• TWS – skutočná rýchlosť vetra\n'
-      '• TWA – uhol vetra voči osi lode (zelená = pravobort, červená = ľavobort)\n'
-      '• DEPTH – hĺbka vody; červená výstraha pri menej ako 5 m\n'
-      '• VMG WP – rýchlosť priblíženia k vybranému waypointu\n\n'
-      'Veľký kompas ukazuje kurz a smer vetra. Štítok vpravo hore hovorí, '
-      'či dáta pochádzajú z GPS telefónu alebo z Raymarine.';
+      'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k cieľovému bodu\n\nZdroj dát: telefónne GPS alebo Raymarine (WiFi gateway).\nNastavenia pripojenia nájdeš v Nastavenia → Prístroje.';
 
   @override
-  String get guideLogbookTitle => 'Logbook a spustenie plavby';
+  String get guideLogbookTitle => 'Denník plavby';
 
   @override
   String get guideLogbookBody =>
-      'Logbook uchováva všetky záznamy. Plavba sa spúšťa klepnutím na + vpravo dole.\n\n'
-      'Typy plavby:\n'
-      '• Viacdňová – charter na viac dní, záznamy sa triedia podľa dní\n'
-      '• Samostatná – jednodňový výlet\n\n'
-      'Záznamy sa pridávajú automaticky počas trackovania. '
-      'Ručný zápis pridáš tlačidlom „Pridať ručne" – obsahuje polohu, vietor, vlny, motor, poznámku a fotku.\n\n'
-      'Tracking beží na pozadí aj keď aplikáciu zatvoríš.';
+      'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa\n• Denník možno exportovať do PDF cez menu dňa';
 
   @override
   String get guideWeatherTitle => 'Počasie';
 
   @override
   String get guideWeatherBody =>
-      '3-dňová predpoveď pre GPS polohu s hodinovou tabuľkou vetra, vĺn a zrážok. '
-      'Obsahuje grafy vetra a vĺn a denné teploty.\n\n'
-      'Beaufortova stupnica: 0 = bezvetrie, 6 = silný vietor (≈50 km/h), 8–9 = búrka.\n\n'
-      'Pri pripojení k Raymarine sa zobrazujú live dáta priamo z lodnej elektroniky.';
+      'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď';
 
   @override
-  String get guideSafetyMobTitle => 'MOB – Muž cez palubu';
+  String get guideSafetyMobTitle => 'MOB a kotva';
 
   @override
   String get guideSafetyMobBody =>
-      'Červené tlačidlo MOB podržte stlačené pre aktiváciu. '
-      'Aplikácia zaznamená GPS polohu pádu a zobrazí vzdialenosť, smer a čas. '
-      'Tlačidlo „Navigovať k MOB" otvorí mapu.\n\n'
-      'Kotviaci alarm: po zakotvení nastav rádius (odporúčame 50+ m) a klepni Aktivovať. '
-      'Alarm zapípa ak loď opustí okruh.';
+      'Záložka Bezpečnosť obsahuje núdzové funkcie.\n\nMOB (Človek cez palubu):\n• Podržte červené tlačidlo MOB pre aktiváciu\n• Aplikácia zaznamená GPS polohu a meria čas a vzdialenosť\n• Navigácia späť k miestu pádu\n\nKotva:\n• Nastav polomer kotvenia (odporúčané: 2× dĺžka kotevného lana)\n• Alarm zavibruje, ak sa loď vzdiali z povoleného okruhu';
 
   @override
-  String get guideSafetyBriefingTitle => 'Brífing, MAYDAY a ostatné';
+  String get guideSafetyBriefingTitle => 'Bezpečnostný brífing a MAYDAY';
 
   @override
   String get guideSafetyBriefingBody =>
-      'Bezpečnostný brífing – 12-bodový kontrolný zoznam pre posádku pred plavbou.\n\n'
-      'MAYDAY karta – postup tiesňového volania cez DSC rádio a hlasový skript pre VHF kanál 16. '
-      'Vyplň počet osôb a povahu núdze vopred. Volací znak a MMSI sa doplnia z Nastavení.\n\n'
-      'Check-in / Check-out – zoznamy pri preberaní a odovzdávaní charteru.\n\n'
-      'Zoznam výbavy – tvoj osobný kontrolný zoznam vecí na palubu.';
+      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty';
 
   @override
   String get guideSettingsTitle => 'Nastavenia';
 
   @override
   String get guideSettingsBody =>
-      'Jednotky: teplota (°C / °F), hĺbka a vlny (m / ft), vietor (uzly / m/s / Beaufort).\n\n'
-      'Jazyk: Slovenčina, English, Deutsch, Español, Українська.\n\n'
-      'Identifikácia plavidla: volací znak a MMSI – automaticky sa plnia v MAYDAY karte.\n\n'
-      'Raymarine: IP adresa a port WiFi brány lode (typicky 10.0.0.1 : 2000). '
-      'Najprv pripoj telefón na WiFi sieť lode.\n\n'
-      'Online účet: synchronizácia denníka s logbook.hmba.boats.';
+      '• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvenciu zápisov do denníka\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt';
 
   @override
-  String get guideExportTitle => 'Export PDF';
+  String get guideExportTitle => 'Export denníka';
 
   @override
   String get guideExportBody =>
-      'Z každej plavby alebo dňa vygeneruješ PDF lodný denník s mapou trasy.\n\n'
-      'Postup: Logbook → plavba → Export PDF → počkaj na generovanie máp → '
-      'podpíš sa prstom → Podpísať a exportovať.\n\n'
-      'PDF obsahuje titulnú stranu, mapy s trasou, tabuľky zápisov a podpis skipera. '
-      'Ulož do telefónu alebo zdieľaj cez e-mail / WhatsApp.';
+      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Zvol dni, ktoré chceš zahrnúť\n4. PDF obsahuje: trasu, záznamy, fotky a podpisy\n5. Zdieľaj cez email, tlač alebo ulož do telefónu';
 }

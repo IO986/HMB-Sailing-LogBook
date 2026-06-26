@@ -1298,107 +1298,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userGuide => 'User Guide';
 
   @override
-  String get guideQuickStart => 'Quick Start';
+  String get guideQuickStart => 'Quick Start – 5 Steps';
 
   @override
   String get guideQuickStartBody =>
-      'Before every voyage:\n'
-      '1. Check the weather forecast\n'
-      '2. Complete the Safety Briefing with the crew\n'
-      '3. Go through the Check-in list\n'
-      '4. Fill in vessel identification in Settings\n'
-      '5. Logbook → + → Start tracking\n'
-      '6. Fair winds!';
+      '1. Open Logbook → tap + → select \"New voyage\"\n2. Enter boat name and estimated number of days\n3. Tracking starts automatically – put the phone in your pocket\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF';
 
   @override
   String get guideMapTitle => 'Map';
 
   @override
   String get guideMapBody =>
-      'Shows your current GPS position and the voyage track.\n\n'
-      'You can add waypoints – points of interest such as ports or anchorages. '
-      'Tap the VMG WP panel in Instruments to select an active waypoint for navigation.';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Anchor icon = anchoring position (only when anchor alarm is active)';
 
   @override
-  String get guideInstrTitle => 'Instruments';
+  String get guideInstrTitle => 'Marine Instruments';
 
   @override
   String get guideInstrBody =>
-      'Digital navigation panel with live data:\n\n'
-      '• SOG – boat speed in knots (1 knot = 1.85 km/h)\n'
-      '• TWS – true wind speed\n'
-      '• TWA – wind angle relative to the boat (green = starboard, red = port)\n'
-      '• DEPTH – water depth; red alert below 5 m\n'
-      '• VMG WP – speed of approach to the selected waypoint\n\n'
-      'The large compass shows heading and wind direction. The badge top-right '
-      'shows whether data comes from phone GPS or Raymarine instruments.';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (WiFi gateway).\nConnection settings are in Settings → Instruments.';
 
   @override
-  String get guideLogbookTitle => 'Logbook & Starting a voyage';
+  String get guideLogbookTitle => 'Voyage Logbook';
 
   @override
   String get guideLogbookBody =>
-      'The Logbook stores all records. A voyage is started by tapping + in the bottom-right corner.\n\n'
-      'Voyage types:\n'
-      '• Multi-day – charter spanning several days, entries sorted by day\n'
-      '• Standalone – single-day trip\n\n'
-      'Entries are recorded automatically during tracking. '
-      'Add a manual entry with "Add manual" – includes position, wind, waves, engine hours, note and photo.\n\n'
-      'Tracking continues in the background even when you close the app.';
+      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day\n• The logbook can be exported to PDF via the day menu';
 
   @override
   String get guideWeatherTitle => 'Weather';
 
   @override
   String get guideWeatherBody =>
-      '3-day forecast for your GPS position with hourly table of wind, waves and precipitation. '
-      'Includes wind and wave graphs and daily temperatures.\n\n'
-      'Beaufort scale: 0 = calm, 6 = strong breeze (≈50 km/h), 8–9 = gale.\n\n'
-      'When connected to Raymarine, live data from the boat\'s electronics is displayed.';
+      'The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• Shows wind, waves, temperature and conditions for the coming hours\n• If offline, the last saved forecast is displayed';
 
   @override
-  String get guideSafetyMobTitle => 'MOB – Man Overboard';
+  String get guideSafetyMobTitle => 'MOB & Anchor';
 
   @override
   String get guideSafetyMobBody =>
-      'Hold down the red MOB button to activate. '
-      'The app records the GPS position of the incident and shows distance, bearing and elapsed time. '
-      'The "Navigate to MOB" button opens the map.\n\n'
-      'Anchor alarm: after anchoring set the radius (50+ m recommended) and tap Activate. '
-      'The alarm sounds if the vessel leaves the perimeter.';
+      'The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius';
 
   @override
-  String get guideSafetyBriefingTitle => 'Briefing, MAYDAY & more';
+  String get guideSafetyBriefingTitle => 'Safety Briefing & MAYDAY';
 
   @override
   String get guideSafetyBriefingBody =>
-      'Safety Briefing – 12-point checklist for the crew before departure.\n\n'
-      'MAYDAY Card – DSC radio distress procedure and voice script for VHF channel 16. '
-      'Fill in number of persons and nature of distress beforehand. '
-      'Call sign and MMSI are filled automatically from Settings.\n\n'
-      'Check-in / Check-out – lists for receiving and handing back a charter boat.\n\n'
-      'Gear List – your personal packing checklist.';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts';
 
   @override
   String get guideSettingsTitle => 'Settings';
 
   @override
   String get guideSettingsBody =>
-      'Units: temperature (°C / °F), depth & waves (m / ft), wind (knots / m/s / Beaufort).\n\n'
-      'Language: Slovenčina, English, Deutsch, Español, Українська.\n\n'
-      'Vessel identification: call sign and MMSI – auto-filled in the MAYDAY Card.\n\n'
-      'Raymarine: IP address and port of the boat\'s WiFi gateway (typically 10.0.0.1 : 2000). '
-      'Connect your phone to the boat\'s WiFi first.\n\n'
-      'Online account: sync your logbook with logbook.hmba.boats.';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Export – PDF or CSV\n• About – version and contact';
 
   @override
-  String get guideExportTitle => 'PDF Export';
+  String get guideExportTitle => 'Logbook Export';
 
   @override
   String get guideExportBody =>
-      'Generate a PDF logbook with route map for any voyage or day.\n\n'
-      'Process: Logbook → voyage → Export PDF → wait for map generation → '
-      'sign with your finger → Sign & export.\n\n'
-      'The PDF contains a cover page, route maps, entry tables and the skipper\'s signature. '
-      'Save to device or share via email / WhatsApp.';
+      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Choose which days to include\n4. PDF includes: track, log entries, photos and signatures\n5. Share via email, print or save to phone';
 }
