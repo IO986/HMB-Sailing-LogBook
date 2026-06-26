@@ -12,7 +12,26 @@
       "Bash(ping -n 20 127.0.0.1)",
       "Bash(flutter pub *)",
       "Bash(flutter gen-l10n *)",
-      "Bash(dir \".dart_tool\\\\flutter_gen\\\\gen_l10n\\\\\" 2>&1 | head -20)"
+      "Bash(dir \".dart_tool\\\\flutter_gen\\\\gen_l10n\\\\\" 2>&1 | head -20)",
+      "Bash(flutter install *)",
+      "PowerShell(cd C:\\\\dev\\\\sailing_logbook && flutter analyze lib/features/export/ lib/core/services/gps_tracking_service.dart lib/features/logbook/ 2>&1 | Where-Object { $_ -match \"error\" -and $_ -notmatch \"info\" })",
+      "PowerShell(cd C:\\\\dev\\\\sailing_logbook && flutter analyze lib/main.dart lib/features/logbook/presentation/screens/logbook_entry_screen.dart 2>&1 | Where-Object { $_ -match \"error\" })",
+      "Bash(adb devices *)",
+      "Bash(adb shell *)",
+      "Bash(adb exec-out *)",
+      "Bash(adb install *)",
+      "Bash(adb pull *)",
+      "PowerShell(adb *)",
+      "PowerShell(cd C:\\\\dev\\\\sailing_logbook && flutter analyze lib/ 2>&1 | Where-Object { $_ -match \"error\" -and $_ -notmatch \"info\" } | Select-Object -First 30)",
+      "PowerShell(cd C:\\\\dev\\\\sailing_logbook && flutter analyze lib/ > C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\analyze_output.txt 2>&1; Get-Content C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\analyze_output.txt | Where-Object { $_ -match \"^\\\\s+error\" } | Select-Object -First 20)",
+      "Bash(grep -v \"//\\\\s*\")",
+      "Bash(grep -v \"^\\\\s*//\")",
+      "PowerShell(Get-ChildItem \"C:\\\\dev\\\\sailing_logbook\\\\\" -File | Where-Object { $_.Name -match \"mayday|xls|xlsx\" -or $_.Extension -match \"\\\\.xls\" } | Select-Object Name, Length)",
+      "Bash(python3 -c ' *)",
+      "Bash(copy *)",
+      "PowerShell(Copy-Item *)",
+      "Bash(adb *)",
+      "Bash(git add *)"
     ]
   }
 }

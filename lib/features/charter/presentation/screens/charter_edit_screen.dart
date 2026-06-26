@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterEditScreen extends ConsumerStatefulWidget {
   final String? charterId;
@@ -64,40 +65,39 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   Widget build(BuildContext context) {
     final isNew = widget.charterId == null;
     final fmt = DateFormat('d. MMM yyyy', 'sk');
+    final l = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isNew ? 'Nová viacdenná plavba' : 'Upraviť charter'),
+        title: Text(isNew ? l.newMultidayVoyage : l.editCharter),
         actions: [
           TextButton(
             onPressed: _loading ? null : _save,
             child: _loading
                 ? const SizedBox(width: 20, height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Text('Uložiť', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                : Text(l.save, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Základné info
-          _Section('Základné informácie'),
+          _Section(l.basicInfo),
           TextField(
             controller: _titleCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Názov plavby *',
-              hintText: 'napr. Plavba 2–9. máj 2026',
-              prefixIcon: Icon(Icons.sailing),
+            decoration: InputDecoration(
+              labelText: l.voyageNameRequired,
+              hintText: 'e.g. Trip 2–9 May 2026',
+              prefixIcon: const Icon(Icons.sailing),
             ),
           ),
           const SizedBox(height: 12),
-          // Dátumy
           Row(children: [
             Expanded(child: InkWell(
               onTap: () => _pickDate(true),
               child: InputDecorator(
-                decoration: const InputDecoration(labelText: 'Dátum od', prefixIcon: Icon(Icons.calendar_today)),
+                decoration: InputDecoration(labelText: l.dateFrom, prefixIcon: const Icon(Icons.calendar_today)),
                 child: Text(fmt.format(_dateFrom)),
               ),
             )),
@@ -105,94 +105,90 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             Expanded(child: InkWell(
               onTap: () => _pickDate(false),
               child: InputDecorator(
-                decoration: const InputDecoration(labelText: 'Dátum do', prefixIcon: Icon(Icons.calendar_today)),
+                decoration: InputDecoration(labelText: l.dateTo, prefixIcon: const Icon(Icons.calendar_today)),
                 child: Text(fmt.format(_dateTo)),
               ),
             )),
           ]),
           const SizedBox(height: 16),
 
-          // Loď
-          _Section('Loď'),
+          _Section(l.vessel),
           TextField(
             controller: _vesselCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Názov lode',
-              hintText: 'napr. Elan 45',
-              prefixIcon: Icon(Icons.directions_boat),
+            decoration: InputDecoration(
+              labelText: l.vesselName,
+              hintText: 'e.g. Elan 45',
+              prefixIcon: const Icon(Icons.directions_boat),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _vesselTypeCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Typ lode',
-              hintText: 'Plachetnica / Katamaran / Motor...',
-              prefixIcon: Icon(Icons.category),
+            decoration: InputDecoration(
+              labelText: l.vesselType,
+              hintText: 'Sailboat / Catamaran / Motor...',
+              prefixIcon: const Icon(Icons.category),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _homePortCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Domovský prístav',
-              hintText: 'Prístav odchodu/príchodu',
-              prefixIcon: Icon(Icons.anchor),
+            decoration: InputDecoration(
+              labelText: l.homePort,
+              hintText: 'Departure/arrival port',
+              prefixIcon: const Icon(Icons.anchor),
             ),
           ),
           const SizedBox(height: 16),
 
-          // Posádka
-          _Section('Posádka'),
+          _Section(l.crew),
           TextField(
             controller: _skipperCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Kapitán',
-              prefixIcon: Icon(Icons.person),
+            decoration: InputDecoration(
+              labelText: l.captain,
+              prefixIcon: const Icon(Icons.person),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _crewCtrl,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Posádka',
-              hintText: 'Mená oddelené čiarkou\nnapr. Peter Novák, Jana Nováková, Marek Kováč',
-              prefixIcon: Icon(Icons.group),
+            decoration: InputDecoration(
+              labelText: l.crew,
+              hintText: 'Names separated by comma\ne.g. Peter Smith, Jana Smith',
+              prefixIcon: const Icon(Icons.group),
               alignLabelWithHint: true,
             ),
           ),
           const SizedBox(height: 16),
 
-          // Poznámky
-          _Section('Poznámky'),
+          _Section(l.notesLabel),
           TextField(
             controller: _notesCtrl,
             maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: 'Poznámky k plavbe...',
-              prefixIcon: Icon(Icons.notes),
+            decoration: InputDecoration(
+              hintText: '${l.notesLabel}...',
+              prefixIcon: const Icon(Icons.notes),
               alignLabelWithHint: true,
             ),
           ),
           const SizedBox(height: 16),
 
-          // Stav
-          _Section('Stav'),
+          _Section(l.statusLabel),
           CheckboxListTile(
-            title: const Text('Safety Briefing vykonaný'),
+            title: Text(l.safetyBriefingDoneLabel),
             value: _briefing,
             onChanged: (v) => setState(() => _briefing = v ?? false),
             secondary: const Icon(Icons.checklist),
           ),
           CheckboxListTile(
-            title: const Text('Check-in dokončený'),
+            title: Text(l.checkInDoneLabel),
             value: _checkIn,
             onChanged: (v) => setState(() => _checkIn = v ?? false),
             secondary: const Icon(Icons.login),
           ),
           CheckboxListTile(
-            title: const Text('Check-out dokončený'),
+            title: Text(l.checkOutDoneLabel),
             value: _checkOut,
             onChanged: (v) => setState(() => _checkOut = v ?? false),
             secondary: const Icon(Icons.logout),
@@ -224,7 +220,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   Future<void> _save() async {
     if (_titleCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Zadaj názov plavby')));
+        SnackBar(content: Text(AppLocalizations.of(context).enterVoyageName)));
       return;
     }
     setState(() => _loading = true);

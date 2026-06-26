@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/config/adriatic_ports.dart';
+import '../../l10n/app_localizations.dart';
 
 class PortAutocomplete extends StatelessWidget {
   final TextEditingController controller;
@@ -27,7 +28,7 @@ class PortAutocomplete extends StatelessWidget {
           focusNode: focusNode,
           decoration: InputDecoration(
             labelText: label,
-            hintText: hint ?? 'Zadaj prístav...',
+            hintText: hint ?? AppLocalizations.of(ctx).enterPort,
             prefixIcon: const Icon(Icons.anchor),
           ),
         );

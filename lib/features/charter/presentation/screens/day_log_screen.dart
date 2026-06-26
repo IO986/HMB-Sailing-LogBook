@@ -272,8 +272,8 @@ class _EntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fmt = DateFormat('HH:mm');
-    final isFirst = entry.skipperNote == 'Začiatok plavby';
-    final isLast = entry.skipperNote == 'Koniec plavby';
+    final isFirst = entry.skipperNote == 'Voyage start' || entry.skipperNote == 'Začiatok plavby';
+    final isLast = entry.skipperNote == 'Voyage end' || entry.skipperNote == 'Koniec plavby';
     final isAuto = entry.isAutoEntry;
 
     Color? bgColor;

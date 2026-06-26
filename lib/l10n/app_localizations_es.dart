@@ -323,6 +323,45 @@ class AppLocalizationsEs extends AppLocalizations {
   String get backToToc => 'Volver al índice';
 
   @override
+  String get briefingComplete => 'Briefing completado';
+
+  @override
+  String get updateByPosition => 'Actualizar por posición';
+
+  @override
+  String get detectedByGps => 'detectado por GPS';
+
+  @override
+  String get locationUnavailable =>
+      '📍 Posición no disponible – contactos globales';
+
+  @override
+  String get detectingLocation => 'Detectando posición...';
+
+  @override
+  String get tapToCall => 'Toca para llamar';
+
+  @override
+  String cannotCall(String name) {
+    return 'No se puede llamar: $name';
+  }
+
+  @override
+  String get vhfChannel16 => 'Canal VHF 16 – usa la radio del barco';
+
+  @override
+  String get hmbHandbook => 'Manual HMB';
+
+  @override
+  String get checkInLabel => 'Check-in (recepción del barco)';
+
+  @override
+  String get checkOutLabel => 'Check-out (entrega del barco)';
+
+  @override
+  String get charterCheckCard => 'Chárter';
+
+  @override
   String get weatherTitle => 'Tiempo y mar';
 
   @override
@@ -398,13 +437,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get waterLabel => 'Agua';
 
   @override
-  String get wind24h => 'Viento – 24h';
+  String get wind24h => 'Viento – 3 días';
 
   @override
-  String get waves24h => 'Olas – 24h';
+  String get waves24h => 'Olas – 3 días';
 
   @override
-  String get hourlyForecast => 'Previsión horaria';
+  String get hourlyForecast => 'Pronóstico 3 días';
 
   @override
   String get timeCol => 'Hora';
@@ -709,4 +748,444 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routePoints => 'Puntos de ruta';
+
+  @override
+  String get anchorDriftTitle => '⚓ ¡ANCLA A LA DERIVA!';
+
+  @override
+  String get anchorDriftContent =>
+      'El barco ha superado el perímetro del ancla.\n¡Compruebe la posición inmediatamente!';
+
+  @override
+  String get cancelAnchor => 'Cancelar ancla';
+
+  @override
+  String get stopAlarm => 'Detener alarma';
+
+  @override
+  String get briefingItem1 => 'Chalecos salvavidas – ubicación y uso';
+
+  @override
+  String get briefingItem2 => 'Aro salvavidas y procedimiento MOB';
+
+  @override
+  String get briefingItem3 => 'Bengalas – tipos y uso';
+
+  @override
+  String get briefingItem4 => 'EPIRB / PLB – activación';
+
+  @override
+  String get briefingItem5 => 'Radio VHF – canal 16, procedimiento Mayday';
+
+  @override
+  String get briefingItem6 => 'Extintor – ubicación y uso';
+
+  @override
+  String get briefingItem7 => 'Botiquín de primeros auxilios – ubicación';
+
+  @override
+  String get briefingItem8 => 'Parada de emergencia del motor';
+
+  @override
+  String get briefingItem9 => 'Fugas – agua, gas';
+
+  @override
+  String get briefingItem10 => 'Ancla y cadena – procedimiento de fondeo';
+
+  @override
+  String get briefingItem11 => 'Reglas a bordo';
+
+  @override
+  String get briefingItem12 => 'Contactos de emergencia y VHF 16';
+
+  @override
+  String get checkInItem1 => 'Documentos del barco (registro, seguro)';
+
+  @override
+  String get checkInItem2 => 'Equipo de seguridad – completo';
+
+  @override
+  String get checkInItem3 => 'Suministros de combustible';
+
+  @override
+  String get checkInItem4 => 'Suministros de agua';
+
+  @override
+  String get checkInItem5 => 'Ancla y cadena – revisión';
+
+  @override
+  String get checkInItem6 => 'Motor – prueba de marcha';
+
+  @override
+  String get checkInItem7 => 'Instrumentos de navegación';
+
+  @override
+  String get checkInItem8 => 'Aparejo – cabos y velas';
+
+  @override
+  String get checkInItem9 => 'Cocina – gas, fogón';
+
+  @override
+  String get checkInItem10 => 'WC – funcionamiento';
+
+  @override
+  String get checkInItem11 => 'Daños existentes – documentación fotográfica';
+
+  @override
+  String get checkOutItem1 => 'Barco limpio – exterior';
+
+  @override
+  String get checkOutItem2 => 'Barco limpio – interior';
+
+  @override
+  String get checkOutItem3 => 'Combustible rellenado';
+
+  @override
+  String get checkOutItem4 => 'Agua rellenada';
+
+  @override
+  String get checkOutItem5 => 'Basura eliminada';
+
+  @override
+  String get checkOutItem6 => 'Daños reportados';
+
+  @override
+  String get checkOutItem7 => 'Llaves entregadas';
+
+  @override
+  String get gearListShort => 'Equipo\nPersonal';
+
+  @override
+  String get colregRules => 'COLREG\nReglas';
+
+  @override
+  String get checkInShort => 'Check-in\nRecepción';
+
+  @override
+  String get checkOutShort => 'Check-out\nEntrega';
+
+  @override
+  String get appTagline => 'Tu diario de a bordo de confianza';
+
+  @override
+  String exportSavedMsg(String path) {
+    return 'Guardado: $path';
+  }
+
+  @override
+  String exportErrorMsg(String error) {
+    return 'Error de exportación: $error';
+  }
+
+  @override
+  String get generatingPdf => 'Generando PDF...';
+
+  @override
+  String get colregTitle => 'COLREG – Reglas de la vía';
+
+  @override
+  String get tableOfContents => 'ÍNDICE';
+
+  @override
+  String get inThisChapter => 'En este capítulo:';
+
+  @override
+  String ruleNumberLabel(Object n) {
+    return 'Regla $n';
+  }
+
+  @override
+  String get resetChecklistTitle => '¿Reiniciar lista?';
+
+  @override
+  String get resetChecklistContent => 'Se borrarán todas las marcas.';
+
+  @override
+  String get reset => 'Reiniciar';
+
+  @override
+  String get checkInReceivingTitle => 'Check-in – Recibir el barco';
+
+  @override
+  String get checkOutHandoverTitle => 'Check-out – Entregar el barco';
+
+  @override
+  String get checkInCompletedMsg => 'Barco recibido – todo verificado ✓';
+
+  @override
+  String get checkOutCompletedMsg => 'Barco entregado – todo en orden ✓';
+
+  @override
+  String get briefingDoneMsg => 'Sesión completada – tripulación informada';
+
+  @override
+  String get sectionBriefed => 'Sección explicada ✓';
+
+  @override
+  String get confirmSection => 'Confirmar sección';
+
+  @override
+  String get gearListTitle => 'Equipo personal';
+
+  @override
+  String get newCategory => 'Nueva categoría';
+
+  @override
+  String get add => 'Añadir';
+
+  @override
+  String get deleteItemTitle => '¿Eliminar elemento?';
+
+  @override
+  String get allPackedMsg => '¡Todo listo para navegar! 🎉';
+
+  @override
+  String get addItemLabel => 'Añadir elemento';
+
+  @override
+  String addToCategoryTitle(String category) {
+    return 'Añadir a: $category';
+  }
+
+  @override
+  String get newItemHint => 'Nuevo elemento...';
+
+  @override
+  String get addWaypoint => 'Añadir waypoint';
+
+  @override
+  String get waypointNameLabel => 'Nombre';
+
+  @override
+  String get skipperSignature => 'Firma del patrón';
+
+  @override
+  String get signWithFinger => 'Firme con el dedo';
+
+  @override
+  String get clear => 'Borrar';
+
+  @override
+  String get signAndExport => 'Firmar y exportar';
+
+  @override
+  String get pleaseSign => 'Por favor firme antes de exportar';
+
+  @override
+  String get generatingPdfPreview => 'Generando vista previa PDF...';
+
+  @override
+  String generationError(String error) {
+    return 'Error de generación: $error';
+  }
+
+  @override
+  String get savingAndGeneratingGpx => 'Guardando y generando GPX...';
+
+  @override
+  String get editCharter => 'Editar charter';
+
+  @override
+  String get basicInfo => 'Información básica';
+
+  @override
+  String get voyageNameRequired => 'Nombre del viaje *';
+
+  @override
+  String get dateFrom => 'Fecha desde';
+
+  @override
+  String get dateTo => 'Fecha hasta';
+
+  @override
+  String get vesselName => 'Nombre del barco';
+
+  @override
+  String get vesselType => 'Tipo de barco';
+
+  @override
+  String get homePort => 'Puerto base';
+
+  @override
+  String get notesLabel => 'Notas';
+
+  @override
+  String get statusLabel => 'Estado';
+
+  @override
+  String get safetyBriefingDoneLabel => 'Briefing de seguridad completado';
+
+  @override
+  String get checkInDoneLabel => 'Check-in completado';
+
+  @override
+  String get checkOutDoneLabel => 'Check-out completado';
+
+  @override
+  String get enterVoyageName => 'Introduce el nombre del viaje';
+
+  @override
+  String daysCount(int n) {
+    return '$n días';
+  }
+
+  @override
+  String get selectTargetWaypoint => 'Seleccionar waypoint destino';
+
+  @override
+  String get noWaypoints => 'Sin waypoints.';
+
+  @override
+  String get goToMap => 'Ir al mapa';
+
+  @override
+  String get noTarget => 'Sin destino';
+
+  @override
+  String get selectWaypointHint => 'Seleccionar waypoint...';
+
+  @override
+  String get sessionStats => 'Estadísticas de la travesía';
+
+  @override
+  String get maxSpeed => 'Velocidad máx.';
+
+  @override
+  String get avgSpeed => 'Velocidad prom.';
+
+  @override
+  String get sailingTime => 'Tiempo de navegación';
+
+  @override
+  String get gpsData => 'Datos GPS';
+
+  @override
+  String get gpsPosition => 'Posición';
+
+  @override
+  String get courseCog => 'Rumbo (COG)';
+
+  @override
+  String get altitudeLabel => 'Altitud';
+
+  @override
+  String get dscProcedure => 'PROCEDIMIENTO DSC';
+
+  @override
+  String get voiceScript => 'GUIÓN DE VOZ';
+
+  @override
+  String get dscWarningUseOnly => '⚠️ USAR SOLO EN CASO DE';
+
+  @override
+  String get dscWarningDanger => 'PELIGRO GRAVE E INMINENTE';
+
+  @override
+  String get dscWarningTypes => 'Incendio · Hundimiento · Hombre al agua';
+
+  @override
+  String get dscProcedureSubtitle =>
+      'Conserve este procedimiento junto al radio VHF DSC';
+
+  @override
+  String get fillBeforeSailing => 'Completar antes de navegar:';
+
+  @override
+  String get copyTooltip => 'Copiar';
+
+  @override
+  String get scriptCopied => 'Guión copiado';
+
+  @override
+  String get sendOnCh16 =>
+      '📻 Enviar en Canal 16 · Alta potencia · Repetir cada 2 minutos si no hay respuesta';
+
+  @override
+  String get enterAbove => '[introducir en campo superior]';
+
+  @override
+  String get distressNature => 'Naturaleza del peligro';
+
+  @override
+  String get vesselNameLabel => 'Nombre del barco';
+
+  @override
+  String get numberOfPersons => 'Número de personas';
+
+  @override
+  String get additionalInfo => 'Información adicional';
+
+  @override
+  String get voiceScriptTitle => 'GUIÓN MAYDAY DE VOZ';
+
+  @override
+  String get dscStep1 => 'Asegúrese de que la radio esté encendida.';
+
+  @override
+  String get dscStep2 => 'Abra la cubierta sobre el botón ROJO de socorro.';
+
+  @override
+  String get dscStep3 => 'Pulse el botón ROJO UNA VEZ y suéltelo.';
+
+  @override
+  String get dscStep4 =>
+      'Seleccione la naturaleza del peligro.\n(Incendio, Hundimiento, MOB, etc.)\nSi omite, se enviará Peligro sin especificar.';
+
+  @override
+  String get dscStep5 =>
+      'Pulse y MANTENGA el botón ROJO durante 5 segundos para enviar la llamada.';
+
+  @override
+  String get dscStep6 =>
+      'Espere hasta 15 segundos para la confirmación (en pantalla), luego envíe mensaje de voz en Canal 16 a ALTA POTENCIA.';
+
+  @override
+  String get appDescription =>
+      'Diario de navegación profesional para navegantes.';
+
+  @override
+  String get vesselIdTitle => 'Identificación del buque';
+
+  @override
+  String get vesselIdHint =>
+      'La indicación de llamada y el MMSI se rellenan automáticamente en la Tarjeta Mayday.';
+
+  @override
+  String get maritimeReference => 'Referencia marítima';
+
+  @override
+  String get phonetic => 'Fonético';
+
+  @override
+  String get flagAlphabet => 'Banderas de señales';
+
+  @override
+  String get dayShapes => 'Marcas de día';
+
+  @override
+  String get marineReferenceTile => 'Señales & alfabeto';
+
+  @override
+  String get navInstruments => 'Instrumentos';
+
+  @override
+  String get enterPort => 'Ingrese puerto...';
+
+  @override
+  String get closeWithoutSaving => 'Cerrar sin guardar';
+
+  @override
+  String get saveAndShare => 'Guardar y compartir';
+
+  @override
+  String get timestampCannotBeChanged =>
+      'La hora del registro no se puede cambiar';
+
+  @override
+  String entriesShort(int n) {
+    return '$n entr.';
+  }
+
+  @override
+  String get mainsail => 'Vela mayor';
 }

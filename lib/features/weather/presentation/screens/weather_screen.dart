@@ -2,14 +2,17 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:intl/intl.dart';
 import '../../../../core/models/weather_data.dart';
 import 'package:dio/dio.dart' as dio;
 import '../../../../core/services/gps_tracking_service.dart';
+import '../../../../core/services/location_service.dart';
 import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/models/marine_instrument_data.dart';
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 // Reverse geocoding + fallback na súradnice
 final _locationNameProvider = FutureProvider<String?>((ref) async {
@@ -65,7 +68,7 @@ class WeatherScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Počasie a more'),
+            Text(AppLocalizations.of(context).weatherTitle),
             if (locationName != null)
               Text(locationName,
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
@@ -74,21 +77,20 @@ class WeatherScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Aktualizovať predpoveď',
+            tooltip: AppLocalizations.of(context).updateForecast,
             onPressed: () async {
-              final pos = GpsTrackingService().lastPosition;
+              final l = AppLocalizations.of(context);
+              final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
               if (pos == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('GPS nie je dostupné – zapnite tracking'),
-                  ),
+                  SnackBar(content: Text(l.gpsNotAvailableTracking)),
                 );
                 return;
               }
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Sťahujem predpoveď...'),
-                  duration: Duration(seconds: 2),
+                SnackBar(
+                  content: Text(l.downloadingForecast),
+                  duration: const Duration(seconds: 2),
                 ),
               );
               try {
@@ -100,7 +102,7 @@ class WeatherScreen extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Chyba: $e')),
+                    SnackBar(content: Text(AppLocalizations.of(context).downloadError(e.toString()))),
                   );
                 }
               }
@@ -115,13 +117,13 @@ class WeatherScreen extends ConsumerWidget {
           }
           return _WeatherContent(forecast: forecast);
         },
-        loading: () => const Center(
+        loading: () => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Načítavam predpoveď...'),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(AppLocalizations.of(context).loadingForecast),
             ],
           ),
         ),
@@ -131,12 +133,12 @@ class WeatherScreen extends ConsumerWidget {
             children: [
               const Icon(Icons.cloud_off, size: 64, color: Colors.grey),
               const SizedBox(height: 16),
-              const Text('Nie je dostupné spojenie'),
+              Text(AppLocalizations.of(context).noConnection),
               const SizedBox(height: 8),
-              const Text(
-                'Stlačte refresh keď ste online',
+              Text(
+                AppLocalizations.of(context).pressRefreshWhenOnline,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ],
           ),
@@ -158,25 +160,25 @@ class _EmptyWeather extends ConsumerWidget {
             Icon(Icons.cloud_download_outlined,
                 size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
-            Text('Žiadne dáta počasia',
+            Text(AppLocalizations.of(context).noWeatherData,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge
                     ?.copyWith(color: Colors.grey)),
             const SizedBox(height: 8),
-            const Text(
-              'Predpoveď sa stiahne automaticky po spustení trackingu, alebo stlačte Refresh.',
+            Text(
+              AppLocalizations.of(context).forecastAutoDownload,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () async {
-                final pos = GpsTrackingService().lastPosition;
+                final l = AppLocalizations.of(context);
+                final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
                 if (pos == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Zapnite GPS / tracking najprv')),
+                    SnackBar(content: Text(l.enableGpsFirst)),
                   );
                   return;
                 }
@@ -189,13 +191,13 @@ class _EmptyWeather extends ConsumerWidget {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Chyba sťahovania: $e')),
+                      SnackBar(content: Text(AppLocalizations.of(context).downloadError(e.toString()))),
                     );
                   }
                 }
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Stiahnuť predpoveď'),
+              label: Text(AppLocalizations.of(context).downloadForecast),
             ),
           ],
         ),
@@ -232,11 +234,11 @@ class _WeatherContent extends ConsumerWidget {
         const SizedBox(height: 12),
         _BeaufortCard(beaufort: current.beaufort),
         const SizedBox(height: 12),
-        _WindChart(forecast: forecast.take(24).toList()),
+        _WindChart(forecast: forecast),
         const SizedBox(height: 12),
-        _WaveChart(forecast: forecast.take(24).toList()),
+        _WaveChart(forecast: forecast),
         const SizedBox(height: 12),
-        _HourlyTable(forecast: forecast.take(12).toList()),
+        _HourlyTable(forecast: forecast.where((w) => w.time.hour % 3 == 0).toList()),
       ],
     );
   }
@@ -247,7 +249,7 @@ class _LiveInstrumentsCard extends StatelessWidget {
   const _LiveInstrumentsCard({required this.data});
 
   String _windDirLabel(double deg) {
-    const dirs = ['S','SSV','SV','VSV','V','VJV','JV','JJV','J','JJZ','JZ','ZJZ','Z','ZSZ','SZ','SSZ'];
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
     return dirs[((deg / 22.5) + 0.5).toInt() % 16];
   }
 
@@ -263,7 +265,7 @@ class _LiveInstrumentsCard extends StatelessWidget {
             Row(children: [
               const Icon(Icons.sensors, size: 18, color: Colors.green),
               const SizedBox(width: 6),
-              Text('Živé dáta z lodných inštrumentov',
+              Text(AppLocalizations.of(context).liveInstrumentData,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold)),
             ]),
@@ -274,22 +276,29 @@ class _LiveInstrumentsCard extends StatelessWidget {
               children: [
                 if (data.hasWind)
                   _Metric(
-                    data.windIsApparent ? 'Vietor (rel.)' : 'Vietor (skut.)',
+                    data.windIsApparent
+                        ? AppLocalizations.of(context).windRelative
+                        : AppLocalizations.of(context).windTrue,
                     '${data.windSpeedKnots!.toStringAsFixed(0)} kn ${_windDirLabel(data.windAngleDegrees!)}',
                     Icons.air,
                   ),
                 if (data.hasDepth)
-                  _Metric('Hĺbka', '${data.depthMeters!.toStringAsFixed(1)} m', Icons.waves),
+                  _Metric(AppLocalizations.of(context).depthLabel,
+                      '${data.depthMeters!.toStringAsFixed(1)} m', Icons.waves),
                 if (data.waterTempCelsius != null)
-                  _Metric('Teplota vody', '${data.waterTempCelsius!.toStringAsFixed(1)}°C', Icons.water),
+                  _Metric(AppLocalizations.of(context).waterTempLabel,
+                      '${data.waterTempCelsius!.toStringAsFixed(1)}°C', Icons.water),
                 if (data.headingDegrees != null)
                   _Metric(
-                    data.headingIsTrue ? 'Kurz (skut.)' : 'Kurz (mag.)',
+                    data.headingIsTrue
+                        ? AppLocalizations.of(context).courseTrue
+                        : AppLocalizations.of(context).courseMag,
                     '${data.headingDegrees!.toStringAsFixed(0)}°',
                     Icons.explore,
                   ),
                 if (data.engineRpm != null)
-                  _Metric('Motor', '${data.engineRpm!.toStringAsFixed(0)} ot/min', Icons.settings),
+                  _Metric(AppLocalizations.of(context).engineLabel,
+                      '${data.engineRpm!.toStringAsFixed(0)} rpm', Icons.settings),
               ],
             ),
           ],
@@ -326,10 +335,10 @@ class _CurrentWeatherCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _Metric('Vlny', '${weather.waveHeight.toStringAsFixed(1)} m', Icons.waves),
-                _Metric('Tlak', '${weather.airPressure.toStringAsFixed(0)} hPa', Icons.compress),
-                _Metric('Vzduch', '${weather.airTemp.toStringAsFixed(0)}°C', Icons.thermostat),
-                _Metric('Voda', '${weather.waterTemp.toStringAsFixed(0)}°C', Icons.water),
+                _Metric(AppLocalizations.of(context).wavesLabel, '${weather.waveHeight.toStringAsFixed(1)} m', Icons.waves),
+                _Metric(AppLocalizations.of(context).pressureLabel, '${weather.airPressure.toStringAsFixed(0)} hPa', Icons.compress),
+                _Metric(AppLocalizations.of(context).airTempLabel, '${weather.airTemp.toStringAsFixed(0)}°C', Icons.thermostat),
+                _Metric(AppLocalizations.of(context).waterLabel, '${weather.waterTemp.toStringAsFixed(0)}°C', Icons.water),
               ],
             ),
           ],
@@ -358,12 +367,6 @@ class _BeaufortCard extends StatelessWidget {
   final int beaufort;
   const _BeaufortCard({required this.beaufort});
 
-  static const _desc = [
-    'Bezvetrie', 'Tichý vánok', 'Slabý vietor', 'Slabý vietor',
-    'Mierny vietor', 'Dosť čerstvý', 'Čerstvý vietor', 'Silný vietor',
-    'Búrlivý vietor', 'Búrka', 'Silná búrka', 'Mimoriadna búrka', 'Orkán',
-  ];
-
   Color get _color {
     if (beaufort <= 3) return Colors.green;
     if (beaufort <= 5) return Colors.orange;
@@ -371,21 +374,33 @@ class _BeaufortCard extends StatelessWidget {
     return Colors.red;
   }
 
+  String _desc(AppLocalizations l) {
+    const keys = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+    final descs = [
+      l.beaufort0, l.beaufort1, l.beaufort2, l.beaufort3, l.beaufort4,
+      l.beaufort5, l.beaufort6, l.beaufort7, l.beaufort8, l.beaufort9,
+      l.beaufort10, l.beaufort11, l.beaufort12,
+    ];
+    return beaufort < keys.length ? descs[beaufort] : '';
+  }
+
   @override
-  Widget build(BuildContext context) => Card(
-        color: _color.withOpacity(0.1),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: _color,
-            child: Text('$beaufort',
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
-          ),
-          title: Text('Beaufort $beaufort'),
-          subtitle: Text(beaufort < _desc.length ? _desc[beaufort] : ''),
-          trailing: Icon(Icons.flag, color: _color),
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Card(
+      color: _color.withOpacity(0.1),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: _color,
+          child: Text('$beaufort',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
-      );
+        title: Text('Beaufort $beaufort'),
+        subtitle: Text(_desc(l)),
+        trailing: Icon(Icons.flag, color: _color),
+      ),
+    );
+  }
 }
 
 class _WindChart extends StatelessWidget {
@@ -399,7 +414,7 @@ class _WindChart extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Vietor – 24h',
+              Text(AppLocalizations.of(context).wind24h,
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 16),
               SizedBox(
@@ -416,12 +431,14 @@ class _WindChart extends StatelessWidget {
                     bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                             showTitles: true,
-                            interval: 6,
+                            interval: 12,
                             getTitlesWidget: (v, _) {
                               final i = v.toInt();
                               if (i >= forecast.length) return const SizedBox();
-                              return Text('${forecast[i].time.hour}h',
-                                  style: const TextStyle(fontSize: 10));
+                              final t = forecast[i].time;
+                              return Text('${t.day}/${t.month}\n${t.hour}h',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 9));
                             })),
                     rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -460,7 +477,7 @@ class _WaveChart extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Vlny – 24h',
+              Text(AppLocalizations.of(context).waves24h,
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 16),
               SizedBox(
@@ -507,49 +524,75 @@ class _HourlyTable extends StatelessWidget {
   const _HourlyTable({required this.forecast});
 
   @override
-  Widget build(BuildContext context) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Hodinová predpoveď',
-                  style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 8),
-              Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(2),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(2),
-                },
-                children: [
-                  TableRow(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer),
-                    children: ['Čas', 'Vietor', 'Vlny', 'Tlak']
-                        .map((h) => Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(h,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12)),
-                            ))
-                        .toList(),
-                  ),
-                  ...forecast.map((w) => TableRow(children: [
-                        _cell('${w.time.hour}:00'),
-                        _cell(
-                            '${w.windSpeed.toStringAsFixed(0)} kn ${w.windDirectionLabel}'),
-                        _cell('${w.waveHeight.toStringAsFixed(1)} m'),
-                        _cell('${w.airPressure.toStringAsFixed(0)} hPa'),
-                      ])),
-                ],
-              ),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
+    final timeFmt = DateFormat('HH:mm', locale);
+    final dayFmt = DateFormat('EEEE', locale);
+
+    // Build rows with day separators
+    final rows = <TableRow>[];
+    DateTime? lastDay;
+    for (final w in forecast) {
+      final day = DateTime(w.time.year, w.time.month, w.time.day);
+      if (lastDay == null || day != lastDay) {
+        lastDay = day;
+        rows.add(TableRow(
+          decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer),
+          children: List.generate(4, (_) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: _ == 0
+                ? Text(dayFmt.format(w.time),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer))
+                : const SizedBox(),
+          )),
+        ));
+      }
+      rows.add(TableRow(children: [
+        _cell(timeFmt.format(w.time)),
+        _cell('${w.windSpeed.toStringAsFixed(0)} kn ${w.windDirectionLabel}'),
+        _cell('${w.waveHeight.toStringAsFixed(1)} m'),
+        _cell('${w.airPressure.toStringAsFixed(0)} hPa'),
+      ]));
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.hourlyForecast, style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1.5),
+                1: FlexColumnWidth(2.5),
+                2: FlexColumnWidth(1.5),
+                3: FlexColumnWidth(2),
+              },
+              children: [
+                TableRow(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer),
+                  children: [l.timeCol, l.windCol, l.wavesCol, l.pressureLabel]
+                      .map((h) => Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(h,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12)),
+                          ))
+                      .toList(),
+                ),
+                ...rows,
+              ],
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _cell(String t) => Padding(
         padding: const EdgeInsets.all(8),

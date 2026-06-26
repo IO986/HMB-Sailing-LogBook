@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:barcode/barcode.dart';
+import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -14,18 +17,19 @@ class PdfExportService {
   static final _green  = PdfColor.fromHex('#1E8449');
   static final _lblue  = PdfColor.fromHex('#D6EAF8');
 
-  static Future<File> exportCharter({
+  /// Vráti bajty PDF bez uloženia na disk – pre náhľad.
+  static Future<Uint8List> buildCharterPdfBytes({
     required Charter charter,
     required List<DayLog> days,
     required Map<int, List<LogbookEntry>> entriesByDay,
     required Map<int, Uint8List?> mapScreenshots,
+    Uint8List? signatureImage,
   }) async {
     final pdf = pw.Document(
       title: _ascii(charter.title),
       author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
-
     pdf.addPage(_titlePage(charter, days));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
@@ -35,11 +39,66 @@ class PdfExportService {
       }
     }
     pdf.addPage(_summaryPage(charter, days, entriesByDay));
+    if (signatureImage != null) {
+      final canonical = _buildCanonical(charter: charter, days: days, entriesByDay: entriesByDay);
+      final hash = sha256.convert(utf8.encode(canonical)).toString();
+      pdf.addPage(_signaturePage(
+        signatureImage: signatureImage,
+        signerName: charter.skipperName,
+        signedAt: DateTime.now().toUtc(),
+        hash: hash,
+        docTitle: charter.title,
+      ));
+    }
+    return pdf.save();
+  }
 
+  /// Vráti bajty PDF pre deň bez uloženia na disk – pre náhľad.
+  static Future<Uint8List> buildDayPdfBytes({
+    required Charter charter,
+    required DayLog day,
+    required List<LogbookEntry> entries,
+    Uint8List? mapScreenshot,
+    Uint8List? signatureImage,
+  }) async {
+    final pdf = pw.Document();
+    for (final page in _dayPages(charter, day, entries, mapScreenshot)) {
+      pdf.addPage(page);
+    }
+    if (signatureImage != null) {
+      final canonical = _buildCanonical(
+        charter: charter, days: [day], entriesByDay: {day.id: entries});
+      final hash = sha256.convert(utf8.encode(canonical)).toString();
+      pdf.addPage(_signaturePage(
+        signatureImage: signatureImage,
+        signerName: charter.skipperName,
+        signedAt: DateTime.now().toUtc(),
+        hash: hash,
+        docTitle: '${charter.title} – ${DateFormat('d.M.yyyy').format(day.date)}',
+      ));
+    }
+    return pdf.save();
+  }
+
+  /// Uloží bajty PDF na disk a vráti súbor.
+  static Future<File> saveBytesToFile(Uint8List bytes, String name) async {
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/charter_${charter.id}_${DateTime.now().millisecondsSinceEpoch}.pdf');
-    await file.writeAsBytes(await pdf.save());
+    final file = File('${dir.path}/${name}_${DateTime.now().millisecondsSinceEpoch}.pdf');
+    await file.writeAsBytes(bytes);
     return file;
+  }
+
+  static Future<File> exportCharter({
+    required Charter charter,
+    required List<DayLog> days,
+    required Map<int, List<LogbookEntry>> entriesByDay,
+    required Map<int, Uint8List?> mapScreenshots,
+    Uint8List? signatureImage,
+  }) async {
+    final bytes = await buildCharterPdfBytes(
+      charter: charter, days: days, entriesByDay: entriesByDay,
+      mapScreenshots: mapScreenshots, signatureImage: signatureImage);
+    return saveBytesToFile(bytes, 'charter_${charter.id}');
   }
 
   static Future<File> exportDay({
@@ -47,15 +106,43 @@ class PdfExportService {
     required DayLog day,
     required List<LogbookEntry> entries,
     Uint8List? mapScreenshot,
+    Uint8List? signatureImage,
   }) async {
-    final pdf = pw.Document();
-    for (final page in _dayPages(charter, day, entries, mapScreenshot)) {
-      pdf.addPage(page);
+    final bytes = await buildDayPdfBytes(
+      charter: charter, day: day, entries: entries,
+      mapScreenshot: mapScreenshot, signatureImage: signatureImage);
+    return saveBytesToFile(bytes, 'day_${day.id}');
+  }
+
+  // ── Kanonické dáta pre hash ───────────────────────────────────
+
+  static String _buildCanonical({
+    required Charter charter,
+    required List<DayLog> days,
+    required Map<int, List<LogbookEntry>> entriesByDay,
+  }) {
+    final sb = StringBuffer();
+    sb.writeln('HMB-SAILING-LOG:v1');
+    sb.writeln('title:${charter.title}');
+    sb.writeln('vessel:${charter.vesselName ?? ""}');
+    sb.writeln('skipper:${charter.skipperName ?? ""}');
+    sb.writeln('from:${charter.dateFrom.toUtc().toIso8601String()}');
+    sb.writeln('to:${charter.dateTo.toUtc().toIso8601String()}');
+    for (final day in days) {
+      sb.writeln('---');
+      sb.writeln('day:${day.date.toUtc().toIso8601String().substring(0, 10)}');
+      sb.writeln('port_from:${day.portFrom ?? ""}');
+      sb.writeln('port_to:${day.portTo ?? ""}');
+      sb.writeln('nm:${day.distanceNm.toStringAsFixed(3)}');
+      for (final e in entriesByDay[day.id] ?? []) {
+        sb.writeln('entry:${e.timestamp.toUtc().toIso8601String()}'
+            '|lat:${e.latitude?.toStringAsFixed(6) ?? ""}'
+            '|lon:${e.longitude?.toStringAsFixed(6) ?? ""}'
+            '|sog:${e.sog?.toStringAsFixed(2) ?? ""}'
+            '|cog:${e.cog?.toStringAsFixed(1) ?? ""}');
+      }
     }
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/day_${day.id}_${DateTime.now().millisecondsSinceEpoch}.pdf');
-    await file.writeAsBytes(await pdf.save());
-    return file;
+    return sb.toString();
   }
 
   // ── Title Page ────────────────────────────────────────────────
@@ -153,6 +240,7 @@ class PdfExportService {
       List<LogbookEntry> entries, Uint8List? screenshot) {
     final pages = <pw.Page>[];
     final dayName = DateFormat('EEEE d. MMMM yyyy').format(day.date);
+    final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
 
     pages.add(pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -182,7 +270,35 @@ class PdfExportService {
             ]),
           ]),
         ),
-        pw.SizedBox(height: 10),
+        pw.SizedBox(height: 6),
+
+        // Vessel / skipper / crew info bar
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: pw.BoxDecoration(color: _lgrey,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4))),
+          child: pw.Row(children: [
+            if (charter.vesselName != null) ...[
+              pw.Text('Lod: ', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+              pw.Text(_ascii(charter.vesselName!),
+                  style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(width: 14),
+            ],
+            if (charter.skipperName != null) ...[
+              pw.Text('Kapitan: ', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+              pw.Text(_ascii(charter.skipperName!),
+                  style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(width: 14),
+            ],
+            if (crew.isNotEmpty) ...[
+              pw.Text('Posadka: ', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+              pw.Text(crew.map(_ascii).join(', '),
+                  style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
+            ],
+          ]),
+        ),
+        pw.SizedBox(height: 8),
 
         // Mapa + počasie
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -197,7 +313,7 @@ class PdfExportService {
                     style: pw.TextStyle(color: _dgrey, fontSize: 10))),
           )),
           pw.SizedBox(width: 10),
-          pw.Expanded(flex: 2, child: _weatherBox(day)),
+          pw.Expanded(flex: 2, child: _weatherBox(day, entries)),
         ]),
         pw.SizedBox(height: 10),
 
@@ -331,12 +447,140 @@ class PdfExportService {
         pw.Spacer(),
         pw.Divider(),
         pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-          pw.Text('Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now())}',
+          pw.Text('Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
               style: pw.TextStyle(color: _dgrey, fontSize: 9)),
           pw.Text('HMB Sailing Log  (c) Lacoste',
               style: pw.TextStyle(color: _dgrey, fontSize: 9)),
         ]),
       ]),
+    );
+  }
+
+  // ── Podpisová strana ──────────────────────────────────────────
+
+  static pw.Page _signaturePage({
+    required Uint8List signatureImage,
+    required String? signerName,
+    required DateTime signedAt,
+    required String hash,
+    required String docTitle,
+  }) {
+    final timeStr = DateFormat('d.M.yyyy HH:mm:ss').format(signedAt);
+    final qrData = 'HMB-LOG:v1'
+        '|doc:${_ascii(docTitle)}'
+        '|signer:${_ascii(signerName ?? "Skipper")}'
+        '|ts:${signedAt.toIso8601String()}'
+        '|sha256:$hash';
+
+    return pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(40),
+      build: (ctx) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          // Hlavička
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.all(16),
+            decoration: pw.BoxDecoration(
+              color: _navy,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('PODPIS SKIPPERA', style: pw.TextStyle(
+                    color: PdfColors.white, fontSize: 11,
+                    fontWeight: pw.FontWeight.bold, letterSpacing: 2)),
+                pw.SizedBox(height: 4),
+                pw.Text(_ascii(docTitle), style: pw.TextStyle(
+                    color: PdfColors.grey200, fontSize: 13)),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 24),
+
+          // Podpis
+          pw.Container(
+            width: double.infinity,
+            height: 130,
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.grey300),
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
+              color: PdfColors.white,
+            ),
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Image(pw.MemoryImage(signatureImage),
+                  fit: pw.BoxFit.contain),
+            ),
+          ),
+          pw.SizedBox(height: 8),
+          if (signerName != null)
+            pw.Text(_ascii(signerName), style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold, fontSize: 13)),
+          pw.Text('Podpisane: $timeStr UTC',
+              style: pw.TextStyle(color: _dgrey, fontSize: 10)),
+          pw.SizedBox(height: 24),
+
+          // Hash + QR
+          pw.Divider(color: PdfColors.grey300),
+          pw.SizedBox(height: 14),
+          pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Expanded(
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('OVERENIE INTEGRITY DOKUMENTU',
+                        style: pw.TextStyle(
+                            color: _navy, fontWeight: pw.FontWeight.bold,
+                            fontSize: 9, letterSpacing: 1)),
+                    pw.SizedBox(height: 8),
+                    pw.Text('SHA-256 odtlacok dat dennnika:',
+                        style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+                    pw.SizedBox(height: 4),
+                    pw.Text(hash.substring(0, 32),
+                        style: pw.TextStyle(
+                            fontSize: 7.5, fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromHex('#2C3E50'))),
+                    pw.Text(hash.substring(32),
+                        style: pw.TextStyle(
+                            fontSize: 7.5, fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromHex('#2C3E50'))),
+                    pw.SizedBox(height: 10),
+                    pw.Text(
+                        'Odtlacok pokryva: nazov plavby, loď, posadku,\n'
+                        'vsetky zaznamy dennika (cas UTC, GPS, rychlost, kurz).\n'
+                        'Akakolvek zmena dat zmeni odtlacok.',
+                        style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
+                  ],
+                ),
+              ),
+              pw.SizedBox(width: 24),
+              pw.Column(
+                children: [
+                  pw.BarcodeWidget(
+                    barcode: Barcode.qrCode(
+                      errorCorrectLevel: BarcodeQRCorrectionLevel.medium,
+                    ),
+                    data: qrData,
+                    width: 100,
+                    height: 100,
+                  ),
+                  pw.SizedBox(height: 5),
+                  pw.Text('Overovaci QR kod',
+                      style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+                ],
+              ),
+            ],
+          ),
+
+          pw.Spacer(),
+          _footer('${_ascii(docTitle)}  |  Podpisany $timeStr UTC'),
+        ],
+      ),
     );
   }
 
@@ -356,13 +600,13 @@ class PdfExportService {
       },
       children: [
         pw.TableRow(decoration: pw.BoxDecoration(color: _blue), children:
-          ['Cas', 'SOG', 'COG', 'Vietor', 'Vlny', 'Pohon', 'Poznamka'].map((h) =>
+          ['Cas (UTC)', 'SOG', 'COG', 'Vietor', 'Vlny', 'Pohon', 'Poznamka'].map((h) =>
             pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 4),
               child: pw.Text(h, style: pw.TextStyle(
                   color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 8)))).toList()),
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
-          final time = DateFormat('HH:mm').format(entry.timestamp);
+          final time = DateFormat('HH:mm').format(entry.timestamp.toUtc());
           // Extrahuj sailMode z poznámky
           String sailMode = '-';
           String noteText = entry.skipperNote ?? '';
@@ -370,7 +614,7 @@ class PdfExportService {
           if (modeMatch != null) {
             sailMode = _sailModeLabel(modeMatch.group(1)!);
             noteText = noteText.substring(modeMatch.end);
-          } else if (noteText == 'Automaticky zaznam' || noteText == 'Automatický záznam') {
+          } else if (noteText == 'Auto entry' || noteText == 'Automaticky zaznam' || noteText == 'Automatický záznam') {
             noteText = '';
           }
 
@@ -402,16 +646,84 @@ class PdfExportService {
 
   // ── Helpers ───────────────────────────────────────────────────
 
-  static pw.Widget _weatherBox(DayLog day) {
+  static int _windToBeaufort(double kn) {
+    if (kn < 1) return 0; if (kn < 4) return 1; if (kn < 7) return 2;
+    if (kn < 11) return 3; if (kn < 17) return 4; if (kn < 22) return 5;
+    if (kn < 28) return 6; if (kn < 34) return 7; if (kn < 41) return 8;
+    if (kn < 48) return 9; if (kn < 56) return 10; if (kn < 64) return 11;
+    return 12;
+  }
+
+  static String _degToCompass(double deg) {
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+    return dirs[((deg % 360) / 22.5).round() % 16];
+  }
+
+  static pw.Widget _weatherBox(DayLog day, List<LogbookEntry> entries) {
     final rows = <pw.Widget>[];
-    if (day.beaufortMorning != null) rows.add(_wRow('Rano', 'Bft ${day.beaufortMorning}'));
-    if (day.beaufortNoon != null) rows.add(_wRow('Poludnie', 'Bft ${day.beaufortNoon}'));
-    if (day.beaufortEvening != null) rows.add(_wRow('Vecer', 'Bft ${day.beaufortEvening}'));
-    if (day.windDirection != null) rows.add(_wRow('Vietor', _ascii(day.windDirection!)));
+
+    // Preferuj manuálne zadané hodnoty z DayLog; ak nie sú, odvod z entries
+    if (day.beaufortMorning != null) {
+      rows.add(_wRow('Rano', 'Bft ${day.beaufortMorning}'));
+    }
+    if (day.beaufortNoon != null) {
+      rows.add(_wRow('Poludnie', 'Bft ${day.beaufortNoon}'));
+    }
+    if (day.beaufortEvening != null) {
+      rows.add(_wRow('Vecer', 'Bft ${day.beaufortEvening}'));
+    }
+
+    // Ak nie sú Beaufort hodnoty, odvoď z entries (priemerná rýchlosť vetra)
+    if (day.beaufortMorning == null && day.beaufortNoon == null && day.beaufortEvening == null) {
+      final withWind = entries.where((e) => e.windSpeed != null).toList();
+      if (withWind.isNotEmpty) {
+        final avgWind = withWind.map((e) => e.windSpeed!).reduce((a, b) => a + b) / withWind.length;
+        rows.add(_wRow('Vietor', '${avgWind.toStringAsFixed(1)} kn (Bft ${_windToBeaufort(avgWind)})'));
+      }
+    }
+
+    if (day.windDirection != null) {
+      rows.add(_wRow('Smer', _ascii(day.windDirection!)));
+    } else {
+      final withDir = entries.where((e) => e.windDirection != null).toList();
+      if (withDir.isNotEmpty) {
+        final avg = withDir.map((e) => e.windDirection!).reduce((a, b) => a + b) / withDir.length;
+        rows.add(_wRow('Smer vetra', _degToCompass(avg)));
+      }
+    }
+
     if (day.seaState != null) rows.add(_wRow('More', _ascii(day.seaState!)));
-    if (day.waveHeightM != null) rows.add(_wRow('Vlny', '${day.waveHeightM!.toStringAsFixed(1)} m'));
-    if (day.airTempC != null) rows.add(_wRow('Vzduch', '${day.airTempC!.toStringAsFixed(0)} C'));
-    if (day.waterTempC != null) rows.add(_wRow('Voda', '${day.waterTempC!.toStringAsFixed(0)} C'));
+
+    if (day.waveHeightM != null) {
+      rows.add(_wRow('Vlny', '${day.waveHeightM!.toStringAsFixed(1)} m'));
+    } else {
+      final withWave = entries.where((e) => e.waveHeight != null).toList();
+      if (withWave.isNotEmpty) {
+        final avg = withWave.map((e) => e.waveHeight!).reduce((a, b) => a + b) / withWave.length;
+        rows.add(_wRow('Vlny', '${avg.toStringAsFixed(1)} m'));
+      }
+    }
+
+    if (day.airTempC != null) {
+      rows.add(_wRow('Vzduch', '${day.airTempC!.toStringAsFixed(0)} C'));
+    } else {
+      final withTemp = entries.where((e) => e.airTemp != null).toList();
+      if (withTemp.isNotEmpty) {
+        final avg = withTemp.map((e) => e.airTemp!).reduce((a, b) => a + b) / withTemp.length;
+        rows.add(_wRow('Vzduch', '${avg.toStringAsFixed(0)} C'));
+      }
+    }
+
+    if (day.waterTempC != null) {
+      rows.add(_wRow('Voda', '${day.waterTempC!.toStringAsFixed(0)} C'));
+    } else {
+      final withWater = entries.where((e) => e.waterTemp != null).toList();
+      if (withWater.isNotEmpty) {
+        final avg = withWater.map((e) => e.waterTemp!).reduce((a, b) => a + b) / withWater.length;
+        rows.add(_wRow('Voda', '${avg.toStringAsFixed(0)} C'));
+      }
+    }
+
     if (rows.isEmpty) rows.add(pw.Text('Bez udajov', style: pw.TextStyle(color: _dgrey, fontSize: 9)));
 
     return pw.Container(

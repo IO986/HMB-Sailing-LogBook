@@ -8,7 +8,10 @@ import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
 import '../../../main.dart';
 import '../services/export_service.dart';
-import '../../charter/providers/charter_provider.dart';
+import '../services/pdf_export_service.dart';
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'signature_pad_dialog.dart';
+import 'pdf_preview_screen.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -75,11 +78,12 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return const Scaffold(
+    final l = AppLocalizations.of(context);
+    if (_loading) return Scaffold(
       body: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
-        Text('Načítavam dáta...'),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 16),
+        Text(l.loadingData),
       ])));
 
     final screenshotsDone = _days.isNotEmpty &&
@@ -87,20 +91,19 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.dayLogId != null ? 'Export dňa' : 'Export chartera'),
+        title: Text(widget.dayLogId != null ? l.exportDayTitle : l.exportCharterTitle),
         actions: [
           if (screenshotsDone)
             IconButton(
               icon: const Icon(Icons.share),
               onPressed: _doExport,
-              tooltip: 'Zdieľať',
+              tooltip: l.share,
             ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Info karta
           Card(
             color: Theme.of(context).colorScheme.primaryContainer,
             child: Padding(
@@ -123,7 +126,6 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           ),
           const SizedBox(height: 12),
 
-          // Stav screenshotov
           Card(
             color: screenshotsDone ? Colors.green.shade50 : Colors.orange.shade50,
             child: Padding(
@@ -135,15 +137,13 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2)),
                 const SizedBox(width: 12),
                 Expanded(child: Text(screenshotsDone
-                    ? 'Mapy pripravené – môžeš exportovať'
-                    : 'Generujem náhľady máp '
-                      '(${_mapScreenshots.length}/${_days.length})...')),
+                    ? l.mapsReady
+                    : l.generatingMaps(_mapScreenshots.length, _days.length))),
               ]),
             ),
           ),
           const SizedBox(height: 12),
 
-          // Náhľady dní
           ..._days.map((day) => _DayMapPreview(
             day: day,
             entries: _entriesByDay[day.id] ?? [],
@@ -158,7 +158,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: screenshotsDone ? _doExport : null,
         icon: const Icon(Icons.share),
-        label: Text(widget.dayLogId != null ? 'Exportovať deň' : 'Exportovať charter'),
+        label: Text(widget.dayLogId != null ? l.exportDayBtn : l.exportCharterBtn),
         backgroundColor: screenshotsDone ? null : Colors.grey,
       ),
     );
@@ -166,15 +166,94 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
   Future<void> _doExport() async {
     if (_charter == null) return;
+
+    // 1. Podpis skippera
+    final signatureImage = await showSignaturePadDialog(
+      context, signerName: _charter!.skipperName);
+    if (signatureImage == null || !mounted) return;
+
+    // 2. Generovanie PDF bajtov (zobraz progress)
+    BuildContext? dialogCtx;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        dialogCtx = ctx;
+        return AlertDialog(
+          content: Row(children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 20),
+            Expanded(child: Text(AppLocalizations.of(ctx).generatingPdfPreview)),
+          ]),
+        );
+      },
+    );
+
+    Uint8List? pdfBytes;
+    String previewTitle;
+    try {
+      if (widget.dayLogId != null && _day != null) {
+        final entries = _entriesByDay[_day!.id] ?? [];
+        pdfBytes = await PdfExportService.buildDayPdfBytes(
+          charter: _charter!,
+          day: _day!,
+          entries: entries,
+          mapScreenshot: _mapScreenshots[_day!.id],
+          signatureImage: signatureImage,
+        );
+        previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
+      } else {
+        pdfBytes = await PdfExportService.buildCharterPdfBytes(
+          charter: _charter!,
+          days: _days,
+          entriesByDay: _entriesByDay,
+          mapScreenshots: _mapScreenshots,
+          signatureImage: signatureImage,
+        );
+        previewTitle = _charter!.title;
+      }
+    } catch (e) {
+      if (dialogCtx != null && dialogCtx!.mounted) {
+        Navigator.of(dialogCtx!).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).generationError(e.toString())),
+              backgroundColor: Colors.red));
+      }
+      return;
+    }
+
+    if (dialogCtx != null && dialogCtx!.mounted) {
+      Navigator.of(dialogCtx!).pop();
+    }
+    if (!mounted) return;
+
+    // 3. Náhľad PDF
     final svc = ExportService();
     svc.setDatabase(ref.read(databaseProvider));
-    if (widget.dayLogId != null && _day != null) {
-      await svc.exportDay(context, _charter!, _day!,
-          mapScreenshot: _mapScreenshots[_day!.id]);
-    } else {
-      await svc.exportCharter(context, _charter!,
-          mapScreenshots: _mapScreenshots);
-    }
+
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => PdfPreviewScreen(
+        title: previewTitle,
+        pdfBytes: pdfBytes!,
+        onSave: () {
+          Navigator.of(context).pop(); // zavrieme preview
+          if (widget.dayLogId != null && _day != null) {
+            svc.exportDayFromBytes(
+              context, _charter!, _day!, pdfBytes!,
+              signatureImage: signatureImage,
+            );
+          } else {
+            svc.exportCharterFromBytes(
+              context, _charter!, pdfBytes!,
+              days: _days,
+              signatureImage: signatureImage,
+            );
+          }
+        },
+      ),
+    ));
   }
 }
 
@@ -277,8 +356,8 @@ class _DayMapPreview extends StatelessWidget {
           const SizedBox(height: 8),
 
           Row(children: [
-            _Stat('Záznamy', '${entries.length}', Icons.list_alt),
-            _Stat('Body trasy', '${trackPoints.length}', Icons.route),
+            _Stat(AppLocalizations.of(context).entriesLabel, '${entries.length}', Icons.list_alt),
+            _Stat(AppLocalizations.of(context).routePoints, '${trackPoints.length}', Icons.route),
             if (day.beaufortNoon != null)
               _Stat('Bft', '${day.beaufortNoon}', Icons.air),
             const Spacer(),

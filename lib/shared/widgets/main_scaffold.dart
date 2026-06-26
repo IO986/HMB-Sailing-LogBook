@@ -69,6 +69,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   static const _tabData = [
     (icon: Icons.map_outlined,        activeIcon: Icons.map,          path: '/map'),
     (icon: Icons.play_circle_outline, activeIcon: Icons.play_circle,  path: '/tracking'),
+    (icon: Icons.speed_outlined,      activeIcon: Icons.speed,        path: '/instruments'),
     (icon: Icons.book_outlined,       activeIcon: Icons.book,         path: '/logbook'),
     (icon: Icons.cloud_outlined,      activeIcon: Icons.cloud,        path: '/weather'),
     (icon: Icons.shield_outlined,     activeIcon: Icons.shield,       path: '/safety'),
@@ -76,7 +77,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   ];
 
   List<String> _labels(AppLocalizations l) => [
-    l.navMap, l.navTracking, l.navLogbook, l.navWeather, l.navSafety, l.navSettings,
+    l.navMap, l.navTracking, l.navInstruments, l.navLogbook, l.navWeather, l.navSafety, l.navSettings,
   ];
 
   int _idx(BuildContext ctx) {
@@ -177,21 +178,27 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       onPopInvokedWithResult: (_, __) => _handleBack(context),
       child: Scaffold(
         body: widget.child,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: currentIndex,
-          onDestinationSelected: (i) => context.go(_tabData[i].path),
-          destinations: List.generate(_tabData.length, (i) {
-            final t = _tabData[i];
-            final isTrack = t.path == '/tracking';
-            return NavigationDestination(
-              icon: Badge(
-                isLabelVisible: isTrack && isTracking,
-                child: Icon(t.icon),
-              ),
-              selectedIcon: Icon(t.activeIcon),
-              label: labels[i],
-            );
-          }),
+        bottomNavigationBar: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            labelTextStyle: WidgetStateProperty.resolveWith((states) =>
+              const TextStyle(fontSize: 10, height: 1.1)),
+          ),
+          child: NavigationBar(
+            selectedIndex: currentIndex,
+            onDestinationSelected: (i) => context.go(_tabData[i].path),
+            destinations: List.generate(_tabData.length, (i) {
+              final t = _tabData[i];
+              final isTrack = t.path == '/tracking';
+              return NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: isTrack && isTracking,
+                  child: Icon(t.icon),
+                ),
+                selectedIcon: Icon(t.activeIcon),
+                label: labels[i],
+              );
+            }),
+          ),
         ),
       ),
     );

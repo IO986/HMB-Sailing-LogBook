@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../main.dart';
 
-class MaydayCardScreen extends StatefulWidget {
+class MaydayCardScreen extends ConsumerStatefulWidget {
   const MaydayCardScreen({super.key});
 
   @override
-  State<MaydayCardScreen> createState() => _MaydayCardScreenState();
+  ConsumerState<MaydayCardScreen> createState() => _MaydayCardScreenState();
 }
 
-class _MaydayCardScreenState extends State<MaydayCardScreen>
+class _MaydayCardScreenState extends ConsumerState<MaydayCardScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabs;
-  // Polia pre vyplnenie
   final _vesselName = TextEditingController();
   final _callSign = TextEditingController();
   final _mmsi = TextEditingController();
@@ -24,6 +27,52 @@ class _MaydayCardScreenState extends State<MaydayCardScreen>
   void initState() {
     super.initState();
     _tabs = TabController(length: 2, vsync: this);
+    _loadSavedData();
+    _callSign.addListener(_saveCallSign);
+    _mmsi.addListener(_saveMmsi);
+    _vesselName.addListener(_saveVesselName);
+  }
+
+  Future<void> _loadSavedData() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    final savedCallSign = prefs.getString('vessel_call_sign') ?? '';
+    final savedMmsi = prefs.getString('vessel_mmsi') ?? '';
+    setState(() {
+      _callSign.text = savedCallSign;
+      _mmsi.text = savedMmsi;
+    });
+    // Load vessel name from most recent charter, fall back to prefs
+    try {
+      final db = ref.read(databaseProvider);
+      final charters = await db.getAllCharters();
+      if (charters.isNotEmpty && mounted) {
+        final name = charters.first.vesselName ?? '';
+        if (name.isNotEmpty) {
+          setState(() => _vesselName.text = name);
+          return;
+        }
+      }
+    } catch (_) {}
+    final savedName = prefs.getString('vessel_name') ?? '';
+    if (savedName.isNotEmpty && mounted) {
+      setState(() => _vesselName.text = savedName);
+    }
+  }
+
+  Future<void> _saveCallSign() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('vessel_call_sign', _callSign.text);
+  }
+
+  Future<void> _saveMmsi() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('vessel_mmsi', _mmsi.text);
+  }
+
+  Future<void> _saveVesselName() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('vessel_name', _vesselName.text);
   }
 
   @override
@@ -35,9 +84,9 @@ class _MaydayCardScreenState extends State<MaydayCardScreen>
         bottom: TabBar(
           controller: _tabs,
           indicatorColor: Colors.white,
-          tabs: const [
-            Tab(text: 'DSC POSTUP', icon: Icon(Icons.radio)),
-            Tab(text: 'HLAS SKRIPT', icon: Icon(Icons.record_voice_over)),
+          tabs: [
+            Tab(text: AppLocalizations.of(context).dscProcedure, icon: const Icon(Icons.radio)),
+            Tab(text: AppLocalizations.of(context).voiceScript, icon: const Icon(Icons.record_voice_over)),
           ],
         ),
       ),
@@ -62,6 +111,9 @@ class _MaydayCardScreenState extends State<MaydayCardScreen>
   @override
   void dispose() {
     _tabs.dispose();
+    _callSign.removeListener(_saveCallSign);
+    _mmsi.removeListener(_saveMmsi);
+    _vesselName.removeListener(_saveVesselName);
     _vesselName.dispose(); _callSign.dispose(); _mmsi.dispose();
     _position.dispose(); _distress.dispose(); _persons.dispose();
     _otherInfo.dispose();
@@ -79,17 +131,19 @@ class _DscProcedure extends StatefulWidget {
 class _DscProcedureState extends State<_DscProcedure> {
   final Set<int> _done = {};
 
-  static const _steps = [
-    (num: '1', text: 'Uistite sa, že rádio je zapnuté.'),
-    (num: '2', text: 'Otvorte kryt nad ČERVENÝM tlačidlom tiesne.'),
-    (num: '3', text: 'Stlačte ČERVENÉ tlačidlo RAZ a uvoľnite.'),
-    (num: '4', text: 'Vyberte povahu tiesne.\n(Požiar, Potápanie, MOB a pod.)\nAk vynecháte, odošle sa Neoznačená tieseň.'),
-    (num: '5', text: 'Stlačte a PODRŽTE ČERVENÉ tlačidlo po dobu 5 sekúnd na odoslanie výzvy.'),
-    (num: '6', text: 'Čakajte max. 15 sekúnd na potvrdenie (zobrazí sa na obrazovke), potom pošlite hlasovú správu na Kanáli 16 na VYSOKÝ výkon.'),
+  List<({String num, String text})> _buildSteps(AppLocalizations l) => [
+    (num: '1', text: l.dscStep1),
+    (num: '2', text: l.dscStep2),
+    (num: '3', text: l.dscStep3),
+    (num: '4', text: l.dscStep4),
+    (num: '5', text: l.dscStep5),
+    (num: '6', text: l.dscStep6),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final steps = _buildSteps(l);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -101,27 +155,27 @@ class _DscProcedureState extends State<_DscProcedure> {
             color: Colors.red.shade800,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('⚠️ POUŽÍVAŤ IBA V PRÍPADE',
-                  style: TextStyle(color: Colors.white70, fontSize: 12)),
-              Text('VÁŽNEHO A BEZPROSTREDNÉHO NEBEZPEČENSTVA',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-              SizedBox(height: 4),
-              Text('Požiar · Potápanie · Muž cez palubu',
-                  style: TextStyle(color: Colors.white70, fontSize: 12)),
+              Text(l.dscWarningUseOnly,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12)),
+              Text(l.dscWarningDanger,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              const SizedBox(height: 4),
+              Text(l.dscWarningTypes,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12)),
             ],
           ),
         ),
         const SizedBox(height: 16),
 
-        const Text('DSC POSTUP', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        const Text('Uchovajte tento postup pri VHF DSC rádiu',
-            style: TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(l.dscProcedure, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(l.dscProcedureSubtitle,
+            style: const TextStyle(color: Colors.grey, fontSize: 12)),
         const SizedBox(height: 12),
 
-        ..._steps.asMap().entries.map((e) {
+        ...steps.asMap().entries.map((e) {
           final i = e.key;
           final step = e.value;
           final isDone = _done.contains(i);
@@ -176,7 +230,7 @@ class _DscProcedureState extends State<_DscProcedure> {
         OutlinedButton.icon(
           onPressed: () => setState(() => _done.clear()),
           icon: const Icon(Icons.refresh),
-          label: const Text('Resetovať'),
+          label: Text(AppLocalizations.of(context).reset),
         ),
       ],
     );
@@ -197,29 +251,29 @@ class _VoiceScript extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Vstupné polia
-        const Text('Vyplňte pred plavbou:',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey)),
+        Text(l.fillBeforeSailing,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey)),
         const SizedBox(height: 10),
 
         Row(children: [
-          Expanded(child: _Field(ctrl: vesselName, label: 'Názov lode', hint: 'napr. ALEGRIA')),
+          Expanded(child: _Field(ctrl: vesselName, label: l.vesselNameLabel, hint: 'e.g. ALEGRIA')),
           const SizedBox(width: 10),
           Expanded(child: _Field(ctrl: callSign, label: 'Call Sign', hint: '9A...')),
         ]),
         const SizedBox(height: 8),
         Row(children: [
-          Expanded(child: _Field(ctrl: mmsi, label: 'MMSI', hint: '9 číslic', keyboard: TextInputType.number)),
+          Expanded(child: _Field(ctrl: mmsi, label: 'MMSI', hint: '9 digits', keyboard: TextInputType.number)),
           const SizedBox(width: 10),
-          Expanded(child: _Field(ctrl: persons, label: 'Počet osôb', hint: 'napr. 6', keyboard: TextInputType.number)),
+          Expanded(child: _Field(ctrl: persons, label: l.numberOfPersons, hint: 'e.g. 6', keyboard: TextInputType.number)),
         ]),
         const SizedBox(height: 8),
-        _Field(ctrl: distress, label: 'Povaha tiesne', hint: 'SINKING / FIRE / MOB'),
+        _Field(ctrl: distress, label: l.distressNature, hint: 'SINKING / FIRE / MOB'),
         const SizedBox(height: 8),
-        _Field(ctrl: otherInfo, label: 'Ďalšie info', hint: 'Typ lode, farba trupu...'),
+        _Field(ctrl: otherInfo, label: l.additionalInfo, hint: 'Vessel type, hull colour...'),
         const SizedBox(height: 16),
 
         // Skript
@@ -233,18 +287,18 @@ class _VoiceScript extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                const Expanded(
-                  child: Text('HLASOVÝ MAYDAY SKRIPT',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(l.voiceScriptTitle,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,
                           fontSize: 15, letterSpacing: 1)),
                 ),
                 IconButton(
                   icon: const Icon(Icons.copy, color: Colors.white70, size: 20),
-                  tooltip: 'Kopírovať',
+                  tooltip: l.copyTooltip,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: _buildScript()));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Skript skopírovaný')));
+                      SnackBar(content: Text(l.scriptCopied)));
                   },
                 ),
               ]),
@@ -267,9 +321,9 @@ class _VoiceScript extends StatelessWidget {
                   '·  MMSI: ${mmsi.text.isNotEmpty ? mmsi.text : "___________"}'),
               const SizedBox(height: 8),
               _ScriptLine('MY POSITION IS:'),
-              _PositionLine(ctrl: position),
+              _PositionLine(ctrl: position, enterAbove: l.enterAbove),
               const SizedBox(height: 8),
-              _ScriptLine('WE ARE  ${distress.text.isNotEmpty ? distress.text.toUpperCase() : "[POVAHA TIESNE]"}'),
+              _ScriptLine('WE ARE  ${distress.text.isNotEmpty ? distress.text.toUpperCase() : "[DISTRESS]"}'),
               const SizedBox(height: 4),
               _ScriptLine('I REQUIRE IMMEDIATE ASSISTANCE'),
               const SizedBox(height: 8),
@@ -283,9 +337,9 @@ class _VoiceScript extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const Text(
-          '📻 Odoslať na Kanáli 16 · Vysoký výkon · Opakovať každé 2 minúty ak bez odpovede',
-          style: TextStyle(fontSize: 12, color: Colors.grey),
+        Text(
+          l.sendOnCh16,
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
           textAlign: TextAlign.center,
         ),
       ],
@@ -296,8 +350,8 @@ class _VoiceScript extends StatelessWidget {
     final v = vesselName.text.isNotEmpty ? vesselName.text.toUpperCase() : '___________';
     final cs = callSign.text.isNotEmpty ? callSign.text.toUpperCase() : '____________';
     final m = mmsi.text.isNotEmpty ? mmsi.text : '___________';
-    final pos = position.text.isNotEmpty ? position.text : '[POLOHA]';
-    final d = distress.text.isNotEmpty ? distress.text.toUpperCase() : '[POVAHA TIESNE]';
+    final pos = position.text.isNotEmpty ? position.text : '[POSITION]';
+    final d = distress.text.isNotEmpty ? distress.text.toUpperCase() : '[DISTRESS]';
     final p = persons.text.isNotEmpty ? persons.text : '___';
     return 'MAYDAY, MAYDAY, MAYDAY\n\n'
         'THIS IS $v, $v, $v\n'
@@ -324,7 +378,8 @@ class _ScriptLine extends StatelessWidget {
 
 class _PositionLine extends StatefulWidget {
   final TextEditingController ctrl;
-  const _PositionLine({required this.ctrl});
+  final String enterAbove;
+  const _PositionLine({required this.ctrl, required this.enterAbove});
   @override
   State<_PositionLine> createState() => _PositionLineState();
 }
@@ -344,7 +399,7 @@ class _PositionLineState extends State<_PositionLine> {
       borderRadius: BorderRadius.circular(6),
     ),
     child: Text(
-      widget.ctrl.text.isNotEmpty ? widget.ctrl.text.toUpperCase() : '[zadaj v polí vyššie]',
+      widget.ctrl.text.isNotEmpty ? widget.ctrl.text.toUpperCase() : widget.enterAbove,
       style: TextStyle(
           color: widget.ctrl.text.isNotEmpty ? Colors.yellow : Colors.white38,
           fontSize: 14, fontWeight: FontWeight.bold),

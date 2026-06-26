@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class GpsDataRow extends StatelessWidget {
   final Position position;
@@ -17,26 +18,26 @@ class GpsDataRow extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('GPS Dáta', style: Theme.of(context).textTheme.titleMedium),
+            Text(AppLocalizations.of(context).gpsData, style: Theme.of(context).textTheme.titleMedium),
             const Divider(),
             _DataRow(
               icon: Icons.location_on,
-              label: 'Poloha',
+              label: AppLocalizations.of(context).gpsPosition,
               value: '${_formatDeg(lat, true)}  ${_formatDeg(lon, false)}',
             ),
             _DataRow(
               icon: Icons.explore,
-              label: 'Kurz (COG)',
+              label: AppLocalizations.of(context).courseCog,
               value: '${course.toStringAsFixed(0)}°',
             ),
             _DataRow(
               icon: Icons.height,
-              label: 'Výška',
+              label: AppLocalizations.of(context).altitudeLabel,
               value: '${position.altitude.toStringAsFixed(0)} m',
             ),
             _DataRow(
               icon: Icons.gps_fixed,
-              label: 'Presnosť',
+              label: AppLocalizations.of(context).accuracy,
               value: '± ${position.accuracy.toStringAsFixed(0)} m',
             ),
           ],

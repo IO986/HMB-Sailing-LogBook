@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/services/units_service.dart';
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -15,16 +17,18 @@ class SettingsScreen extends ConsumerWidget {
     final unitsAsync = ref.watch(unitsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nastavenia')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context).settingsTitle)),
       body: unitsAsync.when(
-        data: (units) => ListView(
+        data: (units) {
+          final l = AppLocalizations.of(context);
+          return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _Section('Jednotky merania'),
+            _Section(l.measurementUnits),
             Card(child: Column(children: [
               ListTile(
                 leading: const Icon(Icons.thermostat),
-                title: const Text('Teplota'),
+                title: Text(l.temperature),
                 trailing: SegmentedButton<TempUnit>(
                   segments: const [
                     ButtonSegment(value: TempUnit.celsius, label: Text('°C')),
@@ -38,7 +42,7 @@ class SettingsScreen extends ConsumerWidget {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.waves),
-                title: const Text('Hĺbka / vlny'),
+                title: Text(l.depthWaves),
                 trailing: SegmentedButton<DepthUnit>(
                   segments: const [
                     ButtonSegment(value: DepthUnit.meters, label: Text('m')),
@@ -52,7 +56,7 @@ class SettingsScreen extends ConsumerWidget {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.air),
-                title: const Text('Vietor'),
+                title: Text(l.wind),
                 trailing: SegmentedButton<WindUnit>(
                   segments: const [
                     ButtonSegment(value: WindUnit.knots, label: Text('kn')),
@@ -67,31 +71,36 @@ class SettingsScreen extends ConsumerWidget {
             ])),
             const SizedBox(height: 16),
 
-            _Section('Lodné inštrumenty'),
+            _Section(l.marineInstrumentsTitle),
             const _RaymarineSection(),
             const SizedBox(height: 16),
 
-            _Section('Jazyk'),
+            _Section(l.language),
             Card(child: ListTile(
               leading: const Text('🌐', style: TextStyle(fontSize: 22)),
-              title: const Text('Jazyk aplikácie'),
+              title: Text(l.appLanguage),
               subtitle: Text(_currentLangName(ref.watch(localeProvider).languageCode)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showLanguageDialog(context, ref),
             )),
             const SizedBox(height: 16),
 
-            _Section('O aplikácii'),
+            _Section(l.vesselIdTitle),
+            const _VesselIdSection(),
+            const SizedBox(height: 16),
+
+            _Section(l.aboutApp),
             Card(child: Column(children: [
               ListTile(
                 leading: const Icon(Icons.info_outline),
-                title: const Text('O aplikácii'),
+                title: Text(l.aboutApp),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _showAboutDialog(context),
               ),
             ])),
           ],
-        ),
+        );
+        },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
       ),
@@ -118,7 +127,7 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Jazyk / Language'),
+        title: Text(AppLocalizations.of(ctx).languageDialogTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: _langs.map((l) => ListTile(
@@ -152,28 +161,114 @@ class SettingsScreen extends ConsumerWidget {
               errorBuilder: (_, __, ___) =>
                   const Icon(Icons.sailing, size: 56)),
         ),
-        applicationLegalese: '© 2025 Lacoste\nVšetky práva vyhradené',
+        applicationLegalese: '© 2025 Lacoste\n© All rights reserved',
         children: [
           const SizedBox(height: 16),
-          const Text('Profesionálny lodný denník pre jachtárov.',
-              style: TextStyle(fontSize: 14)),
+          Text(AppLocalizations.of(context).appDescription,
+              style: const TextStyle(fontSize: 14)),
           const SizedBox(height: 8),
-          const _AboutRow(Icons.gps_fixed, 'GPS tracking s auto-zápismi'),
-          const _AboutRow(Icons.book, 'Viacdenný charterový denník'),
-          const _AboutRow(Icons.map, 'Offline nautické mapy (OpenSeaMap)'),
-          const _AboutRow(Icons.cloud, 'Morské počasie (Open-Meteo)'),
+          const _AboutRow(Icons.gps_fixed, 'GPS tracking with auto-entries'),
+          const _AboutRow(Icons.book, 'Multi-day charter logbook'),
+          const _AboutRow(Icons.map, 'Offline nautical maps (OpenSeaMap)'),
+          const _AboutRow(Icons.cloud, 'Marine weather (Open-Meteo)'),
           const _AboutRow(Icons.picture_as_pdf, 'Export PDF + GPX'),
           const _AboutRow(Icons.shield, 'Safety briefing & Mayday Card'),
           const SizedBox(height: 16),
-          const Text('Autor: Lacoste',
+          const Text('Author: Lacoste',
               style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text('Verzia: ${info.version} (${info.buildNumber})',
+          Text('Version: ${info.version} (${info.buildNumber})',
               style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 4),
           const Text('Platform: Flutter / Android',
               style: TextStyle(color: Colors.grey, fontSize: 12)),
         ],
+      ),
+    );
+  }
+}
+
+// ── Vessel ID Section ─────────────────────────────────────────
+
+class _VesselIdSection extends StatefulWidget {
+  const _VesselIdSection();
+  @override
+  State<_VesselIdSection> createState() => _VesselIdSectionState();
+}
+
+class _VesselIdSectionState extends State<_VesselIdSection> {
+  final _callSignCtrl = TextEditingController();
+  final _mmsiCtrl = TextEditingController();
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _callSignCtrl.text = prefs.getString('vessel_call_sign') ?? '';
+      _mmsiCtrl.text = prefs.getString('vessel_mmsi') ?? '';
+      _loaded = true;
+    });
+  }
+
+  Future<void> _save() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('vessel_call_sign', _callSignCtrl.text.trim());
+    await prefs.setString('vessel_mmsi', _mmsiCtrl.text.trim());
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).saved)));
+    }
+  }
+
+  @override
+  void dispose() {
+    _callSignCtrl.dispose();
+    _mmsiCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    if (!_loaded) return const Card(child: Padding(padding: EdgeInsets.all(16), child: LinearProgressIndicator()));
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.vesselIdHint, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(child: TextField(
+                controller: _callSignCtrl,
+                textCapitalization: TextCapitalization.characters,
+                decoration: InputDecoration(labelText: 'Call Sign', hintText: '9A...', isDense: true),
+              )),
+              const SizedBox(width: 12),
+              Expanded(child: TextField(
+                controller: _mmsiCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'MMSI', hintText: '9 digits', isDense: true),
+              )),
+            ]),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton(
+                onPressed: _save,
+                child: Text(l.save),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -246,21 +341,22 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
     }
   }
 
-  String _stateLabel(RaymarineConnectionState s) {
+  String _stateLabel(RaymarineConnectionState s, AppLocalizations l) {
     switch (s) {
       case RaymarineConnectionState.connected:
-        return 'Pripojené';
+        return l.connectionConnected;
       case RaymarineConnectionState.connecting:
-        return 'Pripájam sa...';
+        return l.connectionConnecting;
       case RaymarineConnectionState.error:
-        return 'Chyba pripojenia';
+        return l.connectionError;
       case RaymarineConnectionState.disconnected:
-        return 'Nepripojené (používa sa telefón GPS / predpoveď)';
+        return l.connectionDisconnected;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final settings = ref.watch(raymarineSettingsProvider);
     _initControllersOnce(settings);
 
@@ -287,7 +383,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(_stateLabel(connState),
+                  child: Text(_stateLabel(connState, l),
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                 ),
               ],
@@ -302,15 +398,15 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                   if (marineData.hasGpsFix)
                     const _LiveTag('GPS fix'),
                   if (marineData.hasWind)
-                    const _LiveTag('Vietor'),
+                    _LiveTag(l.liveWind),
                   if (marineData.hasDepth)
-                    const _LiveTag('Hĺbka'),
+                    _LiveTag(l.liveDepth),
                   if (marineData.waterTempCelsius != null)
-                    const _LiveTag('Teplota vody'),
+                    _LiveTag(l.liveWaterTemp),
                   if (marineData.headingDegrees != null)
-                    const _LiveTag('Kompas'),
+                    _LiveTag(l.liveCompass),
                   if (marineData.engineRpm != null)
-                    const _LiveTag('Motor'),
+                    _LiveTag(l.liveEngine),
                 ],
               ),
             ],
@@ -325,9 +421,9 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
             const Divider(height: 24),
             TextField(
               controller: _hostCtrl,
-              decoration: const InputDecoration(
-                labelText: 'IP adresa gateway',
-                hintText: 'napr. 10.0.0.1',
+              decoration: InputDecoration(
+                labelText: l.ipAddressLabel,
+                hintText: '10.0.0.1',
                 isDense: true,
               ),
               keyboardType: TextInputType.number,
@@ -335,8 +431,8 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
             const SizedBox(height: 8),
             TextField(
               controller: _portCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Port',
+              decoration: InputDecoration(
+                labelText: l.portLabel,
                 hintText: '2000',
                 isDense: true,
               ),
@@ -345,7 +441,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               dense: true,
-              title: const Text('Automaticky pripojiť pri spustení'),
+              title: Text(l.autoConnectLabel),
               value: _autoConnect,
               onChanged: (v) => setState(() => _autoConnect = v),
             ),
@@ -355,7 +451,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.link_off),
-                    label: const Text('Odpojiť'),
+                    label: Text(l.disconnect),
                     onPressed: connState == RaymarineConnectionState.connected
                         ? () async {
                             await RaymarineConnectionService().disconnect();
@@ -374,7 +470,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.link),
-                    label: const Text('Pripojiť'),
+                    label: Text(l.connect),
                     onPressed: _connecting
                         ? null
                         : () => _connect(context),
@@ -384,10 +480,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Pripoj telefón na WiFi sieť lodného gateway (Raymarine WiFi-1, '
-              'RayNet a podobné typicky bežia na 10.0.0.1, port 2000). '
-              'Bez pripojenia aplikácia automaticky používa GPS telefónu '
-              'a predpoveď počasia z internetu.',
+              l.gatewayHint,
               style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
           ],
@@ -396,12 +489,14 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
     );
   }
 
-  Future<void> _connect(BuildContext context) async {
+  Future<void> _connect(BuildContext ctx) async {
+    final l = AppLocalizations.of(ctx);
     final host = _hostCtrl.text.trim();
     final port = int.tryParse(_portCtrl.text.trim()) ?? 2000;
+    final emptyMsg = l.enterIpAddress;
     if (host.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Zadajte IP adresu gateway')),
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(content: Text(emptyMsg)),
       );
       return;
     }
@@ -421,12 +516,12 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
 
     if (mounted) {
       setState(() => _connecting = false);
+      final ll = AppLocalizations.of(context);
+      final msg = ok
+          ? ll.connectedToHost(host, port)
+          : ll.connectionFailed(RaymarineConnectionService().lastError ?? '');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(ok
-              ? 'Pripojené na $host:$port'
-              : 'Nepodarilo sa pripojiť: ${RaymarineConnectionService().lastError ?? ""}'),
-        ),
+        SnackBar(content: Text(msg)),
       );
     }
   }

@@ -67,7 +67,7 @@ class GpsTrackingService {
 
     await _db!.upsertSession(SailingSessionsCompanion.insert(
       sessionId: sessionId,
-      startTime: DateTime.now(),
+      startTime: DateTime.now().toUtc(),
       name: drift.Value(sessionName ?? 'Plavba ${DateTime.now().toLocal()}'),
       isActive: const drift.Value(true),
       dayLogId: drift.Value(dayLogId),
@@ -117,7 +117,7 @@ class GpsTrackingService {
       _lastPosition = existing;
       print('[GPS] First entry: using existing position');
       await Future.delayed(const Duration(seconds: 2)); // krátka pauza
-      await createAutomaticLogbookEntry(note: 'Začiatok plavby');
+      await createAutomaticLogbookEntry(note: 'Voyage start');
       return;
     }
 
@@ -135,7 +135,7 @@ class GpsTrackingService {
         onTimeout: () => throw TimeoutException('GPS timeout'),
       );
       _lastPosition = pos;
-      await createAutomaticLogbookEntry(note: 'Začiatok plavby');
+      await createAutomaticLogbookEntry(note: 'Voyage start');
     } catch (e) {
       print('[GPS] First entry failed: $e');
     } finally {
@@ -156,7 +156,7 @@ class GpsTrackingService {
 
     // Záverečný záznam
     if (_lastPosition != null) {
-      await createAutomaticLogbookEntry(note: 'Koniec plavby');
+      await createAutomaticLogbookEntry(note: 'Voyage end');
     }
 
     await _posSub?.cancel(); _posSub = null;
@@ -171,7 +171,7 @@ class GpsTrackingService {
         id: drift.Value(_currentSession!.id),
         sessionId: drift.Value(_currentSession!.sessionId),
         startTime: drift.Value(_currentSession!.startTime),
-        endTime: drift.Value(DateTime.now()),
+        endTime: drift.Value(DateTime.now().toUtc()),
         isActive: const drift.Value(false),
       ));
       print('[GPS] Session ended: ${_currentSession!.sessionId}');
@@ -229,7 +229,7 @@ class GpsTrackingService {
     await _db!.insertLogbookEntry(LogbookEntriesCompanion.insert(
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
-      timestamp: DateTime.now(),
+      timestamp: pos.timestamp.toUtc(),
       latitude: drift.Value(pos.latitude),
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(_kts(pos.speed)),
@@ -240,7 +240,7 @@ class GpsTrackingService {
       airPressure: drift.Value(weather?.airPressure),
       airTemp: drift.Value(weather?.airTemp),
       waterTemp: drift.Value(weather?.waterTemp),
-      skipperNote: drift.Value(note ?? 'Automatický záznam'),
+      skipperNote: drift.Value(note ?? 'Auto entry'),
       isAutoEntry: const drift.Value(true),
     ));
 

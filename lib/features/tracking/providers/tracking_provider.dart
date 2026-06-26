@@ -154,10 +154,10 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   String _friendly(String e) {
     if (e.contains('permission') || e.contains('Permission'))
-      return 'GPS oprávnenie zamietnuté. Povol polohu v nastaveniach telefónu.';
+      return 'GPS permission denied. Enable location in phone settings.';
     if (e.contains('service'))
-      return 'GPS nie je zapnuté. Zapni Polohu v nastaveniach.';
-    return 'Chyba: $e';
+      return 'GPS is not enabled. Enable Location in settings.';
+    return 'Error: $e';
   }
 }
 

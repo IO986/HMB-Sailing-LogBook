@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,6 +47,10 @@ Future<void> main() async {
 
   await BackgroundService.init();
 
+  // Ihneď po štarte synchrónizuj počasie pre aktuálnu polohu.
+  // Fire-and-forget: neblokuje štart UI.
+  _syncWeatherOnStartup();
+
   // Ak má používateľ uložené nastavenia lodných inštrumentov s auto-connect,
   // skús sa pripojiť na pozadí. Toto nesmie blokovať štart appky - ak
   // gateway nie je dostupný, appka normálne pokračuje s GPS telefónu.
@@ -79,6 +85,38 @@ Future<void> _tryAutoConnectRaymarine() async {
   } catch (e) {
     print('[MAIN] Raymarine auto-connect skipped: $e');
   }
+}
+
+/// Synchrónizuje počasie hneď pri štarte apky, bez čakania na spustenie
+/// GPS trackingu. Ak máme last-known polohu, použijeme ju okamžite.
+/// Inak čakáme max 30 sekúnd na prvý GPS fix zo streamu.
+void _syncWeatherOnStartup() {
+  final loc = LocationService();
+  final repo = WeatherRepository();
+
+  Future<void> doSync(double lat, double lon) async {
+    try {
+      await repo.syncWeather(lat: lat, lon: lon);
+      print('[MAIN] Pocasie synced pri starte: $lat, $lon');
+    } catch (e) {
+      print('[MAIN] Weather sync zlyhal: $e');
+    }
+  }
+
+  final last = loc.lastPosition;
+  if (last != null) {
+    doSync(last.latitude, last.longitude);
+    return;
+  }
+
+  // Počkaj na prvú polohu zo streamu (max 30 s).
+  StreamSubscription? sub;
+  final timeout = Timer(const Duration(seconds: 30), () => sub?.cancel());
+  sub = loc.stream.listen((pos) {
+    sub?.cancel();
+    timeout.cancel();
+    doSync(pos.latitude, pos.longitude);
+  });
 }
 
 class HmbSailingLogApp extends ConsumerWidget {

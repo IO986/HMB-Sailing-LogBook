@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../../../core/config/hmb_handbook.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class YachtHandoverScreen extends StatefulWidget {
   final bool isCheckIn;
@@ -49,17 +50,18 @@ class _YachtHandoverScreenState extends State<YachtHandoverScreen> {
   }
 
   Future<void> _reset() async {
+    final l = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Resetovať ${widget.isCheckIn ? "check-in" : "check-out"}?'),
-        content: const Text('Všetky zaškrtnutia sa vymažú.'),
+        title: Text(l.resetChecklistTitle),
+        content: Text(l.resetChecklistContent),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Nie')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Resetovať'),
+            child: Text(l.reset),
           ),
         ],
       ),
@@ -80,7 +82,7 @@ class _YachtHandoverScreenState extends State<YachtHandoverScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isCheckIn ? 'Check-in – Prevzatie lode' : 'Check-out – Odovzdanie lode'),
+        title: Text(widget.isCheckIn ? AppLocalizations.of(context).checkInReceivingTitle : AppLocalizations.of(context).checkOutHandoverTitle),
         backgroundColor: color,
         actions: [
           IconButton(icon: const Icon(Icons.refresh), onPressed: _reset),
@@ -111,8 +113,8 @@ class _YachtHandoverScreenState extends State<YachtHandoverScreen> {
                 const SizedBox(width: 8),
                 Text(
                   widget.isCheckIn
-                      ? 'Loď prevzatá – všetko skontrolované ✓'
-                      : 'Loď odovzdaná – všetko v poriadku ✓',
+                      ? AppLocalizations.of(context).checkInCompletedMsg
+                      : AppLocalizations.of(context).checkOutCompletedMsg,
                   style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
                 ),
               ]),
@@ -135,7 +137,7 @@ class _YachtHandoverScreenState extends State<YachtHandoverScreen> {
                 OutlinedButton.icon(
                   onPressed: _reset,
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Resetovať'),
+                  label: Text(AppLocalizations.of(context).reset),
                 ),
                 const SizedBox(height: 32),
               ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../../../core/config/hmb_handbook.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class GearListScreen extends StatefulWidget {
   const GearListScreen({super.key});
@@ -68,18 +69,19 @@ class _GearListScreenState extends State<GearListScreen> {
 
   void _addItem(String category) {
     final ctrl = TextEditingController();
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Pridať do: $category'),
+        title: Text(l.addToCategoryTitle(category)),
         content: TextField(
           controller: ctrl,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Nová položka...'),
+          decoration: InputDecoration(hintText: l.newItemHint),
           textCapitalization: TextCapitalization.sentences,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Zrušiť')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
           ElevatedButton(
             onPressed: () {
               if (ctrl.text.trim().isNotEmpty) {
@@ -92,7 +94,7 @@ class _GearListScreenState extends State<GearListScreen> {
               }
               Navigator.pop(ctx);
             },
-            child: const Text('Pridať'),
+            child: Text(l.add),
           ),
         ],
       ),
@@ -110,18 +112,19 @@ class _GearListScreenState extends State<GearListScreen> {
 
   void _addCategory() {
     final ctrl = TextEditingController();
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Nová kategória'),
+        title: Text(l.newCategory),
         content: TextField(
           controller: ctrl,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'napr. Potápanie'),
+          decoration: const InputDecoration(hintText: 'e.g. Diving'),
           textCapitalization: TextCapitalization.sentences,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Zrušiť')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
           ElevatedButton(
             onPressed: () {
               if (ctrl.text.trim().isNotEmpty) {
@@ -130,7 +133,7 @@ class _GearListScreenState extends State<GearListScreen> {
               }
               Navigator.pop(ctx);
             },
-            child: const Text('Pridať'),
+            child: Text(l.add),
           ),
         ],
       ),
@@ -147,11 +150,11 @@ class _GearListScreenState extends State<GearListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Výbava jednotlivca'),
+        title: Text(AppLocalizations.of(context).gearListTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Resetovať zaškrtnutia',
+            tooltip: AppLocalizations.of(context).reset,
             onPressed: () async {
               setState(() => _packed.updateAll((k, v) => false));
               await _saveState();
@@ -170,7 +173,7 @@ class _GearListScreenState extends State<GearListScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addCategory,
         icon: const Icon(Icons.create_new_folder),
-        label: const Text('Nová kategória'),
+        label: Text(AppLocalizations.of(context).newCategory),
       ),
       body: Column(
         children: [
@@ -185,11 +188,11 @@ class _GearListScreenState extends State<GearListScreen> {
             Container(
               width: double.infinity, color: Colors.green.shade50,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              child: const Row(children: [
-                Icon(Icons.check_circle, color: Colors.green),
-                SizedBox(width: 8),
-                Text('Všetko zabalené, pripravený na plavbu! 🎉',
-                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+              child: Row(children: [
+                const Icon(Icons.check_circle, color: Colors.green),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context).allPackedMsg,
+                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
               ]),
             ),
           Expanded(
@@ -311,21 +314,24 @@ class _GearCategoryState extends State<_GearCategory> {
                   color: Colors.red.shade100,
                   child: const Icon(Icons.delete, color: Colors.red),
                 ),
-                confirmDismiss: (_) async => await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('Zmazať položku?'),
-                    content: Text(item),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Nie')),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('Zmazať'),
-                      ),
-                    ],
-                  ),
-                ) ?? false,
+                confirmDismiss: (_) async {
+                  final l = AppLocalizations.of(context);
+                  return await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l.deleteItemTitle),
+                      content: Text(item),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text(l.delete),
+                        ),
+                      ],
+                    ),
+                  ) ?? false;
+                },
                 onDismissed: (_) => widget.onRemoveItem(item),
                 child: CheckboxListTile(
                   dense: true,
@@ -362,7 +368,7 @@ class _GearCategoryState extends State<_GearCategory> {
                     Icon(Icons.add, size: 16,
                         color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 4),
-                    Text('Pridať položku',
+                    Text(AppLocalizations.of(context).addItemLabel,
                         style: TextStyle(fontSize: 12,
                             color: Theme.of(context).colorScheme.primary)),
                   ]),

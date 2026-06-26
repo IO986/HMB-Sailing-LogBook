@@ -38,7 +38,7 @@ class WeatherData {
   }
 
   String get windDirectionLabel {
-    const dirs = ['S','SSV','SV','VSV','V','VJV','JV','JJV','J','JJZ','JZ','ZJZ','Z','ZSZ','SZ','SSZ'];
+    const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
     return dirs[((windDirection / 22.5) + 0.5).toInt() % 16];
   }
 }

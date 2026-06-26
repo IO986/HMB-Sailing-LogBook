@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/config/hmb_handbook.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SafetyBriefingScreen extends StatefulWidget {
   const SafetyBriefingScreen({super.key});
@@ -54,11 +55,11 @@ class _SafetyBriefingScreenState extends State<SafetyBriefingScreen> {
               width: double.infinity,
               color: Colors.green.shade50,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              child: const Row(children: [
-                Icon(Icons.check_circle, color: Colors.green),
-                SizedBox(width: 8),
-                Text('Briefing dokončený – posádka informovaná',
-                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+              child: Row(children: [
+                const Icon(Icons.check_circle, color: Colors.green),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context).briefingDoneMsg,
+                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
               ]),
             ),
 
@@ -131,7 +132,7 @@ class _SafetyBriefingScreenState extends State<SafetyBriefingScreen> {
                           padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                           child: CheckboxListTile(
                             title: Text(
-                              isConfirmed ? 'Sekcia prebriefovaná ✓' : 'Potvrdiť sekciu',
+                              isConfirmed ? AppLocalizations.of(context).sectionBriefed : AppLocalizations.of(context).confirmSection,
                               style: TextStyle(
                                   fontSize: 13,
                                   color: isConfirmed ? Colors.green : null),

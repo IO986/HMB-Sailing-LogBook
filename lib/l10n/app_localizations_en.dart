@@ -323,6 +323,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToToc => 'Back to contents';
 
   @override
+  String get briefingComplete => 'Briefing complete';
+
+  @override
+  String get updateByPosition => 'Update by location';
+
+  @override
+  String get detectedByGps => 'detected by GPS';
+
+  @override
+  String get locationUnavailable =>
+      '📍 Location unavailable – global contacts shown';
+
+  @override
+  String get detectingLocation => 'Detecting location...';
+
+  @override
+  String get tapToCall => 'Tap to call';
+
+  @override
+  String cannotCall(String name) {
+    return 'Cannot call: $name';
+  }
+
+  @override
+  String get vhfChannel16 => 'VHF channel 16 – use the ship\'s radio';
+
+  @override
+  String get hmbHandbook => 'HMB Handbook';
+
+  @override
+  String get checkInLabel => 'Check-in (receiving the boat)';
+
+  @override
+  String get checkOutLabel => 'Check-out (handing over the boat)';
+
+  @override
+  String get charterCheckCard => 'Charter';
+
+  @override
   String get weatherTitle => 'Weather & Sea';
 
   @override
@@ -398,13 +437,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waterLabel => 'Water';
 
   @override
-  String get wind24h => 'Wind – 24h';
+  String get wind24h => 'Wind – 3 days';
 
   @override
-  String get waves24h => 'Waves – 24h';
+  String get waves24h => 'Waves – 3 days';
 
   @override
-  String get hourlyForecast => 'Hourly forecast';
+  String get hourlyForecast => '3-Day Forecast';
 
   @override
   String get timeCol => 'Time';
@@ -708,4 +747,441 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routePoints => 'Route points';
+
+  @override
+  String get anchorDriftTitle => '⚓ ANCHOR DRIFTING!';
+
+  @override
+  String get anchorDriftContent =>
+      'Vessel has exceeded anchor perimeter.\nCheck position immediately!';
+
+  @override
+  String get cancelAnchor => 'Cancel anchor';
+
+  @override
+  String get stopAlarm => 'Stop alarm';
+
+  @override
+  String get briefingItem1 => 'Life jackets – location and use';
+
+  @override
+  String get briefingItem2 => 'Life ring and MOB procedure';
+
+  @override
+  String get briefingItem3 => 'Flares – types and use';
+
+  @override
+  String get briefingItem4 => 'EPIRB / PLB – activation';
+
+  @override
+  String get briefingItem5 => 'VHF radio – channel 16, Mayday procedure';
+
+  @override
+  String get briefingItem6 => 'Fire extinguisher – location and use';
+
+  @override
+  String get briefingItem7 => 'First aid kit – location';
+
+  @override
+  String get briefingItem8 => 'Emergency engine stop';
+
+  @override
+  String get briefingItem9 => 'Leaks – water, gas';
+
+  @override
+  String get briefingItem10 => 'Anchor and chain – anchoring procedure';
+
+  @override
+  String get briefingItem11 => 'On-board rules';
+
+  @override
+  String get briefingItem12 => 'Emergency contacts and VHF 16';
+
+  @override
+  String get checkInItem1 => 'Boat documents (registration, insurance)';
+
+  @override
+  String get checkInItem2 => 'Safety equipment – complete';
+
+  @override
+  String get checkInItem3 => 'Fuel supplies';
+
+  @override
+  String get checkInItem4 => 'Water supplies';
+
+  @override
+  String get checkInItem5 => 'Anchor and chain – check';
+
+  @override
+  String get checkInItem6 => 'Engine – test run';
+
+  @override
+  String get checkInItem7 => 'Navigation instruments';
+
+  @override
+  String get checkInItem8 => 'Rigging – ropes and sails';
+
+  @override
+  String get checkInItem9 => 'Galley – gas, stove';
+
+  @override
+  String get checkInItem10 => 'Toilet – functionality';
+
+  @override
+  String get checkInItem11 => 'Existing damage – photo documentation';
+
+  @override
+  String get checkOutItem1 => 'Boat cleaned – exterior';
+
+  @override
+  String get checkOutItem2 => 'Boat cleaned – interior';
+
+  @override
+  String get checkOutItem3 => 'Fuel refilled';
+
+  @override
+  String get checkOutItem4 => 'Water refilled';
+
+  @override
+  String get checkOutItem5 => 'Rubbish removed';
+
+  @override
+  String get checkOutItem6 => 'Damage reported';
+
+  @override
+  String get checkOutItem7 => 'Keys handed over';
+
+  @override
+  String get gearListShort => 'Personal\nGear';
+
+  @override
+  String get colregRules => 'COLREG\nRules';
+
+  @override
+  String get checkInShort => 'Check-in\nReceiving';
+
+  @override
+  String get checkOutShort => 'Check-out\nHandover';
+
+  @override
+  String get appTagline => 'Your reliable ship\'s logbook';
+
+  @override
+  String exportSavedMsg(String path) {
+    return 'Saved: $path';
+  }
+
+  @override
+  String exportErrorMsg(String error) {
+    return 'Export error: $error';
+  }
+
+  @override
+  String get generatingPdf => 'Generating PDF...';
+
+  @override
+  String get colregTitle => 'COLREG – Rules of the Road';
+
+  @override
+  String get tableOfContents => 'TABLE OF CONTENTS';
+
+  @override
+  String get inThisChapter => 'In this chapter:';
+
+  @override
+  String ruleNumberLabel(Object n) {
+    return 'Rule $n';
+  }
+
+  @override
+  String get resetChecklistTitle => 'Reset checklist?';
+
+  @override
+  String get resetChecklistContent => 'All checkmarks will be erased.';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get checkInReceivingTitle => 'Check-in – Receiving the boat';
+
+  @override
+  String get checkOutHandoverTitle => 'Check-out – Handing over the boat';
+
+  @override
+  String get checkInCompletedMsg => 'Boat received – all checked ✓';
+
+  @override
+  String get checkOutCompletedMsg => 'Boat returned – all in order ✓';
+
+  @override
+  String get briefingDoneMsg => 'Briefing complete – crew informed';
+
+  @override
+  String get sectionBriefed => 'Section briefed ✓';
+
+  @override
+  String get confirmSection => 'Confirm section';
+
+  @override
+  String get gearListTitle => 'Personal gear';
+
+  @override
+  String get newCategory => 'New category';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get deleteItemTitle => 'Delete item?';
+
+  @override
+  String get allPackedMsg => 'All packed, ready to sail! 🎉';
+
+  @override
+  String get addItemLabel => 'Add item';
+
+  @override
+  String addToCategoryTitle(String category) {
+    return 'Add to: $category';
+  }
+
+  @override
+  String get newItemHint => 'New item...';
+
+  @override
+  String get addWaypoint => 'Add waypoint';
+
+  @override
+  String get waypointNameLabel => 'Name';
+
+  @override
+  String get skipperSignature => 'Skipper\'s signature';
+
+  @override
+  String get signWithFinger => 'Sign with your finger';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get signAndExport => 'Sign & export';
+
+  @override
+  String get pleaseSign => 'Please sign before exporting';
+
+  @override
+  String get generatingPdfPreview => 'Generating PDF preview...';
+
+  @override
+  String generationError(String error) {
+    return 'Generation error: $error';
+  }
+
+  @override
+  String get savingAndGeneratingGpx => 'Saving and generating GPX...';
+
+  @override
+  String get editCharter => 'Edit charter';
+
+  @override
+  String get basicInfo => 'Basic information';
+
+  @override
+  String get voyageNameRequired => 'Voyage name *';
+
+  @override
+  String get dateFrom => 'Date from';
+
+  @override
+  String get dateTo => 'Date to';
+
+  @override
+  String get vesselName => 'Vessel name';
+
+  @override
+  String get vesselType => 'Vessel type';
+
+  @override
+  String get homePort => 'Home port';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get safetyBriefingDoneLabel => 'Safety briefing completed';
+
+  @override
+  String get checkInDoneLabel => 'Check-in completed';
+
+  @override
+  String get checkOutDoneLabel => 'Check-out completed';
+
+  @override
+  String get enterVoyageName => 'Enter voyage name';
+
+  @override
+  String daysCount(int n) {
+    return '$n days';
+  }
+
+  @override
+  String get selectTargetWaypoint => 'Select target waypoint';
+
+  @override
+  String get noWaypoints => 'No waypoints.';
+
+  @override
+  String get goToMap => 'Go to map';
+
+  @override
+  String get noTarget => 'No target';
+
+  @override
+  String get selectWaypointHint => 'Select waypoint...';
+
+  @override
+  String get sessionStats => 'Voyage statistics';
+
+  @override
+  String get maxSpeed => 'Max speed';
+
+  @override
+  String get avgSpeed => 'Avg. speed';
+
+  @override
+  String get sailingTime => 'Sailing time';
+
+  @override
+  String get gpsData => 'GPS Data';
+
+  @override
+  String get gpsPosition => 'Position';
+
+  @override
+  String get courseCog => 'Course (COG)';
+
+  @override
+  String get altitudeLabel => 'Altitude';
+
+  @override
+  String get dscProcedure => 'DSC PROCEDURE';
+
+  @override
+  String get voiceScript => 'VOICE SCRIPT';
+
+  @override
+  String get dscWarningUseOnly => '⚠️ USE ONLY IN CASE OF';
+
+  @override
+  String get dscWarningDanger => 'SERIOUS AND IMMINENT DANGER';
+
+  @override
+  String get dscWarningTypes => 'Fire · Sinking · Man overboard';
+
+  @override
+  String get dscProcedureSubtitle => 'Keep this procedure at VHF DSC radio';
+
+  @override
+  String get fillBeforeSailing => 'Fill in before sailing:';
+
+  @override
+  String get copyTooltip => 'Copy';
+
+  @override
+  String get scriptCopied => 'Script copied';
+
+  @override
+  String get sendOnCh16 =>
+      '📻 Send on Channel 16 · High power · Repeat every 2 minutes if no response';
+
+  @override
+  String get enterAbove => '[enter in field above]';
+
+  @override
+  String get distressNature => 'Nature of distress';
+
+  @override
+  String get vesselNameLabel => 'Vessel name';
+
+  @override
+  String get numberOfPersons => 'No. of persons';
+
+  @override
+  String get additionalInfo => 'Additional info';
+
+  @override
+  String get voiceScriptTitle => 'VOICE MAYDAY SCRIPT';
+
+  @override
+  String get dscStep1 => 'Make sure the radio is switched on.';
+
+  @override
+  String get dscStep2 => 'Open the cover above the RED distress button.';
+
+  @override
+  String get dscStep3 => 'Press the RED button ONCE and release.';
+
+  @override
+  String get dscStep4 =>
+      'Select the nature of distress.\n(Fire, Sinking, MOB etc.)\nIf skipped, Undesignated distress will be sent.';
+
+  @override
+  String get dscStep5 =>
+      'Press and HOLD the RED button for 5 seconds to send the call.';
+
+  @override
+  String get dscStep6 =>
+      'Wait up to 15 seconds for acknowledgement (shown on screen), then send voice message on Channel 16 at HIGH power.';
+
+  @override
+  String get appDescription => 'Professional sailor\'s logbook.';
+
+  @override
+  String get vesselIdTitle => 'Vessel identification';
+
+  @override
+  String get vesselIdHint =>
+      'Call sign and MMSI are auto-filled in the Mayday Card.';
+
+  @override
+  String get maritimeReference => 'Maritime Reference';
+
+  @override
+  String get phonetic => 'Phonetic';
+
+  @override
+  String get flagAlphabet => 'Signal Flags';
+
+  @override
+  String get dayShapes => 'Day Shapes';
+
+  @override
+  String get marineReferenceTile => 'Signals & Alphabet';
+
+  @override
+  String get navInstruments => 'Instruments';
+
+  @override
+  String get enterPort => 'Enter port...';
+
+  @override
+  String get closeWithoutSaving => 'Close without saving';
+
+  @override
+  String get saveAndShare => 'Save & share';
+
+  @override
+  String get timestampCannotBeChanged => 'Entry time cannot be changed';
+
+  @override
+  String entriesShort(int n) {
+    return '$n entries';
+  }
+
+  @override
+  String get mainsail => 'Main';
 }

@@ -107,7 +107,7 @@ class _CharterCard extends ConsumerWidget {
                 ),
               ]),
               const SizedBox(height: 4),
-              Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}  ·  $days dní',
+              Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}  ·  ${AppLocalizations.of(context).daysCount(days)}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
               if (charter.vesselName != null) ...[
                 const SizedBox(height: 4),

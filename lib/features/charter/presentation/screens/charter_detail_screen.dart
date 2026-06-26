@@ -279,7 +279,7 @@ class _DayCard extends ConsumerWidget {
               if (day.airTempC != null)
                 _Chip('${day.airTempC!.toStringAsFixed(0)}°C', Icons.thermostat),
               entriesAsync.when(
-                data: (e) => _Chip('${e.length} záz.', Icons.list_alt),
+                data: (e) => _Chip(AppLocalizations.of(context).entriesShort(e.length), Icons.list_alt),
                 loading: () => const SizedBox(),
                 error: (_, __) => const SizedBox(),
               ),

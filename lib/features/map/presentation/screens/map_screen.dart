@@ -24,7 +24,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
   bool _showSeamarks = true;
-  bool _followGps = true;
+  bool _followGps = false;
   BaseMap _baseMap = BaseMap.osm;
   LatLng? _lastCentered;
   String? _lastMobFocus;
@@ -224,6 +224,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               FloatingActionButton.small(
                 heroTag: 'cp',
                 onPressed: () {
+                  if (_followGps) {
+                    setState(() => _followGps = false);
+                    return;
+                  }
                   final pos = LocationService().lastPosition;
                   if (pos == null) return;
                   setState(() => _followGps = true);

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'features/splash/splash_screen.dart';
+import 'features/instruments/presentation/instruments_screen.dart';
 import 'features/charter/presentation/screens/charter_list_screen.dart';
 import 'features/charter/presentation/screens/charter_edit_screen.dart';
 import 'features/charter/presentation/screens/charter_detail_screen.dart';
@@ -72,6 +73,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          GoRoute(path: '/instruments', builder: (c, s) => const InstrumentsScreen()),
           GoRoute(path: '/weather', builder: (c, s) => const WeatherScreen()),
           GoRoute(
             path: '/safety',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/config/colreg_content.dart';
 import '../../../../core/config/colreg_diagrams.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ColregScreen extends StatefulWidget {
   const ColregScreen({super.key});
@@ -17,7 +18,7 @@ class _ColregScreenState extends State<ColregScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('COLREG – Pravidlá pre vyhýbanie'),
+        title: Text(AppLocalizations.of(context).colregTitle),
         leading: _openChapterId != null
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
@@ -48,9 +49,9 @@ class _TableOfContents extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          child: Text('OBSAH', style: TextStyle(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Text(AppLocalizations.of(context).tableOfContents, style: const TextStyle(
               fontWeight: FontWeight.bold, letterSpacing: 1, color: Colors.grey)),
         ),
         ...ColregContent.chapters.map((chapter) => _ChapterTile(
@@ -94,7 +95,7 @@ class _ChapterTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    sub.ruleNumber != null ? 'Pr. ${sub.ruleNumber}' : sub.title,
+                    sub.ruleNumber != null ? AppLocalizations.of(context).ruleNumberLabel(sub.ruleNumber!) : sub.title,
                     style: const TextStyle(fontSize: 10),
                   ),
                 )).toList(),
@@ -135,7 +136,7 @@ class _ChapterView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('V tejto kapitole:', style: TextStyle(
+                Text(AppLocalizations.of(context).inThisChapter, style: TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 12,
                     color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 6),
@@ -154,7 +155,7 @@ class _ChapterView extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: onBackToToc,
           icon: const Icon(Icons.list),
-          label: const Text('Späť na obsah'),
+          label: Text(AppLocalizations.of(context).backToToc),
         ),
         const SizedBox(height: 40),
       ],

@@ -322,6 +322,45 @@ class AppLocalizationsSk extends AppLocalizations {
   String get backToToc => 'Späť na obsah';
 
   @override
+  String get briefingComplete => 'Briefing dokončený';
+
+  @override
+  String get updateByPosition => 'Aktualizovať podľa polohy';
+
+  @override
+  String get detectedByGps => 'detekované podľa GPS';
+
+  @override
+  String get locationUnavailable =>
+      '📍 Poloha nedostupná – zobrazené globálne kontakty';
+
+  @override
+  String get detectingLocation => 'Zisťujem polohu...';
+
+  @override
+  String get tapToCall => 'Klepni pre zavolanie';
+
+  @override
+  String cannotCall(String name) {
+    return 'Nedá sa zavolať: $name';
+  }
+
+  @override
+  String get vhfChannel16 => 'VHF kanál 16 – použite rádio na palube';
+
+  @override
+  String get hmbHandbook => 'HMB Príručka';
+
+  @override
+  String get checkInLabel => 'Check-in (prevzatie lode)';
+
+  @override
+  String get checkOutLabel => 'Check-out (odovzdanie lode)';
+
+  @override
+  String get charterCheckCard => 'Charter';
+
+  @override
   String get weatherTitle => 'Počasie a more';
 
   @override
@@ -398,13 +437,13 @@ class AppLocalizationsSk extends AppLocalizations {
   String get waterLabel => 'Voda';
 
   @override
-  String get wind24h => 'Vietor – 24h';
+  String get wind24h => 'Vietor – 3 dni';
 
   @override
-  String get waves24h => 'Vlny – 24h';
+  String get waves24h => 'Vlny – 3 dni';
 
   @override
-  String get hourlyForecast => 'Hodinová predpoveď';
+  String get hourlyForecast => 'Predpoveď na 3 dni';
 
   @override
   String get timeCol => 'Čas';
@@ -707,4 +746,441 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get routePoints => 'Body trasy';
+
+  @override
+  String get anchorDriftTitle => '⚓ KOTVA DRIFTUJE!';
+
+  @override
+  String get anchorDriftContent =>
+      'Loď prekročila perimeter kotvy.\nOkamžite skontrolujte polohu!';
+
+  @override
+  String get cancelAnchor => 'Zrušiť kotvu';
+
+  @override
+  String get stopAlarm => 'Zastaviť alarm';
+
+  @override
+  String get briefingItem1 => 'Záchranné vesty – umiestnenie a použitie';
+
+  @override
+  String get briefingItem2 => 'Záchranný kruh a MOB postup';
+
+  @override
+  String get briefingItem3 => 'Svetlice – typy a použitie';
+
+  @override
+  String get briefingItem4 => 'EPIRB / PLB – aktivácia';
+
+  @override
+  String get briefingItem5 => 'VHF rádio – kanál 16, Mayday postup';
+
+  @override
+  String get briefingItem6 => 'Hasiaci prístroj – umiestnenie a použitie';
+
+  @override
+  String get briefingItem7 => 'Lekárnička – umiestnenie';
+
+  @override
+  String get briefingItem8 => 'Núdzové vypnutie motora';
+
+  @override
+  String get briefingItem9 => 'Úniky – voda, plyn';
+
+  @override
+  String get briefingItem10 => 'Kotva a reťaz – postup kotvenia';
+
+  @override
+  String get briefingItem11 => 'Pravidlá na palube';
+
+  @override
+  String get briefingItem12 => 'Núdzové kontakty a VHF 16';
+
+  @override
+  String get checkInItem1 => 'Doklady lode (registrácia, poistenie)';
+
+  @override
+  String get checkInItem2 => 'Záchranné vybavenie – komplet';
+
+  @override
+  String get checkInItem3 => 'Zásoby paliva';
+
+  @override
+  String get checkInItem4 => 'Zásoby vody';
+
+  @override
+  String get checkInItem5 => 'Kotva a reťaz – kontrola';
+
+  @override
+  String get checkInItem6 => 'Motor – skúšobná prevádzka';
+
+  @override
+  String get checkInItem7 => 'Navigačné prístroje';
+
+  @override
+  String get checkInItem8 => 'Lezenie – lana a plachty';
+
+  @override
+  String get checkInItem9 => 'Kuchyňa – plyn, sporák';
+
+  @override
+  String get checkInItem10 => 'WC – funkčnosť';
+
+  @override
+  String get checkInItem11 => 'Existujúce poškodenia – fotodokumentácia';
+
+  @override
+  String get checkOutItem1 => 'Loď vyčistená – exteriér';
+
+  @override
+  String get checkOutItem2 => 'Loď vyčistená – interiér';
+
+  @override
+  String get checkOutItem3 => 'Palivo doplnené';
+
+  @override
+  String get checkOutItem4 => 'Voda doplnená';
+
+  @override
+  String get checkOutItem5 => 'Odpadky odstránené';
+
+  @override
+  String get checkOutItem6 => 'Poškodenia hlásené';
+
+  @override
+  String get checkOutItem7 => 'Kľúče odovzdané';
+
+  @override
+  String get gearListShort => 'Výbava\njednotlivca';
+
+  @override
+  String get colregRules => 'COLREG\nPravidlá';
+
+  @override
+  String get checkInShort => 'Check-in\nPrevzatie';
+
+  @override
+  String get checkOutShort => 'Check-out\nOdovzdanie';
+
+  @override
+  String get appTagline => 'Váš spoľahlivý lodný denník';
+
+  @override
+  String exportSavedMsg(String path) {
+    return 'Uložené: $path';
+  }
+
+  @override
+  String exportErrorMsg(String error) {
+    return 'Chyba exportu: $error';
+  }
+
+  @override
+  String get generatingPdf => 'Generujem PDF...';
+
+  @override
+  String get colregTitle => 'COLREG – Pravidlá pre vyhýbanie';
+
+  @override
+  String get tableOfContents => 'OBSAH';
+
+  @override
+  String get inThisChapter => 'V tejto kapitole:';
+
+  @override
+  String ruleNumberLabel(Object n) {
+    return 'Pr. $n';
+  }
+
+  @override
+  String get resetChecklistTitle => 'Resetovať zoznam?';
+
+  @override
+  String get resetChecklistContent => 'Všetky zaškrtnutia sa vymažú.';
+
+  @override
+  String get reset => 'Resetovať';
+
+  @override
+  String get checkInReceivingTitle => 'Check-in – Prevzatie lode';
+
+  @override
+  String get checkOutHandoverTitle => 'Check-out – Odovzdanie lode';
+
+  @override
+  String get checkInCompletedMsg => 'Loď prevzatá – všetko skontrolované ✓';
+
+  @override
+  String get checkOutCompletedMsg => 'Loď odovzdaná – všetko v poriadku ✓';
+
+  @override
+  String get briefingDoneMsg => 'Briefing dokončený – posádka informovaná';
+
+  @override
+  String get sectionBriefed => 'Sekcia prebriefovaná ✓';
+
+  @override
+  String get confirmSection => 'Potvrdiť sekciu';
+
+  @override
+  String get gearListTitle => 'Výbava jednotlivca';
+
+  @override
+  String get newCategory => 'Nová kategória';
+
+  @override
+  String get add => 'Pridať';
+
+  @override
+  String get deleteItemTitle => 'Zmazať položku?';
+
+  @override
+  String get allPackedMsg => 'Všetko zabalené, pripravený na plavbu! 🎉';
+
+  @override
+  String get addItemLabel => 'Pridať položku';
+
+  @override
+  String addToCategoryTitle(String category) {
+    return 'Pridať do: $category';
+  }
+
+  @override
+  String get newItemHint => 'Nová položka...';
+
+  @override
+  String get addWaypoint => 'Pridať waypoint';
+
+  @override
+  String get waypointNameLabel => 'Názov';
+
+  @override
+  String get skipperSignature => 'Podpis skippera';
+
+  @override
+  String get signWithFinger => 'Podpíšte sa prstom';
+
+  @override
+  String get clear => 'Vymazať';
+
+  @override
+  String get signAndExport => 'Podpísať a exportovať';
+
+  @override
+  String get pleaseSign => 'Prosím podpíšte sa pred exportom';
+
+  @override
+  String get generatingPdfPreview => 'Generujem náhľad PDF...';
+
+  @override
+  String generationError(String error) {
+    return 'Chyba generovania: $error';
+  }
+
+  @override
+  String get savingAndGeneratingGpx => 'Ukladám a generujem GPX...';
+
+  @override
+  String get editCharter => 'Upraviť charter';
+
+  @override
+  String get basicInfo => 'Základné informácie';
+
+  @override
+  String get voyageNameRequired => 'Názov plavby *';
+
+  @override
+  String get dateFrom => 'Dátum od';
+
+  @override
+  String get dateTo => 'Dátum do';
+
+  @override
+  String get vesselName => 'Názov lode';
+
+  @override
+  String get vesselType => 'Typ lode';
+
+  @override
+  String get homePort => 'Domovský prístav';
+
+  @override
+  String get notesLabel => 'Poznámky';
+
+  @override
+  String get statusLabel => 'Stav';
+
+  @override
+  String get safetyBriefingDoneLabel => 'Safety Briefing vykonaný';
+
+  @override
+  String get checkInDoneLabel => 'Check-in dokončený';
+
+  @override
+  String get checkOutDoneLabel => 'Check-out dokončený';
+
+  @override
+  String get enterVoyageName => 'Zadaj názov plavby';
+
+  @override
+  String daysCount(int n) {
+    return '$n dní';
+  }
+
+  @override
+  String get selectTargetWaypoint => 'Vyber cieľový waypoint';
+
+  @override
+  String get noWaypoints => 'Žiadne waypointy.';
+
+  @override
+  String get goToMap => 'Ísť na mapu';
+
+  @override
+  String get noTarget => 'Žiadny cieľ';
+
+  @override
+  String get selectWaypointHint => 'Vyber waypoint...';
+
+  @override
+  String get sessionStats => 'Štatistiky plavby';
+
+  @override
+  String get maxSpeed => 'Max rýchlosť';
+
+  @override
+  String get avgSpeed => 'Priem. rýchlosť';
+
+  @override
+  String get sailingTime => 'Čas plavby';
+
+  @override
+  String get gpsData => 'GPS Dáta';
+
+  @override
+  String get gpsPosition => 'Poloha';
+
+  @override
+  String get courseCog => 'Kurz (COG)';
+
+  @override
+  String get altitudeLabel => 'Výška';
+
+  @override
+  String get dscProcedure => 'DSC POSTUP';
+
+  @override
+  String get voiceScript => 'HLAS SKRIPT';
+
+  @override
+  String get dscWarningUseOnly => '⚠️ POUŽÍVAŤ IBA V PRÍPADE';
+
+  @override
+  String get dscWarningDanger => 'VÁŽNEHO A BEZPROSTREDNÉHO NEBEZPEČENSTVA';
+
+  @override
+  String get dscWarningTypes => 'Požiar · Potápanie · Muž cez palubu';
+
+  @override
+  String get dscProcedureSubtitle => 'Uchovajte tento postup pri VHF DSC rádiu';
+
+  @override
+  String get fillBeforeSailing => 'Vyplňte pred plavbou:';
+
+  @override
+  String get copyTooltip => 'Kopírovať';
+
+  @override
+  String get scriptCopied => 'Skript skopírovaný';
+
+  @override
+  String get sendOnCh16 =>
+      '📻 Odoslať na Kanáli 16 · Vysoký výkon · Opakovať každé 2 minúty ak bez odpovede';
+
+  @override
+  String get enterAbove => '[zadaj v polí vyššie]';
+
+  @override
+  String get distressNature => 'Povaha tiesne';
+
+  @override
+  String get vesselNameLabel => 'Názov lode';
+
+  @override
+  String get numberOfPersons => 'Počet osôb';
+
+  @override
+  String get additionalInfo => 'Ďalšie info';
+
+  @override
+  String get voiceScriptTitle => 'HLASOVÝ MAYDAY SKRIPT';
+
+  @override
+  String get dscStep1 => 'Uistite sa, že rádio je zapnuté.';
+
+  @override
+  String get dscStep2 => 'Otvorte kryt nad ČERVENÝM tlačidlom tiesne.';
+
+  @override
+  String get dscStep3 => 'Stlačte ČERVENÉ tlačidlo RAZ a uvoľnite.';
+
+  @override
+  String get dscStep4 =>
+      'Vyberte povahu tiesne.\n(Požiar, Potápanie, MOB a pod.)\nAk vynecháte, odošle sa Neoznačená tieseň.';
+
+  @override
+  String get dscStep5 =>
+      'Stlačte a PODRŽTE ČERVENÉ tlačidlo po dobu 5 sekúnd na odoslanie výzvy.';
+
+  @override
+  String get dscStep6 =>
+      'Čakajte max. 15 sekúnd na potvrdenie (zobrazí sa na obrazovke), potom pošlite hlasovú správu na Kanáli 16 na VYSOKÝ výkon.';
+
+  @override
+  String get appDescription => 'Profesionálny lodný denník pre jachtárov.';
+
+  @override
+  String get vesselIdTitle => 'Identifikácia plavidla';
+
+  @override
+  String get vesselIdHint =>
+      'Call sign a MMSI sa automaticky vyplnia v Mayday Card.';
+
+  @override
+  String get maritimeReference => 'Námorná abeceda';
+
+  @override
+  String get phonetic => 'Fonetická';
+
+  @override
+  String get flagAlphabet => 'Vlajkové signály';
+
+  @override
+  String get dayShapes => 'Denné znaky';
+
+  @override
+  String get marineReferenceTile => 'Signály & abeceda';
+
+  @override
+  String get navInstruments => 'Nástroje';
+
+  @override
+  String get enterPort => 'Zadaj prístav...';
+
+  @override
+  String get closeWithoutSaving => 'Zavrieť bez uloženia';
+
+  @override
+  String get saveAndShare => 'Uložiť a zdieľať';
+
+  @override
+  String get timestampCannotBeChanged => 'Čas záznamu sa nedá zmeniť';
+
+  @override
+  String entriesShort(int n) {
+    return '$n záz.';
+  }
+
+  @override
+  String get mainsail => 'Hlavná';
 }

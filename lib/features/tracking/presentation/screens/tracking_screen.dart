@@ -629,10 +629,10 @@ void _showEndVoyageDialog(BuildContext context, WidgetRef ref, int charterId) {
     context: context,
     barrierDismissible: false,
     builder: (ctx) => AlertDialog(
-      title: const Row(children: [
-        Icon(Icons.anchor, color: Colors.blue),
-        SizedBox(width: 8),
-        Flexible(child: Text('Koniec plavby?')),
+      title: Row(children: [
+        const Icon(Icons.anchor, color: Colors.blue),
+        const SizedBox(width: 8),
+        Flexible(child: Text(l.endVoyageTitle)),
       ]),
       content: Text(l.endVoyageContent),
       actions: [

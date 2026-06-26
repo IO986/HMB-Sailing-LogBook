@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../providers/map_provider.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class WaypointDialog extends ConsumerStatefulWidget {
   final LatLng latLng;
@@ -28,7 +29,7 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Pridať waypoint',
+          Text(AppLocalizations.of(context).addWaypoint,
               style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
@@ -38,9 +39,9 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
           const SizedBox(height: 16),
           TextField(
             controller: _nameCtrl,
-            decoration: const InputDecoration(
-              labelText: 'Názov',
-              hintText: 'napr. Kotevné miesto, Prístav...',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).waypointNameLabel,
+              hintText: 'e.g. Anchorage, Port...',
             ),
             autofocus: true,
           ),
@@ -50,13 +51,13 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Zrušiť'),
+                child: Text(AppLocalizations.of(context).cancel),
               ),
               const SizedBox(width: 8),
               ElevatedButton.icon(
                 onPressed: _save,
                 icon: const Icon(Icons.save),
-                label: const Text('Uložiť'),
+                label: Text(AppLocalizations.of(context).save),
               ),
             ],
           ),

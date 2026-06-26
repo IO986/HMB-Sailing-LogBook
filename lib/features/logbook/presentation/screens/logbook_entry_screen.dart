@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:intl/intl.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/services/gps_tracking_service.dart';
+import '../../../../core/services/location_service.dart';
+import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../main.dart';
@@ -13,7 +16,7 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 // Spôsob plavby - multi-select
 const _sailOptions = [
   (value: 'motor',   label: 'Motor',       icon: Icons.settings),
-  (value: 'main',    label: 'Hlavná',      icon: Icons.sailing),
+  (value: 'main',    label: 'Main',        icon: Icons.sailing),
   (value: 'genoa',   label: 'Genoa',       icon: Icons.air),
   (value: 'reef1',   label: 'Reef 1',      icon: Icons.arrow_downward),
   (value: 'reef2',   label: 'Reef 2',      icon: Icons.arrow_downward),
@@ -30,7 +33,7 @@ class LogbookEntryScreen extends ConsumerStatefulWidget {
 
 class _State extends ConsumerState<LogbookEntryScreen> {
   bool _loading = false;
-  DateTime _ts = DateTime.now();
+  DateTime _ts = DateTime.now().toUtc();
   double? _lat, _lon, _sog, _cog;
   int? _existingId;
 
@@ -82,16 +85,23 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   }
 
   Future<void> _autoFill() async {
-    final pos = GpsTrackingService().lastPosition;
+    final pos = GpsTrackingService().lastPosition
+        ?? LocationService().lastPosition;
     setState(() {
       _lat = pos?.latitude; _lon = pos?.longitude;
       _sog = pos != null ? pos.speed * 1.94384 : null;
       _cog = pos?.heading;
     });
     try {
-      final w = await WeatherService().getCurrentWeather();
+      var w = await WeatherService().getCurrentWeather();
+      // Ak nie je cache, skús synchrónizovať a znova prečítaj.
+      if (w == null && pos != null) {
+        await WeatherRepository().syncWeather(
+            lat: pos.latitude, lon: pos.longitude);
+        w = await WeatherService().getCurrentWeather();
+      }
       if (w != null && mounted) setState(() {
-        _windSpeedCtrl.text = w.windSpeed.toStringAsFixed(0);
+        _windSpeedCtrl.text = w!.windSpeed.toStringAsFixed(0);
         _windDirCtrl.text = w.windDirection.toStringAsFixed(0);
         _waveCtrl.text = w.waveHeight.toStringAsFixed(1);
       });
@@ -119,6 +129,10 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         ],
       ),
       body: ListView(padding: const EdgeInsets.all(16), children: [
+
+        // Časová pečiatka záznamu (UTC, needitovateľná)
+        _TimestampBadge(_ts, isEdit: isEdit),
+        const SizedBox(height: 16),
 
         // Spôsob plavby - multi-select chips
         _Sec(l.sailMode),
@@ -260,4 +274,40 @@ class _Num extends StatelessWidget {
     controller: ctrl,
     keyboardType: const TextInputType.numberWithOptions(decimal: true),
     decoration: InputDecoration(labelText: label, suffixText: suffix));
+}
+
+class _TimestampBadge extends StatelessWidget {
+  final DateTime ts;
+  final bool isEdit;
+  const _TimestampBadge(this.ts, {required this.isEdit});
+
+  @override
+  Widget build(BuildContext context) {
+    final utc = ts.toUtc();
+    final date = DateFormat('d. MMM yyyy').format(utc);
+    final time = DateFormat('HH:mm:ss').format(utc);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.4)),
+      ),
+      child: Row(children: [
+        Icon(Icons.schedule, size: 18, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(width: 10),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(date, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          Text('$time UTC', style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold, fontFeatures: [const FontFeature.tabularFigures()])),
+        ]),
+        const Spacer(),
+        if (isEdit)
+          Tooltip(
+            message: AppLocalizations.of(context).timestampCannotBeChanged,
+            child: Icon(Icons.lock_outline, size: 16, color: Theme.of(context).colorScheme.outline),
+          ),
+      ]),
+    );
+  }
 }

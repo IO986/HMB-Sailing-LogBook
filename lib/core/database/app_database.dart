@@ -223,6 +223,14 @@ class AppDatabase extends _$AppDatabase {
     for (final id in ids) { await deleteDayLog(id); }
   }
 
+  Future<int?> getLatestDayLogId() async {
+    final rows = await (select(dayLogs)
+          ..orderBy([(d) => OrderingTerm.desc(d.date)])
+          ..limit(1))
+        .get();
+    return rows.isEmpty ? null : rows.first.id;
+  }
+
   // ── Logbook Entries ──────────────────────────────────────────
 
   Future<List<LogbookEntry>> getEntriesForDay(int dayLogId) =>

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/services/gps_tracking_service.dart';
+import '../../../../l10n/app_localizations.dart';
 
 String _elapsed(DateTime start) {
   final d = DateTime.now().difference(start);
@@ -24,19 +25,19 @@ class SessionStatsCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Štatistiky plavby',
+            Text(AppLocalizations.of(context).sessionStats,
                 style: Theme.of(context).textTheme.titleMedium),
             const Divider(),
             Row(children: [
               Expanded(
                   child: _StatTile(
-                label: 'Max rýchlosť',
+                label: AppLocalizations.of(context).maxSpeed,
                 value: '${session.maxSpeedKnots.toStringAsFixed(1)} kn',
                 icon: Icons.speed,
               )),
               Expanded(
                   child: _StatTile(
-                label: 'Vzdialenosť',
+                label: AppLocalizations.of(context).distance,
                 value: '${session.totalDistanceNm.toStringAsFixed(2)} NM',
                 icon: Icons.straighten,
               )),
@@ -44,13 +45,13 @@ class SessionStatsCard extends ConsumerWidget {
             Row(children: [
               Expanded(
                   child: _StatTile(
-                label: 'Priem. rýchlosť',
+                label: AppLocalizations.of(context).avgSpeed,
                 value: '${session.avgSpeedKnots.toStringAsFixed(1)} kn',
                 icon: Icons.analytics,
               )),
               Expanded(
                   child: _StatTile(
-                label: 'Čas plavby',
+                label: AppLocalizations.of(context).sailingTime,
                 value: _elapsed(session.startTime),
                 icon: Icons.timer,
               )),
