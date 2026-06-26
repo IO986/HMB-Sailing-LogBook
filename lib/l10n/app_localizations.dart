@@ -2569,6 +2569,26 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Heslo'**
   String get password;
+
+  String get userGuide;
+  String get guideQuickStart;
+  String get guideQuickStartBody;
+  String get guideMapTitle;
+  String get guideMapBody;
+  String get guideInstrTitle;
+  String get guideInstrBody;
+  String get guideLogbookTitle;
+  String get guideLogbookBody;
+  String get guideWeatherTitle;
+  String get guideWeatherBody;
+  String get guideSafetyMobTitle;
+  String get guideSafetyMobBody;
+  String get guideSafetyBriefingTitle;
+  String get guideSafetyBriefingBody;
+  String get guideSettingsTitle;
+  String get guideSettingsBody;
+  String get guideExportTitle;
+  String get guideExportBody;
 }
 
 class _AppLocalizationsDelegate

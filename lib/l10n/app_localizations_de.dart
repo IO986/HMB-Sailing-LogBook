@@ -1300,4 +1300,113 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get password => 'Passwort';
+
+  @override
+  String get userGuide => 'Handbuch';
+
+  @override
+  String get guideQuickStart => 'Schnellstart';
+
+  @override
+  String get guideQuickStartBody =>
+      'Vor jeder Fahrt:\n'
+      '1. Wettervorhersage prüfen\n'
+      '2. Sicherheitseinweisung mit der Crew durchführen\n'
+      '3. Check-in-Liste abarbeiten\n'
+      '4. Schiffsidentifikation in Einstellungen ausfüllen\n'
+      '5. Logbuch → + → Tracking starten\n'
+      '6. Gute Fahrt!';
+
+  @override
+  String get guideMapTitle => 'Karte';
+
+  @override
+  String get guideMapBody =>
+      'Zeigt Ihre aktuelle GPS-Position und die Fahrtroute.\n\n'
+      'Sie können Wegpunkte hinzufügen – Interessenspunkte wie Häfen oder Ankerplätze. '
+      'Tippen Sie im Instrumente-Bildschirm auf das VMG-WP-Panel, '
+      'um einen aktiven Wegpunkt für die Navigation auszuwählen.';
+
+  @override
+  String get guideInstrTitle => 'Instrumente';
+
+  @override
+  String get guideInstrBody =>
+      'Digitales Navigationspanel mit Live-Daten:\n\n'
+      '• SOG – Fahrtgeschwindigkeit in Knoten (1 Knoten = 1,85 km/h)\n'
+      '• TWS – wahre Windgeschwindigkeit\n'
+      '• TWA – Windwinkel zur Bootsachse (grün = Steuerbord, rot = Backbord)\n'
+      '• DEPTH – Wassertiefe; Rotalarm unter 5 m\n'
+      '• VMG WP – Annäherungsgeschwindigkeit an Wegpunkt\n\n'
+      'Der große Kompass zeigt Kurs und Windrichtung. Das Badge oben rechts '
+      'zeigt, ob Daten vom Telefon-GPS oder von Raymarine stammen.';
+
+  @override
+  String get guideLogbookTitle => 'Logbuch & Fahrt starten';
+
+  @override
+  String get guideLogbookBody =>
+      'Das Logbuch speichert alle Aufzeichnungen. Eine Fahrt wird durch Tippen auf + unten rechts gestartet.\n\n'
+      'Fahrtypen:\n'
+      '• Mehrtägig – Charter über mehrere Tage, Einträge nach Tagen sortiert\n'
+      '• Einzelfahrt – Tagesausflug\n\n'
+      'Einträge werden während des Trackings automatisch erfasst. '
+      'Manuelle Einträge mit „Manuell hinzufügen" – enthält Position, Wind, Wellen, Motorstunden, Notiz und Foto.\n\n'
+      'Tracking läuft im Hintergrund weiter, auch wenn Sie die App schließen.';
+
+  @override
+  String get guideWeatherTitle => 'Wetter';
+
+  @override
+  String get guideWeatherBody =>
+      '3-Tages-Vorhersage für Ihre GPS-Position mit stündlicher Tabelle für Wind, Wellen und Niederschlag. '
+      'Enthält Wind- und Wellendiagramme und Tagestemperaturen.\n\n'
+      'Beaufort-Skala: 0 = Windstille, 6 = starker Wind (≈50 km/h), 8–9 = Sturm.\n\n'
+      'Bei Verbindung mit Raymarine werden Live-Daten der Bordelektronik angezeigt.';
+
+  @override
+  String get guideSafetyMobTitle => 'MOB – Mann über Bord';
+
+  @override
+  String get guideSafetyMobBody =>
+      'Halten Sie die rote MOB-Taste gedrückt, um zu aktivieren. '
+      'Die App zeichnet die GPS-Position auf und zeigt Entfernung, Peilung und Zeit. '
+      'Die Schaltfläche „Zu MOB navigieren" öffnet die Karte.\n\n'
+      'Ankeralarm: Nach dem Ankern Radius einstellen (mind. 50 m) und Aktivieren tippen. '
+      'Der Alarm ertönt, wenn das Boot den Bereich verlässt.';
+
+  @override
+  String get guideSafetyBriefingTitle => 'Einweisung, MAYDAY & mehr';
+
+  @override
+  String get guideSafetyBriefingBody =>
+      'Sicherheitseinweisung – 12-Punkte-Checkliste für die Crew vor der Abfahrt.\n\n'
+      'MAYDAY-Karte – DSC-Notrufverfahren und Sprachskript für VHF-Kanal 16. '
+      'Anzahl der Personen und Art des Notfalls vorher ausfüllen. '
+      'Rufzeichen und MMSI werden automatisch aus den Einstellungen eingetragen.\n\n'
+      'Check-in / Check-out – Listen für die Übernahme und Rückgabe eines Charterboots.\n\n'
+      'Ausrüstungsliste – Ihre persönliche Packliste.';
+
+  @override
+  String get guideSettingsTitle => 'Einstellungen';
+
+  @override
+  String get guideSettingsBody =>
+      'Einheiten: Temperatur (°C / °F), Tiefe & Wellen (m / ft), Wind (Knoten / m/s / Beaufort).\n\n'
+      'Sprache: Slovenčina, English, Deutsch, Español, Українська.\n\n'
+      'Schiffsidentifikation: Rufzeichen und MMSI – werden automatisch in die MAYDAY-Karte eingetragen.\n\n'
+      'Raymarine: IP-Adresse und Port des WLAN-Gateways (typisch 10.0.0.1 : 2000). '
+      'Telefon zuerst mit dem Bord-WLAN verbinden.\n\n'
+      'Online-Konto: Logbuch mit logbook.hmba.boats synchronisieren.';
+
+  @override
+  String get guideExportTitle => 'PDF-Export';
+
+  @override
+  String get guideExportBody =>
+      'Für jede Fahrt oder jeden Tag ein PDF-Logbuch mit Routenkarte erstellen.\n\n'
+      'Vorgang: Logbuch → Fahrt → PDF exportieren → Kartengenerierung abwarten → '
+      'mit Finger unterschreiben → Unterschreiben & exportieren.\n\n'
+      'Das PDF enthält Titelseite, Routenkarten, Eintragtabellen und die Unterschrift des Skippers. '
+      'Auf dem Gerät speichern oder per E-Mail / WhatsApp teilen.';
 }

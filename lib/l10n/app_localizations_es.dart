@@ -1297,4 +1297,112 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get password => 'Contraseña';
+
+  @override
+  String get userGuide => 'Manual';
+
+  @override
+  String get guideQuickStart => 'Inicio rápido';
+
+  @override
+  String get guideQuickStartBody =>
+      'Antes de cada travesía:\n'
+      '1. Consultar la previsión meteorológica\n'
+      '2. Completar el briefing de seguridad con la tripulación\n'
+      '3. Revisar la lista de Check-in\n'
+      '4. Rellenar la identificación del buque en Ajustes\n'
+      '5. Diario → + → Iniciar tracking\n'
+      '6. ¡Buen viento!';
+
+  @override
+  String get guideMapTitle => 'Mapa';
+
+  @override
+  String get guideMapBody =>
+      'Muestra su posición GPS actual y la ruta de la travesía.\n\n'
+      'Puede añadir waypoints – puntos de interés como puertos o fondeos. '
+      'Pulse el panel VMG WP en Instrumentos para seleccionar un waypoint activo.';
+
+  @override
+  String get guideInstrTitle => 'Instrumentos';
+
+  @override
+  String get guideInstrBody =>
+      'Panel de navegación digital con datos en tiempo real:\n\n'
+      '• SOG – velocidad del barco en nudos (1 nudo = 1,85 km/h)\n'
+      '• TWS – velocidad real del viento\n'
+      '• TWA – ángulo del viento (verde = estribor, rojo = babor)\n'
+      '• DEPTH – profundidad; alerta roja por debajo de 5 m\n'
+      '• VMG WP – velocidad de aproximación al waypoint\n\n'
+      'La gran brújula muestra el rumbo y la dirección del viento. '
+      'El indicador superior derecho muestra si los datos provienen del GPS o de Raymarine.';
+
+  @override
+  String get guideLogbookTitle => 'Diario e inicio de travesía';
+
+  @override
+  String get guideLogbookBody =>
+      'El Diario almacena todos los registros. Una travesía se inicia pulsando + en la esquina inferior derecha.\n\n'
+      'Tipos de travesía:\n'
+      '• Varios días – charter de varios días, entradas ordenadas por día\n'
+      '• Individual – excursión de un día\n\n'
+      'Las entradas se registran automáticamente durante el tracking. '
+      'Añada una entrada manual con "Añadir manual" – incluye posición, viento, olas, motor, nota y foto.\n\n'
+      'El tracking continúa en segundo plano aunque cierre la aplicación.';
+
+  @override
+  String get guideWeatherTitle => 'Meteorología';
+
+  @override
+  String get guideWeatherBody =>
+      'Previsión de 3 días para su posición GPS con tabla horaria de viento, olas y precipitación. '
+      'Incluye gráficos de viento y olas y temperaturas diarias.\n\n'
+      'Escala Beaufort: 0 = calma, 6 = viento fuerte (≈50 km/h), 8–9 = temporal.\n\n'
+      'Con Raymarine conectado se muestran datos en directo de la electrónica del barco.';
+
+  @override
+  String get guideSafetyMobTitle => 'MOB – Hombre al agua';
+
+  @override
+  String get guideSafetyMobBody =>
+      'Mantenga pulsado el botón rojo MOB para activar. '
+      'La aplicación registra la posición GPS y muestra distancia, rumbo y tiempo. '
+      'El botón "Navegar a MOB" abre el mapa.\n\n'
+      'Alarma de fondeo: fondee el barco, configure el radio (50+ m recomendado) y pulse Activar. '
+      'La alarma suena si el barco sale del perímetro.';
+
+  @override
+  String get guideSafetyBriefingTitle => 'Briefing, MAYDAY y más';
+
+  @override
+  String get guideSafetyBriefingBody =>
+      'Briefing de seguridad – lista de 12 puntos para la tripulación antes de zarpar.\n\n'
+      'Tarjeta MAYDAY – procedimiento DSC y guión de voz para VHF canal 16. '
+      'Rellene el número de personas y la naturaleza de la emergencia de antemano. '
+      'El indicativo y el MMSI se rellenan automáticamente desde Ajustes.\n\n'
+      'Check-in / Check-out – listas para recibir y devolver un barco de charter.\n\n'
+      'Lista de equipaje – su lista personal de cosas para llevar a bordo.';
+
+  @override
+  String get guideSettingsTitle => 'Ajustes';
+
+  @override
+  String get guideSettingsBody =>
+      'Unidades: temperatura (°C / °F), profundidad y olas (m / ft), viento (nudos / m/s / Beaufort).\n\n'
+      'Idioma: Slovenčina, English, Deutsch, Español, Українська.\n\n'
+      'Identificación del buque: indicativo y MMSI – se rellenan automáticamente en la tarjeta MAYDAY.\n\n'
+      'Raymarine: dirección IP y puerto del gateway WiFi (normalmente 10.0.0.1 : 2000). '
+      'Conecte el teléfono a la red WiFi del barco primero.\n\n'
+      'Cuenta online: sincronizar el diario con logbook.hmba.boats.';
+
+  @override
+  String get guideExportTitle => 'Exportar PDF';
+
+  @override
+  String get guideExportBody =>
+      'Genere un diario PDF con mapa de ruta para cualquier travesía o día.\n\n'
+      'Proceso: Diario → travesía → Exportar PDF → esperar la generación de mapas → '
+      'firmar con el dedo → Firmar y exportar.\n\n'
+      'El PDF contiene portada, mapas de ruta, tablas de entradas y la firma del patrón. '
+      'Guarde en el dispositivo o comparta por correo / WhatsApp.';
 }

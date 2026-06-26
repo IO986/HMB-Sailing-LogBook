@@ -9,6 +9,7 @@ import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/services/units_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../help/presentation/screens/user_guide_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -96,6 +97,14 @@ class SettingsScreen extends ConsumerWidget {
 
             _Section(l.aboutApp),
             Card(child: Column(children: [
+              ListTile(
+                leading: const Icon(Icons.menu_book_outlined),
+                title: Text(l.userGuide),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => const UserGuideScreen())),
+              ),
+              const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: Text(l.aboutApp),
