@@ -591,6 +591,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get liveEngine => 'Motor';
 
   @override
+  String get nmeaTcp => 'TCP';
+
+  @override
+  String get nmeaUdp => 'UDP';
+
+  @override
+  String get udpListenPort => 'Lauschport';
+
+  @override
+  String get startListening => 'Starten';
+
+  @override
+  String get stopListening => 'Stoppen';
+
+  @override
+  String connectionListening(String port) {
+    return 'Lauscht UDP auf Port $port';
+  }
+
+  @override
+  String udpHint(String port) {
+    return 'Simulator/Gateway so konfigurieren, dass UDP an die IP dieses Telefons, Port $port, gesendet wird.';
+  }
+
+  @override
+  String udpListeningOnPort(int port) {
+    return 'Lausche auf UDP-Port $port';
+  }
+
+  @override
   String get dayNotFound => 'Tag nicht gefunden';
 
   @override

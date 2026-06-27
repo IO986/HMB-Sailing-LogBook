@@ -590,6 +590,36 @@ class AppLocalizationsSk extends AppLocalizations {
   String get liveEngine => 'Motor';
 
   @override
+  String get nmeaTcp => 'TCP';
+
+  @override
+  String get nmeaUdp => 'UDP';
+
+  @override
+  String get udpListenPort => 'Port na počúvanie';
+
+  @override
+  String get startListening => 'Spustiť';
+
+  @override
+  String get stopListening => 'Zastaviť';
+
+  @override
+  String connectionListening(String port) {
+    return 'Počúva UDP na porte $port';
+  }
+
+  @override
+  String udpHint(String port) {
+    return 'Nastav simulátor/gateway aby posielal UDP na IP tohto telefónu, port $port.';
+  }
+
+  @override
+  String udpListeningOnPort(int port) {
+    return 'Počúvam UDP na porte $port';
+  }
+
+  @override
   String get dayNotFound => 'Deň nenájdený';
 
   @override

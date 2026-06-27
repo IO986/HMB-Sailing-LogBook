@@ -7,6 +7,7 @@ import '../../../../core/providers/account_provider.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
+import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/units_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../help/presentation/screens/user_guide_screen.dart';
@@ -175,7 +176,7 @@ class SettingsScreen extends ConsumerWidget {
               errorBuilder: (_, __, ___) =>
                   const Icon(Icons.sailing, size: 56)),
         ),
-        applicationLegalese: '© 2025 Lacoste\n© All rights reserved',
+        applicationLegalese: '© 2026 LacoSte©\nAll rights reserved',
         children: [
           const SizedBox(height: 16),
           Text(AppLocalizations.of(context).appDescription,
@@ -188,7 +189,7 @@ class SettingsScreen extends ConsumerWidget {
           const _AboutRow(Icons.picture_as_pdf, 'Export PDF + GPX'),
           const _AboutRow(Icons.shield, 'Safety briefing & Mayday Card'),
           const SizedBox(height: 16),
-          const Text('Author: Lacoste',
+          const Text('Author: LacoSte©',
               style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           Text('Version: ${info.version} (${info.buildNumber})',
@@ -323,7 +324,9 @@ class _RaymarineSection extends ConsumerStatefulWidget {
 class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
   late TextEditingController _hostCtrl;
   late TextEditingController _portCtrl;
+  late TextEditingController _udpPortCtrl;
   bool _autoConnect = false;
+  NmeaConnectionType _connType = NmeaConnectionType.tcp;
   bool _controllersInit = false;
   bool _connecting = false;
 
@@ -331,6 +334,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
   void dispose() {
     _hostCtrl.dispose();
     _portCtrl.dispose();
+    _udpPortCtrl.dispose();
     super.dispose();
   }
 
@@ -339,7 +343,10 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
     _controllersInit = true;
     _hostCtrl = TextEditingController(text: settings.host);
     _portCtrl = TextEditingController(text: settings.port.toString());
+    _udpPortCtrl =
+        TextEditingController(text: settings.udpListenPort.toString());
     _autoConnect = settings.autoConnect;
+    _connType = settings.connectionType;
   }
 
   Color _stateColor(RaymarineConnectionState s) {
@@ -356,6 +363,10 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
   }
 
   String _stateLabel(RaymarineConnectionState s, AppLocalizations l) {
+    if (_connType == NmeaConnectionType.udp &&
+        s == RaymarineConnectionState.connected) {
+      return l.connectionListening(_udpPortCtrl.text.trim());
+    }
     switch (s) {
       case RaymarineConnectionState.connected:
         return l.connectionConnected;
@@ -374,10 +385,21 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
     final settings = ref.watch(raymarineSettingsProvider);
     _initControllersOnce(settings);
 
-    final connState = ref.watch(raymarineConnectionStateProvider)
-            .valueOrNull ??
-        RaymarineConnectionState.disconnected;
-    final marineData = ref.watch(marineDataProvider).valueOrNull;
+    final isUdp = _connType == NmeaConnectionType.udp;
+
+    final connState = isUdp
+        ? (ref.watch(udpConnectionStateProvider).valueOrNull ??
+            RaymarineConnectionState.disconnected)
+        : (ref.watch(raymarineConnectionStateProvider).valueOrNull ??
+            RaymarineConnectionState.disconnected);
+
+    final marineData = isUdp
+        ? ref.watch(udpDataProvider).valueOrNull
+        : ref.watch(marineDataProvider).valueOrNull;
+
+    final lastErr = isUdp
+        ? UdpReceiverService().lastError
+        : RaymarineConnectionService().lastError;
 
     return Card(
       child: Padding(
@@ -385,6 +407,7 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ── Stav ──
             Row(
               children: [
                 Container(
@@ -409,66 +432,110 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                 spacing: 16,
                 runSpacing: 4,
                 children: [
-                  if (marineData.hasGpsFix)
-                    const _LiveTag('GPS fix'),
-                  if (marineData.hasWind)
-                    _LiveTag(l.liveWind),
-                  if (marineData.hasDepth)
-                    _LiveTag(l.liveDepth),
+                  if (marineData.hasGpsFix) const _LiveTag('GPS fix'),
+                  if (marineData.hasWind) _LiveTag(l.liveWind),
+                  if (marineData.hasDepth) _LiveTag(l.liveDepth),
                   if (marineData.waterTempCelsius != null)
                     _LiveTag(l.liveWaterTemp),
                   if (marineData.headingDegrees != null)
                     _LiveTag(l.liveCompass),
-                  if (marineData.engineRpm != null)
-                    _LiveTag(l.liveEngine),
+                  if (marineData.engineRpm != null) _LiveTag(l.liveEngine),
                 ],
               ),
             ],
             if (connState == RaymarineConnectionState.error &&
-                RaymarineConnectionService().lastError != null) ...[
+                lastErr != null) ...[
               const SizedBox(height: 4),
-              Text(
-                RaymarineConnectionService().lastError!,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
+              Text(lastErr,
+                  style: const TextStyle(color: Colors.red, fontSize: 12)),
             ],
             const Divider(height: 24),
-            TextField(
-              controller: _hostCtrl,
-              decoration: InputDecoration(
-                labelText: l.ipAddressLabel,
-                hintText: '10.0.0.1',
-                isDense: true,
+
+            // ── TCP / UDP prepínač ──
+            SegmentedButton<NmeaConnectionType>(
+              segments: [
+                ButtonSegment(
+                  value: NmeaConnectionType.tcp,
+                  label: Text(l.nmeaTcp),
+                  icon: const Icon(Icons.cable, size: 16),
+                ),
+                ButtonSegment(
+                  value: NmeaConnectionType.udp,
+                  label: Text(l.nmeaUdp),
+                  icon: const Icon(Icons.wifi_tethering, size: 16),
+                ),
+              ],
+              selected: {_connType},
+              onSelectionChanged: (s) => setState(() => _connType = s.first),
+            ),
+            const SizedBox(height: 12),
+
+            // ── TCP polia ──
+            if (!isUdp) ...[
+              TextField(
+                controller: _hostCtrl,
+                decoration: InputDecoration(
+                  labelText: l.ipAddressLabel,
+                  hintText: '10.0.0.1',
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _portCtrl,
-              decoration: InputDecoration(
-                labelText: l.portLabel,
-                hintText: '2000',
-                isDense: true,
+              const SizedBox(height: 8),
+              TextField(
+                controller: _portCtrl,
+                decoration: InputDecoration(
+                  labelText: l.portLabel,
+                  hintText: '2000',
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              keyboardType: TextInputType.number,
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              title: Text(l.autoConnectLabel),
-              value: _autoConnect,
-              onChanged: (v) => setState(() => _autoConnect = v),
-            ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(l.autoConnectLabel),
+                value: _autoConnect,
+                onChanged: (v) => setState(() => _autoConnect = v),
+              ),
+            ],
+
+            // ── UDP pole ──
+            if (isUdp) ...[
+              TextField(
+                controller: _udpPortCtrl,
+                decoration: InputDecoration(
+                  labelText: l.udpListenPort,
+                  hintText: '10110',
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l.udpHint(_udpPortCtrl.text.trim().isEmpty
+                    ? '10110'
+                    : _udpPortCtrl.text.trim()),
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ],
+
             const SizedBox(height: 8),
+
+            // ── Tlačidlá ──
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    icon: const Icon(Icons.link_off),
-                    label: Text(l.disconnect),
+                    icon: Icon(isUdp ? Icons.stop : Icons.link_off),
+                    label: Text(isUdp ? l.stopListening : l.disconnect),
                     onPressed: connState == RaymarineConnectionState.connected
                         ? () async {
-                            await RaymarineConnectionService().disconnect();
+                            if (isUdp) {
+                              await UdpReceiverService().stop();
+                            } else {
+                              await RaymarineConnectionService().disconnect();
+                            }
                             setState(() {});
                           }
                         : null,
@@ -483,20 +550,21 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.link),
-                    label: Text(l.connect),
-                    onPressed: _connecting
-                        ? null
-                        : () => _connect(context),
+                        : Icon(isUdp ? Icons.hearing : Icons.link),
+                    label: Text(isUdp ? l.startListening : l.connect),
+                    onPressed: _connecting ? null : () => _connect(context),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              l.gatewayHint,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-            ),
+
+            if (!isUdp) ...[
+              const SizedBox(height: 8),
+              Text(
+                l.gatewayHint,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ],
           ],
         ),
       ),
@@ -505,13 +573,36 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
 
   Future<void> _connect(BuildContext ctx) async {
     final l = AppLocalizations.of(ctx);
+    final isUdp = _connType == NmeaConnectionType.udp;
+
+    if (isUdp) {
+      final port = int.tryParse(_udpPortCtrl.text.trim()) ?? 10110;
+      await ref.read(raymarineSettingsProvider.notifier).save(
+            host: _hostCtrl.text.trim(),
+            port: int.tryParse(_portCtrl.text.trim()) ?? 2000,
+            autoConnect: _autoConnect,
+            connectionType: NmeaConnectionType.udp,
+            udpListenPort: port,
+          );
+      setState(() => _connecting = true);
+      final ok = await UdpReceiverService().start(port: port);
+      if (mounted) {
+        setState(() => _connecting = false);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(ok
+              ? l.udpListeningOnPort(port)
+              : l.connectionFailed(UdpReceiverService().lastError ?? '')),
+        ));
+      }
+      return;
+    }
+
+    // TCP
     final host = _hostCtrl.text.trim();
     final port = int.tryParse(_portCtrl.text.trim()) ?? 2000;
-    final emptyMsg = l.enterIpAddress;
     if (host.isEmpty) {
-      ScaffoldMessenger.of(ctx).showSnackBar(
-        SnackBar(content: Text(emptyMsg)),
-      );
+      ScaffoldMessenger.of(ctx)
+          .showSnackBar(SnackBar(content: Text(l.enterIpAddress)));
       return;
     }
 
@@ -520,6 +611,8 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
           host: host,
           port: port,
           autoConnect: _autoConnect,
+          connectionType: NmeaConnectionType.tcp,
+          udpListenPort: int.tryParse(_udpPortCtrl.text.trim()) ?? 10110,
         );
 
     final ok = await RaymarineConnectionService().connect(
@@ -531,12 +624,12 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
     if (mounted) {
       setState(() => _connecting = false);
       final ll = AppLocalizations.of(context);
-      final msg = ok
-          ? ll.connectedToHost(host, port)
-          : ll.connectionFailed(RaymarineConnectionService().lastError ?? '');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(msg)),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(ok
+            ? ll.connectedToHost(host, port)
+            : ll.connectionFailed(
+                RaymarineConnectionService().lastError ?? '')),
+      ));
     }
   }
 }

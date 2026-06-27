@@ -367,7 +367,7 @@ class _EntryTile extends StatelessWidget {
             SizedBox(width: 52, child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(fmt.format(entry.timestamp.toLocal()),
+                Text(fmt.format(entry.timestamp.toUtc()),
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 const SizedBox(height: 4),
                 if (isFirst)

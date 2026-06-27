@@ -433,8 +433,13 @@ class PdfExportService {
             sailMode = _sailModeLabel(modeMatch.group(1)!);
             noteText = noteText.substring(modeMatch.end);
           }
-          // Odfiltruj automatické záznamy bez textu
-          if (noteText.startsWith('Auto') || noteText.startsWith('Automatick')) noteText = '';
+          // Extract data source tag before stripping auto entries
+          String? srcLabel;
+          if (noteText.startsWith('Auto') || noteText.startsWith('Automatick')) {
+            final srcMatch = RegExp(r'\[([^\]]+)\]').firstMatch(noteText);
+            srcLabel = srcMatch?.group(1)?.toUpperCase();
+            noteText = '';
+          }
 
           return pw.TableRow(
             decoration: pw.BoxDecoration(
@@ -505,6 +510,18 @@ class PdfExportService {
                         child: pw.ClipRRect(horizontalRadius: 2, verticalRadius: 2,
                           child: pw.Image(pw.MemoryImage(photos[entry.id]!),
                               fit: pw.BoxFit.cover)),
+                      ),
+                    if (srcLabel != null)
+                      pw.Container(
+                        margin: const pw.EdgeInsets.only(bottom: 2),
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                        decoration: pw.BoxDecoration(
+                          color: srcLabel == 'NMEA' ? _blue : _dgrey,
+                          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
+                        ),
+                        child: pw.Text(srcLabel,
+                            style: pw.TextStyle(color: PdfColors.white,
+                                fontSize: 5.5, fontWeight: pw.FontWeight.bold)),
                       ),
                     if (noteText.isNotEmpty)
                       pw.Text(_ascii(noteText),
@@ -595,7 +612,7 @@ class PdfExportService {
         pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
           pw.Text('Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
               style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-          pw.Text('HMB Sailing Log  (c) Lacoste',
+          pw.Text('HMB Sailing Log  (c) 2026 LacoSte',
               style: pw.TextStyle(color: _dgrey, fontSize: 8)),
         ]),
       ]),

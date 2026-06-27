@@ -180,11 +180,13 @@ class RaymarineConnectionService {
         windAngleDegrees: w.angleDegrees,
         windIsApparent: w.isApparent,
         lastUpdate: now,
+        windLastUpdate: now,
       );
     } else if (result.depth != null) {
       updated = updated.copyWith(
         depthMeters: result.depth!.depthMeters,
         lastUpdate: now,
+        depthLastUpdate: now,
       );
     } else if (result.waterTemp != null) {
       updated = updated.copyWith(

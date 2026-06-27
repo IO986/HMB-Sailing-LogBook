@@ -590,6 +590,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveEngine => 'Engine';
 
   @override
+  String get nmeaTcp => 'TCP';
+
+  @override
+  String get nmeaUdp => 'UDP';
+
+  @override
+  String get udpListenPort => 'Listen port';
+
+  @override
+  String get startListening => 'Start';
+
+  @override
+  String get stopListening => 'Stop';
+
+  @override
+  String connectionListening(String port) {
+    return 'Listening UDP on port $port';
+  }
+
+  @override
+  String udpHint(String port) {
+    return 'Set simulator/gateway to send UDP to this phone\'s IP, port $port.';
+  }
+
+  @override
+  String udpListeningOnPort(int port) {
+    return 'Listening on UDP port $port';
+  }
+
+  @override
   String get dayNotFound => 'Day not found';
 
   @override

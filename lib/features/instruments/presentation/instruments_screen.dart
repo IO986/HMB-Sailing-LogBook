@@ -38,15 +38,27 @@ class InstrumentsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pos = ref.watch(_gpsProvider).valueOrNull
         ?? LocationService().lastPosition;
-    final marine = ref.watch(marineDataProvider).valueOrNull;
-    final rayState = ref.watch(raymarineConnectionStateProvider).valueOrNull;
+    final settings = ref.watch(raymarineSettingsProvider);
+    final isUdp = settings.connectionType == NmeaConnectionType.udp;
+    final tcpMarine = ref.watch(marineDataProvider).valueOrNull;
+    final tcpState = ref.watch(raymarineConnectionStateProvider).valueOrNull;
+    final udpMarine = ref.watch(udpDataProvider).valueOrNull;
+    final udpState = ref.watch(udpConnectionStateProvider).valueOrNull;
+    final marine = isUdp ? udpMarine : tcpMarine;
+    final rayState = isUdp ? udpState : tcpState;
     final weather = ref.watch(_weatherProvider).valueOrNull;
     final waypoints = ref.watch(waypointsProvider).valueOrNull ?? [];
     final activeWp = ref.watch(_activeWpProvider);
 
+    const _fieldStale = Duration(seconds: 10);
+    bool _freshField(DateTime? t) =>
+        t != null && DateTime.now().difference(t) < _fieldStale;
+
     final rayOk = rayState == RaymarineConnectionState.connected
         && marine?.lastUpdate != null
         && DateTime.now().difference(marine!.lastUpdate!) < const Duration(seconds: 8);
+    final windOk = rayOk && _freshField(marine?.windLastUpdate);
+    final depthOk = rayOk && _freshField(marine?.depthLastUpdate);
 
     // --- Hodnoty ---
     final sogKn = rayOk
@@ -59,19 +71,19 @@ class InstrumentsScreen extends ConsumerWidget {
         : (pos?.heading ?? 0.0);
 
     // TWS – true wind speed
-    final twsKn = rayOk ? marine!.windSpeedKnots : weather?.windSpeed;
+    final twsKn = windOk ? marine!.windSpeedKnots : weather?.windSpeed;
 
     // TWA – true wind angle (0–180, P/S)
     // Raymarine môže dávať apparent angle; z weather vypočítame z rozdielu smerov
     double? twaVal;
     bool? twaStarboard;
-    if (rayOk && marine!.windAngleDegrees != null) {
+    if (windOk && marine!.windAngleDegrees != null) {
       final raw = marine.windAngleDegrees!;
       // Normalizuj na -180..180
       final norm = ((raw + 180) % 360) - 180;
       twaVal = norm.abs();
       twaStarboard = norm >= 0;
-    } else if (weather?.windDirection != null) {
+    } else if (!windOk && weather?.windDirection != null) {
       // windDirection je meteorologický smer (odkiaľ fúka) → na kurz lode
       final windFrom = weather!.windDirection;
       final raw = ((windFrom - hdgDeg) + 360) % 360;
@@ -80,7 +92,7 @@ class InstrumentsScreen extends ConsumerWidget {
       twaStarboard = norm >= 0;
     }
 
-    final depthM = rayOk ? marine!.depthMeters : null;
+    final depthM = depthOk ? marine!.depthMeters : null;
 
     // --- VMG WP ---
     double? vmgWp, distWpNm, brgWp;
@@ -110,6 +122,8 @@ class InstrumentsScreen extends ConsumerWidget {
         ],
       ),
       body: Column(children: [
+        // ── GPS pozícia ───────────────────────────────────────
+        _GpsPositionRow(pos: pos, fromNmea: rayOk && (marine?.hasGpsFix ?? false)),
         // ── 2 × 2 digitálne displeje ──────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
@@ -119,6 +133,7 @@ class InstrumentsScreen extends ConsumerWidget {
               value: sogKn != null ? sogKn.toStringAsFixed(1) : '--.-',
               unit: 'kn',
               color: const Color(0xFF27AE60),
+              source: (rayOk && marine!.sogKnots != null) ? 'NMEA' : 'GPS',
             )),
             const SizedBox(width: 10),
             Expanded(child: _DigitBox(
@@ -126,6 +141,7 @@ class InstrumentsScreen extends ConsumerWidget {
               value: twsKn != null ? twsKn.toStringAsFixed(1) : '--.-',
               unit: 'kn',
               color: const Color(0xFF3498DB),
+              source: (windOk && marine!.windSpeedKnots != null) ? 'NMEA' : (twsKn != null ? 'METEO' : null),
             )),
           ]),
         ),
@@ -142,6 +158,7 @@ class InstrumentsScreen extends ConsumerWidget {
                   : twaStarboard == false
                       ? const Color(0xFFE74C3C)
                       : Colors.white38,
+              source: (windOk && marine!.windAngleDegrees != null) ? 'NMEA' : (twaVal != null ? 'METEO' : null),
             )),
             const SizedBox(width: 10),
             Expanded(child: _DigitBox(
@@ -152,6 +169,7 @@ class InstrumentsScreen extends ConsumerWidget {
                   ? const Color(0xFFE74C3C)
                   : const Color(0xFF3EB1C8),
               alert: depthM != null && depthM < 5,
+              source: depthOk ? 'NMEA' : null,
             )),
           ]),
         ),
@@ -206,6 +224,73 @@ class InstrumentsScreen extends ConsumerWidget {
 }
 
 // ─────────────────────────────────────────────────────────────
+// GPS pozícia — riadok na vrchu
+// ─────────────────────────────────────────────────────────────
+
+class _GpsPositionRow extends StatelessWidget {
+  final Position? pos;
+  final bool fromNmea;
+
+  const _GpsPositionRow({required this.pos, required this.fromNmea});
+
+  String _fmt(double deg, bool isLat) {
+    final d = deg.abs().floor();
+    final m = (deg.abs() - d) * 60;
+    final hem = isLat ? (deg >= 0 ? 'N' : 'S') : (deg >= 0 ? 'E' : 'W');
+    return '$d° ${m.toStringAsFixed(3)}\' $hem';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lat = pos?.latitude;
+    final lon = pos?.longitude;
+    final src = fromNmea ? 'NMEA' : 'GPS';
+    final srcColor = fromNmea
+        ? const Color(0xFF27AE60)
+        : Colors.white38;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      color: const Color(0xFF0A1520),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.location_on, size: 11, color: srcColor),
+          const SizedBox(width: 5),
+          Text(
+            lat != null && lon != null
+                ? '${_fmt(lat, true)}   ${_fmt(lon, false)}'
+                : '--° --\' -   --° --\' -',
+            style: TextStyle(
+              color: lat != null ? Colors.white70 : Colors.white24,
+              fontSize: 12,
+              fontWeight: FontWeight.w300,
+              letterSpacing: 0.5,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+            decoration: BoxDecoration(
+              color: srcColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: Text(src,
+                style: TextStyle(
+                    color: srcColor,
+                    fontSize: 7,
+                    letterSpacing: 0.8,
+                    fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
 // Digitálny displej
 // ─────────────────────────────────────────────────────────────
 
@@ -213,6 +298,7 @@ class _DigitBox extends StatelessWidget {
   final String label, value, unit;
   final Color color;
   final bool alert;
+  final String? source; // 'NMEA', 'GPS', 'METEO' — null = skryté
 
   const _DigitBox({
     required this.label,
@@ -220,6 +306,7 @@ class _DigitBox extends StatelessWidget {
     required this.unit,
     required this.color,
     this.alert = false,
+    this.source,
   });
 
   @override
@@ -235,10 +322,28 @@ class _DigitBox extends StatelessWidget {
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label,
-            style: TextStyle(
-                color: color, fontSize: 10, letterSpacing: 2,
-                fontWeight: FontWeight.w500)),
+        Row(children: [
+          Text(label,
+              style: TextStyle(
+                  color: color, fontSize: 10, letterSpacing: 2,
+                  fontWeight: FontWeight.w500)),
+          if (source != null) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(source!,
+                  style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.35),
+                      fontSize: 7,
+                      letterSpacing: 0.8,
+                      fontWeight: FontWeight.w500)),
+            ),
+          ],
+        ]),
         const SizedBox(height: 6),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(value,
@@ -709,7 +814,7 @@ class _SourceBadge extends StatelessWidget {
           size: 10,
           color: rayConnected ? const Color(0xFF27AE60) : Colors.white38),
       const SizedBox(width: 4),
-      Text(rayConnected ? 'RAYMARINE' : 'GPS',
+      Text(rayConnected ? 'NMEA' : 'GPS',
           style: TextStyle(
               color: rayConnected ? const Color(0xFF27AE60) : Colors.white38,
               fontSize: 9,

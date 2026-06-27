@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -62,9 +61,6 @@ class _SplashScreenState extends State<SplashScreen>
             FadeTransition(opacity: _fade, child: const Text('HMB Sailing Log',
                 style: TextStyle(color: Colors.white, fontSize: 32,
                     fontWeight: FontWeight.bold, letterSpacing: 1.5))),
-            const SizedBox(height: 8),
-            FadeTransition(opacity: _tagline, child: Text(AppLocalizations.of(context).appTagline,
-                style: const TextStyle(color: Colors.white70, fontSize: 15))),
             const SizedBox(height: 60),
             FadeTransition(opacity: _tagline, child: SizedBox(width: 40, height: 40,
               child: CircularProgressIndicator(strokeWidth: 2,

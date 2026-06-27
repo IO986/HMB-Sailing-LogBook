@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -273,15 +274,32 @@ class _DayMapPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final points = trackPoints
+    // Group points by session to avoid phantom lines between separate sessions
+    final bySession = <String, List<LatLng>>{};
+    for (final tp in trackPoints) {
+      final sid = tp.sessionId ?? '_';
+      bySession.putIfAbsent(sid, () => []).add(LatLng(tp.latitude, tp.longitude));
+    }
+
+    final allPoints = trackPoints
         .map((p) => LatLng(p.latitude, p.longitude)).toList();
 
     LatLng center = const LatLng(43.5, 16.4);
-    double zoom = 10.0;
-    if (points.isNotEmpty) {
-      final avgLat = points.map((p) => p.latitude).reduce((a, b) => a + b) / points.length;
-      final avgLon = points.map((p) => p.longitude).reduce((a, b) => a + b) / points.length;
+    CameraFit? cameraFit;
+    if (allPoints.isNotEmpty) {
+      final avgLat = allPoints.map((p) => p.latitude).reduce((a, b) => a + b) / allPoints.length;
+      final avgLon = allPoints.map((p) => p.longitude).reduce((a, b) => a + b) / allPoints.length;
       center = LatLng(avgLat, avgLon);
+
+      final minLat = allPoints.map((p) => p.latitude).reduce(min);
+      final maxLat = allPoints.map((p) => p.latitude).reduce(max);
+      final minLon = allPoints.map((p) => p.longitude).reduce(min);
+      final maxLon = allPoints.map((p) => p.longitude).reduce(max);
+      cameraFit = CameraFit.bounds(
+        bounds: LatLngBounds(LatLng(minLat, minLon), LatLng(maxLat, maxLon)),
+        padding: const EdgeInsets.all(28),
+        maxZoom: 14,
+      );
     }
 
     return Card(
@@ -312,7 +330,8 @@ class _DayMapPreview extends StatelessWidget {
                 child: FlutterMap(
                   options: MapOptions(
                     initialCenter: center,
-                    initialZoom: zoom,
+                    initialZoom: 10.0,
+                    initialCameraFit: cameraFit,
                     interactionOptions: const InteractionOptions(
                         flags: InteractiveFlag.none),
                   ),
@@ -328,20 +347,21 @@ class _DayMapPreview extends StatelessWidget {
                           'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.hmb.sailinglog',
                     ),
-                    if (points.isNotEmpty)
+                    if (bySession.isNotEmpty)
                       PolylineLayer(polylines: [
-                        Polyline(points: points,
-                            color: Colors.yellow, strokeWidth: 3),
+                        for (final pts in bySession.values)
+                          if (pts.length >= 2)
+                            Polyline(points: pts, color: Colors.yellow, strokeWidth: 3),
                       ]),
-                    if (points.isNotEmpty)
+                    if (allPoints.isNotEmpty)
                       MarkerLayer(markers: [
-                        Marker(point: points.first, width: 20, height: 20,
+                        Marker(point: allPoints.first, width: 20, height: 20,
                           child: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.green, shape: BoxShape.circle),
                             child: const Icon(Icons.play_arrow,
                                 color: Colors.white, size: 14))),
-                        Marker(point: points.last, width: 20, height: 20,
+                        Marker(point: allPoints.last, width: 20, height: 20,
                           child: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.red, shape: BoxShape.circle),

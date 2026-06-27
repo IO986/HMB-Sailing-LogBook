@@ -23,6 +23,8 @@ class MarineInstrumentData {
   final double? engineRpm;
   final DateTime? lastUpdate;
   final DateTime? gpsTimestampUtc;
+  final DateTime? windLastUpdate;
+  final DateTime? depthLastUpdate;
 
   const MarineInstrumentData({
     this.latitude,
@@ -39,6 +41,8 @@ class MarineInstrumentData {
     this.engineRpm,
     this.lastUpdate,
     this.gpsTimestampUtc,
+    this.windLastUpdate,
+    this.depthLastUpdate,
   });
 
   bool get hasGpsFix => latitude != null && longitude != null;
@@ -60,6 +64,8 @@ class MarineInstrumentData {
     double? engineRpm,
     DateTime? lastUpdate,
     DateTime? gpsTimestampUtc,
+    DateTime? windLastUpdate,
+    DateTime? depthLastUpdate,
   }) {
     return MarineInstrumentData(
       latitude: latitude ?? this.latitude,
@@ -76,6 +82,8 @@ class MarineInstrumentData {
       engineRpm: engineRpm ?? this.engineRpm,
       lastUpdate: lastUpdate ?? this.lastUpdate,
       gpsTimestampUtc: gpsTimestampUtc ?? this.gpsTimestampUtc,
+      windLastUpdate: windLastUpdate ?? this.windLastUpdate,
+      depthLastUpdate: depthLastUpdate ?? this.depthLastUpdate,
     );
   }
 }

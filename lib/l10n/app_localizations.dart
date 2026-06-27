@@ -1214,6 +1214,54 @@ abstract class AppLocalizations {
   /// **'Motor'**
   String get liveEngine;
 
+  /// No description provided for @nmeaTcp.
+  ///
+  /// In sk, this message translates to:
+  /// **'TCP'**
+  String get nmeaTcp;
+
+  /// No description provided for @nmeaUdp.
+  ///
+  /// In sk, this message translates to:
+  /// **'UDP'**
+  String get nmeaUdp;
+
+  /// No description provided for @udpListenPort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Port na počúvanie'**
+  String get udpListenPort;
+
+  /// No description provided for @startListening.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spustiť'**
+  String get startListening;
+
+  /// No description provided for @stopListening.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zastaviť'**
+  String get stopListening;
+
+  /// No description provided for @connectionListening.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počúva UDP na porte {port}'**
+  String connectionListening(String port);
+
+  /// No description provided for @udpHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastav simulátor/gateway aby posielal UDP na IP tohto telefónu, port {port}.'**
+  String udpHint(String port);
+
+  /// No description provided for @udpListeningOnPort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počúvam UDP na porte {port}'**
+  String udpListeningOnPort(int port);
+
   /// No description provided for @dayNotFound.
   ///
   /// In sk, this message translates to:

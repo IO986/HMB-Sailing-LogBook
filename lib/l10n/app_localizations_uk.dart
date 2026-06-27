@@ -592,6 +592,36 @@ class AppLocalizationsUk extends AppLocalizations {
   String get liveEngine => 'Двигун';
 
   @override
+  String get nmeaTcp => 'TCP';
+
+  @override
+  String get nmeaUdp => 'UDP';
+
+  @override
+  String get udpListenPort => 'Порт прослуховування';
+
+  @override
+  String get startListening => 'Запустити';
+
+  @override
+  String get stopListening => 'Зупинити';
+
+  @override
+  String connectionListening(String port) {
+    return 'Прослуховує UDP на порті $port';
+  }
+
+  @override
+  String udpHint(String port) {
+    return 'Налаштуйте симулятор/шлюз для надсилання UDP на IP цього телефону, порт $port.';
+  }
+
+  @override
+  String udpListeningOnPort(int port) {
+    return 'Прослуховую UDP порт $port';
+  }
+
+  @override
   String get dayNotFound => 'День не знайдено';
 
   @override
