@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'gps_tracking_service.dart';
 import 'weather_repository.dart';
 
+@pragma('vm:entry-point')
 class BackgroundService {
   static Future<void> init() async {
     final service = FlutterBackgroundService();

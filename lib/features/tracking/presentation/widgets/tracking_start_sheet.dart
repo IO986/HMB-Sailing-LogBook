@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:drift/drift.dart' show Value;
 
@@ -186,8 +187,39 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
   bool _canStart() => true;
 
   Future<void> _start(BuildContext context) async {
-    Navigator.pop(context);
     final db = ref.read(databaseProvider);
+    final l = AppLocalizations.of(context);
+
+    final router = GoRouter.of(context);
+
+    // Check safety briefing requirement for multiday charters
+    if (_mode == 'multiday') {
+      final charter = _selectedCharter;
+      if (charter != null && !charter.safetyBriefingDone) {
+        if (!context.mounted) return;
+        final go = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l.briefingRequiredTitle),
+            content: Text(l.briefingRequiredBody),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: Text(l.cancel)),
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: Text(l.goToBriefing)),
+            ],
+          ),
+        ) ?? false;
+        if (!context.mounted) return;
+        Navigator.pop(context);
+        if (go) router.go('/logbook/${charter.id}/briefing');
+        return;
+      }
+    }
+
+    Navigator.pop(context);
 
     if (_mode == 'standalone') {
       final today = DateTime.now();
@@ -225,6 +257,9 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
         createdAt: today,
       ));
       ref.invalidate(chartersProvider);
+      // New multiday charter always requires safety briefing before first day
+      router.go('/logbook/${charter.id}/briefing');
+      return;
     }
 
     final today = DateTime.now();

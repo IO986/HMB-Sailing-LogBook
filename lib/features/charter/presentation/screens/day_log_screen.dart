@@ -290,6 +290,8 @@ String? _wcEmoji(String? key) {
   );
 }
 
+enum _AnchorKind { none, dropped, raised, driftOut, driftIn }
+
 Widget _modeIcon(Set<String> modes) {
   if (modes.contains('motor') && modes.length == 1) {
     return const _BigIcon(Icons.settings, Colors.orange);
@@ -312,8 +314,18 @@ class _BigIcon extends StatelessWidget {
 
 class _EntryTile extends StatelessWidget {
   final LogbookEntry entry;
-  final VoidCallback onDelete, onTap;
+  final Future<void> Function() onDelete;
+  final VoidCallback onTap;
   const _EntryTile({required this.entry, required this.onDelete, required this.onTap});
+
+  static _AnchorKind _anchorKind(String? note) {
+    if (note == null) return _AnchorKind.none;
+    if (note.contains('Anchor dropped')) return _AnchorKind.dropped;
+    if (note.contains('Anchor raised'))  return _AnchorKind.raised;
+    if (note.contains('Drift - perimeter exceeded')) return _AnchorKind.driftOut;
+    if (note.contains('Drift - vessel back'))        return _AnchorKind.driftIn;
+    return _AnchorKind.none;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -322,12 +334,15 @@ class _EntryTile extends StatelessWidget {
     final isFirst = entry.skipperNote == 'Voyage start' || entry.skipperNote == 'Začiatok plavby';
     final isLast  = entry.skipperNote == 'Voyage end'   || entry.skipperNote == 'Koniec plavby';
     final isAuto  = entry.isAutoEntry;
+    final anchor  = _anchorKind(entry.skipperNote);
     final parsed  = _parseNote(entry.skipperNote);
-    final note    = isFirst ? '' : (isLast ? '' : parsed.note);
+    final note    = isFirst ? '' : (isLast ? '' : (anchor != _AnchorKind.none ? '' : parsed.note));
 
     Color? bgColor;
     if (isFirst) bgColor = Colors.green.shade800.withValues(alpha: 0.12);
     if (isLast)  bgColor = Colors.red.shade800.withValues(alpha: 0.12);
+    if (anchor == _AnchorKind.driftOut) bgColor = Colors.red.shade800.withValues(alpha: 0.10);
+    if (anchor == _AnchorKind.dropped)  bgColor = Colors.blue.shade800.withValues(alpha: 0.08);
 
     // Photo thumbnail
     final hasPhoto = entry.photoPath != null && File(entry.photoPath!).existsSync();
@@ -341,21 +356,25 @@ class _EntryTile extends StatelessWidget {
         color: Colors.red,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
-      confirmDismiss: (_) async => await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l.deleteEntryTitle),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l.delete),
-            ),
-          ],
-        ),
-      ) ?? false,
-      onDismissed: (_) => onDelete(),
+      confirmDismiss: (_) async {
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l.deleteEntryTitle),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(l.delete),
+              ),
+            ],
+          ),
+        ) ?? false;
+        if (!confirmed) return false;
+        await onDelete();
+        return true;
+      },
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -367,13 +386,21 @@ class _EntryTile extends StatelessWidget {
             SizedBox(width: 52, child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(fmt.format(entry.timestamp.toUtc()),
+                Text(fmt.format(entry.timestamp.toLocal()),
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 const SizedBox(height: 4),
                 if (isFirst)
                   const _BigIcon(Icons.play_arrow, Colors.green)
                 else if (isLast)
                   const _BigIcon(Icons.stop, Colors.red)
+                else if (anchor == _AnchorKind.dropped)
+                  const _BigIcon(Icons.anchor, Colors.blue)
+                else if (anchor == _AnchorKind.raised)
+                  const _BigIcon(Icons.anchor, Colors.blueGrey)
+                else if (anchor == _AnchorKind.driftOut)
+                  const _BigIcon(Icons.warning_amber, Colors.red)
+                else if (anchor == _AnchorKind.driftIn)
+                  const _BigIcon(Icons.check_circle_outline, Colors.orange)
                 else if (isAuto)
                   const Icon(Icons.autorenew, size: 26, color: Colors.grey)
                 else
@@ -443,11 +470,19 @@ class _EntryTile extends StatelessWidget {
                         )),
                   ),
 
-                // Start/End label
+                // Event labels
                 if (isFirst)
                   Text(l.voyageStart, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green))
                 else if (isLast)
-                  Text(l.voyageEnd, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red)),
+                  Text(l.voyageEnd, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red))
+                else if (anchor == _AnchorKind.dropped)
+                  Text('Anchor dropped', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blue))
+                else if (anchor == _AnchorKind.raised)
+                  Text('Anchor raised', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blueGrey))
+                else if (anchor == _AnchorKind.driftOut)
+                  Text('Drift – perimeter exceeded', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red.shade700))
+                else if (anchor == _AnchorKind.driftIn)
+                  Text('Drift – vessel returned', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.orange.shade700)),
               ],
             )),
 

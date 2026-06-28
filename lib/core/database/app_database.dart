@@ -124,6 +124,16 @@ class Waypoints extends Table {
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 }
 
+/// Podpisy posádky na safety briefingu
+class CrewSignatures extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get charterId => integer().references(Charters, #id)();
+  TextColumn get crewName => text()();
+  TextColumn get role => text().withDefault(const Constant('crew'))(); // 'skipper' | 'crew'
+  TextColumn get signaturePath => text().nullable()();  // cesta k PNG súboru
+  DateTimeColumn get signedAt => dateTime().nullable()();
+}
+
 /// Počasie cache
 class WeatherSnapshots extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -150,13 +160,13 @@ class WeatherSnapshots extends Table {
 
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
-  TrackPoints, SailingSessions, Waypoints, WeatherSnapshots,
+  TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -176,6 +186,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 4) {
         await m.addColumn(charters, charters.remoteId);
         await m.addColumn(charters, charters.syncedAt);
+      }
+      if (from < 5) {
+        await m.createTable(crewSignatures);
       }
     },
     beforeOpen: (details) async {},
@@ -204,21 +217,11 @@ class AppDatabase extends _$AppDatabase {
       );
 
   Future<void> deleteCharter(int id) async {
-    // Skontroluj či nemá aktívnu session
-    final active = await getActiveSession();
-    if (active != null) {
-      // Skontroluj či aktívna session patrí k tomuto charteru
-      final days = await getDayLogs(id);
-      final dayIds = days.map((d) => d.id).toSet();
-      if (active.dayLogId != null && dayIds.contains(active.dayLogId)) {
-        throw Exception('Nemožno zmazať plavbu počas aktívneho trackingu');
-      }
-    }
-    // Cascade: zmaž day logs a ich entries
     final days = await getDayLogs(id);
     for (final d in days) {
       await deleteDayLog(d.id);
     }
+    await deleteSignaturesForCharter(id);
     await (delete(charters)..where((c) => c.id.equals(id))).go();
   }
 
@@ -248,6 +251,9 @@ class AppDatabase extends _$AppDatabase {
     for (final id in ids) { await deleteDayLog(id); }
   }
 
+  Future<DayLog?> getDayLogById(int id) =>
+      (select(dayLogs)..where((d) => d.id.equals(id))).getSingleOrNull();
+
   Future<int?> getLatestDayLogId() async {
     final rows = await (select(dayLogs)
           ..orderBy([(d) => OrderingTerm.desc(d.date)])
@@ -267,6 +273,12 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<LogbookEntry>> watchEntriesForDay(int dayLogId) =>
       (select(logbookEntries)
             ..where((e) => e.dayLogId.equals(dayLogId))
+            ..orderBy([(e) => OrderingTerm(expression: e.timestamp)]))
+          .watch();
+
+  Stream<List<LogbookEntry>> watchPhotoEntriesForDay(int dayLogId) =>
+      (select(logbookEntries)
+            ..where((e) => e.dayLogId.equals(dayLogId) & e.photoPath.isNotNull() & e.latitude.isNotNull())
             ..orderBy([(e) => OrderingTerm(expression: e.timestamp)]))
           .watch();
 
@@ -363,6 +375,26 @@ class AppDatabase extends _$AppDatabase {
       (select(weatherSnapshots)
             ..orderBy([(w) => OrderingTerm(expression: w.forecastTime)]))
           .get();
+
+  // ── Crew Signatures ───────────────────────────────────────────
+
+  Stream<List<CrewSignature>> watchSignaturesForCharter(int charterId) =>
+      (select(crewSignatures)
+            ..where((s) => s.charterId.equals(charterId))
+            ..orderBy([(s) => OrderingTerm(expression: s.id)]))
+          .watch();
+
+  Future<List<CrewSignature>> getSignaturesForCharter(int charterId) =>
+      (select(crewSignatures)
+            ..where((s) => s.charterId.equals(charterId))
+            ..orderBy([(s) => OrderingTerm(expression: s.id)]))
+          .get();
+
+  Future<void> upsertCrewSignature(CrewSignaturesCompanion sig) =>
+      into(crewSignatures).insertOnConflictUpdate(sig);
+
+  Future<void> deleteSignaturesForCharter(int charterId) =>
+      (delete(crewSignatures)..where((s) => s.charterId.equals(charterId))).go();
 }
 
 LazyDatabase _openConnection() {

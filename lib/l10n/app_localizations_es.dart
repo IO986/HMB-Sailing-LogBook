@@ -127,6 +127,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stop => 'Detener';
 
   @override
+  String get stopTrackingDay => '¿Detener el seguimiento por hoy?';
+
+  @override
   String get startVoyage => 'Iniciar travesía';
 
   @override
@@ -203,6 +206,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deleteCharterContent => 'Se eliminarán todos los días y entradas.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'No se puede eliminar una travesía mientras el seguimiento está activo.';
 
   @override
   String get noVoyages => 'Sin travesías';
@@ -912,6 +919,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Guardado: $pdf + $gpx';
+  }
+
+  @override
   String exportErrorMsg(String error) {
     return 'Error de exportación: $error';
   }
@@ -1393,4 +1405,64 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get guideExportBody =>
       'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Elegir los días a incluir\n4. El PDF incluye: ruta, entradas, fotos y firmas\n5. Compartir por email, imprimir o guardar en el teléfono';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Instrucción de seguridad';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Firmas de la tripulación';
+
+  @override
+  String get briefingSignHere => 'Firmar aquí';
+
+  @override
+  String get briefingClear => 'Borrar';
+
+  @override
+  String get briefingSigned => 'Firmado';
+
+  @override
+  String get briefingSave => 'Guardar firmas';
+
+  @override
+  String get briefingSavedOk => 'Firmas guardadas';
+
+  @override
+  String get briefingOpenBriefing => 'Instrucción de seguridad';
+
+  @override
+  String get briefingSkipper => 'Patrón';
+
+  @override
+  String get briefingCrew => 'Tripulación';
+
+  @override
+  String get briefingNoCrew =>
+      'Sin tripulación definida. Añade miembros en la configuración del viaje.';
+
+  @override
+  String get briefingDate => 'Fecha';
+
+  @override
+  String get briefingLocation => 'Lugar';
+
+  @override
+  String get briefingDoneLabel => 'Instrucción de seguridad completada';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'Todas las firmas guardadas. No es necesario repetir.';
+
+  @override
+  String get briefingEditSignature => 'Cambiar firma';
+
+  @override
+  String get briefingRequiredTitle => 'Se requiere instrucción de seguridad';
+
+  @override
+  String get briefingRequiredBody =>
+      'Completa la instrucción de seguridad y recoge las firmas antes de iniciar el primer rastreo.';
+
+  @override
+  String get goToBriefing => 'Ir al briefing';
 }

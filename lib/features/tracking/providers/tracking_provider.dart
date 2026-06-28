@@ -66,55 +66,12 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   Future<void> stopTracking() async {
     state = state.copyWith(isLoading: true);
-
-    final activeDayLogId = GpsTrackingService().activeDayLogId;
-
     try {
       await GpsTrackingService().stopTracking();
       await BackgroundService.stop();
     } catch (e) { print('[TRACKING] Stop err: $e'); }
-
     ref.read(isTrackingProvider.notifier).state = false;
-
-    // Skontroluj či je koniec posledného plánovaného dňa
-    bool showDialog = false;
-    int? charterId;
-    if (activeDayLogId != null) {
-      try {
-        final db = ref.read(databaseProvider);
-        final allDays = await _getDayLogById(db, activeDayLogId);
-        if (allDays != null) {
-          charterId = allDays.charterId;
-          final charters = await db.getAllCharters();
-          final charter = charters.firstWhere((c) => c.id == charterId);
-          final today = DateTime.now();
-          // Je dnes posledný plánovaný deň?
-          final isLastDay = !charter.dateTo.isAfter(
-            DateTime(today.year, today.month, today.day, 23, 59));
-          if (isLastDay) showDialog = true;
-        }
-      } catch (_) {}
-    }
-
-    state = state.copyWith(
-      isLoading: false,
-      isTracking: false,
-      showEndVoyageDialog: showDialog,
-      endedCharterId: charterId,
-    );
-  }
-
-  Future<DayLog?> _getDayLogById(AppDatabase db, int dayLogId) async {
-    try {
-      final charters = await db.getAllCharters();
-      for (final c in charters) {
-        final days = await db.getDayLogs(c.id);
-        for (final d in days) {
-          if (d.id == dayLogId) return d;
-        }
-      }
-    } catch (_) {}
-    return null;
+    state = state.copyWith(isLoading: false, isTracking: false);
   }
 
   void clearEndVoyageDialog() {

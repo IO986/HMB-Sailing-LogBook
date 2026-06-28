@@ -332,6 +332,12 @@ abstract class AppLocalizations {
   /// **'Zastaviť'**
   String get stop;
 
+  /// No description provided for @stopTrackingDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ukončiť tracking pre tento deň?'**
+  String get stopTrackingDay;
+
   /// No description provided for @startVoyage.
   ///
   /// In sk, this message translates to:
@@ -481,6 +487,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Zmažú sa všetky dni a záznamy.'**
   String get deleteCharterContent;
+
+  /// No description provided for @cannotDeleteWhileTracking.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nemožno zmazať plavbu počas aktívneho trackingu.'**
+  String get cannotDeleteWhileTracking;
 
   /// No description provided for @noVoyages.
   ///
@@ -1826,6 +1838,12 @@ abstract class AppLocalizations {
   /// **'Uložené: {path}'**
   String exportSavedMsg(String path);
 
+  /// No description provided for @exportSavedPdfGpx.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložené: {pdf} + {gpx}'**
+  String exportSavedPdfGpx(String pdf, String gpx);
+
   /// No description provided for @exportErrorMsg.
   ///
   /// In sk, this message translates to:
@@ -2731,6 +2749,120 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Zvol dni, ktoré chceš zahrnúť\n4. PDF obsahuje: trasu, záznamy, fotky a podpisy\n5. Zdieľaj cez email, tlač alebo ulož do telefónu'**
   String get guideExportBody;
+
+  /// No description provided for @safetyBriefingScreenTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety Briefing'**
+  String get safetyBriefingScreenTitle;
+
+  /// No description provided for @briefingCrewSignaturesSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy posádky'**
+  String get briefingCrewSignaturesSection;
+
+  /// No description provided for @briefingSignHere.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpísať tu'**
+  String get briefingSignHere;
+
+  /// No description provided for @briefingClear.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať'**
+  String get briefingClear;
+
+  /// No description provided for @briefingSigned.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpísané'**
+  String get briefingSigned;
+
+  /// No description provided for @briefingSave.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložiť podpisy'**
+  String get briefingSave;
+
+  /// No description provided for @briefingSavedOk.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy uložené'**
+  String get briefingSavedOk;
+
+  /// No description provided for @briefingOpenBriefing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety Briefing'**
+  String get briefingOpenBriefing;
+
+  /// No description provided for @briefingSkipper.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kapitán'**
+  String get briefingSkipper;
+
+  /// No description provided for @briefingCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posádka'**
+  String get briefingCrew;
+
+  /// No description provided for @briefingNoCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posádka nie je zadaná. Pridaj členov v nastaveniach plavby.'**
+  String get briefingNoCrew;
+
+  /// No description provided for @briefingDate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátum'**
+  String get briefingDate;
+
+  /// No description provided for @briefingLocation.
+  ///
+  /// In sk, this message translates to:
+  /// **'Miesto'**
+  String get briefingLocation;
+
+  /// No description provided for @briefingDoneLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety Briefing dokončený'**
+  String get briefingDoneLabel;
+
+  /// No description provided for @briefingDoneSubtitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy posádky sú uložené. Nie je potrebné opakovať.'**
+  String get briefingDoneSubtitle;
+
+  /// No description provided for @briefingEditSignature.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmeniť podpis'**
+  String get briefingEditSignature;
+
+  /// No description provided for @briefingRequiredTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyžaduje sa Safety Briefing'**
+  String get briefingRequiredTitle;
+
+  /// No description provided for @briefingRequiredBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pred prvým spustením trackingu je potrebné dokončiť Safety Briefing a zozbierať podpisy posádky.'**
+  String get briefingRequiredBody;
+
+  /// No description provided for @goToBriefing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prejsť na Briefing'**
+  String get goToBriefing;
 }
 
 class _AppLocalizationsDelegate

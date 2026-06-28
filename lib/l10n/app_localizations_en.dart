@@ -127,6 +127,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stop => 'Stop';
 
   @override
+  String get stopTrackingDay => 'Stop tracking for today?';
+
+  @override
   String get startVoyage => 'Start voyage';
 
   @override
@@ -203,6 +206,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteCharterContent => 'All days and entries will be deleted.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'Cannot delete a voyage while tracking is active.';
 
   @override
   String get noVoyages => 'No voyages';
@@ -911,6 +918,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Saved: $pdf + $gpx';
+  }
+
+  @override
   String exportErrorMsg(String error) {
     return 'Export error: $error';
   }
@@ -1389,4 +1401,64 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get guideExportBody =>
       'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Choose which days to include\n4. PDF includes: track, log entries, photos and signatures\n5. Share via email, print or save to phone';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Safety Briefing';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Crew Signatures';
+
+  @override
+  String get briefingSignHere => 'Sign here';
+
+  @override
+  String get briefingClear => 'Clear';
+
+  @override
+  String get briefingSigned => 'Signed';
+
+  @override
+  String get briefingSave => 'Save Signatures';
+
+  @override
+  String get briefingSavedOk => 'Signatures saved';
+
+  @override
+  String get briefingOpenBriefing => 'Safety Briefing';
+
+  @override
+  String get briefingSkipper => 'Skipper';
+
+  @override
+  String get briefingCrew => 'Crew';
+
+  @override
+  String get briefingNoCrew =>
+      'No crew defined. Add crew members in the voyage settings.';
+
+  @override
+  String get briefingDate => 'Date';
+
+  @override
+  String get briefingLocation => 'Location';
+
+  @override
+  String get briefingDoneLabel => 'Safety Briefing completed';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'All crew signatures are saved. No need to redo.';
+
+  @override
+  String get briefingEditSignature => 'Change signature';
+
+  @override
+  String get briefingRequiredTitle => 'Safety Briefing required';
+
+  @override
+  String get briefingRequiredBody =>
+      'Complete the Safety Briefing and collect crew signatures before starting the first tracking session.';
+
+  @override
+  String get goToBriefing => 'Go to Briefing';
 }

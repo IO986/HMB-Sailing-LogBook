@@ -7,6 +7,7 @@ import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_start_sheet.dart';
+import '../../../../core/services/gps_tracking_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterListScreen extends ConsumerStatefulWidget {
@@ -33,13 +34,6 @@ class _CharterListScreenState extends ConsumerState<CharterListScreen> {
     final isTracking = ref.watch(isTrackingProvider);
     final l = AppLocalizations.of(context);
 
-    ref.listen<TrackingState>(trackingNotifierProvider, (prev, next) {
-      if (next.showEndVoyageDialog && !(prev?.showEndVoyageDialog ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) showTrackingEndVoyageDialog(context, ref, next.endedCharterId!);
-        });
-      }
-    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('HMB Sailing Log')),
@@ -225,6 +219,23 @@ class _CharterCard extends ConsumerWidget {
                     if (v == 'edit') context.go('/logbook/${charter.id}/edit');
                     if (v == 'delete') {
                       final l = AppLocalizations.of(context);
+                      // Block delete only when this charter is actively being tracked
+                      final isTracking = ref.read(isTrackingProvider);
+                      if (isTracking) {
+                        final activeDayLogId = GpsTrackingService().activeDayLogId;
+                        if (activeDayLogId != null) {
+                          final days = await ref.read(databaseProvider).getDayLogs(charter.id);
+                          if (days.any((d) => d.id == activeDayLogId)) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(l.cannotDeleteWhileTracking),
+                                backgroundColor: Colors.red,
+                              ));
+                            }
+                            return;
+                          }
+                        }
+                      }
                       final ok = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
@@ -242,9 +253,12 @@ class _CharterCard extends ConsumerWidget {
                       ) ?? false;
                       if (ok) {
                         try {
+                          debugPrint('[DELETE] Mazanie chartera ${charter.id}');
                           await ref.read(databaseProvider).deleteCharter(charter.id);
+                          debugPrint('[DELETE] Úspech');
                           ref.invalidate(chartersProvider);
-                        } catch (e) {
+                        } catch (e, st) {
+                          debugPrint('[DELETE] Chyba: $e\n$st');
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(e.toString().replaceAll('Exception: ', '')),

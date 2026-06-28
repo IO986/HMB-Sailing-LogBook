@@ -127,6 +127,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get stop => 'Зупинити';
 
   @override
+  String get stopTrackingDay => 'Зупинити відстеження на сьогодні?';
+
+  @override
   String get startVoyage => 'Розпочати плавання';
 
   @override
@@ -204,6 +207,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get deleteCharterContent => 'Всі дні та записи будуть видалені.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'Неможливо видалити плавання під час активного трекінгу.';
 
   @override
   String get noVoyages => 'Немає плавань';
@@ -913,6 +920,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Збережено: $pdf + $gpx';
+  }
+
+  @override
   String exportErrorMsg(String error) {
     return 'Помилка експорту: $error';
   }
@@ -1392,4 +1404,64 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get guideExportBody =>
       'Журнал можна експортувати як професійний PDF-документ.\n\n1. Відкрий Журнал → обери чартер\n2. Натисни значок експорту або три крапки → Експорт PDF\n3. Обери дні, які потрібно включити\n4. PDF містить: маршрут, записи, фото та підписи\n5. Поділись електронною поштою, роздрукуй або збережи на телефоні';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Інструктаж з безпеки';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Підписи екіпажу';
+
+  @override
+  String get briefingSignHere => 'Підписати тут';
+
+  @override
+  String get briefingClear => 'Очистити';
+
+  @override
+  String get briefingSigned => 'Підписано';
+
+  @override
+  String get briefingSave => 'Зберегти підписи';
+
+  @override
+  String get briefingSavedOk => 'Підписи збережено';
+
+  @override
+  String get briefingOpenBriefing => 'Інструктаж з безпеки';
+
+  @override
+  String get briefingSkipper => 'Шкіпер';
+
+  @override
+  String get briefingCrew => 'Екіпаж';
+
+  @override
+  String get briefingNoCrew =>
+      'Екіпаж не визначено. Додайте членів у налаштуваннях подорожі.';
+
+  @override
+  String get briefingDate => 'Дата';
+
+  @override
+  String get briefingLocation => 'Місце';
+
+  @override
+  String get briefingDoneLabel => 'Інструктаж з безпеки завершено';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'Підписи екіпажу збережені. Повторювати не потрібно.';
+
+  @override
+  String get briefingEditSignature => 'Змінити підпис';
+
+  @override
+  String get briefingRequiredTitle => 'Потрібен інструктаж з безпеки';
+
+  @override
+  String get briefingRequiredBody =>
+      'Перед першим запуском трекінгу потрібно завершити інструктаж і зібрати підписи екіпажу.';
+
+  @override
+  String get goToBriefing => 'До інструктажу';
 }

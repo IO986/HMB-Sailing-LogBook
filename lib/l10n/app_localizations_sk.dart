@@ -126,6 +126,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get stop => 'Zastaviť';
 
   @override
+  String get stopTrackingDay => 'Ukončiť tracking pre tento deň?';
+
+  @override
   String get startVoyage => 'Spustiť plavbu';
 
   @override
@@ -202,6 +205,10 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get deleteCharterContent => 'Zmažú sa všetky dni a záznamy.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'Nemožno zmazať plavbu počas aktívneho trackingu.';
 
   @override
   String get noVoyages => 'Žiadne plavby';
@@ -910,6 +917,11 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Uložené: $pdf + $gpx';
+  }
+
+  @override
   String exportErrorMsg(String error) {
     return 'Chyba exportu: $error';
   }
@@ -1388,4 +1400,64 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get guideExportBody =>
       'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Zvol dni, ktoré chceš zahrnúť\n4. PDF obsahuje: trasu, záznamy, fotky a podpisy\n5. Zdieľaj cez email, tlač alebo ulož do telefónu';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Safety Briefing';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Podpisy posádky';
+
+  @override
+  String get briefingSignHere => 'Podpísať tu';
+
+  @override
+  String get briefingClear => 'Zmazať';
+
+  @override
+  String get briefingSigned => 'Podpísané';
+
+  @override
+  String get briefingSave => 'Uložiť podpisy';
+
+  @override
+  String get briefingSavedOk => 'Podpisy uložené';
+
+  @override
+  String get briefingOpenBriefing => 'Safety Briefing';
+
+  @override
+  String get briefingSkipper => 'Kapitán';
+
+  @override
+  String get briefingCrew => 'Posádka';
+
+  @override
+  String get briefingNoCrew =>
+      'Posádka nie je zadaná. Pridaj členov v nastaveniach plavby.';
+
+  @override
+  String get briefingDate => 'Dátum';
+
+  @override
+  String get briefingLocation => 'Miesto';
+
+  @override
+  String get briefingDoneLabel => 'Safety Briefing dokončený';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'Podpisy posádky sú uložené. Nie je potrebné opakovať.';
+
+  @override
+  String get briefingEditSignature => 'Zmeniť podpis';
+
+  @override
+  String get briefingRequiredTitle => 'Vyžaduje sa Safety Briefing';
+
+  @override
+  String get briefingRequiredBody =>
+      'Pred prvým spustením trackingu je potrebné dokončiť Safety Briefing a zozbierať podpisy posádky.';
+
+  @override
+  String get goToBriefing => 'Prejsť na Briefing';
 }

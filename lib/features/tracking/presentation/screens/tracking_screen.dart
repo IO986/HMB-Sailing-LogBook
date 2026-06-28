@@ -9,6 +9,8 @@ import '../widgets/session_stats_card.dart';
 import '../widgets/gps_data_row.dart';
 import '../widgets/tracking_start_sheet.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:hmb_sailing_log/main.dart';
+import 'package:hmb_sailing_log/core/services/gps_tracking_service.dart';
 
 class TrackingScreen extends ConsumerWidget {
   const TrackingScreen({super.key});
@@ -31,11 +33,6 @@ class TrackingScreen extends ConsumerWidget {
             onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
           ),
         ));
-      }
-      if (next.showEndVoyageDialog && !(prev?.showEndVoyageDialog ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showTrackingEndVoyageDialog(context, ref, next.endedCharterId!);
-        });
       }
     });
 
@@ -229,7 +226,7 @@ class _TrackingControls extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(child: ElevatedButton.icon(
                 onPressed: trackingState.isLoading ? null
-                    : () => ref.read(trackingNotifierProvider.notifier).stopTracking(),
+                    : () => _confirmAndStop(context, ref, l),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
                 icon: const Icon(Icons.stop),
                 label: Text(l.stop),
@@ -248,6 +245,94 @@ class _TrackingControls extends ConsumerWidget {
               ),
             ),
     );
+  }
+
+  Future<void> _confirmAndStop(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+    bool isLastDay = false;
+    int? charterId;
+    final dayLogId = GpsTrackingService().activeDayLogId;
+    if (dayLogId != null) {
+      try {
+        final db = ref.read(databaseProvider);
+        final charters = await db.getAllCharters();
+        for (final c in charters) {
+          final days = await db.getDayLogs(c.id);
+          if (days.any((d) => d.id == dayLogId)) {
+            charterId = c.id;
+            final today = DateTime.now();
+            final dto = c.dateTo.toLocal();
+            isLastDay = DateTime(dto.year, dto.month, dto.day) ==
+                        DateTime(today.year, today.month, today.day);
+            break;
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (!context.mounted) return;
+
+    if (isLastDay && charterId != null) {
+      // Last day — show end-of-voyage dialog first, actions stop tracking
+      final notifier = ref.read(trackingNotifierProvider.notifier);
+      final cid = charterId!;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          title: Row(children: [
+            const Icon(Icons.anchor, color: Colors.blue),
+            const SizedBox(width: 8),
+            Flexible(child: Text(l.endVoyageTitle)),
+          ]),
+          content: Text(l.endVoyageContent),
+          actions: [
+            TextButton(
+              onPressed: () { Navigator.pop(ctx); notifier.stopTracking(); },
+              child: Text(l.decideLayer),
+            ),
+            OutlinedButton.icon(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                await notifier.stopTracking();
+                notifier.extendVoyage(cid);
+              },
+              icon: const Icon(Icons.arrow_forward),
+              label: Text(l.continuesTomorrow),
+            ),
+            ElevatedButton.icon(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                await notifier.stopTracking();
+                notifier.endVoyage(cid);
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              icon: const Icon(Icons.check),
+              label: Text(l.endVoyage),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Non-last day — simple confirmation before stopping
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l.stopTrackingDay),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(l.cancel)),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(l.stop)),
+          ],
+        ),
+      ) ?? false;
+      if (confirmed && context.mounted) {
+        ref.read(trackingNotifierProvider.notifier).stopTracking();
+      }
+    }
   }
 
   void _showStartSheet(BuildContext context, WidgetRef ref) {

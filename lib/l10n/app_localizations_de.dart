@@ -127,6 +127,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stop => 'Stoppen';
 
   @override
+  String get stopTrackingDay => 'Tracking für heute beenden?';
+
+  @override
   String get startVoyage => 'Fahrt starten';
 
   @override
@@ -203,6 +206,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deleteCharterContent => 'Alle Tage und Einträge werden gelöscht.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'Fahrt kann während aktivem Tracking nicht gelöscht werden.';
 
   @override
   String get noVoyages => 'Keine Fahrten';
@@ -912,6 +919,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Gespeichert: $pdf + $gpx';
+  }
+
+  @override
   String exportErrorMsg(String error) {
     return 'Exportfehler: $error';
   }
@@ -1396,4 +1408,64 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get guideExportBody =>
       'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Tage auswählen, die einbezogen werden sollen\n4. PDF enthält: Route, Einträge, Fotos und Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Unterschriften der Crew';
+
+  @override
+  String get briefingSignHere => 'Hier unterschreiben';
+
+  @override
+  String get briefingClear => 'Löschen';
+
+  @override
+  String get briefingSigned => 'Unterschrieben';
+
+  @override
+  String get briefingSave => 'Unterschriften speichern';
+
+  @override
+  String get briefingSavedOk => 'Unterschriften gespeichert';
+
+  @override
+  String get briefingOpenBriefing => 'Sicherheitseinweisung';
+
+  @override
+  String get briefingSkipper => 'Skipper';
+
+  @override
+  String get briefingCrew => 'Crew';
+
+  @override
+  String get briefingNoCrew =>
+      'Keine Crew definiert. Crew-Mitglieder in den Reiseeinstellungen hinzufügen.';
+
+  @override
+  String get briefingDate => 'Datum';
+
+  @override
+  String get briefingLocation => 'Ort';
+
+  @override
+  String get briefingDoneLabel => 'Sicherheitseinweisung abgeschlossen';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'Alle Unterschriften gespeichert. Keine Wiederholung erforderlich.';
+
+  @override
+  String get briefingEditSignature => 'Unterschrift ändern';
+
+  @override
+  String get briefingRequiredTitle => 'Sicherheitseinweisung erforderlich';
+
+  @override
+  String get briefingRequiredBody =>
+      'Bitte Sicherheitseinweisung abschließen und Unterschriften sammeln, bevor das erste Tracking gestartet wird.';
+
+  @override
+  String get goToBriefing => 'Zur Einweisung';
 }
