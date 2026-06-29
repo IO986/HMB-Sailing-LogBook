@@ -427,7 +427,6 @@
   "appDescription": "Professionelles Bordbuch für Segler.",
   "vesselIdTitle": "Schiffsidentifikation",
   "vesselIdHint": "Rufzeichen und MMSI werden in der Mayday-Karte automatisch ausgefüllt.",
-  "saved": "Gespeichert",
   "maritimeReference": "Nautische Referenz",
   "phonetic": "Phonetisch",
   "flagAlphabet": "Signalflaggen",
@@ -480,7 +479,7 @@
   "guideQuickStart": "Schnellstart – 5 Schritte",
   "guideQuickStartBody": "1. Logbuch öffnen → + tippen → \"Neue Reise\" wählen\n2. Bootsname und geschätzte Tagesanzahl eingeben\n3. Tracking startet automatisch – Handy in die Tasche\n4. Einträge tagsüber hinzufügen: Uhrzeit, Position, Notiz\n5. Am Reiseende: Einstellungen → PDF exportieren",
   "guideMapTitle": "Karte",
-  "guideMapBody": "Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)",
+  "guideMapBody": "Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)",
   "guideInstrTitle": "Marine-Instrumente",
   "guideInstrBody": "Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zum Wegpunkt\n\nDatenquelle: Telefon-GPS oder Raymarine (WiFi-Gateway).\nVerbindungseinstellungen: Einstellungen → Instrumente.",
   "guideLogbookTitle": "Fahrtenbuch",
@@ -492,7 +491,7 @@
   "guideSafetyBriefingTitle": "Sicherheitseinweisung & MAYDAY",
   "guideSafetyBriefingBody": "Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte",
   "guideSettingsTitle": "Einstellungen",
-  "guideSettingsBody": "• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt",
+  "guideSettingsBody": "• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Online-Konto – Logbuch mit logbook.hmba.boats synchronisieren\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt",
   "guideExportTitle": "Logbuch-Export",
   "guideExportBody": "Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Tage auswählen, die einbezogen werden sollen\n4. PDF enthält: Route, Einträge, Fotos und Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern",
 
@@ -514,5 +513,19 @@
   "briefingEditSignature": "Unterschrift ändern",
   "briefingRequiredTitle": "Sicherheitseinweisung erforderlich",
   "briefingRequiredBody": "Bitte Sicherheitseinweisung abschließen und Unterschriften sammeln, bevor das erste Tracking gestartet wird.",
-  "goToBriefing": "Zur Einweisung"
+  "goToBriefing": "Zur Einweisung",
+
+  "skipperProfile": "Skipper-Profil",
+  "skipperProfileHint": "Diese Daten erscheinen im PDF-Export der Fahrt.",
+  "skipperFullName": "Name des Skippers",
+  "skipperLicenseSection": "Skipper-Lizenz",
+  "skipperLicenseType": "Lizenztyp",
+  "skipperLicenseNumber": "Lizenznummer",
+  "skipperLicenseAuthority": "Ausstellende Behörde",
+  "skipperLicenseExpiry": "Gültig bis",
+  "skipperVhfSection": "VHF / SRC-Lizenz",
+  "skipperVhfNumber": "VHF/SRC-Nummer",
+  "skipperVhfExpiry": "VHF gültig bis",
+  "skipperOtherCerts": "Weitere Zertifikate / Lizenzen",
+  "skipperOtherCertsHint": "z.B. Yachtmaster, RYA, STCW, Rettungskurse..."
 }

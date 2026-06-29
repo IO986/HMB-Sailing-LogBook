@@ -8,6 +8,8 @@ import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:screenshot/screenshot.dart';
 import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/models/skipper_profile.dart';
+import '../../../core/providers/skipper_profile_provider.dart';
 import '../../../core/utils/distance_calculator.dart';
 import '../../../core/utils/gpx_exporter.dart';
 import '../../../main.dart';
@@ -205,6 +207,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       context, signerName: _charter!.skipperName);
     if (signatureImage == null || !mounted) return;
 
+    // Načítaj profil skippera
+    final skipperProfile =
+        await ref.read(skipperProfileProvider.future).catchError((_) => const SkipperProfile());
+
     // 2. Generovanie PDF bajtov (zobraz progress)
     BuildContext? dialogCtx;
     showDialog(
@@ -248,6 +254,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           entries: entries,
           mapScreenshot: _mapScreenshots[freshDay.id],
           signatureImage: signatureImage,
+          skipperProfile: skipperProfile,
         );
         previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
@@ -274,6 +281,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           entriesByDay: _entriesByDay,
           mapScreenshots: _mapScreenshots,
           signatureImage: signatureImage,
+          skipperProfile: skipperProfile,
         );
         previewTitle = _charter!.title;
         final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);

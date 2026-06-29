@@ -1379,7 +1379,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
@@ -1421,7 +1421,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Cuenta en línea – sincroniza el diario con logbook.hmba.boats\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
 
   @override
   String get guideExportTitle => 'Exportar diario';
@@ -1489,4 +1489,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get goToBriefing => 'Ir al briefing';
+
+  @override
+  String get skipperProfile => 'Perfil del patrón';
+
+  @override
+  String get skipperProfileHint =>
+      'Estos datos aparecen en la exportación PDF del viaje.';
+
+  @override
+  String get skipperFullName => 'Nombre del patrón';
+
+  @override
+  String get skipperLicenseSection => 'Licencia de patrón';
+
+  @override
+  String get skipperLicenseType => 'Tipo de licencia';
+
+  @override
+  String get skipperLicenseNumber => 'Número de licencia';
+
+  @override
+  String get skipperLicenseAuthority => 'Autoridad emisora';
+
+  @override
+  String get skipperLicenseExpiry => 'Válido hasta';
+
+  @override
+  String get skipperVhfSection => 'Licencia VHF / SRC';
+
+  @override
+  String get skipperVhfNumber => 'Número VHF/SRC';
+
+  @override
+  String get skipperVhfExpiry => 'VHF válido hasta';
+
+  @override
+  String get skipperOtherCerts => 'Otros certificados / licencias';
+
+  @override
+  String get skipperOtherCertsHint =>
+      'p.ej. Yachtmaster, RYA, STCW, cursos de rescate...';
 }

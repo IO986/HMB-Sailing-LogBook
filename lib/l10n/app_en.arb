@@ -427,7 +427,6 @@
   "appDescription": "Professional sailor's logbook.",
   "vesselIdTitle": "Vessel identification",
   "vesselIdHint": "Call sign and MMSI are auto-filled in the Mayday Card.",
-  "saved": "Saved",
   "maritimeReference": "Maritime Reference",
   "phonetic": "Phonetic",
   "flagAlphabet": "Signal Flags",
@@ -480,7 +479,7 @@
   "guideQuickStart": "Quick Start – 5 Steps",
   "guideQuickStartBody": "1. Open Logbook → tap + → select \"New voyage\"\n2. Enter boat name and estimated number of days\n3. Tracking starts automatically – put the phone in your pocket\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF",
   "guideMapTitle": "Map",
-  "guideMapBody": "The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Anchor icon = anchoring position (only when anchor alarm is active)",
+  "guideMapBody": "The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)",
   "guideInstrTitle": "Marine Instruments",
   "guideInstrBody": "The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (WiFi gateway).\nConnection settings are in Settings → Instruments.",
   "guideLogbookTitle": "Voyage Logbook",
@@ -492,7 +491,7 @@
   "guideSafetyBriefingTitle": "Safety Briefing & MAYDAY",
   "guideSafetyBriefingBody": "The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts",
   "guideSettingsTitle": "Settings",
-  "guideSettingsBody": "• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Export – PDF or CSV\n• About – version and contact",
+  "guideSettingsBody": "• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Online account – sync your logbook to logbook.hmba.boats\n• Export – PDF or CSV\n• About – version and contact",
   "guideExportTitle": "Logbook Export",
   "guideExportBody": "The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Choose which days to include\n4. PDF includes: track, log entries, photos and signatures\n5. Share via email, print or save to phone",
 
@@ -514,5 +513,19 @@
   "briefingEditSignature": "Change signature",
   "briefingRequiredTitle": "Safety Briefing required",
   "briefingRequiredBody": "Complete the Safety Briefing and collect crew signatures before starting the first tracking session.",
-  "goToBriefing": "Go to Briefing"
+  "goToBriefing": "Go to Briefing",
+
+  "skipperProfile": "Skipper Profile",
+  "skipperProfileHint": "These details appear in the PDF voyage export.",
+  "skipperFullName": "Skipper Name",
+  "skipperLicenseSection": "Skipper License",
+  "skipperLicenseType": "License Type",
+  "skipperLicenseNumber": "License Number",
+  "skipperLicenseAuthority": "Issuing Authority",
+  "skipperLicenseExpiry": "Valid Until",
+  "skipperVhfSection": "VHF / SRC License",
+  "skipperVhfNumber": "VHF/SRC Number",
+  "skipperVhfExpiry": "VHF Valid Until",
+  "skipperOtherCerts": "Other Certificates / Licenses",
+  "skipperOtherCertsHint": "e.g. Yachtmaster, RYA, STCW, rescue courses..."
 }

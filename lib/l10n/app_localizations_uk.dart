@@ -1378,7 +1378,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Вкладка Карта показує твоє поточне місцезнаходження та маршрут рейсу.\n\n• Синя точка = поточна позиція\n• Червона лінія = пройдений маршрут\n• Перемикання між супутниковим і карт-видом\n• Значок якоря = місце стоянки (лише при активній якірній сигналізації)';
+      'Вкладка Карта показує твоє поточне місцезнаходження та маршрут рейсу.\n\n• Синя точка = поточна позиція\n• Червона лінія = пройдений маршрут\n• Перемикання між супутниковим і карт-видом\n• Морські знаки – перемикач навігаційних знаків (затонулі судна, мілини, буї)\n• Значок якоря = місце стоянки (лише при активній якірній сигналізації)';
 
   @override
   String get guideInstrTitle => 'Морські прилади';
@@ -1420,7 +1420,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Мова – змінити мову додатку\n• Прилади – налаштувати IP-адресу WiFi-шлюзу Raymarine\n• Джерело GPS – телефон або Raymarine\n• Одиниці – вузли/км/год, метри/фути\n• Частота записів у журнал\n• Експорт – PDF або CSV\n• Про додаток – версія та контакт';
+      '• Мова – змінити мову додатку\n• Прилади – налаштувати IP-адресу WiFi-шлюзу Raymarine\n• Джерело GPS – телефон або Raymarine\n• Одиниці – вузли/км/год, метри/фути\n• Частота записів у журнал\n• Онлайн-акаунт – синхронізуй журнал з logbook.hmba.boats\n• Експорт – PDF або CSV\n• Про додаток – версія та контакт';
 
   @override
   String get guideExportTitle => 'Експорт журналу';
@@ -1488,4 +1488,45 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get goToBriefing => 'До інструктажу';
+
+  @override
+  String get skipperProfile => 'Профіль шкіпера';
+
+  @override
+  String get skipperProfileHint =>
+      'Ці дані з\'являться в PDF-експорті плавання.';
+
+  @override
+  String get skipperFullName => 'Ім\'я шкіпера';
+
+  @override
+  String get skipperLicenseSection => 'Ліцензія шкіпера';
+
+  @override
+  String get skipperLicenseType => 'Тип ліцензії';
+
+  @override
+  String get skipperLicenseNumber => 'Номер ліцензії';
+
+  @override
+  String get skipperLicenseAuthority => 'Видавець';
+
+  @override
+  String get skipperLicenseExpiry => 'Дійсна до';
+
+  @override
+  String get skipperVhfSection => 'Ліцензія VHF / SRC';
+
+  @override
+  String get skipperVhfNumber => 'Номер VHF/SRC';
+
+  @override
+  String get skipperVhfExpiry => 'VHF дійсна до';
+
+  @override
+  String get skipperOtherCerts => 'Інші сертифікати / ліцензії';
+
+  @override
+  String get skipperOtherCertsHint =>
+      'напр. Yachtmaster, RYA, STCW, рятувальні курси...';
 }

@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/marine_instrument_data.dart';
+import '../../../../core/models/skipper_profile.dart';
 import '../../../../core/providers/account_provider.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/units_service.dart';
@@ -90,6 +92,10 @@ class SettingsScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showLanguageDialog(context, ref),
             )),
+            const SizedBox(height: 16),
+
+            _Section(l.skipperProfile),
+            const _SkipperCardSection(),
             const SizedBox(height: 16),
 
             _Section(l.vesselIdTitle),
@@ -284,6 +290,179 @@ class _VesselIdSectionState extends State<_VesselIdSection> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ── Skipper Card Section ──────────────────────────────────────
+
+class _SkipperCardSection extends ConsumerStatefulWidget {
+  const _SkipperCardSection();
+  @override
+  ConsumerState<_SkipperCardSection> createState() => _SkipperCardSectionState();
+}
+
+class _SkipperCardSectionState extends ConsumerState<_SkipperCardSection> {
+  final _nameCtrl = TextEditingController();
+  final _licTypeCtrl = TextEditingController();
+  final _licNumCtrl = TextEditingController();
+  final _licAuthCtrl = TextEditingController();
+  final _licExpiryCtrl = TextEditingController();
+  final _vhfNumCtrl = TextEditingController();
+  final _vhfExpiryCtrl = TextEditingController();
+  final _otherCtrl = TextEditingController();
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final profile = await ref.read(skipperProfileProvider.future);
+    if (!mounted) return;
+    setState(() {
+      _nameCtrl.text = profile.fullName;
+      _licTypeCtrl.text = profile.licenseType;
+      _licNumCtrl.text = profile.licenseNumber;
+      _licAuthCtrl.text = profile.licenseAuthority;
+      _licExpiryCtrl.text = profile.licenseExpiry;
+      _vhfNumCtrl.text = profile.vhfNumber;
+      _vhfExpiryCtrl.text = profile.vhfExpiry;
+      _otherCtrl.text = profile.otherCerts;
+      _loaded = true;
+    });
+  }
+
+  Future<void> _save() async {
+    await ref.read(skipperProfileProvider.notifier).save(SkipperProfile(
+      fullName: _nameCtrl.text.trim(),
+      licenseType: _licTypeCtrl.text.trim(),
+      licenseNumber: _licNumCtrl.text.trim(),
+      licenseAuthority: _licAuthCtrl.text.trim(),
+      licenseExpiry: _licExpiryCtrl.text.trim(),
+      vhfNumber: _vhfNumCtrl.text.trim(),
+      vhfExpiry: _vhfExpiryCtrl.text.trim(),
+      otherCerts: _otherCtrl.text.trim(),
+    ));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).saved)));
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _licTypeCtrl.dispose();
+    _licNumCtrl.dispose();
+    _licAuthCtrl.dispose();
+    _licExpiryCtrl.dispose();
+    _vhfNumCtrl.dispose();
+    _vhfExpiryCtrl.dispose();
+    _otherCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    if (!_loaded) {
+      return const Card(
+          child: Padding(
+              padding: EdgeInsets.all(16),
+              child: LinearProgressIndicator()));
+    }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(l.skipperProfileHint,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+          const SizedBox(height: 12),
+
+          TextField(
+            controller: _nameCtrl,
+            decoration: InputDecoration(
+                labelText: l.skipperFullName, isDense: true),
+          ),
+          const SizedBox(height: 10),
+
+          Text(l.skipperLicenseSection,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+          const SizedBox(height: 8),
+          Row(children: [
+            Expanded(child: TextField(
+              controller: _licTypeCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperLicenseType,
+                  hintText: 'ICC / Yacht Master / Kapitán A',
+                  isDense: true),
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: TextField(
+              controller: _licNumCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperLicenseNumber, isDense: true),
+            )),
+          ]),
+          const SizedBox(height: 8),
+          Row(children: [
+            Expanded(child: TextField(
+              controller: _licAuthCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperLicenseAuthority, isDense: true),
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: TextField(
+              controller: _licExpiryCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperLicenseExpiry,
+                  hintText: 'MM/YYYY',
+                  isDense: true),
+            )),
+          ]),
+          const SizedBox(height: 10),
+
+          Text(l.skipperVhfSection,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+          const SizedBox(height: 8),
+          Row(children: [
+            Expanded(child: TextField(
+              controller: _vhfNumCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperVhfNumber, isDense: true),
+            )),
+            const SizedBox(width: 10),
+            Expanded(child: TextField(
+              controller: _vhfExpiryCtrl,
+              decoration: InputDecoration(
+                  labelText: l.skipperVhfExpiry,
+                  hintText: 'MM/YYYY',
+                  isDense: true),
+            )),
+          ]),
+          const SizedBox(height: 10),
+
+          TextField(
+            controller: _otherCtrl,
+            maxLines: 3,
+            decoration: InputDecoration(
+              labelText: l.skipperOtherCerts,
+              hintText: l.skipperOtherCertsHint,
+              isDense: true,
+              alignLabelWithHint: true,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton(onPressed: _save, child: Text(l.save)),
+          ),
+        ]),
       ),
     );
   }

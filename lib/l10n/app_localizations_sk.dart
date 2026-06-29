@@ -57,7 +57,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get close => 'Zavrieť';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Skúsiť znova';
 
   @override
   String get share => 'Zdieľať';
@@ -1374,7 +1374,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)';
+      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)';
 
   @override
   String get guideInstrTitle => 'Námorné prístroje';
@@ -1416,7 +1416,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvenciu zápisov do denníka\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt';
+      '• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Online účet – synchronizuj denník na logbook.hmba.boats\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt';
 
   @override
   String get guideExportTitle => 'Export denníka';
@@ -1484,4 +1484,45 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get goToBriefing => 'Prejsť na Briefing';
+
+  @override
+  String get skipperProfile => 'Profil skippera';
+
+  @override
+  String get skipperProfileHint =>
+      'Tieto údaje sa zobrazia v PDF exporte plavby.';
+
+  @override
+  String get skipperFullName => 'Meno skippera';
+
+  @override
+  String get skipperLicenseSection => 'Skipperská licencia';
+
+  @override
+  String get skipperLicenseType => 'Typ licencie';
+
+  @override
+  String get skipperLicenseNumber => 'Číslo licencie';
+
+  @override
+  String get skipperLicenseAuthority => 'Vydavateľ';
+
+  @override
+  String get skipperLicenseExpiry => 'Platnosť do';
+
+  @override
+  String get skipperVhfSection => 'VHF / SRC licencia';
+
+  @override
+  String get skipperVhfNumber => 'Číslo VHF/SRC';
+
+  @override
+  String get skipperVhfExpiry => 'Platnosť VHF';
+
+  @override
+  String get skipperOtherCerts => 'Ostatné certifikáty / licencie';
+
+  @override
+  String get skipperOtherCertsHint =>
+      'napr. Yachtmaster, RYA, STCW, záchranárske kurzy...';
 }

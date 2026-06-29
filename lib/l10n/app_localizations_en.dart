@@ -1375,7 +1375,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Anchor icon = anchoring position (only when anchor alarm is active)';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -1417,7 +1417,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Export – PDF or CSV\n• About – version and contact';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Online account – sync your logbook to logbook.hmba.boats\n• Export – PDF or CSV\n• About – version and contact';
 
   @override
   String get guideExportTitle => 'Logbook Export';
@@ -1485,4 +1485,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goToBriefing => 'Go to Briefing';
+
+  @override
+  String get skipperProfile => 'Skipper Profile';
+
+  @override
+  String get skipperProfileHint =>
+      'These details appear in the PDF voyage export.';
+
+  @override
+  String get skipperFullName => 'Skipper Name';
+
+  @override
+  String get skipperLicenseSection => 'Skipper License';
+
+  @override
+  String get skipperLicenseType => 'License Type';
+
+  @override
+  String get skipperLicenseNumber => 'License Number';
+
+  @override
+  String get skipperLicenseAuthority => 'Issuing Authority';
+
+  @override
+  String get skipperLicenseExpiry => 'Valid Until';
+
+  @override
+  String get skipperVhfSection => 'VHF / SRC License';
+
+  @override
+  String get skipperVhfNumber => 'VHF/SRC Number';
+
+  @override
+  String get skipperVhfExpiry => 'VHF Valid Until';
+
+  @override
+  String get skipperOtherCerts => 'Other Certificates / Licenses';
+
+  @override
+  String get skipperOtherCertsHint =>
+      'e.g. Yachtmaster, RYA, STCW, rescue courses...';
 }

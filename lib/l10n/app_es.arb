@@ -427,7 +427,6 @@
   "appDescription": "Diario de navegación profesional para navegantes.",
   "vesselIdTitle": "Identificación del buque",
   "vesselIdHint": "La indicación de llamada y el MMSI se rellenan automáticamente en la Tarjeta Mayday.",
-  "saved": "Guardado",
   "maritimeReference": "Referencia marítima",
   "phonetic": "Fonético",
   "flagAlphabet": "Banderas de señales",
@@ -480,7 +479,7 @@
   "guideQuickStart": "Inicio rápido – 5 pasos",
   "guideQuickStartBody": "1. Abrir Diario → pulsar + → seleccionar \"Nueva travesía\"\n2. Introducir nombre del barco y días estimados\n3. El rastreo se inicia automáticamente – guarda el teléfono en el bolsillo\n4. Añadir entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF",
   "guideMapTitle": "Mapa",
-  "guideMapBody": "La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)",
+  "guideMapBody": "La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)",
   "guideInstrTitle": "Instrumentos marinos",
   "guideInstrBody": "La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia el waypoint\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi).\nConfiguración de conexión en Ajustes → Instrumentos.",
   "guideLogbookTitle": "Diario de navegación",
@@ -492,7 +491,7 @@
   "guideSafetyBriefingTitle": "Briefing de seguridad y MAYDAY",
   "guideSafetyBriefingBody": "La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia",
   "guideSettingsTitle": "Ajustes",
-  "guideSettingsBody": "• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto",
+  "guideSettingsBody": "• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Cuenta en línea – sincroniza el diario con logbook.hmba.boats\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto",
   "guideExportTitle": "Exportar diario",
   "guideExportBody": "El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Elegir los días a incluir\n4. El PDF incluye: ruta, entradas, fotos y firmas\n5. Compartir por email, imprimir o guardar en el teléfono",
 
@@ -514,5 +513,19 @@
   "briefingEditSignature": "Cambiar firma",
   "briefingRequiredTitle": "Se requiere instrucción de seguridad",
   "briefingRequiredBody": "Completa la instrucción de seguridad y recoge las firmas antes de iniciar el primer rastreo.",
-  "goToBriefing": "Ir al briefing"
+  "goToBriefing": "Ir al briefing",
+
+  "skipperProfile": "Perfil del patrón",
+  "skipperProfileHint": "Estos datos aparecen en la exportación PDF del viaje.",
+  "skipperFullName": "Nombre del patrón",
+  "skipperLicenseSection": "Licencia de patrón",
+  "skipperLicenseType": "Tipo de licencia",
+  "skipperLicenseNumber": "Número de licencia",
+  "skipperLicenseAuthority": "Autoridad emisora",
+  "skipperLicenseExpiry": "Válido hasta",
+  "skipperVhfSection": "Licencia VHF / SRC",
+  "skipperVhfNumber": "Número VHF/SRC",
+  "skipperVhfExpiry": "VHF válido hasta",
+  "skipperOtherCerts": "Otros certificados / licencias",
+  "skipperOtherCertsHint": "p.ej. Yachtmaster, RYA, STCW, cursos de rescate..."
 }

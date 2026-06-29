@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
+import '../../../core/models/skipper_profile.dart';
 
 class PdfExportService {
   static final _navy  = PdfColor.fromHex('#0A2342');
@@ -55,13 +56,14 @@ class PdfExportService {
     required Map<int, List<LogbookEntry>> entriesByDay,
     required Map<int, Uint8List?> mapScreenshots,
     Uint8List? signatureImage,
+    SkipperProfile? skipperProfile,
   }) async {
     final pdf = pw.Document(
       title: _ascii(charter.title),
       author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
-    pdf.addPage(_titlePage(charter, days, entriesByDay));
+    pdf.addPage(_titlePage(charter, days, entriesByDay, skipperProfile));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
@@ -90,6 +92,7 @@ class PdfExportService {
     required List<LogbookEntry> entries,
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
+    SkipperProfile? skipperProfile,
   }) async {
     final pdf = pw.Document();
     final photos = await _loadPhotos(entries);
@@ -124,10 +127,12 @@ class PdfExportService {
     required Map<int, List<LogbookEntry>> entriesByDay,
     required Map<int, Uint8List?> mapScreenshots,
     Uint8List? signatureImage,
+    SkipperProfile? skipperProfile,
   }) async {
     final bytes = await buildCharterPdfBytes(
       charter: charter, days: days, entriesByDay: entriesByDay,
-      mapScreenshots: mapScreenshots, signatureImage: signatureImage);
+      mapScreenshots: mapScreenshots, signatureImage: signatureImage,
+      skipperProfile: skipperProfile);
     return saveBytesToFile(bytes, 'charter_${charter.id}');
   }
 
@@ -137,10 +142,12 @@ class PdfExportService {
     required List<LogbookEntry> entries,
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
+    SkipperProfile? skipperProfile,
   }) async {
     final bytes = await buildDayPdfBytes(
       charter: charter, day: day, entries: entries,
-      mapScreenshot: mapScreenshot, signatureImage: signatureImage);
+      mapScreenshot: mapScreenshot, signatureImage: signatureImage,
+      skipperProfile: skipperProfile);
     return saveBytesToFile(bytes, 'day_${day.id}');
   }
 
@@ -194,7 +201,7 @@ class PdfExportService {
   // ── Title Page ────────────────────────────────────────────────
 
   static pw.Page _titlePage(Charter charter, List<DayLog> days,
-      Map<int, List<LogbookEntry>> entriesByDay) {
+      Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper) {
     final fmt = DateFormat('d. MMM yyyy');
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
@@ -241,7 +248,52 @@ class PdfExportService {
             if (charter.notes != null) _ascii(charter.notes!),
           ])),
         ]),
-        pw.SizedBox(height: 14),
+        pw.SizedBox(height: 10),
+
+        // ── Skipper credentials (only if provided) ──
+        if (skipper != null && !skipper.isEmpty) ...[
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            decoration: pw.BoxDecoration(
+              color: _lblue,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+            ),
+            child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+              pw.Text('SKIPPER – LICENCIE', style: pw.TextStyle(
+                  color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
+              pw.SizedBox(height: 4),
+              pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+                if (skipper.fullName.isNotEmpty) ...[
+                  pw.Expanded(child: _wRow('Meno', _ascii(skipper.fullName))),
+                ],
+                if (skipper.licenseType.isNotEmpty || skipper.licenseNumber.isNotEmpty) ...[
+                  pw.Expanded(child: _wRow(
+                    'Licencia',
+                    _ascii('${skipper.licenseType} ${skipper.licenseNumber}'.trim()),
+                  )),
+                ],
+                if (skipper.licenseAuthority.isNotEmpty || skipper.licenseExpiry.isNotEmpty) ...[
+                  pw.Expanded(child: _wRow(
+                    'Vydal / Plat.',
+                    _ascii('${skipper.licenseAuthority}  ${skipper.licenseExpiry}'.trim()),
+                  )),
+                ],
+                if (skipper.vhfNumber.isNotEmpty || skipper.vhfExpiry.isNotEmpty) ...[
+                  pw.Expanded(child: _wRow(
+                    'VHF/SRC',
+                    _ascii('${skipper.vhfNumber}  ${skipper.vhfExpiry}'.trim()),
+                  )),
+                ],
+              ]),
+              if (skipper.otherCerts.isNotEmpty) ...[
+                pw.SizedBox(height: 3),
+                _wRow('Ine cert.', _ascii(skipper.otherCerts)),
+              ],
+            ]),
+          ),
+          pw.SizedBox(height: 10),
+        ],
 
         pw.Text('PREHLAD DNI', style: pw.TextStyle(color: _navy,
             fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),

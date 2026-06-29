@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// No description provided for @retry.
   ///
   /// In sk, this message translates to:
-  /// **'Retry'**
+  /// **'Skúsiť znova'**
   String get retry;
 
   /// No description provided for @share.
@@ -2711,7 +2711,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -2783,7 +2783,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvenciu zápisov do denníka\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Online účet – synchronizuj denník na logbook.hmba.boats\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
   String get guideSettingsBody;
 
   /// No description provided for @guideExportTitle.
@@ -2911,6 +2911,84 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Prejsť na Briefing'**
   String get goToBriefing;
+
+  /// No description provided for @skipperProfile.
+  ///
+  /// In sk, this message translates to:
+  /// **'Profil skippera'**
+  String get skipperProfile;
+
+  /// No description provided for @skipperProfileHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tieto údaje sa zobrazia v PDF exporte plavby.'**
+  String get skipperProfileHint;
+
+  /// No description provided for @skipperFullName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno skippera'**
+  String get skipperFullName;
+
+  /// No description provided for @skipperLicenseSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skipperská licencia'**
+  String get skipperLicenseSection;
+
+  /// No description provided for @skipperLicenseType.
+  ///
+  /// In sk, this message translates to:
+  /// **'Typ licencie'**
+  String get skipperLicenseType;
+
+  /// No description provided for @skipperLicenseNumber.
+  ///
+  /// In sk, this message translates to:
+  /// **'Číslo licencie'**
+  String get skipperLicenseNumber;
+
+  /// No description provided for @skipperLicenseAuthority.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vydavateľ'**
+  String get skipperLicenseAuthority;
+
+  /// No description provided for @skipperLicenseExpiry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Platnosť do'**
+  String get skipperLicenseExpiry;
+
+  /// No description provided for @skipperVhfSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'VHF / SRC licencia'**
+  String get skipperVhfSection;
+
+  /// No description provided for @skipperVhfNumber.
+  ///
+  /// In sk, this message translates to:
+  /// **'Číslo VHF/SRC'**
+  String get skipperVhfNumber;
+
+  /// No description provided for @skipperVhfExpiry.
+  ///
+  /// In sk, this message translates to:
+  /// **'Platnosť VHF'**
+  String get skipperVhfExpiry;
+
+  /// No description provided for @skipperOtherCerts.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ostatné certifikáty / licencie'**
+  String get skipperOtherCerts;
+
+  /// No description provided for @skipperOtherCertsHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. Yachtmaster, RYA, STCW, záchranárske kurzy...'**
+  String get skipperOtherCertsHint;
 }
 
 class _AppLocalizationsDelegate
