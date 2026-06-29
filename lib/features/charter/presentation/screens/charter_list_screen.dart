@@ -37,11 +37,6 @@ class _CharterListScreenState extends ConsumerState<CharterListScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('HMB Sailing Log')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/logbook/new'),
-        icon: const Icon(Icons.add),
-        label: Text(l.newMultidayVoyage),
-      ),
       body: Column(
         children: [
           if (isTracking)

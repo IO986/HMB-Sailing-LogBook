@@ -219,7 +219,8 @@ class NmeaParserService {
       speedKnots: speedKnots,
       courseDegrees: course,
       timestampUtc: ts,
-      valid: status == 'A' && lat != null && lon != null,
+      // 'A' = active fix; 'V' = void (simulátory často posielajú V aj keď majú platnú pozíciu)
+      valid: lat != null && lon != null,
     );
   }
 

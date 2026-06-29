@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:drift/drift.dart' show Value;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
@@ -19,16 +18,10 @@ class TrackingStartSheet extends ConsumerStatefulWidget {
 }
 
 class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
-  String _mode = 'multiday';
+  // 'existing' | 'new'
+  String _mode = 'existing';
   Charter? _selectedCharter;
-  bool _creatingNew = false;
   int _logInterval = 60;
-
-  final _newNameCtrl = TextEditingController(
-      text: 'Plavba ${DateFormat('MMMM yyyy', 'sk').format(DateTime.now())}');
-  int _newDays = 7;
-
-  final _standaloneNameCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,51 +40,113 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
                 borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 16),
 
-          Text(l.newVoyage, style: Theme.of(context).textTheme.titleLarge
+          Text(l.startVoyage, style: Theme.of(context).textTheme.titleLarge
               ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
 
           SegmentedButton<String>(
             segments: [
-              ButtonSegment(value: 'multiday', icon: const Icon(Icons.directions_boat),
-                  label: Text(l.multiday)),
-              ButtonSegment(value: 'standalone', icon: const Icon(Icons.gps_fixed),
-                  label: Text(l.standalone)),
+              ButtonSegment(
+                value: 'existing',
+                icon: const Icon(Icons.directions_boat),
+                label: Text(l.existingVoyage),
+              ),
+              ButtonSegment(
+                value: 'new',
+                icon: const Icon(Icons.add),
+                label: Text(l.newVoyageForm),
+              ),
             ],
             selected: {_mode},
             onSelectionChanged: (s) => setState(() {
               _mode = s.first;
               _selectedCharter = null;
-              _creatingNew = false;
             }),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          if (_mode == 'multiday') _buildMultidaySection(l),
+          if (_mode == 'existing') _buildExistingSection(l),
+          if (_mode == 'new') _buildNewSection(context, l),
 
-          if (_mode == 'standalone') ...[
-            TextField(
-              controller: _standaloneNameCtrl,
-              decoration: InputDecoration(
-                labelText: l.voyageNameOptional,
-                hintText: l.voyageNameHint,
-                prefixIcon: const Icon(Icons.label),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildExistingSection(AppLocalizations l) {
+    final chartersAsync = ref.watch(chartersProvider);
+    return chartersAsync.when(
+      data: (charters) {
+        // Only show charters with SB done for 2nd+ day
+        final eligible = charters.where((c) => c.safetyBriefingDone).toList();
+        if (eligible.isEmpty) {
+          return Column(children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.orange.shade200),
+              ),
+              child: Row(children: [
+                Icon(Icons.info_outline, color: Colors.orange.shade700),
+                const SizedBox(width: 12),
+                Expanded(child: Text(
+                  l.firstVoyageHint,
+                  style: TextStyle(color: Colors.orange.shade800, fontSize: 13),
+                )),
+              ]),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                  context.go('/logbook/new');
+                },
+                icon: const Icon(Icons.add),
+                label: Text(l.newVoyageForm),
               ),
             ),
+            const SizedBox(height: 8),
+          ]);
+        }
+
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          DropdownButtonFormField<Charter>(
+            decoration: InputDecoration(
+              labelText: l.selectExistingVoyage,
+              prefixIcon: const Icon(Icons.directions_boat),
+            ),
+            value: _selectedCharter,
+            items: eligible.map((c) => DropdownMenuItem(
+              value: c,
+              child: Text(
+                '${c.title}  '
+                '(${DateFormat('d.M.', 'sk').format(c.dateFrom)}–'
+                '${DateFormat('d.M.yy', 'sk').format(c.dateTo)})',
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 14),
+              ),
+            )).toList(),
+            onChanged: (c) => setState(() => _selectedCharter = c),
+          ),
+          if (_selectedCharter != null) ...[
+            const SizedBox(height: 12),
+            TrackingActiveDayInfo(charter: _selectedCharter!),
           ],
-
           const SizedBox(height: 16),
-
           TrackingIntervalSelector(
             value: _logInterval,
             onChanged: (v) => setState(() => _logInterval = v),
           ),
           const SizedBox(height: 20),
-
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _canStart() ? () => _start(context) : null,
+              onPressed: _selectedCharter != null ? () => _startExisting(context) : null,
               icon: const Icon(Icons.play_arrow),
               label: Text(l.startTracking),
               style: ElevatedButton.styleFrom(
@@ -99,84 +154,6 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
             ),
           ),
           const SizedBox(height: 8),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildMultidaySection(AppLocalizations l) {
-    final chartersAsync = ref.watch(chartersProvider);
-
-    return chartersAsync.when(
-      data: (charters) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (charters.isNotEmpty && !_creatingNew) ...[
-            DropdownButtonFormField<Charter?>(
-              decoration: InputDecoration(
-                labelText: l.existingVoyage,
-                prefixIcon: const Icon(Icons.directions_boat),
-              ),
-              value: _selectedCharter,
-              items: [
-                DropdownMenuItem<Charter?>(
-                  value: null,
-                  child: Text(l.newVoyageDropdown,
-                      style: const TextStyle(fontStyle: FontStyle.italic)),
-                ),
-                ...charters.map((c) => DropdownMenuItem(
-                  value: c,
-                  child: Text(
-                    '${c.title}  '
-                    '(${DateFormat('d.M.', 'sk').format(c.dateFrom)}–'
-                    '${DateFormat('d.M.yy', 'sk').format(c.dateTo)})',
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                )),
-              ],
-              onChanged: (c) => setState(() {
-                _selectedCharter = c;
-                _creatingNew = c == null && charters.isNotEmpty;
-              }),
-            ),
-            const SizedBox(height: 12),
-          ],
-
-          if (_selectedCharter == null) ...[
-            if (charters.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(l.firstVoyageHint,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
-              ),
-            TextField(
-              controller: _newNameCtrl,
-              decoration: InputDecoration(
-                labelText: l.voyageName,
-                prefixIcon: const Icon(Icons.sailing),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(children: [
-              const Icon(Icons.calendar_month, size: 20, color: Colors.grey),
-              const SizedBox(width: 8),
-              Text(l.estimatedDays,
-                  style: TextStyle(color: Colors.grey.shade700)),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: _newDays > 2 ? () => setState(() => _newDays--) : null,
-              ),
-              Text('$_newDays', style: const TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.bold)),
-              IconButton(
-                icon: const Icon(Icons.add_circle_outline),
-                onPressed: () => setState(() => _newDays++),
-              ),
-            ]),
-          ],
-
-          if (_selectedCharter != null) TrackingActiveDayInfo(charter: _selectedCharter!),
         ]);
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -184,88 +161,66 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
     );
   }
 
-  bool _canStart() => true;
-
-  Future<void> _start(BuildContext context) async {
-    final db = ref.read(databaseProvider);
-    final l = AppLocalizations.of(context);
-
-    final router = GoRouter.of(context);
-
-    // Check safety briefing requirement for multiday charters
-    if (_mode == 'multiday') {
-      final charter = _selectedCharter;
-      if (charter != null && !charter.safetyBriefingDone) {
-        if (!context.mounted) return;
-        final go = await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(l.briefingRequiredTitle),
-            content: Text(l.briefingRequiredBody),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
-                  child: Text(l.cancel)),
-              ElevatedButton(
-                  onPressed: () => Navigator.pop(ctx, true),
-                  child: Text(l.goToBriefing)),
-            ],
+  Widget _buildNewSection(BuildContext context, AppLocalizations l) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.blue.shade200),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(Icons.checklist_rtl, color: Colors.blue.shade700),
+            const SizedBox(width: 10),
+            Expanded(child: Text(
+              l.fillFormAndBriefing,
+              style: TextStyle(
+                color: Colors.blue.shade800,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            )),
+          ]),
+          const SizedBox(height: 8),
+          Text(
+            '• ${l.basicInfo}\n'
+            '• ${l.vessel} — MMSI, ${l.callsign}, ${l.vesselLengthM}\n'
+            '• ${l.crew}\n'
+            '• Safety Briefing + podpisy',
+            style: TextStyle(color: Colors.blue.shade700, fontSize: 12, height: 1.6),
           ),
-        ) ?? false;
-        if (!context.mounted) return;
-        Navigator.pop(context);
-        if (go) router.go('/logbook/${charter.id}/briefing');
-        return;
-      }
-    }
+        ]),
+      ),
+      const SizedBox(height: 20),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            Navigator.pop(context);
+            context.go('/logbook/new');
+          },
+          icon: const Icon(Icons.arrow_forward),
+          label: Text(l.newVoyageForm),
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14)),
+        ),
+      ),
+      const SizedBox(height: 8),
+    ]);
+  }
+
+  Future<void> _startExisting(BuildContext context) async {
+    final charter = _selectedCharter!;
+    final db = ref.read(databaseProvider);
 
     Navigator.pop(context);
 
-    if (_mode == 'standalone') {
-      final today = DateTime.now();
-      final name = _standaloneNameCtrl.text.trim().isEmpty
-          ? 'Plavba ${DateFormat('d.M.yyyy', 'sk').format(today)}'
-          : _standaloneNameCtrl.text.trim();
-      final charter = await db.insertCharter(ChartersCompanion.insert(
-        title: name,
-        dateFrom: today,
-        dateTo: today,
-        createdAt: today,
-      ));
-      final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-        charterId: charter.id,
-        date: today,
-      ));
-      ref.invalidate(chartersProvider);
-      await ref.read(trackingNotifierProvider.notifier).startTracking(
-          name, dayLogId: dayLog.id, logIntervalSeconds: _logInterval);
-      return;
-    }
-
-    Charter charter;
-
-    if (_selectedCharter != null) {
-      charter = _selectedCharter!;
-    } else {
-      final today = DateTime.now();
-      charter = await db.insertCharter(ChartersCompanion.insert(
-        title: _newNameCtrl.text.trim().isEmpty
-            ? 'Plavba ${DateFormat('MMMM yyyy', 'sk').format(today)}'
-            : _newNameCtrl.text.trim(),
-        dateFrom: today,
-        dateTo: today.add(Duration(days: _newDays - 1)),
-        createdAt: today,
-      ));
-      ref.invalidate(chartersProvider);
-      // New multiday charter always requires safety briefing before first day
-      router.go('/logbook/${charter.id}/briefing');
-      return;
-    }
-
     final today = DateTime.now();
     final days = await db.getDayLogs(charter.id);
-    DayLog dayLog;
 
+    DayLog dayLog;
     final todayLog = days.where((d) =>
         d.date.year == today.year &&
         d.date.month == today.month &&
@@ -287,13 +242,6 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
       dayLogId: dayLog.id,
       logIntervalSeconds: _logInterval,
     );
-  }
-
-  @override
-  void dispose() {
-    _newNameCtrl.dispose();
-    _standaloneNameCtrl.dispose();
-    super.dispose();
   }
 }
 
@@ -323,7 +271,6 @@ class TrackingActiveDayInfo extends ConsumerWidget {
             d.date.day == today.day);
 
         return Container(
-          margin: const EdgeInsets.only(top: 8),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.green.shade50,

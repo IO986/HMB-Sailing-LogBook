@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -310,11 +311,15 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     }
 
     if (!mounted) return;
+    final prefs = await SharedPreferences.getInstance();
+    final logInterval = prefs.getInt('pending_log_interval') ?? 60;
+    await prefs.remove('pending_log_interval');
+
     final dayFmt = DateFormat('EEE d.M.', 'sk');
     await ref.read(trackingNotifierProvider.notifier).startTracking(
       '${dayFmt.format(today)}: ${dayLog.portFrom ?? charter.title}',
       dayLogId: dayLog.id,
-      logIntervalSeconds: 60,
+      logIntervalSeconds: logInterval,
     );
 
     if (context.mounted) context.go('/map');

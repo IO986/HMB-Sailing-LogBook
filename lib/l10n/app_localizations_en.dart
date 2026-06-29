@@ -1057,6 +1057,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homePort => 'Home port';
 
   @override
+  String get mmsi => 'MMSI';
+
+  @override
+  String get callsign => 'Call sign';
+
+  @override
+  String get vesselLengthM => 'Length (m)';
+
+  @override
+  String get vesselBeamM => 'Beam (m)';
+
+  @override
+  String get vesselDraftM => 'Draft (m)';
+
+  @override
+  String get selectExistingVoyage => 'Select existing voyage';
+
+  @override
+  String get newVoyageForm => 'New voyage';
+
+  @override
+  String get fillFormAndBriefing => 'Fill form & sign safety briefing';
+
+  @override
   String get notesLabel => 'Notes';
 
   @override

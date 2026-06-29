@@ -2096,6 +2096,54 @@ abstract class AppLocalizations {
   /// **'Domovský prístav'**
   String get homePort;
 
+  /// No description provided for @mmsi.
+  ///
+  /// In sk, this message translates to:
+  /// **'MMSI'**
+  String get mmsi;
+
+  /// No description provided for @callsign.
+  ///
+  /// In sk, this message translates to:
+  /// **'Volací znak'**
+  String get callsign;
+
+  /// No description provided for @vesselLengthM.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dĺžka (m)'**
+  String get vesselLengthM;
+
+  /// No description provided for @vesselBeamM.
+  ///
+  /// In sk, this message translates to:
+  /// **'Šírka (m)'**
+  String get vesselBeamM;
+
+  /// No description provided for @vesselDraftM.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ponor (m)'**
+  String get vesselDraftM;
+
+  /// No description provided for @selectExistingVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať existujúcu plavbu'**
+  String get selectExistingVoyage;
+
+  /// No description provided for @newVoyageForm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nová plavba'**
+  String get newVoyageForm;
+
+  /// No description provided for @fillFormAndBriefing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyplniť dotazník a podpísať SB'**
+  String get fillFormAndBriefing;
+
   /// No description provided for @notesLabel.
   ///
   /// In sk, this message translates to:

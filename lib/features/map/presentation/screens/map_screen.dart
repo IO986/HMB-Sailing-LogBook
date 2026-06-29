@@ -12,6 +12,9 @@ import '../../providers/map_provider.dart';
 import '../widgets/waypoint_dialog.dart';
 import '../widgets/map_layer_toggle.dart';
 
+// Explicit imports needed for CircleLayer
+import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
+
 enum BaseMap { osm, satellite }
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -23,19 +26,54 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
-  bool _showSeamarks = true;
-  bool _followGps = false;
   BaseMap _baseMap = BaseMap.osm;
-  LatLng? _lastCentered;
   String? _lastMobFocus;
+  bool _mapReady = false;
+  int _tileKey = 0; // increment to force TileLayer recreation
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _onMapReady() {
+    _mapReady = true;
+    // Schedule tile reload for the frame AFTER nonRotatedSizeChange fires.
+    // nonRotatedSizeChange is registered in LayoutBuilder.builder (same frame as
+    // initState) so it fires in the same post-frame batch as onMapReady, but AFTER
+    // it. By nesting one more addPostFrameCallback we land in the next frame where
+    // the camera already has the correct viewport size.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() => _tileKey++); // recreate TileLayer → fresh didChangeDependencies with correct size
+      _centerIfFollowing();
+    });
+  }
+
+  void _centerIfFollowing() {
+    if (!_mapReady || !mounted) return;
+    final follow = ref.read(mapNotifierProvider).followGps;
+    if (!follow) return;
+    final pos = LocationService().lastPosition;
+    if (pos == null) return;
+    try {
+      _mapController.move(LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    final positionAsync = ref.watch(positionStreamProvider);
+    final mapState = ref.watch(mapNotifierProvider);
+    final followGps = mapState.followGps;
+    final showSeamarks = mapState.showSeamarks;
+
+    ref.watch(positionStreamProvider);
     final waypoints = ref.watch(waypointsProvider);
     final trackPoints = ref.watch(currentTrackProvider);
     final isTracking = ref.watch(isTrackingProvider);
     final mob = ref.watch(mobProvider);
+    final anchor = ref.watch(anchorProvider);
+    final photoEntries = ref.watch(photoEntryMarkersProvider).valueOrNull ?? [];
 
     // Centrovanie na MOB pozíciu pri navigácii z MOB karty
     final qp = GoRouterState.of(context).uri.queryParameters;
@@ -49,14 +87,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (lat != null && lon != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            setState(() => _followGps = false);
+            ref.read(mapNotifierProvider.notifier).setFollowGps(false);
             _mapController.move(LatLng(lat, lon), 16);
           }
         });
       }
     }
-
-// GPS follow riadi StreamBuilder vyššie
 
     return Scaffold(
       body: Stack(
@@ -66,6 +102,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             options: MapOptions(
               initialCenter: const LatLng(43.5, 16.4),
               initialZoom: 10,
+              onMapReady: _onMapReady,
               onTap: (_, ll) => _onMapTap(ll),
             ),
             children: [
@@ -73,6 +110,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Base layer ───────────────────────────────────
               if (_baseMap == BaseMap.osm)
                 TileLayer(
+                  key: ValueKey(_tileKey),
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 19,
@@ -98,7 +136,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ],
 
               // ── OpenSeaMap seamarky (nad satelitom aj OSM) ───
-              if (_showSeamarks)
+              if (showSeamarks)
                 TileLayer(
                   urlTemplate:
                       'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
@@ -133,6 +171,35 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 error: (_, __) => const MarkerLayer(markers: []),
               ),
 
+              // ── Kotva: polomer + ikona ───────────────────────────────
+              if (anchor.isActive && anchor.anchorLat != null && anchor.anchorLon != null) ...[
+                CircleLayer(circles: [
+                  CircleMarker(
+                    point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
+                    radius: anchor.radiusMeters,
+                    useRadiusInMeter: true,
+                    color: (anchor.isDrifting ? Colors.red : Colors.blue)
+                        .withOpacity(0.08),
+                    borderColor: anchor.isDrifting
+                        ? Colors.red.shade700
+                        : Colors.blue.shade600,
+                    borderStrokeWidth: 2,
+                  ),
+                ]),
+                MarkerLayer(markers: [
+                  Marker(
+                    point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
+                    width: 36, height: 36,
+                    child: Icon(Icons.anchor,
+                        color: anchor.isDrifting
+                            ? Colors.red.shade700
+                            : Colors.blue.shade700,
+                        size: 30,
+                        shadows: const [Shadow(color: Colors.white, blurRadius: 4)]),
+                  ),
+                ]),
+              ],
+
               // ── MOB marker ──────────────────────────────────────────
               if (mob.isActive && mob.mobLat != null && mob.mobLon != null)
                 MarkerLayer(markers: [
@@ -143,6 +210,33 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ),
                 ]),
 
+              // ── Foto záznamy ─────────────────────────────────────────
+              if (photoEntries.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (final e in photoEntries)
+                    if (e.latitude != null && e.longitude != null)
+                      Marker(
+                        point: LatLng(e.latitude!, e.longitude!),
+                        width: 30, height: 30,
+                        child: GestureDetector(
+                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(e.skipperNote ?? 'Foto záznam'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.amber.shade700,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1.5),
+                            ),
+                            child: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
+                          ),
+                        ),
+                      ),
+                ]),
+
               // ── GPS pozícia ──────────────────────────────────
               // GPS marker - vždy aktívny cez LocationService
               StreamBuilder<Position>(
@@ -151,7 +245,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   final pos = snap.data ?? LocationService().lastPosition;
                   if (pos == null) return const MarkerLayer(markers: []);
                   // Follow GPS ak je zapnuté
-                  if (_followGps) {
+                  if (followGps) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       try {
                         _mapController.move(
@@ -187,15 +281,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               MapLayerToggle(
                 icon: Icons.anchor,
                 label: 'Seamarky',
-                isActive: _showSeamarks,
-                onToggle: () => setState(() => _showSeamarks = !_showSeamarks),
+                isActive: showSeamarks,
+                onToggle: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleSeamarks(),
               ),
               const SizedBox(height: 8),
               MapLayerToggle(
                 icon: Icons.gps_fixed,
                 label: 'GPS',
-                isActive: _followGps,
-                onToggle: () => setState(() => _followGps = !_followGps),
+                isActive: followGps,
+                onToggle: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleFollowGps(),
               ),
             ]),
           ),
@@ -224,24 +320,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               FloatingActionButton.small(
                 heroTag: 'cp',
                 onPressed: () {
-                  if (_followGps) {
-                    setState(() => _followGps = false);
+                  final notifier = ref.read(mapNotifierProvider.notifier);
+                  if (followGps) {
+                    notifier.setFollowGps(false);
                     return;
                   }
                   final pos = LocationService().lastPosition;
                   if (pos == null) return;
-                  setState(() => _followGps = true);
+                  notifier.setFollowGps(true);
                   _mapController.move(
                     LatLng(pos.latitude, pos.longitude),
                     _mapController.camera.zoom,
                   );
                 },
-                backgroundColor: _followGps
+                backgroundColor: followGps
                     ? Theme.of(context).colorScheme.primary
                     : null,
                 child: Icon(
                   Icons.my_location,
-                  color: _followGps ? Colors.white : null,
+                  color: followGps ? Colors.white : null,
                 ),
               ),
             ]),

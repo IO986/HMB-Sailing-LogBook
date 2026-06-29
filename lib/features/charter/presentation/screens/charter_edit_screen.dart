@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../../../tracking/presentation/widgets/tracking_start_sheet.dart' show TrackingIntervalSelector;
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterEditScreen extends ConsumerStatefulWidget {
@@ -21,19 +24,27 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _vesselCtrl = TextEditingController();
   final _vesselTypeCtrl = TextEditingController();
   final _homePortCtrl = TextEditingController();
+  final _mmsiCtrl = TextEditingController();
+  final _callsignCtrl = TextEditingController();
+  final _lengthCtrl = TextEditingController();
+  final _beamCtrl = TextEditingController();
+  final _draftCtrl = TextEditingController();
   final _skipperCtrl = TextEditingController();
   final _crewCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now().add(const Duration(days: 7));
-  bool _briefing = false, _checkIn = false, _checkOut = false;
+  bool _checkIn = false, _checkOut = false;
   bool _loading = false;
   Charter? _existing;
+  int _logInterval = 60;
+
+  bool get _isNew => widget.charterId == null;
 
   @override
   void initState() {
     super.initState();
-    if (widget.charterId != null) _loadCharter();
+    if (!_isNew) _loadCharter();
   }
 
   Future<void> _loadCharter() async {
@@ -49,12 +60,16 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         _vesselCtrl.text = c.vesselName ?? '';
         _vesselTypeCtrl.text = c.vesselType ?? '';
         _homePortCtrl.text = c.homePort ?? '';
+        _mmsiCtrl.text = c.mmsi ?? '';
+        _callsignCtrl.text = c.callsign ?? '';
+        _lengthCtrl.text = c.vesselLengthM?.toString() ?? '';
+        _beamCtrl.text = c.vesselBeamM?.toString() ?? '';
+        _draftCtrl.text = c.vesselDraftM?.toString() ?? '';
         _skipperCtrl.text = c.skipperName ?? '';
         _crewCtrl.text = (c.crewNames ?? '').replaceAll('|', ', ');
         _notesCtrl.text = c.notes ?? '';
         _dateFrom = c.dateFrom;
         _dateTo = c.dateTo;
-        _briefing = c.safetyBriefingDone;
         _checkIn = c.checkInDone;
         _checkOut = c.checkOutDone;
       });
@@ -63,13 +78,12 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isNew = widget.charterId == null;
     final fmt = DateFormat('d. MMM yyyy', 'sk');
     final l = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isNew ? l.newMultidayVoyage : l.editCharter),
+        title: Text(_isNew ? l.newMultidayVoyage : l.editCharter),
         actions: [
           TextButton(
             onPressed: _loading ? null : _save,
@@ -88,7 +102,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _titleCtrl,
             decoration: InputDecoration(
               labelText: l.voyageNameRequired,
-              hintText: 'e.g. Trip 2–9 May 2026',
+              hintText: 'napr. Plavba 2–9. máj 2026',
               prefixIcon: const Icon(Icons.sailing),
             ),
           ),
@@ -117,7 +131,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _vesselCtrl,
             decoration: InputDecoration(
               labelText: l.vesselName,
-              hintText: 'e.g. Elan 45',
+              hintText: 'napr. Elan 45',
               prefixIcon: const Icon(Icons.directions_boat),
             ),
           ),
@@ -126,7 +140,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _vesselTypeCtrl,
             decoration: InputDecoration(
               labelText: l.vesselType,
-              hintText: 'Sailboat / Catamaran / Motor...',
+              hintText: 'Plachetnica / Katamaran / Motor...',
               prefixIcon: const Icon(Icons.category),
             ),
           ),
@@ -135,10 +149,62 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _homePortCtrl,
             decoration: InputDecoration(
               labelText: l.homePort,
-              hintText: 'Departure/arrival port',
+              hintText: 'Prístav odchodu/príchodu',
               prefixIcon: const Icon(Icons.anchor),
             ),
           ),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: TextField(
+              controller: _mmsiCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: l.mmsi,
+                hintText: '123456789',
+                prefixIcon: const Icon(Icons.radio),
+              ),
+            )),
+            const SizedBox(width: 12),
+            Expanded(child: TextField(
+              controller: _callsignCtrl,
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(
+                labelText: l.callsign,
+                hintText: 'OM1ABC',
+                prefixIcon: const Icon(Icons.signal_cellular_alt),
+              ),
+            )),
+          ]),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: TextField(
+              controller: _lengthCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l.vesselLengthM,
+                prefixIcon: const Icon(Icons.straighten),
+              ),
+            )),
+            const SizedBox(width: 8),
+            Expanded(child: TextField(
+              controller: _beamCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l.vesselBeamM,
+                prefixIcon: const Icon(Icons.width_normal),
+              ),
+            )),
+            const SizedBox(width: 8),
+            Expanded(child: TextField(
+              controller: _draftCtrl,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l.vesselDraftM,
+                prefixIcon: const Icon(Icons.water),
+              ),
+            )),
+          ]),
           const SizedBox(height: 16),
 
           _Section(l.crew),
@@ -155,12 +221,22 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             maxLines: 3,
             decoration: InputDecoration(
               labelText: l.crew,
-              hintText: 'Names separated by comma\ne.g. Peter Smith, Jana Smith',
+              hintText: 'Mená oddelené čiarkou\nnapr. Peter Novák, Jana Nováková',
               prefixIcon: const Icon(Icons.group),
               alignLabelWithHint: true,
             ),
           ),
           const SizedBox(height: 16),
+
+          // Log interval iba pri vytváraní nového chartera cez tracking flow
+          if (_isNew) ...[
+            _Section(l.logFrequency),
+            TrackingIntervalSelector(
+              value: _logInterval,
+              onChanged: (v) => setState(() => _logInterval = v),
+            ),
+            const SizedBox(height: 16),
+          ],
 
           _Section(l.notesLabel),
           TextField(
@@ -174,25 +250,22 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           ),
           const SizedBox(height: 16),
 
-          _Section(l.statusLabel),
-          CheckboxListTile(
-            title: Text(l.safetyBriefingDoneLabel),
-            value: _briefing,
-            onChanged: (v) => setState(() => _briefing = v ?? false),
-            secondary: const Icon(Icons.checklist),
-          ),
-          CheckboxListTile(
-            title: Text(l.checkInDoneLabel),
-            value: _checkIn,
-            onChanged: (v) => setState(() => _checkIn = v ?? false),
-            secondary: const Icon(Icons.login),
-          ),
-          CheckboxListTile(
-            title: Text(l.checkOutDoneLabel),
-            value: _checkOut,
-            onChanged: (v) => setState(() => _checkOut = v ?? false),
-            secondary: const Icon(Icons.logout),
-          ),
+          // Status checkboxes only visible when editing (not creating new)
+          if (!_isNew) ...[
+            _Section(l.statusLabel),
+            CheckboxListTile(
+              title: Text(l.checkInDoneLabel),
+              value: _checkIn,
+              onChanged: (v) => setState(() => _checkIn = v ?? false),
+              secondary: const Icon(Icons.login),
+            ),
+            CheckboxListTile(
+              title: Text(l.checkOutDoneLabel),
+              value: _checkOut,
+              onChanged: (v) => setState(() => _checkOut = v ?? false),
+              secondary: const Icon(Icons.logout),
+            ),
+          ],
           const SizedBox(height: 100),
         ],
       ),
@@ -217,6 +290,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     });
   }
 
+  double? _parseDouble(String s) => s.trim().isEmpty ? null : double.tryParse(s.trim().replaceAll(',', '.'));
+
   Future<void> _save() async {
     if (_titleCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,10 +312,17 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       vesselName: Value(_vesselCtrl.text.trim().isEmpty ? null : _vesselCtrl.text.trim()),
       vesselType: Value(_vesselTypeCtrl.text.trim().isEmpty ? null : _vesselTypeCtrl.text.trim()),
       homePort: Value(_homePortCtrl.text.trim().isEmpty ? null : _homePortCtrl.text.trim()),
+      mmsi: Value(_mmsiCtrl.text.trim().isEmpty ? null : _mmsiCtrl.text.trim()),
+      callsign: Value(_callsignCtrl.text.trim().isEmpty ? null : _callsignCtrl.text.trim()),
+      vesselLengthM: Value(_parseDouble(_lengthCtrl.text)),
+      vesselBeamM: Value(_parseDouble(_beamCtrl.text)),
+      vesselDraftM: Value(_parseDouble(_draftCtrl.text)),
       skipperName: Value(_skipperCtrl.text.trim().isEmpty ? null : _skipperCtrl.text.trim()),
       crewNames: Value(crew),
       notes: Value(_notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim()),
-      safetyBriefingDone: Value(_briefing),
+      safetyBriefingDone: _existing != null
+          ? Value(_existing!.safetyBriefingDone)
+          : const Value(false),
       checkInDone: Value(_checkIn),
       checkOutDone: Value(_checkOut),
       createdAt: Value(_existing?.createdAt ?? DateTime.now()),
@@ -248,20 +330,27 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
 
     if (_existing != null) {
       await db.updateCharter(companion);
+      ref.invalidate(chartersProvider);
+      setState(() => _loading = false);
+      if (mounted) context.go('/logbook');
     } else {
-      await db.insertCharter(companion);
+      final charter = await db.insertCharter(companion);
+      ref.invalidate(chartersProvider);
+      // Ulož zvolený log interval pre briefing screen
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('pending_log_interval', _logInterval);
+      setState(() => _loading = false);
+      // New charter always goes to safety briefing before tracking
+      if (mounted) context.go('/logbook/${charter.id}/briefing');
     }
-
-    ref.invalidate(chartersProvider);
-    setState(() => _loading = false);
-    if (mounted) context.go('/logbook');
   }
 
   @override
   void dispose() {
     _titleCtrl.dispose(); _vesselCtrl.dispose(); _vesselTypeCtrl.dispose();
-    _homePortCtrl.dispose(); _skipperCtrl.dispose(); _crewCtrl.dispose();
-    _notesCtrl.dispose();
+    _homePortCtrl.dispose(); _mmsiCtrl.dispose(); _callsignCtrl.dispose();
+    _lengthCtrl.dispose(); _beamCtrl.dispose(); _draftCtrl.dispose();
+    _skipperCtrl.dispose(); _crewCtrl.dispose(); _notesCtrl.dispose();
     super.dispose();
   }
 }

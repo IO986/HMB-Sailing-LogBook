@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../models/marine_instrument_data.dart';
 import 'raymarine_connection_service.dart';
+import 'udp_receiver_service.dart';
 
 /// Singleton GPS service - vždy aktívny, nezávislý od trackingu.
 ///
@@ -22,6 +23,7 @@ class LocationService {
 
   StreamSubscription<Position>? _androidSub;
   StreamSubscription<MarineInstrumentData>? _raymarineSub;
+  StreamSubscription<MarineInstrumentData>? _udpSub;
   Timer? _fallbackCheckTimer;
 
   final _ctrl = StreamController<Position>.broadcast();
@@ -41,7 +43,7 @@ class LocationService {
     _initialized = true;
 
     await _initAndroidGps();
-    _listenToRaymarine();
+    _listenToNmea();
 
     // Periodicky over, či treba prepnúť zdroj (napr. Raymarine vypadol
     // a medzitým neprišla žiadna nová Android pozícia, ktorá by spustila
@@ -84,31 +86,38 @@ class LocationService {
     }, onError: (e) => print('[LOC] Android GPS error: $e'));
   }
 
-  void _listenToRaymarine() {
-    _raymarineSub = RaymarineConnectionService().dataStream.listen((data) {
-      _reEvaluateSource();
-    });
+  void _listenToNmea() {
+    _raymarineSub = RaymarineConnectionService().dataStream
+        .listen((_) => _reEvaluateSource());
+    _udpSub = UdpReceiverService().dataStream
+        .listen((_) => _reEvaluateSource());
   }
 
   /// Rozhodne, ktorý zdroj polohy je aktuálne najlepší, a ak treba,
   /// emituje nový Position do spoločného streamu.
+  /// Priorita: TCP NMEA → UDP NMEA → Android GPS.
   void _reEvaluateSource() {
-    final raymarine = RaymarineConnectionService();
+    final tcp = RaymarineConnectionService();
+    final udp = UdpReceiverService();
 
-    if (raymarine.isConnected &&
-        raymarine.hasFreshData &&
-        raymarine.current.hasGpsFix) {
-      final d = raymarine.current;
+    MarineInstrumentData? nmea;
+    if (tcp.isConnected && tcp.hasFreshData && tcp.current.hasGpsFix) {
+      nmea = tcp.current;
+    } else if (udp.isListening && udp.hasFreshData && udp.current.hasGpsFix) {
+      nmea = udp.current;
+    }
+
+    if (nmea != null) {
       final pos = Position(
-        latitude: d.latitude!,
-        longitude: d.longitude!,
-        timestamp: d.gpsTimestampUtc ?? DateTime.now(),
+        latitude: nmea.latitude!,
+        longitude: nmea.longitude!,
+        timestamp: nmea.gpsTimestampUtc ?? DateTime.now(),
         accuracy: 0,
         altitude: _lastAndroidPosition?.altitude ?? 0,
         altitudeAccuracy: 0,
-        heading: d.cogDegrees ?? d.headingDegrees ?? 0,
+        heading: nmea.cogDegrees ?? nmea.headingDegrees ?? 0,
         headingAccuracy: 0,
-        speed: (d.sogKnots ?? 0) / 1.94384, // knots -> m/s
+        speed: (nmea.sogKnots ?? 0) / 1.94384,
         speedAccuracy: 0,
       );
       _usingRaymarine = true;
@@ -128,6 +137,7 @@ class LocationService {
   void dispose() {
     _androidSub?.cancel();
     _raymarineSub?.cancel();
+    _udpSub?.cancel();
     _fallbackCheckTimer?.cancel();
     _ctrl.close();
   }

@@ -1059,6 +1059,30 @@ class AppLocalizationsUk extends AppLocalizations {
   String get homePort => 'Порт приписки';
 
   @override
+  String get mmsi => 'MMSI';
+
+  @override
+  String get callsign => 'Позивний';
+
+  @override
+  String get vesselLengthM => 'Довжина (м)';
+
+  @override
+  String get vesselBeamM => 'Ширина (м)';
+
+  @override
+  String get vesselDraftM => 'Осадка (м)';
+
+  @override
+  String get selectExistingVoyage => 'Вибрати існуючий рейс';
+
+  @override
+  String get newVoyageForm => 'Новий рейс';
+
+  @override
+  String get fillFormAndBriefing => 'Заповнити анкету та підписати інструктаж';
+
+  @override
   String get notesLabel => 'Нотатки';
 
   @override

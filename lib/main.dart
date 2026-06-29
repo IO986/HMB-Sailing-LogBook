@@ -12,6 +12,7 @@ import 'core/services/background_service.dart';
 import 'core/services/gps_tracking_service.dart';
 import 'core/services/location_service.dart';
 import 'core/services/raymarine_connection_service.dart';
+import 'core/services/udp_receiver_service.dart';
 import 'core/services/weather_repository.dart';
 import 'core/services/weather_service.dart';
 import 'core/services/account_service.dart';
@@ -76,18 +77,25 @@ Future<void> _tryAutoConnectRaymarine() async {
   try {
     final prefs = await SharedPreferences.getInstance();
     final autoConnect = prefs.getBool('raymarine_auto_connect') ?? false;
-    final host = prefs.getString('raymarine_host') ?? '';
-    if (!autoConnect || host.isEmpty) return;
+    if (!autoConnect) return;
 
-    final port = prefs.getInt('raymarine_port') ?? 2000;
-    // Nečakáme na výsledok - pripájanie beží na pozadí, appka štartuje hneď.
-    RaymarineConnectionService().connect(
-      host: host,
-      port: port,
-      autoReconnect: true,
-    );
+    final typeStr = prefs.getString('nmea_connection_type') ?? 'tcp';
+
+    if (typeStr == 'udp') {
+      final udpPort = prefs.getInt('nmea_udp_port') ?? 10110;
+      UdpReceiverService().start(port: udpPort);
+    } else {
+      final host = prefs.getString('raymarine_host') ?? '';
+      if (host.isEmpty) return;
+      final port = prefs.getInt('raymarine_port') ?? 2000;
+      RaymarineConnectionService().connect(
+        host: host,
+        port: port,
+        autoReconnect: true,
+      );
+    }
   } catch (e) {
-    print('[MAIN] Raymarine auto-connect skipped: $e');
+    print('[MAIN] NMEA auto-connect skipped: $e');
   }
 }
 

@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:drift/drift.dart' as drift;
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:uuid/uuid.dart';
 
 import '../database/app_database.dart';
 import '../models/marine_instrument_data.dart';
+import '../utils/distance_calculator.dart';
+import 'geocoding_service.dart';
 import 'location_service.dart';
 import 'raymarine_connection_service.dart';
 import 'udp_receiver_service.dart';
@@ -32,11 +35,18 @@ class GpsTrackingService {
   DateTime? _courseChangeStart;
   double? _courseChangeHeading;
 
+  // GPS track cache + NM accumulation
+  final List<LatLng> _trackCache = [];
+  double _totalDistanceNm = 0.0;
+  LatLng? _lastTrackPoint;
+
   Stream<Position> get positionStream => _posCtrl.stream;
   Position? get lastPosition => _lastPosition ?? LocationService().lastPosition;
   bool get isTracking => _posSub != null;
   SailingSession? get currentSession => _currentSession;
   int? get activeDayLogId => _activeDayLogId;
+  List<LatLng> get trackPoints => List.unmodifiable(_trackCache);
+  double get totalDistanceNm => _totalDistanceNm;
 
   void setDatabase(AppDatabase db) {
     _db = db;
@@ -77,6 +87,9 @@ class GpsTrackingService {
     ));
 
     _currentSession = await _db!.getActiveSession();
+    _trackCache.clear();
+    _totalDistanceNm = 0.0;
+    _lastTrackPoint = null;
     print('[GPS] Session created: ${_currentSession?.sessionId}');
 
     // Použi LocationService stream (GPS je už aktívne)
@@ -119,8 +132,9 @@ class GpsTrackingService {
     if (existing != null) {
       _lastPosition = existing;
       print('[GPS] First entry: using existing position');
-      await Future.delayed(const Duration(seconds: 2)); // krátka pauza
+      await Future.delayed(const Duration(seconds: 2));
       await createAutomaticLogbookEntry(note: 'Voyage start');
+      _geocodeDeparture(existing.latitude, existing.longitude);
       return;
     }
 
@@ -139,10 +153,49 @@ class GpsTrackingService {
       );
       _lastPosition = pos;
       await createAutomaticLogbookEntry(note: 'Voyage start');
+      _geocodeDeparture(pos.latitude, pos.longitude);
     } catch (e) {
       print('[GPS] First entry failed: $e');
     } finally {
       await sub.cancel();
+    }
+  }
+
+  void _geocodeDeparture(double lat, double lon) async {
+    if (_activeDayLogId == null || _db == null) return;
+    try {
+      final dayLog = await _db!.getDayLogById(_activeDayLogId!);
+      if (dayLog == null) return;
+      if (dayLog.portFrom != null && dayLog.portFrom!.isNotEmpty) return; // user-set, neprepisuj
+      final name = await GeocodingService().reverseGeocode(lat, lon);
+      if (name != null) {
+        await _db!.updateDayLog(DayLogsCompanion(
+          id: drift.Value(dayLog.id),
+          portFrom: drift.Value(name),
+        ));
+        print('[GEO] Departure port: $name');
+      }
+    } catch (e) {
+      print('[GEO] _geocodeDeparture: $e');
+    }
+  }
+
+  void _geocodeArrival(double lat, double lon) async {
+    if (_activeDayLogId == null || _db == null) return;
+    try {
+      final dayLog = await _db!.getDayLogById(_activeDayLogId!);
+      if (dayLog == null) return;
+      if (dayLog.portTo != null && dayLog.portTo!.isNotEmpty) return; // user-set, neprepisuj
+      final name = await GeocodingService().reverseGeocode(lat, lon);
+      if (name != null) {
+        await _db!.updateDayLog(DayLogsCompanion(
+          id: drift.Value(dayLog.id),
+          portTo: drift.Value(name),
+        ));
+        print('[GEO] Arrival port: $name');
+      }
+    } catch (e) {
+      print('[GEO] _geocodeArrival: $e');
     }
   }
 
@@ -157,9 +210,10 @@ class GpsTrackingService {
   Future<void> stopTracking() async {
     print('[GPS] stopTracking');
 
-    // Záverečný záznam
+    // Záverečný záznam + geocoding príchodu
     if (_lastPosition != null) {
       await createAutomaticLogbookEntry(note: 'Voyage end');
+      _geocodeArrival(_lastPosition!.latitude, _lastPosition!.longitude);
     }
 
     await _posSub?.cancel(); _posSub = null;
@@ -176,10 +230,32 @@ class GpsTrackingService {
         startTime: drift.Value(_currentSession!.startTime),
         endTime: drift.Value(DateTime.now().toUtc()),
         isActive: const drift.Value(false),
+        totalDistanceNm: drift.Value(_totalDistanceNm),
       ));
-      print('[GPS] Session ended: ${_currentSession!.sessionId}');
+      print('[GPS] Session ended: ${_currentSession!.sessionId}, '
+          '${_totalDistanceNm.toStringAsFixed(2)} NM');
+
+      // Ulož NM do DayLog ak tam ešte nie je
+      if (_activeDayLogId != null && _totalDistanceNm > 0) {
+        try {
+          final dayLog = await _db!.getDayLogById(_activeDayLogId!);
+          if (dayLog != null && dayLog.distanceNm == 0) {
+            await _db!.updateDayLog(DayLogsCompanion(
+              id: drift.Value(dayLog.id),
+              distanceNm: drift.Value(_totalDistanceNm),
+            ));
+            print('[GPS] DayLog NM updated: ${_totalDistanceNm.toStringAsFixed(2)}');
+          }
+        } catch (e) {
+          print('[GPS] DayLog NM update failed: $e');
+        }
+      }
+
       _currentSession = null;
     }
+    _trackCache.clear();
+    _totalDistanceNm = 0.0;
+    _lastTrackPoint = null;
     _activeDayLogId = null;
   }
 
@@ -189,6 +265,18 @@ class GpsTrackingService {
     if (_db == null || _currentSession == null) return;
 
     await _checkCourseChange(pos);
+
+    // Track cache + NM accumulation
+    final latLng = LatLng(pos.latitude, pos.longitude);
+    if (_lastTrackPoint != null) {
+      final d = DistanceCalculator.distanceNm(
+        _lastTrackPoint!.latitude, _lastTrackPoint!.longitude,
+        pos.latitude, pos.longitude,
+      );
+      if (d < 10) _totalDistanceNm += d; // Ignoruj GPS skoky > 10 NM
+    }
+    _lastTrackPoint = latLng;
+    _trackCache.add(latLng);
 
     await _db!.insertTrackPoint(TrackPointsCompanion.insert(
       sessionId: drift.Value(_currentSession!.sessionId),
@@ -258,10 +346,13 @@ class GpsTrackingService {
     // Pre bežné auto záznamy (nie Voyage start/end) pridam zdroj do note
     final entryNote = note ?? 'Auto [$src]';
 
+    // Vždy použi aktuálny čas — pos.timestamp je čas GPS fixu (môže byť starý z cache).
+    final entryTimestamp = DateTime.now().toUtc();
+
     await _db!.insertLogbookEntry(LogbookEntriesCompanion.insert(
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
-      timestamp: pos.timestamp.toUtc(),
+      timestamp: entryTimestamp,
       latitude: drift.Value(pos.latitude),
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(sog),

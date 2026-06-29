@@ -28,6 +28,11 @@ class Charters extends Table {
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get remoteId => text().nullable()();       // UUID na serveri
   DateTimeColumn get syncedAt => dateTime().nullable()(); // posledná úspešná sync
+  TextColumn get mmsi => text().nullable()();
+  TextColumn get callsign => text().nullable()();
+  RealColumn get vesselLengthM => real().nullable()();
+  RealColumn get vesselBeamM => real().nullable()();
+  RealColumn get vesselDraftM => real().nullable()();
 }
 
 /// Jeden deň plavby
@@ -166,7 +171,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -189,6 +194,13 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
         await m.createTable(crewSignatures);
+      }
+      if (from < 6) {
+        await m.addColumn(charters, charters.mmsi);
+        await m.addColumn(charters, charters.callsign);
+        await m.addColumn(charters, charters.vesselLengthM);
+        await m.addColumn(charters, charters.vesselBeamM);
+        await m.addColumn(charters, charters.vesselDraftM);
       }
     },
     beforeOpen: (details) async {},

@@ -70,7 +70,7 @@ class MobNotifier extends Notifier<MobState> {
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(dayLogId),
         sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().toUtc(),
         latitude: drift.Value(lat),
         longitude: drift.Value(lon),
         skipperNote: const drift.Value('Man overboard'),
@@ -101,7 +101,7 @@ class MobNotifier extends Notifier<MobState> {
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(dayLogId),
         sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().toUtc(),
         latitude: drift.Value(pos?.latitude ?? lat),
         longitude: drift.Value(pos?.longitude ?? lon),
         skipperNote: const drift.Value('MOB cancelled'),
@@ -172,7 +172,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(dayLogId),
         sessionId: drift.Value(activeSession?.sessionId),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().toUtc(),
         latitude: drift.Value(lat),
         longitude: drift.Value(lon),
         skipperNote: const drift.Value('Anchor dropped'),
@@ -211,7 +211,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(GpsTrackingService().activeDayLogId),
         sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now(),
+        timestamp: DateTime.now().toUtc(),
         latitude: drift.Value(pos.latitude),
         longitude: drift.Value(pos.longitude),
         skipperNote: drift.Value(note),
@@ -231,7 +231,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
         await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
           dayLogId: drift.Value(dayLogId),
           sessionId: drift.Value(session?.sessionId),
-          timestamp: DateTime.now(),
+          timestamp: DateTime.now().toUtc(),
           latitude: drift.Value(pos?.latitude),
           longitude: drift.Value(pos?.longitude),
           skipperNote: const drift.Value('Anchor raised'),

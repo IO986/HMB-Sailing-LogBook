@@ -254,16 +254,18 @@ class _TrackingControls extends ConsumerWidget {
     if (dayLogId != null) {
       try {
         final db = ref.read(databaseProvider);
-        final charters = await db.getAllCharters();
-        for (final c in charters) {
-          final days = await db.getDayLogs(c.id);
-          if (days.any((d) => d.id == dayLogId)) {
-            charterId = c.id;
-            final today = DateTime.now();
-            final dto = c.dateTo.toLocal();
-            isLastDay = DateTime(dto.year, dto.month, dto.day) ==
-                        DateTime(today.year, today.month, today.day);
-            break;
+        final dayLog = await db.getDayLogById(dayLogId);
+        if (dayLog != null) {
+          final charters = await db.getAllCharters();
+          for (final c in charters) {
+            if (c.id == dayLog.charterId) {
+              charterId = c.id;
+              final logDate = dayLog.date.toLocal();
+              final dto = c.dateTo.toLocal();
+              isLastDay = DateTime(dto.year, dto.month, dto.day) ==
+                          DateTime(logDate.year, logDate.month, logDate.day);
+              break;
+            }
           }
         }
       } catch (_) {}

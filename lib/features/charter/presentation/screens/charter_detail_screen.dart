@@ -29,6 +29,11 @@ class CharterDetailScreen extends ConsumerWidget {
           appBar: AppBar(
             title: Text(charter.title, overflow: TextOverflow.ellipsis),
             actions: [
+              IconButton(
+                icon: const Icon(Icons.health_and_safety_outlined),
+                tooltip: AppLocalizations.of(context).briefingOpenBriefing,
+                onPressed: () => context.go('/logbook/$charterId/briefing'),
+              ),
               IconButton(icon: const Icon(Icons.edit),
                   onPressed: () => context.go('/logbook/$charterId/edit')),
               IconButton(

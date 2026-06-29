@@ -6,6 +6,7 @@ import 'features/charter/presentation/screens/charter_list_screen.dart';
 import 'features/charter/presentation/screens/charter_edit_screen.dart';
 import 'features/charter/presentation/screens/charter_detail_screen.dart';
 import 'features/charter/presentation/screens/day_log_screen.dart';
+import 'features/charter/presentation/screens/safety_briefing_screen.dart';
 import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/weather/presentation/screens/weather_screen.dart';
@@ -44,6 +45,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(path: 'edit',
                       builder: (c, s) => CharterEditScreen(charterId: s.pathParameters['id'])),
+                  GoRoute(path: 'briefing',
+                      builder: (c, s) => SafetyBriefingScreen(
+                          charterId: int.parse(s.pathParameters['id']!))),
                   GoRoute(path: 'export',
                       builder: (c, s) => ExportScreen(
                           charterId: int.parse(s.pathParameters['id']!))),

@@ -1056,6 +1056,30 @@ class AppLocalizationsSk extends AppLocalizations {
   String get homePort => 'Domovský prístav';
 
   @override
+  String get mmsi => 'MMSI';
+
+  @override
+  String get callsign => 'Volací znak';
+
+  @override
+  String get vesselLengthM => 'Dĺžka (m)';
+
+  @override
+  String get vesselBeamM => 'Šírka (m)';
+
+  @override
+  String get vesselDraftM => 'Ponor (m)';
+
+  @override
+  String get selectExistingVoyage => 'Vybrať existujúcu plavbu';
+
+  @override
+  String get newVoyageForm => 'Nová plavba';
+
+  @override
+  String get fillFormAndBriefing => 'Vyplniť dotazník a podpísať SB';
+
+  @override
   String get notesLabel => 'Poznámky';
 
   @override

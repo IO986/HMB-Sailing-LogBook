@@ -1058,6 +1058,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homePort => 'Heimathafen';
 
   @override
+  String get mmsi => 'MMSI';
+
+  @override
+  String get callsign => 'Rufzeichen';
+
+  @override
+  String get vesselLengthM => 'Länge (m)';
+
+  @override
+  String get vesselBeamM => 'Breite (m)';
+
+  @override
+  String get vesselDraftM => 'Tiefgang (m)';
+
+  @override
+  String get selectExistingVoyage => 'Bestehende Reise auswählen';
+
+  @override
+  String get newVoyageForm => 'Neue Reise';
+
+  @override
+  String get fillFormAndBriefing =>
+      'Formular ausfüllen & Sicherheitsunterw. unterschreiben';
+
+  @override
   String get notesLabel => 'Notizen';
 
   @override

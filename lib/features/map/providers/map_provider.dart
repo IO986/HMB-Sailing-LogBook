@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:drift/drift.dart' show Value;
 
 import '../../../core/database/app_database.dart';
+import '../../../core/services/gps_tracking_service.dart';
+import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
 
 final waypointsProvider = FutureProvider<List<Waypoint>>((ref) async {
@@ -10,11 +11,32 @@ final waypointsProvider = FutureProvider<List<Waypoint>>((ref) async {
   return db.getAllWaypoints();
 });
 
-final currentTrackProvider = Provider<List<LatLng>>((ref) => []);
+/// GPS trasa aktuálnej session – obnoví sa pri každom novom GPS bode.
+final currentTrackProvider = Provider<List<LatLng>>((ref) {
+  ref.watch(positionStreamProvider); // Rebuild on every new GPS position
+  return GpsTrackingService().trackPoints;
+});
+
+/// Záznamy s fotkami pre aktuálny deň — reaktívne sleduje DB zmeny.
+final photoEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
+  final isTracking = ref.watch(isTrackingProvider);
+  if (!isTracking) return Stream.value([]);
+  final dayLogId = GpsTrackingService().activeDayLogId;
+  if (dayLogId == null) return Stream.value([]);
+  return ref.read(databaseProvider).watchPhotoEntriesForDay(dayLogId);
+});
 
 class MapNotifier extends Notifier<MapState> {
   @override
   MapState build() => const MapState();
+
+  void toggleFollowGps() =>
+      state = state.copyWith(followGps: !state.followGps);
+
+  void setFollowGps(bool v) => state = state.copyWith(followGps: v);
+
+  void toggleSeamarks() =>
+      state = state.copyWith(showSeamarks: !state.showSeamarks);
 
   Future<void> addWaypoint(String name, double lat, double lon) async {
     final db = ref.read(databaseProvider);

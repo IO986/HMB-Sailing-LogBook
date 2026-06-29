@@ -1,12 +1,15 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:drift/drift.dart' as drift show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:screenshot/screenshot.dart';
 import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/utils/distance_calculator.dart';
+import '../../../core/utils/gpx_exporter.dart';
 import '../../../main.dart';
 import '../services/export_service.dart';
 import '../services/pdf_export_service.dart';
@@ -29,6 +32,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   List<DayLog> _days = [];
   Map<int, List<LogbookEntry>> _entriesByDay = {};
   Map<int, List<TrackPoint>> _tracksByDay = {};
+  Map<int, List<SailingSession>> _sessionsByDay = {};
   bool _loading = true;
   final Map<int, ScreenshotController> _screenshotControllers = {};
   final Map<int, Uint8List?> _mapScreenshots = {};
@@ -57,6 +61,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     for (final day in _days) {
       _entriesByDay[day.id] = await db.getEntriesForDay(day.id);
       final sessions = await db.getSessionsForDay(day.id);
+      _sessionsByDay[day.id] = sessions;
       final pts = <TrackPoint>[];
       for (final s in sessions) {
         pts.addAll(await db.getTrackPointsForSession(s.sessionId));
@@ -67,8 +72,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
     setState(() => _loading = false);
 
-    // Screenshot máp po renderovaní
-    await Future.delayed(const Duration(milliseconds: 2000));
+    // Screenshot máp po renderovaní – 4s aby sa stihli načítať dlaždice.
+    await Future.delayed(const Duration(milliseconds: 4000));
     for (final day in _days) {
       try {
         final img = await _screenshotControllers[day.id]?.capture(pixelRatio: 2.0);
@@ -165,6 +170,33 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     );
   }
 
+  /// Vypočíta NM zo zoznamu track pointov pomocou haversine.
+  static double _calcNm(List<TrackPoint> pts) {
+    if (pts.length < 2) return 0;
+    double nm = 0;
+    for (int i = 1; i < pts.length; i++) {
+      final d = DistanceCalculator.distanceNm(
+        pts[i - 1].latitude, pts[i - 1].longitude,
+        pts[i].latitude, pts[i].longitude,
+      );
+      if (d < 10) nm += d; // ignoruj GPS skoky > 10 NM
+    }
+    return nm;
+  }
+
+  /// Ak má deň distanceNm == 0, dopočíta z track pointov a zapíše do DB.
+  Future<void> _ensureDayNm(DayLog day) async {
+    if (day.distanceNm > 0) return;
+    final pts = _tracksByDay[day.id] ?? [];
+    final nm = _calcNm(pts);
+    if (nm > 0) {
+      await ref.read(databaseProvider).updateDayLog(DayLogsCompanion(
+        id: drift.Value(day.id),
+        distanceNm: drift.Value(nm),
+      ));
+    }
+  }
+
   Future<void> _doExport() async {
     if (_charter == null) return;
 
@@ -191,27 +223,74 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     );
 
     Uint8List? pdfBytes;
-    String previewTitle;
+    Uint8List? gpxBytes;
+    String previewTitle = _charter!.title;
+    String suggestedFileName = 'saillog_export';
+
+    final vessel = (_charter!.vesselName?.isNotEmpty == true
+            ? _charter!.vesselName!
+            : _charter!.title)
+        .replaceAll(RegExp(r'[^\wÀ-žа-яА-Я]'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+
     try {
       if (widget.dayLogId != null && _day != null) {
-        final entries = _entriesByDay[_day!.id] ?? [];
+        // Prepočítaj NM ak chýba
+        await _ensureDayNm(_day!);
+        // Reload day (NM mohlo byť práve zapísané)
+        final freshDay = await ref.read(databaseProvider).getDayLogById(_day!.id) ?? _day!;
+
+        final entries = _entriesByDay[freshDay.id] ?? [];
         pdfBytes = await PdfExportService.buildDayPdfBytes(
           charter: _charter!,
-          day: _day!,
+          day: freshDay,
           entries: entries,
-          mapScreenshot: _mapScreenshots[_day!.id],
+          mapScreenshot: _mapScreenshots[freshDay.id],
           signatureImage: signatureImage,
         );
         previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
+        final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
+        suggestedFileName = 'saillog_${vessel}_$dateStr';
+
+        final sessions = _sessionsByDay[_day!.id] ?? [];
+        final pointsBySession = <String, List<TrackPoint>>{};
+        for (final s in sessions) {
+          pointsBySession[s.sessionId] =
+              await ref.read(databaseProvider).getTrackPointsForSession(s.sessionId);
+        }
+        gpxBytes = await GpxExporter.buildDayGpxBytes(
+            _day!, sessions, pointsBySession);
       } else {
+        // Prepočítaj NM pre každý deň ak chýba
+        final freshDays = <DayLog>[];
+        for (final day in _days) {
+          await _ensureDayNm(day);
+          freshDays.add(await ref.read(databaseProvider).getDayLogById(day.id) ?? day);
+        }
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
           charter: _charter!,
-          days: _days,
+          days: freshDays,
           entriesByDay: _entriesByDay,
           mapScreenshots: _mapScreenshots,
           signatureImage: signatureImage,
         );
         previewTitle = _charter!.title;
+        final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);
+        suggestedFileName = 'saillog_${vessel}_$dateStr';
+
+        final sessionsByDay = <int, List<SailingSession>>{};
+        final pointsBySession = <String, List<TrackPoint>>{};
+        for (final day in _days) {
+          final sessions = _sessionsByDay[day.id] ?? [];
+          sessionsByDay[day.id] = sessions;
+          for (final s in sessions) {
+            pointsBySession[s.sessionId] =
+                await ref.read(databaseProvider).getTrackPointsForSession(s.sessionId);
+          }
+        }
+        gpxBytes = await GpxExporter.buildCharterGpxBytes(
+            _charter!, _days, sessionsByDay, pointsBySession);
       }
     } catch (e) {
       if (dialogCtx != null && dialogCtx!.mounted) {
@@ -238,8 +317,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       builder: (_) => PdfPreviewScreen(
         title: previewTitle,
         pdfBytes: pdfBytes!,
+        suggestedFileName: suggestedFileName,
+        gpxBytes: gpxBytes,
         onSave: () {
-          Navigator.of(context).pop(); // zavrieme preview
+          Navigator.of(context).pop();
           if (widget.dayLogId != null && _day != null) {
             svc.exportDayFromBytes(
               context, _charter!, _day!, pdfBytes!,

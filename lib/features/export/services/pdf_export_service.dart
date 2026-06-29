@@ -17,6 +17,36 @@ class PdfExportService {
   static final _green = PdfColor.fromHex('#1E8449');
   static final _lblue = PdfColor.fromHex('#D6EAF8');
 
+  /// Beaufort stupnica podľa rýchlosti vetra v uzloch.
+  static int _beaufortFromKnots(double kts) {
+    if (kts < 1) return 0;
+    if (kts < 4) return 1;
+    if (kts < 7) return 2;
+    if (kts < 11) return 3;
+    if (kts < 17) return 4;
+    if (kts < 22) return 5;
+    if (kts < 28) return 6;
+    if (kts < 34) return 7;
+    if (kts < 41) return 8;
+    if (kts < 48) return 9;
+    if (kts < 56) return 10;
+    if (kts < 64) return 11;
+    return 12;
+  }
+
+  /// Vypočíta Beaufort pre deň z wind speed záznamu ak nie je manuálne nastavený.
+  static int? _beaufortForDay(DayLog day, List<LogbookEntry> entries) {
+    if (day.beaufortNoon != null) return day.beaufortNoon;
+    final windSpeeds = entries
+        .where((e) => e.windSpeed != null)
+        .map((e) => e.windSpeed!)
+        .toList();
+    if (windSpeeds.isEmpty) return null;
+    final avg = windSpeeds.reduce((a, b) => a + b) / windSpeeds.length;
+    // windSpeed v záznamy je v uzloch (prenáša sa zo SOG / NMEA)
+    return _beaufortFromKnots(avg);
+  }
+
   // ── Public builders ───────────────────────────────────────────
 
   static Future<Uint8List> buildCharterPdfBytes({
@@ -31,7 +61,7 @@ class PdfExportService {
       author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
-    pdf.addPage(_titlePage(charter, days));
+    pdf.addPage(_titlePage(charter, days, entriesByDay));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
@@ -163,7 +193,8 @@ class PdfExportService {
 
   // ── Title Page ────────────────────────────────────────────────
 
-  static pw.Page _titlePage(Charter charter, List<DayLog> days) {
+  static pw.Page _titlePage(Charter charter, List<DayLog> days,
+      Map<int, List<LogbookEntry>> entriesByDay) {
     final fmt = DateFormat('d. MMM yyyy');
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
@@ -237,7 +268,10 @@ class PdfExportService {
                 _cell(_ascii(d.portFrom ?? '-')),
                 _cell(_ascii(d.portTo ?? '-')),
                 _cell(d.distanceNm.toStringAsFixed(1)),
-                _cell(d.beaufortNoon != null ? 'Bft ${d.beaufortNoon}' : '-'),
+                _cell(() {
+                  final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
+                  return bft != null ? 'Bft $bft' : '-';
+                }()),
                 _cell('-'),
               ]);
             }),
@@ -543,8 +577,10 @@ class PdfExportService {
       Map<int, List<LogbookEntry>> entriesByDay) {
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
-    final maxBft = days.where((d) => d.beaufortNoon != null)
-        .fold<int>(0, (s, d) => d.beaufortNoon! > s ? d.beaufortNoon! : s);
+    final maxBft = days.fold<int>(0, (s, d) {
+      final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
+      return (bft ?? 0) > s ? (bft ?? 0) : s;
+    });
 
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -595,7 +631,10 @@ class PdfExportService {
                   _cell(_ascii(d.portFrom ?? '-')),
                   _cell(_ascii(d.portTo ?? '-')),
                   _cell('${d.distanceNm.toStringAsFixed(1)} NM'),
-                  _cell(d.beaufortNoon != null ? 'Bft ${d.beaufortNoon}' : '-'),
+                  _cell(() {
+                    final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
+                    return bft != null ? 'Bft $bft' : '-';
+                  }()),
                   _cell('$cnt'),
                 ],
               );
