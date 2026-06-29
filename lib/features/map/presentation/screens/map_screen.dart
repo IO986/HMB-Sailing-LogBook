@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -30,22 +32,40 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   String? _lastMobFocus;
   bool _mapReady = false;
   int _tileKey = 0; // increment to force TileLayer recreation
+  StreamSubscription<MapEvent>? _sizeChangeSub;
+  Timer? _tileReloadTimer;
 
   @override
   void initState() {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _tileReloadTimer?.cancel();
+    _sizeChangeSub?.cancel();
+    super.dispose();
+  }
+
+  void _scheduleTileReload() {
+    _tileReloadTimer?.cancel();
+    _tileReloadTimer = Timer(const Duration(milliseconds: 100), () {
+      if (!mounted) return;
+      setState(() => _tileKey++);
+    });
+  }
+
   void _onMapReady() {
     _mapReady = true;
-    // Schedule tile reload for the frame AFTER nonRotatedSizeChange fires.
-    // nonRotatedSizeChange is registered in LayoutBuilder.builder (same frame as
-    // initState) so it fires in the same post-frame batch as onMapReady, but AFTER
-    // it. By nesting one more addPostFrameCallback we land in the next frame where
-    // the camera already has the correct viewport size.
+    // Listen for every viewport size change (fires during route animations).
+    // Debounced 100 ms so we reload tiles only after the size stabilises,
+    // not on every animation frame.
+    _sizeChangeSub ??= _mapController.mapEventStream
+        .where((e) => e is MapEventNonRotatedSizeChange)
+        .listen((_) => _scheduleTileReload());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      setState(() => _tileKey++); // recreate TileLayer → fresh didChangeDependencies with correct size
+      setState(() => _tileKey++);
       _centerIfFollowing();
     });
   }
