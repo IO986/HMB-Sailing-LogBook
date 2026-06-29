@@ -62,12 +62,28 @@ Future<void> main() async {
   _tryAutoConnectRaymarine();
 
   final prefs = await SharedPreferences.getInstance();
-  final savedLocale = prefs.getString('app_locale') ?? 'sk';
+  final savedLocale = prefs.getString('app_locale');
+  final isFirstLaunch = savedLocale == null;
+
+  String initialLocale;
+  if (savedLocale != null) {
+    initialLocale = savedLocale;
+  } else {
+    // Auto-detect from system locale, fallback to EN
+    final systemLang =
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    const supported = ['sk', 'en', 'de', 'es', 'uk'];
+    initialLocale = supported.contains(systemLang) ? systemLang : 'en';
+  }
+
+  if (isFirstLaunch) {
+    await prefs.setBool('first_launch', true);
+  }
 
   runApp(ProviderScope(
     overrides: [
       databaseProvider.overrideWithValue(db),
-      localeProvider.overrideWith(() => LocaleNotifier()..initialCode = savedLocale),
+      localeProvider.overrideWith(() => LocaleNotifier()..initialCode = initialLocale),
     ],
     child: const HmbSailingLogApp(),
   ));
