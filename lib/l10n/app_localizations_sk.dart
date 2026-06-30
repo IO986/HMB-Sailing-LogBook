@@ -302,7 +302,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get drifting => 'DRIFTUJE';
 
   @override
-  String get anchorRadiusLabel => 'Polomer kotevníka';
+  String get anchorRadiusLabel => 'Sledovaný polomer pohybu';
 
   @override
   String get activate => 'Aktivovať';
@@ -1047,7 +1047,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get dateTo => 'Dátum do';
 
   @override
-  String get vesselName => 'Názov lode';
+  String get vesselName => 'Meno lode';
 
   @override
   String get vesselType => 'Typ lode';
@@ -1335,7 +1335,8 @@ class AppLocalizationsSk extends AppLocalizations {
   String get onlineAccount => 'Online účet';
 
   @override
-  String get onlineAccountDesc => 'Synchronizuj denník na logbook.hmba.boats';
+  String get onlineAccountDesc =>
+      'Online synchronizácia denníka — pripravujeme';
 
   @override
   String get register => 'Registrovať';
@@ -1409,21 +1410,21 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty';
+      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty';
 
   @override
   String get guideSettingsTitle => 'Nastavenia';
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Online účet – synchronizuj denník na logbook.hmba.boats\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt';
+      '• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Online účet – synchronizácia pripravovaná (v2.0)\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt';
 
   @override
   String get guideExportTitle => 'Export denníka';
 
   @override
   String get guideExportBody =>
-      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Zvol dni, ktoré chceš zahrnúť\n4. PDF obsahuje: trasu, záznamy, fotky a podpisy\n5. Zdieľaj cez email, tlač alebo ulož do telefónu';
+      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
