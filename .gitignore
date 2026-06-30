@@ -24,9 +24,13 @@ build/
 build/
 .dart_tool/
 
-# Android APKs
+# Android build artifacts
 *.apk
-exports/*.apk
+*.aab
+exports/
+
+# AAB folder – local build outputs and signing keys; store assets are in docs/
+AAB/
 
 # iOS
 **/ios/**/*.mode1v3

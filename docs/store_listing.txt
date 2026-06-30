@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════
+  HMB SAILING LOGBOOK – GOOGLE PLAY STORE LISTING
+═══════════════════════════════════════════════════════
+
+NÁZOV APLIKÁCIE (max 30 znakov)
+────────────────────────────────
+HMB Sailing Logbook
+
+
+KRÁTKY POPIS – SK (max 80 znakov)
+───────────────────────────────────
+Plavebný denník – GPS trasa, MOB alarm, kotva a PDF export s podpismi.
+
+KRÁTKY POPIS – EN (max 80 znakov)
+───────────────────────────────────
+Sailing logbook – GPS, MOB alarm, anchor watch, PDF export with crew signatures.
+
+
+DLHÝ POPIS – SK (max 4000 znakov)
+═══════════════════════════════════
+HMB Sailing Logbook je profesionálny plavebný denník pre skipérov, posádky a charterové plavidlá.
+
+HLAVNÉ FUNKCIE
+
+DENNÍK
+• Vytváraj chartery (plavby) s kompletným opisom plavidla a posádky
+• Záznamy do denníka automaticky cez GPS alebo manuálne
+• Zaznamenávaj počasie, stav mora, prístavy, vzdialenosti a poznámky
+• Prezeraj trasu na mape s podporou offline
+
+GPS SLEDOVANIE
+• Sledovanie polohy v reálnom čase počas plavby
+• Automatické záznamy v nastavenom intervale
+• Export trasy ako GPX súbor
+• Kompatibilné s Raymarine WiFi gateway (NMEA 0183)
+
+BEZPEČNOSŤ
+• MOB (Človek cez palubu) – zaznamená GPS polohu a meria čas a vzdialenosť späť
+• Kotevný alarm – vibruje, keď sa plavidlo vzdiali z nastaveného okruhu
+• Bezpečnostný brífing s podpismi každého člena posádky
+• Karta postupu MAYDAY, referencia COLREG, vlajkové signály, prevodník Morse
+
+POČASIE
+• Automatická predpoveď počasia podľa aktuálnej polohy
+• Vietor, vlny, teplota a zrážky pre nasledujúce hodiny
+
+PDF EXPORT
+• Profesionálny PDF dokument s trasou, záznamy, fotkami a mapami
+• Strana bezpečnostného brífingu s podpismi celej posádky
+• Každý dokument dostane jedinečné ID (napr. HMBSL-5-2026) a číslo revízie
+• QR kód s kryptografickým odtlačkom pre overenie integrity dokumentu
+• Podpisová strana skipéra
+
+JAZYKY
+Dostupné v slovenčine, angličtine, nemčine, španielčine a ukrajinčine.
+
+Navrhnuté pre minimálnu spotrebu dát. Funguje offline – nevyžaduje predplatné.
+Online synchronizácia denníka pripravovaná vo verzii 2.0.
+
+
+DLHÝ POPIS – EN (max 4000 znakov)
+═══════════════════════════════════
+HMB Sailing Logbook is a professional logbook application for sailors, skippers and charter crews.
+
+MAIN FEATURES
+
+LOGBOOK
+• Create charters (voyages) with full vessel and crew details
+• Automatic GPS-based log entries or manual input
+• Record weather, sea state, ports, distances and skipper notes
+• View your route on an offline-capable map
+
+GPS TRACKING
+• Real-time position tracking during sailing
+• Automatic logbook entries at configurable intervals
+• GPX export of the full track
+• Compatible with Raymarine WiFi gateway (NMEA 0183)
+
+SAFETY
+• MOB (Man Overboard) alarm – records GPS position and measures time and distance back
+• Anchor watch – vibration alarm when the vessel drifts beyond the set radius
+• Safety briefing checklist with individual on-screen crew signatures
+• MAYDAY procedure card, COLREG collision rules, flag signals, Morse code converter
+
+WEATHER
+• Automatic weather forecast based on current position
+• Wind, waves, temperature and precipitation for the coming hours
+
+PDF EXPORT
+• Professional PDF with track, log entries, photos and maps
+• Safety briefing page with individual crew signatures
+• Each document gets a unique ID (e.g. HMBSL-5-2026) and revision number
+• QR code with cryptographic fingerprint for document integrity verification
+• Skipper signature page
+
+MULTILINGUAL
+Available in Slovak, English, German, Spanish and Ukrainian.
+
+Designed for minimal data usage. Works fully offline – no subscription required.
+Online logbook sync coming in v2.0.
+
+
+KATEGÓRIA
+──────────
+Travel & Local
+
+
+KONTAKTNÝ EMAIL (zobrazí sa v Obchode)
+────────────────────────────────────────
+steclaco@gmail.com
+
+
+PRIVACY POLICY URL
+───────────────────
+https://io986.github.io/HMB-Sailing-LogBook/privacy.html
+
+
+POZNÁMKY PRE PLAY CONSOLE
+══════════════════════════
+• Screenshoty: použiť súbory z priečinka exports/ (min. 2 pre telefón)
+• Content rating dotazník: aplikácia neobsahuje násilie, reklamu, in-app nákupy
+• Interné testovanie: pridaj emailové adresy testerov
+• Verzia: 1.17 (versionCode podľa pubspec.yaml)
