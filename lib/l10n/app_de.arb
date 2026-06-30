@@ -466,7 +466,7 @@
   "voyageEnd": "Reiseende",
 
   "onlineAccount": "Online-Konto",
-  "onlineAccountDesc": "Logbuch mit logbook.hmba.boats synchronisieren",
+  "onlineAccountDesc": "Online-Logbuch-Synchronisation — demnächst verfügbar",
   "register": "Registrieren",
   "login": "Anmelden",
   "logout": "Abmelden",

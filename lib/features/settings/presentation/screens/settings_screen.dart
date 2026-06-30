@@ -4,7 +4,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/skipper_profile.dart';
-import '../../../../core/providers/account_provider.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
@@ -836,167 +835,35 @@ class _LiveTag extends StatelessWidget {
 
 // ── Online účet ───────────────────────────────────────────────
 
-class _AccountSection extends ConsumerWidget {
+class _AccountSection extends StatelessWidget {
   const _AccountSection();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(accountProvider);
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    if (user != null) {
-      return Card(child: Column(children: [
-        ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: Text(user.name.isNotEmpty ? user.name[0].toUpperCase() : 'S',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          ),
-          title: Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(user.email),
-          trailing: const Icon(Icons.cloud_done, color: Colors.green),
-        ),
-        const Divider(height: 1),
-        ListTile(
-          leading: const Icon(Icons.logout, color: Colors.red),
-          title: Text(l.logout, style: const TextStyle(color: Colors.red)),
-          onTap: () async {
-            final ok = await showDialog<bool>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text(l.logout),
-                content: Text(l.logoutConfirm),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: Text(l.logout),
-                  ),
-                ],
-              ),
-            ) ?? false;
-            if (ok) await ref.read(accountProvider.notifier).logout();
-          },
-        ),
-      ]));
-    }
-
-    // Neprihlásený
-    return Card(child: Column(children: [
-      ListTile(
-        leading: const Icon(Icons.cloud_off_outlined),
-        title: Text(l.notLoggedIn),
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.cloud_outlined, color: colorScheme.primary),
+        title: Text(l.onlineAccount),
         subtitle: Text(l.onlineAccountDesc),
-      ),
-      const Divider(height: 1),
-      ListTile(
-        leading: const Icon(Icons.person_add_outlined),
-        title: Text(l.register),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => _showAuthDialog(context, ref, isRegister: true),
-      ),
-      const Divider(height: 1),
-      ListTile(
-        leading: const Icon(Icons.login),
-        title: Text(l.login),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => _showAuthDialog(context, ref, isRegister: false),
-      ),
-    ]));
-  }
-
-  Future<void> _showAuthDialog(BuildContext context, WidgetRef ref,
-      {required bool isRegister}) async {
-    final l = AppLocalizations.of(context);
-    final emailCtrl = TextEditingController();
-    final nameCtrl  = TextEditingController();
-    final passCtrl  = TextEditingController();
-    String? error;
-    bool loading = false;
-
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => AlertDialog(
-          title: Text(isRegister ? l.register : l.login),
-          content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
-            if (isRegister) ...[
-              TextField(
-                controller: nameCtrl,
-                decoration: InputDecoration(labelText: l.fullName),
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 8),
-            ],
-            TextField(
-              controller: emailCtrl,
-              decoration: const InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            'v2.0',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: passCtrl,
-              decoration: InputDecoration(labelText: l.password),
-              obscureText: true,
-              textInputAction: TextInputAction.done,
-            ),
-            if (error != null) ...[
-              const SizedBox(height: 8),
-              Text(error!, style: const TextStyle(color: Colors.red, fontSize: 13)),
-            ],
-          ])),
-          actions: [
-            TextButton(
-              onPressed: loading ? null : () => Navigator.pop(ctx),
-              child: Text(l.cancel),
-            ),
-            ElevatedButton(
-              onPressed: loading ? null : () async {
-                setState(() { loading = true; error = null; });
-                try {
-                  if (isRegister) {
-                    await ref.read(accountProvider.notifier).register(
-                      email: emailCtrl.text,
-                      name: nameCtrl.text,
-                      password: passCtrl.text,
-                    );
-                  } else {
-                    await ref.read(accountProvider.notifier).login(
-                      email: emailCtrl.text,
-                      password: passCtrl.text,
-                    );
-                  }
-                  if (ctx.mounted) Navigator.pop(ctx);
-                } catch (e) {
-                  setState(() {
-                    loading = false;
-                    error = _friendlyError(e);
-                  });
-                }
-              },
-              child: loading
-                  ? const SizedBox(width: 18, height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : Text(isRegister ? l.register : l.login),
-            ),
-          ],
+          ),
         ),
       ),
     );
-  }
-
-  String _friendlyError(Object e) {
-    final msg = e.toString().toLowerCase();
-    if (msg.contains('email') && msg.contains('exist')) return 'Email je už registrovaný.';
-    if (msg.contains('invalid') || msg.contains('credentials') || msg.contains('401')) {
-      return 'Nesprávny email alebo heslo.';
-    }
-    if (msg.contains('connection') || msg.contains('timeout') || msg.contains('network')) {
-      return 'Chyba siete. Skontroluj pripojenie.';
-    }
-    return 'Chyba: $e';
   }
 }
