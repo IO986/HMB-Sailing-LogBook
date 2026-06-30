@@ -47,12 +47,6 @@ android {
         versionName flutter.versionName
     }
 
-    packagingOptions {
-        jniLibs {
-            keepDebugSymbols += ['**/*.so']
-        }
-    }
-
     buildTypes {
         debug {
             minifyEnabled false
