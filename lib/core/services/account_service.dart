@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../config/api_constants.dart';
 
 // ── API kontrakt (backend musí implementovať) ─────────────────
 //
@@ -19,12 +20,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 //   Headers:  Authorization: Bearer {token}
 //   Response: { "user": { "id": "uuid", "email": "...", "name": "..." } }
 
-const _kApiBase = 'https://api.logbook.hmba.boats';
+const _kSecToken  = 'account_token';
+const _kSecUserId = 'account_user_id';
+const _kSecEmail  = 'account_email';
+const _kSecName   = 'account_name';
 
-const _kPrefToken    = 'account_token';
-const _kPrefUserId   = 'account_user_id';
-const _kPrefEmail    = 'account_email';
-const _kPrefName     = 'account_name';
+// Encrypted storage backed by Android Keystore / iOS Secure Enclave
+const _storage = FlutterSecureStorage(
+  aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+);
 
 class AccountUser {
   final String id;
@@ -39,7 +44,7 @@ class AccountService {
   AccountService._();
 
   final _dio = Dio(BaseOptions(
-    baseUrl: _kApiBase,
+    baseUrl: kApiBase,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 15),
     headers: {'Content-Type': 'application/json'},
@@ -54,11 +59,10 @@ class AccountService {
 
   /// Načíta uložený stav pri štarte aplikácie.
   Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString(_kPrefToken);
-    final id    = prefs.getString(_kPrefUserId);
-    final email = prefs.getString(_kPrefEmail);
-    final name  = prefs.getString(_kPrefName);
+    _token        = await _storage.read(key: _kSecToken);
+    final id      = await _storage.read(key: _kSecUserId);
+    final email   = await _storage.read(key: _kSecEmail);
+    final name    = await _storage.read(key: _kSecName);
     if (_token != null && id != null && email != null && name != null) {
       _user = AccountUser(id: id, email: email, name: name);
     }
@@ -97,14 +101,13 @@ class AccountService {
     }
     _token = null;
     _user  = null;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_kPrefToken);
-    await prefs.remove(_kPrefUserId);
-    await prefs.remove(_kPrefEmail);
-    await prefs.remove(_kPrefName);
+    await _storage.delete(key: _kSecToken);
+    await _storage.delete(key: _kSecUserId);
+    await _storage.delete(key: _kSecEmail);
+    await _storage.delete(key: _kSecName);
   }
 
-  AccountUser _handleAuthResponse(Map<String, dynamic> data) {
+  Future<AccountUser> _handleAuthResponse(Map<String, dynamic> data) async {
     final token = data['token'] as String;
     final u = data['user'] as Map<String, dynamic>;
     final user = AccountUser(
@@ -114,12 +117,10 @@ class AccountService {
     );
     _token = token;
     _user  = user;
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_kPrefToken,  token);
-      prefs.setString(_kPrefUserId, user.id);
-      prefs.setString(_kPrefEmail,  user.email);
-      prefs.setString(_kPrefName,   user.name);
-    });
+    await _storage.write(key: _kSecToken,  value: token);
+    await _storage.write(key: _kSecUserId, value: user.id);
+    await _storage.write(key: _kSecEmail,  value: user.email);
+    await _storage.write(key: _kSecName,   value: user.name);
     return user;
   }
 

@@ -111,7 +111,7 @@ Future<void> _tryAutoConnectRaymarine() async {
       );
     }
   } catch (e) {
-    print('[MAIN] NMEA auto-connect skipped: $e');
+    debugPrint('[MAIN] NMEA auto-connect skipped: $e');
   }
 }
 
@@ -125,9 +125,9 @@ void _syncWeatherOnStartup() {
   Future<void> doSync(double lat, double lon) async {
     try {
       await repo.syncWeather(lat: lat, lon: lon);
-      print('[MAIN] Pocasie synced pri starte: $lat, $lon');
+      debugPrint('[MAIN] Pocasie synced pri starte: $lat, $lon');
     } catch (e) {
-      print('[MAIN] Weather sync zlyhal: $e');
+      debugPrint('[MAIN] Weather sync zlyhal: $e');
     }
   }
 

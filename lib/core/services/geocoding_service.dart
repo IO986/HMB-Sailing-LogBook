@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class GeocodingService {
   static final GeocodingService _i = GeocodingService._();
@@ -9,7 +10,7 @@ class GeocodingService {
     baseUrl: 'https://nominatim.openstreetmap.org',
     connectTimeout: const Duration(seconds: 8),
     receiveTimeout: const Duration(seconds: 8),
-    headers: {'User-Agent': 'HMBSailingLog/1.0 (steclaco@gmail.com)'},
+    headers: {'User-Agent': 'HMBSailingLogbook/1.0 (https://logbook.hmba.boats)'},
   ));
 
   /// Reverse geocode GPS → human-readable port/marina/bay name.
@@ -42,7 +43,6 @@ class GeocodingService {
       for (final key in ['marina', 'harbour', 'bay', 'beach', 'suburb', 'village', 'town', 'city']) {
         final v = address[key] as String?;
         if (v != null && v.isNotEmpty) {
-          // For bays/anchorages, append the nearest town for context
           if (key == 'bay' || key == 'beach') {
             final town = address['village'] as String? ??
                          address['town']    as String? ??
@@ -61,7 +61,7 @@ class GeocodingService {
 
       return null;
     } catch (e) {
-      print('[GEO] Reverse geocode failed: $e');
+      debugPrint('[GEO] Reverse geocode failed: $e');
       return null;
     }
   }

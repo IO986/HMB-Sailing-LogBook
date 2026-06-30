@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/marine_instrument_data.dart';
@@ -52,7 +53,7 @@ class LocationService {
       _reEvaluateSource();
     });
 
-    print('[LOC] Location service started');
+    debugPrint('[LOC] Location service started');
   }
 
   Future<void> _initAndroidGps() async {
@@ -83,7 +84,7 @@ class LocationService {
     ).listen((pos) {
       _lastAndroidPosition = pos;
       _reEvaluateSource();
-    }, onError: (e) => print('[LOC] Android GPS error: $e'));
+    }, onError: (e) => debugPrint('[LOC] Android GPS error: $e'));
   }
 
   void _listenToNmea() {

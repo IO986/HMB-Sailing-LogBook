@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import '../models/marine_instrument_data.dart';
 import '../services/raymarine_connection_service.dart';
 import 'nmea_parser_service.dart';
@@ -59,12 +60,12 @@ class UdpReceiverService {
         cancelOnError: true,
       );
       _setState(RaymarineConnectionState.connected);
-      print('[UDP] Počúvam na porte $port');
+      debugPrint('[UDP] Počúvam na porte $port');
       return true;
     } catch (e) {
       _lastError = e.toString();
       _setState(RaymarineConnectionState.error);
-      print('[UDP] Bind zlyhalo: $e');
+      debugPrint('[UDP] Bind zlyhalo: $e');
       return false;
     }
   }
@@ -72,7 +73,7 @@ class UdpReceiverService {
   Future<void> stop() async {
     await _teardown();
     _setState(RaymarineConnectionState.disconnected);
-    print('[UDP] Zastavený');
+    debugPrint('[UDP] Zastavený');
   }
 
   Future<void> _teardown() async {
@@ -84,7 +85,7 @@ class UdpReceiverService {
 
   void _handleError(String reason) {
     _lastError = reason;
-    print('[UDP] $reason');
+    debugPrint('[UDP] $reason');
     _teardown();
     _setState(RaymarineConnectionState.error);
   }

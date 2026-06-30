@@ -76,8 +76,8 @@ class MobNotifier extends Notifier<MobState> {
         skipperNote: const drift.Value('Man overboard'),
         isAutoEntry: const drift.Value(true),
       ));
-      print('[MOB] Logged MOB activation');
-    } catch (e) { print('[MOB] Log error: $e'); }
+      debugPrint('[MOB] Logged MOB activation');
+    } catch (e) { debugPrint('[MOB] Log error: $e'); }
     _sub = (GpsTrackingService().isTracking
         ? GpsTrackingService().positionStream
         : LocationService().stream).listen((pos) {
@@ -107,8 +107,8 @@ class MobNotifier extends Notifier<MobState> {
         skipperNote: const drift.Value('MOB cancelled'),
         isAutoEntry: const drift.Value(true),
       ));
-      print('[MOB] Logged MOB deactivation');
-    } catch (e) { print('[MOB] Deactivate log error: $e'); }
+      debugPrint('[MOB] Logged MOB deactivation');
+    } catch (e) { debugPrint('[MOB] Deactivate log error: $e'); }
   }
 
   double _haversine(double la1, double lo1, double la2, double lo2) {
@@ -178,8 +178,8 @@ class AnchorNotifier extends Notifier<AnchorState> {
         skipperNote: const drift.Value('Anchor dropped'),
         isAutoEntry: const drift.Value(true),
       ));
-      print('[ANCHOR] Logged anchor drop');
-    } catch (e) { print('[ANCHOR] Log error: $e'); }
+      debugPrint('[ANCHOR] Logged anchor drop');
+    } catch (e) { debugPrint('[ANCHOR] Log error: $e'); }
 
     _sub = LocationService().stream.listen((pos) {
       final dist = _haversine(lat, lon, pos.latitude, pos.longitude);
@@ -217,7 +217,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
         skipperNote: drift.Value(note),
         isAutoEntry: const drift.Value(true),
       ));
-    } catch (e) { print('[ANCHOR] Drift log error: $e'); }
+    } catch (e) { debugPrint('[ANCHOR] Drift log error: $e'); }
   }
 
   Future<void> deactivate() async {

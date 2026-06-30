@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:uuid/uuid.dart';
@@ -50,7 +51,7 @@ class GpsTrackingService {
 
   void setDatabase(AppDatabase db) {
     _db = db;
-    print('[GPS] DB set');
+    debugPrint('[GPS] DB set');
   }
 
   Future<bool> _checkPermission() async {
@@ -67,9 +68,9 @@ class GpsTrackingService {
     int logIntervalSeconds = 3600,
   }) async {
     _logIntervalSeconds = logIntervalSeconds;
-    print('[GPS] startTracking dayLogId=$dayLogId interval=${logIntervalSeconds}s');
+    debugPrint('[GPS] startTracking dayLogId=$dayLogId interval=${logIntervalSeconds}s');
 
-    if (isTracking) { print('[GPS] Already tracking'); return; }
+    if (isTracking) { debugPrint('[GPS] Already tracking'); return; }
     if (_db == null) throw Exception('DB not initialized');
 
     final ok = await _checkPermission();
@@ -90,22 +91,22 @@ class GpsTrackingService {
     _trackCache.clear();
     _totalDistanceNm = 0.0;
     _lastTrackPoint = null;
-    print('[GPS] Session created: ${_currentSession?.sessionId}');
+    debugPrint('[GPS] Session created: ${_currentSession?.sessionId}');
 
     // Použi LocationService stream (GPS je už aktívne)
     _posSub = LocationService().stream.listen(
       _onPosition,
-      onError: (e) => print('[GPS] Stream err: $e'),
+      onError: (e) => debugPrint('[GPS] Stream err: $e'),
     );
 
     // Ak už máme polohu, spracuj ju
     final existingPos = LocationService().lastPosition;
     if (existingPos != null) {
       _lastPosition = existingPos;
-      print('[GPS] Using existing position: ${existingPos.latitude}, ${existingPos.longitude}');
+      debugPrint('[GPS] Using existing position: ${existingPos.latitude}, ${existingPos.longitude}');
     }
 
-    print('[GPS] Started OK, interval=${_logIntervalSeconds}s');
+    debugPrint('[GPS] Started OK, interval=${_logIntervalSeconds}s');
 
     // _posSub už beží, prvý záznam naplánuj
     _scheduleFirstEntry();
@@ -115,11 +116,11 @@ class GpsTrackingService {
     _weatherTimer = Timer.periodic(const Duration(hours: 1), (_) => _syncWeather());
 
     // Auto logbook timer
-    print('[GPS] Starting logbook timer: ${_logIntervalSeconds}s');
+    debugPrint('[GPS] Starting logbook timer: ${_logIntervalSeconds}s');
     _logbookTimer = Timer.periodic(
       Duration(seconds: _logIntervalSeconds),
       (_) async {
-        print('[GPS] Auto logbook timer fired');
+        debugPrint('[GPS] Auto logbook timer fired');
         await createAutomaticLogbookEntry();
       },
     );
@@ -131,7 +132,7 @@ class GpsTrackingService {
     final existing = _lastPosition ?? LocationService().lastPosition;
     if (existing != null) {
       _lastPosition = existing;
-      print('[GPS] First entry: using existing position');
+      debugPrint('[GPS] First entry: using existing position');
       await Future.delayed(const Duration(seconds: 2));
       await createAutomaticLogbookEntry(note: 'Voyage start');
       _geocodeDeparture(existing.latitude, existing.longitude);
@@ -139,7 +140,7 @@ class GpsTrackingService {
     }
 
     // Čakaj na prvý GPS update z LocationService (max 60s)
-    print('[GPS] Waiting for first GPS position...');
+    debugPrint('[GPS] Waiting for first GPS position...');
     StreamSubscription? sub;
     Completer<Position> completer = Completer();
     sub = LocationService().stream.listen((pos) {
@@ -155,7 +156,7 @@ class GpsTrackingService {
       await createAutomaticLogbookEntry(note: 'Voyage start');
       _geocodeDeparture(pos.latitude, pos.longitude);
     } catch (e) {
-      print('[GPS] First entry failed: $e');
+      debugPrint('[GPS] First entry failed: $e');
     } finally {
       await sub.cancel();
     }
@@ -173,10 +174,10 @@ class GpsTrackingService {
           id: drift.Value(dayLog.id),
           portFrom: drift.Value(name),
         ));
-        print('[GEO] Departure port: $name');
+        debugPrint('[GEO] Departure port: $name');
       }
     } catch (e) {
-      print('[GEO] _geocodeDeparture: $e');
+      debugPrint('[GEO] _geocodeDeparture: $e');
     }
   }
 
@@ -192,10 +193,10 @@ class GpsTrackingService {
           id: drift.Value(dayLog.id),
           portTo: drift.Value(name),
         ));
-        print('[GEO] Arrival port: $name');
+        debugPrint('[GEO] Arrival port: $name');
       }
     } catch (e) {
-      print('[GEO] _geocodeArrival: $e');
+      debugPrint('[GEO] _geocodeArrival: $e');
     }
   }
 
@@ -203,12 +204,12 @@ class GpsTrackingService {
     final pos = _lastPosition ?? LocationService().lastPosition;
     if (pos == null) return;
     _weatherRepo.syncWeather(lat: pos.latitude, lon: pos.longitude)
-        .then((_) => print('[GPS] Weather synced'))
-        .catchError((e) => print('[GPS] Weather err: $e'));
+        .then((_) => debugPrint('[GPS] Weather synced'))
+        .catchError((e) => debugPrint('[GPS] Weather err: $e'));
   }
 
   Future<void> stopTracking() async {
-    print('[GPS] stopTracking');
+    debugPrint('[GPS] stopTracking');
 
     // Záverečný záznam + geocoding príchodu
     if (_lastPosition != null) {
@@ -232,7 +233,7 @@ class GpsTrackingService {
         isActive: const drift.Value(false),
         totalDistanceNm: drift.Value(_totalDistanceNm),
       ));
-      print('[GPS] Session ended: ${_currentSession!.sessionId}, '
+      debugPrint('[GPS] Session ended: ${_currentSession!.sessionId}, '
           '${_totalDistanceNm.toStringAsFixed(2)} NM');
 
       // Ulož NM do DayLog ak tam ešte nie je
@@ -244,10 +245,10 @@ class GpsTrackingService {
               id: drift.Value(dayLog.id),
               distanceNm: drift.Value(_totalDistanceNm),
             ));
-            print('[GPS] DayLog NM updated: ${_totalDistanceNm.toStringAsFixed(2)}');
+            debugPrint('[GPS] DayLog NM updated: ${_totalDistanceNm.toStringAsFixed(2)}');
           }
         } catch (e) {
-          print('[GPS] DayLog NM update failed: $e');
+          debugPrint('[GPS] DayLog NM update failed: $e');
         }
       }
 
@@ -312,16 +313,16 @@ class GpsTrackingService {
 
   Future<void> createAutomaticLogbookEntry({String? note}) async {
     if (_currentSession == null || _db == null) {
-      print('[GPS] Cannot create entry: no session or db');
+      debugPrint('[GPS] Cannot create entry: no session or db');
       return;
     }
     final pos = _lastPosition ?? LocationService().lastPosition;
     if (pos == null) {
-      print('[GPS] Cannot create entry: no GPS position');
+      debugPrint('[GPS] Cannot create entry: no GPS position');
       return;
     }
 
-    print('[GPS] Creating auto entry: note=$note dayLogId=$_activeDayLogId pos=${pos.latitude.toStringAsFixed(4)},${pos.longitude.toStringAsFixed(4)}');
+    debugPrint('[GPS] Creating auto entry: note=$note dayLogId=$_activeDayLogId pos=${pos.latitude.toStringAsFixed(4)},${pos.longitude.toStringAsFixed(4)}');
 
     final weather = await _weatherRepo.getNearestWeather(DateTime.now())
         .catchError((_) => null);
@@ -339,7 +340,7 @@ class GpsTrackingService {
     final waterTmp = nmea?.waterTempCelsius ?? weather?.waterTemp;
 
     final src = nmea != null ? 'NMEA' : 'meteo';
-    print('[GPS] Entry data — SOG:${sog.toStringAsFixed(1)}kn COG:${cog.toStringAsFixed(0)}° '
+    debugPrint('[GPS] Entry data — SOG:${sog.toStringAsFixed(1)}kn COG:${cog.toStringAsFixed(0)}° '
         'wind:${windSpd?.toStringAsFixed(1)}kn/${windDir?.toStringAsFixed(0)}° '
         'source:$src');
 
@@ -367,7 +368,7 @@ class GpsTrackingService {
       isAutoEntry: const drift.Value(true),
     ));
 
-    print('[GPS] Auto entry created OK');
+    debugPrint('[GPS] Auto entry created OK');
   }
 
   Future<void> _checkCourseChange(Position pos) async {

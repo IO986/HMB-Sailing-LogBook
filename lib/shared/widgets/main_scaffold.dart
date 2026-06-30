@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../core/services/gps_tracking_service.dart';
-import '../../core/services/raymarine_connection_service.dart';
-import '../../core/providers/raymarine_providers.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
@@ -127,7 +125,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         SystemNavigator.pop(animated: true);
       }
     } catch (e) {
-      print('[BACK] error: $e');
+      debugPrint('[BACK] error: $e');
     }
   }
 

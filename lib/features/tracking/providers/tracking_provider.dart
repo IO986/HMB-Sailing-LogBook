@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../core/services/gps_tracking_service.dart';
@@ -49,7 +50,7 @@ class TrackingNotifier extends Notifier<TrackingState> {
   TrackingState build() => const TrackingState();
 
   Future<void> startTracking(String? name, {int? dayLogId, String? skipperName, int logIntervalSeconds = 3600}) async {
-    print('[TRACKING] startTracking name=$name dayLogId=$dayLogId');
+    debugPrint('[TRACKING] startTracking name=$name dayLogId=$dayLogId');
     state = state.copyWith(isLoading: true, error: null);
     try {
       await GpsTrackingService().startTracking(
@@ -59,7 +60,7 @@ class TrackingNotifier extends Notifier<TrackingState> {
       ref.read(isTrackingProvider.notifier).state = true;
       state = state.copyWith(isLoading: false, isTracking: true);
     } catch (e, st) {
-      print('[TRACKING] ERROR: $e\n$st');
+      debugPrint('[TRACKING] ERROR: $e\n$st');
       state = state.copyWith(isLoading: false, error: _friendly(e.toString()));
     }
   }
@@ -69,7 +70,7 @@ class TrackingNotifier extends Notifier<TrackingState> {
     try {
       await GpsTrackingService().stopTracking();
       await BackgroundService.stop();
-    } catch (e) { print('[TRACKING] Stop err: $e'); }
+    } catch (e) { debugPrint('[TRACKING] Stop err: $e'); }
     ref.read(isTrackingProvider.notifier).state = false;
     state = state.copyWith(isLoading: false, isTracking: false);
   }

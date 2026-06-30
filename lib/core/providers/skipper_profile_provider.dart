@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/skipper_profile.dart';
 
 final skipperProfileProvider =
@@ -7,34 +7,44 @@ final skipperProfileProvider =
   SkipperProfileNotifier.new,
 );
 
+const _storage = FlutterSecureStorage(
+  aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+);
+
+const _kFullName   = 'skipper_full_name';
+const _kLicType    = 'skipper_license_type';
+const _kLicNum     = 'skipper_license_number';
+const _kLicAuth    = 'skipper_license_authority';
+const _kLicExpiry  = 'skipper_license_expiry';
+const _kVhfNum     = 'skipper_vhf_number';
+const _kVhfExpiry  = 'skipper_vhf_expiry';
+const _kOtherCerts = 'skipper_other_certs';
+
 class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
   @override
-  Future<SkipperProfile> build() async {
-    final prefs = await SharedPreferences.getInstance();
-    return _fromPrefs(prefs);
-  }
+  Future<SkipperProfile> build() => _load();
 
-  static SkipperProfile _fromPrefs(SharedPreferences p) => SkipperProfile(
-        fullName: p.getString('skipper_full_name') ?? '',
-        licenseType: p.getString('skipper_license_type') ?? '',
-        licenseNumber: p.getString('skipper_license_number') ?? '',
-        licenseAuthority: p.getString('skipper_license_authority') ?? '',
-        licenseExpiry: p.getString('skipper_license_expiry') ?? '',
-        vhfNumber: p.getString('skipper_vhf_number') ?? '',
-        vhfExpiry: p.getString('skipper_vhf_expiry') ?? '',
-        otherCerts: p.getString('skipper_other_certs') ?? '',
+  Future<SkipperProfile> _load() async => SkipperProfile(
+        fullName:         await _storage.read(key: _kFullName)   ?? '',
+        licenseType:      await _storage.read(key: _kLicType)    ?? '',
+        licenseNumber:    await _storage.read(key: _kLicNum)     ?? '',
+        licenseAuthority: await _storage.read(key: _kLicAuth)    ?? '',
+        licenseExpiry:    await _storage.read(key: _kLicExpiry)  ?? '',
+        vhfNumber:        await _storage.read(key: _kVhfNum)     ?? '',
+        vhfExpiry:        await _storage.read(key: _kVhfExpiry)  ?? '',
+        otherCerts:       await _storage.read(key: _kOtherCerts) ?? '',
       );
 
   Future<void> save(SkipperProfile profile) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('skipper_full_name', profile.fullName);
-    await prefs.setString('skipper_license_type', profile.licenseType);
-    await prefs.setString('skipper_license_number', profile.licenseNumber);
-    await prefs.setString('skipper_license_authority', profile.licenseAuthority);
-    await prefs.setString('skipper_license_expiry', profile.licenseExpiry);
-    await prefs.setString('skipper_vhf_number', profile.vhfNumber);
-    await prefs.setString('skipper_vhf_expiry', profile.vhfExpiry);
-    await prefs.setString('skipper_other_certs', profile.otherCerts);
-    state = AsyncData(_fromPrefs(prefs));
+    await _storage.write(key: _kFullName,   value: profile.fullName);
+    await _storage.write(key: _kLicType,    value: profile.licenseType);
+    await _storage.write(key: _kLicNum,     value: profile.licenseNumber);
+    await _storage.write(key: _kLicAuth,    value: profile.licenseAuthority);
+    await _storage.write(key: _kLicExpiry,  value: profile.licenseExpiry);
+    await _storage.write(key: _kVhfNum,     value: profile.vhfNumber);
+    await _storage.write(key: _kVhfExpiry,  value: profile.vhfExpiry);
+    await _storage.write(key: _kOtherCerts, value: profile.otherCerts);
+    state = AsyncData(profile);
   }
 }

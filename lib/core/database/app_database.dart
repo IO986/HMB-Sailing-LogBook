@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -355,7 +356,7 @@ class AppDatabase extends _$AppDatabase {
           endTime: Value(s.startTime.add(const Duration(minutes: 1))),
         ));
       }
-      print('[DB] Fixed ${active.length - 1} orphaned sessions');
+      debugPrint('[DB] Fixed ${active.length - 1} orphaned sessions');
     }
   }
 

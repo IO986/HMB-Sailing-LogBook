@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import '../models/marine_instrument_data.dart';
 import 'nmea_parser_service.dart';
 
@@ -93,12 +94,12 @@ class RaymarineConnectionService {
 
       _setState(RaymarineConnectionState.connected);
       _startStaleCheck();
-      print('[RAYMARINE] Connected to $host:$port');
+      debugPrint('[RAYMARINE] Connected to $host:$port');
       return true;
     } catch (e) {
       _lastError = e.toString();
       _setState(RaymarineConnectionState.error);
-      print('[RAYMARINE] Connect failed: $e');
+      debugPrint('[RAYMARINE] Connect failed: $e');
       if (_autoReconnect) _scheduleReconnect();
       return false;
     }
@@ -110,7 +111,7 @@ class RaymarineConnectionService {
     _reconnectTimer = null;
     await _teardownSocket();
     _setState(RaymarineConnectionState.disconnected);
-    print('[RAYMARINE] Disconnected by user');
+    debugPrint('[RAYMARINE] Disconnected by user');
   }
 
   Future<void> _teardownSocket() async {
@@ -126,7 +127,7 @@ class RaymarineConnectionService {
 
   void _handleDisconnect(String reason) {
     _lastError = reason;
-    print('[RAYMARINE] Disconnected: $reason');
+    debugPrint('[RAYMARINE] Disconnected: $reason');
     _teardownSocket();
     _setState(RaymarineConnectionState.error);
     if (_autoReconnect) _scheduleReconnect();
@@ -136,7 +137,7 @@ class RaymarineConnectionService {
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(const Duration(seconds: 5), () {
       if (_autoReconnect && _host.isNotEmpty) {
-        print('[RAYMARINE] Attempting reconnect to $_host:$_port');
+        debugPrint('[RAYMARINE] Attempting reconnect to $_host:$_port');
         connect(host: _host, port: _port, autoReconnect: true);
       }
     });

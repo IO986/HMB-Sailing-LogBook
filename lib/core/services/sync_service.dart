@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import '../config/api_constants.dart';
 import '../database/app_database.dart';
 import 'account_service.dart';
 
@@ -47,8 +48,6 @@ import 'account_service.dart';
 //   ]
 // }
 
-const _kApiBase = 'https://api.logbook.hmba.boats';
-
 enum SyncResult { ok, notLoggedIn, networkError, serverError }
 
 class SyncService {
@@ -57,7 +56,7 @@ class SyncService {
   SyncService._();
 
   final _dio = Dio(BaseOptions(
-    baseUrl: _kApiBase,
+    baseUrl: kApiBase,
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 30),
   ));
