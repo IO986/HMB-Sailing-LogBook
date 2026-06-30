@@ -34,6 +34,7 @@ class Charters extends Table {
   RealColumn get vesselLengthM => real().nullable()();
   RealColumn get vesselBeamM => real().nullable()();
   RealColumn get vesselDraftM => real().nullable()();
+  IntColumn get pdfRevision => integer().withDefault(const Constant(0))();
 }
 
 /// Jeden deň plavby
@@ -172,7 +173,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -203,6 +204,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.vesselBeamM);
         await m.addColumn(charters, charters.vesselDraftM);
       }
+      if (from < 7) {
+        await m.addColumn(charters, charters.pdfRevision);
+      }
     },
     beforeOpen: (details) async {},
   );
@@ -228,6 +232,16 @@ class AppDatabase extends _$AppDatabase {
           syncedAt: Value(syncedAt),
         ),
       );
+
+  /// Inkrementuje počítadlo revízií PDF a vráti nové číslo.
+  Future<int> incrementPdfRevision(int charterId) async {
+    final charter = await (select(charters)..where((t) => t.id.equals(charterId))).getSingle();
+    final newRev = charter.pdfRevision + 1;
+    await (update(charters)..where((t) => t.id.equals(charterId))).write(
+      ChartersCompanion(pdfRevision: Value(newRev)),
+    );
+    return newRev;
+  }
 
   Future<void> deleteCharter(int id) async {
     final days = await getDayLogs(id);

@@ -278,6 +278,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           await _ensureDayNm(day);
           freshDays.add(await ref.read(databaseProvider).getDayLogById(day.id) ?? day);
         }
+        final db = ref.read(databaseProvider);
+        final newRevision = await db.incrementPdfRevision(_charter!.id);
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
           charter: _charter!,
           days: freshDays,
@@ -286,6 +288,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
           crewSignatures: _crewSignatures,
+          pdfRevision: newRevision,
         );
         previewTitle = _charter!.title;
         final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);

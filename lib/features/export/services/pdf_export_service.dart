@@ -58,26 +58,31 @@ class PdfExportService {
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
+    int pdfRevision = 0,
   }) async {
+    final docId  = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
+    final rev    = pdfRevision;
+
     final pdf = pw.Document(
       title: _ascii(charter.title),
       author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
-    pdf.addPage(_titlePage(charter, days, entriesByDay, skipperProfile));
+    pdf.addPage(_titlePage(charter, days, entriesByDay, skipperProfile, docId, rev));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
-      for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos)) {
+      for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos, docId, rev)) {
         pdf.addPage(page);
       }
     }
-    pdf.addPage(_summaryPage(charter, days, entriesByDay));
-    // Safety briefing page with crew signatures
-    final sbPage = await _safetyBriefingPage(charter, crewSignatures);
+    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev));
+    final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev);
     pdf.addPage(sbPage);
     if (signatureImage != null) {
-      final canonical = _buildCanonical(charter: charter, days: days, entriesByDay: entriesByDay);
+      final canonical = _buildCanonical(
+          charter: charter, days: days, entriesByDay: entriesByDay,
+          docId: docId, revision: rev);
       final hash = sha256.convert(utf8.encode(canonical)).toString();
       pdf.addPage(_signaturePage(
         signatureImage: signatureImage,
@@ -85,6 +90,8 @@ class PdfExportService {
         signedAt: DateTime.now().toUtc(),
         hash: hash,
         docTitle: charter.title,
+        docId: docId,
+        revision: rev,
       ));
     }
     return pdf.save();
@@ -98,14 +105,17 @@ class PdfExportService {
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
   }) async {
+    final docId = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
+    const rev = 0;
     final pdf = pw.Document();
     final photos = await _loadPhotos(entries);
-    for (final page in _dayPages(charter, day, entries, mapScreenshot, photos)) {
+    for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
       final canonical = _buildCanonical(
-        charter: charter, days: [day], entriesByDay: {day.id: entries});
+        charter: charter, days: [day], entriesByDay: {day.id: entries},
+        docId: docId, revision: rev);
       final hash = sha256.convert(utf8.encode(canonical)).toString();
       pdf.addPage(_signaturePage(
         signatureImage: signatureImage,
@@ -176,11 +186,16 @@ class PdfExportService {
     required Charter charter,
     required List<DayLog> days,
     required Map<int, List<LogbookEntry>> entriesByDay,
+    String docId = '',
+    int revision = 0,
   }) {
     final sb = StringBuffer()
-      ..writeln('HMB-SAILING-LOG:v1')
+      ..writeln('HMB-SAILING-LOG:v2')
+      ..writeln('docId:$docId')
+      ..writeln('rev:$revision')
       ..writeln('title:${charter.title}')
       ..writeln('vessel:${charter.vesselName ?? ""}')
+      ..writeln('mmsi:${charter.mmsi ?? ""}')
       ..writeln('skipper:${charter.skipperName ?? ""}')
       ..writeln('from:${charter.dateFrom.toUtc().toIso8601String()}')
       ..writeln('to:${charter.dateTo.toUtc().toIso8601String()}');
@@ -205,7 +220,8 @@ class PdfExportService {
   // ── Title Page ────────────────────────────────────────────────
 
   static pw.Page _titlePage(Charter charter, List<DayLog> days,
-      Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper) {
+      Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper,
+      String docId, int revision) {
     final fmt = DateFormat('d. MMM yyyy');
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
@@ -342,7 +358,7 @@ class PdfExportService {
           ],
         ),
         pw.Spacer(),
-        _footer(_ascii(charter.title)),
+        _footer(_ascii(charter.title), docId: docId, revision: revision),
       ]),
     );
   }
@@ -350,8 +366,8 @@ class PdfExportService {
   // ── Day Pages ─────────────────────────────────────────────────
 
   static List<pw.Page> _dayPages(Charter charter, DayLog day,
-      List<LogbookEntry> entries, Uint8List? screenshot,
-      Map<int, Uint8List> photos) {
+      List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
+      String docId, int revision) {
     final pages = <pw.Page>[];
     final dayName = DateFormat('EEEE d. MMMM yyyy').format(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
@@ -474,7 +490,7 @@ class PdfExportService {
         ],
 
         pw.Spacer(),
-        _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}'),
+        _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
       ]),
     ));
 
@@ -492,7 +508,7 @@ class PdfExportService {
             pw.SizedBox(height: 8),
             _entriesTable(chunk, photos),
             pw.Spacer(),
-            _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}'),
+            _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
           ]),
         ));
       }
@@ -638,7 +654,7 @@ class PdfExportService {
   // ── Summary Page ──────────────────────────────────────────────
 
   static pw.Page _summaryPage(Charter charter, List<DayLog> days,
-      Map<int, List<LogbookEntry>> entriesByDay) {
+      Map<int, List<LogbookEntry>> entriesByDay, String docId, int revision) {
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
     final maxBft = days.fold<int>(0, (s, d) {
@@ -711,13 +727,10 @@ class PdfExportService {
           ],
         ),
         pw.Spacer(),
-        pw.Divider(color: PdfColors.grey300),
-        pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-          pw.Text('Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
-              style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-          pw.Text('HMB Sailing Log  (c) 2026 LacoSte',
-              style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-        ]),
+        _footer(
+          'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+          docId: docId, revision: revision,
+        ),
       ]),
     );
   }
@@ -740,7 +753,7 @@ class PdfExportService {
   ];
 
   static Future<pw.Page> _safetyBriefingPage(
-      Charter charter, List<CrewSignature> sigs) async {
+      Charter charter, List<CrewSignature> sigs, String docId, int revision) async {
     // Load signature images
     final sigImages = <int, pw.MemoryImage>{};
     for (var i = 0; i < sigs.length; i++) {
@@ -873,7 +886,7 @@ class PdfExportService {
           ]),
 
         pw.Spacer(),
-        _footer('${_ascii(charter.title)}  |  Bezpecnostny briefing'),
+        _footer('${_ascii(charter.title)}  |  Bezpecnostny briefing', docId: docId, revision: revision),
       ]),
     );
   }
@@ -904,13 +917,17 @@ class PdfExportService {
     required DateTime signedAt,
     required String hash,
     required String docTitle,
+    String docId = '',
+    int revision = 0,
   }) {
     final timeStr = DateFormat('d.M.yyyy HH:mm:ss').format(signedAt);
-    final qrData = 'HMB-LOG:v1'
-        '|doc:${_ascii(docTitle)}'
+    final shortHash = hash.substring(0, 12);
+    final qrData = 'HMB-LOG:v2'
+        '|id:$docId'
+        '|rev:$revision'
         '|signer:${_ascii(signerName ?? "Skipper")}'
         '|ts:${signedAt.toIso8601String()}'
-        '|sha256:$hash';
+        '|sha256:$shortHash';
 
     return pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -969,7 +986,7 @@ class PdfExportService {
           ]),
         ]),
         pw.Spacer(),
-        _footer('${_ascii(docTitle)}  |  Podpisany $timeStr UTC'),
+        _footer('${_ascii(docTitle)}  |  Podpisany $timeStr UTC', docId: docId, revision: revision),
       ]),
     );
   }
@@ -1162,12 +1179,19 @@ class PdfExportService {
       child: pw.Text(text, maxLines: maxLines, overflow: pw.TextOverflow.clip,
           style: style ?? pw.TextStyle(fontSize: fontSize)));
 
-  static pw.Widget _footer(String text) => pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-      pw.Text(text, style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
-      pw.Text('HMB Sailing Log  |  ${DateFormat('d.M.yyyy').format(DateTime.now())}',
-          style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
+  static pw.Widget _footer(String text, {String? docId, int? revision}) {
+    final right = [
+      if (docId != null && revision != null) '$docId  |  Rev.$revision',
+      'HMB Sailing Log  |  ${DateFormat('d.M.yyyy').format(DateTime.now())}',
+    ].join('  |  ');
+    return pw.Column(children: [
+      pw.Divider(color: _dgrey, thickness: 0.3),
+      pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
+        pw.Text(text, style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+        pw.Text(right, style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+      ]),
     ]);
+  }
 
   /// Diakritika → ASCII pre PDF
   static String _ascii(String s) => s
