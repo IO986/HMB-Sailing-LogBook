@@ -31,8 +31,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   BaseMap _baseMap = BaseMap.osm;
   String? _lastMobFocus;
   bool _mapReady = false;
-  int _tileKey = 0; // increment to force TileLayer recreation
-  StreamSubscription<MapEvent>? _sizeChangeSub;
+  int _tileKey = 0;
   Timer? _tileReloadTimer;
 
   @override
@@ -43,27 +42,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   void dispose() {
     _tileReloadTimer?.cancel();
-    _sizeChangeSub?.cancel();
     super.dispose();
-  }
-
-  void _scheduleTileReload() {
-    _tileReloadTimer?.cancel();
-    _tileReloadTimer = Timer(const Duration(milliseconds: 100), () {
-      if (!mounted) return;
-      setState(() => _tileKey++);
-    });
   }
 
   void _onMapReady() {
     _mapReady = true;
-    // Listen for every viewport size change (fires during route animations).
-    // Debounced 100 ms so we reload tiles only after the size stabilises,
-    // not on every animation frame.
-    _sizeChangeSub ??= _mapController.mapEventStream
-        .where((e) => e is MapEventNonRotatedSizeChange)
-        .listen((_) => _scheduleTileReload());
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Wait 500 ms (safely after any GoRouter enter animation) then force a
+    // fresh TileLayer so tiles load with the final, correct viewport size.
+    _tileReloadTimer = Timer(const Duration(milliseconds: 500), () {
       if (!mounted) return;
       setState(() => _tileKey++);
       _centerIfFollowing();

@@ -48,7 +48,7 @@ class SafetyBriefingContent {
     ]),
     BriefingSection('9. Lodná toaleta (Heads)', [
       'Lodná toaleta nie je domáce WC.',
-      'Do toalety patrí IBAN ľudský odpad a lodný/rýchlo rozložiteľný toaletný papier.',
+      'Do toalety patrí len ľudský odpad a lodný/rýchlo rozložiteľný toaletný papier.',
       'ZAKÁZANÉ: vlhčené utierky, hygienické vložky, tampóny, papierové utierky.',
       'Po použití systém dostatočne prepláchnuť.',
       'Pri probléme okamžite informovať kapitána.',

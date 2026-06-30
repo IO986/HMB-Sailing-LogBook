@@ -57,6 +57,7 @@ class PdfExportService {
     required Map<int, Uint8List?> mapScreenshots,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    List<CrewSignature> crewSignatures = const [],
   }) async {
     final pdf = pw.Document(
       title: _ascii(charter.title),
@@ -72,6 +73,9 @@ class PdfExportService {
       }
     }
     pdf.addPage(_summaryPage(charter, days, entriesByDay));
+    // Safety briefing page with crew signatures
+    final sbPage = await _safetyBriefingPage(charter, crewSignatures);
+    pdf.addPage(sbPage);
     if (signatureImage != null) {
       final canonical = _buildCanonical(charter: charter, days: days, entriesByDay: entriesByDay);
       final hash = sha256.convert(utf8.encode(canonical)).toString();
@@ -223,7 +227,7 @@ class PdfExportService {
             pw.Text(_ascii(charter.title), style: pw.TextStyle(
                 color: PdfColors.white, fontSize: 24, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 3),
-            pw.Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}',
+            pw.Text('${fmt.format(charter.dateFrom)} - ${fmt.format(charter.dateTo)}',
                 style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
           ]),
         ),
@@ -233,7 +237,15 @@ class PdfExportService {
           pw.Expanded(child: _infoBox('LOD', [
             _ascii(charter.vesselName ?? '-'),
             if (charter.vesselType != null) _ascii(charter.vesselType!),
-            if (charter.homePort != null) 'Pristav: ${_ascii(charter.homePort!)}',
+            if (charter.homePort != null) 'Domovsky pristav: ${_ascii(charter.homePort!)}',
+            if (charter.mmsi != null) 'MMSI: ${charter.mmsi!}',
+            if (charter.callsign != null) 'Volaci znak: ${charter.callsign!}',
+            if (charter.vesselLengthM != null || charter.vesselBeamM != null || charter.vesselDraftM != null)
+              'Rozmery: ${[
+                if (charter.vesselLengthM != null) '${charter.vesselLengthM!.toStringAsFixed(1)}m',
+                if (charter.vesselBeamM != null) '${charter.vesselBeamM!.toStringAsFixed(1)}m',
+                if (charter.vesselDraftM != null) '${charter.vesselDraftM!.toStringAsFixed(1)}m',
+              ].join(' x ')}',
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('POSADKA', [
@@ -706,6 +718,180 @@ class PdfExportService {
           pw.Text('HMB Sailing Log  (c) 2026 LacoSte',
               style: pw.TextStyle(color: _dgrey, fontSize: 8)),
         ]),
+      ]),
+    );
+  }
+
+  // ── Safety Briefing Page ─────────────────────────────────────
+
+  static const _sbItems = [
+    'Zachranne vesty – umiestnenie a pouzitie',
+    'Zachranny kruh a MOB postup',
+    'Svetlice – typy a pouzitie',
+    'EPIRB / PLB – aktivacia',
+    'VHF radio – kanal 16, Mayday postup',
+    'Hasiaci pristroj – umiestnenie a pouzitie',
+    'Lekarnička – umiestnenie',
+    'Nuzove vypnutie motora',
+    'Uniky – voda, plyn',
+    'Kotva a retaz – postup kotvenia',
+    'Pravidla na palube',
+    'Nuzove kontakty a VHF 16',
+  ];
+
+  static Future<pw.Page> _safetyBriefingPage(
+      Charter charter, List<CrewSignature> sigs) async {
+    // Load signature images
+    final sigImages = <int, pw.MemoryImage>{};
+    for (var i = 0; i < sigs.length; i++) {
+      final path = sigs[i].signaturePath;
+      if (path != null) {
+        try {
+          final f = File(path);
+          if (await f.exists()) {
+            sigImages[i] = pw.MemoryImage(await f.readAsBytes());
+          }
+        } catch (_) {}
+      }
+    }
+
+    return pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      build: (ctx) => pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        // Header
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: pw.BoxDecoration(color: _navy,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
+          child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.Text('BEZPECNOSTNY BRIEFING', style: pw.TextStyle(
+                color: PdfColors.white, fontSize: 9, letterSpacing: 2,
+                fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 3),
+            pw.Text(_ascii(charter.title),
+                style: pw.TextStyle(color: PdfColors.grey200, fontSize: 11)),
+          ]),
+        ),
+        pw.SizedBox(height: 12),
+
+        // Checklist in 2 columns
+        pw.Text('CHECKLIST', style: pw.TextStyle(
+            color: _navy, fontWeight: pw.FontWeight.bold,
+            fontSize: 8, letterSpacing: 1)),
+        pw.SizedBox(height: 6),
+        pw.Container(
+          decoration: pw.BoxDecoration(
+            border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+          ),
+          child: pw.Table(
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1),
+              1: const pw.FlexColumnWidth(1),
+            },
+            children: List.generate(
+              (_sbItems.length / 2).ceil(),
+              (row) {
+                final left = _sbItems[row * 2];
+                final rightIdx = row * 2 + 1;
+                final right = rightIdx < _sbItems.length ? _sbItems[rightIdx] : null;
+                return pw.TableRow(
+                  decoration: pw.BoxDecoration(
+                      color: row.isEven ? _lgrey : PdfColors.white),
+                  children: [
+                    _sbCell('${row * 2 + 1}. $left'),
+                    _sbCell(right != null ? '${rightIdx + 1}. $right' : ''),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+        pw.SizedBox(height: 14),
+
+        // Crew signatures
+        pw.Text('PODPISY POSADKY', style: pw.TextStyle(
+            color: _navy, fontWeight: pw.FontWeight.bold,
+            fontSize: 8, letterSpacing: 1)),
+        pw.SizedBox(height: 6),
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: pw.BoxDecoration(
+            color: _lblue,
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+          ),
+          child: pw.Text(
+            'Vsetci clenovia posadky boli oboznameni a porozumeli bezpecnostnym '
+            'pravidlam. Potvrdzuju to podpisom.',
+            style: pw.TextStyle(fontSize: 8.5, fontStyle: pw.FontStyle.italic),
+          ),
+        ),
+        pw.SizedBox(height: 10),
+
+        if (sigs.isEmpty)
+          pw.Text('Ziadne podpisy', style: pw.TextStyle(color: _dgrey, fontSize: 9))
+        else
+          pw.Wrap(spacing: 10, runSpacing: 10, children: [
+            for (var i = 0; i < sigs.length; i++)
+              pw.Container(
+                width: 150,
+                padding: const pw.EdgeInsets.all(8),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                ),
+                child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+                  pw.Text(_ascii(sigs[i].crewName),
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                  pw.Text(sigs[i].role == 'skipper' ? 'Kapitan' : 'Posadka',
+                      style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
+                  pw.SizedBox(height: 4),
+                  pw.Container(
+                    width: double.infinity,
+                    height: 60,
+                    decoration: pw.BoxDecoration(
+                      color: PdfColors.white,
+                      border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+                      borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
+                    ),
+                    child: sigImages.containsKey(i)
+                        ? pw.Padding(padding: const pw.EdgeInsets.all(3),
+                            child: pw.Image(sigImages[i]!, fit: pw.BoxFit.contain))
+                        : pw.Center(child: pw.Text('Nepodpisane',
+                            style: pw.TextStyle(color: _dgrey, fontSize: 7))),
+                  ),
+                  if (sigs[i].signedAt != null) ...[
+                    pw.SizedBox(height: 3),
+                    pw.Text(DateFormat('d.M.yyyy HH:mm').format(sigs[i].signedAt!.toLocal()),
+                        style: pw.TextStyle(color: _dgrey, fontSize: 6.5)),
+                  ],
+                ]),
+              ),
+          ]),
+
+        pw.Spacer(),
+        _footer('${_ascii(charter.title)}  |  Bezpecnostny briefing'),
+      ]),
+    );
+  }
+
+  static pw.Widget _sbCell(String text) {
+    if (text.isEmpty) return pw.SizedBox();
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        pw.Container(
+          width: 10, height: 10,
+          margin: const pw.EdgeInsets.only(right: 5, top: 1),
+          decoration: pw.BoxDecoration(
+            color: _green,
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
+          ),
+        ),
+        pw.Expanded(child: pw.Text(_ascii(text), style: const pw.TextStyle(fontSize: 8))),
       ]),
     );
   }

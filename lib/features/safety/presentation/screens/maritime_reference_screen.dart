@@ -40,32 +40,110 @@ class MaritimeReferenceScreen extends StatelessWidget {
 // ── Data ─────────────────────────────────────────────────────────
 
 const _alphabet = [
-  (letter: 'A', nato: 'Alpha',    morse: '·−',     flagColors: [Colors.white, Colors.blue],     flagDesc: 'Diver down – keep clear'),
-  (letter: 'B', nato: 'Bravo',    morse: '−···',   flagColors: [Colors.red],                    flagDesc: 'Dangerous goods on board'),
-  (letter: 'C', nato: 'Charlie',  morse: '−·−·',   flagColors: [Colors.blue, Colors.white, Colors.red, Colors.white, Colors.blue], flagDesc: 'Yes / Affirmative'),
-  (letter: 'D', nato: 'Delta',    morse: '−··',    flagColors: [Colors.blue, Colors.yellow, Colors.red], flagDesc: 'Keep clear – maneuvering with difficulty'),
-  (letter: 'E', nato: 'Echo',     morse: '·',      flagColors: [Colors.blue],                   flagDesc: 'Altering course to starboard'),
-  (letter: 'F', nato: 'Foxtrot',  morse: '··−·',   flagColors: [Colors.white, Colors.red, Colors.white], flagDesc: 'I am disabled – communicate with me'),
-  (letter: 'G', nato: 'Golf',     morse: '−−·',    flagColors: [Colors.yellow, Colors.blue],    flagDesc: 'I require a pilot'),
-  (letter: 'H', nato: 'Hotel',    morse: '····',   flagColors: [Colors.white, Colors.red],      flagDesc: 'Pilot on board'),
-  (letter: 'I', nato: 'India',    morse: '··',     flagColors: [Colors.yellow, Colors.black],   flagDesc: 'Altering course to port'),
-  (letter: 'J', nato: 'Juliet',   morse: '·−−−',   flagColors: [Colors.blue, Colors.white],     flagDesc: 'Fire & dangerous cargo – keep clear'),
-  (letter: 'K', nato: 'Kilo',     morse: '−·−',    flagColors: [Colors.blue, Colors.yellow],    flagDesc: 'I wish to communicate'),
-  (letter: 'L', nato: 'Lima',     morse: '·−··',   flagColors: [Colors.yellow, Colors.black],   flagDesc: 'Stop your vessel instantly'),
-  (letter: 'M', nato: 'Mike',     morse: '−−',     flagColors: [Colors.white, Colors.blue],     flagDesc: 'My vessel is stopped'),
-  (letter: 'N', nato: 'November', morse: '−·',     flagColors: [Colors.blue, Colors.white],     flagDesc: 'No / Negative'),
-  (letter: 'O', nato: 'Oscar',    morse: '−−−',    flagColors: [Colors.red, Colors.yellow],     flagDesc: 'Man overboard'),
-  (letter: 'P', nato: 'Papa',     morse: '·−−·',   flagColors: [Colors.blue, Colors.white],     flagDesc: 'All aboard – departing to sea'),
-  (letter: 'Q', nato: 'Quebec',   morse: '−−·−',   flagColors: [Colors.yellow],                 flagDesc: 'Vessel healthy – free pratique requested'),
-  (letter: 'R', nato: 'Romeo',    morse: '·−·',    flagColors: [Colors.red, Colors.yellow, Colors.red], flagDesc: '(No standard ICS meaning)'),
-  (letter: 'S', nato: 'Sierra',   morse: '···',    flagColors: [Colors.white, Colors.blue],     flagDesc: 'Engines full astern'),
-  (letter: 'T', nato: 'Tango',    morse: '−',      flagColors: [Colors.red, Colors.white, Colors.red], flagDesc: 'Engaged in pair trawling – keep clear'),
-  (letter: 'U', nato: 'Uniform',  morse: '··−',    flagColors: [Colors.red, Colors.white],      flagDesc: 'You are running into danger'),
-  (letter: 'V', nato: 'Victor',   morse: '···−',   flagColors: [Colors.white, Colors.red],      flagDesc: 'I require assistance'),
-  (letter: 'W', nato: 'Whiskey',  morse: '·−−',    flagColors: [Colors.red, Colors.white],      flagDesc: 'I require medical assistance'),
-  (letter: 'X', nato: 'X-ray',    morse: '−··−',   flagColors: [Colors.blue, Colors.white],     flagDesc: 'Stop – watch for my signals'),
-  (letter: 'Y', nato: 'Yankee',   morse: '−·−−',   flagColors: [Colors.yellow, Colors.red],     flagDesc: 'Dragging anchor'),
-  (letter: 'Z', nato: 'Zulu',     morse: '−−··',   flagColors: [Colors.black, Colors.yellow],   flagDesc: 'I require a tug'),
+  (letter: 'A', nato: 'Alpha',    morse: '·−',     flagColors: [Colors.white, Colors.blue],
+    flagDescEn: 'Diver down – keep clear',               flagDescSk: 'Potápač pod hladinou – nepribližujte sa',
+    flagDescDe: 'Taucher im Wasser – Abstand halten',    flagDescEs: 'Buceador en el agua – manténgase alejado',
+    flagDescUk: 'Водолаз під водою – тримайтесь осторонь'),
+  (letter: 'B', nato: 'Bravo',    morse: '−···',   flagColors: [Colors.red],
+    flagDescEn: 'Dangerous goods on board',              flagDescSk: 'Na palube nebezpečný náklad',
+    flagDescDe: 'Gefährliche Güter an Bord',             flagDescEs: 'Mercancías peligrosas a bordo',
+    flagDescUk: 'Небезпечний вантаж на борту'),
+  (letter: 'C', nato: 'Charlie',  morse: '−·−·',   flagColors: [Colors.blue, Colors.white, Colors.red, Colors.white, Colors.blue],
+    flagDescEn: 'Yes / Affirmative',                     flagDescSk: 'Áno / Súhlasím',
+    flagDescDe: 'Ja / Affirmativ',                       flagDescEs: 'Sí / Afirmativo',
+    flagDescUk: 'Так / Стверджую'),
+  (letter: 'D', nato: 'Delta',    morse: '−··',    flagColors: [Colors.blue, Colors.yellow, Colors.red],
+    flagDescEn: 'Keep clear – maneuvering with difficulty', flagDescSk: 'Drž sa ďalej – problémy s manévrovaním',
+    flagDescDe: 'Abstand halten – Manövrierfähigkeit eingeschränkt', flagDescEs: 'Manténgase alejado – dificultades de maniobra',
+    flagDescUk: 'Тримайтесь осторонь – труднощі з маневруванням'),
+  (letter: 'E', nato: 'Echo',     morse: '·',      flagColors: [Colors.blue],
+    flagDescEn: 'Altering course to starboard',          flagDescSk: 'Mením kurz doprava',
+    flagDescDe: 'Kursänderung nach Steuerbord',          flagDescEs: 'Cambiando rumbo a estribor',
+    flagDescUk: 'Змінюю курс на правий борт'),
+  (letter: 'F', nato: 'Foxtrot',  morse: '··−·',   flagColors: [Colors.white, Colors.red, Colors.white],
+    flagDescEn: 'I am disabled – communicate with me',   flagDescSk: 'Som imobilný – kontaktujte ma',
+    flagDescDe: 'Manövrierunfähig – bitte Verbindung aufnehmen', flagDescEs: 'Estoy averiado – comuníquese conmigo',
+    flagDescUk: 'Я нерухомий – зв\'яжіться зі мною'),
+  (letter: 'G', nato: 'Golf',     morse: '−−·',    flagColors: [Colors.yellow, Colors.blue],
+    flagDescEn: 'I require a pilot',                     flagDescSk: 'Potrebujem lodného pilota',
+    flagDescDe: 'Lotse erforderlich',                    flagDescEs: 'Necesito práctico',
+    flagDescUk: 'Потрібен лоцман'),
+  (letter: 'H', nato: 'Hotel',    morse: '····',   flagColors: [Colors.white, Colors.red],
+    flagDescEn: 'Pilot on board',                        flagDescSk: 'Lodný pilot na palube',
+    flagDescDe: 'Lotse an Bord',                         flagDescEs: 'Práctico a bordo',
+    flagDescUk: 'Лоцман на борту'),
+  (letter: 'I', nato: 'India',    morse: '··',     flagColors: [Colors.yellow, Colors.black],
+    flagDescEn: 'Altering course to port',               flagDescSk: 'Mením kurz doľava',
+    flagDescDe: 'Kursänderung nach Backbord',            flagDescEs: 'Cambiando rumbo a babor',
+    flagDescUk: 'Змінюю курс на лівий борт'),
+  (letter: 'J', nato: 'Juliet',   morse: '·−−−',   flagColors: [Colors.blue, Colors.white],
+    flagDescEn: 'Fire & dangerous cargo – keep clear',   flagDescSk: 'Požiar a nebezpečný náklad – drž sa ďalej',
+    flagDescDe: 'Feuer und gefährliche Ladung – Abstand halten', flagDescEs: 'Fuego y carga peligrosa – manténgase alejado',
+    flagDescUk: 'Пожежа та небезпечний вантаж – тримайтесь осторонь'),
+  (letter: 'K', nato: 'Kilo',     morse: '−·−',    flagColors: [Colors.blue, Colors.yellow],
+    flagDescEn: 'I wish to communicate',                 flagDescSk: 'Chcem komunikovať',
+    flagDescDe: 'Ich möchte kommunizieren',              flagDescEs: 'Deseo comunicarme',
+    flagDescUk: 'Хочу зв\'язатися'),
+  (letter: 'L', nato: 'Lima',     morse: '·−··',   flagColors: [Colors.yellow, Colors.black],
+    flagDescEn: 'Stop your vessel instantly',             flagDescSk: 'Okamžite zastavte svoju loď',
+    flagDescDe: 'Schiff sofort stoppen',                 flagDescEs: 'Detenga su barco inmediatamente',
+    flagDescUk: 'Негайно зупиніть судно'),
+  (letter: 'M', nato: 'Mike',     morse: '−−',     flagColors: [Colors.white, Colors.blue],
+    flagDescEn: 'My vessel is stopped',                  flagDescSk: 'Moja loď stojí',
+    flagDescDe: 'Mein Schiff liegt still',               flagDescEs: 'Mi barco está parado',
+    flagDescUk: 'Моє судно стоїть'),
+  (letter: 'N', nato: 'November', morse: '−·',     flagColors: [Colors.blue, Colors.white],
+    flagDescEn: 'No / Negative',                         flagDescSk: 'Nie / Nesúhlasím',
+    flagDescDe: 'Nein / Negativ',                        flagDescEs: 'No / Negativo',
+    flagDescUk: 'Ні / Негативно'),
+  (letter: 'O', nato: 'Oscar',    morse: '−−−',    flagColors: [Colors.red, Colors.yellow],
+    flagDescEn: 'Man overboard',                         flagDescSk: 'Muž cez palubu',
+    flagDescDe: 'Mann über Bord',                        flagDescEs: 'Hombre al agua',
+    flagDescUk: 'Людина за бортом'),
+  (letter: 'P', nato: 'Papa',     morse: '·−−·',   flagColors: [Colors.blue, Colors.white],
+    flagDescEn: 'All aboard – departing to sea',          flagDescSk: 'Všetci na palube – odplávam na more',
+    flagDescDe: 'Alle an Bord – Abfahrt auf See',        flagDescEs: 'Todos a bordo – zarpo al mar',
+    flagDescUk: 'Всі на борту – відпливаю в море'),
+  (letter: 'Q', nato: 'Quebec',   morse: '−−·−',   flagColors: [Colors.yellow],
+    flagDescEn: 'Vessel healthy – free pratique requested', flagDescSk: 'Loď je zdravá – žiadam voľný prístup',
+    flagDescDe: 'Schiff gesund – bitte freie Einfahrt',  flagDescEs: 'Barco sano – solicito libre plática',
+    flagDescUk: 'Судно здорове – прошу вільного доступу'),
+  (letter: 'R', nato: 'Romeo',    morse: '·−·',    flagColors: [Colors.red, Colors.yellow, Colors.red],
+    flagDescEn: '(No standard ICS meaning)',              flagDescSk: '(Bez štandardného ICS významu)',
+    flagDescDe: '(Keine ICS-Standardbedeutung)',          flagDescEs: '(Sin significado ICS estándar)',
+    flagDescUk: '(Немає стандартного значення ICS)'),
+  (letter: 'S', nato: 'Sierra',   morse: '···',    flagColors: [Colors.white, Colors.blue],
+    flagDescEn: 'Engines full astern',                   flagDescSk: 'Motory plnou cúvaním',
+    flagDescDe: 'Maschinen volle Kraft zurück',           flagDescEs: 'Máquinas a toda marcha atrás',
+    flagDescUk: 'Машини на повний задній хід'),
+  (letter: 'T', nato: 'Tango',    morse: '−',      flagColors: [Colors.red, Colors.white, Colors.red],
+    flagDescEn: 'Engaged in pair trawling – keep clear', flagDescSk: 'Lovím sieťami – drž sa ďalej',
+    flagDescDe: 'Schleppnetzfischerei – Abstand halten', flagDescEs: 'Pesca de arrastre – manténgase alejado',
+    flagDescUk: 'Веду парне тралення – тримайтесь осторонь'),
+  (letter: 'U', nato: 'Uniform',  morse: '··−',    flagColors: [Colors.red, Colors.white],
+    flagDescEn: 'You are running into danger',            flagDescSk: 'Smerujete do nebezpečenstva',
+    flagDescDe: 'Sie steuern in Gefahr',                 flagDescEs: 'Va en dirección al peligro',
+    flagDescUk: 'Ви прямуєте в небезпеку'),
+  (letter: 'V', nato: 'Victor',   morse: '···−',   flagColors: [Colors.white, Colors.red],
+    flagDescEn: 'I require assistance',                  flagDescSk: 'Potrebujem pomoc',
+    flagDescDe: 'Ich benötige Hilfe',                    flagDescEs: 'Necesito asistencia',
+    flagDescUk: 'Потрібна допомога'),
+  (letter: 'W', nato: 'Whiskey',  morse: '·−−',    flagColors: [Colors.red, Colors.white],
+    flagDescEn: 'I require medical assistance',           flagDescSk: 'Potrebujem lekársku pomoc',
+    flagDescDe: 'Ich benötige ärztliche Hilfe',          flagDescEs: 'Necesito asistencia médica',
+    flagDescUk: 'Потрібна медична допомога'),
+  (letter: 'X', nato: 'X-ray',    morse: '−··−',   flagColors: [Colors.blue, Colors.white],
+    flagDescEn: 'Stop – watch for my signals',           flagDescSk: 'Zastavte – čakajte na moje signály',
+    flagDescDe: 'Stopp – auf meine Signale warten',      flagDescEs: 'Pare – espere mis señales',
+    flagDescUk: 'Стоп – чекайте моїх сигналів'),
+  (letter: 'Y', nato: 'Yankee',   morse: '−·−−',   flagColors: [Colors.yellow, Colors.red],
+    flagDescEn: 'Dragging anchor',                       flagDescSk: 'Kotva sa vlečie',
+    flagDescDe: 'Anker schleppt',                        flagDescEs: 'Garreo de ancla',
+    flagDescUk: 'Якір тягнеться'),
+  (letter: 'Z', nato: 'Zulu',     morse: '−−··',   flagColors: [Colors.black, Colors.yellow],
+    flagDescEn: 'I require a tug',                       flagDescSk: 'Potrebujem remorkér',
+    flagDescDe: 'Schlepper erforderlich',                flagDescEs: 'Necesito remolcador',
+    flagDescUk: 'Потрібен буксир'),
 ];
 
 // ── Phonetic Alphabet Tab ─────────────────────────────────────────
@@ -144,8 +222,16 @@ class _FlagTab extends StatelessWidget {
                   Text('${entry.letter} – ${entry.nato}',
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
                   const SizedBox(height: 2),
-                  Text(entry.flagDesc,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    switch (Localizations.localeOf(context).languageCode) {
+                      'sk' => entry.flagDescSk,
+                      'de' => entry.flagDescDe,
+                      'es' => entry.flagDescEs,
+                      'uk' => entry.flagDescUk,
+                      _    => entry.flagDescEn,
+                    },
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               )),
             ]),
@@ -233,8 +319,12 @@ class _DayShapesTab extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Row(children: [
-              SizedBox(
+              Container(
                 width: 52, height: 68,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD6E4F0),
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: _DayShapePainter(shapeCode: s.shape),
               ),
               const SizedBox(width: 14),
@@ -354,8 +444,34 @@ const _morseNumbers = [
   (char: '9', morse: '−−−−·'),
 ];
 
-class _MorseTab extends StatelessWidget {
+class _MorseTab extends StatefulWidget {
   const _MorseTab();
+  @override
+  State<_MorseTab> createState() => _MorseTabState();
+}
+
+class _MorseTabState extends State<_MorseTab> {
+  final _ctrl = TextEditingController();
+  String _morse = '';
+
+  static final _morseMap = {
+    for (final e in _alphabet) e.letter: e.morse,
+    for (final e in _morseNumbers) e.char: e.morse,
+  };
+
+  void _convert(String text) {
+    final result = text.toUpperCase().split('').map((c) {
+      if (c == ' ') return '/';
+      return _morseMap[c] ?? '?';
+    }).join('  ');
+    setState(() => _morse = result);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -364,6 +480,50 @@ class _MorseTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Prevodník ──
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Prevodník text → Morse',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13,
+                        color: Theme.of(context).colorScheme.primary)),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _ctrl,
+                  onChanged: _convert,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: const InputDecoration(
+                    hintText: 'Zadajte text...',
+                    prefixIcon: Icon(Icons.keyboard),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: SelectableText(
+                    _morse.isEmpty ? '· · ·' : _morse,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 16,
+                      letterSpacing: 2,
+                      color: _morse.isEmpty ? Colors.white24 : Colors.yellow,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          const SizedBox(height: 12),
+
           // SOS highlight
           Container(
             width: double.infinity,

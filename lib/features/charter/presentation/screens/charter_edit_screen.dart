@@ -30,7 +30,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _beamCtrl = TextEditingController();
   final _draftCtrl = TextEditingController();
   final _skipperCtrl = TextEditingController();
-  final _crewCtrl = TextEditingController();
+  final List<TextEditingController> _crewControllers = [];
   final _notesCtrl = TextEditingController();
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now().add(const Duration(days: 7));
@@ -44,6 +44,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   @override
   void initState() {
     super.initState();
+    _crewControllers.add(TextEditingController());
     if (!_isNew) _loadCharter();
   }
 
@@ -66,7 +67,17 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         _beamCtrl.text = c.vesselBeamM?.toString() ?? '';
         _draftCtrl.text = c.vesselDraftM?.toString() ?? '';
         _skipperCtrl.text = c.skipperName ?? '';
-        _crewCtrl.text = (c.crewNames ?? '').replaceAll('|', ', ');
+        final crewList = (c.crewNames ?? '').split('|')
+            .map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+        for (final ctrl in _crewControllers) ctrl.dispose();
+        _crewControllers.clear();
+        if (crewList.isEmpty) {
+          _crewControllers.add(TextEditingController());
+        } else {
+          for (final name in crewList) {
+            _crewControllers.add(TextEditingController(text: name));
+          }
+        }
         _notesCtrl.text = c.notes ?? '';
         _dateFrom = c.dateFrom;
         _dateTo = c.dateTo;
@@ -131,7 +142,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _vesselCtrl,
             decoration: InputDecoration(
               labelText: l.vesselName,
-              hintText: 'napr. Elan 45',
               prefixIcon: const Icon(Icons.directions_boat),
             ),
           ),
@@ -161,7 +171,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 labelText: l.mmsi,
-                hintText: '123456789',
+                hintText: '9-miestne číslo',
                 prefixIcon: const Icon(Icons.radio),
               ),
             )),
@@ -171,7 +181,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: l.callsign,
-                hintText: 'OM1ABC',
                 prefixIcon: const Icon(Icons.signal_cellular_alt),
               ),
             )),
@@ -216,15 +225,40 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          TextField(
-            controller: _crewCtrl,
-            maxLines: 3,
-            decoration: InputDecoration(
-              labelText: l.crew,
-              hintText: 'Mená oddelené čiarkou\nnapr. Peter Novák, Jana Nováková',
-              prefixIcon: const Icon(Icons.group),
-              alignLabelWithHint: true,
-            ),
+          ..._crewControllers.asMap().entries.map((e) {
+            final i = e.key;
+            final ctrl = e.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: ctrl,
+                    decoration: InputDecoration(
+                      labelText: '${l.crew} ${i + 1}',
+                      prefixIcon: const Icon(Icons.person_outline),
+                    ),
+                  ),
+                ),
+                if (_crewControllers.length > 1) ...[
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                    onPressed: () => setState(() {
+                      ctrl.dispose();
+                      _crewControllers.removeAt(i);
+                    }),
+                  ),
+                ],
+              ]),
+            );
+          }),
+          TextButton.icon(
+            icon: const Icon(Icons.add),
+            label: Text(l.crew),
+            onPressed: () => setState(() {
+              _crewControllers.add(TextEditingController());
+            }),
           ),
           const SizedBox(height: 16),
 
@@ -300,9 +334,11 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     }
     setState(() => _loading = true);
     final db = ref.read(databaseProvider);
-    final crew = _crewCtrl.text.trim().isEmpty ? null
-        : _crewCtrl.text.split(',').map((e) => e.trim())
-            .where((e) => e.isNotEmpty).join('|');
+    final crewList = _crewControllers
+        .map((c) => c.text.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final crew = crewList.isEmpty ? null : crewList.join('|');
 
     final companion = ChartersCompanion(
       id: _existing != null ? Value(_existing!.id) : const Value.absent(),
@@ -350,7 +386,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     _titleCtrl.dispose(); _vesselCtrl.dispose(); _vesselTypeCtrl.dispose();
     _homePortCtrl.dispose(); _mmsiCtrl.dispose(); _callsignCtrl.dispose();
     _lengthCtrl.dispose(); _beamCtrl.dispose(); _draftCtrl.dispose();
-    _skipperCtrl.dispose(); _crewCtrl.dispose(); _notesCtrl.dispose();
+    _skipperCtrl.dispose(); _notesCtrl.dispose();
+    for (final c in _crewControllers) c.dispose();
     super.dispose();
   }
 }

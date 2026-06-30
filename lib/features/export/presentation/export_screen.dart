@@ -35,6 +35,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   Map<int, List<LogbookEntry>> _entriesByDay = {};
   Map<int, List<TrackPoint>> _tracksByDay = {};
   Map<int, List<SailingSession>> _sessionsByDay = {};
+  List<CrewSignature> _crewSignatures = [];
   bool _loading = true;
   final Map<int, ScreenshotController> _screenshotControllers = {};
   final Map<int, Uint8List?> _mapScreenshots = {};
@@ -51,6 +52,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     try {
       _charter = charters.firstWhere((c) => c.id == widget.charterId);
     } catch (_) { return; }
+
+    _crewSignatures = await db.getSignaturesForCharter(widget.charterId);
 
     if (widget.dayLogId != null) {
       final allDays = await db.getDayLogs(widget.charterId);
@@ -282,6 +285,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           mapScreenshots: _mapScreenshots,
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
+          crewSignatures: _crewSignatures,
         );
         previewTitle = _charter!.title;
         final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);
