@@ -11,6 +11,7 @@ import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/weather/presentation/screens/weather_screen.dart';
 import 'features/safety/presentation/screens/safety_screen.dart';
+import 'features/compass/presentation/screens/compass_screen.dart';
 import 'features/safety/presentation/screens/colreg_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/export/presentation/export_screen.dart';
@@ -84,6 +85,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(path: 'colreg', builder: (c, s) => const ColregScreen()),
             ],
           ),
+          GoRoute(path: '/compass', builder: (c, s) => const CompassScreen()),
           GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
         ],
       ),

@@ -9,7 +9,10 @@
   "navLogbook": "Logbook",
   "navWeather": "Weather",
   "navSafety": "Safety",
+  "navCompass": "Compass",
   "navSettings": "Settings",
+  "cameraPermissionDenied": "Camera access was denied. Enable it in device settings.",
+  "compassCalibrationNote": "Magnetic compass. Accuracy may be affected by nearby metal or electronics. If uncalibrated, move the device in a figure-eight pattern.",
 
   "cancel": "Cancel",
   "delete": "Delete",

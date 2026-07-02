@@ -35,6 +35,10 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>HMB Sailing Log uses your location in the background for continuous GPS track recording and anchor watch alerts.</string>
 
+	<!-- Motion sensors (compass) -->
+	<key>NSMotionUsageDescription</key>
+	<string>HMB Sailing Log uses the motion sensor to show the magnetic compass bearing.</string>
+
 	<!-- Camera and photo library (image_picker) -->
 	<key>NSCameraUsageDescription</key>
 	<string>HMB Sailing Log uses the camera to add photos to your logbook entries.</string>

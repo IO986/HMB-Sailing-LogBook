@@ -70,11 +70,12 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     (icon: Icons.book_outlined,       activeIcon: Icons.book,         path: '/logbook'),
     (icon: Icons.cloud_outlined,      activeIcon: Icons.cloud,        path: '/weather'),
     (icon: Icons.shield_outlined,     activeIcon: Icons.shield,       path: '/safety'),
+    (icon: Icons.explore_outlined,    activeIcon: Icons.explore,      path: '/compass'),
     (icon: Icons.settings_outlined,   activeIcon: Icons.settings,     path: '/settings'),
   ];
 
   List<String> _labels(AppLocalizations l) => [
-    l.navMap, l.navInstruments, l.navLogbook, l.navWeather, l.navSafety, l.navSettings,
+    l.navMap, l.navInstruments, l.navLogbook, l.navWeather, l.navSafety, l.navCompass, l.navSettings,
   ];
 
   int _idx(BuildContext ctx) {

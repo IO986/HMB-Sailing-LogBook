@@ -9,7 +9,10 @@
   "navLogbook": "Denník",
   "navWeather": "Počasie",
   "navSafety": "Bezpečnosť",
+  "navCompass": "Kompas",
   "navSettings": "Nastavenia",
+  "cameraPermissionDenied": "Prístup ku kamere bol zamietnutý. Povoľ ho v nastaveniach zariadenia.",
+  "compassCalibrationNote": "Magnetický kompas. Presnosť môže byť ovplyvnená kovom alebo elektronikou v blízkosti. Nekalibrovaný kompas kalibruj pohybom v tvare osmičky.",
 
   "cancel": "Zrušiť",
   "delete": "Zmazať",

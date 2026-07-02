@@ -9,7 +9,10 @@
   "navLogbook": "Diario",
   "navWeather": "Tiempo",
   "navSafety": "Seguridad",
+  "navCompass": "Brújula",
   "navSettings": "Ajustes",
+  "cameraPermissionDenied": "Acceso a la cámara denegado. Actívalo en los ajustes del dispositivo.",
+  "compassCalibrationNote": "Brújula magnética. La precisión puede verse afectada por metales o electrónica cercana. Si no está calibrada, mueve el dispositivo en forma de ocho.",
 
   "cancel": "Cancelar",
   "delete": "Eliminar",

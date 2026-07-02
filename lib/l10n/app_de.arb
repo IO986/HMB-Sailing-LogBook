@@ -9,7 +9,10 @@
   "navLogbook": "Logbuch",
   "navWeather": "Wetter",
   "navSafety": "Sicherheit",
+  "navCompass": "Kompass",
   "navSettings": "Einstellungen",
+  "cameraPermissionDenied": "Kamerazugriff wurde verweigert. Bitte in den Geräteeinstellungen aktivieren.",
+  "compassCalibrationNote": "Magnetkompass. Die Genauigkeit kann durch nahes Metall oder Elektronik beeinträchtigt werden. Bei Fehler das Gerät in einer Achterbewegung kalibrieren.",
 
   "cancel": "Abbrechen",
   "delete": "Löschen",
