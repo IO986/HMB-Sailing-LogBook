@@ -68,7 +68,7 @@
 	<!-- Background task identifiers (flutter_background_service) -->
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.sailinglogbook.app.background</string>
+		<string>com.hmbsailinglogbook.app.background</string>
 	</array>
 
 	<key>UIApplicationSceneManifest</key>
