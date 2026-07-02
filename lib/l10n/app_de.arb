@@ -199,7 +199,7 @@
   "autoConnectLabel": "Beim Start automatisch verbinden",
   "disconnect": "Trennen",
   "connect": "Verbinden",
-  "gatewayHint": "Telefon mit dem WLAN des Boot-Gateways verbinden (Raymarine WiFi-1, RayNet und ähnliche laufen typischerweise auf 10.0.0.1, Port 2000). Ohne Verbindung verwendet die App automatisch Telefon-GPS und Internet-Wettervorhersage.",
+  "gatewayHint": "Telefon mit dem Raymarine-WLAN verbinden (z. B. WiFi-1, RayNet). Die einzugebende IP ist NICHT die in den Raymarine-Einstellungen angezeigte — es ist die Gateway-IP dieses WLANs. Am Telefon: Einstellungen → WLAN → Netzwerkdetails → Gateway. Port 2000 (TCP) ist Standard. Ohne Verbindung nutzt die App automatisch das Telefon-GPS.",
   "connectedToHost": "Verbunden mit {host}:{port}",
   "@connectedToHost": { "placeholders": { "host": { "type": "String" }, "port": { "type": "int" } } },
   "enterIpAddress": "Gateway-IP-Adresse eingeben",

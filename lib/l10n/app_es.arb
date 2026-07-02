@@ -199,7 +199,7 @@
   "autoConnectLabel": "Conectar automáticamente al inicio",
   "disconnect": "Desconectar",
   "connect": "Conectar",
-  "gatewayHint": "Conecte el teléfono a la red WiFi del gateway del barco (Raymarine WiFi-1, RayNet y similares suelen funcionar en 10.0.0.1, puerto 2000). Sin conexión, la app usa automáticamente el GPS del teléfono y la previsión meteorológica de internet.",
+  "gatewayHint": "Conecte el teléfono a la red WiFi de Raymarine (p. ej. WiFi-1, RayNet). La IP a introducir NO es la que aparece en los ajustes de Raymarine — es la IP de puerta de enlace (gateway) de esa red WiFi. Encuéntrela en el teléfono: Ajustes → WiFi → detalles de red → Puerta de enlace. Puerto 2000 (TCP) es el estándar. Sin conexión, la app usa automáticamente el GPS del teléfono.",
   "connectedToHost": "Conectado a {host}:{port}",
   "@connectedToHost": { "placeholders": { "host": { "type": "String" }, "port": { "type": "int" } } },
   "enterIpAddress": "Ingrese la dirección IP del gateway",
