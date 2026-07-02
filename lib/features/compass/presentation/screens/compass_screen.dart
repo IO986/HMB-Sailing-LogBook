@@ -92,7 +92,7 @@ class _CompassScreenState extends State<CompassScreen>
     final mx = _magX * cosPitch + _magZ * sinPitch;
     final my = _magX * sinRoll * sinPitch + _magY * cosRoll - _magZ * sinRoll * cosPitch;
 
-    double h = math.atan2(-my, mx) * 180 / math.pi;
+    double h = math.atan2(my, -mx) * 180 / math.pi;
     if (h < 0) h += 360;
     if (mounted) setState(() => _heading = h);
   }
