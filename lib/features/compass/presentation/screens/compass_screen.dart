@@ -28,6 +28,12 @@ class _CompassScreenState extends State<CompassScreen>
   double _magX = 0, _magY = 0, _magZ = 0;
   double _accX = 0, _accY = 0, _accZ = 0;
   double _heading = 0;
+  double _smoothedHeading = 0;
+  bool _headingInitialized = false;
+
+  // Rolling variance for stability indicator
+  final List<double> _recentHeadings = [];
+  bool _isStable = false;
 
   @override
   void initState() {
@@ -74,9 +80,9 @@ class _CompassScreenState extends State<CompassScreen>
   }
 
   void _initSensors() {
-    _magSub = magnetometerEventStream(samplingPeriod: SensorInterval.gameInterval)
+    _magSub = magnetometerEventStream(samplingPeriod: SensorInterval.uiInterval)
         .listen((e) { _magX = e.x; _magY = e.y; _magZ = e.z; _updateHeading(); });
-    _accSub = accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
+    _accSub = accelerometerEventStream(samplingPeriod: SensorInterval.uiInterval)
         .listen((e) { _accX = e.x; _accY = e.y; _accZ = e.z; });
   }
 
@@ -92,9 +98,35 @@ class _CompassScreenState extends State<CompassScreen>
     final mx = _magX * cosPitch + _magZ * sinPitch;
     final my = _magX * sinRoll * sinPitch + _magY * cosRoll - _magZ * sinRoll * cosPitch;
 
-    double h = math.atan2(my, -mx) * 180 / math.pi;
-    if (h < 0) h += 360;
-    if (mounted) setState(() => _heading = h);
+    double raw = math.atan2(my, -mx) * 180 / math.pi;
+    if (raw < 0) raw += 360;
+
+    // Circular low-pass filter (alpha = 0.15 → smooth but responsive)
+    if (!_headingInitialized) {
+      _smoothedHeading = raw;
+      _headingInitialized = true;
+    } else {
+      double diff = raw - _smoothedHeading;
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+      _smoothedHeading = (_smoothedHeading + 0.15 * diff + 360) % 360;
+    }
+
+    // Stability: track last 20 readings, stable if variance < 4°
+    _recentHeadings.add(_smoothedHeading);
+    if (_recentHeadings.length > 20) _recentHeadings.removeAt(0);
+    final stable = _recentHeadings.length >= 10 && _headingVariance() < 4.0;
+
+    if (mounted) setState(() { _heading = _smoothedHeading; _isStable = stable; });
+  }
+
+  double _headingVariance() {
+    if (_recentHeadings.isEmpty) return 999;
+    final mean = _recentHeadings.reduce((a, b) => a + b) / _recentHeadings.length;
+    final variance = _recentHeadings
+        .map((h) { double d = h - mean; if (d > 180) d -= 360; if (d < -180) d += 360; return d * d; })
+        .reduce((a, b) => a + b) / _recentHeadings.length;
+    return math.sqrt(variance);
   }
 
   @override
@@ -168,13 +200,35 @@ class _CompassScreenState extends State<CompassScreen>
             ]),
           ),
 
-          // ── Calibration note ──────────────────────────────
+          // ── Stability indicator + calibration note ────────────
           Positioned(
             bottom: 88,
             left: 24, right: 24,
-            child: Text(l.compassCalibrationNote,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white30, fontSize: 11)),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: 8, height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 500),
+                  style: TextStyle(
+                    color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
+                    fontSize: 11,
+                  ),
+                  child: Text(_isStable ? 'Stable' : 'Calibrating…'),
+                ),
+              ]),
+              const SizedBox(height: 6),
+              Text(l.compassCalibrationNote,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white24, fontSize: 10)),
+            ]),
           ),
         ],
       ),
