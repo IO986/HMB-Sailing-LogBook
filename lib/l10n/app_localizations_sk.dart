@@ -30,7 +30,18 @@ class AppLocalizationsSk extends AppLocalizations {
   String get navSafety => 'Bezpečnosť';
 
   @override
+  String get navCompass => 'Kompas';
+
+  @override
   String get navSettings => 'Nastavenia';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Prístup ku kamere bol zamietnutý. Povoľ ho v nastaveniach zariadenia.';
+
+  @override
+  String get compassCalibrationNote =>
+      'Magnetický kompas. Presnosť môže byť ovplyvnená kovom alebo elektronikou v blízkosti. Nekalibrovaný kompas kalibruj pohybom v tvare osmičky.';
 
   @override
   String get cancel => 'Zrušiť';
@@ -534,6 +545,15 @@ class AppLocalizationsSk extends AppLocalizations {
   String get languageDialogTitle => 'Jazyk / Language';
 
   @override
+  String get displaySettings => 'Zobrazenie';
+
+  @override
+  String get nightMode => 'Nočný režim';
+
+  @override
+  String get nightModeDesc => 'Červený filter pre zachovanie nočného videnia';
+
+  @override
   String get aboutApp => 'O aplikácii';
 
   @override
@@ -566,7 +586,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get gatewayHint =>
-      'Pripoj telefón na WiFi sieť lodného gateway (Raymarine WiFi-1, RayNet a podobné typicky bežia na 10.0.0.1, port 2000). Bez pripojenia aplikácia automaticky používa GPS telefónu a predpoveď počasia z internetu.';
+      'Pripoj telefón na WiFi sieť Raymarine (napr. WiFi-1, RayNet). IP adresa na zadanie NIE je tá z nastavení Raymarine — je to brána (gateway) tej WiFi siete. Nájdeš ju v telefóne: Nastavenia → WiFi → detail siete → Brána. Port 2000 (TCP) je štandard. Bez pripojenia appka automaticky používa GPS telefónu.';
 
   @override
   String connectedToHost(String host, int port) {

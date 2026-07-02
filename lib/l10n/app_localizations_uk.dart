@@ -30,7 +30,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get navSafety => 'Безпека';
 
   @override
+  String get navCompass => 'Компас';
+
+  @override
   String get navSettings => 'Налаштування';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Доступ до камери заборонено. Увімкніть його в налаштуваннях пристрою.';
+
+  @override
+  String get compassCalibrationNote =>
+      'Магнітний компас. Точність може бути знижена через метал або електроніку поруч. Для калібрування рухайте пристрій по вісімці.';
 
   @override
   String get cancel => 'Скасувати';
@@ -536,6 +547,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get languageDialogTitle => 'Jazyk / Language';
 
   @override
+  String get displaySettings => 'Відображення';
+
+  @override
+  String get nightMode => 'Нічний режим';
+
+  @override
+  String get nightModeDesc => 'Червоний фільтр для збереження нічного зору';
+
+  @override
   String get aboutApp => 'Про додаток';
 
   @override
@@ -568,7 +588,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get gatewayHint =>
-      'Підключіть телефон до мережі WiFi судового шлюзу (Raymarine WiFi-1, RayNet та подібні зазвичай працюють на 10.0.0.1, порт 2000). Без підключення додаток автоматично використовує GPS телефону та інтернет-прогноз погоди.';
+      'Підключіть телефон до мережі WiFi Raymarine (напр. WiFi-1, RayNet). IP-адреса для введення — це НЕ та, що показана в налаштуваннях Raymarine — це шлюз (gateway) тієї WiFi-мережі. Знайдіть її на телефоні: Налаштування → WiFi → деталі мережі → Шлюз. Порт 2000 (TCP) — стандартний. Без підключення додаток автоматично використовує GPS телефону.';
 
   @override
   String connectedToHost(String host, int port) {

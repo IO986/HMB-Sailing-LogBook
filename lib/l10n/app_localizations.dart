@@ -146,11 +146,29 @@ abstract class AppLocalizations {
   /// **'Bezpečnosť'**
   String get navSafety;
 
+  /// No description provided for @navCompass.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kompas'**
+  String get navCompass;
+
   /// No description provided for @navSettings.
   ///
   /// In sk, this message translates to:
   /// **'Nastavenia'**
   String get navSettings;
+
+  /// No description provided for @cameraPermissionDenied.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prístup ku kamere bol zamietnutý. Povoľ ho v nastaveniach zariadenia.'**
+  String get cameraPermissionDenied;
+
+  /// No description provided for @compassCalibrationNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Magnetický kompas. Presnosť môže byť ovplyvnená kovom alebo elektronikou v blízkosti. Nekalibrovaný kompas kalibruj pohybom v tvare osmičky.'**
+  String get compassCalibrationNote;
 
   /// No description provided for @cancel.
   ///
@@ -1112,6 +1130,24 @@ abstract class AppLocalizations {
   /// **'Jazyk / Language'**
   String get languageDialogTitle;
 
+  /// No description provided for @displaySettings.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zobrazenie'**
+  String get displaySettings;
+
+  /// No description provided for @nightMode.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočný režim'**
+  String get nightMode;
+
+  /// No description provided for @nightModeDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Červený filter pre zachovanie nočného videnia'**
+  String get nightModeDesc;
+
   /// No description provided for @aboutApp.
   ///
   /// In sk, this message translates to:
@@ -1175,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @gatewayHint.
   ///
   /// In sk, this message translates to:
-  /// **'Pripoj telefón na WiFi sieť lodného gateway (Raymarine WiFi-1, RayNet a podobné typicky bežia na 10.0.0.1, port 2000). Bez pripojenia aplikácia automaticky používa GPS telefónu a predpoveď počasia z internetu.'**
+  /// **'Pripoj telefón na WiFi sieť Raymarine (napr. WiFi-1, RayNet). IP adresa na zadanie NIE je tá z nastavení Raymarine — je to brána (gateway) tej WiFi siete. Nájdeš ju v telefóne: Nastavenia → WiFi → detail siete → Brána. Port 2000 (TCP) je štandard. Bez pripojenia appka automaticky používa GPS telefónu.'**
   String get gatewayHint;
 
   /// No description provided for @connectedToHost.

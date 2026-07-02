@@ -30,7 +30,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navSafety => 'Sicherheit';
 
   @override
+  String get navCompass => 'Kompass';
+
+  @override
   String get navSettings => 'Einstellungen';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Kamerazugriff wurde verweigert. Bitte in den Geräteeinstellungen aktivieren.';
+
+  @override
+  String get compassCalibrationNote =>
+      'Magnetkompass. Die Genauigkeit kann durch nahes Metall oder Elektronik beeinträchtigt werden. Bei Fehler das Gerät in einer Achterbewegung kalibrieren.';
 
   @override
   String get cancel => 'Abbrechen';
@@ -535,6 +546,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get languageDialogTitle => 'Jazyk / Language';
 
   @override
+  String get displaySettings => 'Anzeige';
+
+  @override
+  String get nightMode => 'Nachtmodus';
+
+  @override
+  String get nightModeDesc => 'Roter Filter zum Schutz der Nachtsicht';
+
+  @override
   String get aboutApp => 'Über die App';
 
   @override
@@ -567,7 +587,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get gatewayHint =>
-      'Telefon mit dem WLAN des Boot-Gateways verbinden (Raymarine WiFi-1, RayNet und ähnliche laufen typischerweise auf 10.0.0.1, Port 2000). Ohne Verbindung verwendet die App automatisch Telefon-GPS und Internet-Wettervorhersage.';
+      'Telefon mit dem Raymarine-WLAN verbinden (z. B. WiFi-1, RayNet). Die einzugebende IP ist NICHT die in den Raymarine-Einstellungen angezeigte — es ist die Gateway-IP dieses WLANs. Am Telefon: Einstellungen → WLAN → Netzwerkdetails → Gateway. Port 2000 (TCP) ist Standard. Ohne Verbindung nutzt die App automatisch das Telefon-GPS.';
 
   @override
   String connectedToHost(String host, int port) {

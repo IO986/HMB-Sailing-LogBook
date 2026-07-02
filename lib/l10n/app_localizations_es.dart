@@ -30,7 +30,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navSafety => 'Seguridad';
 
   @override
+  String get navCompass => 'Brújula';
+
+  @override
   String get navSettings => 'Ajustes';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Acceso a la cámara denegado. Actívalo en los ajustes del dispositivo.';
+
+  @override
+  String get compassCalibrationNote =>
+      'Brújula magnética. La precisión puede verse afectada por metales o electrónica cercana. Si no está calibrada, mueve el dispositivo en forma de ocho.';
 
   @override
   String get cancel => 'Cancelar';
@@ -534,6 +545,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get languageDialogTitle => 'Jazyk / Language';
 
   @override
+  String get displaySettings => 'Pantalla';
+
+  @override
+  String get nightMode => 'Modo nocturno';
+
+  @override
+  String get nightModeDesc => 'Filtro rojo para preservar la visión nocturna';
+
+  @override
   String get aboutApp => 'Acerca de';
 
   @override
@@ -566,7 +586,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get gatewayHint =>
-      'Conecte el teléfono a la red WiFi del gateway del barco (Raymarine WiFi-1, RayNet y similares suelen funcionar en 10.0.0.1, puerto 2000). Sin conexión, la app usa automáticamente el GPS del teléfono y la previsión meteorológica de internet.';
+      'Conecte el teléfono a la red WiFi de Raymarine (p. ej. WiFi-1, RayNet). La IP a introducir NO es la que aparece en los ajustes de Raymarine — es la IP de puerta de enlace (gateway) de esa red WiFi. Encuéntrela en el teléfono: Ajustes → WiFi → detalles de red → Puerta de enlace. Puerto 2000 (TCP) es el estándar. Sin conexión, la app usa automáticamente el GPS del teléfono.';
 
   @override
   String connectedToHost(String host, int port) {
