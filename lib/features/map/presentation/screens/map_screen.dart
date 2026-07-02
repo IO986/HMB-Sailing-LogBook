@@ -49,9 +49,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     _mapReady = true;
     // Wait 500 ms (safely after any GoRouter enter animation) then force a
     // fresh TileLayer so tiles load with the final, correct viewport size.
-    _tileReloadTimer = Timer(const Duration(milliseconds: 500), () {
+    _tileReloadTimer = Timer(const Duration(milliseconds: 800), () {
       if (!mounted) return;
       setState(() => _tileKey++);
+      // Force a camera move so flutter_map actually fires tile requests
+      // on devices where the initial layout finishes after onMapReady.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        try {
+          _mapController.move(
+            _mapController.camera.center,
+            _mapController.camera.zoom,
+          );
+        } catch (_) {}
+      });
       _centerIfFollowing();
     });
   }

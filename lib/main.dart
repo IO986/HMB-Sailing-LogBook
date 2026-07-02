@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
 import 'core/database/app_database.dart';
 import 'core/providers/locale_provider.dart';
+import 'core/providers/night_mode_provider.dart';
 import 'core/services/background_service.dart';
 import 'core/services/gps_tracking_service.dart';
 import 'core/services/location_service.dart';
@@ -154,6 +155,7 @@ class HmbSailingLogApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final locale = ref.watch(localeProvider);
+    final nightMode = ref.watch(nightModeProvider);
     return MaterialApp.router(
       title: 'HMB Sailing Log',
       theme: AppTheme.light,
@@ -169,6 +171,19 @@ class HmbSailingLogApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      builder: (context, child) {
+        if (!nightMode || child == null) return child ?? const SizedBox();
+        // Red filter: preserves night vision by removing green/blue channels.
+        return ColorFiltered(
+          colorFilter: const ColorFilter.matrix([
+            0.7, 0, 0, 0, 0,
+            0,   0, 0, 0, 0,
+            0,   0, 0, 0, 0,
+            0,   0, 0, 1, 0,
+          ]),
+          child: child,
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/skipper_profile.dart';
 import '../../../../core/providers/locale_provider.dart';
+import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
@@ -91,6 +92,18 @@ class SettingsScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showLanguageDialog(context, ref),
             )),
+            const SizedBox(height: 16),
+
+            _Section(l.displaySettings),
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.nightlight_round),
+                title: Text(l.nightMode),
+                subtitle: Text(l.nightModeDesc),
+                value: ref.watch(nightModeProvider),
+                onChanged: (_) => ref.read(nightModeProvider.notifier).toggle(),
+              ),
+            ),
             const SizedBox(height: 16),
 
             _Section(l.skipperProfile),
