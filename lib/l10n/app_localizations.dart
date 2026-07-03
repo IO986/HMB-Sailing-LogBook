@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Prístup ku kamere bol zamietnutý. Povoľ ho v nastaveniach zariadenia.'**
   String get cameraPermissionDenied;
 
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kamera nedostupná'**
+  String get cameraUnavailable;
+
   /// No description provided for @compassCalibrationNote.
   ///
   /// In sk, this message translates to:
@@ -2810,6 +2816,18 @@ abstract class AppLocalizations {
   /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty'**
   String get guideSafetyBriefingBody;
 
+  /// No description provided for @guideCompassTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Námerový kompas'**
+  String get guideCompassTitle;
+
+  /// No description provided for @guideCompassBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.'**
+  String get guideCompassBody;
+
   /// No description provided for @guideSettingsTitle.
   ///
   /// In sk, this message translates to:
@@ -2819,7 +2837,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Online účet – synchronizácia pripravovaná (v2.0)\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Online účet – synchronizácia pripravovaná (v2.0)\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
   String get guideSettingsBody;
 
   /// No description provided for @guideExportTitle.

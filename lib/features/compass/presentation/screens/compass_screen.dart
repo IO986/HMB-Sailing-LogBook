@@ -21,6 +21,7 @@ class _CompassScreenState extends State<CompassScreen>
   CameraController? _camCtrl;
   bool _cameraReady = false;
   bool _cameraPermissionDenied = false;
+  bool _cameraFailed = false;
 
   StreamSubscription<MagnetometerEvent>? _magSub;
   StreamSubscription<AccelerometerEvent>? _accSub;
@@ -50,7 +51,7 @@ class _CompassScreenState extends State<CompassScreen>
     if (state == AppLifecycleState.inactive) {
       _camCtrl?.dispose();
       _camCtrl = null;
-      if (mounted) setState(() => _cameraReady = false);
+      if (mounted) setState(() { _cameraReady = false; _cameraFailed = false; });
     } else if (state == AppLifecycleState.resumed) {
       _initCamera();
     }
@@ -63,7 +64,10 @@ class _CompassScreenState extends State<CompassScreen>
       return;
     }
     final cameras = await availableCameras();
-    if (cameras.isEmpty) return;
+    if (cameras.isEmpty) {
+      if (mounted) setState(() => _cameraFailed = true);
+      return;
+    }
 
     final back = cameras.firstWhere(
       (c) => c.lensDirection == CameraLensDirection.back,
@@ -73,9 +77,10 @@ class _CompassScreenState extends State<CompassScreen>
         enableAudio: false, imageFormatGroup: ImageFormatGroup.jpeg);
     try {
       await ctrl.initialize();
-      if (mounted) setState(() { _camCtrl = ctrl; _cameraReady = true; });
+      if (mounted) setState(() { _camCtrl = ctrl; _cameraReady = true; _cameraFailed = false; });
     } catch (_) {
       ctrl.dispose();
+      if (mounted) setState(() => _cameraFailed = true);
     }
   }
 
@@ -98,7 +103,7 @@ class _CompassScreenState extends State<CompassScreen>
     final mx = _magX * cosPitch + _magZ * sinPitch;
     final my = _magX * sinRoll * sinPitch + _magY * cosRoll - _magZ * sinRoll * cosPitch;
 
-    double raw = math.atan2(my, -mx) * 180 / math.pi;
+    double raw = math.atan2(-mx, my) * 180 / math.pi;
     if (raw < 0) raw += 360;
 
     // Circular low-pass filter (alpha = 0.15 → smooth but responsive)
@@ -152,9 +157,17 @@ class _CompassScreenState extends State<CompassScreen>
           if (_cameraReady && _camCtrl != null)
             CameraPreview(_camCtrl!)
           else if (_cameraPermissionDenied)
-            _NoCamera(label: l.cameraPermissionDenied)
+            _NoCamera(label: l.cameraPermissionDenied, canRetry: false)
+          else if (_cameraFailed)
+            _NoCamera(label: l.cameraUnavailable, canRetry: true, onRetry: () {
+              setState(() { _cameraFailed = false; });
+              _initCamera();
+            })
           else
-            const Center(child: CircularProgressIndicator(color: Colors.white)),
+            const DecoratedBox(
+              decoration: BoxDecoration(color: Colors.black),
+              child: Center(child: CircularProgressIndicator(color: Colors.white30, strokeWidth: 1.5)),
+            ),
 
           // ── Top gradient ──────────────────────────────────
           if (_cameraReady)
@@ -402,25 +415,37 @@ class _BearingReadout extends StatelessWidget {
 
 class _NoCamera extends StatelessWidget {
   final String label;
-  const _NoCamera({required this.label});
+  final bool canRetry;
+  final VoidCallback? onRetry;
+  const _NoCamera({required this.label, this.canRetry = false, this.onRetry});
 
   @override
-  Widget build(BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.no_photography_outlined, color: Colors.white38, size: 56),
-            const SizedBox(height: 16),
-            Text(label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white54, fontSize: 14)),
-            const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: openAppSettings,
-              style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
-              child: const Text('Otvoriť nastavenia'),
-            ),
-          ]),
+  Widget build(BuildContext context) => DecoratedBox(
+        decoration: const BoxDecoration(color: Colors.black),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.no_photography_outlined, color: Colors.white38, size: 56),
+              const SizedBox(height: 16),
+              Text(label,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white54, fontSize: 14)),
+              const SizedBox(height: 16),
+              if (canRetry && onRetry != null)
+                OutlinedButton(
+                  onPressed: onRetry,
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
+                  child: const Text('Skúsiť znova'),
+                )
+              else
+                OutlinedButton(
+                  onPressed: openAppSettings,
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
+                  child: const Text('Otvoriť nastavenia'),
+                ),
+            ]),
+          ),
         ),
       );
 }

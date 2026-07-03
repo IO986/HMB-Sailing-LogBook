@@ -12,6 +12,7 @@
   "navCompass": "Brújula",
   "navSettings": "Ajustes",
   "cameraPermissionDenied": "Acceso a la cámara denegado. Actívalo en los ajustes del dispositivo.",
+  "cameraUnavailable": "Cámara no disponible",
   "compassCalibrationNote": "Brújula magnética. La precisión puede verse afectada por metales o electrónica cercana. Si no está calibrada, mueve el dispositivo en forma de ocho.",
 
   "cancel": "Cancelar",
@@ -496,8 +497,10 @@
   "guideSafetyMobBody": "La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido",
   "guideSafetyBriefingTitle": "Briefing de seguridad y MAYDAY",
   "guideSafetyBriefingBody": "La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia",
+  "guideCompassTitle": "Brújula de navegación",
+  "guideCompassBody": "La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.",
   "guideSettingsTitle": "Ajustes",
-  "guideSettingsBody": "• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto",
+  "guideSettingsBody": "• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto",
   "guideExportTitle": "Exportar diario",
   "guideExportBody": "El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.",
 

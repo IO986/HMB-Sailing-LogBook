@@ -40,6 +40,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kamerazugriff wurde verweigert. Bitte in den Geräteeinstellungen aktivieren.';
 
   @override
+  String get cameraUnavailable => 'Kamera nicht verfügbar';
+
+  @override
   String get compassCalibrationNote =>
       'Magnetkompass. Die Genauigkeit kann durch nahes Metall oder Elektronik beeinträchtigt werden. Bei Fehler das Gerät in einer Achterbewegung kalibrieren.';
 
@@ -1441,11 +1444,18 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte';
 
   @override
+  String get guideCompassTitle => 'Peilkompass';
+
+  @override
+  String get guideCompassBody =>
+      'Die Kompass-Registerkarte zeigt den Magnetkurs mithilfe der Telefonsensoren, mit der Rückkamera als Hintergrund zum Anpeilen von Objekten.\n\n• Gelbes Fadenkreuz – Richtung, in die du zielst\n• Kompassstreifen oben – N / NE / E / SE / S / SW / W / NW\n• Numerische Anzeige – Grad und Himmelsrichtung\n• Grüner Punkt = stabiles Ergebnis  ·  Oranger Punkt = kalibriert noch\n\nBei instabiler Anzeige: Telefon langsam in einer Achterbewegung führen.\n\nHinweis: Genauigkeit kann durch Metallstrukturen, Lautsprecher oder Elektronik beeinträchtigt werden.';
+
+  @override
   String get guideSettingsTitle => 'Einstellungen';
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Online-Konto – Synchronisation in Vorbereitung (v2.0)\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Online-Konto – Synchronisation in Vorbereitung (v2.0)\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt';
 
   @override
   String get guideExportTitle => 'Logbuch-Export';

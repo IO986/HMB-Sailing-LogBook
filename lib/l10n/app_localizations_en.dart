@@ -40,6 +40,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Camera access was denied. Enable it in device settings.';
 
   @override
+  String get cameraUnavailable => 'Camera unavailable';
+
+  @override
   String get compassCalibrationNote =>
       'Magnetic compass. Accuracy may be affected by nearby metal or electronics. If uncalibrated, move the device in a figure-eight pattern.';
 
@@ -1433,11 +1436,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts';
 
   @override
+  String get guideCompassTitle => 'Sighting Compass';
+
+  @override
+  String get guideCompassBody =>
+      'The Compass tab shows your magnetic bearing using the phone sensors, with the rear camera as background for taking bearings on objects.\n\n• Yellow crosshair – direction you are pointing\n• Compass strip at top – N / NE / E / SE / S / SW / W / NW\n• Numeric readout – degrees and cardinal point\n• Green dot = stable reading  ·  Orange dot = calibrating\n\nIf the reading is unstable, slowly move the phone in a figure-eight pattern to calibrate the magnetometer.\n\nAccuracy may be reduced near metal structures, speakers or electronic equipment.';
+
+  @override
   String get guideSettingsTitle => 'Settings';
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Online account – sync coming soon (v2.0)\n• Export – PDF or CSV\n• About – version and contact';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Display – Night mode (red filter to preserve night vision)\n• Online account – sync coming soon (v2.0)\n• Export – PDF or CSV\n• About – version and contact';
 
   @override
   String get guideExportTitle => 'Logbook Export';

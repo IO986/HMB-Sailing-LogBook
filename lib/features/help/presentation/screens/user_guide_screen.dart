@@ -82,6 +82,12 @@ class UserGuideScreen extends StatelessWidget {
             body: l.guideSafetyBriefingBody,
           ),
           _GuideSection(
+            icon: Icons.explore_outlined,
+            color: Colors.teal.shade600,
+            title: l.guideCompassTitle,
+            body: l.guideCompassBody,
+          ),
+          _GuideSection(
             icon: Icons.settings_outlined,
             color: Colors.blueGrey.shade600,
             title: l.guideSettingsTitle,

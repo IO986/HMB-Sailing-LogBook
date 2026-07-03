@@ -40,6 +40,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Acceso a la cámara denegado. Actívalo en los ajustes del dispositivo.';
 
   @override
+  String get cameraUnavailable => 'Cámara no disponible';
+
+  @override
   String get compassCalibrationNote =>
       'Brújula magnética. La precisión puede verse afectada por metales o electrónica cercana. Si no está calibrada, mueve el dispositivo en forma de ocho.';
 
@@ -1438,11 +1441,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia';
 
   @override
+  String get guideCompassTitle => 'Brújula de navegación';
+
+  @override
+  String get guideCompassBody =>
+      'La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.';
+
+  @override
   String get guideSettingsTitle => 'Ajustes';
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
 
   @override
   String get guideExportTitle => 'Exportar diario';
