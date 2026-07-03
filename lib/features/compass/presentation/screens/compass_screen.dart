@@ -92,18 +92,42 @@ class _CompassScreenState extends State<CompassScreen>
   }
 
   void _updateHeading() {
-    // Tilt-compensated heading (Freescale AN4248)
-    final norm = math.sqrt(_accX * _accX + _accY * _accY + _accZ * _accZ);
-    if (norm == 0) return;
-    final sinRoll  = _accX / norm;
-    final cosRoll  = math.sqrt(1 - sinRoll * sinRoll);
-    final sinPitch = _accY / norm;
-    final cosPitch = math.sqrt(1 - sinPitch * sinPitch);
+    // Full rotation-matrix heading — works at any phone orientation.
+    //
+    // Step 1: East = normalize(Mag × Acc_norm)
+    // Step 2: North = Acc_norm × East
+    // Step 3: bearing = atan2(dot(East, fwd), dot(North, fwd))
+    //   where fwd = Y axis when phone is flat, -Z axis (camera) when vertical.
+    //
+    // This is equivalent to Android SensorManager.getRotationMatrix / getOrientation.
 
-    final mx = _magX * cosPitch + _magZ * sinPitch;
-    final my = _magX * sinRoll * sinPitch + _magY * cosRoll - _magZ * sinRoll * cosPitch;
+    final aNorm = math.sqrt(_accX * _accX + _accY * _accY + _accZ * _accZ);
+    if (aNorm < 0.5) return;
+    final aXn = _accX / aNorm, aYn = _accY / aNorm, aZn = _accZ / aNorm;
 
-    double raw = math.atan2(-mx, my) * 180 / math.pi;
+    // East = Mag × Acc_norm
+    final eX = _magY * aZn - _magZ * aYn;
+    final eY = _magZ * aXn - _magX * aZn;
+    final eZ = _magX * aYn - _magY * aXn;
+    final eNorm = math.sqrt(eX * eX + eY * eY + eZ * eZ);
+    if (eNorm < 0.1) return;
+    final eXn = eX / eNorm, eYn = eY / eNorm, eZn = eZ / eNorm;
+
+    // North = Acc_norm × East  (already unit length)
+    final nY = aZn * eXn - aXn * eZn;
+    final nZ = aXn * eYn - aYn * eXn;
+
+    // Forward direction: Y axis (top) when flat, -Z axis (camera) when vertical
+    final double eastComp, northComp;
+    if (aZn.abs() >= aYn.abs()) {
+      eastComp  = eYn;   // dot(East,  [0,1,0])
+      northComp = nY;    // dot(North, [0,1,0])
+    } else {
+      eastComp  = -eZn;  // dot(East,  [0,0,-1])
+      northComp = -nZ;   // dot(North, [0,0,-1])
+    }
+
+    double raw = math.atan2(eastComp, northComp) * 180 / math.pi;
     if (raw < 0) raw += 360;
 
     // Circular low-pass filter (alpha = 0.15 → smooth but responsive)
