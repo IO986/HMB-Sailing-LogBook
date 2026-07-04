@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/utils/gpx_exporter.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../charter/services/handover_checklist.dart';
 import 'pdf_export_service.dart';
 
 class ExportService {
@@ -59,12 +60,21 @@ class ExportService {
         }
       }
 
+      final checkInProtocol = await db.getHandoverProtocol(charter.id, 'checkIn');
+      final checkOutProtocol = await db.getHandoverProtocol(charter.id, 'checkOut');
+
       final pdf = await PdfExportService.exportCharter(
         charter: charter,
         days: days,
         entriesByDay: entriesByDay,
         mapScreenshots: mapScreenshots ?? {},
         signatureImage: signatureImage,
+        checkInProtocol: checkInProtocol,
+        checkInChecklist:
+            checkInProtocol != null ? checklistFromJson(checkInProtocol.checklistJson) : null,
+        checkOutProtocol: checkOutProtocol,
+        checkOutChecklist:
+            checkOutProtocol != null ? checklistFromJson(checkOutProtocol.checklistJson) : null,
       );
 
       final gpx = await GpxExporter.exportCharter(

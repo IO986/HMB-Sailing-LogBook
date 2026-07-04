@@ -61,6 +61,10 @@ class PdfExportService {
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
     int pdfRevision = 0,
+    HandoverProtocol? checkInProtocol,
+    List<ChecklistItem>? checkInChecklist,
+    HandoverProtocol? checkOutProtocol,
+    List<ChecklistItem>? checkOutChecklist,
   }) async {
     final docId  = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
     final rev    = pdfRevision;
@@ -81,6 +85,18 @@ class PdfExportService {
     pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev));
     final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev);
     pdf.addPage(sbPage);
+
+    if (checkInProtocol != null && checkInChecklist != null) {
+      pdf.addPage(await _handoverProtocolPage(
+          charter: charter, protocol: checkInProtocol, checklist: checkInChecklist,
+          docId: docId, revision: rev));
+    }
+    if (checkOutProtocol != null && checkOutChecklist != null) {
+      pdf.addPage(await _handoverProtocolPage(
+          charter: charter, protocol: checkOutProtocol, checklist: checkOutChecklist,
+          docId: docId, revision: rev));
+    }
+
     if (signatureImage != null) {
       final canonical = _buildCanonical(
           charter: charter, days: days, entriesByDay: entriesByDay,
@@ -144,11 +160,18 @@ class PdfExportService {
     required Map<int, Uint8List?> mapScreenshots,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    HandoverProtocol? checkInProtocol,
+    List<ChecklistItem>? checkInChecklist,
+    HandoverProtocol? checkOutProtocol,
+    List<ChecklistItem>? checkOutChecklist,
   }) async {
     final bytes = await buildCharterPdfBytes(
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
-      skipperProfile: skipperProfile);
+      skipperProfile: skipperProfile,
+      checkInProtocol: checkInProtocol, checkInChecklist: checkInChecklist,
+      checkOutProtocol: checkOutProtocol, checkOutChecklist: checkOutChecklist,
+    );
     return saveBytesToFile(bytes, 'charter_${charter.id}');
   }
 
@@ -1172,44 +1195,9 @@ class PdfExportService {
     final fmt = DateFormat('d.M.yyyy HH:mm');
     final typeLabel = protocol.type == 'checkOut' ? 'CHECK-OUT' : 'CHECK-IN';
 
-    final thumbnails = <String, Uint8List>{};
-    for (final item in checklist) {
-      if (item.photoPath == null) continue;
-      try {
-        final f = File(item.photoPath!);
-        if (await f.exists()) thumbnails[item.itemKey] = await f.readAsBytes();
-      } catch (_) {}
-    }
-
-    Uint8List? skipperSig;
-    if (protocol.skipperSignaturePath != null) {
-      final f = File(protocol.skipperSignaturePath!);
-      if (await f.exists()) skipperSig = await f.readAsBytes();
-    }
-    Uint8List? companySig;
-    if (protocol.companySignaturePath != null) {
-      final f = File(protocol.companySignaturePath!);
-      if (await f.exists()) companySig = await f.readAsBytes();
-    }
-
-    String statusLabel(ChecklistStatus s) => switch (s) {
-          ChecklistStatus.ok => 'OK',
-          ChecklistStatus.damaged => 'Poskodene',
-          ChecklistStatus.missing => 'Chyba',
-        };
-    String itemLabel(String key) => switch (key) {
-          'sails' => 'Plachty',
-          'rigging' => 'Lanovie',
-          'anchorChain' => 'Kotva a retaz',
-          'navInstruments' => 'Navigacne pristroje',
-          'lifeJackets' => 'Zachranne vesty',
-          'raft' => 'Zachranny raft',
-          'firstAidKit' => 'Lekarnicka',
-          'dinghyMotor' => 'Dinghy a privesny motor',
-          'lights' => 'Svetla',
-          'bimini' => 'Bimini',
-          _ => key,
-        };
+    final thumbnails = await _loadHandoverThumbnails(checklist);
+    final skipperSig = await _loadHandoverSignature(protocol.skipperSignaturePath);
+    final companySig = await _loadHandoverSignature(protocol.companySignaturePath);
 
     final pdf = pw.Document(
       title: 'Odovzdavaci protokol $typeLabel',
@@ -1241,76 +1229,196 @@ class PdfExportService {
         '${protocol.location != null ? "  |  ${_ascii(protocol.location!)}" : ""}',
         docId: docId, revision: 0,
       ),
-      build: (ctx) => [
-        pw.Row(children: [
-          _statBox('MOTOHODINY', protocol.engineHours?.toStringAsFixed(1) ?? '-', _navy),
-          pw.SizedBox(width: 6),
-          _statBox('PALIVO', protocol.fuelLevel != null ? '${protocol.fuelLevel}%' : '-', _blue),
-          pw.SizedBox(width: 6),
-          _statBox('VODA', protocol.waterLevel != null ? '${protocol.waterLevel}%' : '-', _green),
-        ]),
-        pw.SizedBox(height: 16),
-
-        pw.Text('KONTROLNY ZOZNAM', style: pw.TextStyle(
-            color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
-        pw.SizedBox(height: 6),
-        pw.Table(
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          columnWidths: {
-            0: const pw.FlexColumnWidth(1.6),
-            1: const pw.FlexColumnWidth(1),
-            2: const pw.FlexColumnWidth(2),
-            3: const pw.FlexColumnWidth(1.2),
-          },
-          children: [
-            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              ['Polozka', 'Stav', 'Poznamka / poloha', 'Foto'].map((h) => _hcell(h)).toList()),
-            ...checklist.map((item) {
-              final noteParts = [
-                if (item.note != null && item.note!.isNotEmpty) item.note!,
-                if (item.position != null && item.position!.isNotEmpty) '(${item.position})',
-              ];
-              return pw.TableRow(
-                decoration: pw.BoxDecoration(
-                    color: item.status == ChecklistStatus.ok ? PdfColors.white : PdfColor.fromHex('#FDEBD0')),
-                children: [
-                  _cell(_ascii(itemLabel(item.itemKey))),
-                  _cell(statusLabel(item.status), bold: item.status != ChecklistStatus.ok),
-                  _cell(_ascii(noteParts.join(' '))),
-                  thumbnails.containsKey(item.itemKey)
-                      ? pw.Container(
-                          padding: const pw.EdgeInsets.all(2),
-                          child: pw.Image(pw.MemoryImage(thumbnails[item.itemKey]!),
-                              height: 40, fit: pw.BoxFit.cover))
-                      : _cell('-'),
-                ],
-              );
-            }),
-          ],
-        ),
-
-        pw.SizedBox(height: 32),
-        pw.Text('PODPISY', style: pw.TextStyle(
-            color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
-        pw.SizedBox(height: 8),
-        pw.Row(children: [
-          pw.Expanded(child: _handoverSignatureBlock(
-            title: 'Skipper', name: protocol.skipperName, signature: skipperSig,
-            signedAt: protocol.skipperSignedAt, fmt: fmt,
-          )),
-          pw.SizedBox(width: 16),
-          pw.Expanded(child: _handoverSignatureBlock(
-            title: 'Za charterovu spolocnost',
-            name: protocol.companyRepName != null
-                ? '${protocol.companyRepName}${protocol.companyName != null ? " (${protocol.companyName})" : ""}'
-                : null,
-            signature: companySig, signedAt: protocol.companySignedAt, fmt: fmt,
-          )),
-        ]),
-      ],
+      build: (ctx) => _handoverProtocolContent(
+        protocol: protocol, checklist: checklist, thumbnails: thumbnails,
+        skipperSig: skipperSig, companySig: companySig, fmt: fmt,
+      ),
     ));
 
     return pdf.save();
+  }
+
+  /// Zdieľaný obsah odovzdávacieho protokolu (stat riadok, checklist podľa
+  /// kategórií s fotkami, oba podpisy) – používaný aj samostatným
+  /// `exportHandoverProtocol`, aj vloženým do hlavného PDF denníka plavby
+  /// (`buildCharterPdfBytes`).
+  static List<pw.Widget> _handoverProtocolContent({
+    required HandoverProtocol protocol,
+    required List<ChecklistItem> checklist,
+    required Map<String, Uint8List> thumbnails,
+    required Uint8List? skipperSig,
+    required Uint8List? companySig,
+    required DateFormat fmt,
+  }) {
+    return [
+      pw.Row(children: [
+        _statBox('MOTOHODINY', protocol.engineHours?.toStringAsFixed(1) ?? '-', _navy),
+        pw.SizedBox(width: 6),
+        _statBox('PALIVO', protocol.fuelLevel != null ? '${protocol.fuelLevel}%' : '-', _blue),
+        pw.SizedBox(width: 6),
+        _statBox('VODA', protocol.waterLevel != null ? '${protocol.waterLevel}%' : '-', _green),
+      ]),
+      pw.SizedBox(height: 16),
+
+      pw.Text('KONTROLNY ZOZNAM', style: pw.TextStyle(
+          color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
+      pw.SizedBox(height: 6),
+      _handoverChecklistTable(checklist, thumbnails),
+
+      if (protocol.extraNotes != null && protocol.extraNotes!.isNotEmpty) ...[
+        pw.SizedBox(height: 12),
+        pw.Text('DALSIE POZNAMKY', style: pw.TextStyle(
+            color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9, letterSpacing: 1)),
+        pw.SizedBox(height: 4),
+        pw.Text(_ascii(protocol.extraNotes!), style: const pw.TextStyle(fontSize: 9)),
+      ],
+
+      pw.SizedBox(height: 32),
+      pw.Text('PODPISY', style: pw.TextStyle(
+          color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
+      pw.SizedBox(height: 8),
+      pw.Row(children: [
+        pw.Expanded(child: _handoverSignatureBlock(
+          title: 'Skipper', name: protocol.skipperName, signature: skipperSig,
+          signedAt: protocol.skipperSignedAt, fmt: fmt,
+        )),
+        pw.SizedBox(width: 16),
+        pw.Expanded(child: _handoverSignatureBlock(
+          title: 'Za charterovu spolocnost',
+          name: protocol.companyRepName != null
+              ? '${protocol.companyRepName}${protocol.companyName != null ? " (${protocol.companyName})" : ""}'
+              : null,
+          signature: companySig, signedAt: protocol.companySignedAt, fmt: fmt,
+        )),
+      ]),
+    ];
+  }
+
+  /// Sekcia odovzdávacieho protokolu (check-in alebo check-out) vložená do
+  /// hlavného PDF denníka plavby – rovnaký obsah ako samostatný
+  /// `exportHandoverProtocol`, len ako ďalšia MultiPage v existujúcom
+  /// dokumente namiesto vlastného `pw.Document`.
+  static Future<pw.Page> _handoverProtocolPage({
+    required Charter charter,
+    required HandoverProtocol protocol,
+    required List<ChecklistItem> checklist,
+    required String docId,
+    required int revision,
+  }) async {
+    final fmt = DateFormat('d.M.yyyy HH:mm');
+    final typeLabel = protocol.type == 'checkOut' ? 'CHECK-OUT' : 'CHECK-IN';
+    final thumbnails = await _loadHandoverThumbnails(checklist);
+    final skipperSig = await _loadHandoverSignature(protocol.skipperSignaturePath);
+    final companySig = await _loadHandoverSignature(protocol.companySignaturePath);
+
+    return pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      header: (ctx) => ctx.pageNumber == 1
+          ? pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(16),
+              margin: const pw.EdgeInsets.only(bottom: 14),
+              decoration: pw.BoxDecoration(color: _navy,
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
+              child: pw.Text('ODOVZDAVACI PROTOKOL - $typeLabel', style: pw.TextStyle(
+                  color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
+            )
+          : pw.SizedBox(),
+      footer: (ctx) => _footer(_ascii(charter.title), docId: docId, revision: revision),
+      build: (ctx) => _handoverProtocolContent(
+        protocol: protocol, checklist: checklist, thumbnails: thumbnails,
+        skipperSig: skipperSig, companySig: companySig, fmt: fmt,
+      ),
+    );
+  }
+
+  static Future<Map<String, Uint8List>> _loadHandoverThumbnails(List<ChecklistItem> checklist) async {
+    final thumbnails = <String, Uint8List>{};
+    for (final item in checklist) {
+      if (item.photoPath == null) continue;
+      try {
+        final f = File(item.photoPath!);
+        if (await f.exists()) thumbnails[item.itemKey] = await f.readAsBytes();
+      } catch (_) {}
+    }
+    return thumbnails;
+  }
+
+  static Future<Uint8List?> _loadHandoverSignature(String? path) async {
+    if (path == null) return null;
+    final f = File(path);
+    if (await f.exists()) return f.readAsBytes();
+    return null;
+  }
+
+  static String _handoverStatusLabel(ChecklistStatus s) => switch (s) {
+        ChecklistStatus.ok => 'OK',
+        ChecklistStatus.damaged => 'Poskodene',
+        ChecklistStatus.missing => 'Chyba',
+      };
+
+  /// Tabuľka checklistu zoskupená podľa kategórií (rovnaké kategórie ako v
+  /// `handover_checklist.dart`) – funguje pre check-in aj check-out
+  /// zoznam, keďže kľúče položiek sú medzi oboma naprieč unikátne.
+  static pw.Widget _handoverChecklistTable(
+      List<ChecklistItem> checklist, Map<String, Uint8List> thumbnails) {
+    final byKey = {for (final i in checklist) i.itemKey: i};
+    final rows = <pw.TableRow>[
+      pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
+        ['Polozka', 'Stav', 'Poznamka / poloha', 'Foto'].map((h) => _hcell(h)).toList()),
+    ];
+
+    for (final category in [...checkInCategories, ...checkOutCategories]) {
+      final items = category.items.map((d) => byKey[d.key]).whereType<ChecklistItem>().toList();
+      if (items.isEmpty) continue;
+
+      rows.add(pw.TableRow(
+        decoration: const pw.BoxDecoration(color: PdfColors.blue50),
+        children: [
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+            child: pw.Text(_ascii(category.labelSk),
+                style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: _navy)),
+          ),
+          _cell(''), _cell(''), _cell(''),
+        ],
+      ));
+
+      for (final item in items) {
+        final label = findItemDef(item.itemKey)?.labelSk ?? item.itemKey;
+        final noteParts = [
+          if (item.note != null && item.note!.isNotEmpty) item.note!,
+          if (item.position != null && item.position!.isNotEmpty) '(${item.position})',
+        ];
+        rows.add(pw.TableRow(
+          decoration: pw.BoxDecoration(
+              color: item.status == ChecklistStatus.ok ? PdfColors.white : PdfColor.fromHex('#FDEBD0')),
+          children: [
+            _cell(_ascii(label)),
+            _cell(_handoverStatusLabel(item.status), bold: item.status != ChecklistStatus.ok),
+            _cell(_ascii(noteParts.join(' '))),
+            thumbnails.containsKey(item.itemKey)
+                ? pw.Container(
+                    padding: const pw.EdgeInsets.all(2),
+                    child: pw.Image(pw.MemoryImage(thumbnails[item.itemKey]!),
+                        height: 40, fit: pw.BoxFit.cover))
+                : _cell('-'),
+          ],
+        ));
+      }
+    }
+
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      columnWidths: {
+        0: const pw.FlexColumnWidth(1.6),
+        1: const pw.FlexColumnWidth(1),
+        2: const pw.FlexColumnWidth(2),
+        3: const pw.FlexColumnWidth(1.2),
+      },
+      children: rows,
+    );
   }
 
   static pw.Widget _handoverSignatureBlock({

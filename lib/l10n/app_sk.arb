@@ -253,6 +253,7 @@
   "itemDinghyMotor": "Dinghy a prívesný motor",
   "itemLights": "Svetlá",
   "itemBimini": "Bimini",
+  "extraNotesLabel": "Ďalšie poznámky",
   "gpxImportTitle": "Import GPX",
   "gpxImportPickFile": "Vybrať GPX súbor",
   "gpxTracksFound": "Nájdené tracky",

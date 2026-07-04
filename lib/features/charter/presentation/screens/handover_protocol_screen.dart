@@ -17,20 +17,6 @@ import '../../../export/services/pdf_export_service.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
 
-String _itemLabel(AppLocalizations l, String key) => switch (key) {
-      'sails' => l.itemSails,
-      'rigging' => l.itemRigging,
-      'anchorChain' => l.itemAnchorChain,
-      'navInstruments' => l.itemNavInstruments,
-      'lifeJackets' => l.itemLifeJackets,
-      'raft' => l.itemRaft,
-      'firstAidKit' => l.itemFirstAidKit,
-      'dinghyMotor' => l.itemDinghyMotor,
-      'lights' => l.itemLights,
-      'bimini' => l.itemBimini,
-      _ => key,
-    };
-
 String _statusLabel(AppLocalizations l, ChecklistStatus s) => switch (s) {
       ChecklistStatus.ok => l.checklistItemOk,
       ChecklistStatus.damaged => l.checklistItemDamaged,
@@ -49,14 +35,14 @@ class HandoverProtocolScreen extends ConsumerStatefulWidget {
 class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen> {
   Charter? _charter;
   HandoverProtocol? _existing;
-  List<ChecklistItem>? _checkInChecklistForComparison;
 
   DateTime _dateTime = DateTime.now();
   final _locationCtrl = TextEditingController();
   final _engineHoursCtrl = TextEditingController();
+  final _extraNotesCtrl = TextEditingController();
   int? _fuelLevel;
   int? _waterLevel;
-  List<ChecklistItem> _checklist = defaultChecklist();
+  late List<ChecklistItem> _checklist = defaultChecklist(widget.type);
 
   final _skipperNameCtrl = TextEditingController();
   final _companyRepCtrl = TextEditingController();
@@ -88,13 +74,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     _charter = charters.where((c) => c.id == widget.charterId).firstOrNull;
     _skipperNameCtrl.text = _charter?.skipperName ?? '';
 
-    if (_isCheckOut) {
-      final checkIn = await db.getHandoverProtocol(widget.charterId, 'checkIn');
-      if (checkIn != null) {
-        _checkInChecklistForComparison = checklistFromJson(checkIn.checklistJson);
-      }
-    }
-
     final existing = await db.getHandoverProtocol(widget.charterId, widget.type);
     if (existing != null) {
       _existing = existing;
@@ -103,6 +82,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       _fuelLevel = existing.fuelLevel;
       _waterLevel = existing.waterLevel;
       _engineHoursCtrl.text = existing.engineHours?.toString() ?? '';
+      _extraNotesCtrl.text = existing.extraNotes ?? '';
       _checklist = checklistFromJson(existing.checklistJson);
       _skipperNameCtrl.text = existing.skipperName ?? _skipperNameCtrl.text;
       _skipperSignaturePath = existing.skipperSignaturePath;
@@ -112,28 +92,20 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       _companySignaturePath = existing.companySignaturePath;
       _companySignedAt = existing.companySignedAt;
     } else if (_isCheckOut) {
-      // Predvyplnenie z check-in protokolu.
+      // Predvyplnenie spoločných metadát z check-in protokolu. Samotný
+      // checklist NIE je rovnaký zoznam ako pri check-in (iné položky,
+      // viď handover_checklist.dart) – stavia sa z vlastných checkOut
+      // kategórií, nekopíruje sa.
       final checkIn = await db.getHandoverProtocol(widget.charterId, 'checkIn');
       if (checkIn != null) {
         _locationCtrl.text = checkIn.location ?? '';
         _fuelLevel = checkIn.fuelLevel;
         _waterLevel = checkIn.waterLevel;
         _engineHoursCtrl.text = checkIn.engineHours?.toString() ?? '';
-        _checklist = checklistFromJson(checkIn.checklistJson)
-            .map((i) => i.copyWith()) // kópia, editovateľná nezávisle
-            .toList();
       }
     }
 
     if (mounted) setState(() => _loading = false);
-  }
-
-  bool _isNewDamage(ChecklistItem current) {
-    final before = _checkInChecklistForComparison
-        ?.where((i) => i.itemKey == current.itemKey)
-        .firstOrNull;
-    if (before == null) return false;
-    return before.status == ChecklistStatus.ok && current.status != ChecklistStatus.ok;
   }
 
   Future<void> _pickDate() async {
@@ -210,6 +182,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       companyName: Value(_companyNameCtrl.text.trim().isEmpty ? null : _companyNameCtrl.text.trim()),
       companySignaturePath: Value(companyPath),
       companySignedAt: Value(companySignedAt),
+      extraNotes: Value(_extraNotesCtrl.text.trim().isEmpty ? null : _extraNotesCtrl.text.trim()),
       createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
     ));
 
@@ -239,6 +212,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final localeCode = Localizations.localeOf(context).languageCode;
     if (_loading) {
       return Scaffold(body: const Center(child: CircularProgressIndicator()));
     }
@@ -246,6 +220,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     final title = _isCheckOut ? l.checkOutProtocol : l.checkInProtocol;
     final fmt = DateFormat('d.M.yyyy HH:mm');
     final readOnly = _isClosed;
+    final categories = _isCheckOut ? checkOutCategories : checkInCategories;
 
     return Scaffold(
       appBar: AppBar(
@@ -315,16 +290,34 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
             onChanged: readOnly ? null : (v) => setState(() => _waterLevel = v)),
         const SizedBox(height: 16),
 
-        for (var i = 0; i < _checklist.length; i++)
-          _ChecklistItemTile(
-            item: _checklist[i],
-            label: _itemLabel(l, _checklist[i].itemKey),
+        for (final category in categories)
+          _CategorySection(
+            category: category,
+            localeCode: localeCode,
             l: l,
             readOnly: readOnly,
-            isNewDamage: _isNewDamage(_checklist[i]),
-            onChanged: readOnly ? null : (updated) => setState(() => _checklist[i] = updated),
-            onPickPhoto: readOnly ? null : (source) => _pickPhoto(i, source),
+            checklist: _checklist,
+            onItemChanged: readOnly
+                ? null
+                : (itemKey, updated) {
+                    final idx = _checklist.indexWhere((i) => i.itemKey == itemKey);
+                    if (idx != -1) setState(() => _checklist[idx] = updated);
+                  },
+            onPickPhoto: readOnly
+                ? null
+                : (itemKey, source) {
+                    final idx = _checklist.indexWhere((i) => i.itemKey == itemKey);
+                    if (idx != -1) _pickPhoto(idx, source);
+                  },
           ),
+        const SizedBox(height: 16),
+
+        TextField(
+          controller: _extraNotesCtrl,
+          enabled: !readOnly,
+          maxLines: 3,
+          decoration: InputDecoration(labelText: l.extraNotesLabel),
+        ),
         const SizedBox(height: 24),
 
         Text(l.skipperSignature, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
@@ -378,6 +371,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
   void dispose() {
     _locationCtrl.dispose();
     _engineHoursCtrl.dispose();
+    _extraNotesCtrl.dispose();
     _skipperNameCtrl.dispose();
     _companyRepCtrl.dispose();
     _companyNameCtrl.dispose();
@@ -420,21 +414,84 @@ class _PercentField extends StatelessWidget {
   }
 }
 
-class _ChecklistItemTile extends StatelessWidget {
-  final ChecklistItem item;
-  final String label;
+/// Jedna zbaliteľná kategória checklistu (napr. "Elektrické vybavenie")
+/// so svojimi položkami. Predvolene zbalená kvôli objemu (~70 položiek
+/// pri check-in).
+class _CategorySection extends StatefulWidget {
+  final HandoverCategoryDef category;
+  final String localeCode;
   final AppLocalizations l;
   final bool readOnly;
-  final bool isNewDamage;
+  final List<ChecklistItem> checklist;
+  final void Function(String itemKey, ChecklistItem updated)? onItemChanged;
+  final void Function(String itemKey, ImageSource source)? onPickPhoto;
+
+  const _CategorySection({
+    required this.category,
+    required this.localeCode,
+    required this.l,
+    required this.readOnly,
+    required this.checklist,
+    required this.onItemChanged,
+    required this.onPickPhoto,
+  });
+
+  @override
+  State<_CategorySection> createState() => _CategorySectionState();
+}
+
+class _CategorySectionState extends State<_CategorySection> {
+  @override
+  Widget build(BuildContext context) {
+    final itemKeys = widget.category.items.map((i) => i.key).toSet();
+    final items = widget.checklist.where((i) => itemKeys.contains(i.itemKey)).toList();
+    final issues = items.where((i) => i.status != ChecklistStatus.ok).length;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ExpansionTile(
+        title: Text(categoryLabel(widget.localeCode, widget.category),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+        subtitle: issues > 0
+            ? Text('$issues ⚠', style: TextStyle(color: Colors.red.shade700, fontSize: 12))
+            : null,
+        childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        children: [
+          for (final itemDef in widget.category.items)
+            _ChecklistItemTile(
+              item: widget.checklist.firstWhere((i) => i.itemKey == itemDef.key),
+              itemDef: itemDef,
+              localeCode: widget.localeCode,
+              l: widget.l,
+              readOnly: widget.readOnly,
+              onChanged: widget.onItemChanged == null
+                  ? null
+                  : (updated) => widget.onItemChanged!(itemDef.key, updated),
+              onPickPhoto: widget.onPickPhoto == null
+                  ? null
+                  : (source) => widget.onPickPhoto!(itemDef.key, source),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChecklistItemTile extends StatelessWidget {
+  final ChecklistItem item;
+  final HandoverItemDef itemDef;
+  final String localeCode;
+  final AppLocalizations l;
+  final bool readOnly;
   final ValueChanged<ChecklistItem>? onChanged;
   final ValueChanged<ImageSource>? onPickPhoto;
 
   const _ChecklistItemTile({
     required this.item,
-    required this.label,
+    required this.itemDef,
+    required this.localeCode,
     required this.l,
     required this.readOnly,
-    required this.isNewDamage,
     required this.onChanged,
     required this.onPickPhoto,
   });
@@ -447,15 +504,10 @@ class _ChecklistItemTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600))),
-            if (isNewDamage)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(color: Colors.red.shade700, borderRadius: BorderRadius.circular(4)),
-                child: Text(l.newDamageBadge, style: const TextStyle(color: Colors.white, fontSize: 10)),
-              ),
-          ]),
+          Text(itemLabel(localeCode, itemDef), style: const TextStyle(fontWeight: FontWeight.w600)),
+          if (localeCode == 'sk')
+            Text('(${itemDef.labelEn})',
+                style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           SegmentedButton<ChecklistStatus>(
             segments: ChecklistStatus.values

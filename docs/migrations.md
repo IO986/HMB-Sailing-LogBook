@@ -57,3 +57,18 @@ stĺpec, zmena typu...) postupuj takto:
   `flutter pub add intl:^0.20.2`.
 - Editácia existujúceho záznamu vždy cez `update`, nikdy `insert`
   (duplicitné riadky).
+- **`createTable` vs `addColumn` pre stĺpec pridaný do tej istej tabuľky
+  o pár verzií neskôr**: `m.createTable(tabulka)` stavia tabuľku podľa
+  AKTUÁLNEJ definície v kóde (nie podľa historického stavu v čase, keď
+  bola tabuľka vytvorená) — ak teda pridáš nový stĺpec do tabuľky, ktorá
+  vznikla v skoršej migrácii, a napíšeš samostatný `addColumn` krok pre
+  neskoršiu verziu, migrácia z verzie PRED vznikom tabuľky zlyhá s
+  `duplicate column name` (createTable ho už vytvoril, addColumn sa ho
+  potom pokúsi pridať znova). Rieš cez `if (from < <verzia_vzniku_tabulky>)
+  createTable(...) else if (from < <verzia_noveho_stlpca>) addColumn(...)`
+  — nie dva samostatné `if (from < N)` bloky za sebou.
+- Ak `flutter test`/`flutter build` zlyhá s `PathAccessException:
+  Deletion failed ... sqlite3.dll (Access is denied)`: zvyškový
+  `flutter_tester.exe` proces z predchádzajúceho (napr. prerušeného)
+  behu drží zámok na DLL — ukonči ho (`Get-Process flutter_tester |
+  Stop-Process -Force`) a skús znova.

@@ -746,6 +746,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get itemBimini => 'Bimini';
 
   @override
+  String get extraNotesLabel => 'Ďalšie poznámky';
+
+  @override
   String get gpxImportTitle => 'Import GPX';
 
   @override

@@ -749,6 +749,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get itemBimini => 'Bimini';
 
   @override
+  String get extraNotesLabel => 'Zusätzliche Notizen';
+
+  @override
   String get gpxImportTitle => 'GPX-Import';
 
   @override

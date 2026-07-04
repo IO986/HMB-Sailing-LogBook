@@ -201,6 +201,7 @@ class HandoverProtocols extends Table {
   TextColumn get companyName => text().nullable()();
   TextColumn get companySignaturePath => text().nullable()();
   DateTimeColumn get companySignedAt => dateTime().nullable()();
+  TextColumn get extraNotes => text().nullable()(); // poznámky mimo štandardného checklistu
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -225,7 +226,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -268,7 +269,13 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.myRole);
       }
       if (from < 10) {
+        // createTable stavia podľa AKTUÁLNEJ definície tabuľky (vrátane
+        // extraNotes), takže tu sa nižšie addColumn pre extraNotes
+        // nesmie zopakovať – inak "duplicate column name" pri migrácii
+        // z verzie < 10.
         await m.createTable(handoverProtocols);
+      } else if (from < 11) {
+        await m.addColumn(handoverProtocols, handoverProtocols.extraNotes);
       }
     },
     beforeOpen: (details) async {

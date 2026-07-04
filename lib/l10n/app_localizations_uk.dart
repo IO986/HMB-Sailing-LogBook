@@ -748,6 +748,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get itemBimini => 'Тент бімін';
 
   @override
+  String get extraNotesLabel => 'Додаткові примітки';
+
+  @override
   String get gpxImportTitle => 'Імпорт GPX';
 
   @override

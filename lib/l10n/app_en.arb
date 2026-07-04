@@ -253,6 +253,7 @@
   "itemDinghyMotor": "Dinghy and outboard motor",
   "itemLights": "Lights",
   "itemBimini": "Bimini",
+  "extraNotesLabel": "Additional notes",
   "gpxImportTitle": "GPX import",
   "gpxImportPickFile": "Choose GPX file",
   "gpxTracksFound": "Tracks found",

@@ -253,6 +253,7 @@
   "itemDinghyMotor": "Тузик і підвісний мотор",
   "itemLights": "Освітлення",
   "itemBimini": "Тент бімін",
+  "extraNotesLabel": "Додаткові примітки",
   "gpxImportTitle": "Імпорт GPX",
   "gpxImportPickFile": "Вибрати GPX файл",
   "gpxTracksFound": "Знайдені треки",

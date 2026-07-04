@@ -8,10 +8,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/config/emergency_contacts.dart';
-import 'safety_briefing_screen.dart';
 import 'mayday_card_screen.dart';
 import 'gear_list_screen.dart';
-import 'yacht_handover_screen.dart';
 import 'colreg_screen.dart';
 import 'maritime_reference_screen.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -269,10 +267,6 @@ class SafetyScreen extends ConsumerWidget {
           _MobSection(),
           const SizedBox(height: 16),
           _AnchorCard(),
-          const SizedBox(height: 16),
-          const _SafetyBriefingCard(),
-          const SizedBox(height: 16),
-          const _CharterCheckCard(),
           const SizedBox(height: 16),
           const _HmbHandbookCard(),
           const SizedBox(height: 16),
@@ -626,170 +620,6 @@ class _DriftAlarmDialogState extends State<_DriftAlarmDialog>
   }
 }
 
-// ── Safety Briefing ───────────────────────────────────────────
-
-class _SafetyBriefingCard extends StatefulWidget {
-  const _SafetyBriefingCard();
-  @override
-  State<_SafetyBriefingCard> createState() => _SafetyBriefingCardState();
-}
-
-class _SafetyBriefingCardState extends State<_SafetyBriefingCard> {
-  final List<bool> _checked = List.filled(12, false);
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final items = [
-      l.briefingItem1, l.briefingItem2, l.briefingItem3, l.briefingItem4,
-      l.briefingItem5, l.briefingItem6, l.briefingItem7, l.briefingItem8,
-      l.briefingItem9, l.briefingItem10, l.briefingItem11, l.briefingItem12,
-    ];
-    final checked = _checked.where((v) => v).length;
-    final total = items.length;
-    final allDone = checked == total;
-    return Card(
-      color: allDone ? Colors.green.shade50 : null,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          InkWell(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Row(children: [
-              Icon(Icons.checklist, color: allDone ? Colors.green : null),
-              const SizedBox(width: 8),
-              Expanded(child: Text(l.safetyBriefingCard,
-                  style: Theme.of(context).textTheme.titleMedium)),
-              Text('$checked/$total', style: TextStyle(
-                  color: allDone ? Colors.green : Colors.orange,
-                  fontWeight: FontWeight.bold)),
-              const SizedBox(width: 8),
-              Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-            ]),
-          ),
-          if (allDone)
-            Padding(padding: const EdgeInsets.only(top: 8),
-              child: Row(children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                const SizedBox(width: 4),
-                Text(l.briefingComplete, style: const TextStyle(color: Colors.green)),
-              ])),
-          if (_expanded) ...[
-            const Divider(),
-            ...items.asMap().entries.map((e) => CheckboxListTile(
-              title: Text(e.value, style: const TextStyle(fontSize: 14)),
-              value: _checked[e.key], dense: true, contentPadding: EdgeInsets.zero,
-              onChanged: (v) => setState(() => _checked[e.key] = v ?? false),
-            )),
-          ],
-        ]),
-      ),
-    );
-  }
-}
-
-// ── Charter Check ─────────────────────────────────────────────
-
-class _CharterCheckCard extends StatefulWidget {
-  const _CharterCheckCard();
-  @override
-  State<_CharterCheckCard> createState() => _CharterCheckCardState();
-}
-
-class _CharterCheckCardState extends State<_CharterCheckCard> {
-  final List<bool> _checkInChecked = List.filled(11, false);
-  final List<bool> _checkOutChecked = List.filled(7, false);
-  bool _inExp = false, _outExp = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final checkInItems = [
-      l.checkInItem1, l.checkInItem2, l.checkInItem3, l.checkInItem4,
-      l.checkInItem5, l.checkInItem6, l.checkInItem7, l.checkInItem8,
-      l.checkInItem9, l.checkInItem10, l.checkInItem11,
-    ];
-    final checkOutItems = [
-      l.checkOutItem1, l.checkOutItem2, l.checkOutItem3, l.checkOutItem4,
-      l.checkOutItem5, l.checkOutItem6, l.checkOutItem7,
-    ];
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(l.charterCheckCard, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          _CheckSection(
-            title: l.checkInLabel, icon: Icons.login,
-            items: checkInItems, checked: _checkInChecked, expanded: _inExp,
-            onToggle: () => setState(() => _inExp = !_inExp),
-            onChanged: (i, v) => setState(() => _checkInChecked[i] = v),
-          ),
-          const SizedBox(height: 8),
-          _CheckSection(
-            title: l.checkOutLabel, icon: Icons.logout,
-            items: checkOutItems, checked: _checkOutChecked, expanded: _outExp,
-            onToggle: () => setState(() => _outExp = !_outExp),
-            onChanged: (i, v) => setState(() => _checkOutChecked[i] = v),
-          ),
-        ]),
-      ),
-    );
-  }
-}
-
-class _CheckSection extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final List<String> items;
-  final List<bool> checked;
-  final bool expanded;
-  final VoidCallback onToggle;
-  final Function(int, bool) onChanged;
-  const _CheckSection({required this.title, required this.icon, required this.items,
-      required this.checked, required this.expanded, required this.onToggle,
-      required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final checkedCount = checked.where((v) => v).length;
-    final total = items.length;
-    final allDone = checkedCount == total;
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: allDone ? Colors.green.shade300 : Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(children: [
-        InkWell(
-          onTap: onToggle,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(children: [
-              Icon(icon, size: 20, color: allDone ? Colors.green : null),
-              const SizedBox(width: 8),
-              Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500))),
-              Text('$checkedCount/$total', style: TextStyle(
-                  color: allDone ? Colors.green : Colors.orange, fontWeight: FontWeight.bold)),
-              const SizedBox(width: 4),
-              Icon(expanded ? Icons.expand_less : Icons.expand_more, size: 20),
-            ]),
-          ),
-        ),
-        if (expanded)
-          ...items.asMap().entries.map((e) => CheckboxListTile(
-            title: Text(e.value, style: const TextStyle(fontSize: 13)),
-            value: checked[e.key], dense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-            onChanged: (v) => onChanged(e.key, v ?? false),
-          )),
-      ]),
-    );
-  }
-}
-
 // ── Emergency Contacts ────────────────────────────────────────
 
 class _EmergencyCard extends ConsumerWidget {
@@ -957,14 +787,6 @@ class _HmbHandbookCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(children: [
               Expanded(child: _HandbookButton(
-                icon: Icons.checklist,
-                label: 'Safety\nBriefing',
-                color: Colors.blue,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => const SafetyBriefingScreen())),
-              )),
-              const SizedBox(width: 8),
-              Expanded(child: _HandbookButton(
                 icon: Icons.radio,
                 label: 'Mayday\nCard',
                 color: Colors.red,
@@ -978,24 +800,6 @@ class _HmbHandbookCard extends StatelessWidget {
                 color: Colors.teal,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                     builder: (_) => const GearListScreen())),
-              )),
-            ]),
-            const SizedBox(height: 8),
-            Row(children: [
-              Expanded(child: _HandbookButton(
-                icon: Icons.login,
-                label: l.checkInShort,
-                color: Colors.blue.shade700,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => const YachtHandoverScreen(isCheckIn: true))),
-              )),
-              const SizedBox(width: 8),
-              Expanded(child: _HandbookButton(
-                icon: Icons.logout,
-                label: l.checkOutShort,
-                color: Colors.orange.shade700,
-                onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => const YachtHandoverScreen(isCheckIn: false))),
               )),
             ]),
             const SizedBox(height: 8),

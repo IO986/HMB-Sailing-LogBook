@@ -253,6 +253,7 @@
   "itemDinghyMotor": "Beiboot und Außenbordmotor",
   "itemLights": "Beleuchtung",
   "itemBimini": "Bimini",
+  "extraNotesLabel": "Zusätzliche Notizen",
   "gpxImportTitle": "GPX-Import",
   "gpxImportPickFile": "GPX-Datei auswählen",
   "gpxTracksFound": "Gefundene Tracks",

@@ -1514,6 +1514,12 @@ abstract class AppLocalizations {
   /// **'Bimini'**
   String get itemBimini;
 
+  /// No description provided for @extraNotesLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ďalšie poznámky'**
+  String get extraNotesLabel;
+
   /// No description provided for @gpxImportTitle.
   ///
   /// In sk, this message translates to:

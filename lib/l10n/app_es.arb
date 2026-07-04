@@ -253,6 +253,7 @@
   "itemDinghyMotor": "Bote auxiliar y motor fueraborda",
   "itemLights": "Luces",
   "itemBimini": "Bimini",
+  "extraNotesLabel": "Notas adicionales",
   "gpxImportTitle": "Importar GPX",
   "gpxImportPickFile": "Elegir archivo GPX",
   "gpxTracksFound": "Tracks encontrados",

@@ -20,36 +20,44 @@ void main() {
     verifier = SchemaVerifier(GeneratedHelper());
   });
 
-  test('onCreate builds a schema matching the current (v10) snapshot', () async {
-    final connection = await verifier.startAt(10);
+  test('onCreate builds a schema matching the current (v11) snapshot', () async {
+    final connection = await verifier.startAt(11);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, 11);
   });
 
-  test('migrate v7 to current (v10)', () async {
+  test('migrate v7 to current (v11)', () async {
     final connection = await verifier.startAt(7);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, 11);
   });
 
-  test('migrate v8 to current (v10)', () async {
+  test('migrate v8 to current (v11)', () async {
     final connection = await verifier.startAt(8);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, 11);
   });
 
-  test('migrate v9 to current (v10): handoverProtocols table', () async {
+  test('migrate v9 to current (v11)', () async {
     final connection = await verifier.startAt(9);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, 11);
+  });
+
+  test('migrate v10 to current (v11): handoverProtocols.extraNotes', () async {
+    final connection = await verifier.startAt(10);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 11);
   });
 
   // PRAVIDLO: pri každom zvýšení schemaVersion pridaj nový
