@@ -672,6 +672,83 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filterCustomRange => 'Eigener Zeitraum';
 
   @override
+  String get handoverMenuTitle => 'Übergabeprotokoll';
+
+  @override
+  String get checkInProtocol => 'Check-in-Protokoll';
+
+  @override
+  String get checkOutProtocol => 'Check-out-Protokoll';
+
+  @override
+  String get handoverDateTime => 'Datum und Uhrzeit';
+
+  @override
+  String get handoverLocation => 'Ort (Marina)';
+
+  @override
+  String get checklistItemOk => 'OK';
+
+  @override
+  String get checklistItemDamaged => 'Beschädigt';
+
+  @override
+  String get checklistItemMissing => 'Fehlt';
+
+  @override
+  String get damagePosition => 'Position am Boot';
+
+  @override
+  String get newDamageBadge => 'NEUER SCHADEN';
+
+  @override
+  String get companySignatureSection =>
+      'Unterschrift des Vertreters der Charterfirma';
+
+  @override
+  String get companyRepName => 'Name des Vertreters';
+
+  @override
+  String get companyNameLabel => 'Firmenname';
+
+  @override
+  String get protocolClosedNotice =>
+      'Das Protokoll ist abgeschlossen (beide Parteien haben unterschrieben) – nur lesbar.';
+
+  @override
+  String get handoverCertTitle => 'Schiffsübergabeprotokoll';
+
+  @override
+  String get itemSails => 'Segel';
+
+  @override
+  String get itemRigging => 'Takelage';
+
+  @override
+  String get itemAnchorChain => 'Anker und Kette';
+
+  @override
+  String get itemNavInstruments => 'Navigationsinstrumente';
+
+  @override
+  String get itemLifeJackets => 'Rettungswesten';
+
+  @override
+  String get itemRaft => 'Rettungsinsel';
+
+  @override
+  String get itemFirstAidKit => 'Erste-Hilfe-Kasten';
+
+  @override
+  String get itemDinghyMotor => 'Beiboot und Außenbordmotor';
+
+  @override
+  String get itemLights => 'Beleuchtung';
+
+  @override
+  String get itemBimini => 'Bimini';
+
+  @override
   String get connectionConnected => 'Verbunden';
 
   @override

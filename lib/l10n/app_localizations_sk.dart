@@ -669,6 +669,83 @@ class AppLocalizationsSk extends AppLocalizations {
   String get filterCustomRange => 'Vlastný rozsah';
 
   @override
+  String get handoverMenuTitle => 'Odovzdávací protokol';
+
+  @override
+  String get checkInProtocol => 'Check-in protokol';
+
+  @override
+  String get checkOutProtocol => 'Check-out protokol';
+
+  @override
+  String get handoverDateTime => 'Dátum a čas';
+
+  @override
+  String get handoverLocation => 'Miesto (marína)';
+
+  @override
+  String get checklistItemOk => 'OK';
+
+  @override
+  String get checklistItemDamaged => 'Poškodené';
+
+  @override
+  String get checklistItemMissing => 'Chýba';
+
+  @override
+  String get damagePosition => 'Poloha na lodi';
+
+  @override
+  String get newDamageBadge => 'NOVÉ POŠKODENIE';
+
+  @override
+  String get companySignatureSection =>
+      'Podpis zástupcu charterovej spoločnosti';
+
+  @override
+  String get companyRepName => 'Meno zástupcu';
+
+  @override
+  String get companyNameLabel => 'Názov spoločnosti';
+
+  @override
+  String get protocolClosedNotice =>
+      'Protokol je uzavretý (podpísali obe strany) – len na čítanie.';
+
+  @override
+  String get handoverCertTitle => 'Odovzdávací protokol lode';
+
+  @override
+  String get itemSails => 'Plachty';
+
+  @override
+  String get itemRigging => 'Lanovie';
+
+  @override
+  String get itemAnchorChain => 'Kotva a reťaz';
+
+  @override
+  String get itemNavInstruments => 'Navigačné prístroje';
+
+  @override
+  String get itemLifeJackets => 'Záchranné vesty';
+
+  @override
+  String get itemRaft => 'Záchranný raft';
+
+  @override
+  String get itemFirstAidKit => 'Lekárnička';
+
+  @override
+  String get itemDinghyMotor => 'Dinghy a prívesný motor';
+
+  @override
+  String get itemLights => 'Svetlá';
+
+  @override
+  String get itemBimini => 'Bimini';
+
+  @override
   String get connectionConnected => 'Pripojené';
 
   @override

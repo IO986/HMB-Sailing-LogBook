@@ -668,6 +668,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterCustomRange => 'Custom range';
 
   @override
+  String get handoverMenuTitle => 'Handover protocol';
+
+  @override
+  String get checkInProtocol => 'Check-in protocol';
+
+  @override
+  String get checkOutProtocol => 'Check-out protocol';
+
+  @override
+  String get handoverDateTime => 'Date and time';
+
+  @override
+  String get handoverLocation => 'Location (marina)';
+
+  @override
+  String get checklistItemOk => 'OK';
+
+  @override
+  String get checklistItemDamaged => 'Damaged';
+
+  @override
+  String get checklistItemMissing => 'Missing';
+
+  @override
+  String get damagePosition => 'Position on boat';
+
+  @override
+  String get newDamageBadge => 'NEW DAMAGE';
+
+  @override
+  String get companySignatureSection =>
+      'Charter company representative signature';
+
+  @override
+  String get companyRepName => 'Representative name';
+
+  @override
+  String get companyNameLabel => 'Company name';
+
+  @override
+  String get protocolClosedNotice =>
+      'The protocol is closed (both parties signed) – read only.';
+
+  @override
+  String get handoverCertTitle => 'Vessel handover protocol';
+
+  @override
+  String get itemSails => 'Sails';
+
+  @override
+  String get itemRigging => 'Rigging';
+
+  @override
+  String get itemAnchorChain => 'Anchor and chain';
+
+  @override
+  String get itemNavInstruments => 'Navigation instruments';
+
+  @override
+  String get itemLifeJackets => 'Life jackets';
+
+  @override
+  String get itemRaft => 'Life raft';
+
+  @override
+  String get itemFirstAidKit => 'First aid kit';
+
+  @override
+  String get itemDinghyMotor => 'Dinghy and outboard motor';
+
+  @override
+  String get itemLights => 'Lights';
+
+  @override
+  String get itemBimini => 'Bimini';
+
+  @override
   String get connectionConnected => 'Connected';
 
   @override

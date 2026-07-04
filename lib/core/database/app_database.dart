@@ -181,6 +181,34 @@ class HistoricalVoyages extends Table {
   DateTimeColumn get createdAt => dateTime()();
 }
 
+/// Odovzdávací protokol lode (check-in pri prevzatí, check-out pri
+/// vrátení) – max. jeden od každého typu na charter, uzavretie sa počíta
+/// odvodene (obidva podpisy vyplnené), nie samostatným stĺpcom.
+class HandoverProtocols extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get charterId => integer().references(Charters, #id)();
+  TextColumn get type => text()(); // 'checkIn' | 'checkOut'
+  DateTimeColumn get dateTimeUtc => dateTime()();
+  TextColumn get location => text().nullable()(); // marína
+  IntColumn get fuelLevel => integer().nullable()();  // 0-100 %
+  IntColumn get waterLevel => integer().nullable()(); // 0-100 %
+  RealColumn get engineHours => real().nullable()();
+  TextColumn get checklistJson => text().withDefault(const Constant('[]'))();
+  TextColumn get skipperName => text().nullable()();
+  TextColumn get skipperSignaturePath => text().nullable()();
+  DateTimeColumn get skipperSignedAt => dateTime().nullable()();
+  TextColumn get companyRepName => text().nullable()();
+  TextColumn get companyName => text().nullable()();
+  TextColumn get companySignaturePath => text().nullable()();
+  DateTimeColumn get companySignedAt => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+        {charterId, type},
+      ];
+}
+
 // ─────────────────────────────────────────────────────────────
 // DATABASE
 // ─────────────────────────────────────────────────────────────
@@ -188,7 +216,7 @@ class HistoricalVoyages extends Table {
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
-  HistoricalVoyages,
+  HistoricalVoyages, HandoverProtocols,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -197,7 +225,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -238,6 +266,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 9) {
         await m.createTable(historicalVoyages);
         await m.addColumn(charters, charters.myRole);
+      }
+      if (from < 10) {
+        await m.createTable(handoverProtocols);
       }
     },
     beforeOpen: (details) async {
@@ -472,6 +503,16 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteHistoricalVoyage(int id) =>
       (delete(historicalVoyages)..where((t) => t.id.equals(id))).go();
+
+  // ── Handover Protocols (check-in/check-out) ────────────────────
+
+  Future<HandoverProtocol?> getHandoverProtocol(int charterId, String type) =>
+      (select(handoverProtocols)
+            ..where((h) => h.charterId.equals(charterId) & h.type.equals(type)))
+          .getSingleOrNull();
+
+  Future<int> upsertHandoverProtocol(HandoverProtocolsCompanion h) =>
+      into(handoverProtocols).insertOnConflictUpdate(h);
 }
 
 LazyDatabase _openConnection() {

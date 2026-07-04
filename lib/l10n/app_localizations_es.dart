@@ -670,6 +670,83 @@ class AppLocalizationsEs extends AppLocalizations {
   String get filterCustomRange => 'Rango personalizado';
 
   @override
+  String get handoverMenuTitle => 'Protocolo de entrega';
+
+  @override
+  String get checkInProtocol => 'Protocolo de check-in';
+
+  @override
+  String get checkOutProtocol => 'Protocolo de check-out';
+
+  @override
+  String get handoverDateTime => 'Fecha y hora';
+
+  @override
+  String get handoverLocation => 'Lugar (puerto deportivo)';
+
+  @override
+  String get checklistItemOk => 'OK';
+
+  @override
+  String get checklistItemDamaged => 'Dañado';
+
+  @override
+  String get checklistItemMissing => 'Falta';
+
+  @override
+  String get damagePosition => 'Posición en el barco';
+
+  @override
+  String get newDamageBadge => 'DAÑO NUEVO';
+
+  @override
+  String get companySignatureSection =>
+      'Firma del representante de la empresa de charter';
+
+  @override
+  String get companyRepName => 'Nombre del representante';
+
+  @override
+  String get companyNameLabel => 'Nombre de la empresa';
+
+  @override
+  String get protocolClosedNotice =>
+      'El protocolo está cerrado (ambas partes firmaron) – solo lectura.';
+
+  @override
+  String get handoverCertTitle => 'Protocolo de entrega de la embarcación';
+
+  @override
+  String get itemSails => 'Velas';
+
+  @override
+  String get itemRigging => 'Jarcia';
+
+  @override
+  String get itemAnchorChain => 'Ancla y cadena';
+
+  @override
+  String get itemNavInstruments => 'Instrumentos de navegación';
+
+  @override
+  String get itemLifeJackets => 'Chalecos salvavidas';
+
+  @override
+  String get itemRaft => 'Balsa salvavidas';
+
+  @override
+  String get itemFirstAidKit => 'Botiquín';
+
+  @override
+  String get itemDinghyMotor => 'Bote auxiliar y motor fueraborda';
+
+  @override
+  String get itemLights => 'Luces';
+
+  @override
+  String get itemBimini => 'Bimini';
+
+  @override
   String get connectionConnected => 'Conectado';
 
   @override

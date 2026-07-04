@@ -671,6 +671,83 @@ class AppLocalizationsUk extends AppLocalizations {
   String get filterCustomRange => 'Власний діапазон';
 
   @override
+  String get handoverMenuTitle => 'Протокол передачі';
+
+  @override
+  String get checkInProtocol => 'Протокол прийому (check-in)';
+
+  @override
+  String get checkOutProtocol => 'Протокол повернення (check-out)';
+
+  @override
+  String get handoverDateTime => 'Дата і час';
+
+  @override
+  String get handoverLocation => 'Місце (марина)';
+
+  @override
+  String get checklistItemOk => 'ОК';
+
+  @override
+  String get checklistItemDamaged => 'Пошкоджено';
+
+  @override
+  String get checklistItemMissing => 'Відсутнє';
+
+  @override
+  String get damagePosition => 'Розташування на судні';
+
+  @override
+  String get newDamageBadge => 'НОВЕ ПОШКОДЖЕННЯ';
+
+  @override
+  String get companySignatureSection =>
+      'Підпис представника чартерної компанії';
+
+  @override
+  String get companyRepName => 'Ім\'я представника';
+
+  @override
+  String get companyNameLabel => 'Назва компанії';
+
+  @override
+  String get protocolClosedNotice =>
+      'Протокол закрито (обидві сторони підписали) – лише перегляд.';
+
+  @override
+  String get handoverCertTitle => 'Протокол передачі судна';
+
+  @override
+  String get itemSails => 'Вітрила';
+
+  @override
+  String get itemRigging => 'Такелаж';
+
+  @override
+  String get itemAnchorChain => 'Якір і ланцюг';
+
+  @override
+  String get itemNavInstruments => 'Навігаційні прилади';
+
+  @override
+  String get itemLifeJackets => 'Рятувальні жилети';
+
+  @override
+  String get itemRaft => 'Рятувальний пліт';
+
+  @override
+  String get itemFirstAidKit => 'Аптечка';
+
+  @override
+  String get itemDinghyMotor => 'Тузик і підвісний мотор';
+
+  @override
+  String get itemLights => 'Освітлення';
+
+  @override
+  String get itemBimini => 'Тент бімін';
+
+  @override
   String get connectionConnected => 'Підключено';
 
   @override

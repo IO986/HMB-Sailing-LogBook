@@ -34,6 +34,11 @@ class CharterDetailScreen extends ConsumerWidget {
                 tooltip: AppLocalizations.of(context).briefingOpenBriefing,
                 onPressed: () => context.go('/logbook/$charterId/briefing'),
               ),
+              IconButton(
+                icon: const Icon(Icons.handshake_outlined),
+                tooltip: AppLocalizations.of(context).handoverMenuTitle,
+                onPressed: () => _showHandoverMenu(context, ref, charterId),
+              ),
               IconButton(icon: const Icon(Icons.edit),
                   onPressed: () => context.go('/logbook/$charterId/edit')),
               IconButton(
@@ -53,6 +58,41 @@ class CharterDetailScreen extends ConsumerWidget {
       error: (e, _) => Scaffold(body: Center(child: Text('$e'))),
     );
   }
+}
+
+void _showHandoverMenu(BuildContext context, WidgetRef ref, int charterId) async {
+  final l = AppLocalizations.of(context);
+  final db = ref.read(databaseProvider);
+  final checkIn = await db.getHandoverProtocol(charterId, 'checkIn');
+  final checkOut = await db.getHandoverProtocol(charterId, 'checkOut');
+  bool isClosed(HandoverProtocol? p) => p != null && p.skipperSignedAt != null && p.companySignedAt != null;
+
+  if (!context.mounted) return;
+  showModalBottomSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(
+          leading: const Icon(Icons.assignment_turned_in_outlined),
+          title: Text(l.checkInProtocol),
+          trailing: isClosed(checkIn) ? const Icon(Icons.check_circle, color: Colors.green) : null,
+          onTap: () {
+            Navigator.pop(ctx);
+            context.go('/logbook/$charterId/handover/checkIn');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.assignment_return_outlined),
+          title: Text(l.checkOutProtocol),
+          trailing: isClosed(checkOut) ? const Icon(Icons.check_circle, color: Colors.green) : null,
+          onTap: () {
+            Navigator.pop(ctx);
+            context.go('/logbook/$charterId/handover/checkOut');
+          },
+        ),
+      ]),
+    ),
+  );
 }
 
 class _Body extends ConsumerWidget {

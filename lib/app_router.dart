@@ -7,6 +7,7 @@ import 'features/charter/presentation/screens/charter_edit_screen.dart';
 import 'features/charter/presentation/screens/charter_detail_screen.dart';
 import 'features/charter/presentation/screens/day_log_screen.dart';
 import 'features/charter/presentation/screens/safety_briefing_screen.dart';
+import 'features/charter/presentation/screens/handover_protocol_screen.dart';
 import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/weather/presentation/screens/weather_screen.dart';
@@ -54,6 +55,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(path: 'export',
                       builder: (c, s) => ExportScreen(
                           charterId: int.parse(s.pathParameters['id']!))),
+                  GoRoute(path: 'handover/checkIn',
+                      builder: (c, s) => HandoverProtocolScreen(
+                          charterId: int.parse(s.pathParameters['id']!), type: 'checkIn')),
+                  GoRoute(path: 'handover/checkOut',
+                      builder: (c, s) => HandoverProtocolScreen(
+                          charterId: int.parse(s.pathParameters['id']!), type: 'checkOut')),
                   GoRoute(
                     path: 'day/:dayId',
                     builder: (c, s) => DayLogScreen(

@@ -1364,6 +1364,156 @@ abstract class AppLocalizations {
   /// **'Vlastný rozsah'**
   String get filterCustomRange;
 
+  /// No description provided for @handoverMenuTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací protokol'**
+  String get handoverMenuTitle;
+
+  /// No description provided for @checkInProtocol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Check-in protokol'**
+  String get checkInProtocol;
+
+  /// No description provided for @checkOutProtocol.
+  ///
+  /// In sk, this message translates to:
+  /// **'Check-out protokol'**
+  String get checkOutProtocol;
+
+  /// No description provided for @handoverDateTime.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátum a čas'**
+  String get handoverDateTime;
+
+  /// No description provided for @handoverLocation.
+  ///
+  /// In sk, this message translates to:
+  /// **'Miesto (marína)'**
+  String get handoverLocation;
+
+  /// No description provided for @checklistItemOk.
+  ///
+  /// In sk, this message translates to:
+  /// **'OK'**
+  String get checklistItemOk;
+
+  /// No description provided for @checklistItemDamaged.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poškodené'**
+  String get checklistItemDamaged;
+
+  /// No description provided for @checklistItemMissing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chýba'**
+  String get checklistItemMissing;
+
+  /// No description provided for @damagePosition.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poloha na lodi'**
+  String get damagePosition;
+
+  /// No description provided for @newDamageBadge.
+  ///
+  /// In sk, this message translates to:
+  /// **'NOVÉ POŠKODENIE'**
+  String get newDamageBadge;
+
+  /// No description provided for @companySignatureSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpis zástupcu charterovej spoločnosti'**
+  String get companySignatureSection;
+
+  /// No description provided for @companyRepName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno zástupcu'**
+  String get companyRepName;
+
+  /// No description provided for @companyNameLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Názov spoločnosti'**
+  String get companyNameLabel;
+
+  /// No description provided for @protocolClosedNotice.
+  ///
+  /// In sk, this message translates to:
+  /// **'Protokol je uzavretý (podpísali obe strany) – len na čítanie.'**
+  String get protocolClosedNotice;
+
+  /// No description provided for @handoverCertTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací protokol lode'**
+  String get handoverCertTitle;
+
+  /// No description provided for @itemSails.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plachty'**
+  String get itemSails;
+
+  /// No description provided for @itemRigging.
+  ///
+  /// In sk, this message translates to:
+  /// **'Lanovie'**
+  String get itemRigging;
+
+  /// No description provided for @itemAnchorChain.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotva a reťaz'**
+  String get itemAnchorChain;
+
+  /// No description provided for @itemNavInstruments.
+  ///
+  /// In sk, this message translates to:
+  /// **'Navigačné prístroje'**
+  String get itemNavInstruments;
+
+  /// No description provided for @itemLifeJackets.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záchranné vesty'**
+  String get itemLifeJackets;
+
+  /// No description provided for @itemRaft.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záchranný raft'**
+  String get itemRaft;
+
+  /// No description provided for @itemFirstAidKit.
+  ///
+  /// In sk, this message translates to:
+  /// **'Lekárnička'**
+  String get itemFirstAidKit;
+
+  /// No description provided for @itemDinghyMotor.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dinghy a prívesný motor'**
+  String get itemDinghyMotor;
+
+  /// No description provided for @itemLights.
+  ///
+  /// In sk, this message translates to:
+  /// **'Svetlá'**
+  String get itemLights;
+
+  /// No description provided for @itemBimini.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bimini'**
+  String get itemBimini;
+
   /// No description provided for @connectionConnected.
   ///
   /// In sk, this message translates to:

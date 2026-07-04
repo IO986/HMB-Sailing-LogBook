@@ -10,6 +10,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
 import '../../../core/models/skipper_profile.dart';
 import '../../miles/services/miles_calculator.dart';
+import '../../charter/services/handover_checklist.dart';
 
 class PdfExportService {
   static final _navy  = PdfColor.fromHex('#0A2342');
@@ -1159,6 +1160,183 @@ class PdfExportService {
           child: pw.Text(l, style: const pw.TextStyle(fontSize: 9)))),
     ]),
   );
+
+  // ── Handover protokol (check-in/check-out) ───────────────────
+
+  static Future<Uint8List> exportHandoverProtocol({
+    required Charter charter,
+    required HandoverProtocol protocol,
+    required List<ChecklistItem> checklist,
+  }) async {
+    final docId = 'HMBSL-HANDOVER-${charter.id}-${protocol.type}';
+    final fmt = DateFormat('d.M.yyyy HH:mm');
+    final typeLabel = protocol.type == 'checkOut' ? 'CHECK-OUT' : 'CHECK-IN';
+
+    final thumbnails = <String, Uint8List>{};
+    for (final item in checklist) {
+      if (item.photoPath == null) continue;
+      try {
+        final f = File(item.photoPath!);
+        if (await f.exists()) thumbnails[item.itemKey] = await f.readAsBytes();
+      } catch (_) {}
+    }
+
+    Uint8List? skipperSig;
+    if (protocol.skipperSignaturePath != null) {
+      final f = File(protocol.skipperSignaturePath!);
+      if (await f.exists()) skipperSig = await f.readAsBytes();
+    }
+    Uint8List? companySig;
+    if (protocol.companySignaturePath != null) {
+      final f = File(protocol.companySignaturePath!);
+      if (await f.exists()) companySig = await f.readAsBytes();
+    }
+
+    String statusLabel(ChecklistStatus s) => switch (s) {
+          ChecklistStatus.ok => 'OK',
+          ChecklistStatus.damaged => 'Poskodene',
+          ChecklistStatus.missing => 'Chyba',
+        };
+    String itemLabel(String key) => switch (key) {
+          'sails' => 'Plachty',
+          'rigging' => 'Lanovie',
+          'anchorChain' => 'Kotva a retaz',
+          'navInstruments' => 'Navigacne pristroje',
+          'lifeJackets' => 'Zachranne vesty',
+          'raft' => 'Zachranny raft',
+          'firstAidKit' => 'Lekarnicka',
+          'dinghyMotor' => 'Dinghy a privesny motor',
+          'lights' => 'Svetla',
+          'bimini' => 'Bimini',
+          _ => key,
+        };
+
+    final pdf = pw.Document(
+      title: 'Odovzdavaci protokol $typeLabel',
+      creator: 'HMB Sailing Log',
+    );
+
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      header: (ctx) => ctx.pageNumber == 1
+          ? pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(16),
+              margin: const pw.EdgeInsets.only(bottom: 14),
+              decoration: pw.BoxDecoration(color: _navy,
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+                pw.Text('ODOVZDAVACI PROTOKOL - $typeLabel', style: pw.TextStyle(
+                    color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                pw.SizedBox(height: 4),
+                pw.Text(_ascii('${charter.title}  |  ${charter.vesselName ?? "-"}'
+                    '  |  ${charter.callsign ?? charter.mmsi ?? ""}'),
+                    style: pw.TextStyle(color: PdfColors.grey200, fontSize: 9)),
+              ]),
+            )
+          : pw.SizedBox(),
+      footer: (ctx) => _footer(
+        'Datum/miesto: ${fmt.format(protocol.dateTimeUtc.toLocal())}'
+        '${protocol.location != null ? "  |  ${_ascii(protocol.location!)}" : ""}',
+        docId: docId, revision: 0,
+      ),
+      build: (ctx) => [
+        pw.Row(children: [
+          _statBox('MOTOHODINY', protocol.engineHours?.toStringAsFixed(1) ?? '-', _navy),
+          pw.SizedBox(width: 6),
+          _statBox('PALIVO', protocol.fuelLevel != null ? '${protocol.fuelLevel}%' : '-', _blue),
+          pw.SizedBox(width: 6),
+          _statBox('VODA', protocol.waterLevel != null ? '${protocol.waterLevel}%' : '-', _green),
+        ]),
+        pw.SizedBox(height: 16),
+
+        pw.Text('KONTROLNY ZOZNAM', style: pw.TextStyle(
+            color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
+        pw.SizedBox(height: 6),
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          columnWidths: {
+            0: const pw.FlexColumnWidth(1.6),
+            1: const pw.FlexColumnWidth(1),
+            2: const pw.FlexColumnWidth(2),
+            3: const pw.FlexColumnWidth(1.2),
+          },
+          children: [
+            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
+              ['Polozka', 'Stav', 'Poznamka / poloha', 'Foto'].map((h) => _hcell(h)).toList()),
+            ...checklist.map((item) {
+              final noteParts = [
+                if (item.note != null && item.note!.isNotEmpty) item.note!,
+                if (item.position != null && item.position!.isNotEmpty) '(${item.position})',
+              ];
+              return pw.TableRow(
+                decoration: pw.BoxDecoration(
+                    color: item.status == ChecklistStatus.ok ? PdfColors.white : PdfColor.fromHex('#FDEBD0')),
+                children: [
+                  _cell(_ascii(itemLabel(item.itemKey))),
+                  _cell(statusLabel(item.status), bold: item.status != ChecklistStatus.ok),
+                  _cell(_ascii(noteParts.join(' '))),
+                  thumbnails.containsKey(item.itemKey)
+                      ? pw.Container(
+                          padding: const pw.EdgeInsets.all(2),
+                          child: pw.Image(pw.MemoryImage(thumbnails[item.itemKey]!),
+                              height: 40, fit: pw.BoxFit.cover))
+                      : _cell('-'),
+                ],
+              );
+            }),
+          ],
+        ),
+
+        pw.SizedBox(height: 32),
+        pw.Text('PODPISY', style: pw.TextStyle(
+            color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
+        pw.SizedBox(height: 8),
+        pw.Row(children: [
+          pw.Expanded(child: _handoverSignatureBlock(
+            title: 'Skipper', name: protocol.skipperName, signature: skipperSig,
+            signedAt: protocol.skipperSignedAt, fmt: fmt,
+          )),
+          pw.SizedBox(width: 16),
+          pw.Expanded(child: _handoverSignatureBlock(
+            title: 'Za charterovu spolocnost',
+            name: protocol.companyRepName != null
+                ? '${protocol.companyRepName}${protocol.companyName != null ? " (${protocol.companyName})" : ""}'
+                : null,
+            signature: companySig, signedAt: protocol.companySignedAt, fmt: fmt,
+          )),
+        ]),
+      ],
+    ));
+
+    return pdf.save();
+  }
+
+  static pw.Widget _handoverSignatureBlock({
+    required String title,
+    required String? name,
+    required Uint8List? signature,
+    required DateTime? signedAt,
+    required DateFormat fmt,
+  }) {
+    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+      pw.Text(_ascii(title), style: pw.TextStyle(fontSize: 8, color: _dgrey, fontWeight: pw.FontWeight.bold)),
+      pw.SizedBox(height: 4),
+      if (signature != null)
+        pw.Image(pw.MemoryImage(signature), height: 50, fit: pw.BoxFit.contain, alignment: pw.Alignment.centerLeft)
+      else
+        pw.Container(height: 50, alignment: pw.Alignment.centerLeft,
+            child: pw.Text('-', style: const pw.TextStyle(fontSize: 8))),
+      pw.Container(decoration: const pw.BoxDecoration(
+          border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
+      pw.SizedBox(height: 4),
+      pw.Text(_ascii(name ?? '-'), style: const pw.TextStyle(fontSize: 8.5)),
+      if (signedAt != null)
+        pw.Text('Podpisane: ${fmt.format(signedAt.toLocal())}',
+            style: pw.TextStyle(fontSize: 7, color: _dgrey)),
+    ]);
+  }
 
   // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
 
