@@ -929,10 +929,11 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
       return;
     }
 
-    final picked = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['hmbbackup'],
-    );
+    // Poznámka: FileType.custom + allowedExtensions: ['hmbbackup'] sa na
+    // Androide (SAF) nedá namapovať na MIME typ pre neznámu príponu –
+    // systémový picker potom nezobrazí/nedovolí vybrať žiadny súbor.
+    // FileType.any obchádza tento problém; obsah sa aj tak validuje nižšie.
+    final picked = await FilePicker.platform.pickFiles(type: FileType.any);
     final path = picked?.files.single.path;
     if (path == null) return;
 
