@@ -22,10 +22,27 @@ import 'features/export/services/export_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/theme/app_theme.dart';
 
-final databaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase();
-  return db;
-});
+AppDatabase _currentDb = AppDatabase();
+
+/// [databaseProvider] číta z [_currentDb] namiesto pevnej hodnoty, aby po
+/// obnove zo zálohy (viď BackupService) stačilo vymeniť [_currentDb] a
+/// zavolať `ref.invalidate(databaseProvider)` – všetci `watch` odberatelia
+/// (napr. charter_provider.dart) sa prekreslia s novou inštanciou.
+final databaseProvider = Provider<AppDatabase>((ref) => _currentDb);
+
+/// Nastaví DB inštanciu, ktorú vracia [databaseProvider]. Volajúci musí po
+/// tomto zavolať `ref.invalidate(databaseProvider)`.
+void replaceCurrentDatabase(AppDatabase db) => _currentDb = db;
+
+/// Prepojí DB inštanciu do singleton služieb, ktoré si ju držia mimo
+/// Riverpod (nemajú providery). Volané pri štarte aj po obnove zo zálohy.
+void wireDatabaseSingletons(AppDatabase db) {
+  GpsTrackingService().setDatabase(db);
+  WeatherService().setDatabase(db);
+  WeatherRepository().setDatabase(db);
+  ExportService().setDatabase(db);
+  SyncService().setDatabase(db);
+}
 
 /// True, ak ešte nikdy neboli nastavené žiadne Raymarine pripojenie -
 /// použije sa na zobrazenie jednorazovej výzvy na splash/map obrazovke.
@@ -37,18 +54,14 @@ Future<void> main() async {
     await initializeDateFormatting(locale, null);
   }
 
-  final db = AppDatabase();
+  final db = _currentDb;
   await db.fixOrphanedSessions();
 
   // Spusti GPS vždy - nezávisle od trackingu.
   // LocationService interne prioritizuje Raymarine dáta (ak sú pripojené
   // a fresh), inak používa Android GPS.
   await LocationService().init();
-  GpsTrackingService().setDatabase(db);
-  WeatherService().setDatabase(db);
-  WeatherRepository().setDatabase(db);
-  ExportService().setDatabase(db);
-  SyncService().setDatabase(db);
+  wireDatabaseSingletons(db);
   await AccountService().init();
 
   await BackgroundService.init();
@@ -83,7 +96,6 @@ Future<void> main() async {
 
   runApp(ProviderScope(
     overrides: [
-      databaseProvider.overrideWithValue(db),
       localeProvider.overrideWith(() => LocaleNotifier()..initialCode = initialLocale),
     ],
     child: const HmbSailingLogApp(),

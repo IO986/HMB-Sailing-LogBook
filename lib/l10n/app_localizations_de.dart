@@ -561,6 +561,52 @@ class AppLocalizationsDe extends AppLocalizations {
   String get aboutApp => 'Über die App';
 
   @override
+  String get backupSection => 'Datensicherung';
+
+  @override
+  String get exportBackup => 'Sicherung exportieren';
+
+  @override
+  String get exportBackupDesc =>
+      'Speichert das gesamte Logbuch (Fahrten, Einträge, Einstellungen) in einer Datei';
+
+  @override
+  String get restoreBackup => 'Aus Sicherung wiederherstellen';
+
+  @override
+  String get restoreBackupDesc =>
+      'Ersetzt die aktuellen Daten durch den Inhalt einer ausgewählten Sicherungsdatei';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'GPS-Tracking läuft';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Beende das aktive Tracking der Fahrt, bevor du eine Sicherung wiederherstellst.';
+
+  @override
+  String get restoreSchemaTooNewTitle => 'Sicherung ist neuer';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'Diese Sicherung wurde mit einer neueren App-Version erstellt als der aktuell installierten. Aktualisiere zuerst die App.';
+
+  @override
+  String get restoreConfirmTitle => 'Aus Sicherung wiederherstellen?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Die aktuellen Daten werden durch den Inhalt der Sicherung ersetzt. Zuvor wird automatisch eine Sicherung des aktuellen Zustands erstellt.';
+
+  @override
+  String get restoreSuccess =>
+      'Die Daten wurden erfolgreich aus der Sicherung wiederhergestellt.';
+
+  @override
+  String get restoreInvalidFile =>
+      'Die ausgewählte Datei ist keine gültige HMB Sailing Log-Sicherung.';
+
+  @override
   String get connectionConnected => 'Verbunden';
 
   @override

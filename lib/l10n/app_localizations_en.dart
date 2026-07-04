@@ -560,6 +560,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'About';
 
   @override
+  String get backupSection => 'Data backup';
+
+  @override
+  String get exportBackup => 'Export backup';
+
+  @override
+  String get exportBackupDesc =>
+      'Saves the whole logbook (voyages, entries, settings) into a single file';
+
+  @override
+  String get restoreBackup => 'Restore from backup';
+
+  @override
+  String get restoreBackupDesc =>
+      'Replaces current data with the contents of a selected backup file';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'GPS tracking is running';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Stop the active voyage tracking before restoring a backup.';
+
+  @override
+  String get restoreSchemaTooNewTitle => 'Backup is from a newer version';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'This backup was created by a newer app version than the one currently installed. Update the app first.';
+
+  @override
+  String get restoreConfirmTitle => 'Restore from backup?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Current data will be replaced with the backup\'s contents. A safety backup of the current state will be created automatically first.';
+
+  @override
+  String get restoreSuccess => 'Data was successfully restored from backup.';
+
+  @override
+  String get restoreInvalidFile =>
+      'The selected file is not a valid HMB Sailing Log backup.';
+
+  @override
   String get connectionConnected => 'Connected';
 
   @override

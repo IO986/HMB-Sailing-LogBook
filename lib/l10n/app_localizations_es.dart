@@ -560,6 +560,52 @@ class AppLocalizationsEs extends AppLocalizations {
   String get aboutApp => 'Acerca de';
 
   @override
+  String get backupSection => 'Copia de seguridad';
+
+  @override
+  String get exportBackup => 'Exportar copia de seguridad';
+
+  @override
+  String get exportBackupDesc =>
+      'Guarda todo el diario (travesías, registros, ajustes) en un solo archivo';
+
+  @override
+  String get restoreBackup => 'Restaurar desde copia de seguridad';
+
+  @override
+  String get restoreBackupDesc =>
+      'Reemplaza los datos actuales con el contenido de un archivo de copia de seguridad seleccionado';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'El seguimiento GPS está activo';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Detén el seguimiento activo de la travesía antes de restaurar una copia de seguridad.';
+
+  @override
+  String get restoreSchemaTooNewTitle => 'La copia es de una versión más nueva';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'Esta copia de seguridad fue creada con una versión de la app más reciente que la instalada. Actualiza la app primero.';
+
+  @override
+  String get restoreConfirmTitle => '¿Restaurar desde copia de seguridad?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Los datos actuales serán reemplazados por el contenido de la copia. Antes se creará automáticamente una copia de seguridad del estado actual.';
+
+  @override
+  String get restoreSuccess =>
+      'Los datos se restauraron correctamente desde la copia de seguridad.';
+
+  @override
+  String get restoreInvalidFile =>
+      'El archivo seleccionado no es una copia de seguridad válida de HMB Sailing Log.';
+
+  @override
   String get connectionConnected => 'Conectado';
 
   @override

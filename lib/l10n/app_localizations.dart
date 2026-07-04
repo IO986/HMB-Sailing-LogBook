@@ -1160,6 +1160,84 @@ abstract class AppLocalizations {
   /// **'O aplikácii'**
   String get aboutApp;
 
+  /// No description provided for @backupSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záloha dát'**
+  String get backupSection;
+
+  /// No description provided for @exportBackup.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exportovať zálohu'**
+  String get exportBackup;
+
+  /// No description provided for @exportBackupDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru'**
+  String get exportBackupDesc;
+
+  /// No description provided for @restoreBackup.
+  ///
+  /// In sk, this message translates to:
+  /// **'Obnoviť zo zálohy'**
+  String get restoreBackup;
+
+  /// No description provided for @restoreBackupDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nahradí aktuálne dáta obsahom vybraného súboru zálohy'**
+  String get restoreBackupDesc;
+
+  /// No description provided for @restoreBlockedTrackingTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Beží GPS tracking'**
+  String get restoreBlockedTrackingTitle;
+
+  /// No description provided for @restoreBlockedTrackingBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pred obnovou zálohy najprv zastav aktívne trasovanie plavby.'**
+  String get restoreBlockedTrackingBody;
+
+  /// No description provided for @restoreSchemaTooNewTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záloha je z novšej verzie'**
+  String get restoreSchemaTooNewTitle;
+
+  /// No description provided for @restoreSchemaTooNewBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Táto záloha bola vytvorená novšou verziou aplikácie, ako je práve nainštalovaná. Najprv aktualizuj aplikáciu.'**
+  String get restoreSchemaTooNewBody;
+
+  /// No description provided for @restoreConfirmTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Obnoviť zo zálohy?'**
+  String get restoreConfirmTitle;
+
+  /// No description provided for @restoreConfirmBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aktuálne dáta budú nahradené obsahom zálohy. Pred obnovou sa automaticky vytvorí bezpečnostná záloha súčasného stavu.'**
+  String get restoreConfirmBody;
+
+  /// No description provided for @restoreSuccess.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dáta boli úspešne obnovené zo zálohy.'**
+  String get restoreSuccess;
+
+  /// No description provided for @restoreInvalidFile.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybraný súbor nie je platná záloha HMB Sailing Log.'**
+  String get restoreInvalidFile;
+
   /// No description provided for @connectionConnected.
   ///
   /// In sk, this message translates to:

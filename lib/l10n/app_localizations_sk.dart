@@ -560,6 +560,51 @@ class AppLocalizationsSk extends AppLocalizations {
   String get aboutApp => 'O aplikácii';
 
   @override
+  String get backupSection => 'Záloha dát';
+
+  @override
+  String get exportBackup => 'Exportovať zálohu';
+
+  @override
+  String get exportBackupDesc =>
+      'Uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru';
+
+  @override
+  String get restoreBackup => 'Obnoviť zo zálohy';
+
+  @override
+  String get restoreBackupDesc =>
+      'Nahradí aktuálne dáta obsahom vybraného súboru zálohy';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'Beží GPS tracking';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Pred obnovou zálohy najprv zastav aktívne trasovanie plavby.';
+
+  @override
+  String get restoreSchemaTooNewTitle => 'Záloha je z novšej verzie';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'Táto záloha bola vytvorená novšou verziou aplikácie, ako je práve nainštalovaná. Najprv aktualizuj aplikáciu.';
+
+  @override
+  String get restoreConfirmTitle => 'Obnoviť zo zálohy?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Aktuálne dáta budú nahradené obsahom zálohy. Pred obnovou sa automaticky vytvorí bezpečnostná záloha súčasného stavu.';
+
+  @override
+  String get restoreSuccess => 'Dáta boli úspešne obnovené zo zálohy.';
+
+  @override
+  String get restoreInvalidFile =>
+      'Vybraný súbor nie je platná záloha HMB Sailing Log.';
+
+  @override
   String get connectionConnected => 'Pripojené';
 
   @override

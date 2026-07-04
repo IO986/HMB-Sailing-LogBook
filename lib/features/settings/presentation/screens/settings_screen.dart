@@ -1,6 +1,8 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/skipper_profile.dart';
@@ -8,9 +10,13 @@ import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
+import '../../../../core/services/backup_service.dart';
+import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/units_service.dart';
+import '../../../../core/database/app_database.dart';
+import '../../../../main.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../help/presentation/screens/user_guide_screen.dart';
 
@@ -112,6 +118,10 @@ class SettingsScreen extends ConsumerWidget {
 
             _Section(l.vesselIdTitle),
             const _VesselIdSection(),
+            const SizedBox(height: 16),
+
+            _Section(l.backupSection),
+            const _BackupSection(),
             const SizedBox(height: 16),
 
             _Section(l.aboutApp),
@@ -878,5 +888,159 @@ class _AccountSection extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ── Záloha dát ─────────────────────────────────────────────────
+
+class _BackupSection extends ConsumerStatefulWidget {
+  const _BackupSection();
+  @override
+  ConsumerState<_BackupSection> createState() => _BackupSectionState();
+}
+
+class _BackupSectionState extends ConsumerState<_BackupSection> {
+  bool _busy = false;
+
+  Future<void> _export() async {
+    final l = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    try {
+      final db = ref.read(databaseProvider);
+      final zip = await BackupService().createSnapshotZip(db);
+      await Share.shareXFiles([XFile(zip.path)], subject: l.exportBackup);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _restore() async {
+    final l = AppLocalizations.of(context);
+
+    if (GpsTrackingService().isTracking) {
+      await _showInfoDialog(l.restoreBlockedTrackingTitle, l.restoreBlockedTrackingBody);
+      return;
+    }
+
+    final picked = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['hmbbackup'],
+    );
+    final path = picked?.files.single.path;
+    if (path == null) return;
+
+    setState(() => _busy = true);
+    try {
+      final db = ref.read(databaseProvider);
+      BackupMetadata metadata;
+      try {
+        metadata = await BackupService().readMetadata(path);
+      } on FormatException {
+        setState(() => _busy = false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(l.restoreInvalidFile),
+            backgroundColor: Colors.red,
+          ));
+        }
+        return;
+      }
+
+      if (metadata.schemaVersion > db.schemaVersion) {
+        setState(() => _busy = false);
+        await _showInfoDialog(l.restoreSchemaTooNewTitle, l.restoreSchemaTooNewBody);
+        return;
+      }
+
+      setState(() => _busy = false);
+      final confirmed = await _showConfirmDialog(l.restoreConfirmTitle, l.restoreConfirmBody);
+      if (confirmed != true) return;
+      setState(() => _busy = true);
+
+      // Automatická bezpečnostná záloha aktuálneho stavu pred prepísaním.
+      await BackupService().createSnapshotZip(db);
+
+      await db.close();
+      await BackupService().applyRestore(path);
+
+      final newDb = AppDatabase();
+      replaceCurrentDatabase(newDb);
+      wireDatabaseSingletons(newDb);
+      ref.invalidate(databaseProvider);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.restoreSuccess),
+          backgroundColor: Colors.green.shade700,
+        ));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _showInfoDialog(String title, String body) => showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(AppLocalizations.of(ctx).ok)),
+          ],
+        ),
+      );
+
+  Future<bool?> _showConfirmDialog(String title, String body) => showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(title),
+          content: Text(body),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(AppLocalizations.of(ctx).cancel)),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(AppLocalizations.of(ctx).restoreBackup),
+            ),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Card(child: Column(children: [
+      ListTile(
+        leading: const Icon(Icons.upload_file_outlined),
+        title: Text(l.exportBackup),
+        subtitle: Text(l.exportBackupDesc),
+        trailing: _busy ? const SizedBox(width: 20, height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2)) : null,
+        onTap: _busy ? null : _export,
+      ),
+      const Divider(height: 1),
+      ListTile(
+        leading: const Icon(Icons.settings_backup_restore),
+        title: Text(l.restoreBackup),
+        subtitle: Text(l.restoreBackupDesc),
+        trailing: _busy ? const SizedBox(width: 20, height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2)) : null,
+        onTap: _busy ? null : _restore,
+      ),
+    ]));
   }
 }

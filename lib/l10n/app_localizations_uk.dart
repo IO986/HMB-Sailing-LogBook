@@ -562,6 +562,51 @@ class AppLocalizationsUk extends AppLocalizations {
   String get aboutApp => 'Про додаток';
 
   @override
+  String get backupSection => 'Резервна копія даних';
+
+  @override
+  String get exportBackup => 'Експортувати резервну копію';
+
+  @override
+  String get exportBackupDesc =>
+      'Зберігає весь журнал (плавання, записи, налаштування) в одному файлі';
+
+  @override
+  String get restoreBackup => 'Відновити з резервної копії';
+
+  @override
+  String get restoreBackupDesc =>
+      'Замінює поточні дані вмістом обраного файлу резервної копії';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'Триває GPS-трекінг';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Спочатку зупини активне трасування плавання перед відновленням резервної копії.';
+
+  @override
+  String get restoreSchemaTooNewTitle => 'Резервна копія новіша';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'Ця резервна копія створена новішою версією додатку, ніж встановлена зараз. Спочатку онови додаток.';
+
+  @override
+  String get restoreConfirmTitle => 'Відновити з резервної копії?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Поточні дані буде замінено вмістом резервної копії. Перед цим автоматично буде створено резервну копію поточного стану.';
+
+  @override
+  String get restoreSuccess => 'Дані успішно відновлено з резервної копії.';
+
+  @override
+  String get restoreInvalidFile =>
+      'Обраний файл не є дійсною резервною копією HMB Sailing Log.';
+
+  @override
   String get connectionConnected => 'Підключено';
 
   @override
