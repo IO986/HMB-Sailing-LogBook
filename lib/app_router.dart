@@ -18,6 +18,7 @@ import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/export/presentation/export_screen.dart';
 import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
+import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -96,6 +97,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       voyageId: s.pathParameters['voyageId'])),
             ],
           ),
+          GoRoute(path: '/gpx-import', builder: (c, s) => const GpxImportScreen()),
           GoRoute(path: '/instruments', builder: (c, s) => const InstrumentsScreen()),
           GoRoute(path: '/weather', builder: (c, s) => const WeatherScreen()),
           GoRoute(

@@ -746,6 +746,30 @@ class AppLocalizationsSk extends AppLocalizations {
   String get itemBimini => 'Bimini';
 
   @override
+  String get gpxImportTitle => 'Import GPX';
+
+  @override
+  String get gpxImportPickFile => 'Vybrať GPX súbor';
+
+  @override
+  String get gpxTracksFound => 'Nájdené tracky';
+
+  @override
+  String get gpxWaypointsFound => 'Nájdené waypointy';
+
+  @override
+  String get gpxAssignTarget => 'Priradiť k plavbe';
+
+  @override
+  String get gpxNewVoyage => 'Nová plavba';
+
+  @override
+  String get gpxImportButton => 'Importovať';
+
+  @override
+  String get gpxImportSuccess => 'GPX úspešne importovaný.';
+
+  @override
   String get connectionConnected => 'Pripojené';
 
   @override

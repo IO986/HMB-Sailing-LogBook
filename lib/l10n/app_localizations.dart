@@ -1514,6 +1514,54 @@ abstract class AppLocalizations {
   /// **'Bimini'**
   String get itemBimini;
 
+  /// No description provided for @gpxImportTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Import GPX'**
+  String get gpxImportTitle;
+
+  /// No description provided for @gpxImportPickFile.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať GPX súbor'**
+  String get gpxImportPickFile;
+
+  /// No description provided for @gpxTracksFound.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nájdené tracky'**
+  String get gpxTracksFound;
+
+  /// No description provided for @gpxWaypointsFound.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nájdené waypointy'**
+  String get gpxWaypointsFound;
+
+  /// No description provided for @gpxAssignTarget.
+  ///
+  /// In sk, this message translates to:
+  /// **'Priradiť k plavbe'**
+  String get gpxAssignTarget;
+
+  /// No description provided for @gpxNewVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nová plavba'**
+  String get gpxNewVoyage;
+
+  /// No description provided for @gpxImportButton.
+  ///
+  /// In sk, this message translates to:
+  /// **'Importovať'**
+  String get gpxImportButton;
+
+  /// No description provided for @gpxImportSuccess.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPX úspešne importovaný.'**
+  String get gpxImportSuccess;
+
   /// No description provided for @connectionConnected.
   ///
   /// In sk, this message translates to:

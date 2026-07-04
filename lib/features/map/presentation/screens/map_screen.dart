@@ -310,6 +310,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onToggle: () =>
                     ref.read(mapNotifierProvider.notifier).toggleFollowGps(),
               ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
+                heroTag: 'gpxImport',
+                tooltip: 'Import GPX',
+                onPressed: () => context.push('/gpx-import'),
+                child: const Icon(Icons.file_upload_outlined),
+              ),
             ]),
           ),
 

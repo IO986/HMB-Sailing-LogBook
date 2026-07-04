@@ -747,6 +747,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get itemBimini => 'Bimini';
 
   @override
+  String get gpxImportTitle => 'Importar GPX';
+
+  @override
+  String get gpxImportPickFile => 'Elegir archivo GPX';
+
+  @override
+  String get gpxTracksFound => 'Tracks encontrados';
+
+  @override
+  String get gpxWaypointsFound => 'Waypoints encontrados';
+
+  @override
+  String get gpxAssignTarget => 'Asignar a travesía';
+
+  @override
+  String get gpxNewVoyage => 'Nueva travesía';
+
+  @override
+  String get gpxImportButton => 'Importar';
+
+  @override
+  String get gpxImportSuccess => 'GPX importado correctamente.';
+
+  @override
   String get connectionConnected => 'Conectado';
 
   @override

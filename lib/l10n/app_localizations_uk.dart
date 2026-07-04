@@ -748,6 +748,30 @@ class AppLocalizationsUk extends AppLocalizations {
   String get itemBimini => 'Тент бімін';
 
   @override
+  String get gpxImportTitle => 'Імпорт GPX';
+
+  @override
+  String get gpxImportPickFile => 'Вибрати GPX файл';
+
+  @override
+  String get gpxTracksFound => 'Знайдені треки';
+
+  @override
+  String get gpxWaypointsFound => 'Знайдені точки маршруту';
+
+  @override
+  String get gpxAssignTarget => 'Прив\'язати до плавання';
+
+  @override
+  String get gpxNewVoyage => 'Нове плавання';
+
+  @override
+  String get gpxImportButton => 'Імпортувати';
+
+  @override
+  String get gpxImportSuccess => 'GPX успішно імпортовано.';
+
+  @override
   String get connectionConnected => 'Підключено';
 
   @override
