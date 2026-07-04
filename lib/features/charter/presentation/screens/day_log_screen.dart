@@ -457,6 +457,32 @@ class _EntryTile extends StatelessWidget {
                     ]),
                   ),
 
+                // Motor + nádrže row
+                if (entry.engineHours != null || entry.fuelLevel != null || entry.waterLevel != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Row(children: [
+                      if (entry.engineHours != null) ...[
+                        const Icon(Icons.settings, size: 13, color: Colors.grey),
+                        const SizedBox(width: 2),
+                        Text('${entry.engineHours!.toStringAsFixed(1)} h',
+                            style: const TextStyle(fontSize: 12)),
+                        const SizedBox(width: 8),
+                      ],
+                      if (entry.fuelLevel != null) ...[
+                        const Icon(Icons.local_gas_station, size: 13, color: Colors.grey),
+                        const SizedBox(width: 2),
+                        Text('${entry.fuelLevel}%', style: const TextStyle(fontSize: 12)),
+                        const SizedBox(width: 8),
+                      ],
+                      if (entry.waterLevel != null) ...[
+                        const Icon(Icons.water_drop, size: 13, color: Colors.grey),
+                        const SizedBox(width: 2),
+                        Text('${entry.waterLevel}%', style: const TextStyle(fontSize: 12)),
+                      ],
+                    ]),
+                  ),
+
                 // Note
                 if (note.isNotEmpty)
                   Padding(

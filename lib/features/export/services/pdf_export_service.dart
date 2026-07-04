@@ -529,7 +529,7 @@ class PdfExportService {
         4: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
         5: const pw.FixedColumnWidth(26),   // hPa
         6: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
-        7: const pw.FixedColumnWidth(26),   // Pohon
+        7: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
         8: const pw.FixedColumnWidth(22),   // Poč.
         9: const pw.FlexColumnWidth(1),     // Poznámka
       },
@@ -603,8 +603,21 @@ class PdfExportService {
                   if (entry.airTemp == null && entry.waterTemp == null)
                     pw.Text('-', style: const pw.TextStyle(fontSize: 7)),
                 ])),
-              // Pohon
-              _dcell(sailMode, maxLines: 2),
+              // Pohon + motor/nadrze
+              pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+                  pw.Text(_ascii(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
+                      style: const pw.TextStyle(fontSize: 7.5)),
+                  if (entry.engineHours != null)
+                    pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
+                        style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
+                  if (entry.fuelLevel != null)
+                    pw.Text('P:${entry.fuelLevel}%',
+                        style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
+                  if (entry.waterLevel != null)
+                    pw.Text('V:${entry.waterLevel}%',
+                        style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
+                ])),
               // Počasie
               _dcell(_wcShort(entry.weatherCondition)),
               // Poznámka + foto priamo v riadku

@@ -1559,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineSection.
   ///
   /// In sk, this message translates to:
-  /// **'Motor'**
+  /// **'Motor a nádrže'**
   String get engineSection;
 
   /// No description provided for @engineHours.
@@ -1573,6 +1573,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Palivo'**
   String get fuel;
+
+  /// No description provided for @fuelLevel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hladina paliva'**
+  String get fuelLevel;
+
+  /// No description provided for @waterLevel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hladina vody'**
+  String get waterLevel;
 
   /// No description provided for @noteSection.
   ///

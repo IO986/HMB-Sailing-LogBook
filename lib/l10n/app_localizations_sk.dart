@@ -773,13 +773,19 @@ class AppLocalizationsSk extends AppLocalizations {
   String get waveHeight2 => 'Výška vĺn';
 
   @override
-  String get engineSection => 'Motor';
+  String get engineSection => 'Motor a nádrže';
 
   @override
   String get engineHours => 'Motohodiny';
 
   @override
   String get fuel => 'Palivo';
+
+  @override
+  String get fuelLevel => 'Hladina paliva';
+
+  @override
+  String get waterLevel => 'Hladina vody';
 
   @override
   String get noteSection => 'Poznámka';

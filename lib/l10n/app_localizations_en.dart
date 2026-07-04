@@ -774,13 +774,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waveHeight2 => 'Wave height';
 
   @override
-  String get engineSection => 'Engine';
+  String get engineSection => 'Engine & tanks';
 
   @override
   String get engineHours => 'Engine hours';
 
   @override
   String get fuel => 'Fuel';
+
+  @override
+  String get fuelLevel => 'Fuel level';
+
+  @override
+  String get waterLevel => 'Water level';
 
   @override
   String get noteSection => 'Note';

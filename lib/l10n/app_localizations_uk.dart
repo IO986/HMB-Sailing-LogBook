@@ -775,13 +775,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get waveHeight2 => 'Висота хвиль';
 
   @override
-  String get engineSection => 'Двигун';
+  String get engineSection => 'Двигун і баки';
 
   @override
   String get engineHours => 'Мотогодини';
 
   @override
   String get fuel => 'Паливо';
+
+  @override
+  String get fuelLevel => 'Рівень палива';
+
+  @override
+  String get waterLevel => 'Рівень води';
 
   @override
   String get noteSection => 'Нотатка';

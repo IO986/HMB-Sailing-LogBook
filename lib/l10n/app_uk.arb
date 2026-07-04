@@ -268,9 +268,11 @@
   "windSpeed": "Вітер",
   "windDirection": "Напрямок",
   "waveHeight2": "Висота хвиль",
-  "engineSection": "Двигун",
+  "engineSection": "Двигун і баки",
   "engineHours": "Мотогодини",
   "fuel": "Паливо",
+  "fuelLevel": "Рівень палива",
+  "waterLevel": "Рівень води",
   "noteSection": "Нотатка",
   "noteHint": "Умови плавання, події, зміна екіпажу...",
 

@@ -268,9 +268,11 @@
   "windSpeed": "Vietor",
   "windDirection": "Smer",
   "waveHeight2": "Výška vĺn",
-  "engineSection": "Motor",
+  "engineSection": "Motor a nádrže",
   "engineHours": "Motohodiny",
   "fuel": "Palivo",
+  "fuelLevel": "Hladina paliva",
+  "waterLevel": "Hladina vody",
   "noteSection": "Poznámka",
   "noteHint": "Podmienky plavby, udalosti, zmena posádky...",
 

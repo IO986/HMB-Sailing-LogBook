@@ -268,9 +268,11 @@
   "windSpeed": "Viento",
   "windDirection": "Dirección",
   "waveHeight2": "Altura de olas",
-  "engineSection": "Motor",
+  "engineSection": "Motor y tanques",
   "engineHours": "Horas de motor",
   "fuel": "Combustible",
+  "fuelLevel": "Nivel de combustible",
+  "waterLevel": "Nivel de agua",
   "noteSection": "Nota",
   "noteHint": "Condiciones de navegación, eventos, cambio de tripulación...",
 

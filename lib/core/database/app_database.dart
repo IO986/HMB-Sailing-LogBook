@@ -84,6 +84,8 @@ class LogbookEntries extends Table {
   RealColumn get waterTemp => real().nullable()();
   RealColumn get engineHours => real().nullable()();
   RealColumn get fuelConsumed => real().nullable()();
+  IntColumn get fuelLevel => integer().nullable()();  // stav nádrže 0–100 %
+  IntColumn get waterLevel => integer().nullable()(); // stav nádrže 0–100 %
   TextColumn get skipperName => text().nullable()();
   TextColumn get crewNames => text().nullable()();
   TextColumn get skipperNote => text().nullable()();
@@ -176,7 +178,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -209,6 +211,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 7) {
         await m.addColumn(charters, charters.pdfRevision);
+      }
+      if (from < 8) {
+        await m.addColumn(logbookEntries, logbookEntries.fuelLevel);
+        await m.addColumn(logbookEntries, logbookEntries.waterLevel);
       }
     },
     beforeOpen: (details) async {

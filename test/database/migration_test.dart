@@ -21,6 +21,22 @@ void main() {
     await verifier.migrateAndValidate(db, 7);
   });
 
+  test('migrate v7 to v8 (fuelLevel, waterLevel columns)', () async {
+    final connection = await verifier.startAt(7);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 8);
+  });
+
+  test('onCreate builds a schema matching the committed v8 snapshot', () async {
+    final connection = await verifier.startAt(8);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 8);
+  });
+
   // PRAVIDLO: pri každom zvýšení schemaVersion pridaj nový
   // `dart run drift_dev schema dump ... drift_schemas/` a `schema generate`,
   // potom sem doplň `verifier.startAt(<staraVerzia>)` +

@@ -53,6 +53,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   final Set<String> _sailModes = {'motor'};
   String? _weatherCondition;
   String? _photoPath;
+  int? _fuelLevel;
+  int? _waterLevel;
 
   @override
   void initState() {
@@ -92,6 +94,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         }
         _weatherCondition = e.weatherCondition;
         _photoPath = e.photoPath;
+        _fuelLevel = e.fuelLevel;
+        _waterLevel = e.waterLevel;
       });
     } catch (_) {}
   }
@@ -231,6 +235,17 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           const SizedBox(width: 12),
           Expanded(child: _Num(ctrl: _fuelCtrl, label: l.fuel, suffix: 'L')),
         ]),
+        const SizedBox(height: 8),
+        _PercentField(
+          label: l.fuelLevel,
+          value: _fuelLevel,
+          onChanged: (v) => setState(() => _fuelLevel = v),
+        ),
+        _PercentField(
+          label: l.waterLevel,
+          value: _waterLevel,
+          onChanged: (v) => setState(() => _waterLevel = v),
+        ),
         const SizedBox(height: 16),
 
         _Sec(l.noteSection),
@@ -274,6 +289,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         skipperNote: Value(fullNote),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
+        fuelLevel: Value(_fuelLevel),
+        waterLevel: Value(_waterLevel),
       ));
     } else {
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
@@ -293,6 +310,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         skipperNote: Value(fullNote),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
+        fuelLevel: Value(_fuelLevel),
+        waterLevel: Value(_waterLevel),
       ));
     }
 
@@ -333,6 +352,38 @@ class _NavRow extends StatelessWidget {
       const Spacer(),
       Text(v, style: const TextStyle(fontWeight: FontWeight.w600)),
     ]));
+}
+
+class _PercentField extends StatelessWidget {
+  final String label;
+  final int? value;
+  final ValueChanged<int?> onChanged;
+  const _PercentField({required this.label, required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final has = value != null;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Expanded(child: Text(label, style: const TextStyle(fontSize: 13))),
+        Text(has ? '$value%' : '–',
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: has ? null : Theme.of(context).colorScheme.outline)),
+        IconButton(
+          icon: Icon(has ? Icons.close : Icons.add, size: 18),
+          onPressed: () => onChanged(has ? null : 50),
+        ),
+      ]),
+      if (has)
+        Slider(
+          value: value!.toDouble(),
+          min: 0, max: 100, divisions: 20,
+          label: '$value%',
+          onChanged: (v) => onChanged(v.round()),
+        ),
+    ]);
+  }
 }
 
 class _Num extends StatelessWidget {

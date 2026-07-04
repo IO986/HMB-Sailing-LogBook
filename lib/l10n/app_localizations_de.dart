@@ -775,13 +775,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get waveHeight2 => 'Wellenhöhe';
 
   @override
-  String get engineSection => 'Motor';
+  String get engineSection => 'Motor & Tanks';
 
   @override
   String get engineHours => 'Motorstunden';
 
   @override
   String get fuel => 'Kraftstoff';
+
+  @override
+  String get fuelLevel => 'Kraftstoffstand';
+
+  @override
+  String get waterLevel => 'Wasserstand';
 
   @override
   String get noteSection => 'Notiz';
