@@ -22,6 +22,8 @@ class UdpReceiverService {
 
   RawDatagramSocket? _socket;
   StreamSubscription? _sub;
+  Timer? _reconnectTimer;
+  Timer? _staleCheckTimer;
 
   final _dataCtrl = StreamController<MarineInstrumentData>.broadcast();
   final _stateCtrl = StreamController<RaymarineConnectionState>.broadcast();
@@ -30,6 +32,7 @@ class UdpReceiverService {
   RaymarineConnectionState _state = RaymarineConnectionState.disconnected;
   String? _lastError;
   int _port = 10110;
+  bool _autoReconnect = false;
 
   Stream<MarineInstrumentData> get dataStream => _dataCtrl.stream;
   Stream<RaymarineConnectionState> get stateStream => _stateCtrl.stream;
@@ -45,8 +48,12 @@ class UdpReceiverService {
     return DateTime.now().difference(last) < _staleTimeout;
   }
 
-  Future<bool> start({int port = 10110}) async {
+  /// Začne počúvať na zadanom porte. Ak [autoReconnect] je true, pri
+  /// strate/chybe socketu sa appka bude periodicky pokúšať znova nabindovať
+  /// port na pozadí (rovnaký vzor ako RaymarineConnectionService pre TCP).
+  Future<bool> start({int port = 10110, bool autoReconnect = true}) async {
     _port = port;
+    _autoReconnect = autoReconnect;
     await _teardown();
     _lastError = null;
 
@@ -60,23 +67,30 @@ class UdpReceiverService {
         cancelOnError: true,
       );
       _setState(RaymarineConnectionState.connected);
+      _startStaleCheck();
       debugPrint('[UDP] Počúvam na porte $port');
       return true;
     } catch (e) {
       _lastError = e.toString();
       _setState(RaymarineConnectionState.error);
       debugPrint('[UDP] Bind zlyhalo: $e');
+      if (_autoReconnect) _scheduleReconnect();
       return false;
     }
   }
 
   Future<void> stop() async {
+    _autoReconnect = false;
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
     await _teardown();
     _setState(RaymarineConnectionState.disconnected);
     debugPrint('[UDP] Zastavený');
   }
 
   Future<void> _teardown() async {
+    _staleCheckTimer?.cancel();
+    _staleCheckTimer = null;
     await _sub?.cancel();
     _sub = null;
     _socket?.close();
@@ -88,6 +102,31 @@ class UdpReceiverService {
     debugPrint('[UDP] $reason');
     _teardown();
     _setState(RaymarineConnectionState.error);
+    if (_autoReconnect) _scheduleReconnect();
+  }
+
+  void _scheduleReconnect() {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(const Duration(seconds: 5), () {
+      if (_autoReconnect) {
+        debugPrint('[UDP] Pokus o znovu-nabindovanie portu $_port');
+        start(port: _port, autoReconnect: true);
+      }
+    });
+  }
+
+  void _startStaleCheck() {
+    _staleCheckTimer?.cancel();
+    _staleCheckTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      // Ak dlho neprišli žiadne dáta hoci socket je "connected", zdroj
+      // mohol prestať vysielať alebo zmenil sieť - vynúť rebind.
+      final last = _current.lastUpdate;
+      if (last != null &&
+          DateTime.now().difference(last) > const Duration(seconds: 20) &&
+          _state == RaymarineConnectionState.connected) {
+        _handleError('Žiadne dáta 20s - rebind');
+      }
+    });
   }
 
   void _onEvent(RawSocketEvent event) {
@@ -164,6 +203,8 @@ class UdpReceiverService {
   }
 
   void dispose() {
+    _autoReconnect = false;
+    _reconnectTimer?.cancel();
     _teardown();
     _dataCtrl.close();
     _stateCtrl.close();
