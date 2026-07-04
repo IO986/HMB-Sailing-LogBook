@@ -1613,21 +1613,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
 
   @override
   String get guideInstrBody =>
-      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (WiFi gateway).\nConnection settings are in Settings → Instruments.';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.';
 
   @override
   String get guideLogbookTitle => 'Voyage Logbook';
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day\n• The logbook can be exported to PDF via the day menu';
+      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
+
+  @override
+  String get guideMilesTitle => 'Mile Logbook';
+
+  @override
+  String get guideMilesBody =>
+      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign';
+
+  @override
+  String get guideHandoverTitle => 'Handover Protocol (check-in/check-out)';
+
+  @override
+  String get guideHandoverBody =>
+      'A formal record of taking over and returning the boat on a charter – handshake icon in the voyage detail.\n\n• Equipment checklist (sails, rigging, anchor, navigation, life jackets, raft, first aid kit, dinghy, lights, bimini...) – OK / damaged / missing, with a note, position on board and a photo\n• Fuel, water and engine hours state\n• Signature of both the skipper and the charter company representative\n• The protocol becomes read-only once both have signed\n• Check-out pre-fills data from the check-in protocol and highlights new damage\n• PDF export with both signatures side by side';
+
+  @override
+  String get guideGpxImportTitle => 'GPX Import';
+
+  @override
+  String get guideGpxImportBody =>
+      'Import tracks and waypoints from other navigation apps or GPS devices (icon on the Map).\n\n• Choose a .gpx file from your device\n• Assign found tracks to an existing or a new voyage\n• Waypoints (including from routes) are added straight to the map\n• A clear error message is shown for a corrupted file';
 
   @override
   String get guideWeatherTitle => 'Weather';
@@ -1662,7 +1683,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Display – Night mode (red filter to preserve night vision)\n• Online account – sync coming soon (v2.0)\n• Export – PDF or CSV\n• About – version and contact';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Display – Night mode (red filter to preserve night vision)\n• Online account – sync coming soon (v2.0)\n• Data backup – see \"Data backup and restore\"\n• About – version and contact';
+
+  @override
+  String get guideBackupTitle => 'Data backup and restore';
+
+  @override
+  String get guideBackupBody =>
+      'In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation';
 
   @override
   String get guideExportTitle => 'Logbook Export';

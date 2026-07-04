@@ -1620,21 +1620,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
 
   @override
   String get guideInstrBody =>
-      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia el waypoint\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi).\nConfiguración de conexión en Ajustes → Instrumentos.';
+      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia el waypoint\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi TCP o UDP).\nConfiguración de conexión (incluida la elección TCP/UDP) en Ajustes → Instrumentos.';
 
   @override
   String get guideLogbookTitle => 'Diario de navegación';
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día\n• Exportar a PDF desde el menú del día';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
+
+  @override
+  String get guideMilesTitle => 'Libro de millas';
+
+  @override
+  String get guideMilesBody =>
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar';
+
+  @override
+  String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
+
+  @override
+  String get guideHandoverBody =>
+      'Registro formal de la entrega y devolución del barco en un charter – icono de manos en el detalle de la travesía.\n\n• Checklist de equipamiento (velas, jarcia, ancla, navegación, chalecos, balsa, botiquín, bote auxiliar, luces, bimini...) – OK / dañado / falta, con nota, posición en el barco y foto\n• Estado de combustible, agua y horas de motor\n• Firma del patrón y del representante de la empresa de charter\n• El protocolo pasa a ser de solo lectura cuando ambos han firmado\n• El check-out se rellena con los datos del check-in y resalta los daños nuevos\n• Exportación PDF con ambas firmas una junto a la otra';
+
+  @override
+  String get guideGpxImportTitle => 'Importar GPX';
+
+  @override
+  String get guideGpxImportBody =>
+      'Importa tracks y waypoints desde otras apps de navegación o dispositivos GPS (icono en el Mapa).\n\n• Elige un archivo .gpx del dispositivo\n• Asigna los tracks encontrados a una travesía existente o nueva\n• Los waypoints (también de rutas) se añaden directamente al mapa\n• Se muestra un mensaje de error claro si el archivo está dañado';
 
   @override
   String get guideWeatherTitle => 'Tiempo';
@@ -1669,7 +1690,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Exportar – PDF o CSV\n• Acerca de – versión y contacto';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Cuenta en línea – sincronización próximamente (v2.0)\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto';
+
+  @override
+  String get guideBackupTitle => 'Copia de seguridad y restauración de datos';
+
+  @override
+  String get guideBackupBody =>
+      'En Ajustes → Copia de seguridad.\n\n• Exportar copia de seguridad – guarda todo el diario (travesías, registros, ajustes) en un solo archivo (.hmbbackup) que puedes compartir por email, en la nube o guardar localmente\n• Restaurar desde copia de seguridad – reemplaza los datos actuales con el contenido de la copia seleccionada; antes se crea automáticamente una copia de seguridad del estado actual\n• La restauración está bloqueada mientras el seguimiento GPS de una travesía está activo\n• Una copia con un esquema más nuevo del que soporta la app se rechaza con una explicación';
 
   @override
   String get guideExportTitle => 'Exportar diario';

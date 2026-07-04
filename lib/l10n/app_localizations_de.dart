@@ -1624,21 +1624,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
 
   @override
   String get guideInstrBody =>
-      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zum Wegpunkt\n\nDatenquelle: Telefon-GPS oder Raymarine (WiFi-Gateway).\nVerbindungseinstellungen: Einstellungen → Instrumente.';
+      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zum Wegpunkt\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.';
 
   @override
   String get guideLogbookTitle => 'Fahrtenbuch';
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• + (FAB) tippen → \"Neue Reise\" zum Erstellen eines Charters\n• Tracking startet aus diesem Dialog – Position wird automatisch erfasst\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden\n• Export als PDF über das Tagesmenü';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• + (FAB) tippen → \"Neue Reise\" zum Erstellen eines Charters\n• Tracking startet aus diesem Dialog – Position wird automatisch erfasst\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
+
+  @override
+  String get guideMilesTitle => 'Meilenbuch';
+
+  @override
+  String get guideMilesBody =>
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld';
+
+  @override
+  String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
+
+  @override
+  String get guideHandoverBody =>
+      'Formelle Aufzeichnung der Übernahme und Rückgabe des Bootes bei einem Charter – Handschlag-Symbol in der Reisedetailansicht.\n\n• Ausrüstungs-Checkliste (Segel, Takelage, Anker, Navigation, Rettungswesten, Rettungsinsel, Erste-Hilfe-Kasten, Beiboot, Beleuchtung, Bimini...) – OK / beschädigt / fehlt, mit Notiz, Position am Boot und Foto\n• Zustand von Kraftstoff, Wasser und Motorstunden\n• Unterschrift des Skippers und des Vertreters der Charterfirma\n• Das Protokoll wird schreibgeschützt, sobald beide unterschrieben haben\n• Check-out übernimmt die Daten aus dem Check-in-Protokoll und hebt neue Schäden hervor\n• PDF-Export mit beiden Unterschriften nebeneinander';
+
+  @override
+  String get guideGpxImportTitle => 'GPX-Import';
+
+  @override
+  String get guideGpxImportBody =>
+      'Importiere Tracks und Wegpunkte aus anderen Navigations-Apps oder GPS-Geräten (Symbol auf der Karte).\n\n• .gpx-Datei vom Gerät auswählen\n• Gefundene Tracks einer bestehenden oder neuen Fahrt zuordnen\n• Wegpunkte (auch aus Routen) werden direkt zur Karte hinzugefügt\n• Bei einer beschädigten Datei wird eine verständliche Fehlermeldung angezeigt';
 
   @override
   String get guideWeatherTitle => 'Wetter';
@@ -1673,7 +1694,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Online-Konto – Synchronisation in Vorbereitung (v2.0)\n• Export – PDF oder CSV\n• Über die App – Version und Kontakt';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Online-Konto – Synchronisation in Vorbereitung (v2.0)\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt';
+
+  @override
+  String get guideBackupTitle => 'Datensicherung und Wiederherstellung';
+
+  @override
+  String get guideBackupBody =>
+      'In Einstellungen → Datensicherung.\n\n• Sicherung exportieren – speichert das gesamte Logbuch (Fahrten, Einträge, Einstellungen) in einer Datei (.hmbbackup), die du per E-Mail, in die Cloud oder lokal speichern kannst\n• Aus Sicherung wiederherstellen – ersetzt die aktuellen Daten durch den Inhalt der ausgewählten Sicherung; zuvor wird automatisch eine Sicherung des aktuellen Zustands erstellt\n• Die Wiederherstellung ist gesperrt, während das GPS-Tracking einer Fahrt aktiv ist\n• Eine Sicherung mit einer neueren Schema-Version als von der App unterstützt wird abgelehnt, mit Erklärung';
 
   @override
   String get guideExportTitle => 'Logbuch-Export';

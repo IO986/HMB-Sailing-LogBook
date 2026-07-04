@@ -52,6 +52,12 @@ class UserGuideScreen extends StatelessWidget {
             body: l.guideMapBody,
           ),
           _GuideSection(
+            icon: Icons.file_upload_outlined,
+            color: Colors.brown.shade600,
+            title: l.guideGpxImportTitle,
+            body: l.guideGpxImportBody,
+          ),
+          _GuideSection(
             icon: Icons.speed,
             color: const Color(0xFF27AE60),
             title: l.guideInstrTitle,
@@ -62,6 +68,18 @@ class UserGuideScreen extends StatelessWidget {
             color: Colors.indigo,
             title: l.guideLogbookTitle,
             body: l.guideLogbookBody,
+          ),
+          _GuideSection(
+            icon: Icons.military_tech_outlined,
+            color: Colors.amber.shade800,
+            title: l.guideMilesTitle,
+            body: l.guideMilesBody,
+          ),
+          _GuideSection(
+            icon: Icons.handshake_outlined,
+            color: Colors.deepPurple,
+            title: l.guideHandoverTitle,
+            body: l.guideHandoverBody,
           ),
           _GuideSection(
             icon: Icons.cloud_outlined,
@@ -92,6 +110,12 @@ class UserGuideScreen extends StatelessWidget {
             color: Colors.blueGrey.shade600,
             title: l.guideSettingsTitle,
             body: l.guideSettingsBody,
+          ),
+          _GuideSection(
+            icon: Icons.backup_outlined,
+            color: Colors.cyan.shade700,
+            title: l.guideBackupTitle,
+            body: l.guideBackupBody,
           ),
           _GuideSection(
             icon: Icons.picture_as_pdf_outlined,

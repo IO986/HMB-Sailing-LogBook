@@ -3167,7 +3167,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Červená čiara = prejdená trasa\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -3179,7 +3179,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideInstrBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k cieľovému bodu\n\nZdroj dát: telefónne GPS alebo Raymarine (WiFi gateway).\nNastavenia pripojenia nájdeš v Nastavenia → Prístroje.'**
+  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k cieľovému bodu\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.'**
   String get guideInstrBody;
 
   /// No description provided for @guideLogbookTitle.
@@ -3191,8 +3191,44 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa\n• Denník možno exportovať do PDF cez menu dňa'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
   String get guideLogbookBody;
+
+  /// No description provided for @guideMilesTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kniha míľ'**
+  String get guideMilesTitle;
+
+  /// No description provided for @guideMilesBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis'**
+  String get guideMilesBody;
+
+  /// No description provided for @guideHandoverTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací protokol (check-in/check-out)'**
+  String get guideHandoverTitle;
+
+  /// No description provided for @guideHandoverBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Podpis skippera aj zástupcu charterovej spoločnosti\n• Protokol sa uzavrie (len na čítanie) až keď podpíšu obaja\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Export PDF s oboma podpismi vedľa seba'**
+  String get guideHandoverBody;
+
+  /// No description provided for @guideGpxImportTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Import GPX'**
+  String get guideGpxImportTitle;
+
+  /// No description provided for @guideGpxImportBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Importuj trasy a waypointy z iných navigačných aplikácií alebo GPS zariadení (ikona na Mape).\n\n• Vyber .gpx súbor zo zariadenia\n• Nájdené tracky priraď k existujúcej alebo novej plavbe\n• Waypointy (aj z trás/routes) sa pridajú rovno na mapu\n• Pri poškodenom súbore appka zobrazí zrozumiteľnú chybovú hlášku'**
+  String get guideGpxImportBody;
 
   /// No description provided for @guideWeatherTitle.
   ///
@@ -3251,8 +3287,20 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Online účet – synchronizácia pripravovaná (v2.0)\n• Export – PDF alebo CSV\n• O aplikácii – verzia a kontakt'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Online účet – synchronizácia pripravovaná (v2.0)\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt'**
   String get guideSettingsBody;
+
+  /// No description provided for @guideBackupTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záloha a obnova dát'**
+  String get guideBackupTitle;
+
+  /// No description provided for @guideBackupBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'V Nastavenia → Záloha dát.\n\n• Exportovať zálohu – uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru (.hmbbackup), ktorý môžeš zdieľať emailom, do cloudu alebo si ho uložiť lokálne\n• Obnoviť zo zálohy – nahradí aktuálne dáta obsahom vybranej zálohy; pred prepísaním sa automaticky vytvorí bezpečnostná záloha súčasného stavu\n• Obnova je zablokovaná počas aktívneho GPS trackingu plavby\n• Zálohu s novšou schémou, než akú appka podporuje, appka odmietne s vysvetlením'**
+  String get guideBackupBody;
 
   /// No description provided for @guideExportTitle.
   ///

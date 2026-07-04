@@ -51,6 +51,27 @@ PDF EXPORT
 • QR kód s kryptografickým odtlačkom pre overenie integrity dokumentu
 • Podpisová strana skipéra
 
+KNIHA MÍĽ
+• Súhrn všetkých plavieb – celkové námorné míle, dni na mori, nočné hodiny
+• Rozpad podľa roka a podľa lode
+• Pridaj historické plavby spred používania appky
+• PDF potvrdenie o najazdených míľach s miestom na podpis
+
+ODOVZDÁVACÍ PROTOKOL (CHECK-IN/CHECK-OUT)
+• Kontrolný zoznam výbavy s fotkami poškodení a polohou na lodi
+• Podpis skippera aj zástupcu charterovej spoločnosti
+• Check-out predvyplní údaje z check-in a zvýrazní nové poškodenia
+
+ZÁLOHA A OBNOVA DÁT
+• Export celej DB do jedného súboru, zdieľanie emailom alebo do cloudu
+• Bezpečná obnova s automatickou zálohou pred prepísaním
+
+IMPORT GPX
+• Import trás a waypointov z iných navigačných aplikácií a GPS zariadení
+
+MOTOR A NÁDRŽE
+• Motohodiny, palivo a voda priamo v zázname denníka
+
 JAZYKY
 Dostupné v slovenčine, angličtine, nemčine, španielčine a ukrajinčine.
 
@@ -93,6 +114,27 @@ PDF EXPORT
 • QR code with cryptographic fingerprint for document integrity verification
 • Skipper signature page
 
+MILE LOGBOOK
+• Summary of all voyages – total nautical miles, days at sea, night hours
+• Breakdown by year and by vessel
+• Add historical voyages from before you started using the app
+• PDF certificate of miles sailed with a place to sign
+
+HANDOVER PROTOCOL (CHECK-IN/CHECK-OUT)
+• Equipment checklist with damage photos and position on board
+• Signature of both the skipper and the charter company representative
+• Check-out pre-fills data from check-in and highlights new damage
+
+DATA BACKUP AND RESTORE
+• Export the whole database to a single file, share by email or to the cloud
+• Safe restore with an automatic backup before overwriting
+
+GPX IMPORT
+• Import tracks and waypoints from other navigation apps and GPS devices
+
+ENGINE & TANKS
+• Engine hours, fuel and water level right in the logbook entry
+
 MULTILINGUAL
 Available in Slovak, English, German, Spanish and Ukrainian.
 
@@ -115,9 +157,32 @@ PRIVACY POLICY URL
 https://io986.github.io/HMB-Sailing-LogBook/privacy.html
 
 
+ČO JE NOVÉ – v1.21.0 (Release notes, max 500 znakov/jazyk)
+══════════════════════════════════════════════════════════
+SK:
+Nové vo verzii 1.21.0:
+• Kniha míľ – súhrn plavieb, historické záznamy, PDF certifikát
+• Odovzdávací protokol lode s podpismi oboch strán a fotkami poškodení
+• Motohodiny, palivo a voda priamo v zázname denníka
+• Záloha a obnova celej databázy jedným súborom
+• Import GPX trás a waypointov z iných aplikácií
+• NMEA cez UDP + stabilnejšie automatické opätovné pripojenie
+• Bezpečnejšie databázové migrácie pri aktualizáciách appky
+
+EN:
+What's new in 1.21.0:
+• Mile logbook – voyage summary, historical entries, PDF certificate
+• Vessel handover protocol with two-party signatures and damage photos
+• Engine hours, fuel and water right in the logbook entry
+• Backup and restore the whole database as a single file
+• Import GPX tracks and waypoints from other apps
+• NMEA over UDP with more reliable auto-reconnect
+• Safer database migrations across app updates
+
+
 POZNÁMKY PRE PLAY CONSOLE
 ══════════════════════════
 • Screenshoty: použiť súbory z priečinka exports/ (min. 2 pre telefón)
 • Content rating dotazník: aplikácia neobsahuje násilie, reklamu, in-app nákupy
 • Interné testovanie: pridaj emailové adresy testerov
-• Verzia: 1.17 (versionCode podľa pubspec.yaml)
+• Verzia: 1.21.0+25 (versionCode podľa pubspec.yaml)
