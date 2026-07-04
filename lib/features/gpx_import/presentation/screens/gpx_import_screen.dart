@@ -12,6 +12,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
+import '../../../charter/presentation/screens/charter_edit_screen.dart' show CharterPrefill;
 import '../../../charter/providers/charter_provider.dart';
 import '../../../map/providers/map_provider.dart';
 import '../../services/gpx_importer.dart';
@@ -30,11 +31,23 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   bool _loading = false;
 
   Future<void> _pickAndParse() async {
-    final picked = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['gpx'],
-    );
-    final path = picked?.files.single.path;
+    String? path;
+    try {
+      // FileType.custom + allowedExtensions zlyháva na niektorých Android
+      // zariadeniach (SAF/OEM file manager nevie namapovať príponu na MIME
+      // typ, hoci ide o bežnú príponu ako "gpx") – rovnaký problém ako pri
+      // obnove zálohy. FileType.any funguje všade, obsah sa validuje nižšie.
+      final picked = await FilePicker.platform.pickFiles(type: FileType.any);
+      path = picked?.files.single.path;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+      return;
+    }
     if (path == null) return;
 
     setState(() => _loading = true);
@@ -99,68 +112,44 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         final track = result.tracks[i];
         if (track.points.isEmpty) continue;
 
-        int dayLogId;
         final chosen = _targetDayLogId[i];
         if (chosen != null) {
-          dayLogId = chosen;
           final entry = _dayLogsByCharter.entries
               .where((e) => e.value.any((d) => d.id == chosen))
               .firstOrNull;
           if (entry == null) continue; // stale selection, skip defensively
           touchedCharterIds.add(entry.key);
+          await _importPointsIntoDayLog(db, chosen, track.points, track.name);
         } else {
           final firstTime = track.points.first.time ?? DateTime.now();
           final lastTime = track.points.last.time ?? firstTime;
-          final charter = await db.insertCharter(ChartersCompanion.insert(
+          final prefill = CharterPrefill(
             title: track.name ?? 'Import GPX ${DateFormat('d.M.yyyy').format(firstTime)}',
             dateFrom: firstTime,
             dateTo: lastTime,
-            createdAt: DateTime.now(),
-          ));
-          final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-            charterId: charter.id,
-            date: firstTime,
-          ));
-          dayLogId = dayLog.id;
-          touchedCharterIds.add(charter.id);
-        }
-
-        var nm = 0.0;
-        for (var p = 1; p < track.points.length; p++) {
-          nm += DistanceCalculator.distanceNm(
-            track.points[p - 1].lat, track.points[p - 1].lon,
-            track.points[p].lat, track.points[p].lon,
           );
-        }
+          if (!mounted) continue;
+          // Otvor skutočný formulár novej plavby a čakaj na výsledok –
+          // GPX import tak nikdy ticho nevytvára charter na pozadí.
+          final charter = await context.push<Charter>('/logbook/new', extra: prefill);
+          if (charter == null) continue; // používateľ zrušil, track sa preskočí
+          touchedCharterIds.add(charter.id);
 
-        final sessionId = const Uuid().v4();
-        await db.upsertSession(SailingSessionsCompanion.insert(
-          sessionId: sessionId,
-          dayLogId: Value(dayLogId),
-          startTime: track.points.first.time ?? DateTime.now(),
-          endTime: Value(track.points.last.time),
-          name: Value(track.name),
-          totalDistanceNm: Value(nm),
-          isActive: const Value(false),
-        ));
-        for (final p in track.points) {
-          await db.insertTrackPoint(TrackPointsCompanion.insert(
-            sessionId: Value(sessionId),
-            timestamp: p.time ?? DateTime.now(),
-            latitude: p.lat,
-            longitude: p.lon,
-            altitude: Value(p.ele),
-          ));
-        }
-
-        // DayLogs.distanceNm sa inak dopočíta len pri exporte (fallback) –
-        // zapíš ju rovno, nech sa nová plavba prejaví okamžite v Knihe míľ.
-        final day = await db.getDayLogById(dayLogId);
-        if (day != null && day.distanceNm == 0) {
-          await db.updateDayLog(DayLogsCompanion(
-            id: Value(dayLogId),
-            distanceNm: Value(nm),
-          ));
+          // Track môže obsahovať záznamy z viacerých kalendárnych dní –
+          // rozdeľ ich na samostatné DayLogs pod tou istou novou plavbou.
+          final byDay = <DateTime, List<GpxTrackPoint>>{};
+          for (final p in track.points) {
+            final t = (p.time ?? DateTime.now()).toLocal();
+            final dayKey = DateTime(t.year, t.month, t.day);
+            byDay.putIfAbsent(dayKey, () => []).add(p);
+          }
+          for (final dayEntry in byDay.entries) {
+            final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
+              charterId: charter.id,
+              date: dayEntry.key,
+            ));
+            await _importPointsIntoDayLog(db, dayLog.id, dayEntry.value, track.name);
+          }
         }
       }
 
@@ -183,6 +172,49 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       }
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _importPointsIntoDayLog(
+    AppDatabase db, int dayLogId, List<GpxTrackPoint> points, String? trackName,
+  ) async {
+    if (points.isEmpty) return;
+    var nm = 0.0;
+    for (var p = 1; p < points.length; p++) {
+      nm += DistanceCalculator.distanceNm(
+        points[p - 1].lat, points[p - 1].lon,
+        points[p].lat, points[p].lon,
+      );
+    }
+
+    final sessionId = const Uuid().v4();
+    await db.upsertSession(SailingSessionsCompanion.insert(
+      sessionId: sessionId,
+      dayLogId: Value(dayLogId),
+      startTime: points.first.time ?? DateTime.now(),
+      endTime: Value(points.last.time),
+      name: Value(trackName),
+      totalDistanceNm: Value(nm),
+      isActive: const Value(false),
+    ));
+    for (final p in points) {
+      await db.insertTrackPoint(TrackPointsCompanion.insert(
+        sessionId: Value(sessionId),
+        timestamp: p.time ?? DateTime.now(),
+        latitude: p.lat,
+        longitude: p.lon,
+        altitude: Value(p.ele),
+      ));
+    }
+
+    // DayLogs.distanceNm sa inak dopočíta len pri exporte (fallback) –
+    // zapíš ju rovno, nech sa nová plavba prejaví okamžite v Knihe míľ.
+    final day = await db.getDayLogById(dayLogId);
+    if (day != null && day.distanceNm == 0) {
+      await db.updateDayLog(DayLogsCompanion(
+        id: Value(dayLogId),
+        distanceNm: Value(nm),
+      ));
     }
   }
 

@@ -42,7 +42,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: '/logbook',
             builder: (c, s) => const CharterListScreen(),
             routes: [
-              GoRoute(path: 'new', builder: (c, s) => const CharterEditScreen()),
+              GoRoute(path: 'new', builder: (c, s) {
+                final prefill = s.extra as CharterPrefill?;
+                return CharterEditScreen(prefill: prefill, popOnCreate: prefill != null);
+              }),
               GoRoute(
                 path: ':id',
                 builder: (c, s) => CharterDetailScreen(

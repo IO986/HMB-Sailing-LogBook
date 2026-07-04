@@ -11,9 +11,18 @@ import '../../providers/charter_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_start_sheet.dart' show TrackingIntervalSelector;
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
+class CharterPrefill {
+  final String title;
+  final DateTime dateFrom;
+  final DateTime dateTo;
+  const CharterPrefill({required this.title, required this.dateFrom, required this.dateTo});
+}
+
 class CharterEditScreen extends ConsumerStatefulWidget {
   final String? charterId;
-  const CharterEditScreen({super.key, this.charterId});
+  final CharterPrefill? prefill;
+  final bool popOnCreate;
+  const CharterEditScreen({super.key, this.charterId, this.prefill, this.popOnCreate = false});
 
   @override
   ConsumerState<CharterEditScreen> createState() => _CharterEditScreenState();
@@ -45,7 +54,13 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   void initState() {
     super.initState();
     _crewControllers.add(TextEditingController());
-    if (!_isNew) _loadCharter();
+    if (!_isNew) {
+      _loadCharter();
+    } else if (widget.prefill != null) {
+      _titleCtrl.text = widget.prefill!.title;
+      _dateFrom = widget.prefill!.dateFrom;
+      _dateTo = widget.prefill!.dateTo;
+    }
   }
 
   Future<void> _loadCharter() async {
@@ -376,8 +391,12 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('pending_log_interval', _logInterval);
       setState(() => _loading = false);
-      // New charter always goes to safety briefing before tracking
-      if (mounted) context.go('/logbook/${charter.id}/briefing');
+      if (widget.popOnCreate) {
+        if (mounted) Navigator.pop(context, charter);
+      } else {
+        // New charter always goes to check-in protocol before tracking
+        if (mounted) context.go('/logbook/${charter.id}/handover/checkIn');
+      }
     }
   }
 

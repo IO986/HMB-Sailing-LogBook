@@ -13,6 +13,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
+import '../../../export/presentation/pdf_preview_screen.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
@@ -203,10 +204,24 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       protocol: protocol,
       checklist: checklistFromJson(protocol.checklistJson),
     );
-    final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/HMB_Protokol_${widget.type}_${DateTime.now().millisecondsSinceEpoch}.pdf');
-    await file.writeAsBytes(bytes);
-    if (mounted) await Share.shareXFiles([XFile(file.path)]);
+    if (!mounted) return;
+    final l = AppLocalizations.of(context);
+    final title = widget.type == 'checkOut' ? l.checkOutProtocol : l.checkInProtocol;
+    final fileName = 'HMB_Protokol_${widget.type}_${DateFormat('yyyyMMdd_HHmm').format(DateTime.now())}';
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => PdfPreviewScreen(
+        title: title,
+        pdfBytes: bytes,
+        suggestedFileName: fileName,
+        onSave: () async {
+          Navigator.of(context).pop();
+          final dir = await getTemporaryDirectory();
+          final file = File('${dir.path}/$fileName.pdf');
+          await file.writeAsBytes(bytes);
+          await Share.shareXFiles([XFile(file.path)]);
+        },
+      ),
+    ));
   }
 
   @override
