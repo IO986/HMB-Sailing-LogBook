@@ -172,6 +172,9 @@ class WeatherSnapshots extends Table {
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  @visibleForTesting
+  AppDatabase.forTesting(super.executor);
+
   @override
   int get schemaVersion => 7;
 
@@ -208,7 +211,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.pdfRevision);
       }
     },
-    beforeOpen: (details) async {},
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+    },
   );
 
   // ── Charters ────────────────────────────────────────────────
