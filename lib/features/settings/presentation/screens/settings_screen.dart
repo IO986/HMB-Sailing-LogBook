@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -902,13 +904,21 @@ class _BackupSection extends ConsumerStatefulWidget {
 class _BackupSectionState extends ConsumerState<_BackupSection> {
   bool _busy = false;
 
-  Future<void> _export() async {
+  Future<void> _export({required bool saveLocally}) async {
     final l = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
       final db = ref.read(databaseProvider);
       final zip = await BackupService().createSnapshotZip(db);
-      await Share.shareXFiles([XFile(zip.path)], subject: l.exportBackup);
+      if (saveLocally) {
+        await FilePicker.platform.saveFile(
+          dialogTitle: l.saveToDevice,
+          fileName: zip.path.split(Platform.pathSeparator).last,
+          bytes: await zip.readAsBytes(),
+        );
+      } else {
+        await Share.shareXFiles([XFile(zip.path)], subject: l.exportBackup);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -929,12 +939,23 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
       return;
     }
 
-    // Poznámka: FileType.custom + allowedExtensions: ['hmbbackup'] sa na
-    // Androide (SAF) nedá namapovať na MIME typ pre neznámu príponu –
-    // systémový picker potom nezobrazí/nedovolí vybrať žiadny súbor.
-    // FileType.any obchádza tento problém; obsah sa aj tak validuje nižšie.
-    final picked = await FilePicker.platform.pickFiles(type: FileType.any);
-    final path = picked?.files.single.path;
+    String? path;
+    try {
+      // Poznámka: FileType.custom + allowedExtensions: ['hmbbackup'] sa na
+      // Androide (SAF) nedá namapovať na MIME typ pre neznámu príponu –
+      // systémový picker potom nezobrazí/nedovolí vybrať žiadny súbor.
+      // FileType.any obchádza tento problém; obsah sa aj tak validuje nižšie.
+      final picked = await FilePicker.platform.pickFiles(type: FileType.any);
+      path = picked?.files.single.path;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+      return;
+    }
     if (path == null) return;
 
     setState(() => _busy = true);
@@ -1029,9 +1050,15 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
         leading: const Icon(Icons.upload_file_outlined),
         title: Text(l.exportBackup),
         subtitle: Text(l.exportBackupDesc),
-        trailing: _busy ? const SizedBox(width: 20, height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2)) : null,
-        onTap: _busy ? null : _export,
+        trailing: _busy
+            ? const SizedBox(width: 20, height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2))
+            : IconButton(
+                icon: const Icon(Icons.save_alt),
+                tooltip: l.saveToDevice,
+                onPressed: () => _export(saveLocally: true),
+              ),
+        onTap: _busy ? null : () => _export(saveLocally: false),
       ),
       const Divider(height: 1),
       ListTile(

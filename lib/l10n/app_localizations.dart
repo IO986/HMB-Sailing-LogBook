@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @existingVoyage.
   ///
   /// In sk, this message translates to:
-  /// **'Existujúca plavba'**
+  /// **'Pokračovanie existujúcej plavby'**
   String get existingVoyage;
 
   /// No description provided for @newVoyageDropdown.

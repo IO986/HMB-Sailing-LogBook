@@ -58,7 +58,7 @@
   "voyageName": "Назва плавання",
   "voyageNameOptional": "Назва (необов'язково)",
   "voyageNameHint": "напр. Прогулянка до бухти",
-  "existingVoyage": "Існуюче плавання",
+  "existingVoyage": "Продовжити існуюче плавання",
   "newVoyageDropdown": "— Нове плавання —",
   "firstVoyageHint": "Перше плавання – заповніть основну інформацію:",
   "estimatedDays": "Очікувана кількість днів:",

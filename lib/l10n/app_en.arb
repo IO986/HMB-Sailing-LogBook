@@ -58,7 +58,7 @@
   "voyageName": "Voyage name",
   "voyageNameOptional": "Name (optional)",
   "voyageNameHint": "e.g. Bay trip",
-  "existingVoyage": "Existing voyage",
+  "existingVoyage": "Continue existing voyage",
   "newVoyageDropdown": "— New voyage —",
   "firstVoyageHint": "First voyage – fill in the basic info:",
   "estimatedDays": "Estimated number of days:",

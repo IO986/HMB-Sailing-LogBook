@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +26,18 @@ class MilesBookScreen extends ConsumerWidget {
         title: Text(l.milesBookTitle),
         actions: [
           IconButton(
+            icon: const Icon(Icons.save_alt),
+            tooltip: l.saveToDevice,
+            onPressed: aggregateAsync.maybeWhen(
+              data: (agg) => () => _exportPdf(context, agg, saveLocally: true),
+              orElse: () => null,
+            ),
+          ),
+          IconButton(
             icon: const Icon(Icons.picture_as_pdf_outlined),
             tooltip: l.exportPdf,
             onPressed: aggregateAsync.maybeWhen(
-              data: (agg) => () => _exportPdf(context, agg),
+              data: (agg) => () => _exportPdf(context, agg, saveLocally: false),
               orElse: () => null,
             ),
           ),
@@ -47,13 +56,32 @@ class MilesBookScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _exportPdf(BuildContext context, MilesAggregate agg) async {
-    final pdfBytes = await PdfExportService.exportMilesCertificate(aggregate: agg);
-    final dir = await getTemporaryDirectory();
-    final file = File(
-        '${dir.path}/HMB_Kniha_Mil_${DateTime.now().millisecondsSinceEpoch}.pdf');
-    await file.writeAsBytes(pdfBytes);
-    await Share.shareXFiles([XFile(file.path)]);
+  Future<void> _exportPdf(BuildContext context, MilesAggregate agg,
+      {required bool saveLocally}) async {
+    final l = AppLocalizations.of(context);
+    try {
+      final pdfBytes = await PdfExportService.exportMilesCertificate(aggregate: agg);
+      final fileName = 'HMB_Kniha_Mil_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      if (saveLocally) {
+        await FilePicker.platform.saveFile(
+          dialogTitle: l.saveToDevice,
+          fileName: fileName,
+          bytes: pdfBytes,
+        );
+      } else {
+        final dir = await getTemporaryDirectory();
+        final file = File('${dir.path}/$fileName');
+        await file.writeAsBytes(pdfBytes);
+        await Share.shareXFiles([XFile(file.path)]);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
   }
 }
 

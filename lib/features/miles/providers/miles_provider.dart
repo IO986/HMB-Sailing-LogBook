@@ -5,7 +5,11 @@ import '../services/miles_calculator.dart';
 
 final milesFilterProvider = StateProvider<MilesFilter>((ref) => const MilesFilter());
 
-final historicalVoyagesProvider = FutureProvider<List<HistoricalVoyage>>((ref) async {
+/// `.autoDispose` – bez toho by súhrn ostal zacachovaný so starými dátami
+/// aj po skončení plavby; takto sa pri každom otvorení Knihy míľ dáta
+/// znova načítajú z DB.
+final historicalVoyagesProvider =
+    FutureProvider.autoDispose<List<HistoricalVoyage>>((ref) async {
   final db = ref.watch(databaseProvider);
   return db.getAllHistoricalVoyages();
 });
@@ -24,7 +28,7 @@ class _MilesRawData {
   });
 }
 
-final _milesRawDataProvider = FutureProvider<_MilesRawData>((ref) async {
+final _milesRawDataProvider = FutureProvider.autoDispose<_MilesRawData>((ref) async {
   final db = ref.watch(databaseProvider);
 
   final charters = await db.getAllCharters();
@@ -56,7 +60,7 @@ final _milesRawDataProvider = FutureProvider<_MilesRawData>((ref) async {
 });
 
 /// Súhrn Knihy míľ pre aktuálne zvolený [milesFilterProvider].
-final milesAggregateProvider = FutureProvider<MilesAggregate>((ref) async {
+final milesAggregateProvider = FutureProvider.autoDispose<MilesAggregate>((ref) async {
   final raw = await ref.watch(_milesRawDataProvider.future);
   final filter = ref.watch(milesFilterProvider);
 
@@ -71,7 +75,7 @@ final milesAggregateProvider = FutureProvider<MilesAggregate>((ref) async {
 
 /// Zoznam rokov, v ktorých existuje aspoň jedna plavba – na filter chips
 /// (nezávisí od aktuálne zvoleného filtra).
-final milesAvailableYearsProvider = FutureProvider<List<int>>((ref) async {
+final milesAvailableYearsProvider = FutureProvider.autoDispose<List<int>>((ref) async {
   final raw = await ref.watch(_milesRawDataProvider.future);
   final years = <int>{};
   for (final charter in raw.charters) {

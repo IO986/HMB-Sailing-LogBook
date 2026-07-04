@@ -58,7 +58,7 @@
   "voyageName": "Názov plavby",
   "voyageNameOptional": "Názov (voliteľné)",
   "voyageNameHint": "napr. Výlet do zátoky",
-  "existingVoyage": "Existujúca plavba",
+  "existingVoyage": "Pokračovanie existujúcej plavby",
   "newVoyageDropdown": "— Nová plavba —",
   "firstVoyageHint": "Prvá plavba – vyplň základné info:",
   "estimatedDays": "Predpokladaný počet dní:",

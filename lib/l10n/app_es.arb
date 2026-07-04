@@ -58,7 +58,7 @@
   "voyageName": "Nombre de travesía",
   "voyageNameOptional": "Nombre (opcional)",
   "voyageNameHint": "p.ej. Viaje a la bahía",
-  "existingVoyage": "Travesía existente",
+  "existingVoyage": "Continuar travesía existente",
   "newVoyageDropdown": "— Nueva travesía —",
   "firstVoyageHint": "Primera travesía – rellene los datos básicos:",
   "estimatedDays": "Número estimado de días:",

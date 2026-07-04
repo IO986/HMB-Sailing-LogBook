@@ -168,7 +168,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get voyageNameHint => 'напр. Прогулянка до бухти';
 
   @override
-  String get existingVoyage => 'Існуюче плавання';
+  String get existingVoyage => 'Продовжити існуюче плавання';
 
   @override
   String get newVoyageDropdown => '— Нове плавання —';

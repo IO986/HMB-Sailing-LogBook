@@ -77,90 +77,112 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   Future<void> _import() async {
     final result = _result;
     if (result == null) return;
+    final l = AppLocalizations.of(context);
     setState(() => _loading = true);
-    final db = ref.read(databaseProvider);
+    try {
+      final db = ref.read(databaseProvider);
 
-    for (final wpt in result.waypoints) {
-      await db.insertWaypoint(WaypointsCompanion.insert(
-        name: wpt.name ?? (wpt.isRoutePoint ? 'Route point' : 'Waypoint'),
-        latitude: wpt.lat,
-        longitude: wpt.lon,
-        createdAt: wpt.time ?? DateTime.now(),
-        type: Value(wpt.isRoutePoint ? 'route' : null),
-      ));
-    }
-    ref.invalidate(waypointsProvider);
-
-    final touchedCharterIds = <int>{};
-
-    for (var i = 0; i < result.tracks.length; i++) {
-      final track = result.tracks[i];
-      if (track.points.isEmpty) continue;
-
-      int dayLogId;
-      final chosen = _targetDayLogId[i];
-      if (chosen != null) {
-        dayLogId = chosen;
-        final charterId = _dayLogsByCharter.entries
-            .firstWhere((e) => e.value.any((d) => d.id == chosen))
-            .key;
-        touchedCharterIds.add(charterId);
-      } else {
-        final firstTime = track.points.first.time ?? DateTime.now();
-        final lastTime = track.points.last.time ?? firstTime;
-        final charter = await db.insertCharter(ChartersCompanion.insert(
-          title: track.name ?? 'Import GPX ${DateFormat('d.M.yyyy').format(firstTime)}',
-          dateFrom: firstTime,
-          dateTo: lastTime,
-          createdAt: DateTime.now(),
-        ));
-        final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-          charterId: charter.id,
-          date: firstTime,
-        ));
-        dayLogId = dayLog.id;
-        touchedCharterIds.add(charter.id);
-      }
-
-      var nm = 0.0;
-      for (var p = 1; p < track.points.length; p++) {
-        nm += DistanceCalculator.distanceNm(
-          track.points[p - 1].lat, track.points[p - 1].lon,
-          track.points[p].lat, track.points[p].lon,
-        );
-      }
-
-      final sessionId = const Uuid().v4();
-      await db.upsertSession(SailingSessionsCompanion.insert(
-        sessionId: sessionId,
-        dayLogId: Value(dayLogId),
-        startTime: track.points.first.time ?? DateTime.now(),
-        endTime: Value(track.points.last.time),
-        name: Value(track.name),
-        totalDistanceNm: Value(nm),
-        isActive: const Value(false),
-      ));
-      for (final p in track.points) {
-        await db.insertTrackPoint(TrackPointsCompanion.insert(
-          sessionId: Value(sessionId),
-          timestamp: p.time ?? DateTime.now(),
-          latitude: p.lat,
-          longitude: p.lon,
-          altitude: Value(p.ele),
+      for (final wpt in result.waypoints) {
+        await db.insertWaypoint(WaypointsCompanion.insert(
+          name: wpt.name ?? (wpt.isRoutePoint ? 'Route point' : 'Waypoint'),
+          latitude: wpt.lat,
+          longitude: wpt.lon,
+          createdAt: wpt.time ?? DateTime.now(),
+          type: Value(wpt.isRoutePoint ? 'route' : null),
         ));
       }
-    }
+      ref.invalidate(waypointsProvider);
 
-    ref.invalidate(chartersProvider);
-    for (final id in touchedCharterIds) {
-      ref.invalidate(dayLogsProvider(id));
-    }
+      final touchedCharterIds = <int>{};
 
-    setState(() => _loading = false);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).gpxImportSuccess)));
-      context.pop();
+      for (var i = 0; i < result.tracks.length; i++) {
+        final track = result.tracks[i];
+        if (track.points.isEmpty) continue;
+
+        int dayLogId;
+        final chosen = _targetDayLogId[i];
+        if (chosen != null) {
+          dayLogId = chosen;
+          final entry = _dayLogsByCharter.entries
+              .where((e) => e.value.any((d) => d.id == chosen))
+              .firstOrNull;
+          if (entry == null) continue; // stale selection, skip defensively
+          touchedCharterIds.add(entry.key);
+        } else {
+          final firstTime = track.points.first.time ?? DateTime.now();
+          final lastTime = track.points.last.time ?? firstTime;
+          final charter = await db.insertCharter(ChartersCompanion.insert(
+            title: track.name ?? 'Import GPX ${DateFormat('d.M.yyyy').format(firstTime)}',
+            dateFrom: firstTime,
+            dateTo: lastTime,
+            createdAt: DateTime.now(),
+          ));
+          final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
+            charterId: charter.id,
+            date: firstTime,
+          ));
+          dayLogId = dayLog.id;
+          touchedCharterIds.add(charter.id);
+        }
+
+        var nm = 0.0;
+        for (var p = 1; p < track.points.length; p++) {
+          nm += DistanceCalculator.distanceNm(
+            track.points[p - 1].lat, track.points[p - 1].lon,
+            track.points[p].lat, track.points[p].lon,
+          );
+        }
+
+        final sessionId = const Uuid().v4();
+        await db.upsertSession(SailingSessionsCompanion.insert(
+          sessionId: sessionId,
+          dayLogId: Value(dayLogId),
+          startTime: track.points.first.time ?? DateTime.now(),
+          endTime: Value(track.points.last.time),
+          name: Value(track.name),
+          totalDistanceNm: Value(nm),
+          isActive: const Value(false),
+        ));
+        for (final p in track.points) {
+          await db.insertTrackPoint(TrackPointsCompanion.insert(
+            sessionId: Value(sessionId),
+            timestamp: p.time ?? DateTime.now(),
+            latitude: p.lat,
+            longitude: p.lon,
+            altitude: Value(p.ele),
+          ));
+        }
+
+        // DayLogs.distanceNm sa inak dopočíta len pri exporte (fallback) –
+        // zapíš ju rovno, nech sa nová plavba prejaví okamžite v Knihe míľ.
+        final day = await db.getDayLogById(dayLogId);
+        if (day != null && day.distanceNm == 0) {
+          await db.updateDayLog(DayLogsCompanion(
+            id: Value(dayLogId),
+            distanceNm: Value(nm),
+          ));
+        }
+      }
+
+      ref.invalidate(chartersProvider);
+      for (final id in touchedCharterIds) {
+        ref.invalidate(dayLogsProvider(id));
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l.gpxImportSuccess)));
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 

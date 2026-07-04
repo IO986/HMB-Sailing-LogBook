@@ -58,7 +58,7 @@
   "voyageName": "Fahrtname",
   "voyageNameOptional": "Name (optional)",
   "voyageNameHint": "z.B. Ausflug in die Bucht",
-  "existingVoyage": "Bestehende Fahrt",
+  "existingVoyage": "Bestehende Fahrt fortsetzen",
   "newVoyageDropdown": "— Neue Fahrt —",
   "firstVoyageHint": "Erste Fahrt – Grundinfos ausfüllen:",
   "estimatedDays": "Geschätzte Tagesanzahl:",

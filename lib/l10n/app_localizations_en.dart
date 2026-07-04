@@ -168,7 +168,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voyageNameHint => 'e.g. Bay trip';
 
   @override
-  String get existingVoyage => 'Existing voyage';
+  String get existingVoyage => 'Continue existing voyage';
 
   @override
   String get newVoyageDropdown => '— New voyage —';
