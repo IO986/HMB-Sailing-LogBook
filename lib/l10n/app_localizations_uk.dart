@@ -607,6 +607,70 @@ class AppLocalizationsUk extends AppLocalizations {
       'Обраний файл не є дійсною резервною копією HMB Sailing Log.';
 
   @override
+  String get milesBookTitle => 'Книга миль';
+
+  @override
+  String get totalNm => 'Всього NM';
+
+  @override
+  String get daysAtSea => 'Днів у морі';
+
+  @override
+  String get voyageCount => 'Кількість плавань';
+
+  @override
+  String get nightHoursLabel => 'Нічні години';
+
+  @override
+  String get byYear => 'За роком';
+
+  @override
+  String get byVessel => 'За судном';
+
+  @override
+  String get addHistoricalVoyage => 'Додати історичне плавання';
+
+  @override
+  String get editHistoricalVoyage => 'Редагувати історичне плавання';
+
+  @override
+  String get deleteHistoricalVoyageConfirm =>
+      'Справді видалити це історичне плавання?';
+
+  @override
+  String get manualEntryExplanation => '* ручний запис (введено вручну)';
+
+  @override
+  String get roleLabel => 'Роль на борту';
+
+  @override
+  String get roleSkipper => 'Шкіпер';
+
+  @override
+  String get roleCoSkipper => 'Помічник шкіпера';
+
+  @override
+  String get roleCrew => 'Екіпаж';
+
+  @override
+  String get areaLabel => 'Район / маршрут';
+
+  @override
+  String get distanceNmLabel => 'Відстань (NM)';
+
+  @override
+  String get daysCountLabel => 'Кількість днів';
+
+  @override
+  String get milesCertificateTitle => 'Підтвердження пройдених миль';
+
+  @override
+  String get filterAllYears => 'Всі роки';
+
+  @override
+  String get filterCustomRange => 'Власний діапазон';
+
+  @override
   String get connectionConnected => 'Підключено';
 
   @override

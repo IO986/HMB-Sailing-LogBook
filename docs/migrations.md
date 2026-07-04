@@ -31,13 +31,23 @@ stĺpec, zmena typu...) postupuj takto:
    ```
    (prepíše `schema.dart`/pridá `schema_v<N>.dart`), potom doplň test:
    ```dart
-   test('migrate v<STARÁ> to v<NOVÁ>', () async {
+   test('migrate v<STARÁ> to current (v<NOVÁ>)', () async {
      final connection = await verifier.startAt(<STARÁ>);
      final db = AppDatabase.forTesting(connection);
      addTearDown(db.close);
      await verifier.migrateAndValidate(db, <NOVÁ>);
    });
    ```
+   **DÔLEŽITÉ**: druhý argument `migrateAndValidate(db, X)` musí byť VŽDY
+   aktuálne najnovší `schemaVersion`, nikdy medzikrok. `onUpgrade` je reťaz
+   `if (from < N)` blokov bez ohľadu na `to` — pri behu appky sa vždy
+   migruje až na najnovšiu verziu, takže test na medzikrok (napr. cieľ v8
+   keď existuje aj v9) skončí falošným zlyhaním, lebo neskorší `from < 9`
+   blok sa aj tak potichu spustí a pridá stĺpce/tabuľky navyše oproti
+   staršiemu očakávanému snapshotu. Preto pri KAŽDEJ ďalšej fáze uprav aj
+   existujúce staršie testy tak, aby ich `migrateAndValidate` cieľ
+   ukazoval na novú najnovšiu verziu (nie na verziu z čias, keď boli
+   napísané).
 6. **Spusti testy**: `flutter test`.
 
 ## Známe pasce

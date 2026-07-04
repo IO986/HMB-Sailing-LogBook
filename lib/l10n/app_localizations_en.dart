@@ -605,6 +605,69 @@ class AppLocalizationsEn extends AppLocalizations {
       'The selected file is not a valid HMB Sailing Log backup.';
 
   @override
+  String get milesBookTitle => 'Mile logbook';
+
+  @override
+  String get totalNm => 'Total NM';
+
+  @override
+  String get daysAtSea => 'Days at sea';
+
+  @override
+  String get voyageCount => 'Voyage count';
+
+  @override
+  String get nightHoursLabel => 'Night hours';
+
+  @override
+  String get byYear => 'By year';
+
+  @override
+  String get byVessel => 'By vessel';
+
+  @override
+  String get addHistoricalVoyage => 'Add historical voyage';
+
+  @override
+  String get editHistoricalVoyage => 'Edit historical voyage';
+
+  @override
+  String get deleteHistoricalVoyageConfirm => 'Delete this historical voyage?';
+
+  @override
+  String get manualEntryExplanation => '* manual entry (entered by hand)';
+
+  @override
+  String get roleLabel => 'Role on board';
+
+  @override
+  String get roleSkipper => 'Skipper';
+
+  @override
+  String get roleCoSkipper => 'Co-skipper';
+
+  @override
+  String get roleCrew => 'Crew';
+
+  @override
+  String get areaLabel => 'Area / route';
+
+  @override
+  String get distanceNmLabel => 'Distance (NM)';
+
+  @override
+  String get daysCountLabel => 'Number of days';
+
+  @override
+  String get milesCertificateTitle => 'Certificate of miles sailed';
+
+  @override
+  String get filterAllYears => 'All years';
+
+  @override
+  String get filterCustomRange => 'Custom range';
+
+  @override
   String get connectionConnected => 'Connected';
 
   @override

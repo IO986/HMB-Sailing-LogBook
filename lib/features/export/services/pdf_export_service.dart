@@ -9,6 +9,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
 import '../../../core/models/skipper_profile.dart';
+import '../../miles/services/miles_calculator.dart';
 
 class PdfExportService {
   static final _navy  = PdfColor.fromHex('#0A2342');
@@ -1158,6 +1159,105 @@ class PdfExportService {
           child: pw.Text(l, style: const pw.TextStyle(fontSize: 9)))),
     ]),
   );
+
+  // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
+
+  static Future<Uint8List> exportMilesCertificate({
+    required MilesAggregate aggregate,
+    String? signerName,
+  }) async {
+    final docId = 'HMBSL-MILES-${DateTime.now().year}';
+    final fmt = DateFormat('d.M.yyyy');
+
+    final pdf = pw.Document(
+      title: 'Potvrdenie o najazdenych miliach',
+      creator: 'HMB Sailing Log',
+    );
+
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      header: (ctx) => ctx.pageNumber == 1
+          ? pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(16),
+              margin: const pw.EdgeInsets.only(bottom: 14),
+              decoration: pw.BoxDecoration(color: _navy,
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
+              child: pw.Text('POTVRDENIE O NAJAZDENYCH MILIACH', style: pw.TextStyle(
+                  color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
+            )
+          : pw.SizedBox(),
+      footer: (ctx) => _footer(
+        'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        docId: docId, revision: 0,
+      ),
+      build: (ctx) => [
+        pw.Row(children: [
+          _statBox('CELKOVE\nNM', aggregate.totalNm.toStringAsFixed(1), _blue),
+          pw.SizedBox(width: 6),
+          _statBox('DNI NA\nMORI', '${aggregate.daysAtSea}', _green),
+          pw.SizedBox(width: 6),
+          _statBox('POCET\nPLAVIEB', '${aggregate.voyageCount}', _dgrey),
+          pw.SizedBox(width: 6),
+          _statBox('NOCNE\nHODINY', aggregate.nightHours.toStringAsFixed(1), _navy),
+        ]),
+        pw.SizedBox(height: 16),
+
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          columnWidths: {
+            0: const pw.FlexColumnWidth(1.8),
+            1: const pw.FlexColumnWidth(1.6),
+            2: const pw.FlexColumnWidth(1.8),
+            3: const pw.FlexColumnWidth(1),
+            4: const pw.FlexColumnWidth(1.2),
+          },
+          children: [
+            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
+              ['Datum od-do', 'Lod', 'Oblast', 'NM', 'Rola'].map((h) => _hcell(h)).toList()),
+            ...aggregate.voyages.map((v) => pw.TableRow(
+              children: [
+                _cell('${v.isManualEntry ? "* " : ""}${fmt.format(v.dateFrom)}-${fmt.format(v.dateTo)}'),
+                _cell(_ascii(v.vesselName)),
+                _cell(_ascii(v.area ?? '-')),
+                _cell(v.distanceNm.toStringAsFixed(1)),
+                _cell(_ascii(v.role ?? '-')),
+              ],
+            )),
+            pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
+              _cell('SPOLU', bold: true), _cell(''), _cell(''),
+              _cell(aggregate.totalNm.toStringAsFixed(1), bold: true), _cell(''),
+            ]),
+          ],
+        ),
+
+        if (aggregate.voyages.any((v) => v.isManualEntry)) ...[
+          pw.SizedBox(height: 8),
+          pw.Text('* manualny zaznam (zadane rucne)',
+              style: pw.TextStyle(fontSize: 7.5, color: _dgrey)),
+        ],
+
+        pw.SizedBox(height: 32),
+        pw.Row(children: [
+          pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.Container(width: 200, decoration: const pw.BoxDecoration(
+                border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
+            pw.SizedBox(height: 4),
+            pw.Text(_ascii('Podpis: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
+          ])),
+          pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.Container(width: 150, decoration: const pw.BoxDecoration(
+                border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
+            pw.SizedBox(height: 4),
+            pw.Text('Datum: ${fmt.format(DateTime.now())}', style: const pw.TextStyle(fontSize: 8.5)),
+          ])),
+        ]),
+      ],
+    ));
+
+    return pdf.save();
+  }
 
   static pw.Widget _statBox(String label, String value, PdfColor color) =>
     pw.Expanded(child: pw.Container(

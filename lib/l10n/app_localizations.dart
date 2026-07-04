@@ -1238,6 +1238,132 @@ abstract class AppLocalizations {
   /// **'Vybraný súbor nie je platná záloha HMB Sailing Log.'**
   String get restoreInvalidFile;
 
+  /// No description provided for @milesBookTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kniha míľ'**
+  String get milesBookTitle;
+
+  /// No description provided for @totalNm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celkové NM'**
+  String get totalNm;
+
+  /// No description provided for @daysAtSea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dni na mori'**
+  String get daysAtSea;
+
+  /// No description provided for @voyageCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počet plavieb'**
+  String get voyageCount;
+
+  /// No description provided for @nightHoursLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočné hodiny'**
+  String get nightHoursLabel;
+
+  /// No description provided for @byYear.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podľa roka'**
+  String get byYear;
+
+  /// No description provided for @byVessel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podľa lode'**
+  String get byVessel;
+
+  /// No description provided for @addHistoricalVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať historickú plavbu'**
+  String get addHistoricalVoyage;
+
+  /// No description provided for @editHistoricalVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upraviť historickú plavbu'**
+  String get editHistoricalVoyage;
+
+  /// No description provided for @deleteHistoricalVoyageConfirm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Naozaj zmazať túto historickú plavbu?'**
+  String get deleteHistoricalVoyageConfirm;
+
+  /// No description provided for @manualEntryExplanation.
+  ///
+  /// In sk, this message translates to:
+  /// **'* manuálny záznam (zadané ručne)'**
+  String get manualEntryExplanation;
+
+  /// No description provided for @roleLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rola na palube'**
+  String get roleLabel;
+
+  /// No description provided for @roleSkipper.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skipper'**
+  String get roleSkipper;
+
+  /// No description provided for @roleCoSkipper.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kormidelník'**
+  String get roleCoSkipper;
+
+  /// No description provided for @roleCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posádka'**
+  String get roleCrew;
+
+  /// No description provided for @areaLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oblasť / trasa'**
+  String get areaLabel;
+
+  /// No description provided for @distanceNmLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vzdialenosť (NM)'**
+  String get distanceNmLabel;
+
+  /// No description provided for @daysCountLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počet dní'**
+  String get daysCountLabel;
+
+  /// No description provided for @milesCertificateTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Potvrdenie o najazdených míľach'**
+  String get milesCertificateTitle;
+
+  /// No description provided for @filterAllYears.
+  ///
+  /// In sk, this message translates to:
+  /// **'Všetky roky'**
+  String get filterAllYears;
+
+  /// No description provided for @filterCustomRange.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlastný rozsah'**
+  String get filterCustomRange;
+
   /// No description provided for @connectionConnected.
   ///
   /// In sk, this message translates to:

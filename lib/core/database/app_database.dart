@@ -35,6 +35,7 @@ class Charters extends Table {
   RealColumn get vesselBeamM => real().nullable()();
   RealColumn get vesselDraftM => real().nullable()();
   IntColumn get pdfRevision => integer().withDefault(const Constant(0))();
+  TextColumn get myRole => text().nullable()(); // 'skipper' | 'coSkipper' | 'crew'
 }
 
 /// Jeden deň plavby
@@ -163,6 +164,23 @@ class WeatherSnapshots extends Table {
   RealColumn get precipitation => real().nullable()();               // mm
 }
 
+/// Ručne zadaná historická plavba (spred používania appky) – plne sa
+/// počíta do súhrnov v Knihe míľ.
+class HistoricalVoyages extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get dateFrom => dateTime()();
+  DateTimeColumn get dateTo => dateTime()();
+  TextColumn get vesselName => text()();
+  TextColumn get vesselType => text().nullable()();
+  TextColumn get area => text().nullable()();          // oblasť/trasa
+  RealColumn get distanceNm => real().withDefault(const Constant(0.0))();
+  IntColumn get daysCount => integer().nullable()();    // ak null, dopočíta sa z dátumov
+  RealColumn get nightHours => real().nullable()();
+  TextColumn get role => text().withDefault(const Constant('skipper'))(); // 'skipper' | 'coSkipper' | 'crew'
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 // ─────────────────────────────────────────────────────────────
 // DATABASE
 // ─────────────────────────────────────────────────────────────
@@ -170,6 +188,7 @@ class WeatherSnapshots extends Table {
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
+  HistoricalVoyages,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -178,7 +197,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -215,6 +234,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 8) {
         await m.addColumn(logbookEntries, logbookEntries.fuelLevel);
         await m.addColumn(logbookEntries, logbookEntries.waterLevel);
+      }
+      if (from < 9) {
+        await m.createTable(historicalVoyages);
+        await m.addColumn(charters, charters.myRole);
       }
     },
     beforeOpen: (details) async {
@@ -433,6 +456,22 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteSignaturesForCharter(int charterId) =>
       (delete(crewSignatures)..where((s) => s.charterId.equals(charterId))).go();
+
+  // ── Historical Voyages (Kniha míľ) ─────────────────────────────
+
+  Future<List<HistoricalVoyage>> getAllHistoricalVoyages() =>
+      (select(historicalVoyages)
+            ..orderBy([(v) => OrderingTerm.desc(v.dateFrom)]))
+          .get();
+
+  Future<int> insertHistoricalVoyage(HistoricalVoyagesCompanion v) =>
+      into(historicalVoyages).insert(v);
+
+  Future<void> updateHistoricalVoyage(int id, HistoricalVoyagesCompanion v) =>
+      (update(historicalVoyages)..where((t) => t.id.equals(id))).write(v);
+
+  Future<void> deleteHistoricalVoyage(int id) =>
+      (delete(historicalVoyages)..where((t) => t.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {

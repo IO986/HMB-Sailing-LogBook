@@ -607,6 +607,71 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die ausgewählte Datei ist keine gültige HMB Sailing Log-Sicherung.';
 
   @override
+  String get milesBookTitle => 'Meilenbuch';
+
+  @override
+  String get totalNm => 'Gesamt-NM';
+
+  @override
+  String get daysAtSea => 'Tage auf See';
+
+  @override
+  String get voyageCount => 'Anzahl Fahrten';
+
+  @override
+  String get nightHoursLabel => 'Nachtstunden';
+
+  @override
+  String get byYear => 'Nach Jahr';
+
+  @override
+  String get byVessel => 'Nach Schiff';
+
+  @override
+  String get addHistoricalVoyage => 'Historische Fahrt hinzufügen';
+
+  @override
+  String get editHistoricalVoyage => 'Historische Fahrt bearbeiten';
+
+  @override
+  String get deleteHistoricalVoyageConfirm =>
+      'Diese historische Fahrt wirklich löschen?';
+
+  @override
+  String get manualEntryExplanation =>
+      '* manueller Eintrag (von Hand eingegeben)';
+
+  @override
+  String get roleLabel => 'Rolle an Bord';
+
+  @override
+  String get roleSkipper => 'Skipper';
+
+  @override
+  String get roleCoSkipper => 'Co-Skipper';
+
+  @override
+  String get roleCrew => 'Crew';
+
+  @override
+  String get areaLabel => 'Gebiet / Route';
+
+  @override
+  String get distanceNmLabel => 'Distanz (NM)';
+
+  @override
+  String get daysCountLabel => 'Anzahl Tage';
+
+  @override
+  String get milesCertificateTitle => 'Bescheinigung der gesegelten Meilen';
+
+  @override
+  String get filterAllYears => 'Alle Jahre';
+
+  @override
+  String get filterCustomRange => 'Eigener Zeitraum';
+
+  @override
   String get connectionConnected => 'Verbunden';
 
   @override

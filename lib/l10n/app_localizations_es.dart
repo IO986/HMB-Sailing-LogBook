@@ -606,6 +606,70 @@ class AppLocalizationsEs extends AppLocalizations {
       'El archivo seleccionado no es una copia de seguridad válida de HMB Sailing Log.';
 
   @override
+  String get milesBookTitle => 'Libro de millas';
+
+  @override
+  String get totalNm => 'NM totales';
+
+  @override
+  String get daysAtSea => 'Días en el mar';
+
+  @override
+  String get voyageCount => 'Número de travesías';
+
+  @override
+  String get nightHoursLabel => 'Horas nocturnas';
+
+  @override
+  String get byYear => 'Por año';
+
+  @override
+  String get byVessel => 'Por embarcación';
+
+  @override
+  String get addHistoricalVoyage => 'Añadir travesía histórica';
+
+  @override
+  String get editHistoricalVoyage => 'Editar travesía histórica';
+
+  @override
+  String get deleteHistoricalVoyageConfirm =>
+      '¿Eliminar esta travesía histórica?';
+
+  @override
+  String get manualEntryExplanation => '* entrada manual (introducida a mano)';
+
+  @override
+  String get roleLabel => 'Rol a bordo';
+
+  @override
+  String get roleSkipper => 'Patrón';
+
+  @override
+  String get roleCoSkipper => 'Copatrón';
+
+  @override
+  String get roleCrew => 'Tripulación';
+
+  @override
+  String get areaLabel => 'Zona / ruta';
+
+  @override
+  String get distanceNmLabel => 'Distancia (NM)';
+
+  @override
+  String get daysCountLabel => 'Número de días';
+
+  @override
+  String get milesCertificateTitle => 'Certificado de millas navegadas';
+
+  @override
+  String get filterAllYears => 'Todos los años';
+
+  @override
+  String get filterCustomRange => 'Rango personalizado';
+
+  @override
   String get connectionConnected => 'Conectado';
 
   @override

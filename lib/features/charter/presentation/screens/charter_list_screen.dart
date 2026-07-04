@@ -36,7 +36,16 @@ class _CharterListScreenState extends ConsumerState<CharterListScreen> {
 
 
     return Scaffold(
-      appBar: AppBar(title: const Text('HMB Sailing Log')),
+      appBar: AppBar(
+        title: const Text('HMB Sailing Log'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.military_tech_outlined),
+            tooltip: l.milesBookTitle,
+            onPressed: () => context.push('/miles'),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           if (isTracking)

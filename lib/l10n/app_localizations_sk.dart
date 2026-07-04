@@ -605,6 +605,70 @@ class AppLocalizationsSk extends AppLocalizations {
       'Vybraný súbor nie je platná záloha HMB Sailing Log.';
 
   @override
+  String get milesBookTitle => 'Kniha míľ';
+
+  @override
+  String get totalNm => 'Celkové NM';
+
+  @override
+  String get daysAtSea => 'Dni na mori';
+
+  @override
+  String get voyageCount => 'Počet plavieb';
+
+  @override
+  String get nightHoursLabel => 'Nočné hodiny';
+
+  @override
+  String get byYear => 'Podľa roka';
+
+  @override
+  String get byVessel => 'Podľa lode';
+
+  @override
+  String get addHistoricalVoyage => 'Pridať historickú plavbu';
+
+  @override
+  String get editHistoricalVoyage => 'Upraviť historickú plavbu';
+
+  @override
+  String get deleteHistoricalVoyageConfirm =>
+      'Naozaj zmazať túto historickú plavbu?';
+
+  @override
+  String get manualEntryExplanation => '* manuálny záznam (zadané ručne)';
+
+  @override
+  String get roleLabel => 'Rola na palube';
+
+  @override
+  String get roleSkipper => 'Skipper';
+
+  @override
+  String get roleCoSkipper => 'Kormidelník';
+
+  @override
+  String get roleCrew => 'Posádka';
+
+  @override
+  String get areaLabel => 'Oblasť / trasa';
+
+  @override
+  String get distanceNmLabel => 'Vzdialenosť (NM)';
+
+  @override
+  String get daysCountLabel => 'Počet dní';
+
+  @override
+  String get milesCertificateTitle => 'Potvrdenie o najazdených míľach';
+
+  @override
+  String get filterAllYears => 'Všetky roky';
+
+  @override
+  String get filterCustomRange => 'Vlastný rozsah';
+
+  @override
   String get connectionConnected => 'Pripojené';
 
   @override
