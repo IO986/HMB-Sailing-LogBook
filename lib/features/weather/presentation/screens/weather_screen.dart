@@ -672,7 +672,7 @@ class _HourlyTable extends StatelessWidget {
         lastDay = day;
         rows.add(TableRow(
           decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondaryContainer),
-          children: List.generate(5, (i) => Padding(
+          children: List.generate(6, (i) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: i == 0
                 ? Text(dayFmt.format(w.time),
@@ -696,6 +696,7 @@ class _HourlyTable extends StatelessWidget {
 
       rows.add(TableRow(children: [
         _cell(timeFmt.format(w.time)),
+        _cell('${w.airTemp.toStringAsFixed(0)}°'),
         _cell('${w.windSpeed.toStringAsFixed(0)} kn ${w.windDirectionLabel}'),
         _cell('${w.waveHeight.toStringAsFixed(1)} m'),
         _cell('${w.airPressure.toStringAsFixed(0)}'),
@@ -720,16 +721,17 @@ class _HourlyTable extends StatelessWidget {
             Table(
               columnWidths: const {
                 0: FlexColumnWidth(1.4),
-                1: FlexColumnWidth(2.4),
-                2: FlexColumnWidth(1.3),
-                3: FlexColumnWidth(1.4),
-                4: FlexColumnWidth(1.5),
+                1: FlexColumnWidth(1.1),
+                2: FlexColumnWidth(2.4),
+                3: FlexColumnWidth(1.3),
+                4: FlexColumnWidth(1.4),
+                5: FlexColumnWidth(1.5),
               },
               children: [
                 TableRow(
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer),
-                  children: [l.timeCol, l.windCol, l.wavesCol, 'hPa', l.rainCol]
+                  children: [l.timeCol, '°C', l.windCol, l.wavesCol, 'hPa', l.rainCol]
                       .map((h) => Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(h,
