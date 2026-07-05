@@ -1653,7 +1653,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Red line = track sailed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';

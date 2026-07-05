@@ -1660,7 +1660,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea roja = ruta recorrida\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';

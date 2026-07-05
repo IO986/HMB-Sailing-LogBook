@@ -1665,7 +1665,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Rote Linie = gefahrene Route\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
