@@ -35,7 +35,16 @@ class Charters extends Table {
   RealColumn get vesselBeamM => real().nullable()();
   RealColumn get vesselDraftM => real().nullable()();
   IntColumn get pdfRevision => integer().withDefault(const Constant(0))();
-  TextColumn get myRole => text().nullable()(); // 'skipper' | 'coSkipper' | 'crew'
+  TextColumn get myRole => text().nullable()(); // 'skipper' | 'coSkipper' | 'crew' | 'bosun' | 'radioOperator'
+  // Polia pre oficiálny záznam Knihy míľ (ICC/RYA štýl) – vyplnené najmä pri
+  // importovaných/trackovaných plavbách, kde chýbajú oproti ručne písaným
+  // historickým plavbám.
+  TextColumn get route => text().nullable()();               // trasa, ak sa líši od portFrom/portTo dní
+  TextColumn get vesselFlag => text().nullable()();           // vlajka registrácie lode
+  TextColumn get captainFirstName => text().nullable()();
+  TextColumn get captainLastName => text().nullable()();
+  TextColumn get captainQualification => text().nullable()(); // najvyššia dosiahnutá kvalifikácia
+  TextColumn get logbookSignaturePath => text().nullable()(); // podpis kapitána potvrdzujúci míle
 }
 
 /// Jeden deň plavby
@@ -172,13 +181,20 @@ class HistoricalVoyages extends Table {
   DateTimeColumn get dateTo => dateTime()();
   TextColumn get vesselName => text()();
   TextColumn get vesselType => text().nullable()();
-  TextColumn get area => text().nullable()();          // oblasť/trasa
+  TextColumn get area => text().nullable()();          // oblasť plavby
   RealColumn get distanceNm => real().withDefault(const Constant(0.0))();
   IntColumn get daysCount => integer().nullable()();    // ak null, dopočíta sa z dátumov
   RealColumn get nightHours => real().nullable()();
-  TextColumn get role => text().withDefault(const Constant('skipper'))(); // 'skipper' | 'coSkipper' | 'crew'
+  TextColumn get role => text().withDefault(const Constant('skipper'))(); // funkcia na lodi, voľný text
   TextColumn get note => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
+  // Polia pre oficiálny záznam Knihy míľ (ICC/RYA štýl), rovnaké ako na Charters.
+  TextColumn get route => text().nullable()();
+  TextColumn get vesselFlag => text().nullable()();
+  TextColumn get captainFirstName => text().nullable()();
+  TextColumn get captainLastName => text().nullable()();
+  TextColumn get captainQualification => text().nullable()();
+  TextColumn get logbookSignaturePath => text().nullable()();
 }
 
 /// Odovzdávací protokol lode (check-in pri prevzatí, check-out pri
@@ -226,7 +242,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -267,6 +283,16 @@ class AppDatabase extends _$AppDatabase {
       if (from < 9) {
         await m.createTable(historicalVoyages);
         await m.addColumn(charters, charters.myRole);
+      } else if (from < 12) {
+        // historicalVoyages už existuje (vzniklo vo v9) – createTable vyššie
+        // by ho pri staršom `from` postavilo rovno s týmito stĺpcami, takže
+        // addColumn tu smie bežať len keď tabuľka vznikla PRED v12.
+        await m.addColumn(historicalVoyages, historicalVoyages.route);
+        await m.addColumn(historicalVoyages, historicalVoyages.vesselFlag);
+        await m.addColumn(historicalVoyages, historicalVoyages.captainFirstName);
+        await m.addColumn(historicalVoyages, historicalVoyages.captainLastName);
+        await m.addColumn(historicalVoyages, historicalVoyages.captainQualification);
+        await m.addColumn(historicalVoyages, historicalVoyages.logbookSignaturePath);
       }
       if (from < 10) {
         // createTable stavia podľa AKTUÁLNEJ definície tabuľky (vrátane
@@ -276,6 +302,14 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(handoverProtocols);
       } else if (from < 11) {
         await m.addColumn(handoverProtocols, handoverProtocols.extraNotes);
+      }
+      if (from < 12) {
+        await m.addColumn(charters, charters.route);
+        await m.addColumn(charters, charters.vesselFlag);
+        await m.addColumn(charters, charters.captainFirstName);
+        await m.addColumn(charters, charters.captainLastName);
+        await m.addColumn(charters, charters.captainQualification);
+        await m.addColumn(charters, charters.logbookSignaturePath);
       }
     },
     beforeOpen: (details) async {
@@ -287,6 +321,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Charter>> getAllCharters() =>
       (select(charters)..orderBy([(c) => OrderingTerm.desc(c.dateFrom)])).get();
+
+  Future<Charter?> getCharterById(int id) =>
+      (select(charters)..where((t) => t.id.equals(id))).getSingleOrNull();
 
   Future<Charter> insertCharter(ChartersCompanion c) async {
     final id = await into(charters).insert(c);
@@ -321,6 +358,7 @@ class AppDatabase extends _$AppDatabase {
       await deleteDayLog(d.id);
     }
     await deleteSignaturesForCharter(id);
+    await deleteHandoverProtocolsForCharter(id);
     await (delete(charters)..where((c) => c.id.equals(id))).go();
   }
 
@@ -407,6 +445,12 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> insertTrackPoint(TrackPointsCompanion e) =>
       into(trackPoints).insert(e);
+
+  /// Vloží veľa bodov v jednej transakcii – oproti `insertTrackPoint` volanému
+  /// v cykle je toto rádovo rýchlejšie (GPX import vie mať desaťtisíce bodov,
+  /// jednotlivé awaitované inserty by bežali cez DB izolát jeden po druhom).
+  Future<void> insertTrackPointsBatch(List<TrackPointsCompanion> points) =>
+      batch((b) => b.insertAll(trackPoints, points));
 
   Future<List<TrackPoint>> getTrackPointsForSession(String sessionId) =>
       (select(trackPoints)
@@ -520,6 +564,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> upsertHandoverProtocol(HandoverProtocolsCompanion h) =>
       into(handoverProtocols).insertOnConflictUpdate(h);
+
+  Future<void> deleteHandoverProtocolsForCharter(int charterId) =>
+      (delete(handoverProtocols)..where((h) => h.charterId.equals(charterId))).go();
 }
 
 LazyDatabase _openConnection() {

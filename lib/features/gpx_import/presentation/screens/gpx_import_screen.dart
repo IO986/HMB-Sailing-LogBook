@@ -108,6 +108,12 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
       final touchedCharterIds = <int>{};
 
+      // Tracky bez explicitného cieľa ("nová plavba", default) patria pod
+      // JEDNU novú plavbu, aj keď ich je viac – bežný prípad viacdňového
+      // GPX exportu (napr. Garmin Explore), kde je každý deň samostatný
+      // <trk>. Explicitne priradené tracky (existujúci deň) sa importujú
+      // rovno, mimo tohto zoskupenia.
+      final newVoyageTracks = <GpxTrack>[];
       for (var i = 0; i < result.tracks.length; i++) {
         final track = result.tracks[i];
         if (track.points.isEmpty) continue;
@@ -121,34 +127,58 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           touchedCharterIds.add(entry.key);
           await _importPointsIntoDayLog(db, chosen, track.points, track.name);
         } else {
-          final firstTime = track.points.first.time ?? DateTime.now();
-          final lastTime = track.points.last.time ?? firstTime;
-          final prefill = CharterPrefill(
-            title: track.name ?? 'Import GPX ${DateFormat('d.M.yyyy').format(firstTime)}',
-            dateFrom: firstTime,
-            dateTo: lastTime,
-          );
-          if (!mounted) continue;
-          // Otvor skutočný formulár novej plavby a čakaj na výsledok –
-          // GPX import tak nikdy ticho nevytvára charter na pozadí.
-          final charter = await context.push<Charter>('/logbook/new', extra: prefill);
-          if (charter == null) continue; // používateľ zrušil, track sa preskočí
-          touchedCharterIds.add(charter.id);
+          newVoyageTracks.add(track);
+        }
+      }
 
-          // Track môže obsahovať záznamy z viacerých kalendárnych dní –
-          // rozdeľ ich na samostatné DayLogs pod tou istou novou plavbou.
-          final byDay = <DateTime, List<GpxTrackPoint>>{};
-          for (final p in track.points) {
-            final t = (p.time ?? DateTime.now()).toLocal();
-            final dayKey = DateTime(t.year, t.month, t.day);
-            byDay.putIfAbsent(dayKey, () => []).add(p);
-          }
-          for (final dayEntry in byDay.entries) {
-            final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-              charterId: charter.id,
-              date: dayEntry.key,
-            ));
-            await _importPointsIntoDayLog(db, dayLog.id, dayEntry.value, track.name);
+      if (newVoyageTracks.isNotEmpty) {
+        final firstTime = newVoyageTracks
+            .map((t) => t.points.first.time ?? DateTime.now())
+            .reduce((a, b) => a.isBefore(b) ? a : b);
+        final lastTime = newVoyageTracks
+            .map((t) => t.points.last.time ?? firstTime)
+            .reduce((a, b) => a.isAfter(b) ? a : b);
+        final prefill = CharterPrefill(
+          title: result.tripName ??
+              (newVoyageTracks.length == 1 ? newVoyageTracks.first.name : null) ??
+              'Import GPX ${DateFormat('d.M.yyyy').format(firstTime)}',
+          dateFrom: firstTime,
+          dateTo: lastTime,
+        );
+        if (mounted) {
+          // Otvor skutočný formulár novej plavby a čakaj na výsledok – GPX
+          // import tak nikdy ticho nevytvára charter na pozadí. Jeden
+          // formulár pre celý batch, nie jeden na track.
+          final charter = await context.push<Charter>('/logbook/new', extra: prefill);
+          if (charter != null) {
+            touchedCharterIds.add(charter.id);
+
+            // Zoskup body naprieč VŠETKÝMI tracks v batchi podľa kalendárneho
+            // dňa (jeden track môže aj sám prekročiť polnoc) – jeden DayLog
+            // na deň, s jednou SailingSession na pôvodný track v ten deň.
+            final byDay = <DateTime, List<(String?, List<GpxTrackPoint>)>>{};
+            for (final track in newVoyageTracks) {
+              final perTrackDay = <DateTime, List<GpxTrackPoint>>{};
+              for (final p in track.points) {
+                final t = (p.time ?? DateTime.now()).toLocal();
+                final dayKey = DateTime(t.year, t.month, t.day);
+                perTrackDay.putIfAbsent(dayKey, () => []).add(p);
+              }
+              perTrackDay.forEach((dayKey, points) {
+                byDay.putIfAbsent(dayKey, () => []).add((track.name, points));
+              });
+            }
+
+            final sortedDays = byDay.keys.toList()..sort();
+            for (final dayKey in sortedDays) {
+              final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
+                charterId: charter.id,
+                date: dayKey,
+              ));
+              for (final (trackName, points) in byDay[dayKey]!) {
+                await _importPointsIntoDayLog(db, dayLog.id, points, trackName);
+              }
+            }
           }
         }
       }
@@ -197,15 +227,16 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       totalDistanceNm: Value(nm),
       isActive: const Value(false),
     ));
-    for (final p in points) {
-      await db.insertTrackPoint(TrackPointsCompanion.insert(
-        sessionId: Value(sessionId),
-        timestamp: p.time ?? DateTime.now(),
-        latitude: p.lat,
-        longitude: p.lon,
-        altitude: Value(p.ele),
-      ));
-    }
+    await db.insertTrackPointsBatch([
+      for (final p in points)
+        TrackPointsCompanion.insert(
+          sessionId: Value(sessionId),
+          timestamp: p.time ?? DateTime.now(),
+          latitude: p.lat,
+          longitude: p.lon,
+          altitude: Value(p.ele),
+        ),
+    ]);
 
     // DayLogs.distanceNm sa inak dopočíta len pri exporte (fallback) –
     // zapíš ju rovno, nech sa nová plavba prejaví okamžite v Knihe míľ.

@@ -666,6 +666,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get milesCertificateTitle => 'Bescheinigung der gesegelten Meilen';
 
   @override
+  String get logbookRecordTitle => 'Logbucheintrag';
+
+  @override
+  String get logbookTrackedHint =>
+      'Datum, Meilen, Revier und Rolle werden aus Tracking/Import berechnet.';
+
+  @override
+  String get vesselFlag => 'Registrierungsflagge';
+
+  @override
+  String get captainFirstName => 'Vorname des Kapitäns';
+
+  @override
+  String get captainLastName => 'Nachname des Kapitäns';
+
+  @override
+  String get captainQualification => 'Höchste erreichte Qualifikation';
+
+  @override
+  String get logbookSignatureSection =>
+      'Unterschrift zur Bestätigung der Meilen';
+
+  @override
+  String get addSignature => 'Unterschrift hinzufügen';
+
+  @override
   String get filterAllYears => 'Alle Jahre';
 
   @override
@@ -679,6 +705,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get checkOutProtocol => 'Check-out-Protokoll';
+
+  @override
+  String get safetyBriefingShort => 'Sicherheits-\neinweisung';
+
+  @override
+  String get handoverChecklistShort => 'Übergabe-\nChecklist';
+
+  @override
+  String get safetyBriefingRefTitle => 'Sicherheitseinweisung';
+
+  @override
+  String get handoverChecklistRefTitle => 'Übergabe-Checkliste';
 
   @override
   String get handoverDateTime => 'Datum und Uhrzeit';

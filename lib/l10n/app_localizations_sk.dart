@@ -663,6 +663,31 @@ class AppLocalizationsSk extends AppLocalizations {
   String get milesCertificateTitle => 'Potvrdenie o najazdených míľach';
 
   @override
+  String get logbookRecordTitle => 'Záznam Knihy míľ';
+
+  @override
+  String get logbookTrackedHint =>
+      'Dátumy, míle, oblasť a rola sa počítajú z trackingu/importu.';
+
+  @override
+  String get vesselFlag => 'Vlajka registrácie';
+
+  @override
+  String get captainFirstName => 'Meno kapitána';
+
+  @override
+  String get captainLastName => 'Priezvisko kapitána';
+
+  @override
+  String get captainQualification => 'Najvyššia dosiahnutá kvalifikácia';
+
+  @override
+  String get logbookSignatureSection => 'Podpis potvrdzujúci míle';
+
+  @override
+  String get addSignature => 'Pridať podpis';
+
+  @override
   String get filterAllYears => 'Všetky roky';
 
   @override
@@ -676,6 +701,18 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get checkOutProtocol => 'Check-out protokol';
+
+  @override
+  String get safetyBriefingShort => 'Safety\nBrífing';
+
+  @override
+  String get handoverChecklistShort => 'Odovzdávací\nChecklist';
+
+  @override
+  String get safetyBriefingRefTitle => 'Bezpečnostný brífing';
+
+  @override
+  String get handoverChecklistRefTitle => 'Odovzdávací checklist';
 
   @override
   String get handoverDateTime => 'Dátum a čas';

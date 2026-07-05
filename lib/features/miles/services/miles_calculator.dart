@@ -34,6 +34,10 @@ class VoyageRow {
   /// (umožňuje priame prekliknutie na editáciu bez ďalšieho dohľadávania).
   final int? historicalVoyageId;
 
+  /// ID `Charters` riadku – vyplnené len ak [isManualEntry] je false, na
+  /// prekliknutie do záznamu Knihy míľ pre trackovanú/importovanú plavbu.
+  final int? charterId;
+
   const VoyageRow({
     required this.dateFrom,
     required this.dateTo,
@@ -45,6 +49,7 @@ class VoyageRow {
     required this.role,
     required this.isManualEntry,
     this.historicalVoyageId,
+    this.charterId,
   });
 }
 
@@ -135,6 +140,7 @@ class MilesCalculator {
         nightHours: charterNightHours,
         role: charter.myRole,
         isManualEntry: false,
+        charterId: charter.id,
       ));
     }
 

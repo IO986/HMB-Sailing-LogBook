@@ -160,7 +160,7 @@ class _MilesBody extends ConsumerWidget {
                     '${v.area != null ? " · ${v.area}" : ""}'),
                 onTap: v.isManualEntry
                     ? () => context.push('/miles/historical/${v.historicalVoyageId}/edit')
-                    : null,
+                    : () => context.push('/miles/charter/${v.charterId}/logbook'),
               ),
             )),
         if (aggregate.voyages.any((v) => v.isManualEntry)) ...[

@@ -664,6 +664,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get milesCertificateTitle => 'Certificado de millas navegadas';
 
   @override
+  String get logbookRecordTitle => 'Registro del cuaderno';
+
+  @override
+  String get logbookTrackedHint =>
+      'Las fechas, millas, zona y rol se calculan a partir del seguimiento/importación.';
+
+  @override
+  String get vesselFlag => 'Bandera de matrícula';
+
+  @override
+  String get captainFirstName => 'Nombre del patrón';
+
+  @override
+  String get captainLastName => 'Apellido del patrón';
+
+  @override
+  String get captainQualification => 'Titulación náutica más alta';
+
+  @override
+  String get logbookSignatureSection => 'Firma que confirma las millas';
+
+  @override
+  String get addSignature => 'Añadir firma';
+
+  @override
   String get filterAllYears => 'Todos los años';
 
   @override
@@ -677,6 +702,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get checkOutProtocol => 'Protocolo de check-out';
+
+  @override
+  String get safetyBriefingShort => 'Briefing de\nseguridad';
+
+  @override
+  String get handoverChecklistShort => 'Checklist de\nentrega';
+
+  @override
+  String get safetyBriefingRefTitle => 'Briefing de seguridad';
+
+  @override
+  String get handoverChecklistRefTitle => 'Checklist de entrega';
 
   @override
   String get handoverDateTime => 'Fecha y hora';

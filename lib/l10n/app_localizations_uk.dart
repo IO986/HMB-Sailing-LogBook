@@ -665,6 +665,31 @@ class AppLocalizationsUk extends AppLocalizations {
   String get milesCertificateTitle => 'Підтвердження пройдених миль';
 
   @override
+  String get logbookRecordTitle => 'Запис книги миль';
+
+  @override
+  String get logbookTrackedHint =>
+      'Дати, милі, район і роль розраховуються з трекінгу/імпорту.';
+
+  @override
+  String get vesselFlag => 'Прапор реєстрації';
+
+  @override
+  String get captainFirstName => 'Ім\'я капітана';
+
+  @override
+  String get captainLastName => 'Прізвище капітана';
+
+  @override
+  String get captainQualification => 'Найвища здобута кваліфікація';
+
+  @override
+  String get logbookSignatureSection => 'Підпис, що підтверджує милі';
+
+  @override
+  String get addSignature => 'Додати підпис';
+
+  @override
   String get filterAllYears => 'Всі роки';
 
   @override
@@ -678,6 +703,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get checkOutProtocol => 'Протокол повернення (check-out)';
+
+  @override
+  String get safetyBriefingShort => 'Інструктаж з\nбезпеки';
+
+  @override
+  String get handoverChecklistShort => 'Чекліст\nпередачі';
+
+  @override
+  String get safetyBriefingRefTitle => 'Інструктаж з безпеки';
+
+  @override
+  String get handoverChecklistRefTitle => 'Чекліст передачі судна';
 
   @override
   String get handoverDateTime => 'Дата і час';

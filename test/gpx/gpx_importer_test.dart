@@ -62,6 +62,48 @@ void main() {
     });
   });
 
+  group('multi-day trip GPX (Garmin Explore style, one <trk> per day)', () {
+    const gpx = '''
+<gpx version="1.1" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Plavba HMB Academy Chorvatsko Maj 2026</name>
+    <time>2026-05-10T11:13:35Z</time>
+  </metadata>
+  <trk>
+    <name>3.5.2026 Marina Kornati (Biograd) - ACI Marina Zut</name>
+    <trkseg>
+      <trkpt lat="43.94" lon="15.43"><time>2026-05-03T07:52:18Z</time></trkpt>
+      <trkpt lat="43.95" lon="15.44"><time>2026-05-03T08:00:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+  <trk>
+    <name>4.5.2026 ACI Marina Zut - Marina Veli Rat</name>
+    <trkseg>
+      <trkpt lat="44.00" lon="15.20"><time>2026-05-04T08:00:00Z</time></trkpt>
+      <trkpt lat="44.05" lon="15.25"><time>2026-05-04T09:00:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+''';
+
+    test('parses trip name from <metadata><name>', () {
+      final result = GpxImporter.parse(gpx);
+      expect(result.tripName, 'Plavba HMB Academy Chorvatsko Maj 2026');
+    });
+
+    test('parses each day as a separate track, each keeping its own name', () {
+      final result = GpxImporter.parse(gpx);
+      expect(result.tracks, hasLength(2));
+      expect(result.tracks[0].name, contains('3.5.2026'));
+      expect(result.tracks[1].name, contains('4.5.2026'));
+    });
+
+    test('gpx without <metadata> yields null tripName', () {
+      final result = GpxImporter.parse(_validGpx);
+      expect(result.tripName, isNull);
+    });
+  });
+
   group('corrupted / invalid GPX', () {
     test('malformed XML throws GpxParseException with a Slovak message', () {
       expect(

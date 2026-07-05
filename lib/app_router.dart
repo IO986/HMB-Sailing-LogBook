@@ -18,6 +18,7 @@ import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/export/presentation/export_screen.dart';
 import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
+import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 
@@ -98,6 +99,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(path: 'historical/:voyageId/edit',
                   builder: (c, s) => HistoricalVoyageFormScreen(
                       voyageId: s.pathParameters['voyageId'])),
+              GoRoute(path: 'charter/:id/logbook',
+                  builder: (c, s) => CharterLogbookRecordScreen(
+                      charterId: int.parse(s.pathParameters['id']!))),
             ],
           ),
           GoRoute(path: '/gpx-import', builder: (c, s) => const GpxImportScreen()),

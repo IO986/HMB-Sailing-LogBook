@@ -40,9 +40,13 @@ class GpxWaypoint {
 }
 
 class GpxParseResult {
+  /// Názov z `<metadata><name>` – ak gpx obsahuje viac `<trk>` (viacdňová
+  /// plavba naexportovaná napr. Garmin Explore), toto je názov celej cesty,
+  /// nie jednotlivého dňa.
+  final String? tripName;
   final List<GpxTrack> tracks;
   final List<GpxWaypoint> waypoints;
-  const GpxParseResult({required this.tracks, required this.waypoints});
+  const GpxParseResult({required this.tripName, required this.tracks, required this.waypoints});
 }
 
 /// Parsuje GPX 1.1 XML obsah (`<trk>/<trkseg>/<trkpt>`, `<rte>/<rtept>`,
@@ -60,6 +64,9 @@ class GpxImporter {
     if (root.name.local.toLowerCase() != 'gpx') {
       throw const GpxParseException('Súbor neobsahuje značku <gpx>.');
     }
+
+    final metadata = root.findElements('metadata').firstOrNull;
+    final tripName = metadata == null ? null : _text(metadata, 'name');
 
     final tracks = <GpxTrack>[];
     for (final trk in root.findAllElements('trk')) {
@@ -86,7 +93,7 @@ class GpxImporter {
       if (parsed != null) waypoints.add(parsed);
     }
 
-    return GpxParseResult(tracks: tracks, waypoints: waypoints);
+    return GpxParseResult(tripName: tripName, tracks: tracks, waypoints: waypoints);
   }
 
   static GpxTrackPoint? _parsePoint(XmlElement el) {

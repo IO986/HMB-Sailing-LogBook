@@ -112,9 +112,14 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             ),
         ],
       ),
-      body: ListView(
+      // SingleChildScrollView+Column namiesto ListView – ListView (aj
+      // s children:) layoutuje potomkov cez Sliver len keď sú blízko
+      // viewportu; mapové preview mimo obrazovky by tak nikdy nedostali
+      // veľkosť a screenshot .capture() na nich navždy zlyhá (potichu,
+      // odchytené nižšie), takže počítadlo "generujem mapy X/N" zamrzne.
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Card(
             color: Theme.of(context).colorScheme.primaryContainer,
             child: Padding(
@@ -164,7 +169,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           )),
 
           const SizedBox(height: 80),
-        ],
+        ]),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: screenshotsDone ? _doExport : null,

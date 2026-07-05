@@ -12,6 +12,8 @@ import 'mayday_card_screen.dart';
 import 'gear_list_screen.dart';
 import 'colreg_screen.dart';
 import 'maritime_reference_screen.dart';
+import 'safety_briefing_reference_screen.dart';
+import 'handover_checklist_reference_screen.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/anchor_alarm_service.dart';
 import 'package:drift/drift.dart' as drift;
@@ -818,6 +820,24 @@ class _HmbHandbookCard extends StatelessWidget {
                 color: Colors.teal.shade700,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                     builder: (_) => const MaritimeReferenceScreen())),
+              )),
+            ]),
+            const SizedBox(height: 8),
+            Row(children: [
+              Expanded(child: _HandbookButton(
+                icon: Icons.checklist,
+                label: l.safetyBriefingShort,
+                color: Colors.orange.shade700,
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => const SafetyBriefingReferenceScreen())),
+              )),
+              const SizedBox(width: 8),
+              Expanded(child: _HandbookButton(
+                icon: Icons.handshake_outlined,
+                label: l.handoverChecklistShort,
+                color: Colors.deepPurple,
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => const HandoverChecklistReferenceScreen())),
               )),
             ]),
           ],

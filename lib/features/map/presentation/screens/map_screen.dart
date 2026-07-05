@@ -32,7 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   String? _lastMobFocus;
   bool _mapReady = false;
   int _tileKey = 0;
-  Timer? _tileReloadTimer;
+  final List<Timer> _tileReloadTimers = [];
 
   @override
   void initState() {
@@ -41,30 +41,37 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void dispose() {
-    _tileReloadTimer?.cancel();
+    for (final t in _tileReloadTimers) {
+      t.cancel();
+    }
     super.dispose();
   }
 
   void _onMapReady() {
     _mapReady = true;
-    // Wait 500 ms (safely after any GoRouter enter animation) then force a
-    // fresh TileLayer so tiles load with the final, correct viewport size.
-    _tileReloadTimer = Timer(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
-      setState(() => _tileKey++);
-      // Force a camera move so flutter_map actually fires tile requests
-      // on devices where the initial layout finishes after onMapReady.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Force a fresh TileLayer (all layers, not just the active base map) so
+    // tiles load with the final, correct viewport size after the GoRouter
+    // enter animation settles. A single fixed delay proved unreliable on
+    // slower devices (500ms then 800ms both still left blank tiles on some
+    // phones) – retry twice instead of tuning one magic number forever.
+    for (final delayMs in [800, 2000]) {
+      _tileReloadTimers.add(Timer(Duration(milliseconds: delayMs), () {
         if (!mounted) return;
-        try {
-          _mapController.move(
-            _mapController.camera.center,
-            _mapController.camera.zoom,
-          );
-        } catch (_) {}
-      });
-      _centerIfFollowing();
-    });
+        setState(() => _tileKey++);
+        // Force a camera move so flutter_map actually fires tile requests
+        // on devices where the initial layout finishes after onMapReady.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          try {
+            _mapController.move(
+              _mapController.camera.center,
+              _mapController.camera.zoom,
+            );
+          } catch (_) {}
+        });
+        _centerIfFollowing();
+      }));
+    }
   }
 
   void _centerIfFollowing() {
@@ -127,7 +134,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Base layer ───────────────────────────────────
               if (_baseMap == BaseMap.osm)
                 TileLayer(
-                  key: ValueKey(_tileKey),
+                  key: ValueKey('osm_$_tileKey'),
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 19,
@@ -136,6 +143,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               if (_baseMap == BaseMap.satellite) ...[
                 // ESRI satelitné snímky
                 TileLayer(
+                  key: ValueKey('sat_$_tileKey'),
                   urlTemplate:
                       'https://server.arcgisonline.com/ArcGIS/rest/services/'
                       'World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -144,6 +152,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
                 // CartoDB labels navrch - free, bez API kľúča
                 TileLayer(
+                  key: ValueKey('sat_labels_$_tileKey'),
                   urlTemplate:
                       'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png',
                   subdomains: const ['a', 'b', 'c', 'd'],
@@ -155,6 +164,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── OpenSeaMap seamarky (nad satelitom aj OSM) ───
               if (showSeamarks)
                 TileLayer(
+                  key: ValueKey('seamark_$_tileKey'),
                   urlTemplate:
                       'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.hmb.sailinglog',

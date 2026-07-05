@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -81,7 +82,9 @@ class BackupService {
 
     await snapshotFile.delete();
 
-    final zipFile = File(p.join(tempDir.path, 'HMB_Backup_$stamp.hmbbackup'));
+    final dateStamp = DateFormat('ddMMyyHHmm').format(DateTime.now());
+    final zipFile =
+        File(p.join(tempDir.path, 'HMBSaillog_backup_$dateStamp.hmbbackup'));
     await zipFile.writeAsBytes(zipBytes);
     return zipFile;
   }

@@ -662,6 +662,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get milesCertificateTitle => 'Certificate of miles sailed';
 
   @override
+  String get logbookRecordTitle => 'Logbook record';
+
+  @override
+  String get logbookTrackedHint =>
+      'Dates, miles, area and role are calculated from tracking/import.';
+
+  @override
+  String get vesselFlag => 'Flag of registration';
+
+  @override
+  String get captainFirstName => 'Captain\'s first name';
+
+  @override
+  String get captainLastName => 'Captain\'s last name';
+
+  @override
+  String get captainQualification => 'Highest qualification held';
+
+  @override
+  String get logbookSignatureSection => 'Signature confirming the miles';
+
+  @override
+  String get addSignature => 'Add signature';
+
+  @override
   String get filterAllYears => 'All years';
 
   @override
@@ -675,6 +700,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkOutProtocol => 'Check-out protocol';
+
+  @override
+  String get safetyBriefingShort => 'Safety\nBriefing';
+
+  @override
+  String get handoverChecklistShort => 'Handover\nChecklist';
+
+  @override
+  String get safetyBriefingRefTitle => 'Safety briefing';
+
+  @override
+  String get handoverChecklistRefTitle => 'Handover checklist';
 
   @override
   String get handoverDateTime => 'Date and time';

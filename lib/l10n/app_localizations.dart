@@ -1352,6 +1352,54 @@ abstract class AppLocalizations {
   /// **'Potvrdenie o najazdených míľach'**
   String get milesCertificateTitle;
 
+  /// No description provided for @logbookRecordTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznam Knihy míľ'**
+  String get logbookRecordTitle;
+
+  /// No description provided for @logbookTrackedHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátumy, míle, oblasť a rola sa počítajú z trackingu/importu.'**
+  String get logbookTrackedHint;
+
+  /// No description provided for @vesselFlag.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlajka registrácie'**
+  String get vesselFlag;
+
+  /// No description provided for @captainFirstName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno kapitána'**
+  String get captainFirstName;
+
+  /// No description provided for @captainLastName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Priezvisko kapitána'**
+  String get captainLastName;
+
+  /// No description provided for @captainQualification.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najvyššia dosiahnutá kvalifikácia'**
+  String get captainQualification;
+
+  /// No description provided for @logbookSignatureSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpis potvrdzujúci míle'**
+  String get logbookSignatureSection;
+
+  /// No description provided for @addSignature.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať podpis'**
+  String get addSignature;
+
   /// No description provided for @filterAllYears.
   ///
   /// In sk, this message translates to:
@@ -1381,6 +1429,30 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Check-out protokol'**
   String get checkOutProtocol;
+
+  /// No description provided for @safetyBriefingShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety\nBrífing'**
+  String get safetyBriefingShort;
+
+  /// No description provided for @handoverChecklistShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací\nChecklist'**
+  String get handoverChecklistShort;
+
+  /// No description provided for @safetyBriefingRefTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnostný brífing'**
+  String get safetyBriefingRefTitle;
+
+  /// No description provided for @handoverChecklistRefTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací checklist'**
+  String get handoverChecklistRefTitle;
 
   /// No description provided for @handoverDateTime.
   ///

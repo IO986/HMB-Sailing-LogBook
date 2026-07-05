@@ -1,15 +1,17 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
+import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../providers/miles_provider.dart';
-
-const _roles = ['skipper', 'coSkipper', 'crew'];
 
 class HistoricalVoyageFormScreen extends ConsumerStatefulWidget {
   final String? voyageId;
@@ -22,15 +24,21 @@ class HistoricalVoyageFormScreen extends ConsumerStatefulWidget {
 class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFormScreen> {
   final _vesselCtrl = TextEditingController();
   final _vesselTypeCtrl = TextEditingController();
+  final _vesselFlagCtrl = TextEditingController();
   final _areaCtrl = TextEditingController();
+  final _routeCtrl = TextEditingController();
   final _nmCtrl = TextEditingController();
   final _daysCtrl = TextEditingController();
   final _nightHoursCtrl = TextEditingController();
+  final _roleCtrl = TextEditingController(text: 'skipper');
+  final _captainFirstCtrl = TextEditingController();
+  final _captainLastCtrl = TextEditingController();
+  final _captainQualCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
 
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now();
-  String _role = 'skipper';
+  String? _signaturePath;
   bool _loading = false;
   int? _existingId;
 
@@ -54,11 +62,17 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
       _dateTo = v.dateTo;
       _vesselCtrl.text = v.vesselName;
       _vesselTypeCtrl.text = v.vesselType ?? '';
+      _vesselFlagCtrl.text = v.vesselFlag ?? '';
       _areaCtrl.text = v.area ?? '';
+      _routeCtrl.text = v.route ?? '';
       _nmCtrl.text = v.distanceNm.toString();
       _daysCtrl.text = v.daysCount?.toString() ?? '';
       _nightHoursCtrl.text = v.nightHours?.toString() ?? '';
-      _role = v.role;
+      _roleCtrl.text = v.role;
+      _captainFirstCtrl.text = v.captainFirstName ?? '';
+      _captainLastCtrl.text = v.captainLastName ?? '';
+      _captainQualCtrl.text = v.captainQualification ?? '';
+      _signaturePath = v.logbookSignaturePath;
       _noteCtrl.text = v.note ?? '';
     });
   }
@@ -81,6 +95,20 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
     });
   }
 
+  Future<void> _captureSignature() async {
+    final captainName = '${_captainFirstCtrl.text.trim()} ${_captainLastCtrl.text.trim()}'.trim();
+    final bytes = await showSignaturePadDialog(context,
+        signerName: captainName.isEmpty ? null : captainName);
+    if (bytes == null || !mounted) return;
+
+    final docsDir = await getApplicationDocumentsDirectory();
+    final sigDir = Directory('${docsDir.path}/signatures/historical_voyages');
+    await sigDir.create(recursive: true);
+    final file = File('${sigDir.path}/${_existingId ?? DateTime.now().millisecondsSinceEpoch}.png');
+    await file.writeAsBytes(bytes);
+    if (mounted) setState(() => _signaturePath = file.path);
+  }
+
   Future<void> _save() async {
     if (_vesselCtrl.text.trim().isEmpty) return;
     setState(() => _loading = true);
@@ -91,11 +119,20 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
       dateTo: Value(_dateTo),
       vesselName: Value(_vesselCtrl.text.trim()),
       vesselType: Value(_vesselTypeCtrl.text.trim().isEmpty ? null : _vesselTypeCtrl.text.trim()),
+      vesselFlag: Value(_vesselFlagCtrl.text.trim().isEmpty ? null : _vesselFlagCtrl.text.trim()),
       area: Value(_areaCtrl.text.trim().isEmpty ? null : _areaCtrl.text.trim()),
+      route: Value(_routeCtrl.text.trim().isEmpty ? null : _routeCtrl.text.trim()),
       distanceNm: Value(double.tryParse(_nmCtrl.text) ?? 0),
       daysCount: Value(int.tryParse(_daysCtrl.text)),
       nightHours: Value(double.tryParse(_nightHoursCtrl.text)),
-      role: Value(_role),
+      role: Value(_roleCtrl.text.trim().isEmpty ? 'skipper' : _roleCtrl.text.trim()),
+      captainFirstName:
+          Value(_captainFirstCtrl.text.trim().isEmpty ? null : _captainFirstCtrl.text.trim()),
+      captainLastName:
+          Value(_captainLastCtrl.text.trim().isEmpty ? null : _captainLastCtrl.text.trim()),
+      captainQualification:
+          Value(_captainQualCtrl.text.trim().isEmpty ? null : _captainQualCtrl.text.trim()),
+      logbookSignaturePath: Value(_signaturePath),
       note: Value(_noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
       createdAt: Value(DateTime.now()),
     );
@@ -140,12 +177,6 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
     if (mounted) context.pop();
   }
 
-  String _roleLabel(AppLocalizations l, String role) => switch (role) {
-        'coSkipper' => l.roleCoSkipper,
-        'crew' => l.roleCrew,
-        _ => l.roleSkipper,
-      };
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -184,9 +215,15 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
 
         TextField(controller: _vesselCtrl, decoration: InputDecoration(labelText: l.vessel)),
         const SizedBox(height: 12),
-        TextField(controller: _vesselTypeCtrl, decoration: InputDecoration(labelText: l.vesselType)),
+        Row(children: [
+          Expanded(child: TextField(controller: _vesselTypeCtrl, decoration: InputDecoration(labelText: l.vesselType))),
+          const SizedBox(width: 12),
+          Expanded(child: TextField(controller: _vesselFlagCtrl, decoration: InputDecoration(labelText: l.vesselFlag))),
+        ]),
         const SizedBox(height: 12),
         TextField(controller: _areaCtrl, decoration: InputDecoration(labelText: l.areaLabel)),
+        const SizedBox(height: 12),
+        TextField(controller: _routeCtrl, decoration: InputDecoration(labelText: l.routeSection)),
         const SizedBox(height: 16),
 
         Row(children: [
@@ -208,14 +245,33 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(labelText: l.nightHoursLabel),
         ),
+        const SizedBox(height: 12),
+        TextField(controller: _roleCtrl, decoration: InputDecoration(labelText: l.roleLabel)),
         const SizedBox(height: 16),
 
-        DropdownButtonFormField<String>(
-          initialValue: _role,
-          decoration: InputDecoration(labelText: l.roleLabel),
-          items: _roles.map((r) => DropdownMenuItem(value: r, child: Text(_roleLabel(l, r)))).toList(),
-          onChanged: (v) => setState(() => _role = v ?? 'skipper'),
+        Text(l.logbookSignatureSection, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Row(children: [
+          Expanded(child: TextField(controller: _captainFirstCtrl, decoration: InputDecoration(labelText: l.captainFirstName))),
+          const SizedBox(width: 12),
+          Expanded(child: TextField(controller: _captainLastCtrl, decoration: InputDecoration(labelText: l.captainLastName))),
+        ]),
+        const SizedBox(height: 12),
+        TextField(controller: _captainQualCtrl, decoration: InputDecoration(labelText: l.captainQualification)),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          icon: Icon(_signaturePath == null ? Icons.draw : Icons.edit),
+          label: Text(_signaturePath == null ? l.addSignature : l.briefingEditSignature),
+          onPressed: _captureSignature,
         ),
+        if (_signaturePath != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            height: 80,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+            child: Image.file(File(_signaturePath!), fit: BoxFit.contain),
+          ),
+        ],
         const SizedBox(height: 16),
 
         TextField(
@@ -231,10 +287,16 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
   void dispose() {
     _vesselCtrl.dispose();
     _vesselTypeCtrl.dispose();
+    _vesselFlagCtrl.dispose();
     _areaCtrl.dispose();
+    _routeCtrl.dispose();
     _nmCtrl.dispose();
     _daysCtrl.dispose();
     _nightHoursCtrl.dispose();
+    _roleCtrl.dispose();
+    _captainFirstCtrl.dispose();
+    _captainLastCtrl.dispose();
+    _captainQualCtrl.dispose();
     _noteCtrl.dispose();
     super.dispose();
   }
