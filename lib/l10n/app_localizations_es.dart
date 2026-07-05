@@ -1681,7 +1681,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar';
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar';
 
   @override
   String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
@@ -1695,7 +1695,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importa tracks y waypoints desde otras apps de navegación o dispositivos GPS (icono en el Mapa).\n\n• Elige un archivo .gpx del dispositivo\n• Asigna los tracks encontrados a una travesía existente o nueva\n• Los waypoints (también de rutas) se añaden directamente al mapa\n• Se muestra un mensaje de error claro si el archivo está dañado';
+      'Importa tracks y waypoints desde otras apps de navegación o dispositivos GPS (icono en el Mapa).\n\n• Elige un archivo .gpx del dispositivo\n• Una exportación de varios días (varios tracks en un archivo, p. ej. de Garmin Explore) se combina automáticamente en una sola travesía con un día por cada día del calendario\n• Los tracks encontrados también se pueden asignar manualmente a una travesía existente\n• Los waypoints (también de rutas) se añaden directamente al mapa\n• Se muestra un mensaje de error claro si el archivo está dañado';
 
   @override
   String get guideWeatherTitle => 'Tiempo';
@@ -1716,7 +1716,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia';
 
   @override
   String get guideCompassTitle => 'Brújula de navegación';

@@ -1686,7 +1686,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld';
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Kapitäns, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld';
 
   @override
   String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
@@ -1700,7 +1700,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importiere Tracks und Wegpunkte aus anderen Navigations-Apps oder GPS-Geräten (Symbol auf der Karte).\n\n• .gpx-Datei vom Gerät auswählen\n• Gefundene Tracks einer bestehenden oder neuen Fahrt zuordnen\n• Wegpunkte (auch aus Routen) werden direkt zur Karte hinzugefügt\n• Bei einer beschädigten Datei wird eine verständliche Fehlermeldung angezeigt';
+      'Importiere Tracks und Wegpunkte aus anderen Navigations-Apps oder GPS-Geräten (Symbol auf der Karte).\n\n• .gpx-Datei vom Gerät auswählen\n• Ein mehrtägiger Export (mehrere Tracks in einer Datei, z. B. von Garmin Explore) wird automatisch zu einer einzigen Fahrt mit einem Tag pro Kalendertag zusammengeführt\n• Gefundene Tracks können auch manuell einer bestehenden Fahrt zugeordnet werden\n• Wegpunkte (auch aus Routen) werden direkt zur Karte hinzugefügt\n• Bei einer beschädigten Datei wird eine verständliche Fehlermeldung angezeigt';
 
   @override
   String get guideWeatherTitle => 'Wetter';
@@ -1721,7 +1721,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte';
 
   @override
   String get guideCompassTitle => 'Peilkompass';

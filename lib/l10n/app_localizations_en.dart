@@ -1674,7 +1674,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign';
+      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign';
 
   @override
   String get guideHandoverTitle => 'Handover Protocol (check-in/check-out)';
@@ -1688,7 +1688,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Import tracks and waypoints from other navigation apps or GPS devices (icon on the Map).\n\n• Choose a .gpx file from your device\n• Assign found tracks to an existing or a new voyage\n• Waypoints (including from routes) are added straight to the map\n• A clear error message is shown for a corrupted file';
+      'Import tracks and waypoints from other navigation apps or GPS devices (icon on the Map).\n\n• Choose a .gpx file from your device\n• A multi-day export (several tracks in one file, e.g. from Garmin Explore) is merged automatically into a single voyage with one day per calendar day\n• Found tracks can also be assigned manually to an existing voyage\n• Waypoints (including from routes) are added straight to the map\n• A clear error message is shown for a corrupted file';
 
   @override
   String get guideWeatherTitle => 'Weather';
@@ -1709,7 +1709,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';

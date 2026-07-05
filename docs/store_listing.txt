@@ -160,24 +160,20 @@ https://io986.github.io/HMB-Sailing-LogBook/privacy.html
 ČO JE NOVÉ – v1.21.0 (Release notes, max 500 znakov/jazyk)
 ══════════════════════════════════════════════════════════
 SK:
-Nové vo verzii 1.21.0:
-• Kniha míľ – súhrn plavieb, historické záznamy, PDF certifikát
-• Odovzdávací protokol lode s podpismi oboch strán a fotkami poškodení
-• Motohodiny, palivo a voda priamo v zázname denníka
-• Záloha a obnova celej databázy jedným súborom
-• Import GPX trás a waypointov z iných aplikácií
-• NMEA cez UDP + stabilnejšie automatické opätovné pripojenie
-• Bezpečnejšie databázové migrácie pri aktualizáciách appky
+Novinky:
+- GPX import zlúči viacdňový export do jednej plavby (deň na kalendárny deň) namiesto rozdelenia na viac plavieb
+- Kniha míľ: klikni na plavbu a doplň trasu, vlajku lode, kapitána a podpis potvrdzujúci míle
+- Odovzdávací checklist a Safety Briefing dostupné ako karty aj bez otvorenej plavby
+- Hodinová predpoveď teraz ukazuje teplotu
+- Opravené: pomalý GPX import, mapa sa niekedy nenačítala celá, PDF export sa zaseklo pri mapách
 
 EN:
-What's new in 1.21.0:
-• Mile logbook – voyage summary, historical entries, PDF certificate
-• Vessel handover protocol with two-party signatures and damage photos
-• Engine hours, fuel and water right in the logbook entry
-• Backup and restore the whole database as a single file
-• Import GPX tracks and waypoints from other apps
-• NMEA over UDP with more reliable auto-reconnect
-• Safer database migrations across app updates
+What's new:
+- GPX import merges a multi-day export into one voyage (one day per date) instead of splitting it up
+- Mile logbook: tap a voyage to add route, vessel flag, captain name/qualification and a signature confirming the miles
+- Handover checklist & safety briefing now available as reference cards, no active voyage needed
+- Hourly forecast now shows temperature
+- Fixed slow GPX import, map not loading fully on startup, PDF export stuck generating maps
 
 
 POZNÁMKY PRE PLAY CONSOLE
