@@ -5,10 +5,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../safety/presentation/screens/safety_screen.dart';
+import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/waypoint_dialog.dart';
@@ -90,14 +92,33 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final mapState = ref.watch(mapNotifierProvider);
     final followGps = mapState.followGps;
     final showSeamarks = mapState.showSeamarks;
+    final previewDayLogId = mapState.previewDayLogId;
+    final previewCharterId = mapState.previewCharterId;
+    final isPreviewing = previewDayLogId != null || previewCharterId != null;
 
     ref.watch(positionStreamProvider);
     final waypoints = ref.watch(waypointsProvider);
-    final trackPoints = ref.watch(currentTrackProvider);
+    final liveTrackPoints = ref.watch(currentTrackProvider);
     final isTracking = ref.watch(isTrackingProvider);
     final mob = ref.watch(mobProvider);
     final anchor = ref.watch(anchorProvider);
     final photoEntries = ref.watch(photoEntryMarkersProvider).valueOrNull ?? [];
+
+    // Nový tracking vždy vyhráva nad prezeraním starej plavby.
+    ref.listen<bool>(isTrackingProvider, (prev, next) {
+      if (next && (mapState.previewDayLogId != null || mapState.previewCharterId != null)) {
+        ref.read(mapNotifierProvider.notifier).clearPreview();
+      }
+    });
+
+    final List<LatLng> trackPoints;
+    if (previewDayLogId != null) {
+      trackPoints = ref.watch(dayTrackPreviewProvider(previewDayLogId)).valueOrNull ?? const [];
+    } else if (previewCharterId != null) {
+      trackPoints = ref.watch(charterTrackPreviewProvider(previewCharterId)).valueOrNull ?? const [];
+    } else {
+      trackPoints = liveTrackPoints;
+    }
 
     // Centrovanie na MOB pozíciu pri navigácii z MOB karty
     final qp = GoRouterState.of(context).uri.queryParameters;
@@ -171,12 +192,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   maxZoom: 18,
                 ),
 
-              // ── GPS track ────────────────────────────────────
+              // ── GPS track (živý tracking, alebo náhľad zvolenej plavby) ──
               if (trackPoints.isNotEmpty)
                 PolylineLayer(polylines: [
                   Polyline(
                     points: trackPoints,
-                    color: Colors.blue.shade400,
+                    color: isPreviewing
+                        ? Colors.orange.shade700
+                        : Colors.blue.shade400,
                     strokeWidth: 3,
                   ),
                 ]),
@@ -322,6 +345,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               const SizedBox(height: 8),
               FloatingActionButton.small(
+                heroTag: 'voyagePreview',
+                tooltip: 'Prehľad plavby',
+                onPressed: () => _openVoyagePicker(context),
+                backgroundColor: isPreviewing ? Colors.orange.shade700 : null,
+                child: Icon(Icons.route,
+                    color: isPreviewing ? Colors.white : null),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
                 heroTag: 'gpxImport',
                 tooltip: 'Import GPX',
                 onPressed: () => context.push('/gpx-import'),
@@ -329,6 +361,35 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ]),
           ),
+
+          // ── Banner: prezeranie inej plavby ────────────────────
+          if (isPreviewing)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8,
+              left: 12,
+              right: 72,
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.orange.shade700,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Row(children: [
+                    const Icon(Icons.route, color: Colors.white, size: 16),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(mapState.previewLabel ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white, fontSize: 12)),
+                    ),
+                    InkWell(
+                      onTap: () => ref.read(mapNotifierProvider.notifier).clearPreview(),
+                      child: const Icon(Icons.close, color: Colors.white, size: 18),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
 
           // ── Zoom + Current position ───────────────────────────
           Positioned(
@@ -408,6 +469,116 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void _showWaypointInfo(String name) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('Waypoint: $name')));
+  }
+
+  void _focusOnPoints(List<LatLng> points) {
+    if (points.isEmpty) return;
+    if (points.length == 1) {
+      _mapController.move(points.first, 14);
+      return;
+    }
+    try {
+      _mapController.fitCamera(CameraFit.bounds(
+        bounds: LatLngBounds.fromPoints(points),
+        padding: const EdgeInsets.all(40),
+      ));
+    } catch (_) {}
+  }
+
+  Future<void> _selectDay(int dayLogId, String label, BuildContext sheetContext) async {
+    ref.read(mapNotifierProvider.notifier).previewDay(dayLogId, label);
+    ref.read(mapNotifierProvider.notifier).setFollowGps(false);
+    Navigator.pop(sheetContext);
+    final points = await ref.read(dayTrackPreviewProvider(dayLogId).future);
+    if (mounted) _focusOnPoints(points);
+  }
+
+  Future<void> _selectCharter(int charterId, String label, BuildContext sheetContext) async {
+    ref.read(mapNotifierProvider.notifier).previewCharter(charterId, label);
+    ref.read(mapNotifierProvider.notifier).setFollowGps(false);
+    Navigator.pop(sheetContext);
+    final points = await ref.read(charterTrackPreviewProvider(charterId).future);
+    if (mounted) _focusOnPoints(points);
+  }
+
+  void _openVoyagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetCtx) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6,
+        builder: (_, scrollCtrl) => Consumer(
+          builder: (consumerCtx, sheetRef, __) {
+            final chartersAsync = sheetRef.watch(chartersProvider);
+            return ListView(
+              controller: scrollCtrl,
+              padding: const EdgeInsets.all(16),
+              children: [
+                Row(children: [
+                  const Icon(Icons.route),
+                  const SizedBox(width: 8),
+                  const Text('Prehľad plavby',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ]),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.gps_fixed, color: Colors.blue),
+                  title: const Text('Naživo (aktuálny tracking)'),
+                  onTap: () {
+                    ref.read(mapNotifierProvider.notifier).clearPreview();
+                    Navigator.pop(sheetCtx);
+                  },
+                ),
+                const Divider(),
+                chartersAsync.when(
+                  data: (charters) => Column(children: [
+                    for (final charter in charters)
+                      Consumer(builder: (_, dayRef, __) {
+                        final daysAsync = dayRef.watch(dayLogsProvider(charter.id));
+                        return daysAsync.when(
+                          data: (days) => days.isEmpty
+                              ? const SizedBox()
+                              : ExpansionTile(
+                                  title: Text(charter.title),
+                                  subtitle: Text(
+                                      '${days.fold<double>(0, (s, d) => s + d.distanceNm).toStringAsFixed(1)} NM · ${days.length} dní'),
+                                  children: [
+                                    ListTile(
+                                      dense: true,
+                                      leading: const Icon(Icons.route, size: 20),
+                                      title: const Text('Celá plavba',
+                                          style: TextStyle(fontWeight: FontWeight.bold)),
+                                      onTap: () => _selectCharter(
+                                          charter.id, charter.title, sheetCtx),
+                                    ),
+                                    const Divider(height: 1),
+                                    for (final day in days)
+                                      ListTile(
+                                        dense: true,
+                                        title: Text(DateFormat('EEEE d. MMM yyyy', 'sk').format(day.date)),
+                                        subtitle: Text('${day.distanceNm.toStringAsFixed(1)} NM'),
+                                        onTap: () => _selectDay(
+                                            day.id,
+                                            '${charter.title} · ${DateFormat('d.M.yyyy').format(day.date)}',
+                                            sheetCtx),
+                                      ),
+                                  ],
+                                ),
+                          loading: () => const SizedBox(),
+                          error: (_, __) => const SizedBox(),
+                        );
+                      }),
+                  ]),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (e, _) => Text('$e'),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
