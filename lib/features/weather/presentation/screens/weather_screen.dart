@@ -227,7 +227,7 @@ class _WeatherContent extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       children: [
         if (showLive) ...[
-          _LiveInstrumentsCard(data: marineData!),
+          _LiveInstrumentsCard(data: marineData),
           const SizedBox(height: 12),
         ],
         _CurrentWeatherCard(weather: current),

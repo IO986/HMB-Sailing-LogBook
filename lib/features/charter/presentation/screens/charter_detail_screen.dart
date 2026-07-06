@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:drift/drift.dart' show Value;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
-import '../../../../shared/widgets/port_autocomplete.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterDetailScreen extends ConsumerWidget {

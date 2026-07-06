@@ -207,7 +207,6 @@ class NmeaParserService {
   // $--RMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a,m*hh
   NmeaFix _parseRMC(List<String> f) {
     if (f.length < 10) throw const FormatException('RMC incomplete');
-    final status = f[2]; // A = valid, V = invalid
     final lat = _parseLat(f[3], f[4]);
     final lon = _parseLon(f[5], f[6]);
     final speedKnots = _toDouble(f[7]);

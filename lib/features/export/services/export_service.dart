@@ -355,12 +355,4 @@ class ExportService {
     final dest = File('${dir.path}/$safe.$ext');
     return src.copy(dest.path);
   }
-
-  /// Skráti cestu na posledné 4 časti pre snackbar.
-  String _shortPath(String path) {
-    final parts = path.replaceAll('\\', '/').split('/');
-    return parts.length > 4
-        ? '.../${parts.skip(parts.length - 4).join('/')}'
-        : path;
-  }
 }

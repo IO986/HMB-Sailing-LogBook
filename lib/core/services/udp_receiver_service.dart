@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import '../models/marine_instrument_data.dart';
-import '../services/raymarine_connection_service.dart';
 import 'nmea_parser_service.dart';
 
 /// UDP receiver — počúva NMEA 0183 datagramy na zadanom porte.

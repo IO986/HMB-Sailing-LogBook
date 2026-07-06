@@ -335,8 +335,8 @@ class GpsTrackingService {
 
     final sog = (nmea?.sogKnots) ?? _kts(pos.speed);
     final cog = (nmea?.cogDegrees) ?? pos.heading;
-    final windSpd = windFresh ? nmea!.windSpeedKnots : weather?.windSpeed;
-    final windDir = windFresh ? nmea!.windAngleDegrees : weather?.windDirection;
+    final windSpd = windFresh ? nmea.windSpeedKnots : weather?.windSpeed;
+    final windDir = windFresh ? nmea.windAngleDegrees : weather?.windDirection;
     final waterTmp = nmea?.waterTempCelsius ?? weather?.waterTemp;
 
     final src = nmea != null ? 'NMEA' : 'meteo';

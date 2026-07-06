@@ -70,8 +70,7 @@ class _BoatPainter extends CustomPainter {
 class _DiagramFrame extends StatelessWidget {
   final double height;
   final Widget child;
-  final String? bgLabel;
-  const _DiagramFrame({required this.height, required this.child, this.bgLabel});
+  const _DiagramFrame({required this.height, required this.child});
 
   @override
   Widget build(BuildContext context) => Container(

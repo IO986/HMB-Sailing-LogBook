@@ -276,7 +276,7 @@ class _TrackingControls extends ConsumerWidget {
     if (isLastDay && charterId != null) {
       // Last day — show end-of-voyage dialog first, actions stop tracking
       final notifier = ref.read(trackingNotifierProvider.notifier);
-      final cid = charterId!;
+      final cid = charterId;
       showDialog(
         context: context,
         barrierDismissible: false,

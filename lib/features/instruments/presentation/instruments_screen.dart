@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/models/marine_instrument_data.dart';
@@ -12,7 +11,6 @@ import '../../../core/models/weather_data.dart';
 import '../../../core/providers/raymarine_providers.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/services/weather_service.dart';
-import '../../../main.dart';
 import '../../map/providers/map_provider.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -57,27 +55,27 @@ class InstrumentsScreen extends ConsumerWidget {
     final rayOk = rayState == RaymarineConnectionState.connected
         && marine?.lastUpdate != null
         && DateTime.now().difference(marine!.lastUpdate!) < const Duration(seconds: 8);
-    final windOk = rayOk && _freshField(marine?.windLastUpdate);
-    final depthOk = rayOk && _freshField(marine?.depthLastUpdate);
+    final windOk = rayOk && _freshField(marine.windLastUpdate);
+    final depthOk = rayOk && _freshField(marine.depthLastUpdate);
 
     // --- Hodnoty ---
     final sogKn = rayOk
-        ? (marine!.sogKnots ?? _ms2kn(pos?.speed))
+        ? (marine.sogKnots ?? _ms2kn(pos?.speed))
         : _ms2kn(pos?.speed);
 
     // heading: Raymarine kompas > GPS heading
     final hdgDeg = rayOk
-        ? (marine!.headingDegrees ?? marine.cogDegrees ?? pos?.heading ?? 0.0)
+        ? (marine.headingDegrees ?? marine.cogDegrees ?? pos?.heading ?? 0.0)
         : (pos?.heading ?? 0.0);
 
     // TWS – true wind speed
-    final twsKn = windOk ? marine!.windSpeedKnots : weather?.windSpeed;
+    final twsKn = windOk ? marine.windSpeedKnots : weather?.windSpeed;
 
     // TWA – true wind angle (0–180, P/S)
     // Raymarine môže dávať apparent angle; z weather vypočítame z rozdielu smerov
     double? twaVal;
     bool? twaStarboard;
-    if (windOk && marine!.windAngleDegrees != null) {
+    if (windOk && marine.windAngleDegrees != null) {
       final raw = marine.windAngleDegrees!;
       // Normalizuj na -180..180
       final norm = ((raw + 180) % 360) - 180;
@@ -92,14 +90,14 @@ class InstrumentsScreen extends ConsumerWidget {
       twaStarboard = norm >= 0;
     }
 
-    final depthM = depthOk ? marine!.depthMeters : null;
+    final depthM = depthOk ? marine.depthMeters : null;
 
     // --- VMG WP ---
     double? vmgWp, distWpNm, brgWp;
     if (activeWp != null && pos != null) {
       brgWp = _bearing(pos.latitude, pos.longitude, activeWp.latitude, activeWp.longitude);
       distWpNm = _haversineNm(pos.latitude, pos.longitude, activeWp.latitude, activeWp.longitude);
-      final cogDeg2 = rayOk ? (marine!.cogDegrees ?? pos.heading) : pos.heading;
+      final cogDeg2 = rayOk ? (marine.cogDegrees ?? pos.heading) : pos.heading;
       final angleDiff = ((cogDeg2 - brgWp) + 360) % 360;
       vmgWp = sogKn * cos(angleDiff * pi / 180);
     }
@@ -123,17 +121,17 @@ class InstrumentsScreen extends ConsumerWidget {
       ),
       body: Column(children: [
         // ── GPS pozícia ───────────────────────────────────────
-        _GpsPositionRow(pos: pos, fromNmea: rayOk && (marine?.hasGpsFix ?? false)),
+        _GpsPositionRow(pos: pos, fromNmea: rayOk && (marine.hasGpsFix ?? false)),
         // ── 2 × 2 digitálne displeje ──────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
           child: Row(children: [
             Expanded(child: _DigitBox(
               label: 'SOG',
-              value: sogKn != null ? sogKn.toStringAsFixed(1) : '--.-',
+              value: sogKn.toStringAsFixed(1),
               unit: 'kn',
               color: const Color(0xFF27AE60),
-              source: (rayOk && marine!.sogKnots != null) ? 'NMEA' : 'GPS',
+              source: (rayOk && marine.sogKnots != null) ? 'NMEA' : 'GPS',
             )),
             const SizedBox(width: 10),
             Expanded(child: _DigitBox(
@@ -141,7 +139,7 @@ class InstrumentsScreen extends ConsumerWidget {
               value: twsKn != null ? twsKn.toStringAsFixed(1) : '--.-',
               unit: 'kn',
               color: const Color(0xFF3498DB),
-              source: (windOk && marine!.windSpeedKnots != null) ? 'NMEA' : (twsKn != null ? 'METEO' : null),
+              source: (windOk && marine.windSpeedKnots != null) ? 'NMEA' : (twsKn != null ? 'METEO' : null),
             )),
           ]),
         ),
@@ -158,7 +156,7 @@ class InstrumentsScreen extends ConsumerWidget {
                   : twaStarboard == false
                       ? const Color(0xFFE74C3C)
                       : Colors.white38,
-              source: (windOk && marine!.windAngleDegrees != null) ? 'NMEA' : (twaVal != null ? 'METEO' : null),
+              source: (windOk && marine.windAngleDegrees != null) ? 'NMEA' : (twaVal != null ? 'METEO' : null),
             )),
             const SizedBox(width: 10),
             Expanded(child: _DigitBox(

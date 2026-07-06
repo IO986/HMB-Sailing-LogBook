@@ -4,7 +4,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'gps_tracking_service.dart';
 import 'weather_repository.dart';
 
 @pragma('vm:entry-point')
