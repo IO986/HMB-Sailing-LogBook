@@ -116,6 +116,34 @@ class AppLocalizationsSk extends AppLocalizations {
   String get setupConnection => 'Nastaviť pripojenie';
 
   @override
+  String get autoDetectAction => 'Auto-detekcia';
+
+  @override
+  String get autoDetectWifiHintTitle => 'Najprv sa pripoj na WiFi lode';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'Skontroluj v Nastaveniach telefónu → WiFi, že si pripojený na sieť lodných inštrumentov (napr. RayNet, WiFi-1). Potom appka skúsi automaticky nájsť gateway na tejto sieti.';
+
+  @override
+  String get openWifiSettings => 'WiFi nastavenia';
+
+  @override
+  String get continueAction => 'Pokračovať';
+
+  @override
+  String get autoDetecting => 'Hľadám prístroje na WiFi sieti…';
+
+  @override
+  String get autoDetectFailed =>
+      'Gateway sa nenašiel. Skontroluj, či si pripojený na WiFi sieť lode, alebo zadaj IP ručne v Nastaveniach.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Pripojené na $host';
+  }
+
+  @override
   String get guidePromptTitle => 'Prvýkrát tu? Rýchla príručka';
 
   @override

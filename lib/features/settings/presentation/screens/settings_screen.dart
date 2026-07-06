@@ -570,13 +570,22 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
         s == RaymarineConnectionState.connected) {
       return l.connectionListening(_udpPortCtrl.text.trim());
     }
+    // Pri TCP ukáž KAM sa appka pripája/pripojila - inak nie je jasné, či
+    // ide o adresu čo je práve napísaná v poli, alebo o inú (staršiu,
+    // uloženú) adresu z predošlého pokusu.
+    final tcpHost = RaymarineConnectionService().host;
+    final hostSuffix = (_connType == NmeaConnectionType.tcp &&
+            tcpHost.isNotEmpty &&
+            s != RaymarineConnectionState.disconnected)
+        ? ' ($tcpHost:${RaymarineConnectionService().port})'
+        : '';
     switch (s) {
       case RaymarineConnectionState.connected:
-        return l.connectionConnected;
+        return '${l.connectionConnected}$hostSuffix';
       case RaymarineConnectionState.connecting:
-        return l.connectionConnecting;
+        return '${l.connectionConnecting}$hostSuffix';
       case RaymarineConnectionState.error:
-        return l.connectionError;
+        return '${l.connectionError}$hostSuffix';
       case RaymarineConnectionState.disconnected:
         return l.connectionDisconnected;
     }
@@ -699,7 +708,20 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                 dense: true,
                 title: Text(l.autoConnectLabel),
                 value: _autoConnect,
-                onChanged: (v) => setState(() => _autoConnect = v),
+                onChanged: (v) {
+                  setState(() => _autoConnect = v);
+                  // Ulož hneď, nie až pri ďalšom stlačení "Pripojiť" - inak
+                  // vypnutie tu v UI reálne nič nezmení a appka bude na
+                  // ďalšom štarte aj tak auto-connectovať podľa starej hodnoty.
+                  ref.read(raymarineSettingsProvider.notifier).save(
+                        host: _hostCtrl.text.trim(),
+                        port: int.tryParse(_portCtrl.text.trim()) ?? 2000,
+                        autoConnect: v,
+                        connectionType: _connType,
+                        udpListenPort:
+                            int.tryParse(_udpPortCtrl.text.trim()) ?? 10110,
+                      );
+                },
               ),
             ],
 
@@ -732,7 +754,10 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
                   child: OutlinedButton.icon(
                     icon: Icon(isUdp ? Icons.stop : Icons.link_off),
                     label: Text(isUdp ? l.stopListening : l.disconnect),
-                    onPressed: connState == RaymarineConnectionState.connected
+                    // Aktívne aj v stave "error" - inak nemá používateľ ako
+                    // zastaviť neúspešný reconnect loop (napr. zlá/neplatná
+                    // uložená IP) z UI.
+                    onPressed: connState != RaymarineConnectionState.disconnected
                         ? () async {
                             if (isUdp) {
                               await UdpReceiverService().stop();

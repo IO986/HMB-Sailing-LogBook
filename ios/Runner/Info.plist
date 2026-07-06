@@ -51,6 +51,10 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>HMB Sailing Log may use the microphone when recording video for logbook entries.</string>
 
+	<!-- Local network (Raymarine/NMEA WiFi gateway TCP+UDP connection) -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>HMB Sailing Log connects to marine instruments (e.g. Raymarine WiFi gateway) over your boat's local WiFi network to read GPS, wind, depth and other data.</string>
+
 	<!-- File access (file_picker) -->
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>

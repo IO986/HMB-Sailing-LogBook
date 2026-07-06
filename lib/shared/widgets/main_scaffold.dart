@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../core/services/gps_tracking_service.dart';
+import '../../core/models/marine_instrument_data.dart';
+import '../../core/services/raymarine_connection_service.dart';
+import '../../core/services/udp_receiver_service.dart';
+import '../../core/providers/raymarine_providers.dart';
 import '../../features/help/presentation/screens/user_guide_screen.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -64,39 +69,128 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     }
   }
 
+  /// Pýta sa na pripojenie lodných inštrumentov pri každom štarte appky,
+  /// pokiaľ ešte nie je nadviazané NMEA spojenie (TCP ani UDP). Netrvalý
+  /// flag ako pri sprievodcovi — toto sa má opakovať každé spustenie, kým
+  /// používateľ niečo nepripojí.
   Future<void> _maybePromptRaymarineSetup() async {
     if (_checkedRaymarinePrompt) return;
     _checkedRaymarinePrompt = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    final alreadyAsked = prefs.getBool('raymarine_setup_asked') ?? false;
-    final host = prefs.getString('raymarine_host') ?? '';
-    if (alreadyAsked || host.isNotEmpty) return;
-
-    await prefs.setBool('raymarine_setup_asked', true);
+    // Daj existujúcemu auto-connect pokusu (spustenému v main.dart) chvíľu
+    // na dokončenie, nech neprerušujeme prebiehajúce pripojenie zbytočnou otázkou.
+    await Future.delayed(const Duration(milliseconds: 1500));
     if (!mounted) return;
 
+    final tcpState = RaymarineConnectionService().state;
+    final alreadyHandled = tcpState == RaymarineConnectionState.connected ||
+        tcpState == RaymarineConnectionState.connecting ||
+        UdpReceiverService().isListening;
+    if (alreadyHandled) return;
+
     final l = AppLocalizations.of(context);
-    final connect = await showDialog<bool>(
+    final action = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l.marineInstrumentsTitle),
         content: Text(l.marineInstrumentsPrompt),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () => Navigator.pop(ctx, 'later'),
             child: Text(l.notNow),
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx, 'manual'),
             child: Text(l.setupConnection),
+          ),
+          FilledButton.icon(
+            onPressed: () => Navigator.pop(ctx, 'auto'),
+            icon: const Icon(Icons.wifi_find, size: 18),
+            label: Text(l.autoDetectAction),
           ),
         ],
       ),
     );
 
-    if (connect == true && mounted) {
+    if (!mounted || action == null || action == 'later') return;
+
+    if (action == 'manual') {
       context.go('/settings');
+      return;
+    }
+
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.wifi, size: 32),
+        title: Text(l.autoDetectWifiHintTitle),
+        content: Text(l.autoDetectWifiHintBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.notNow),
+          ),
+          OutlinedButton.icon(
+            onPressed: () =>
+                AppSettings.openAppSettings(type: AppSettingsType.wifi),
+            icon: const Icon(Icons.wifi, size: 18),
+            label: Text(l.openWifiSettings),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.continueAction),
+          ),
+        ],
+      ),
+    );
+    if (proceed != true || !mounted) return;
+
+    await _runAutoDetect();
+  }
+
+  Future<void> _runAutoDetect() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(SnackBar(
+      content: Row(children: [
+        const SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2)),
+        const SizedBox(width: 12),
+        Expanded(child: Text(l.autoDetecting)),
+      ]),
+      duration: const Duration(seconds: 10),
+    ));
+
+    final host = await RaymarineConnectionService().autoDetectHost();
+    if (!mounted) return;
+    messenger.hideCurrentSnackBar();
+
+    if (host == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l.autoDetectFailed)));
+      return;
+    }
+
+    final ok = await RaymarineConnectionService().connect(host: host, port: 2000);
+    if (!mounted) return;
+
+    if (ok) {
+      final udpPort = ref.read(raymarineSettingsProvider).udpListenPort;
+      await ref.read(raymarineSettingsProvider.notifier).save(
+            host: host,
+            port: 2000,
+            autoConnect: true,
+            connectionType: NmeaConnectionType.tcp,
+            udpListenPort: udpPort,
+          );
+      messenger.showSnackBar(SnackBar(content: Text(l.autoDetectSuccess(host))));
+    } else {
+      // connect() naplánoval reconnect loop (autoReconnect defaultne true) -
+      // zruš ho, inak by appka donekonečna skúšala pripojiť sa na hosta,
+      // ktorý sa ukázal ako falošný pozitív (otvorený port, žiadne NMEA dáta).
+      await RaymarineConnectionService().disconnect();
+      messenger.showSnackBar(SnackBar(content: Text(l.autoDetectFailed)));
     }
   }
 

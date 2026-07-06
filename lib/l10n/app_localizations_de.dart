@@ -117,6 +117,35 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupConnection => 'Verbindung einrichten';
 
   @override
+  String get autoDetectAction => 'Automatisch erkennen';
+
+  @override
+  String get autoDetectWifiHintTitle =>
+      'Zuerst mit dem WLAN des Bootes verbinden';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'Prüfen Sie in den Telefoneinstellungen → WLAN, dass Sie mit dem Netzwerk der Marineinstrumente verbunden sind (z.B. RayNet, WiFi-1). Die App versucht dann automatisch, das Gateway in diesem Netzwerk zu finden.';
+
+  @override
+  String get openWifiSettings => 'WLAN-Einstellungen';
+
+  @override
+  String get continueAction => 'Weiter';
+
+  @override
+  String get autoDetecting => 'Suche nach Instrumenten im WLAN…';
+
+  @override
+  String get autoDetectFailed =>
+      'Kein Gateway gefunden. Prüfen Sie, ob Sie mit dem WLAN des Bootes verbunden sind, oder geben Sie die IP manuell in den Einstellungen ein.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Verbunden mit $host';
+  }
+
+  @override
   String get guidePromptTitle => 'Neu hier? Kurzanleitung';
 
   @override

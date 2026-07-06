@@ -117,6 +117,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupConnection => 'Set up connection';
 
   @override
+  String get autoDetectAction => 'Auto-detect';
+
+  @override
+  String get autoDetectWifiHintTitle => 'Connect to the boat\'s WiFi first';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'Check in your phone\'s Settings → WiFi that you\'re connected to the marine instruments network (e.g. RayNet, WiFi-1). Then the app will try to find the gateway on that network automatically.';
+
+  @override
+  String get openWifiSettings => 'WiFi settings';
+
+  @override
+  String get continueAction => 'Continue';
+
+  @override
+  String get autoDetecting => 'Searching for instruments on the WiFi network…';
+
+  @override
+  String get autoDetectFailed =>
+      'No gateway found nearby. Check you\'re on the boat\'s WiFi network, or enter the IP manually in Settings.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Connected to $host';
+  }
+
+  @override
   String get guidePromptTitle => 'New here? Quick guide';
 
   @override

@@ -308,6 +308,54 @@ abstract class AppLocalizations {
   /// **'Nastaviť pripojenie'**
   String get setupConnection;
 
+  /// No description provided for @autoDetectAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Auto-detekcia'**
+  String get autoDetectAction;
+
+  /// No description provided for @autoDetectWifiHintTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najprv sa pripoj na WiFi lode'**
+  String get autoDetectWifiHintTitle;
+
+  /// No description provided for @autoDetectWifiHintBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skontroluj v Nastaveniach telefónu → WiFi, že si pripojený na sieť lodných inštrumentov (napr. RayNet, WiFi-1). Potom appka skúsi automaticky nájsť gateway na tejto sieti.'**
+  String get autoDetectWifiHintBody;
+
+  /// No description provided for @openWifiSettings.
+  ///
+  /// In sk, this message translates to:
+  /// **'WiFi nastavenia'**
+  String get openWifiSettings;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračovať'**
+  String get continueAction;
+
+  /// No description provided for @autoDetecting.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hľadám prístroje na WiFi sieti…'**
+  String get autoDetecting;
+
+  /// No description provided for @autoDetectFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Gateway sa nenašiel. Skontroluj, či si pripojený na WiFi sieť lode, alebo zadaj IP ručne v Nastaveniach.'**
+  String get autoDetectFailed;
+
+  /// No description provided for @autoDetectSuccess.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojené na {host}'**
+  String autoDetectSuccess(String host);
+
   /// No description provided for @guidePromptTitle.
   ///
   /// In sk, this message translates to:

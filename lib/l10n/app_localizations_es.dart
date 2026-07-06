@@ -117,6 +117,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get setupConnection => 'Configurar conexión';
 
   @override
+  String get autoDetectAction => 'Detección automática';
+
+  @override
+  String get autoDetectWifiHintTitle => 'Primero conéctate al WiFi del barco';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'Comprueba en Ajustes del teléfono → WiFi que estás conectado a la red de los instrumentos marinos (p.ej. RayNet, WiFi-1). Luego la app intentará encontrar el gateway en esa red automáticamente.';
+
+  @override
+  String get openWifiSettings => 'Ajustes de WiFi';
+
+  @override
+  String get continueAction => 'Continuar';
+
+  @override
+  String get autoDetecting => 'Buscando instrumentos en la red WiFi…';
+
+  @override
+  String get autoDetectFailed =>
+      'No se encontró ningún gateway. Comprueba que estás en la red WiFi del barco, o introduce la IP manualmente en Ajustes.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Conectado a $host';
+  }
+
+  @override
   String get guidePromptTitle => '¿Primera vez? Guía rápida';
 
   @override

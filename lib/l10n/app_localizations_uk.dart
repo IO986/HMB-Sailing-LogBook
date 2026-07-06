@@ -117,6 +117,34 @@ class AppLocalizationsUk extends AppLocalizations {
   String get setupConnection => 'Налаштувати підключення';
 
   @override
+  String get autoDetectAction => 'Автовизначення';
+
+  @override
+  String get autoDetectWifiHintTitle => 'Спочатку підключіться до WiFi судна';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'Перевірте в Налаштуваннях телефону → WiFi, що ви підключені до мережі морських інструментів (наприклад, RayNet, WiFi-1). Тоді додаток автоматично спробує знайти шлюз у цій мережі.';
+
+  @override
+  String get openWifiSettings => 'Налаштування WiFi';
+
+  @override
+  String get continueAction => 'Продовжити';
+
+  @override
+  String get autoDetecting => 'Пошук приладів у мережі WiFi…';
+
+  @override
+  String get autoDetectFailed =>
+      'Шлюз не знайдено. Перевірте, чи підключені до WiFi судна, або введіть IP вручну в Налаштуваннях.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Підключено до $host';
+  }
+
+  @override
   String get guidePromptTitle => 'Вперше тут? Короткий гід';
 
   @override
