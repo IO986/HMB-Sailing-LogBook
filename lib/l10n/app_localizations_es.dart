@@ -1085,6 +1085,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Condiciones de navegación, eventos, cambio de tripulación...';
 
   @override
+  String get quickPhotoLogTitle => 'Registro rápido';
+
+  @override
+  String get quickPhotoNoteHint => '¿Qué es esto? (opcional)';
+
+  @override
   String get exportDayTitle => 'Exportar día';
 
   @override
@@ -1323,10 +1329,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addWaypoint => 'Añadir waypoint';
 
   @override
+  String get editWaypoint => 'Editar waypoint';
+
+  @override
   String get waypointNameLabel => 'Nombre';
 
   @override
   String get skipperSignature => 'Firma del patrón';
+
+  @override
+  String get skipperNameLabel => 'Nombre del patrón';
 
   @override
   String get signWithFinger => 'Firme con el dedo';
@@ -1698,21 +1710,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
 
   @override
   String get guideInstrBody =>
-      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia el waypoint\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi TCP o UDP).\nConfiguración de conexión (incluida la elección TCP/UDP) en Ajustes → Instrumentos.';
+      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia un waypoint seleccionado; al elegirlo verás distancia/rumbo y una flecha directamente en la rosa de los vientos\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi TCP o UDP).\nConfiguración de conexión (incluida la elección TCP/UDP) en Ajustes → Instrumentos.';
 
   @override
   String get guideLogbookTitle => 'Diario de navegación';
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Libro de millas';

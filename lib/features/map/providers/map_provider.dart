@@ -48,13 +48,14 @@ final charterTrackPreviewProvider =
   return points;
 });
 
-/// Záznamy s fotkami pre aktuálny deň — reaktívne sleduje DB zmeny.
-final photoEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
+/// Denníkové záznamy s polohou pre aktuálny deň (s fotkou aj bez) —
+/// reaktívne sleduje DB zmeny, na vykreslenie značiek na mape počas trackingu.
+final dayEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
   final isTracking = ref.watch(isTrackingProvider);
   if (!isTracking) return Stream.value([]);
   final dayLogId = GpsTrackingService().activeDayLogId;
   if (dayLogId == null) return Stream.value([]);
-  return ref.read(databaseProvider).watchPhotoEntriesForDay(dayLogId);
+  return ref.read(databaseProvider).watchMappableEntriesForDay(dayLogId);
 });
 
 class MapNotifier extends Notifier<MapState> {
@@ -105,6 +106,12 @@ class MapNotifier extends Notifier<MapState> {
   Future<void> deleteWaypoint(int id) async {
     final db = ref.read(databaseProvider);
     await db.deleteWaypoint(id);
+    ref.invalidate(waypointsProvider);
+  }
+
+  Future<void> renameWaypoint(int id, String name) async {
+    final db = ref.read(databaseProvider);
+    await db.updateWaypointName(id, name);
     ref.invalidate(waypointsProvider);
   }
 }

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
+import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import '../../core/services/gps_tracking_service.dart';
 import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
@@ -294,17 +296,38 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     );
   }
 
+  Future<void> _quickPhotoLog(BuildContext context) async {
+    final file = await ImagePicker()
+        .pickImage(source: ImageSource.camera, imageQuality: 85, maxWidth: 1920);
+    if (file == null || !context.mounted) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => QuickPhotoLogSheet(photoPath: file.path),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentIndex = _idx(context);
     final l = AppLocalizations.of(context);
     final labels = _labels(l);
+    final isTracking = ref.watch(isTrackingProvider);
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (_, __) => _handleBack(context),
       child: Scaffold(
         body: widget.child,
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButton: isTracking
+            ? FloatingActionButton(
+                heroTag: 'quickPhotoLog',
+                tooltip: l.quickPhotoLogTitle,
+                onPressed: () => _quickPhotoLog(context),
+                child: const Icon(Icons.add_a_photo),
+              )
+            : null,
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
             labelTextStyle: WidgetStateProperty.resolveWith((states) =>
@@ -314,8 +337,8 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
             selectedIndex: currentIndex,
             onDestinationSelected: (i) => context.go(_tabData[i].path),
             destinations: _tabData.map((t) => NavigationDestination(
-              icon: Icon(t.icon),
-              selectedIcon: Icon(t.activeIcon),
+              icon: Icon(t.icon, size: 28),
+              selectedIcon: Icon(t.activeIcon, size: 28),
               label: labels[_tabData.indexOf(t)],
             )).toList(),
           ),

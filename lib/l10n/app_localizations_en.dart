@@ -1082,6 +1082,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteHint => 'Sailing conditions, events, crew change...';
 
   @override
+  String get quickPhotoLogTitle => 'Quick log entry';
+
+  @override
+  String get quickPhotoNoteHint => 'What\'s this? (optional)';
+
+  @override
   String get exportDayTitle => 'Day export';
 
   @override
@@ -1320,10 +1326,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addWaypoint => 'Add waypoint';
 
   @override
+  String get editWaypoint => 'Edit waypoint';
+
+  @override
   String get waypointNameLabel => 'Name';
 
   @override
   String get skipperSignature => 'Skipper\'s signature';
+
+  @override
+  String get skipperNameLabel => 'Skipper name';
 
   @override
   String get signWithFinger => 'Sign with your finger';
@@ -1691,21 +1703,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
 
   @override
   String get guideInstrBody =>
-      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward waypoint\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.';
 
   @override
   String get guideLogbookTitle => 'Voyage Logbook';
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
+      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';

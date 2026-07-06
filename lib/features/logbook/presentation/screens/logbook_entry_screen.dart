@@ -160,9 +160,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
             onPressed: _loading ? null : _save,
             child: _loading
                 ? const SizedBox(width: 18, height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    child: CircularProgressIndicator(strokeWidth: 2))
                 : Text(l.save,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),

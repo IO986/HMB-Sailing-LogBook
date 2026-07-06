@@ -193,6 +193,7 @@ class InstrumentsScreen extends ConsumerWidget {
               heading: hdgDeg,
               twa: twaVal,
               twaStarboard: twaStarboard,
+              brgWp: brgWp,
             ),
           ),
         ),
@@ -568,10 +569,12 @@ class _HeadingCompass extends StatelessWidget {
   final double heading;
   final double? twa;
   final bool? twaStarboard;
+  final double? brgWp;
   const _HeadingCompass({
     required this.heading,
     this.twa,
     this.twaStarboard,
+    this.brgWp,
   });
 
   @override
@@ -587,6 +590,7 @@ class _HeadingCompass extends StatelessWidget {
               heading: heading,
               twa: twa,
               twaStarboard: twaStarboard,
+              brgWp: brgWp,
             ),
           ),
         ),
@@ -599,10 +603,12 @@ class _CompassPainter extends CustomPainter {
   final double heading;
   final double? twa;
   final bool? twaStarboard;
+  final double? brgWp;
   const _CompassPainter({
     required this.heading,
     this.twa,
     this.twaStarboard,
+    this.brgWp,
   });
 
   @override
@@ -748,6 +754,42 @@ class _CompassPainter extends CustomPainter {
       );
     }
 
+    // --- WP šípka (priamy kurz na vybraný waypoint) ---
+    if (brgWp != null) {
+      const wpColor = Color(0xFFFFAA00);
+      final relRad = ((brgWp! - heading + 360) % 360) * pi / 180;
+      final dx = sin(relRad);
+      final dy = -cos(relRad);
+
+      final innerR = r * 0.20;
+      final outerR = r * 0.92;
+      final tipX = cx + dx * outerR;
+      final tipY = cy + dy * outerR;
+
+      canvas.drawLine(
+        Offset(cx + dx * innerR, cy + dy * innerR),
+        Offset(tipX, tipY),
+        Paint()
+          ..color = wpColor
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round,
+      );
+
+      final headLen = r * 0.075;
+      final perpX = cos(relRad);
+      final perpY = sin(relRad);
+      final baseX = tipX - dx * headLen;
+      final baseY = tipY - dy * headLen;
+      canvas.drawPath(
+        Path()
+          ..moveTo(tipX, tipY)
+          ..lineTo(baseX + perpX * headLen * 0.5, baseY + perpY * headLen * 0.5)
+          ..lineTo(baseX - perpX * headLen * 0.5, baseY - perpY * headLen * 0.5)
+          ..close(),
+        Paint()..color = wpColor,
+      );
+    }
+
     // --- Kruh v strede s aktuálnym heading ---
     final centerR = r * 0.28;
     canvas.drawCircle(Offset(cx, cy), centerR,
@@ -782,7 +824,10 @@ class _CompassPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CompassPainter old) =>
-      old.heading != heading || old.twa != twa || old.twaStarboard != twaStarboard;
+      old.heading != heading ||
+      old.twa != twa ||
+      old.twaStarboard != twaStarboard ||
+      old.brgWp != brgWp;
 }
 
 // ─────────────────────────────────────────────────────────────

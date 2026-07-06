@@ -165,7 +165,9 @@ class _GearListScreenState extends State<GearListScreen> {
             child: Center(child: Text('$done/$total',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: allDone ? Colors.greenAccent : Colors.white70,
+                    color: allDone
+                        ? Colors.green.shade700
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 16))),
           ),
         ],

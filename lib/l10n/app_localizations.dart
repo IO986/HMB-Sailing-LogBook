@@ -2144,6 +2144,18 @@ abstract class AppLocalizations {
   /// **'Podmienky plavby, udalosti, zmena posádky...'**
   String get noteHint;
 
+  /// No description provided for @quickPhotoLogTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rýchly záznam'**
+  String get quickPhotoLogTitle;
+
+  /// No description provided for @quickPhotoNoteHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čo je to? (voliteľné)'**
+  String get quickPhotoNoteHint;
+
   /// No description provided for @exportDayTitle.
   ///
   /// In sk, this message translates to:
@@ -2594,6 +2606,12 @@ abstract class AppLocalizations {
   /// **'Pridať waypoint'**
   String get addWaypoint;
 
+  /// No description provided for @editWaypoint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upraviť waypoint'**
+  String get editWaypoint;
+
   /// No description provided for @waypointNameLabel.
   ///
   /// In sk, this message translates to:
@@ -2605,6 +2623,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Podpis skippera'**
   String get skipperSignature;
+
+  /// No description provided for @skipperNameLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno skippera'**
+  String get skipperNameLabel;
 
   /// No description provided for @signWithFinger.
   ///
@@ -3311,7 +3335,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -3323,7 +3347,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideInstrBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k cieľovému bodu\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.'**
+  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k vybranému waypointu; po výbere z dlaždice uvidíš vzdialenosť/smer aj šípku priamo na smerovej ružici\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.'**
   String get guideInstrBody;
 
   /// No description provided for @guideLogbookTitle.
@@ -3335,7 +3359,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.

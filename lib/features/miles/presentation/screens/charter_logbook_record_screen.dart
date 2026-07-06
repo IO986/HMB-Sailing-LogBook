@@ -145,7 +145,7 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
         actions: [
           TextButton(
             onPressed: _saving ? null : _save,
-            child: Text(l.save, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(l.save, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),

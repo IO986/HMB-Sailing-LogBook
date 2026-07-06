@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
@@ -59,6 +60,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
 
   bool _loading = true;
   bool _saving = false;
+  bool _scrollLocked = false;
 
   bool get _isCheckOut => widget.type == 'checkOut';
   bool get _isClosed => _skipperSignedAt != null && _companySignedAt != null;
@@ -92,7 +94,14 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       _companyNameCtrl.text = existing.companyName ?? '';
       _companySignaturePath = existing.companySignaturePath;
       _companySignedAt = existing.companySignedAt;
-    } else if (_isCheckOut) {
+    }
+
+    if (_skipperNameCtrl.text.isEmpty) {
+      final profile = await ref.read(skipperProfileProvider.future);
+      if (profile.fullName.isNotEmpty) _skipperNameCtrl.text = profile.fullName;
+    }
+
+    if (existing == null && _isCheckOut) {
       // Predvyplnenie spoločných metadát z check-in protokolu. Samotný
       // checklist NIE je rovnaký zoznam ako pri check-in (iné položky,
       // viď handover_checklist.dart) – stavia sa z vlastných checkOut
@@ -138,58 +147,65 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
 
   Future<void> _save() async {
     setState(() => _saving = true);
-    final db = ref.read(databaseProvider);
-    final docsDir = await getApplicationDocumentsDirectory();
-    final sigDir = Directory('${docsDir.path}/handover_signatures/charter_${widget.charterId}');
-    await sigDir.create(recursive: true);
+    try {
+      final db = ref.read(databaseProvider);
+      final docsDir = await getApplicationDocumentsDirectory();
+      final sigDir = Directory('${docsDir.path}/handover_signatures/charter_${widget.charterId}');
+      await sigDir.create(recursive: true);
 
-    var skipperPath = _skipperSignaturePath;
-    var skipperSignedAt = _skipperSignedAt;
-    if (_skipperStrokes.isNotEmpty) {
-      final bytes = await _skipperPadKey.currentState?.toBytes();
-      if (bytes != null) {
-        final file = File('${sigDir.path}/${widget.type}_skipper.png');
-        await file.writeAsBytes(bytes);
-        skipperPath = file.path;
-        skipperSignedAt = DateTime.now().toUtc();
+      var skipperPath = _skipperSignaturePath;
+      var skipperSignedAt = _skipperSignedAt;
+      if (_skipperStrokes.isNotEmpty) {
+        final bytes = await _skipperPadKey.currentState?.toBytes();
+        if (bytes != null) {
+          final file = File('${sigDir.path}/${widget.type}_skipper.png');
+          await file.writeAsBytes(bytes);
+          skipperPath = file.path;
+          skipperSignedAt = DateTime.now().toUtc();
+        }
       }
-    }
 
-    var companyPath = _companySignaturePath;
-    var companySignedAt = _companySignedAt;
-    if (_companyStrokes.isNotEmpty) {
-      final bytes = await _companyPadKey.currentState?.toBytes();
-      if (bytes != null) {
-        final file = File('${sigDir.path}/${widget.type}_company.png');
-        await file.writeAsBytes(bytes);
-        companyPath = file.path;
-        companySignedAt = DateTime.now().toUtc();
+      var companyPath = _companySignaturePath;
+      var companySignedAt = _companySignedAt;
+      if (_companyStrokes.isNotEmpty) {
+        final bytes = await _companyPadKey.currentState?.toBytes();
+        if (bytes != null) {
+          final file = File('${sigDir.path}/${widget.type}_company.png');
+          await file.writeAsBytes(bytes);
+          companyPath = file.path;
+          companySignedAt = DateTime.now().toUtc();
+        }
       }
+
+      await db.upsertHandoverProtocol(HandoverProtocolsCompanion(
+        charterId: Value(widget.charterId),
+        type: Value(widget.type),
+        dateTimeUtc: Value(_dateTime.toUtc()),
+        location: Value(_locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim()),
+        fuelLevel: Value(_fuelLevel),
+        waterLevel: Value(_waterLevel),
+        engineHours: Value(double.tryParse(_engineHoursCtrl.text)),
+        checklistJson: Value(checklistToJson(_checklist)),
+        skipperName: Value(_skipperNameCtrl.text.trim().isEmpty ? null : _skipperNameCtrl.text.trim()),
+        skipperSignaturePath: Value(skipperPath),
+        skipperSignedAt: Value(skipperSignedAt),
+        companyRepName: Value(_companyRepCtrl.text.trim().isEmpty ? null : _companyRepCtrl.text.trim()),
+        companyName: Value(_companyNameCtrl.text.trim().isEmpty ? null : _companyNameCtrl.text.trim()),
+        companySignaturePath: Value(companyPath),
+        companySignedAt: Value(companySignedAt),
+        extraNotes: Value(_extraNotesCtrl.text.trim().isEmpty ? null : _extraNotesCtrl.text.trim()),
+        createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
+      ));
+
+      ref.invalidate(chartersProvider);
+      if (mounted) context.pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
-
-    await db.upsertHandoverProtocol(HandoverProtocolsCompanion(
-      charterId: Value(widget.charterId),
-      type: Value(widget.type),
-      dateTimeUtc: Value(_dateTime.toUtc()),
-      location: Value(_locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim()),
-      fuelLevel: Value(_fuelLevel),
-      waterLevel: Value(_waterLevel),
-      engineHours: Value(double.tryParse(_engineHoursCtrl.text)),
-      checklistJson: Value(checklistToJson(_checklist)),
-      skipperName: Value(_skipperNameCtrl.text.trim().isEmpty ? null : _skipperNameCtrl.text.trim()),
-      skipperSignaturePath: Value(skipperPath),
-      skipperSignedAt: Value(skipperSignedAt),
-      companyRepName: Value(_companyRepCtrl.text.trim().isEmpty ? null : _companyRepCtrl.text.trim()),
-      companyName: Value(_companyNameCtrl.text.trim().isEmpty ? null : _companyNameCtrl.text.trim()),
-      companySignaturePath: Value(companyPath),
-      companySignedAt: Value(companySignedAt),
-      extraNotes: Value(_extraNotesCtrl.text.trim().isEmpty ? null : _extraNotesCtrl.text.trim()),
-      createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
-    ));
-
-    ref.invalidate(chartersProvider);
-    setState(() => _saving = false);
-    if (mounted) context.pop();
   }
 
   Future<void> _exportPdf() async {
@@ -250,11 +266,18 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           if (!readOnly)
             TextButton(
               onPressed: _saving ? null : _save,
-              child: Text(l.save, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text(l.save, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
         ],
       ),
-      body: ListView(padding: const EdgeInsets.all(16), children: [
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (_) => _scrollLocked,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          physics: _scrollLocked
+              ? const NeverScrollableScrollPhysics()
+              : const ClampingScrollPhysics(),
+          children: [
         if (readOnly)
           Container(
             padding: const EdgeInsets.all(12),
@@ -340,7 +363,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         TextField(
           controller: _skipperNameCtrl,
           enabled: !readOnly,
-          decoration: InputDecoration(labelText: l.skipperSignature),
+          decoration: InputDecoration(labelText: l.skipperNameLabel),
         ),
         const SizedBox(height: 8),
         _SignatureBox(
@@ -351,6 +374,8 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           onStrokeAdded: (s) => setState(() => _skipperStrokes = [..._skipperStrokes, s]),
           onClear: () => setState(() => _skipperStrokes = []),
           clearLabel: l.clear,
+          onDrawStart: () => setState(() => _scrollLocked = true),
+          onDrawEnd: () => setState(() => _scrollLocked = false),
         ),
         const SizedBox(height: 24),
 
@@ -376,9 +401,13 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           onStrokeAdded: (s) => setState(() => _companyStrokes = [..._companyStrokes, s]),
           onClear: () => setState(() => _companyStrokes = []),
           clearLabel: l.clear,
+          onDrawStart: () => setState(() => _scrollLocked = true),
+          onDrawEnd: () => setState(() => _scrollLocked = false),
         ),
         const SizedBox(height: 80),
-      ]),
+          ],
+        ),
+      ),
     );
   }
 
@@ -583,6 +612,8 @@ class _SignatureBox extends StatelessWidget {
   final ValueChanged<List<Offset>> onStrokeAdded;
   final VoidCallback onClear;
   final String clearLabel;
+  final VoidCallback? onDrawStart;
+  final VoidCallback? onDrawEnd;
 
   const _SignatureBox({
     required this.existingPath,
@@ -592,6 +623,8 @@ class _SignatureBox extends StatelessWidget {
     required this.onStrokeAdded,
     required this.onClear,
     required this.clearLabel,
+    this.onDrawStart,
+    this.onDrawEnd,
   });
 
   @override
@@ -624,6 +657,8 @@ class _SignatureBox extends StatelessWidget {
           key: padKey,
           strokes: strokes,
           onStrokeAdded: onStrokeAdded,
+          onDrawStart: onDrawStart,
+          onDrawEnd: onDrawEnd,
         ),
       ),
       Align(

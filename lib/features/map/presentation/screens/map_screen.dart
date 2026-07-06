@@ -12,6 +12,7 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
+import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/waypoint_dialog.dart';
 import '../widgets/map_layer_toggle.dart';
@@ -102,7 +103,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final isTracking = ref.watch(isTrackingProvider);
     final mob = ref.watch(mobProvider);
     final anchor = ref.watch(anchorProvider);
-    final photoEntries = ref.watch(photoEntryMarkersProvider).valueOrNull ?? [];
+    final dayEntries = ref.watch(dayEntryMarkersProvider).valueOrNull ?? [];
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -148,7 +149,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               initialCenter: const LatLng(43.5, 16.4),
               initialZoom: 10,
               onMapReady: _onMapReady,
-              onTap: (_, ll) => _onMapTap(ll),
+              onLongPress: (_, ll) => _onMapTap(ll),
             ),
             children: [
 
@@ -211,7 +212,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     point: LatLng(wp.latitude, wp.longitude),
                     width: 40, height: 40,
                     child: GestureDetector(
-                      onTap: () => _showWaypointInfo(wp.name),
+                      onTap: () => _editWaypoint(wp),
                       child: const Icon(Icons.location_pin,
                           color: Colors.red, size: 36),
                     ),
@@ -260,10 +261,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ),
                 ]),
 
-              // ── Foto záznamy ─────────────────────────────────────────
-              if (photoEntries.isNotEmpty)
+              // ── Denníkové záznamy (s fotkou aj bez) ──────────────────
+              if (dayEntries.isNotEmpty)
                 MarkerLayer(markers: [
-                  for (final e in photoEntries)
+                  for (final e in dayEntries)
                     if (e.latitude != null && e.longitude != null)
                       Marker(
                         point: LatLng(e.latitude!, e.longitude!),
@@ -271,17 +272,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         child: GestureDetector(
                           onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(e.skipperNote ?? 'Foto záznam'),
+                              content: Text(e.skipperNote ??
+                                  (e.photoPath != null ? 'Foto záznam' : 'Záznam denníka')),
                               duration: const Duration(seconds: 2),
                             ),
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.amber.shade700,
+                              color: e.photoPath != null
+                                  ? Colors.amber.shade700
+                                  : Colors.indigo.shade400,
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 1.5),
                             ),
-                            child: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
+                            child: Icon(
+                              e.photoPath != null ? Icons.camera_alt : Icons.edit_note,
+                              color: Colors.white,
+                              size: 16,
+                            ),
                           ),
                         ),
                       ),
@@ -466,9 +474,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
-  void _showWaypointInfo(String name) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Waypoint: $name')));
+  void _editWaypoint(Waypoint wp) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => WaypointDialog(
+        latLng: LatLng(wp.latitude, wp.longitude),
+        existing: wp,
+      ),
+    );
   }
 
   void _focusOnPoints(List<LatLng> points) {

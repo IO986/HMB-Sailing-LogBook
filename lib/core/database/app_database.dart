@@ -413,9 +413,9 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(e) => OrderingTerm(expression: e.timestamp)]))
           .watch();
 
-  Stream<List<LogbookEntry>> watchPhotoEntriesForDay(int dayLogId) =>
+  Stream<List<LogbookEntry>> watchMappableEntriesForDay(int dayLogId) =>
       (select(logbookEntries)
-            ..where((e) => e.dayLogId.equals(dayLogId) & e.photoPath.isNotNull() & e.latitude.isNotNull())
+            ..where((e) => e.dayLogId.equals(dayLogId) & e.latitude.isNotNull())
             ..orderBy([(e) => OrderingTerm(expression: e.timestamp)]))
           .watch();
 
@@ -501,6 +501,10 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deleteWaypoint(int id) =>
       (delete(waypoints)..where((w) => w.id.equals(id))).go();
 
+  Future<void> updateWaypointName(int id, String name) =>
+      (update(waypoints)..where((w) => w.id.equals(id)))
+          .write(WaypointsCompanion(name: Value(name)));
+
   // ── Weather ───────────────────────────────────────────────────
 
   Future<int> insertWeatherSnapshot(WeatherSnapshotsCompanion e) =>
@@ -563,7 +567,13 @@ class AppDatabase extends _$AppDatabase {
           .getSingleOrNull();
 
   Future<int> upsertHandoverProtocol(HandoverProtocolsCompanion h) =>
-      into(handoverProtocols).insertOnConflictUpdate(h);
+      into(handoverProtocols).insert(
+        h,
+        onConflict: DoUpdate(
+          (old) => h,
+          target: [handoverProtocols.charterId, handoverProtocols.type],
+        ),
+      );
 
   Future<void> deleteHandoverProtocolsForCharter(int charterId) =>
       (delete(handoverProtocols)..where((h) => h.charterId.equals(charterId))).go();

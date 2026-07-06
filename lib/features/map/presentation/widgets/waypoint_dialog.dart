@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class WaypointDialog extends ConsumerStatefulWidget {
   final LatLng latLng;
-  const WaypointDialog({super.key, required this.latLng});
+  final Waypoint? existing;
+  const WaypointDialog({super.key, required this.latLng, this.existing});
 
   @override
   ConsumerState<WaypointDialog> createState() => _WaypointDialogState();
 }
 
 class _WaypointDialogState extends ConsumerState<WaypointDialog> {
-  final _nameCtrl = TextEditingController();
+  late final _nameCtrl =
+      TextEditingController(text: widget.existing?.name ?? '');
 
   @override
   Widget build(BuildContext context) {
+    final isEdit = widget.existing != null;
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -29,7 +33,10 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context).addWaypoint,
+          Text(
+              isEdit
+                  ? AppLocalizations.of(context).editWaypoint
+                  : AppLocalizations.of(context).addWaypoint,
               style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
@@ -49,6 +56,14 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              if (isEdit)
+                TextButton.icon(
+                  onPressed: _delete,
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  label: Text(AppLocalizations.of(context).delete,
+                      style: const TextStyle(color: Colors.red)),
+                ),
+              const Spacer(),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(AppLocalizations.of(context).cancel),
@@ -71,11 +86,24 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
     final name = _nameCtrl.text.trim().isEmpty
         ? 'Waypoint ${DateTime.now().hour}:${DateTime.now().minute}'
         : _nameCtrl.text.trim();
-    ref.read(mapNotifierProvider.notifier).addWaypoint(
-          name,
-          widget.latLng.latitude,
-          widget.latLng.longitude,
-        );
+    final existing = widget.existing;
+    if (existing != null) {
+      ref.read(mapNotifierProvider.notifier).renameWaypoint(existing.id, name);
+    } else {
+      ref.read(mapNotifierProvider.notifier).addWaypoint(
+            name,
+            widget.latLng.latitude,
+            widget.latLng.longitude,
+          );
+    }
+    Navigator.pop(context);
+  }
+
+  void _delete() {
+    final existing = widget.existing;
+    if (existing != null) {
+      ref.read(mapNotifierProvider.notifier).deleteWaypoint(existing.id);
+    }
     Navigator.pop(context);
   }
 }

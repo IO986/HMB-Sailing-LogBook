@@ -6,6 +6,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_start_sheet.dart' show TrackingIntervalSelector;
@@ -56,10 +57,20 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     _crewControllers.add(TextEditingController());
     if (!_isNew) {
       _loadCharter();
-    } else if (widget.prefill != null) {
-      _titleCtrl.text = widget.prefill!.title;
-      _dateFrom = widget.prefill!.dateFrom;
-      _dateTo = widget.prefill!.dateTo;
+    } else {
+      if (widget.prefill != null) {
+        _titleCtrl.text = widget.prefill!.title;
+        _dateFrom = widget.prefill!.dateFrom;
+        _dateTo = widget.prefill!.dateTo;
+      }
+      _prefillSkipperFromProfile();
+    }
+  }
+
+  Future<void> _prefillSkipperFromProfile() async {
+    final profile = await ref.read(skipperProfileProvider.future);
+    if (mounted && _skipperCtrl.text.isEmpty && profile.fullName.isNotEmpty) {
+      setState(() => _skipperCtrl.text = profile.fullName);
     }
   }
 
@@ -115,8 +126,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             onPressed: _loading ? null : _save,
             child: _loading
                 ? const SizedBox(width: 20, height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : Text(l.save, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: CircularProgressIndicator(strokeWidth: 2))
+                : Text(l.save, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),

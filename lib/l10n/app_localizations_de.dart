@@ -1088,6 +1088,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noteHint => 'Segelbedingungen, Ereignisse, Crewwechsel...';
 
   @override
+  String get quickPhotoLogTitle => 'Schnelleintrag';
+
+  @override
+  String get quickPhotoNoteHint => 'Was ist das? (optional)';
+
+  @override
   String get exportDayTitle => 'Tagesexport';
 
   @override
@@ -1326,10 +1332,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addWaypoint => 'Wegpunkt hinzufügen';
 
   @override
+  String get editWaypoint => 'Wegpunkt bearbeiten';
+
+  @override
   String get waypointNameLabel => 'Name';
 
   @override
   String get skipperSignature => 'Unterschrift des Skippers';
+
+  @override
+  String get skipperNameLabel => 'Name des Skippers';
 
   @override
   String get signWithFinger => 'Mit dem Finger unterschreiben';
@@ -1704,21 +1716,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
 
   @override
   String get guideInstrBody =>
-      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zum Wegpunkt\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.';
+      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zu einem gewählten Wegpunkt; nach Auswahl siehst du Distanz/Peilung sowie einen Pfeil direkt auf der Kompassrose\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.';
 
   @override
   String get guideLogbookTitle => 'Fahrtenbuch';
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• + (FAB) tippen → \"Neue Reise\" zum Erstellen eines Charters\n• Tracking startet aus diesem Dialog – Position wird automatisch erfasst\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• + (FAB) tippen → \"Neue Reise\" zum Erstellen eines Charters\n• Tracking startet aus diesem Dialog – Position wird automatisch erfasst\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
@@ -47,7 +48,22 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
   @override
   void initState() {
     super.initState();
-    if (!_isNew) _load();
+    if (!_isNew) {
+      _load();
+    } else {
+      _prefillCaptainFromProfile();
+    }
+  }
+
+  Future<void> _prefillCaptainFromProfile() async {
+    final profile = await ref.read(skipperProfileProvider.future);
+    if (!mounted || profile.fullName.isEmpty) return;
+    final parts = profile.fullName.trim().split(RegExp(r'\s+'));
+    setState(() {
+      _captainFirstCtrl.text = parts.length > 1 ? parts.sublist(0, parts.length - 1).join(' ') : parts.first;
+      _captainLastCtrl.text = parts.length > 1 ? parts.last : '';
+      if (profile.licenseType.isNotEmpty) _captainQualCtrl.text = profile.licenseType;
+    });
   }
 
   Future<void> _load() async {
@@ -189,7 +205,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
           if (!_isNew) IconButton(icon: const Icon(Icons.delete_outline), onPressed: _delete),
           TextButton(
             onPressed: _loading ? null : _save,
-            child: Text(l.save, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(l.save, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
