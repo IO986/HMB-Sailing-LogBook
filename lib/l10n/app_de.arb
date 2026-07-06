@@ -41,6 +41,10 @@
   "notNow": "Nicht jetzt",
   "setupConnection": "Verbindung einrichten",
 
+  "guidePromptTitle": "Neu hier? Kurzanleitung",
+  "guidePromptBody": "Die App enthält eine kurze Bedienungsanleitung – Karte, Logbuch, Wetter, Sicherheits-Checkliste und mehr. Möchten Sie sie sich jetzt kurz ansehen? Sie finden sie jederzeit auch später unter Einstellungen → Bedienungsanleitung.",
+  "guidePromptAction": "Anleitung zeigen",
+
   "trackingActiveTitle": "Tracking aktiv",
   "trackingTitle": "Tracking",
   "waitingForGps": "Warte auf GPS...",

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../core/services/gps_tracking_service.dart';
+import '../../features/help/presentation/screens/user_guide_screen.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
@@ -23,9 +24,44 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _maybePromptRaymarineSetup();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _maybePromptUserGuide();
+      await _maybePromptRaymarineSetup();
     });
+  }
+
+  Future<void> _maybePromptUserGuide() async {
+    final prefs = await SharedPreferences.getInstance();
+    final alreadyAsked = prefs.getBool('user_guide_prompted') ?? false;
+    if (alreadyAsked) return;
+
+    await prefs.setBool('user_guide_prompted', true);
+    if (!mounted) return;
+
+    final l = AppLocalizations.of(context);
+    final showGuide = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.menu_book_outlined, size: 32),
+        title: Text(l.guidePromptTitle),
+        content: Text(l.guidePromptBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.guidePromptAction),
+          ),
+        ],
+      ),
+    );
+
+    if (showGuide == true && mounted) {
+      await Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const UserGuideScreen()));
+    }
   }
 
   Future<void> _maybePromptRaymarineSetup() async {

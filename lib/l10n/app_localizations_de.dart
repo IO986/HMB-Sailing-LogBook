@@ -117,6 +117,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupConnection => 'Verbindung einrichten';
 
   @override
+  String get guidePromptTitle => 'Neu hier? Kurzanleitung';
+
+  @override
+  String get guidePromptBody =>
+      'Die App enthält eine kurze Bedienungsanleitung – Karte, Logbuch, Wetter, Sicherheits-Checkliste und mehr. Möchten Sie sie sich jetzt kurz ansehen? Sie finden sie jederzeit auch später unter Einstellungen → Bedienungsanleitung.';
+
+  @override
+  String get guidePromptAction => 'Anleitung zeigen';
+
+  @override
   String get trackingActiveTitle => 'Tracking aktiv';
 
   @override

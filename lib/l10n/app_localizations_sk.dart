@@ -116,6 +116,16 @@ class AppLocalizationsSk extends AppLocalizations {
   String get setupConnection => 'Nastaviť pripojenie';
 
   @override
+  String get guidePromptTitle => 'Prvýkrát tu? Rýchla príručka';
+
+  @override
+  String get guidePromptBody =>
+      'Aplikácia má krátku používateľskú príručku – mapa, lodný denník, počasie, bezpečnostný checklist a ďalšie. Chceš sa na ňu rýchlo pozrieť teraz? Kedykoľvek ju nájdeš aj neskôr v Nastaveniach → Používateľská príručka.';
+
+  @override
+  String get guidePromptAction => 'Ukázať príručku';
+
+  @override
   String get trackingActiveTitle => 'Tracking aktívny';
 
   @override

@@ -117,6 +117,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupConnection => 'Set up connection';
 
   @override
+  String get guidePromptTitle => 'New here? Quick guide';
+
+  @override
+  String get guidePromptBody =>
+      'This app includes a short user guide – map, logbook, weather, safety checklist and more. Want a quick look now? You\'ll always find it later under Settings → User Guide.';
+
+  @override
+  String get guidePromptAction => 'Show me the guide';
+
+  @override
   String get trackingActiveTitle => 'Tracking active';
 
   @override

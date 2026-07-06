@@ -308,6 +308,24 @@ abstract class AppLocalizations {
   /// **'Nastaviť pripojenie'**
   String get setupConnection;
 
+  /// No description provided for @guidePromptTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prvýkrát tu? Rýchla príručka'**
+  String get guidePromptTitle;
+
+  /// No description provided for @guidePromptBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aplikácia má krátku používateľskú príručku – mapa, lodný denník, počasie, bezpečnostný checklist a ďalšie. Chceš sa na ňu rýchlo pozrieť teraz? Kedykoľvek ju nájdeš aj neskôr v Nastaveniach → Používateľská príručka.'**
+  String get guidePromptBody;
+
+  /// No description provided for @guidePromptAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ukázať príručku'**
+  String get guidePromptAction;
+
   /// No description provided for @trackingActiveTitle.
   ///
   /// In sk, this message translates to:

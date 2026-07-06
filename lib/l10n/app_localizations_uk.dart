@@ -117,6 +117,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get setupConnection => 'Налаштувати підключення';
 
   @override
+  String get guidePromptTitle => 'Вперше тут? Короткий гід';
+
+  @override
+  String get guidePromptBody =>
+      'Додаток має короткий посібник користувача – карта, судновий журнал, погода, контрольний список безпеки та інше. Хочете швидко переглянути зараз? Ви завжди знайдете його пізніше в Налаштування → Посібник користувача.';
+
+  @override
+  String get guidePromptAction => 'Показати посібник';
+
+  @override
   String get trackingActiveTitle => 'Трекінг активний';
 
   @override

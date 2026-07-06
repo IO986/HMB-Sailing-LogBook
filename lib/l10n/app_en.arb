@@ -41,6 +41,10 @@
   "notNow": "Not now",
   "setupConnection": "Set up connection",
 
+  "guidePromptTitle": "New here? Quick guide",
+  "guidePromptBody": "This app includes a short user guide – map, logbook, weather, safety checklist and more. Want a quick look now? You'll always find it later under Settings → User Guide.",
+  "guidePromptAction": "Show me the guide",
+
   "trackingActiveTitle": "Tracking active",
   "trackingTitle": "Tracking",
   "waitingForGps": "Waiting for GPS...",

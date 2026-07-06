@@ -41,6 +41,10 @@
   "notNow": "Teraz nie",
   "setupConnection": "Nastaviť pripojenie",
 
+  "guidePromptTitle": "Prvýkrát tu? Rýchla príručka",
+  "guidePromptBody": "Aplikácia má krátku používateľskú príručku – mapa, lodný denník, počasie, bezpečnostný checklist a ďalšie. Chceš sa na ňu rýchlo pozrieť teraz? Kedykoľvek ju nájdeš aj neskôr v Nastaveniach → Používateľská príručka.",
+  "guidePromptAction": "Ukázať príručku",
+
   "trackingActiveTitle": "Tracking aktívny",
   "trackingTitle": "Tracking",
   "waitingForGps": "Čakám na GPS...",

@@ -117,6 +117,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get setupConnection => 'Configurar conexión';
 
   @override
+  String get guidePromptTitle => '¿Primera vez? Guía rápida';
+
+  @override
+  String get guidePromptBody =>
+      'La app incluye una breve guía de usuario – mapa, cuaderno de bitácora, tiempo, lista de seguridad y más. ¿Quiere echarle un vistazo rápido ahora? Siempre la encontrará más tarde en Ajustes → Guía del usuario.';
+
+  @override
+  String get guidePromptAction => 'Mostrar guía';
+
+  @override
   String get trackingActiveTitle => 'Rastreo activo';
 
   @override

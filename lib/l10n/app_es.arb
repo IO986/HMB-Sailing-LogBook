@@ -41,6 +41,10 @@
   "notNow": "Ahora no",
   "setupConnection": "Configurar conexión",
 
+  "guidePromptTitle": "¿Primera vez? Guía rápida",
+  "guidePromptBody": "La app incluye una breve guía de usuario – mapa, cuaderno de bitácora, tiempo, lista de seguridad y más. ¿Quiere echarle un vistazo rápido ahora? Siempre la encontrará más tarde en Ajustes → Guía del usuario.",
+  "guidePromptAction": "Mostrar guía",
+
   "trackingActiveTitle": "Rastreo activo",
   "trackingTitle": "Rastreo",
   "waitingForGps": "Esperando GPS...",
