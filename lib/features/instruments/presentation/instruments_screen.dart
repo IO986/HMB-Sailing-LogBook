@@ -121,7 +121,7 @@ class InstrumentsScreen extends ConsumerWidget {
       ),
       body: Column(children: [
         // ── GPS pozícia ───────────────────────────────────────
-        _GpsPositionRow(pos: pos, fromNmea: rayOk && (marine.hasGpsFix ?? false)),
+        _GpsPositionRow(pos: pos, fromNmea: rayOk && marine.hasGpsFix),
         // ── 2 × 2 digitálne displeje ──────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
