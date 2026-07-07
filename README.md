@@ -85,6 +85,7 @@ flutter run
 ```bash
 flutter build appbundle --release
 ```
+> ⚠️ Pred buildom vždy zvýš `+buildNumber` v `pubspec.yaml` (Play Console odmietne už použité číslo, viď db5ff32).
 
 **iOS (unsigned – Sideloadly):**
 Spustite GitHub Actions workflow `iOS Build (unsigned – Sideloadly)` → stiahni IPA artefakt.
