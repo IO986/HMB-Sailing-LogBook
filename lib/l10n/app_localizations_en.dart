@@ -215,6 +215,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstVoyageHint => 'First voyage – fill in the basic info:';
 
   @override
+  String get briefingRequiredHint =>
+      'Tracking can only be started once the Safety Briefing for this voyage is completed.';
+
+  @override
   String get estimatedDays => 'Estimated number of days:';
 
   @override
@@ -1759,7 +1763,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking for continuing an existing voyage can only be started once its Safety Briefing is completed.';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';

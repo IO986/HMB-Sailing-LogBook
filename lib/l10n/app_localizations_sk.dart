@@ -214,6 +214,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get firstVoyageHint => 'Prvá plavba – vyplň základné info:';
 
   @override
+  String get briefingRequiredHint =>
+      'Tracking sa dá spustiť až po dokončení Safety Briefingu pre danú plavbu.';
+
+  @override
   String get estimatedDays => 'Predpokladaný počet dní:';
 
   @override
@@ -1760,7 +1764,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty';
+      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking pre pokračovanie existujúcej plavby sa dá spustiť až po dokončení Safety Briefingu danej plavby.';
 
   @override
   String get guideCompassTitle => 'Námerový kompas';

@@ -215,6 +215,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get firstVoyageHint => 'Primera travesía – rellene los datos básicos:';
 
   @override
+  String get briefingRequiredHint =>
+      'El tracking solo se puede iniciar una vez completado el Safety Briefing de esta travesía.';
+
+  @override
   String get estimatedDays => 'Número estimado de días:';
 
   @override
@@ -1766,7 +1770,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el tracking para continuar una travesía existente solo se puede iniciar una vez completado su Safety Briefing.';
 
   @override
   String get guideCompassTitle => 'Brújula de navegación';

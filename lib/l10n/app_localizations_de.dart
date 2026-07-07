@@ -216,6 +216,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get firstVoyageHint => 'Erste Fahrt – Grundinfos ausfüllen:';
 
   @override
+  String get briefingRequiredHint =>
+      'Tracking kann erst gestartet werden, wenn das Safety Briefing für diese Fahrt abgeschlossen ist.';
+
+  @override
   String get estimatedDays => 'Geschätzte Tagesanzahl:';
 
   @override
@@ -1772,7 +1776,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking zur Fortsetzung einer bestehenden Fahrt kann erst gestartet werden, wenn deren Safety Briefing abgeschlossen ist.';
 
   @override
   String get guideCompassTitle => 'Peilkompass';

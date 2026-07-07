@@ -494,6 +494,12 @@ abstract class AppLocalizations {
   /// **'Prvá plavba – vyplň základné info:'**
   String get firstVoyageHint;
 
+  /// No description provided for @briefingRequiredHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tracking sa dá spustiť až po dokončení Safety Briefingu pre danú plavbu.'**
+  String get briefingRequiredHint;
+
   /// No description provided for @estimatedDays.
   ///
   /// In sk, this message translates to:
@@ -3431,7 +3437,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyBriefingBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty'**
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking pre pokračovanie existujúcej plavby sa dá spustiť až po dokončení Safety Briefingu danej plavby.'**
   String get guideSafetyBriefingBody;
 
   /// No description provided for @guideCompassTitle.

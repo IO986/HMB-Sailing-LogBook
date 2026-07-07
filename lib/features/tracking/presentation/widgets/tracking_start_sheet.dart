@@ -81,6 +81,42 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
         // Only show charters with SB done for 2nd+ day
         final eligible = charters.where((c) => c.safetyBriefingDone).toList();
         if (eligible.isEmpty) {
+          if (charters.isEmpty) {
+            return Column(children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: Row(children: [
+                  Icon(Icons.info_outline, color: Colors.orange.shade700),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(
+                    l.firstVoyageHint,
+                    style: TextStyle(color: Colors.orange.shade800, fontSize: 13),
+                  )),
+                ]),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.go('/logbook/new');
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(l.newVoyageForm),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ]);
+          }
+
+          // Charters exist but none has a completed Safety Briefing yet
+          final pending = charters.where((c) => !c.safetyBriefingDone).toList();
           return Column(children: [
             Container(
               padding: const EdgeInsets.all(16),
@@ -90,27 +126,30 @@ class _TrackingStartSheetState extends ConsumerState<TrackingStartSheet> {
                 border: Border.all(color: Colors.orange.shade200),
               ),
               child: Row(children: [
-                Icon(Icons.info_outline, color: Colors.orange.shade700),
+                Icon(Icons.warning_amber_rounded, color: Colors.orange.shade700),
                 const SizedBox(width: 12),
                 Expanded(child: Text(
-                  l.firstVoyageHint,
+                  l.briefingRequiredHint,
                   style: TextStyle(color: Colors.orange.shade800, fontSize: 13),
                 )),
               ]),
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.go('/logbook/new');
-                },
-                icon: const Icon(Icons.add),
-                label: Text(l.newVoyageForm),
+            ...pending.map((c) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.go('/logbook/${c.id}/briefing');
+                  },
+                  icon: const Icon(Icons.checklist_rtl),
+                  label: Text('${c.title} — ${l.goToBriefing}',
+                      overflow: TextOverflow.ellipsis),
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
+            )),
           ]);
         }
 
