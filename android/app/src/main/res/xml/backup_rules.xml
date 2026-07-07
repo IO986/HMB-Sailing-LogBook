@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pre-Android 12 (API < 31) Auto Backup rules.
+  Excludes FlutterSharedPreferences so onboarding flags (first_launch,
+  user_guide_prompted, app_locale) don't get silently restored on
+  reinstall, making a "fresh install" behave like an existing one.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="FlutterSharedPreferences.xml" />
+</full-backup-content>
