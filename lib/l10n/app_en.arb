@@ -75,6 +75,8 @@
   "newVoyageDropdown": "— New voyage —",
   "firstVoyageHint": "First voyage – fill in the basic info:",
   "briefingRequiredHint": "Tracking can only be started once the Safety Briefing for this voyage is completed.",
+  "briefingPending": "SB required",
+  "briefingPendingListWarning": "Safety Briefing not completed – tracking can't be started yet",
   "estimatedDays": "Estimated number of days:",
   "logFrequency": "Log entry frequency",
   "startTracking": "Start tracking",

@@ -219,6 +219,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tracking can only be started once the Safety Briefing for this voyage is completed.';
 
   @override
+  String get briefingPending => 'SB required';
+
+  @override
+  String get briefingPendingListWarning =>
+      'Safety Briefing not completed – tracking can\'t be started yet';
+
+  @override
   String get estimatedDays => 'Estimated number of days:';
 
   @override

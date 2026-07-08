@@ -197,6 +197,12 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
       ));
 
+      await db.updateCharter(ChartersCompanion(
+        id: Value(widget.charterId),
+        checkInDone: widget.type == 'checkIn' ? const Value(true) : const Value.absent(),
+        checkOutDone: widget.type == 'checkOut' ? const Value(true) : const Value.absent(),
+      ));
+
       ref.invalidate(chartersProvider);
       if (mounted) context.pop();
     } catch (e) {

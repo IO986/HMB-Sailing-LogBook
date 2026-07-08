@@ -500,6 +500,18 @@ abstract class AppLocalizations {
   /// **'Tracking sa dá spustiť až po dokončení Safety Briefingu pre danú plavbu.'**
   String get briefingRequiredHint;
 
+  /// No description provided for @briefingPending.
+  ///
+  /// In sk, this message translates to:
+  /// **'SB potrebný'**
+  String get briefingPending;
+
+  /// No description provided for @briefingPendingListWarning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Safety Briefing nedokončený – tracking zatiaľ nejde spustiť'**
+  String get briefingPendingListWarning;
+
   /// No description provided for @estimatedDays.
   ///
   /// In sk, this message translates to:

@@ -75,6 +75,8 @@
   "newVoyageDropdown": "— Nueva travesía —",
   "firstVoyageHint": "Primera travesía – rellene los datos básicos:",
   "briefingRequiredHint": "El tracking solo se puede iniciar una vez completado el Safety Briefing de esta travesía.",
+  "briefingPending": "SB requerido",
+  "briefingPendingListWarning": "Safety Briefing sin completar – el tracking aún no se puede iniciar",
   "estimatedDays": "Número estimado de días:",
   "logFrequency": "Frecuencia de entradas en el diario",
   "startTracking": "Iniciar rastreo",

@@ -220,6 +220,13 @@ class AppLocalizationsUk extends AppLocalizations {
       'Трекінг можна запустити лише після завершення інструктажу з безпеки (Safety Briefing) для цього плавання.';
 
   @override
+  String get briefingPending => 'Потрібен SB';
+
+  @override
+  String get briefingPendingListWarning =>
+      'Інструктаж з безпеки не завершено – трекінг поки що не можна запустити';
+
+  @override
   String get estimatedDays => 'Очікувана кількість днів:';
 
   @override

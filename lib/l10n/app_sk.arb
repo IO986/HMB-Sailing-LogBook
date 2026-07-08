@@ -75,6 +75,8 @@
   "newVoyageDropdown": "— Nová plavba —",
   "firstVoyageHint": "Prvá plavba – vyplň základné info:",
   "briefingRequiredHint": "Tracking sa dá spustiť až po dokončení Safety Briefingu pre danú plavbu.",
+  "briefingPending": "SB potrebný",
+  "briefingPendingListWarning": "Safety Briefing nedokončený – tracking zatiaľ nejde spustiť",
   "estimatedDays": "Predpokladaný počet dní:",
   "logFrequency": "Frekvencia zápisov do denníka",
   "startTracking": "Spustiť tracking",

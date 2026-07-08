@@ -306,9 +306,12 @@ class _CharterCard extends ConsumerWidget {
               ],
               const SizedBox(height: 8),
               Row(children: [
-                if (charter.safetyBriefingDone) ...[
-                  _Badge(AppLocalizations.of(context).briefingDone, Colors.green),
-                ],
+                _Badge(
+                  charter.safetyBriefingDone
+                      ? AppLocalizations.of(context).briefingDone
+                      : AppLocalizations.of(context).briefingPending,
+                  charter.safetyBriefingDone ? Colors.green : Colors.red,
+                ),
                 if (charter.checkInDone) ...[
                   _Badge(AppLocalizations.of(context).checkInDone, Colors.blue),
                 ],

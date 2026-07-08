@@ -27,11 +27,16 @@ class CharterDetailScreen extends ConsumerWidget {
           appBar: AppBar(
             title: Text(charter.title, overflow: TextOverflow.ellipsis),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.health_and_safety_outlined),
-                tooltip: AppLocalizations.of(context).briefingOpenBriefing,
-                onPressed: () => context.go('/logbook/$charterId/briefing'),
-              ),
+              charter.safetyBriefingDone
+                  ? IconButton(
+                      icon: const Icon(Icons.health_and_safety_outlined),
+                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
+                      onPressed: () => context.go('/logbook/$charterId/briefing'),
+                    )
+                  : _BlinkingSbIconButton(
+                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
+                      onPressed: () => context.go('/logbook/$charterId/briefing'),
+                    ),
               IconButton(
                 icon: const Icon(Icons.handshake_outlined),
                 tooltip: AppLocalizations.of(context).handoverMenuTitle,
@@ -54,6 +59,41 @@ class CharterDetailScreen extends ConsumerWidget {
       },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('$e'))),
+    );
+  }
+}
+
+class _BlinkingSbIconButton extends StatefulWidget {
+  final String tooltip;
+  final VoidCallback onPressed;
+  const _BlinkingSbIconButton({required this.tooltip, required this.onPressed});
+
+  @override
+  State<_BlinkingSbIconButton> createState() => _BlinkingSbIconButtonState();
+}
+
+class _BlinkingSbIconButtonState extends State<_BlinkingSbIconButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 700),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: FadeTransition(
+        opacity: Tween(begin: 0.3, end: 1.0).animate(_controller),
+        child: const Icon(Icons.health_and_safety, color: Colors.red),
+      ),
+      tooltip: widget.tooltip,
+      onPressed: widget.onPressed,
     );
   }
 }
@@ -134,14 +174,42 @@ class _Body extends ConsumerWidget {
             if (totalNm > 0)
               _InfoRow(Icons.straighten, AppLocalizations.of(context).total, '${totalNm.toStringAsFixed(1)} NM'),
             // Status badges
-            if (charter.safetyBriefingDone || charter.checkInDone || charter.checkOutDone)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Wrap(spacing: 6, children: [
+                _Badge(
+                  charter.safetyBriefingDone
+                      ? AppLocalizations.of(context).briefingDone
+                      : AppLocalizations.of(context).briefingPending,
+                  charter.safetyBriefingDone ? Colors.green : Colors.red,
+                ),
+                if (charter.checkInDone) _Badge(AppLocalizations.of(context).checkInDone, Colors.blue),
+                if (charter.checkOutDone) _Badge(AppLocalizations.of(context).checkOutDone, Colors.orange),
+              ]),
+            ),
+            if (!charter.safetyBriefingDone)
               Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Wrap(spacing: 6, children: [
-                  if (charter.safetyBriefingDone) _Badge(AppLocalizations.of(context).briefingDone, Colors.green),
-                  if (charter.checkInDone) _Badge(AppLocalizations.of(context).checkInDone, Colors.blue),
-                  if (charter.checkOutDone) _Badge(AppLocalizations.of(context).checkOutDone, Colors.orange),
-                ]),
+                padding: const EdgeInsets.only(top: 10),
+                child: InkWell(
+                  onTap: () => context.go('/logbook/${charter.id}/briefing'),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.shade200),
+                    ),
+                    child: Row(children: [
+                      Icon(Icons.warning_amber_rounded, size: 16, color: Colors.red.shade700),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(
+                        AppLocalizations.of(context).briefingPendingListWarning,
+                        style: TextStyle(fontSize: 12, color: Colors.red.shade800, fontWeight: FontWeight.w600),
+                      )),
+                      Icon(Icons.chevron_right, size: 18, color: Colors.red.shade700),
+                    ]),
+                  ),
+                ),
               ),
           ]),
         )),

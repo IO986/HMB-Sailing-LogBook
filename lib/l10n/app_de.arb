@@ -75,6 +75,8 @@
   "newVoyageDropdown": "— Neue Fahrt —",
   "firstVoyageHint": "Erste Fahrt – Grundinfos ausfüllen:",
   "briefingRequiredHint": "Tracking kann erst gestartet werden, wenn das Safety Briefing für diese Fahrt abgeschlossen ist.",
+  "briefingPending": "SB erforderlich",
+  "briefingPendingListWarning": "Safety Briefing nicht abgeschlossen – Tracking kann noch nicht gestartet werden",
   "estimatedDays": "Geschätzte Tagesanzahl:",
   "logFrequency": "Häufigkeit der Logbucheinträge",
   "startTracking": "Tracking starten",

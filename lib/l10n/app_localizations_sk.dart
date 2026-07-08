@@ -218,6 +218,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'Tracking sa dá spustiť až po dokončení Safety Briefingu pre danú plavbu.';
 
   @override
+  String get briefingPending => 'SB potrebný';
+
+  @override
+  String get briefingPendingListWarning =>
+      'Safety Briefing nedokončený – tracking zatiaľ nejde spustiť';
+
+  @override
   String get estimatedDays => 'Predpokladaný počet dní:';
 
   @override
