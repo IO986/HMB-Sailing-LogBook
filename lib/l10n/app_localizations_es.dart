@@ -753,6 +753,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get checkOutProtocol => 'Protocolo de check-out';
 
   @override
+  String get nextStepLabel => 'Siguiente paso';
+
+  @override
+  String get readyToTrackHint => 'Listo para iniciar el tracking';
+
+  @override
+  String wizardStepHeader(int step, int total, String label) {
+    return 'Paso $step/$total · $label';
+  }
+
+  @override
   String get safetyBriefingShort => 'Briefing de\nseguridad';
 
   @override
@@ -1714,7 +1725,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Abrir Diario → pulsar + → seleccionar \"Nueva travesía\"\n2. Introducir nombre del barco y días estimados\n3. El rastreo se inicia automáticamente – guarda el teléfono en el bolsillo\n4. Añadir entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF';
+      '1. Toca el botón grande \"Iniciar travesía\" arriba (en Mapa, Diario o Instrumentos) – el seguimiento empieza al instante, no hay que rellenar nada antes\n2. Si tienes una travesía abierta, la app pregunta: continuarla o crear un nuevo registro\n3. Completa los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) cuando quieras – la app te lo recuerda con chips en el Diario\n4. Añade entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF';
 
   @override
   String get guideMapTitle => 'Mapa';
@@ -1735,7 +1746,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• Pulsar + (FAB) → \"Nueva travesía\" para crear un charter\n• El rastreo se inicia desde este diálogo – la posición se registra automáticamente\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento al instante – no hay que rellenar ningún formulario antes\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -1777,7 +1788,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el tracking para continuar una travesía existente solo se puede iniciar una vez completado su Safety Briefing.';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes.';
 
   @override
   String get guideCompassTitle => 'Brújula de navegación';
@@ -1907,4 +1918,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get skipperOtherCertsHint =>
       'p.ej. Yachtmaster, RYA, STCW, cursos de rescate...';
+
+  @override
+  String get continueLastVoyageTitle => '¿Continuar la última travesía?';
+
+  @override
+  String get continueVoyageAction => 'Continuar';
+
+  @override
+  String get newRecordAction => 'Nuevo registro';
+
+  @override
+  String get missingCheckInChip => 'Falta check-in';
+
+  @override
+  String get missingBriefingChip => 'Falta briefing de seguridad';
+
+  @override
+  String get missingDetailsChip => 'Faltan datos de barco/tripulación';
+
+  @override
+  String get missingCheckOutChip => 'Falta check-out';
 }

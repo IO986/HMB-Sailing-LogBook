@@ -751,6 +751,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkOutProtocol => 'Check-out protocol';
 
   @override
+  String get nextStepLabel => 'Next step';
+
+  @override
+  String get readyToTrackHint => 'Ready to start tracking';
+
+  @override
+  String wizardStepHeader(int step, int total, String label) {
+    return 'Step $step/$total · $label';
+  }
+
+  @override
   String get safetyBriefingShort => 'Safety\nBriefing';
 
   @override
@@ -1707,7 +1718,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Open Logbook → tap + → select \"New voyage\"\n2. Enter boat name and estimated number of days\n3. Tracking starts automatically – put the phone in your pocket\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF';
+      '1. Tap the big \"Start Voyage\" button at the top (on Map, Logbook or Instruments) – tracking starts immediately, nothing to fill in first\n2. If you have an open voyage, the app asks whether to continue it or start a new record\n3. Fill in missing details (check-in, safety briefing, vessel/crew card) whenever you like – the app reminds you with chips in the Logbook\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF';
 
   @override
   String get guideMapTitle => 'Map';
@@ -1728,7 +1739,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• Tap + (FAB) → \"New voyage\" to create a charter\n• Tracking starts from this dialog – position is recorded automatically\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking immediately – no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -1770,7 +1781,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking for continuing an existing voyage can only be started once its Safety Briefing is completed.';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done.';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';
@@ -1900,4 +1911,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get skipperOtherCertsHint =>
       'e.g. Yachtmaster, RYA, STCW, rescue courses...';
+
+  @override
+  String get continueLastVoyageTitle => 'Continue the last voyage?';
+
+  @override
+  String get continueVoyageAction => 'Continue';
+
+  @override
+  String get newRecordAction => 'New record';
+
+  @override
+  String get missingCheckInChip => 'Missing check-in';
+
+  @override
+  String get missingBriefingChip => 'Missing safety briefing';
+
+  @override
+  String get missingDetailsChip => 'Missing vessel/crew details';
+
+  @override
+  String get missingCheckOutChip => 'Missing check-out';
 }

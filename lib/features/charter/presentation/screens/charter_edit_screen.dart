@@ -9,7 +9,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
-import '../../../tracking/presentation/widgets/tracking_start_sheet.dart' show TrackingIntervalSelector;
+import '../../../../shared/widgets/tracking_interval_selector.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterPrefill {
@@ -44,7 +44,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _notesCtrl = TextEditingController();
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now().add(const Duration(days: 7));
-  bool _checkIn = false, _checkOut = false;
   bool _loading = false;
   Charter? _existing;
   int _logInterval = 60;
@@ -107,8 +106,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         _notesCtrl.text = c.notes ?? '';
         _dateFrom = c.dateFrom;
         _dateTo = c.dateTo;
-        _checkIn = c.checkInDone;
-        _checkOut = c.checkOutDone;
       });
     } catch (_) {}
   }
@@ -308,24 +305,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               alignLabelWithHint: true,
             ),
           ),
-          const SizedBox(height: 16),
-
-          // Status checkboxes only visible when editing (not creating new)
-          if (!_isNew) ...[
-            _Section(l.statusLabel),
-            CheckboxListTile(
-              title: Text(l.checkInDoneLabel),
-              value: _checkIn,
-              onChanged: (v) => setState(() => _checkIn = v ?? false),
-              secondary: const Icon(Icons.login),
-            ),
-            CheckboxListTile(
-              title: Text(l.checkOutDoneLabel),
-              value: _checkOut,
-              onChanged: (v) => setState(() => _checkOut = v ?? false),
-              secondary: const Icon(Icons.logout),
-            ),
-          ],
           const SizedBox(height: 100),
         ],
       ),
@@ -385,8 +364,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       safetyBriefingDone: _existing != null
           ? Value(_existing!.safetyBriefingDone)
           : const Value(false),
-      checkInDone: Value(_checkIn),
-      checkOutDone: Value(_checkOut),
       createdAt: Value(_existing?.createdAt ?? DateTime.now()),
     );
 
@@ -394,7 +371,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       await db.updateCharter(companion);
       ref.invalidate(chartersProvider);
       setState(() => _loading = false);
-      if (mounted) context.go('/logbook');
+      if (mounted) context.go('/logbook/${_existing!.id}');
     } else {
       final charter = await db.insertCharter(companion);
       ref.invalidate(chartersProvider);

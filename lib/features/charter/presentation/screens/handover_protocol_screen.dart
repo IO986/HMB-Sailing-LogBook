@@ -197,14 +197,23 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
       ));
 
+      final closed = skipperSignedAt != null && companySignedAt != null;
       await db.updateCharter(ChartersCompanion(
         id: Value(widget.charterId),
-        checkInDone: widget.type == 'checkIn' ? const Value(true) : const Value.absent(),
-        checkOutDone: widget.type == 'checkOut' ? const Value(true) : const Value.absent(),
+        checkInDone: widget.type == 'checkIn' ? Value(closed) : const Value.absent(),
+        checkOutDone: widget.type == 'checkOut' ? Value(closed) : const Value.absent(),
       ));
 
       ref.invalidate(chartersProvider);
-      if (mounted) context.pop();
+      if (!mounted) return;
+
+      final charter = _charter;
+      if (widget.type == 'checkIn' && closed &&
+          charter != null && !charter.safetyBriefingDone) {
+        context.go('/logbook/${widget.charterId}/briefing');
+      } else {
+        context.pop();
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));

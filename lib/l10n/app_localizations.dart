@@ -1514,6 +1514,24 @@ abstract class AppLocalizations {
   /// **'Check-out protokol'**
   String get checkOutProtocol;
 
+  /// No description provided for @nextStepLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ďalší krok'**
+  String get nextStepLabel;
+
+  /// No description provided for @readyToTrackHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripravené na tracking'**
+  String get readyToTrackHint;
+
+  /// No description provided for @wizardStepHeader.
+  ///
+  /// In sk, this message translates to:
+  /// **'Krok {step}/{total} · {label}'**
+  String wizardStepHeader(int step, int total, String label);
+
   /// No description provided for @safetyBriefingShort.
   ///
   /// In sk, this message translates to:
@@ -3341,7 +3359,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideQuickStartBody.
   ///
   /// In sk, this message translates to:
-  /// **'1. Otvor Denník → stlač + → vyber \"Nová plavba\"\n2. Vyplň názov lode a zadaj predpokladaný počet dní\n3. Tracking štartuje automaticky – telefón si ulož do vrecka\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF'**
+  /// **'1. Ťukni na veľké tlačidlo \"Spustiť plavbu\" hore (na Mape, v Denníku alebo pri Prístrojoch) – tracking beží okamžite, nič netreba vypĺňať vopred\n2. Ak máš rozostavanú plavbu, appka sa opýta: pokračovať v nej, alebo nový záznam\n3. Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) doplň kedykoľvek – appka ich pripomenie farebnými chipmi v Denníku\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF'**
   String get guideQuickStartBody;
 
   /// No description provided for @guideMapTitle.
@@ -3377,7 +3395,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking okamžite – žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.
@@ -3449,7 +3467,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyBriefingBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking pre pokračovanie existujúcej plavby sa dá spustiť až po dokončení Safety Briefingu danej plavby.'**
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš.'**
   String get guideSafetyBriefingBody;
 
   /// No description provided for @guideCompassTitle.
@@ -3691,6 +3709,48 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'napr. Yachtmaster, RYA, STCW, záchranárske kurzy...'**
   String get skipperOtherCertsHint;
+
+  /// No description provided for @continueLastVoyageTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračovať v poslednej plavbe?'**
+  String get continueLastVoyageTitle;
+
+  /// No description provided for @continueVoyageAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračovať'**
+  String get continueVoyageAction;
+
+  /// No description provided for @newRecordAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nový záznam'**
+  String get newRecordAction;
+
+  /// No description provided for @missingCheckInChip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chýba Check-in'**
+  String get missingCheckInChip;
+
+  /// No description provided for @missingBriefingChip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chýba SB'**
+  String get missingBriefingChip;
+
+  /// No description provided for @missingDetailsChip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chýba karta lode/posádky'**
+  String get missingDetailsChip;
+
+  /// No description provided for @missingCheckOutChip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chýba Check-out'**
+  String get missingCheckOutChip;
 }
 
 class _AppLocalizationsDelegate

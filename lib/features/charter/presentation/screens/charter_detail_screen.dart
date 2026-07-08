@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterDetailScreen extends ConsumerWidget {
@@ -173,44 +174,7 @@ class _Body extends ConsumerWidget {
               _InfoRow(Icons.group, AppLocalizations.of(context).crew, crew.join(', ')),
             if (totalNm > 0)
               _InfoRow(Icons.straighten, AppLocalizations.of(context).total, '${totalNm.toStringAsFixed(1)} NM'),
-            // Status badges
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Wrap(spacing: 6, children: [
-                _Badge(
-                  charter.safetyBriefingDone
-                      ? AppLocalizations.of(context).briefingDone
-                      : AppLocalizations.of(context).briefingPending,
-                  charter.safetyBriefingDone ? Colors.green : Colors.red,
-                ),
-                if (charter.checkInDone) _Badge(AppLocalizations.of(context).checkInDone, Colors.blue),
-                if (charter.checkOutDone) _Badge(AppLocalizations.of(context).checkOutDone, Colors.orange),
-              ]),
-            ),
-            if (!charter.safetyBriefingDone)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: InkWell(
-                  onTap: () => context.go('/logbook/${charter.id}/briefing'),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade200),
-                    ),
-                    child: Row(children: [
-                      Icon(Icons.warning_amber_rounded, size: 16, color: Colors.red.shade700),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(
-                        AppLocalizations.of(context).briefingPendingListWarning,
-                        style: TextStyle(fontSize: 12, color: Colors.red.shade800, fontWeight: FontWeight.w600),
-                      )),
-                      Icon(Icons.chevron_right, size: 18, color: Colors.red.shade700),
-                    ]),
-                  ),
-                ),
-              ),
+            VoyageReminderChips(charterId: charter.id),
           ]),
         )),
         const SizedBox(height: 8),
@@ -276,23 +240,6 @@ class _InfoRow extends StatelessWidget {
       Text('$label: ', style: const TextStyle(color: Colors.grey, fontSize: 13)),
       Expanded(child: Text(value, style: const TextStyle(fontSize: 13))),
     ]),
-  );
-}
-
-class _Badge extends StatelessWidget {
-  final String label;
-  final Color color;
-  const _Badge(this.label, this.color);
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-    decoration: BoxDecoration(
-      color: color.withOpacity(0.15),
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: color.withOpacity(0.4)),
-    ),
-    child: Text(label, style: TextStyle(fontSize: 11, color: color,
-        fontWeight: FontWeight.w600)),
   );
 }
 

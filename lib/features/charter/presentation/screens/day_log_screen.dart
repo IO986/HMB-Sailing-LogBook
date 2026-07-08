@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:drift/drift.dart' show Value;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
+import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
+import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
@@ -26,22 +27,10 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
   DayLog? _day;
   bool _loading = true;
 
-  final _fromCtrl = TextEditingController();
-  final _toCtrl = TextEditingController();
-  final _vesselCtrl = TextEditingController();
-  final _noteCtrl = TextEditingController();
-  final _distCtrl = TextEditingController();
-  final _waveCtrl = TextEditingController();
-  final _airTempCtrl = TextEditingController();
-  final _waterTempCtrl = TextEditingController();
-  int? _bftMorn, _bftNoon, _bftEve;
-  String? _seaState, _windDir;
-
-
   @override
   void initState() {
     super.initState();
-_loadDay();
+    _loadDay();
   }
 
   Future<void> _loadDay() async {
@@ -51,19 +40,6 @@ _loadDay();
       final d = days.firstWhere((d) => d.id == widget.dayLogId);
       setState(() {
         _day = d;
-        _fromCtrl.text = d.portFrom ?? '';
-        _toCtrl.text = d.portTo ?? '';
-        _vesselCtrl.text = d.vesselForDay ?? '';
-        _noteCtrl.text = d.skipperNote ?? '';
-        _distCtrl.text = d.distanceNm > 0 ? d.distanceNm.toStringAsFixed(1) : '';
-        _waveCtrl.text = d.waveHeightM?.toStringAsFixed(1) ?? '';
-        _airTempCtrl.text = d.airTempC?.toStringAsFixed(1) ?? '';
-        _waterTempCtrl.text = d.waterTempC?.toStringAsFixed(1) ?? '';
-        _bftMorn = d.beaufortMorning;
-        _bftNoon = d.beaufortNoon;
-        _bftEve = d.beaufortEvening;
-        _seaState = d.seaState;
-        _windDir = d.windDirection;
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
@@ -81,7 +57,6 @@ _loadDay();
       appBar: AppBar(
         title: Text(dayName, style: const TextStyle(fontSize: 15)),
         actions: [
-          IconButton(icon: const Icon(Icons.save), onPressed: _save),
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () => context.go(
@@ -99,40 +74,6 @@ _loadDay();
     );
   }
 
-  Future<void> _save() async {
-    final db = ref.read(databaseProvider);
-    await db.updateDayLog(DayLogsCompanion(
-      id: Value(_day!.id),
-      charterId: Value(_day!.charterId),
-      date: Value(_day!.date),
-      portFrom: Value(_fromCtrl.text.trim().isEmpty ? null : _fromCtrl.text.trim()),
-      portTo: Value(_toCtrl.text.trim().isEmpty ? null : _toCtrl.text.trim()),
-      vesselForDay: Value(_vesselCtrl.text.trim().isEmpty ? null : _vesselCtrl.text.trim()),
-      distanceNm: Value(double.tryParse(_distCtrl.text) ?? 0),
-      beaufortMorning: Value(_bftMorn),
-      beaufortNoon: Value(_bftNoon),
-      beaufortEvening: Value(_bftEve),
-      windDirection: Value(_windDir),
-      seaState: Value(_seaState),
-      waveHeightM: Value(double.tryParse(_waveCtrl.text)),
-      airTempC: Value(double.tryParse(_airTempCtrl.text)),
-      waterTempC: Value(double.tryParse(_waterTempCtrl.text)),
-      skipperNote: Value(_noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
-    ));
-    ref.invalidate(dayLogsProvider(widget.charterId));
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).saved), duration: const Duration(seconds: 1)));
-    }
-  }
-
-  @override
-  void dispose() {
-    _fromCtrl.dispose(); _toCtrl.dispose(); _vesselCtrl.dispose();
-    _noteCtrl.dispose(); _distCtrl.dispose(); _waveCtrl.dispose();
-    _airTempCtrl.dispose(); _waterTempCtrl.dispose();
-    super.dispose();
-  }
 }
 
 // ── Tab 1: Záznamy ────────────────────────────────────────────
@@ -235,7 +176,7 @@ class _TrackingStatusCard extends ConsumerWidget {
             Expanded(child: Text(AppLocalizations.of(context).trackingThisDay,
                 style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600))),
             OutlinedButton.icon(
-              onPressed: () => ref.read(trackingNotifierProvider.notifier).stopTracking(),
+              onPressed: () => handleStopTap(context, ref),
               icon: const Icon(Icons.stop, size: 16, color: Colors.red),
               label: const Text('Stop', style: TextStyle(color: Colors.red)),
               style: OutlinedButton.styleFrom(
@@ -261,18 +202,6 @@ class _TrackingStatusCard extends ConsumerWidget {
     }
     return const SizedBox.shrink();
   }
-}
-
-// ── Weather condition emoji lookup (mirrors logbook_entry_screen) ──
-
-String? _wcEmoji(String? key) {
-  const map = {
-    'sunny': '☀️', 'partly_cloudy': '⛅', 'overcast': '☁️',
-    'light_rain': '🌦', 'rain': '🌧', 'heavy_rain': '🌧',
-    'drizzle': '🌂', 'thunderstorm': '⛈', 'iso_thunder': '🌩',
-    'hail': '🌨', 'dust': '🌫', 'foggy': '🌁', 'windy': '💨', 'cold': '❄️',
-  };
-  return key == null ? null : map[key];
 }
 
 // ── helpers ───────────────────────────────────────────────────
@@ -436,7 +365,7 @@ class _EntryTile extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 3),
                     child: Row(children: [
                       if (entry.weatherCondition != null) ...[
-                        Text(_wcEmoji(entry.weatherCondition) ?? '',
+                        Text(wcEmoji(entry.weatherCondition) ?? '',
                             style: const TextStyle(fontSize: 14)),
                         const SizedBox(width: 6),
                       ],

@@ -5,14 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
-import '../../../tracking/providers/tracking_provider.dart';
 
 // ── Screen ────────────────────────────────────────────────────
 
@@ -127,22 +125,38 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                       color: Colors.green.shade700,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(children: [
-                      const Icon(Icons.verified, color: Colors.white, size: 24),
-                      const SizedBox(width: 12),
-                      Expanded(child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l.briefingDoneLabel,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15)),
-                          Text(l.briefingDoneSubtitle,
-                              style: const TextStyle(
-                                  color: Colors.white70, fontSize: 12)),
-                        ],
-                      )),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(children: [
+                        const Icon(Icons.verified, color: Colors.white, size: 24),
+                        const SizedBox(width: 12),
+                        Expanded(child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l.briefingDoneLabel,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15)),
+                            Text(l.briefingDoneSubtitle,
+                                style: const TextStyle(
+                                    color: Colors.white70, fontSize: 12)),
+                          ],
+                        )),
+                      ]),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => context.go('/map'),
+                          icon: const Icon(Icons.play_arrow),
+                          label: Text(l.startTracking),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.green.shade800,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
                     ]),
                   ),
 
@@ -258,7 +272,6 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
 
       if (context.mounted) {
         final l = AppLocalizations.of(context);
-        final capturedCharter = charter;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(l.briefingSavedOk),
           backgroundColor: Colors.green.shade700,
@@ -267,7 +280,7 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
             label: l.startTracking,
             textColor: Colors.white,
             onPressed: () {
-              if (mounted) _startTrackingNow(context, capturedCharter);
+              if (mounted) context.go('/map');
             },
           ),
         ));
@@ -284,45 +297,6 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-  }
-
-  Future<void> _startTrackingNow(BuildContext context, Charter charter) async {
-    if (!mounted) return;
-    final db = ref.read(databaseProvider);
-    final today = DateTime.now();
-    final days = await db.getDayLogs(charter.id);
-    if (!mounted) return;
-
-    DayLog dayLog;
-    final todayLog = days.where((d) =>
-        d.date.year == today.year &&
-        d.date.month == today.month &&
-        d.date.day == today.day).toList();
-
-    if (todayLog.isNotEmpty) {
-      dayLog = todayLog.first;
-    } else {
-      dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-        charterId: charter.id,
-        date: today,
-      ));
-      if (!mounted) return;
-      ref.invalidate(dayLogsProvider(charter.id));
-    }
-
-    if (!mounted) return;
-    final prefs = await SharedPreferences.getInstance();
-    final logInterval = prefs.getInt('pending_log_interval') ?? 60;
-    await prefs.remove('pending_log_interval');
-
-    final dayFmt = DateFormat('EEE d.M.', 'sk');
-    await ref.read(trackingNotifierProvider.notifier).startTracking(
-      '${dayFmt.format(today)}: ${dayLog.portFrom ?? charter.title}',
-      dayLogId: dayLog.id,
-      logIntervalSeconds: logInterval,
-    );
-
-    if (context.mounted) context.go('/map');
   }
 }
 

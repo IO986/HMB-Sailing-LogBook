@@ -252,6 +252,17 @@ class GpsTrackingService {
         }
       }
 
+      if (_activeDayLogId != null) {
+        try {
+          await _db!.updateDayLog(DayLogsCompanion(
+            id: drift.Value(_activeDayLogId!),
+            isComplete: const drift.Value(true),
+          ));
+        } catch (e) {
+          debugPrint('[GPS] DayLog isComplete update failed: $e');
+        }
+      }
+
       _currentSession = null;
     }
     _trackCache.clear();

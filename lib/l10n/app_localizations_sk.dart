@@ -752,6 +752,17 @@ class AppLocalizationsSk extends AppLocalizations {
   String get checkOutProtocol => 'Check-out protokol';
 
   @override
+  String get nextStepLabel => 'Ďalší krok';
+
+  @override
+  String get readyToTrackHint => 'Pripravené na tracking';
+
+  @override
+  String wizardStepHeader(int step, int total, String label) {
+    return 'Krok $step/$total · $label';
+  }
+
+  @override
   String get safetyBriefingShort => 'Safety\nBrífing';
 
   @override
@@ -1708,7 +1719,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Otvor Denník → stlač + → vyber \"Nová plavba\"\n2. Vyplň názov lode a zadaj predpokladaný počet dní\n3. Tracking štartuje automaticky – telefón si ulož do vrecka\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF';
+      '1. Ťukni na veľké tlačidlo \"Spustiť plavbu\" hore (na Mape, v Denníku alebo pri Prístrojoch) – tracking beží okamžite, nič netreba vypĺňať vopred\n2. Ak máš rozostavanú plavbu, appka sa opýta: pokračovať v nej, alebo nový záznam\n3. Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) doplň kedykoľvek – appka ich pripomenie farebnými chipmi v Denníku\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF';
 
   @override
   String get guideMapTitle => 'Mapa';
@@ -1729,7 +1740,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)';
+      'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking okamžite – žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Kniha míľ';
@@ -1771,7 +1782,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking pre pokračovanie existujúcej plavby sa dá spustiť až po dokončení Safety Briefingu danej plavby.';
+      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš.';
 
   @override
   String get guideCompassTitle => 'Námerový kompas';
@@ -1901,4 +1912,25 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get skipperOtherCertsHint =>
       'napr. Yachtmaster, RYA, STCW, záchranárske kurzy...';
+
+  @override
+  String get continueLastVoyageTitle => 'Pokračovať v poslednej plavbe?';
+
+  @override
+  String get continueVoyageAction => 'Pokračovať';
+
+  @override
+  String get newRecordAction => 'Nový záznam';
+
+  @override
+  String get missingCheckInChip => 'Chýba Check-in';
+
+  @override
+  String get missingBriefingChip => 'Chýba SB';
+
+  @override
+  String get missingDetailsChip => 'Chýba karta lode/posádky';
+
+  @override
+  String get missingCheckOutChip => 'Chýba Check-out';
 }
