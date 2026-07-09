@@ -1718,7 +1718,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Tap the big \"Start Voyage\" button at the top (on Map, Logbook or Instruments) – tracking starts immediately, nothing to fill in first\n2. If you have an open voyage, the app asks whether to continue it or start a new record\n3. Fill in missing details (check-in, safety briefing, vessel/crew card) whenever you like – the app reminds you with chips in the Logbook\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF';
+      '1. Tap the big \"Start Voyage\" button at the top (on Map, Logbook or Instruments) – pick the log frequency and tracking runs, nothing else to fill in first\n2. If you have an open voyage, the app asks whether to continue it or start a new record\n3. Fill in missing details (check-in, safety briefing, vessel/crew card) whenever you like – the app reminds you with chips in the Logbook\n4. Add log entries during the day: time, position, note\n5. At the end of the voyage open Settings → Export PDF\n\nThe app runs in fullscreen – swipe from the top or bottom edge to temporarily show the phone\'s system bars.';
 
   @override
   String get guideMapTitle => 'Map';
@@ -1739,7 +1739,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking immediately – no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';

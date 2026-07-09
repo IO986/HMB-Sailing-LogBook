@@ -1725,7 +1725,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Toca el botón grande \"Iniciar travesía\" arriba (en Mapa, Diario o Instrumentos) – el seguimiento empieza al instante, no hay que rellenar nada antes\n2. Si tienes una travesía abierta, la app pregunta: continuarla o crear un nuevo registro\n3. Completa los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) cuando quieras – la app te lo recuerda con chips en el Diario\n4. Añade entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF';
+      '1. Toca el botón grande \"Iniciar travesía\" arriba (en Mapa, Diario o Instrumentos) – elige la frecuencia de registro y el seguimiento arranca, no hay que rellenar nada más antes\n2. Si tienes una travesía abierta, la app pregunta: continuarla o crear un nuevo registro\n3. Completa los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) cuando quieras – la app te lo recuerda con chips en el Diario\n4. Añade entradas durante el día: hora, posición, nota\n5. Al final de la travesía: Ajustes → Exportar PDF\n\nLa app funciona a pantalla completa – desliza desde el borde superior o inferior para mostrar temporalmente las barras del sistema del teléfono.';
 
   @override
   String get guideMapTitle => 'Mapa';
@@ -1746,7 +1746,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento al instante – no hay que rellenar ningún formulario antes\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
 
   @override
   String get guideMilesTitle => 'Libro de millas';

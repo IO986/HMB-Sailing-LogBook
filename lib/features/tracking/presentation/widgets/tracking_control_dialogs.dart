@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
+import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../providers/tracking_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
@@ -17,10 +18,12 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 /// chips in the Denník.
 Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
   final l = AppLocalizations.of(context);
+  final interval = await _pickLogInterval(context);
+  if (interval == null || !context.mounted) return;
   final open = await ref.read(openVoyageProvider.future);
   if (!context.mounted) return;
   if (open == null) {
-    await _startNew(context, ref);
+    await _startNew(context, ref, interval);
     return;
   }
 
@@ -46,15 +49,48 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
 
   if (!context.mounted || choice == null) return;
   if (choice == 'continue') {
-    await _continueVoyage(context, ref, open);
+    await _continueVoyage(context, ref, open, interval);
   } else if (choice == 'new') {
     // `open` is left untouched — checkOutDone stays false, so its
     // "missing check-out" reminder chip surfaces on its own in the Denník.
-    await _startNew(context, ref);
+    await _startNew(context, ref, interval);
   }
 }
 
-Future<void> _continueVoyage(BuildContext context, WidgetRef ref, Charter charter) async {
+/// Popup hneď po ťuknutí na Start: výber frekvencie zápisov do denníka.
+/// Zrušenie dialógu zruší celý štart (nič sa nevytvorí). Zvolená hodnota
+/// sa uloží ako predvolená pre nabudúce.
+Future<int?> _pickLogInterval(BuildContext context) async {
+  final l = AppLocalizations.of(context);
+  var selected = await _defaultLogInterval();
+  if (!context.mounted) return null;
+  final result = await showDialog<int>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) => AlertDialog(
+        content: TrackingIntervalSelector(
+          value: selected,
+          onChanged: (v) => setState(() => selected = v),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, selected),
+            child: Text(l.startTracking),
+          ),
+        ],
+      ),
+    ),
+  );
+  if (result != null) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('pending_log_interval', result);
+  }
+  return result;
+}
+
+Future<void> _continueVoyage(
+    BuildContext context, WidgetRef ref, Charter charter, int intervalSeconds) async {
   final db = ref.read(databaseProvider);
   final today = DateTime.now();
   if (today.isAfter(charter.dateTo)) {
@@ -66,24 +102,23 @@ Future<void> _continueVoyage(BuildContext context, WidgetRef ref, Charter charte
   }
   final dayLog = await ensureTodayDayLog(ref, charter);
   if (!context.mounted) return;
-  await _beginTracking(context, ref, charter, dayLog);
+  await _beginTracking(context, ref, charter, dayLog, intervalSeconds);
 }
 
-Future<void> _startNew(BuildContext context, WidgetRef ref) async {
+Future<void> _startNew(BuildContext context, WidgetRef ref, int intervalSeconds) async {
   final charter = await createQuickCharter(ref);
   final dayLog = await ensureTodayDayLog(ref, charter);
   if (!context.mounted) return;
-  await _beginTracking(context, ref, charter, dayLog);
+  await _beginTracking(context, ref, charter, dayLog, intervalSeconds);
 }
 
-Future<void> _beginTracking(
-    BuildContext context, WidgetRef ref, Charter charter, DayLog dayLog) async {
+Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter,
+    DayLog dayLog, int intervalSeconds) async {
   final dayFmt = DateFormat('EEE d.M.', 'sk');
-  final interval = await _defaultLogInterval();
   await ref.read(trackingNotifierProvider.notifier).startTracking(
         '${dayFmt.format(DateTime.now())}: ${dayLog.portFrom ?? charter.title}',
         dayLogId: dayLog.id,
-        logIntervalSeconds: interval,
+        logIntervalSeconds: intervalSeconds,
       );
   if (context.mounted) context.go('/map');
 }

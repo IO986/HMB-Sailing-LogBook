@@ -1731,7 +1731,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Tippe oben auf die große Schaltfläche \"Reise starten\" (auf Karte, Logbuch oder Instrumente) – die Aufzeichnung beginnt sofort, nichts muss vorher ausgefüllt werden\n2. Gibt es eine offene Reise, fragt die App: fortsetzen oder neuen Eintrag beginnen\n3. Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) trägst du jederzeit nach – die App erinnert dich mit Chips im Logbuch\n4. Trage tagsüber Einträge ein: Zeit, Position, Notiz\n5. Am Ende der Reise: Einstellungen → PDF-Export';
+      '1. Tippe oben auf die große Schaltfläche \"Reise starten\" (auf Karte, Logbuch oder Instrumente) – wähle die Eintragsfrequenz und die Aufzeichnung läuft, sonst muss nichts vorher ausgefüllt werden\n2. Gibt es eine offene Reise, fragt die App: fortsetzen oder neuen Eintrag beginnen\n3. Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) trägst du jederzeit nach – die App erinnert dich mit Chips im Logbuch\n4. Trage tagsüber Einträge ein: Zeit, Position, Notiz\n5. Am Ende der Reise: Einstellungen → PDF-Export\n\nDie App läuft im Vollbildmodus – wische vom oberen oder unteren Rand, um die Systemleisten des Telefons vorübergehend einzublenden.';
 
   @override
   String get guideMapTitle => 'Karte';
@@ -1752,7 +1752,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung sofort – kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
