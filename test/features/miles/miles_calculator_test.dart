@@ -20,6 +20,7 @@ Charter _charter({
       createdAt: DateTime.utc(year, 5, 1),
       pdfRevision: 0,
       myRole: myRole,
+      source: 'live',
     );
 
 DayLog _dayLog({required int id, required int charterId, required DateTime date, double distanceNm = 20}) =>

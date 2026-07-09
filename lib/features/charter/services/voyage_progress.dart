@@ -69,6 +69,19 @@ final voyageProgressProvider = FutureProvider.family<VoyageProgress, int>((ref, 
     );
   }
 
+  // GPX-importovaná staršia plavba: existuje len pre mapu a Knihu míľ.
+  // Check-in/SB/check-out už nikdy nevzniknú — nič nepripomínaj.
+  if (charter.source == 'gpx') {
+    return const VoyageProgress(
+      step: VoyageStep.closed,
+      checkInClosed: true,
+      checkOutClosed: true,
+      briefingDone: true,
+      detailsComplete: true,
+      hasAnyDayLog: true,
+    );
+  }
+
   final checkIn = await db.getHandoverProtocol(charterId, 'checkIn');
   final checkOut = await db.getHandoverProtocol(charterId, 'checkOut');
   final checkInClosed = _isProtocolClosed(checkIn);

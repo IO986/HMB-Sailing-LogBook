@@ -1,8 +1,10 @@
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
+import '../../../core/services/marine_poi_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
 
@@ -58,6 +60,21 @@ final dayEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
   return ref.read(databaseProvider).watchMappableEntriesForDay(dayLogId);
 });
 
+/// Aktuálny viditeľný výrez mapy — map_screen ho aktualizuje (debounced)
+/// pri posune/zoome, POI provider naň reaguje.
+final marinePoiBoundsProvider = StateProvider<LatLngBounds?>((_) => null);
+
+/// Kotviská/maríny/prístavy pre viditeľný výrez (Overpass API, kešované
+/// po bunkách v MarinePoiService). Prázdne, kým je vrstva vypnutá.
+final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
+  final show = ref.watch(
+      mapNotifierProvider.select((s) => s.showMarinePois));
+  if (!show) return const [];
+  final bounds = ref.watch(marinePoiBoundsProvider);
+  if (bounds == null) return const [];
+  return MarinePoiService().fetchForBounds(bounds);
+});
+
 class MapNotifier extends Notifier<MapState> {
   @override
   MapState build() => const MapState();
@@ -70,9 +87,13 @@ class MapNotifier extends Notifier<MapState> {
   void toggleSeamarks() =>
       state = state.copyWith(showSeamarks: !state.showSeamarks);
 
+  void toggleMarinePois() =>
+      state = state.copyWith(showMarinePois: !state.showMarinePois);
+
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
   void previewDay(int dayLogId, String label) => state = MapState(
         showSeamarks: state.showSeamarks,
+        showMarinePois: state.showMarinePois,
         followGps: state.followGps,
         previewDayLogId: dayLogId,
         previewLabel: label,
@@ -81,6 +102,7 @@ class MapNotifier extends Notifier<MapState> {
   /// Zobraz spojenú trasu celej plavby (všetky dni).
   void previewCharter(int charterId, String label) => state = MapState(
         showSeamarks: state.showSeamarks,
+        showMarinePois: state.showMarinePois,
         followGps: state.followGps,
         previewCharterId: charterId,
         previewLabel: label,
@@ -89,6 +111,7 @@ class MapNotifier extends Notifier<MapState> {
   /// Vráť sa k živej trase aktuálneho trackingu.
   void clearPreview() => state = MapState(
         showSeamarks: state.showSeamarks,
+        showMarinePois: state.showMarinePois,
         followGps: state.followGps,
       );
 
@@ -118,6 +141,8 @@ class MapNotifier extends Notifier<MapState> {
 
 class MapState {
   final bool showSeamarks;
+  /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
+  final bool showMarinePois;
   final bool followGps;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
@@ -127,6 +152,7 @@ class MapState {
   final String? previewLabel;
   const MapState({
     this.showSeamarks = true,
+    this.showMarinePois = false,
     this.followGps = true,
     this.previewDayLogId,
     this.previewCharterId,
@@ -134,12 +160,14 @@ class MapState {
   });
   MapState copyWith({
     bool? showSeamarks,
+    bool? showMarinePois,
     bool? followGps,
     int? previewDayLogId,
     int? previewCharterId,
     String? previewLabel,
   }) => MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
+        showMarinePois: showMarinePois ?? this.showMarinePois,
         followGps: followGps ?? this.followGps,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,

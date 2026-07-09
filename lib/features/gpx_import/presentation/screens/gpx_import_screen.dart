@@ -153,6 +153,15 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           if (charter != null) {
             touchedCharterIds.add(charter.id);
 
+            // Spätný import staršej plavby — len pre mapu a Knihu míľ.
+            // Bez tejto značky by plavba pýtala check-in/SB/check-out
+            // (ktoré už nikdy nevzniknú) a Start by ju ponúkal na
+            // pokračovanie trackingu.
+            await db.updateCharter(ChartersCompanion(
+              id: Value(charter.id),
+              source: const Value('gpx'),
+            ));
+
             // Zoskup body naprieč VŠETKÝMI tracks v batchi podľa kalendárneho
             // dňa (jeden track môže aj sám prekročiť polnoc) – jeden DayLog
             // na deň, s jednou SailingSession na pôvodný track v ten deň.

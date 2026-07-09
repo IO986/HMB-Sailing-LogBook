@@ -12,8 +12,10 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
+import '../../../../core/services/marine_poi_service.dart';
 import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
+import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
 import '../widgets/map_layer_toggle.dart';
 
@@ -36,6 +38,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   bool _mapReady = false;
   int _tileKey = 0;
   final List<Timer> _tileReloadTimers = [];
+  Timer? _poiDebounce;
+
+  // Pod týmto zoomom POI nesťahujeme — bbox by bol príliš veľký.
+  static const _poiMinZoom = 9.0;
 
   @override
   void initState() {
@@ -47,7 +53,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     for (final t in _tileReloadTimers) {
       t.cancel();
     }
+    _poiDebounce?.cancel();
     super.dispose();
+  }
+
+  /// Debounced aktualizácia viditeľného výrezu pre POI vrstvu — až keď sa
+  /// mapa na chvíľu ustáli, nie počas každého frame posunu.
+  void _schedulePoiRefresh() {
+    if (!ref.read(mapNotifierProvider).showMarinePois) return;
+    _poiDebounce?.cancel();
+    _poiDebounce = Timer(const Duration(milliseconds: 700), () {
+      if (!mounted || !_mapReady) return;
+      final camera = _mapController.camera;
+      if (camera.zoom < _poiMinZoom) return;
+      ref.read(marinePoiBoundsProvider.notifier).state =
+          camera.visibleBounds;
+    });
   }
 
   void _onMapReady() {
@@ -104,6 +125,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final mob = ref.watch(mobProvider);
     final anchor = ref.watch(anchorProvider);
     final dayEntries = ref.watch(dayEntryMarkersProvider).valueOrNull ?? [];
+    final showMarinePois = mapState.showMarinePois;
+    final marinePois =
+        ref.watch(marinePoisProvider).valueOrNull ?? const <MarinePoi>[];
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -150,6 +174,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               initialZoom: 10,
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
+              onPositionChanged: (_, __) => _schedulePoiRefresh(),
             ),
             children: [
 
@@ -192,6 +217,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 18,
                 ),
+
+              // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
+              if (showMarinePois && marinePois.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (final poi in marinePois)
+                    Marker(
+                      point: LatLng(poi.lat, poi.lon),
+                      width: 32, height: 32,
+                      child: GestureDetector(
+                        onTap: () => _showPoiDetail(poi),
+                        child: _MarinePoiMarker(type: poi.type),
+                      ),
+                    ),
+                ]),
 
               // ── GPS track (živý tracking, alebo náhľad zvolenej plavby) ──
               if (trackPoints.isNotEmpty)
@@ -345,6 +384,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               const SizedBox(height: 8),
               MapLayerToggle(
+                icon: Icons.directions_boat,
+                label: 'Prístavy',
+                isActive: showMarinePois,
+                onToggle: () {
+                  ref.read(mapNotifierProvider.notifier).toggleMarinePois();
+                  final nowOn =
+                      ref.read(mapNotifierProvider).showMarinePois;
+                  if (nowOn && _mapReady) {
+                    if (_mapController.camera.zoom < _poiMinZoom) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Priblíž mapu pre načítanie prístavov a kotvísk'),
+                        duration: Duration(seconds: 3),
+                      ));
+                    } else {
+                      ref.read(marinePoiBoundsProvider.notifier).state =
+                          _mapController.camera.visibleBounds;
+                    }
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
+              MapLayerToggle(
                 icon: Icons.gps_fixed,
                 label: 'GPS',
                 isActive: followGps,
@@ -471,6 +532,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     showModalBottomSheet(
       context: context,
       builder: (_) => WaypointDialog(latLng: ll),
+    );
+  }
+
+  void _showPoiDetail(MarinePoi poi) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => MarinePoiSheet(poi: poi),
     );
   }
 
@@ -671,6 +740,31 @@ class _Btn extends StatelessWidget {
       ]),
     ),
   );
+}
+
+// ── Marine POI Marker ─────────────────────────────────────────
+
+class _MarinePoiMarker extends StatelessWidget {
+  final String type;
+  const _MarinePoiMarker({required this.type});
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color) = switch (type) {
+      'anchorage' => (Icons.anchor, Colors.teal.shade700),
+      'marina' => (Icons.sailing, Colors.indigo.shade600),
+      _ => (Icons.directions_boat, Colors.blueGrey.shade700),
+    };
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        border: Border.all(color: color, width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3)],
+      ),
+      child: Icon(icon, color: color, size: 18),
+    );
+  }
 }
 
 // ── MOB Marker ───────────────────────────────────────────────

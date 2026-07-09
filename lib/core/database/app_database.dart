@@ -36,6 +36,11 @@ class Charters extends Table {
   RealColumn get vesselDraftM => real().nullable()();
   IntColumn get pdfRevision => integer().withDefault(const Constant(0))();
   TextColumn get myRole => text().nullable()(); // 'skipper' | 'coSkipper' | 'crew' | 'bosun' | 'radioOperator'
+  // 'live' = plavba trackovaná/zapisovaná naživo v appke; 'gpx' = spätný
+  // import staršej plavby zo súboru — slúži len na mapu a Knihu míľ,
+  // nemá zmysel pre ňu pýtať check-in/SB/check-out ani ju ponúkať na
+  // pokračovanie trackingu.
+  TextColumn get source => text().withDefault(const Constant('live'))();
   // Polia pre oficiálny záznam Knihy míľ (ICC/RYA štýl) – vyplnené najmä pri
   // importovaných/trackovaných plavbách, kde chýbajú oproti ručne písaným
   // historickým plavbám.
@@ -242,7 +247,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -310,6 +315,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.captainLastName);
         await m.addColumn(charters, charters.captainQualification);
         await m.addColumn(charters, charters.logbookSignaturePath);
+      }
+      if (from < 13) {
+        await m.addColumn(charters, charters.source);
       }
     },
     beforeOpen: (details) async {

@@ -10,9 +10,13 @@ final chartersProvider = FutureProvider<List<Charter>>((ref) async {
 
 /// Most recent charter still awaiting checkout, or null if none / first-ever use.
 /// Drives the "Pokračovať v poslednej plavbe? / Nový záznam?" choice at Start.
+/// GPX-imported voyages are never offered — they're read-only history
+/// (map preview + Kniha míľ), tracking can't continue them.
 final openVoyageProvider = FutureProvider<Charter?>((ref) async {
   final charters = await ref.watch(chartersProvider.future);
-  final open = charters.where((c) => !c.checkOutDone).toList()
+  final open = charters
+      .where((c) => !c.checkOutDone && c.source != 'gpx')
+      .toList()
     ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
   return open.isEmpty ? null : open.first;
 });
