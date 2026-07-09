@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -125,38 +124,22 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                       color: Colors.green.shade700,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(children: [
-                        const Icon(Icons.verified, color: Colors.white, size: 24),
-                        const SizedBox(width: 12),
-                        Expanded(child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(l.briefingDoneLabel,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15)),
-                            Text(l.briefingDoneSubtitle,
-                                style: const TextStyle(
-                                    color: Colors.white70, fontSize: 12)),
-                          ],
-                        )),
-                      ]),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () => context.go('/map'),
-                          icon: const Icon(Icons.play_arrow),
-                          label: Text(l.startTracking),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.green.shade800,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
+                    child: Row(children: [
+                      const Icon(Icons.verified, color: Colors.white, size: 24),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l.briefingDoneLabel,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15)),
+                          Text(l.briefingDoneSubtitle,
+                              style: const TextStyle(
+                                  color: Colors.white70, fontSize: 12)),
+                        ],
+                      )),
                     ]),
                   ),
 
@@ -275,14 +258,7 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(l.briefingSavedOk),
           backgroundColor: Colors.green.shade700,
-          duration: const Duration(seconds: 8),
-          action: SnackBarAction(
-            label: l.startTracking,
-            textColor: Colors.white,
-            onPressed: () {
-              if (mounted) context.go('/map');
-            },
-          ),
+          duration: const Duration(seconds: 3),
         ));
       }
     } catch (e, st) {
