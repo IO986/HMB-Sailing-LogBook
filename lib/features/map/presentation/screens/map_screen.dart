@@ -524,14 +524,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              MapLayerToggle(
-                icon: Icons.gps_fixed,
-                label: 'GPS',
-                isActive: followGps,
-                onToggle: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleFollowGps(),
-              ),
-              const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'voyagePreview',
                 tooltip: 'Prehľad plavby',
@@ -572,7 +564,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // ── Panel pravítka / trasy ────────────────────────────
           if (_rulerActive)
             Positioned(
-              bottom: 100,
+              bottom: 224,
               left: 12,
               child: _RulerPanel(
                 points: _rulerPoints,
@@ -614,10 +606,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
-          // ── Zoom + Current position ───────────────────────────
+          // ── Zoom (vľavo, nekryje sa s pravým stĺpcom vrstiev) ──
           Positioned(
             bottom: 100,
-            right: 12,
+            left: 12,
             child: Column(children: [
               FloatingActionButton.small(
                 heroTag: 'zi',
@@ -634,7 +626,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     _mapController.camera.zoom - 1),
                 child: const Icon(Icons.remove),
               ),
-              const SizedBox(height: 16),
+            ]),
+          ),
+
+          // ── Current position (vpravo dole) ────────────────────
+          Positioned(
+            bottom: 100,
+            right: 12,
+            child: Column(children: [
               FloatingActionButton.small(
                 heroTag: 'cp',
                 onPressed: () {
