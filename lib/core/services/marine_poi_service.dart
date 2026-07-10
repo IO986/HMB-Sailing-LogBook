@@ -33,9 +33,19 @@ class MarinePoiService {
   final _dio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 25),
+    headers: {
+      // Overpass vracia 406 na požiadavky bez User-Agent (dio ho sám
+      // neposiela) — overené na zariadení aj curl-om s prázdnym UA.
+      'User-Agent': 'HMBSailingLog/1.21 (com.hmb.sailinglog)',
+      'Accept': 'application/json',
+    },
   ));
 
-  static const _endpoint = 'https://overpass-api.de/api/interpreter';
+  // Hlavný endpoint + mirror — hlavný občas vracia 504 pri preťažení.
+  static const _endpoints = [
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+  ];
   static const _cellDeg = 0.25;
   // Strop na jeden fetch — pri oddialenej mape nesťahuj polovicu Jadranu.
   static const _maxCellsPerFetch = 12;
@@ -108,11 +118,22 @@ out center 300;
 ''';
 
     try {
-      final resp = await _dio.post(
-        _endpoint,
-        data: {'data': query},
-        options: Options(contentType: Headers.formUrlEncodedContentType),
-      );
+      Response? resp;
+      Object? lastError;
+      for (final endpoint in _endpoints) {
+        try {
+          resp = await _dio.post(
+            endpoint,
+            data: {'data': query},
+            options: Options(contentType: Headers.formUrlEncodedContentType),
+          );
+          break;
+        } catch (e) {
+          lastError = e;
+          debugPrint('[POI] $endpoint failed, trying next: $e');
+        }
+      }
+      if (resp == null) throw lastError!;
       final elements = (resp.data['elements'] as List?) ?? const [];
 
       // Najprv priprav prázdne bunky, aby sa oblasť bez POI tiež zapamätala.
