@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
@@ -65,6 +66,22 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
     _captainLastCtrl.text = charter.captainLastName ?? '';
     _captainQualCtrl.text = charter.captainQualification ?? '';
     _noteCtrl.text = charter.notes ?? '';
+
+    // Kapitán sa nevypĺňa druhýkrát: prázdne meno sa odvodí zo skippera
+    // plavby (karta lode), kvalifikácia z Profilu skippera.
+    if (_captainFirstCtrl.text.isEmpty &&
+        _captainLastCtrl.text.isEmpty &&
+        (charter.skipperName?.isNotEmpty ?? false)) {
+      final parts = charter.skipperName!.trim().split(RegExp(r'\s+'));
+      _captainFirstCtrl.text = parts.first;
+      if (parts.length > 1) _captainLastCtrl.text = parts.sublist(1).join(' ');
+    }
+    if (_captainQualCtrl.text.isEmpty) {
+      final profile = await ref.read(skipperProfileProvider.future);
+      if (profile.licenseType.isNotEmpty) {
+        _captainQualCtrl.text = profile.licenseType;
+      }
+    }
 
     setState(() {
       _charter = charter;

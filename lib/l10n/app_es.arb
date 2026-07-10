@@ -545,7 +545,7 @@
   "flagAlphabet": "Banderas de señales",
   "dayShapes": "Marcas de día",
   "marineReferenceTile": "Señales & alfabeto",
-  "navInstruments": "Instrumentos",
+  "navInstruments": "Instrumentos náuticos",
   "enterPort": "Ingrese puerto...",
   "closeWithoutSaving": "Cerrar sin guardar",
   "saveToDevice": "Guardar en dispositivo",
@@ -616,7 +616,7 @@
   "guideBackupTitle": "Copia de seguridad y restauración de datos",
   "guideBackupBody": "En Ajustes → Copia de seguridad.\n\n• Exportar copia de seguridad – guarda todo el diario (travesías, registros, ajustes) en un solo archivo (.hmbbackup) que puedes compartir por email, en la nube o guardar localmente\n• Restaurar desde copia de seguridad – reemplaza los datos actuales con el contenido de la copia seleccionada; antes se crea automáticamente una copia de seguridad del estado actual\n• La restauración está bloqueada mientras el seguimiento GPS de una travesía está activo\n• Una copia con un esquema más nuevo del que soporta la app se rechaza con una explicación",
   "guideExportTitle": "Exportar diario",
-  "guideExportBody": "El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.",
+  "guideExportBody": "El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.",
 
   "safetyBriefingScreenTitle": "Instrucción de seguridad",
   "briefingCrewSignaturesSection": "Firmas de la tripulación",

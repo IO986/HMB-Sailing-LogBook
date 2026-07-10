@@ -545,7 +545,7 @@
   "flagAlphabet": "Signal Flags",
   "dayShapes": "Day Shapes",
   "marineReferenceTile": "Signals & Alphabet",
-  "navInstruments": "Instruments",
+  "navInstruments": "Ship instruments",
   "enterPort": "Enter port...",
   "closeWithoutSaving": "Close without saving",
   "saveToDevice": "Save to device",
@@ -616,7 +616,7 @@
   "guideBackupTitle": "Data backup and restore",
   "guideBackupBody": "In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation",
   "guideExportTitle": "Logbook Export",
-  "guideExportBody": "The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.",
+  "guideExportBody": "The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.",
 
   "safetyBriefingScreenTitle": "Safety Briefing",
   "briefingCrewSignaturesSection": "Crew Signatures",

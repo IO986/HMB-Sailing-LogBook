@@ -110,13 +110,26 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     }
   }
 
+  /// Meno aj preukazy skippera sa preberajú z Profilu skippera — rovnaké
+  /// údaje sa nikde nevypĺňajú dvakrát.
   Future<void> _prefillSkipperFromProfile() async {
     final profile = await ref.read(skipperProfileProvider.future);
-    if (mounted &&
-        _crew.first.nameCtrl.text.isEmpty &&
-        profile.fullName.isNotEmpty) {
-      setState(() => _crew.first.nameCtrl.text = profile.fullName);
-    }
+    if (!mounted) return;
+    setState(() {
+      final skipper = _crew.first;
+      if (skipper.nameCtrl.text.isEmpty && profile.fullName.isNotEmpty) {
+        skipper.nameCtrl.text = profile.fullName;
+      }
+      if (skipper.boatLicCtrl.text.isEmpty) {
+        final lic = [profile.licenseType, profile.licenseNumber]
+            .where((s) => s.isNotEmpty)
+            .join(' ');
+        if (lic.isNotEmpty) skipper.boatLicCtrl.text = lic;
+      }
+      if (skipper.radioLicCtrl.text.isEmpty && profile.vhfNumber.isNotEmpty) {
+        skipper.radioLicCtrl.text = profile.vhfNumber;
+      }
+    });
   }
 
   Future<void> _loadCharter() async {
