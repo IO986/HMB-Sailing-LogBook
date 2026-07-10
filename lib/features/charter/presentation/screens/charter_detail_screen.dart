@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../../services/voyage_progress.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -24,27 +25,38 @@ class CharterDetailScreen extends ConsumerWidget {
         try { charter = charters.firstWhere((c) => c.id == charterId); }
         catch (_) { return Scaffold(body: Center(child: Text(AppLocalizations.of(context).voyageNotFound))); }
 
+        // Nevyplnené karty blikajú, kým ich užívateľ nedokončí:
+        // SB (briefing), handshake (check-in/out), loď (karta lode/posádky).
+        final progress = ref.watch(voyageProgressProvider(charterId)).valueOrNull;
+        final reminders = progress?.reminders ?? const <VoyageReminder>[];
+        final l = AppLocalizations.of(context);
+
         return Scaffold(
           appBar: AppBar(
             title: Text(charter.title, overflow: TextOverflow.ellipsis),
             actions: [
-              charter.safetyBriefingDone
-                  ? IconButton(
-                      icon: const Icon(Icons.health_and_safety_outlined),
-                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
-                      onPressed: () => context.go('/logbook/$charterId/briefing'),
-                    )
-                  : _BlinkingSbIconButton(
-                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
-                      onPressed: () => context.go('/logbook/$charterId/briefing'),
-                    ),
-              IconButton(
-                icon: const Icon(Icons.handshake_outlined),
-                tooltip: AppLocalizations.of(context).handoverMenuTitle,
+              _MaybeBlinkingIconButton(
+                blink: !charter.safetyBriefingDone,
+                icon: Icons.health_and_safety_outlined,
+                blinkIcon: Icons.health_and_safety,
+                tooltip: l.briefingOpenBriefing,
+                onPressed: () => context.go('/logbook/$charterId/briefing'),
+              ),
+              _MaybeBlinkingIconButton(
+                blink: reminders.contains(VoyageReminder.checkIn) ||
+                    reminders.contains(VoyageReminder.checkOut),
+                icon: Icons.handshake_outlined,
+                blinkIcon: Icons.handshake,
+                tooltip: l.handoverMenuTitle,
                 onPressed: () => _showHandoverMenu(context, ref, charterId),
               ),
-              IconButton(icon: const Icon(Icons.edit),
-                  onPressed: () => context.go('/logbook/$charterId/edit')),
+              _MaybeBlinkingIconButton(
+                blink: reminders.contains(VoyageReminder.details),
+                icon: Icons.directions_boat_outlined,
+                blinkIcon: Icons.directions_boat,
+                tooltip: l.editCharter,
+                onPressed: () => context.go('/logbook/$charterId/edit'),
+              ),
               IconButton(
                 icon: const Icon(Icons.picture_as_pdf),
                 onPressed: () => context.go('/logbook/$charterId/export'),
@@ -64,21 +76,54 @@ class CharterDetailScreen extends ConsumerWidget {
   }
 }
 
-class _BlinkingSbIconButton extends StatefulWidget {
+/// IconButton, ktorý červeno bliká, kým [blink] platí — signalizuje
+/// nevyplnenú kartu (SB, check-in/out, karta lode/posádky).
+class _MaybeBlinkingIconButton extends StatefulWidget {
+  final bool blink;
+  final IconData icon;
+  final IconData blinkIcon;
   final String tooltip;
   final VoidCallback onPressed;
-  const _BlinkingSbIconButton({required this.tooltip, required this.onPressed});
+  const _MaybeBlinkingIconButton({
+    required this.blink,
+    required this.icon,
+    required this.blinkIcon,
+    required this.tooltip,
+    required this.onPressed,
+  });
 
   @override
-  State<_BlinkingSbIconButton> createState() => _BlinkingSbIconButtonState();
+  State<_MaybeBlinkingIconButton> createState() =>
+      _MaybeBlinkingIconButtonState();
 }
 
-class _BlinkingSbIconButtonState extends State<_BlinkingSbIconButton>
+class _MaybeBlinkingIconButtonState extends State<_MaybeBlinkingIconButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 700),
-  )..repeat(reverse: true);
+  );
+
+  @override
+  void didUpdateWidget(covariant _MaybeBlinkingIconButton old) {
+    super.didUpdateWidget(old);
+    _syncAnimation();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _syncAnimation();
+  }
+
+  void _syncAnimation() {
+    if (widget.blink && !_controller.isAnimating) {
+      _controller.repeat(reverse: true);
+    } else if (!widget.blink && _controller.isAnimating) {
+      _controller.stop();
+      _controller.value = 1;
+    }
+  }
 
   @override
   void dispose() {
@@ -88,10 +133,17 @@ class _BlinkingSbIconButtonState extends State<_BlinkingSbIconButton>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.blink) {
+      return IconButton(
+        icon: Icon(widget.icon),
+        tooltip: widget.tooltip,
+        onPressed: widget.onPressed,
+      );
+    }
     return IconButton(
       icon: FadeTransition(
         opacity: Tween(begin: 0.3, end: 1.0).animate(_controller),
-        child: const Icon(Icons.health_and_safety, color: Colors.red),
+        child: Icon(widget.blinkIcon, color: Colors.red),
       ),
       tooltip: widget.tooltip,
       onPressed: widget.onPressed,

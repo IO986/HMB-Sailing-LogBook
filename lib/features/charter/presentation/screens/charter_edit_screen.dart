@@ -40,21 +40,8 @@ class _CrewEntry {
   }
 }
 
-/// Nákladová položka (label + suma). Hlavná cena charteru sa ukladá do
-/// costsJson so sentinel labelom [_priceLabel].
-class _CostEntry {
-  final String label;
-  final amountCtrl = TextEditingController();
-  _CostEntry(this.label, [double? amount]) {
-    if (amount != null) amountCtrl.text = _fmtNum(amount);
-  }
-  void dispose() => amountCtrl.dispose();
-}
-
 String _fmtNum(double v) =>
     v == v.roundToDouble() ? v.toInt().toString() : v.toString();
-
-const _priceLabel = '__price__';
 
 class CharterEditScreen extends ConsumerStatefulWidget {
   final String? charterId;
@@ -95,11 +82,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now().add(const Duration(days: 7));
 
-  // ── Kontakty / náklady / posádka / fotky ──
+  // ── Kontakty / posádka / fotky ──
   final List<TextEditingController> _contactCtrls = [];
-  final _priceCtrl = TextEditingController();
-  final _currencyCtrl = TextEditingController(text: '€');
-  final List<_CostEntry> _costs = [];
   final List<_CrewEntry> _crew = [];
   final List<String> _photos = [];
 
@@ -172,20 +156,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       _contactCtrls.clear();
       for (final p in _decodeStringList(c.contactsJson)) {
         _contactCtrls.add(TextEditingController(text: p));
-      }
-
-      // Náklady
-      _currencyCtrl.text = c.costCurrency ?? '€';
-      for (final e in _costs) e.dispose();
-      _costs.clear();
-      for (final item in _decodeMapList(c.costsJson)) {
-        final label = item['label'] as String? ?? '';
-        final amount = (item['amount'] as num?)?.toDouble();
-        if (label == _priceLabel) {
-          if (amount != null) _priceCtrl.text = _fmtNum(amount);
-        } else {
-          _costs.add(_CostEntry(label, amount));
-        }
       }
 
       // Posádka: primárne crewJson, fallback na staré skipperName/crewNames
@@ -456,64 +426,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             ),
           const SizedBox(height: 20),
 
-          // ── NÁKLADY ──────────────────────────────────────────
-          _Section(l.costsSection),
-          Row(children: [
-            Expanded(
-              flex: 3,
-              child: _numField(_priceCtrl, l.charterPriceLabel),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 1,
-              child: TextField(
-                controller: _currencyCtrl,
-                decoration: InputDecoration(labelText: l.currencyLabel),
-              ),
-            ),
-          ]),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final preset in _costPresets(l))
-                if (!_costs.any((c) => c.label == preset))
-                  ActionChip(
-                    avatar: const Icon(Icons.add, size: 16),
-                    label: Text(preset, style: const TextStyle(fontSize: 12)),
-                    onPressed: () =>
-                        setState(() => _costs.add(_CostEntry(preset))),
-                  ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          ..._costs.asMap().entries.map((e) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(e.value.label,
-                        style: const TextStyle(fontSize: 14)),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: _numField(e.value.amountCtrl, l.charterPriceLabel,
-                        dense: true),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline,
-                        color: Colors.red),
-                    onPressed: () => setState(() {
-                      e.value.dispose();
-                      _costs.removeAt(e.key);
-                    }),
-                  ),
-                ]),
-              )),
-          _DashedAddButton(label: l.addCostItem, onTap: _addCustomCost),
-          const SizedBox(height: 20),
-
           // ── POSÁDKA ──────────────────────────────────────────
           _Section(l.crew),
           Text(l.crewSectionHint,
@@ -634,21 +546,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       ),
     );
   }
-
-  List<String> _costPresets(AppLocalizations l) => [
-        l.costBaseCharter,
-        l.costDeposit,
-        l.costDinghyOutboard,
-        l.costOutboardFuel,
-        l.costTransitLog,
-        l.costTouristTax,
-        l.costFinalCleaning,
-        l.costLinenTowels,
-        l.costWifi,
-        l.costSupKayak,
-        l.costSkipperFee,
-        l.costHostessFee,
-      ];
 
   Widget _numField(TextEditingController ctrl, String label,
       {String? suffix, bool integer = false, bool dense = false}) {
@@ -780,32 +677,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     );
   }
 
-  Future<void> _addCustomCost() async {
-    final l = AppLocalizations.of(context);
-    final ctrl = TextEditingController();
-    final label = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.addCostItem),
-        content: TextField(
-          controller: ctrl,
-          autofocus: true,
-          decoration: InputDecoration(labelText: l.costName),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
-            child: Text(l.ok),
-          ),
-        ],
-      ),
-    );
-    if (label != null && label.isNotEmpty) {
-      setState(() => _costs.add(_CostEntry(label)));
-    }
-  }
-
   Future<void> _addPhoto() async {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
@@ -900,13 +771,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           }
     ]);
 
-    final costs = <Map<String, dynamic>>[
-      if (_parseDouble(_priceCtrl.text) != null)
-        {'label': _priceLabel, 'amount': _parseDouble(_priceCtrl.text)},
-      for (final c in _costs)
-        {'label': c.label, 'amount': _parseDouble(c.amountCtrl.text)},
-    ];
-
     final contacts = _contactCtrls
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
@@ -937,8 +801,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       country: Value(_emptyNull(_countryCtrl.text)),
       cruisingArea: Value(_emptyNull(_areaCtrl.text)),
       contactsJson: Value(contacts.isEmpty ? null : jsonEncode(contacts)),
-      costsJson: Value(costs.isEmpty ? null : jsonEncode(costs)),
-      costCurrency: Value(_emptyNull(_currencyCtrl.text)),
       photosJson: Value(_photos.isEmpty ? null : jsonEncode(_photos)),
       crewJson: Value(crewJson),
       skipperName: Value(_emptyNull(skipper?.nameCtrl.text ?? '')),
@@ -979,9 +841,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     _waterTankCtrl.dispose(); _fuelTankCtrl.dispose();
     _engineHoursStartCtrl.dispose(); _engineHoursEndCtrl.dispose();
     _homePortCtrl.dispose(); _countryCtrl.dispose(); _areaCtrl.dispose();
-    _priceCtrl.dispose(); _currencyCtrl.dispose(); _notesCtrl.dispose();
+    _notesCtrl.dispose();
     for (final c in _contactCtrls) c.dispose();
-    for (final c in _costs) c.dispose();
     for (final c in _crew) c.dispose();
     super.dispose();
   }
