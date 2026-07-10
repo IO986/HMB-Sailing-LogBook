@@ -1732,7 +1732,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Radar – radar de lluvia (RainViewer), la imagen se actualiza ~cada 10 minutos\n• Viento – flechas de dirección/fuerza del viento (nudos) en una cuadrícula sobre el área visible\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa offline (icono de descarga) – descarga el área visible (mapa + marcas náuticas, zoom actual +3 niveles) para usar sin señal; cada tesela vista también se guarda automáticamente\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
@@ -1746,7 +1746,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (lápiz en el detalle) registra el barco y sus parámetros, la zona de navegación, contactos del chárter, costes, tripulación con las licencias del patrón y fotos del barco (máx. 3)';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -1939,4 +1939,159 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get missingCheckOutChip => 'Falta check-out';
+
+  @override
+  String get vesselModel => 'Modelo';
+
+  @override
+  String get vesselTypeMonohull => 'Monocasco';
+
+  @override
+  String get vesselTypeCatamaran => 'Catamarán';
+
+  @override
+  String get vesselTypeTrimaran => 'Trimarán';
+
+  @override
+  String get vesselTypeMotorYacht => 'Yate a motor';
+
+  @override
+  String get vesselTypeGulet => 'Gulet';
+
+  @override
+  String get vesselTypeDinghy => 'Bote';
+
+  @override
+  String get vesselTypeRib => 'RIB';
+
+  @override
+  String get vesselTypeOther => 'Otro';
+
+  @override
+  String get charterCompanyLabel => 'Compañía de chárter';
+
+  @override
+  String get yachtParamsSection => 'Parámetros del yate';
+
+  @override
+  String get berthsLabel => 'Literas';
+
+  @override
+  String get yearBuiltLabel => 'Año de construcción';
+
+  @override
+  String get waterTankLabel => 'Tanque de agua';
+
+  @override
+  String get fuelTankLabel => 'Tanque de combustible';
+
+  @override
+  String get engineHoursStartLabel => 'Horas de motor · inicio';
+
+  @override
+  String get engineHoursEndLabel => 'Horas de motor · fin';
+
+  @override
+  String get whereWhenSection => 'Dónde y cuándo';
+
+  @override
+  String get countryLabel => 'País';
+
+  @override
+  String get cruisingAreaLabel => 'Zona de navegación';
+
+  @override
+  String get charterContactsSection => 'Contactos del chárter';
+
+  @override
+  String get charterContactsHint =>
+      'Hasta 3 números para llamada / WhatsApp / SMS. Siempre con prefijo internacional (p. ej. +385...).';
+
+  @override
+  String get addPhoneNumber => 'Añadir número de teléfono';
+
+  @override
+  String get costsSection => 'Costes';
+
+  @override
+  String get charterPriceLabel => 'Precio del chárter';
+
+  @override
+  String get currencyLabel => 'Moneda';
+
+  @override
+  String get addCostItem => 'Añadir coste';
+
+  @override
+  String get costName => 'Nombre del coste';
+
+  @override
+  String get crewSectionHint =>
+      'Toca la insignia para designar al capitán — el resto es tripulación.';
+
+  @override
+  String get addCrewMember => 'Añadir tripulante';
+
+  @override
+  String get crewNameLabel => 'Nombre';
+
+  @override
+  String get skipperBadge => 'SKIPPER';
+
+  @override
+  String get crewBadge => 'CREW';
+
+  @override
+  String get boatLicenceLabel => 'N.º licencia náutica';
+
+  @override
+  String get radioLicenceLabel => 'N.º licencia de radio';
+
+  @override
+  String get vesselPhotosSection => 'Fotos del barco (máx. 3)';
+
+  @override
+  String get addPhotoLabel => 'Añadir';
+
+  @override
+  String get createVoyageButton => 'Crear travesía';
+
+  @override
+  String get saveVoyageButton => 'Guardar travesía';
+
+  @override
+  String get costBaseCharter => 'Precio base del chárter';
+
+  @override
+  String get costDeposit => 'Fianza';
+
+  @override
+  String get costDinghyOutboard => 'Bote / fueraborda';
+
+  @override
+  String get costOutboardFuel => 'Combustible del fueraborda';
+
+  @override
+  String get costTransitLog => 'Transit log';
+
+  @override
+  String get costTouristTax => 'Tasa turística';
+
+  @override
+  String get costFinalCleaning => 'Limpieza final';
+
+  @override
+  String get costLinenTowels => 'Ropa de cama y toallas';
+
+  @override
+  String get costWifi => 'WiFi';
+
+  @override
+  String get costSupKayak => 'SUP / kayak';
+
+  @override
+  String get costSkipperFee => 'Tarifa de patrón';
+
+  @override
+  String get costHostessFee => 'Tarifa de azafata';
 }

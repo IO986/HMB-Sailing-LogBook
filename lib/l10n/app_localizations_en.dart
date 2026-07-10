@@ -1725,7 +1725,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Radar – rain radar overlay (RainViewer), frame refreshes ~every 10 minutes\n• Wind – wind direction/speed arrows (knots) in a grid over the visible area\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) – downloads the visible area (map + seamarks, current zoom +3 levels) for use without signal; every browsed tile is also cached automatically\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -1739,7 +1739,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (pencil in the detail) records the vessel and its parameters, cruising area, charter contacts, costs, crew with the skipper\'s licences, and vessel photos (max 3)';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -1932,4 +1932,159 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missingCheckOutChip => 'Missing check-out';
+
+  @override
+  String get vesselModel => 'Model';
+
+  @override
+  String get vesselTypeMonohull => 'Monohull';
+
+  @override
+  String get vesselTypeCatamaran => 'Catamaran';
+
+  @override
+  String get vesselTypeTrimaran => 'Trimaran';
+
+  @override
+  String get vesselTypeMotorYacht => 'Motor yacht';
+
+  @override
+  String get vesselTypeGulet => 'Gulet';
+
+  @override
+  String get vesselTypeDinghy => 'Dinghy';
+
+  @override
+  String get vesselTypeRib => 'RIB';
+
+  @override
+  String get vesselTypeOther => 'Other';
+
+  @override
+  String get charterCompanyLabel => 'Charter company';
+
+  @override
+  String get yachtParamsSection => 'Yacht parameters';
+
+  @override
+  String get berthsLabel => 'Berths';
+
+  @override
+  String get yearBuiltLabel => 'Year built';
+
+  @override
+  String get waterTankLabel => 'Water tank';
+
+  @override
+  String get fuelTankLabel => 'Fuel tank';
+
+  @override
+  String get engineHoursStartLabel => 'Engine hours · start';
+
+  @override
+  String get engineHoursEndLabel => 'Engine hours · end';
+
+  @override
+  String get whereWhenSection => 'Where & when';
+
+  @override
+  String get countryLabel => 'Country';
+
+  @override
+  String get cruisingAreaLabel => 'Cruising area';
+
+  @override
+  String get charterContactsSection => 'Charter contacts';
+
+  @override
+  String get charterContactsHint =>
+      'Up to 3 numbers for call / WhatsApp / SMS. Always with the international prefix (e.g. +385...).';
+
+  @override
+  String get addPhoneNumber => 'Add phone number';
+
+  @override
+  String get costsSection => 'Costs';
+
+  @override
+  String get charterPriceLabel => 'Charter price';
+
+  @override
+  String get currencyLabel => 'Currency';
+
+  @override
+  String get addCostItem => 'Add cost';
+
+  @override
+  String get costName => 'Cost name';
+
+  @override
+  String get crewSectionHint =>
+      'Tap the badge to set the captain — the rest are crew.';
+
+  @override
+  String get addCrewMember => 'Add crew member';
+
+  @override
+  String get crewNameLabel => 'Name';
+
+  @override
+  String get skipperBadge => 'SKIPPER';
+
+  @override
+  String get crewBadge => 'CREW';
+
+  @override
+  String get boatLicenceLabel => 'Boat licence no.';
+
+  @override
+  String get radioLicenceLabel => 'Radio licence no.';
+
+  @override
+  String get vesselPhotosSection => 'Vessel photos (max 3)';
+
+  @override
+  String get addPhotoLabel => 'Add';
+
+  @override
+  String get createVoyageButton => 'Create voyage';
+
+  @override
+  String get saveVoyageButton => 'Save voyage';
+
+  @override
+  String get costBaseCharter => 'Base charter price';
+
+  @override
+  String get costDeposit => 'Deposit';
+
+  @override
+  String get costDinghyOutboard => 'Dinghy / outboard';
+
+  @override
+  String get costOutboardFuel => 'Outboard fuel';
+
+  @override
+  String get costTransitLog => 'Transit log';
+
+  @override
+  String get costTouristTax => 'Tourist tax';
+
+  @override
+  String get costFinalCleaning => 'Final cleaning';
+
+  @override
+  String get costLinenTowels => 'Bed linen and towels';
+
+  @override
+  String get costWifi => 'WiFi';
+
+  @override
+  String get costSupKayak => 'SUP / kayak';
+
+  @override
+  String get costSkipperFee => 'Skipper fee';
+
+  @override
+  String get costHostessFee => 'Hostess fee';
 }

@@ -1738,7 +1738,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Radar – Regenradar-Overlay (RainViewer), Bild aktualisiert sich ~alle 10 Minuten\n• Wind – Windrichtungs-/Stärke-Pfeile (Knoten) im Raster über dem sichtbaren Bereich\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) – lädt den sichtbaren Bereich (Karte + Seezeichen, aktueller Zoom +3 Stufen) für die Nutzung ohne Empfang; jede betrachtete Kachel wird zudem automatisch gespeichert\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
@@ -1752,7 +1752,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Stift im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Charter-Kontakte, Kosten, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3)';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -1945,4 +1945,159 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get missingCheckOutChip => 'Check-out fehlt';
+
+  @override
+  String get vesselModel => 'Modell';
+
+  @override
+  String get vesselTypeMonohull => 'Einrumpf';
+
+  @override
+  String get vesselTypeCatamaran => 'Katamaran';
+
+  @override
+  String get vesselTypeTrimaran => 'Trimaran';
+
+  @override
+  String get vesselTypeMotorYacht => 'Motoryacht';
+
+  @override
+  String get vesselTypeGulet => 'Gulet';
+
+  @override
+  String get vesselTypeDinghy => 'Beiboot';
+
+  @override
+  String get vesselTypeRib => 'RIB';
+
+  @override
+  String get vesselTypeOther => 'Andere';
+
+  @override
+  String get charterCompanyLabel => 'Charterfirma';
+
+  @override
+  String get yachtParamsSection => 'Yacht-Parameter';
+
+  @override
+  String get berthsLabel => 'Kojen';
+
+  @override
+  String get yearBuiltLabel => 'Baujahr';
+
+  @override
+  String get waterTankLabel => 'Wassertank';
+
+  @override
+  String get fuelTankLabel => 'Kraftstofftank';
+
+  @override
+  String get engineHoursStartLabel => 'Motorstunden · Start';
+
+  @override
+  String get engineHoursEndLabel => 'Motorstunden · Ende';
+
+  @override
+  String get whereWhenSection => 'Wo & wann';
+
+  @override
+  String get countryLabel => 'Land';
+
+  @override
+  String get cruisingAreaLabel => 'Fahrtgebiet';
+
+  @override
+  String get charterContactsSection => 'Charter-Kontakte';
+
+  @override
+  String get charterContactsHint =>
+      'Bis zu 3 Nummern für Anruf / WhatsApp / SMS. Immer mit internationaler Vorwahl (z. B. +385...).';
+
+  @override
+  String get addPhoneNumber => 'Telefonnummer hinzufügen';
+
+  @override
+  String get costsSection => 'Kosten';
+
+  @override
+  String get charterPriceLabel => 'Charterpreis';
+
+  @override
+  String get currencyLabel => 'Währung';
+
+  @override
+  String get addCostItem => 'Kosten hinzufügen';
+
+  @override
+  String get costName => 'Kostenbezeichnung';
+
+  @override
+  String get crewSectionHint =>
+      'Tippe auf das Abzeichen, um den Kapitän festzulegen — der Rest ist Crew.';
+
+  @override
+  String get addCrewMember => 'Crew-Mitglied hinzufügen';
+
+  @override
+  String get crewNameLabel => 'Name';
+
+  @override
+  String get skipperBadge => 'SKIPPER';
+
+  @override
+  String get crewBadge => 'CREW';
+
+  @override
+  String get boatLicenceLabel => 'Bootsführerschein-Nr.';
+
+  @override
+  String get radioLicenceLabel => 'Funkschein-Nr.';
+
+  @override
+  String get vesselPhotosSection => 'Schiffsfotos (max. 3)';
+
+  @override
+  String get addPhotoLabel => 'Hinzufügen';
+
+  @override
+  String get createVoyageButton => 'Reise erstellen';
+
+  @override
+  String get saveVoyageButton => 'Reise speichern';
+
+  @override
+  String get costBaseCharter => 'Charter-Grundpreis';
+
+  @override
+  String get costDeposit => 'Kaution';
+
+  @override
+  String get costDinghyOutboard => 'Beiboot / Außenborder';
+
+  @override
+  String get costOutboardFuel => 'Kraftstoff Außenborder';
+
+  @override
+  String get costTransitLog => 'Transitlog';
+
+  @override
+  String get costTouristTax => 'Kurtaxe';
+
+  @override
+  String get costFinalCleaning => 'Endreinigung';
+
+  @override
+  String get costLinenTowels => 'Bettwäsche und Handtücher';
+
+  @override
+  String get costWifi => 'WLAN';
+
+  @override
+  String get costSupKayak => 'SUP / Kajak';
+
+  @override
+  String get costSkipperFee => 'Skipper-Gebühr';
+
+  @override
+  String get costHostessFee => 'Hostessen-Gebühr';
 }

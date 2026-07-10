@@ -3371,7 +3371,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web, hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web, hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Radar – zrážkový radar nad mapou (RainViewer), snímka sa obnovuje ~každých 10 minút\n• Vietor – šípky smeru a sily vetra (uzly) v mriežke pre viditeľnú oblasť\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) – stiahne viditeľnú oblasť (mapa + seamarky, aktuálny zoom +3 úrovne) na použitie bez signálu; navyše každá prezretá dlaždica sa ukladá automaticky\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -3395,7 +3395,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ceruzka v detaile) eviduje loď a jej parametre, oblasť plavby, kontakty chartru, náklady, posádku s preukazmi skippera aj fotky lode (max 3)'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.
@@ -3751,6 +3751,312 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Chýba Check-out'**
   String get missingCheckOutChip;
+
+  /// No description provided for @vesselModel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Model'**
+  String get vesselModel;
+
+  /// No description provided for @vesselTypeMonohull.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jednotrupové'**
+  String get vesselTypeMonohull;
+
+  /// No description provided for @vesselTypeCatamaran.
+  ///
+  /// In sk, this message translates to:
+  /// **'Katamarán'**
+  String get vesselTypeCatamaran;
+
+  /// No description provided for @vesselTypeTrimaran.
+  ///
+  /// In sk, this message translates to:
+  /// **'Trimaran'**
+  String get vesselTypeTrimaran;
+
+  /// No description provided for @vesselTypeMotorYacht.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motorová jachta'**
+  String get vesselTypeMotorYacht;
+
+  /// No description provided for @vesselTypeGulet.
+  ///
+  /// In sk, this message translates to:
+  /// **'Gulet'**
+  String get vesselTypeGulet;
+
+  /// No description provided for @vesselTypeDinghy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čln'**
+  String get vesselTypeDinghy;
+
+  /// No description provided for @vesselTypeRib.
+  ///
+  /// In sk, this message translates to:
+  /// **'RIB'**
+  String get vesselTypeRib;
+
+  /// No description provided for @vesselTypeOther.
+  ///
+  /// In sk, this message translates to:
+  /// **'Iné'**
+  String get vesselTypeOther;
+
+  /// No description provided for @charterCompanyLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Charterová spoločnosť'**
+  String get charterCompanyLabel;
+
+  /// No description provided for @yachtParamsSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Parametre jachty'**
+  String get yachtParamsSection;
+
+  /// No description provided for @berthsLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Lôžka'**
+  String get berthsLabel;
+
+  /// No description provided for @yearBuiltLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rok výroby'**
+  String get yearBuiltLabel;
+
+  /// No description provided for @waterTankLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nádrž na vodu'**
+  String get waterTankLabel;
+
+  /// No description provided for @fuelTankLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Palivová nádrž'**
+  String get fuelTankLabel;
+
+  /// No description provided for @engineHoursStartLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motohodiny · začiatok'**
+  String get engineHoursStartLabel;
+
+  /// No description provided for @engineHoursEndLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motohodiny · koniec'**
+  String get engineHoursEndLabel;
+
+  /// No description provided for @whereWhenSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kde & kedy'**
+  String get whereWhenSection;
+
+  /// No description provided for @countryLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Krajina'**
+  String get countryLabel;
+
+  /// No description provided for @cruisingAreaLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oblasť plavby'**
+  String get cruisingAreaLabel;
+
+  /// No description provided for @charterContactsSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kontakty chartru'**
+  String get charterContactsSection;
+
+  /// No description provided for @charterContactsHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Až 3 čísla pre hovor / WhatsApp / SMS. Vždy s medzinárodnou predvoľbou (napr. +385...).'**
+  String get charterContactsHint;
+
+  /// No description provided for @addPhoneNumber.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať telefónne číslo'**
+  String get addPhoneNumber;
+
+  /// No description provided for @costsSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Náklady'**
+  String get costsSection;
+
+  /// No description provided for @charterPriceLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cena charteru'**
+  String get charterPriceLabel;
+
+  /// No description provided for @currencyLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mena'**
+  String get currencyLabel;
+
+  /// No description provided for @addCostItem.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať náklad'**
+  String get addCostItem;
+
+  /// No description provided for @costName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Názov nákladu'**
+  String get costName;
+
+  /// No description provided for @crewSectionHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ťuknite na odznak na nastavenie kapitána — ostatní sú posádka.'**
+  String get crewSectionHint;
+
+  /// No description provided for @addCrewMember.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať člena posádky'**
+  String get addCrewMember;
+
+  /// No description provided for @crewNameLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno'**
+  String get crewNameLabel;
+
+  /// No description provided for @skipperBadge.
+  ///
+  /// In sk, this message translates to:
+  /// **'SKIPPER'**
+  String get skipperBadge;
+
+  /// No description provided for @crewBadge.
+  ///
+  /// In sk, this message translates to:
+  /// **'CREW'**
+  String get crewBadge;
+
+  /// No description provided for @boatLicenceLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Č. lodného preukazu'**
+  String get boatLicenceLabel;
+
+  /// No description provided for @radioLicenceLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Č. rádiového preukazu'**
+  String get radioLicenceLabel;
+
+  /// No description provided for @vesselPhotosSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fotky plavidla (max 3)'**
+  String get vesselPhotosSection;
+
+  /// No description provided for @addPhotoLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať'**
+  String get addPhotoLabel;
+
+  /// No description provided for @createVoyageButton.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vytvoriť plavbu'**
+  String get createVoyageButton;
+
+  /// No description provided for @saveVoyageButton.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložiť plavbu'**
+  String get saveVoyageButton;
+
+  /// No description provided for @costBaseCharter.
+  ///
+  /// In sk, this message translates to:
+  /// **'Základná cena charteru'**
+  String get costBaseCharter;
+
+  /// No description provided for @costDeposit.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kaucia'**
+  String get costDeposit;
+
+  /// No description provided for @costDinghyOutboard.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čln / prívesný motor'**
+  String get costDinghyOutboard;
+
+  /// No description provided for @costOutboardFuel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Palivo prívesného motora'**
+  String get costOutboardFuel;
+
+  /// No description provided for @costTransitLog.
+  ///
+  /// In sk, this message translates to:
+  /// **'Transit log'**
+  String get costTransitLog;
+
+  /// No description provided for @costTouristTax.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pobytová daň'**
+  String get costTouristTax;
+
+  /// No description provided for @costFinalCleaning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záverečné upratovanie'**
+  String get costFinalCleaning;
+
+  /// No description provided for @costLinenTowels.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posteľná bielizeň a uteráky'**
+  String get costLinenTowels;
+
+  /// No description provided for @costWifi.
+  ///
+  /// In sk, this message translates to:
+  /// **'WiFi'**
+  String get costWifi;
+
+  /// No description provided for @costSupKayak.
+  ///
+  /// In sk, this message translates to:
+  /// **'SUP / kajak'**
+  String get costSupKayak;
+
+  /// No description provided for @costSkipperFee.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poplatok za skippera'**
+  String get costSkipperFee;
+
+  /// No description provided for @costHostessFee.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poplatok za hostesku'**
+  String get costHostessFee;
 }
 
 class _AppLocalizationsDelegate

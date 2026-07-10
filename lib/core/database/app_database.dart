@@ -41,6 +41,25 @@ class Charters extends Table {
   // nemá zmysel pre ňu pýtať check-in/SB/check-out ani ju ponúkať na
   // pokračovanie trackingu.
   TextColumn get source => text().withDefault(const Constant('live'))();
+  // Rozšírený dotazník novej plavby (v14):
+  TextColumn get vesselModel => text().nullable()();       // napr. Bavaria Cruiser 41
+  TextColumn get charterCompany => text().nullable()();    // napr. Sunsail
+  TextColumn get country => text().nullable()();           // krajina plavby
+  TextColumn get cruisingArea => text().nullable()();      // oblasť, napr. Central Dalmatia
+  IntColumn get berths => integer().nullable()();          // počet lôžok
+  IntColumn get yearBuilt => integer().nullable()();       // rok výroby
+  TextColumn get engine => text().nullable()();            // napr. Volvo Penta 40hp
+  RealColumn get waterTankL => real().nullable()();
+  RealColumn get fuelTankL => real().nullable()();
+  RealColumn get engineHoursStart => real().nullable()();
+  RealColumn get engineHoursEnd => real().nullable()();
+  TextColumn get contactsJson => text().nullable()();      // JSON list telefónov chartru
+  TextColumn get costsJson => text().nullable()();         // JSON list {label, amount}
+  TextColumn get costCurrency => text().nullable()();      // mena nákladov, napr. EUR
+  TextColumn get photosJson => text().nullable()();        // JSON list ciest k fotkám (max 3)
+  // Detailná posádka {name, role, boatLicence, radioLicence} — skipperName
+  // a crewNames sa z nej naďalej odvodzujú kvôli SB/PDF kompatibilite.
+  TextColumn get crewJson => text().nullable()();
   // Polia pre oficiálny záznam Knihy míľ (ICC/RYA štýl) – vyplnené najmä pri
   // importovaných/trackovaných plavbách, kde chýbajú oproti ručne písaným
   // historickým plavbám.
@@ -247,7 +266,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -318,6 +337,24 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 13) {
         await m.addColumn(charters, charters.source);
+      }
+      if (from < 14) {
+        await m.addColumn(charters, charters.vesselModel);
+        await m.addColumn(charters, charters.charterCompany);
+        await m.addColumn(charters, charters.country);
+        await m.addColumn(charters, charters.cruisingArea);
+        await m.addColumn(charters, charters.berths);
+        await m.addColumn(charters, charters.yearBuilt);
+        await m.addColumn(charters, charters.engine);
+        await m.addColumn(charters, charters.waterTankL);
+        await m.addColumn(charters, charters.fuelTankL);
+        await m.addColumn(charters, charters.engineHoursStart);
+        await m.addColumn(charters, charters.engineHoursEnd);
+        await m.addColumn(charters, charters.contactsJson);
+        await m.addColumn(charters, charters.costsJson);
+        await m.addColumn(charters, charters.costCurrency);
+        await m.addColumn(charters, charters.photosJson);
+        await m.addColumn(charters, charters.crewJson);
       }
     },
     beforeOpen: (details) async {
