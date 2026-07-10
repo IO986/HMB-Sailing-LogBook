@@ -2039,6 +2039,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get crewBadge => 'ЕКІПАЖ';
 
   @override
+  String get prefillSkipperTitle => 'Заповнити збережені дані шкіпера?';
+
+  @override
+  String get prefillSkipperFill => 'Заповнити';
+
+  @override
+  String get prefillSkipperNew => 'Новий шкіпер';
+
+  @override
   String get boatLicenceLabel => '№ посвідчення судноводія';
 
   @override

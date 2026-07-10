@@ -2048,6 +2048,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get crewBadge => 'CREW';
 
   @override
+  String get prefillSkipperTitle => 'Gespeicherte Skipper-Daten übernehmen?';
+
+  @override
+  String get prefillSkipperFill => 'Übernehmen';
+
+  @override
+  String get prefillSkipperNew => 'Neuer Skipper';
+
+  @override
   String get boatLicenceLabel => 'Bootsführerschein-Nr.';
 
   @override

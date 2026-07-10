@@ -3950,6 +3950,24 @@ abstract class AppLocalizations {
   /// **'CREW'**
   String get crewBadge;
 
+  /// No description provided for @prefillSkipperTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Doplniť uložené údaje skippera?'**
+  String get prefillSkipperTitle;
+
+  /// No description provided for @prefillSkipperFill.
+  ///
+  /// In sk, this message translates to:
+  /// **'Doplniť'**
+  String get prefillSkipperFill;
+
+  /// No description provided for @prefillSkipperNew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nový skipper'**
+  String get prefillSkipperNew;
+
   /// No description provided for @boatLicenceLabel.
   ///
   /// In sk, this message translates to:

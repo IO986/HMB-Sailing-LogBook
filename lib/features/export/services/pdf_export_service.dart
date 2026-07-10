@@ -312,12 +312,12 @@ class PdfExportService {
             if (charter.homePort != null) 'Domovsky pristav: ${_ascii(charter.homePort!)}',
             if (charter.mmsi != null) 'MMSI: ${charter.mmsi!}',
             if (charter.callsign != null) 'Volaci znak: ${charter.callsign!}',
-            if (charter.vesselLengthM != null || charter.vesselBeamM != null || charter.vesselDraftM != null)
-              'Rozmery: ${[
-                if (charter.vesselLengthM != null) '${charter.vesselLengthM!.toStringAsFixed(1)}m',
-                if (charter.vesselBeamM != null) '${charter.vesselBeamM!.toStringAsFixed(1)}m',
-                if (charter.vesselDraftM != null) '${charter.vesselDraftM!.toStringAsFixed(1)}m',
-              ].join(' x ')}',
+            if (charter.vesselLengthM != null)
+              'Dlzka: ${charter.vesselLengthM!.toStringAsFixed(1)} m',
+            if (charter.vesselBeamM != null)
+              'Sirka: ${charter.vesselBeamM!.toStringAsFixed(1)} m',
+            if (charter.vesselDraftM != null)
+              'Ponor: ${charter.vesselDraftM!.toStringAsFixed(1)} m',
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('POSADKA', [

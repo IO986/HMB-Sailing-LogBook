@@ -52,7 +52,10 @@ class MarinePoiService {
   static const _maxCellsPerFetch = 12;
 
   final Map<String, List<MarinePoi>> _cells = {};
-  final Set<String> _inFlight = {};
+  // Bežiaci fetch per bunka — keď provider medzičasom rebuildne, nová
+  // exekúcia na prebiehajúci fetch POČKÁ (inak vráti prázdno a markery sa
+  // objavia až pri ďalšej zmene stavu mapy).
+  final Map<String, Future<void>> _inFlight = {};
 
   String _cellKey(int cx, int cy) => '$cx:$cy';
 
@@ -66,10 +69,14 @@ class MarinePoiService {
     final cyMax = (bounds.north / _cellDeg).floor();
 
     final missing = <(int, int)>[];
+    final pending = <Future<void>>{};
     for (var cx = cxMin; cx <= cxMax; cx++) {
       for (var cy = cyMin; cy <= cyMax; cy++) {
         final key = _cellKey(cx, cy);
-        if (!_cells.containsKey(key) && !_inFlight.contains(key)) {
+        final inFlight = _inFlight[key];
+        if (inFlight != null) {
+          pending.add(inFlight);
+        } else if (!_cells.containsKey(key)) {
           missing.add((cx, cy));
         }
       }
@@ -78,8 +85,9 @@ class MarinePoiService {
     final tooManyCells =
         (cxMax - cxMin + 1) * (cyMax - cyMin + 1) > _maxCellsPerFetch;
     if (missing.isNotEmpty && !tooManyCells) {
-      await _fetchCells(missing);
+      pending.add(_fetchCells(missing));
     }
+    await Future.wait(pending);
 
     final result = <MarinePoi>[];
     final seen = <String>{};
@@ -114,10 +122,15 @@ class MarinePoiService {
     }
   }
 
-  Future<void> _fetchCells(List<(int, int)> cells) async {
+  Future<void> _fetchCells(List<(int, int)> cells) {
+    final future = _doFetchCells(cells);
     for (final (cx, cy) in cells) {
-      _inFlight.add(_cellKey(cx, cy));
+      _inFlight[_cellKey(cx, cy)] = future;
     }
+    return future;
+  }
+
+  Future<void> _doFetchCells(List<(int, int)> cells) async {
     // Bbox = zjednotenie chýbajúcich buniek (sú vždy blízko seba,
     // lebo pochádzajú z jedného viditeľného výrezu).
     final south = cells.map((c) => c.$2).reduce((a, b) => a < b ? a : b) * _cellDeg;

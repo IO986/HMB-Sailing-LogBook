@@ -2036,6 +2036,15 @@ class AppLocalizationsSk extends AppLocalizations {
   String get crewBadge => 'CREW';
 
   @override
+  String get prefillSkipperTitle => 'Doplniť uložené údaje skippera?';
+
+  @override
+  String get prefillSkipperFill => 'Doplniť';
+
+  @override
+  String get prefillSkipperNew => 'Nový skipper';
+
+  @override
   String get boatLicenceLabel => 'Č. lodného preukazu';
 
   @override

@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/skipper_profile.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
@@ -31,12 +32,14 @@ class _CrewEntry {
   final nameCtrl = TextEditingController();
   final boatLicCtrl = TextEditingController();
   final radioLicCtrl = TextEditingController();
+  final otherCertsCtrl = TextEditingController();
   bool isSkipper;
   _CrewEntry({this.isSkipper = false});
   void dispose() {
     nameCtrl.dispose();
     boatLicCtrl.dispose();
     radioLicCtrl.dispose();
+    otherCertsCtrl.dispose();
   }
 }
 
@@ -110,25 +113,46 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     }
   }
 
-  /// Meno aj preukazy skippera sa preberajú z Profilu skippera — rovnaké
-  /// údaje sa nikde nevypĺňajú dvakrát.
+  /// Pri novej plavbe sa užívateľ rozhodne, či doplniť uložené údaje
+  /// skippera (meno, preukazy, certifikácie — ukladajú sa pri každom
+  /// uložení plavby), alebo začať s prázdnym skipperom.
   Future<void> _prefillSkipperFromProfile() async {
     final profile = await ref.read(skipperProfileProvider.future);
     if (!mounted) return;
+    final hasSaved = profile.fullName.isNotEmpty ||
+        profile.licenseNumber.isNotEmpty ||
+        profile.vhfNumber.isNotEmpty ||
+        profile.otherCerts.isNotEmpty;
+    if (!hasSaved) return;
+
+    final l = AppLocalizations.of(context);
+    final fill = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.prefillSkipperTitle),
+        content: Text(profile.fullName),
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.prefillSkipperNew),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.prefillSkipperFill),
+          ),
+        ],
+      ),
+    );
+    if (fill != true || !mounted) return;
+
     setState(() {
       final skipper = _crew.first;
-      if (skipper.nameCtrl.text.isEmpty && profile.fullName.isNotEmpty) {
-        skipper.nameCtrl.text = profile.fullName;
-      }
-      if (skipper.boatLicCtrl.text.isEmpty) {
-        final lic = [profile.licenseType, profile.licenseNumber]
-            .where((s) => s.isNotEmpty)
-            .join(' ');
-        if (lic.isNotEmpty) skipper.boatLicCtrl.text = lic;
-      }
-      if (skipper.radioLicCtrl.text.isEmpty && profile.vhfNumber.isNotEmpty) {
-        skipper.radioLicCtrl.text = profile.vhfNumber;
-      }
+      skipper.nameCtrl.text = profile.fullName;
+      skipper.boatLicCtrl.text = [profile.licenseType, profile.licenseNumber]
+          .where((s) => s.isNotEmpty)
+          .join(' ');
+      skipper.radioLicCtrl.text = profile.vhfNumber;
+      skipper.otherCertsCtrl.text = profile.otherCerts;
     });
   }
 
@@ -181,6 +205,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           e.nameCtrl.text = m['name'] as String? ?? '';
           e.boatLicCtrl.text = m['boatLicence'] as String? ?? '';
           e.radioLicCtrl.text = m['radioLicence'] as String? ?? '';
+          e.otherCertsCtrl.text = m['otherCerts'] as String? ?? '';
           _crew.add(e);
         }
       } else {
@@ -259,7 +284,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _vesselCtrl,
             decoration: InputDecoration(
               labelText: '${l.vesselName} *',
-              hintText: 'S/Y Aurora',
               prefixIcon: const Icon(Icons.directions_boat),
             ),
           ),
@@ -268,7 +292,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _modelCtrl,
             decoration: InputDecoration(
               labelText: l.vesselModel,
-              hintText: 'Bavaria Cruiser 41',
               prefixIcon: const Icon(Icons.category),
             ),
           ),
@@ -305,7 +328,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: l.callsign,
-                hintText: '9HA1234',
               ),
             )),
             const SizedBox(width: 12),
@@ -315,7 +337,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 labelText: l.mmsi,
-                hintText: '256123456',
               ),
             )),
           ]),
@@ -324,7 +345,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _companyCtrl,
             decoration: InputDecoration(
               labelText: l.charterCompanyLabel,
-              hintText: 'Sunsail',
               prefixIcon: const Icon(Icons.business),
             ),
           ),
@@ -350,7 +370,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _engineCtrl,
             decoration: InputDecoration(
               labelText: l.engineLabel,
-              hintText: 'Volvo Penta 40hp',
               prefixIcon: const Icon(Icons.settings),
             ),
           ),
@@ -377,7 +396,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               controller: _homePortCtrl,
               decoration: InputDecoration(
                 labelText: l.homePort,
-                hintText: 'Marina Kaštela',
               ),
             )),
             const SizedBox(width: 12),
@@ -385,7 +403,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               controller: _countryCtrl,
               decoration: InputDecoration(
                 labelText: l.countryLabel,
-                hintText: 'Croatia',
               ),
             )),
           ]),
@@ -394,7 +411,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             controller: _areaCtrl,
             decoration: InputDecoration(
               labelText: l.cruisingAreaLabel,
-              hintText: 'Central Dalmatia',
               prefixIcon: const Icon(Icons.map_outlined),
             ),
           ),
@@ -418,7 +434,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
                     controller: e.value,
                     keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(
-                      hintText: '+385 91 234 5678',
                       prefixIcon: Icon(Icons.phone),
                     ),
                   )),
@@ -671,7 +686,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               controller: entry.boatLicCtrl,
               decoration: InputDecoration(
                 labelText: l.boatLicenceLabel,
-                hintText: 'e.g. RYA / ICC 123456',
                 isDense: true,
               ),
             ),
@@ -680,8 +694,17 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               controller: entry.radioLicCtrl,
               decoration: InputDecoration(
                 labelText: l.radioLicenceLabel,
-                hintText: 'e.g. SRC / LRC 7890',
                 isDense: true,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: entry.otherCertsCtrl,
+              maxLines: 2,
+              decoration: InputDecoration(
+                labelText: l.skipperOtherCerts,
+                isDense: true,
+                alignLabelWithHint: true,
               ),
             ),
           ],
@@ -781,8 +804,25 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             'role': e.isSkipper ? 'skipper' : 'crew',
             'boatLicence': _emptyNull(e.boatLicCtrl.text),
             'radioLicence': _emptyNull(e.radioLicCtrl.text),
+            'otherCerts': _emptyNull(e.otherCertsCtrl.text),
           }
     ]);
+
+    // Údaje skippera sa uložia ako predvoľba pre budúce plavby (nahrádza
+    // zrušený Profil skippera v Nastaveniach).
+    if (skipper != null && skipper.nameCtrl.text.trim().isNotEmpty) {
+      final old = await ref.read(skipperProfileProvider.future);
+      await ref.read(skipperProfileProvider.notifier).save(SkipperProfile(
+            fullName: skipper.nameCtrl.text.trim(),
+            licenseType: old.licenseType,
+            licenseNumber: skipper.boatLicCtrl.text.trim(),
+            licenseAuthority: old.licenseAuthority,
+            licenseExpiry: old.licenseExpiry,
+            vhfNumber: skipper.radioLicCtrl.text.trim(),
+            vhfExpiry: old.vhfExpiry,
+            otherCerts: skipper.otherCertsCtrl.text.trim(),
+          ));
+    }
 
     final contacts = _contactCtrls
         .map((c) => c.text.trim())

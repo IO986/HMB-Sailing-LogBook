@@ -2035,6 +2035,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get crewBadge => 'CREW';
 
   @override
+  String get prefillSkipperTitle => 'Fill in saved skipper details?';
+
+  @override
+  String get prefillSkipperFill => 'Fill in';
+
+  @override
+  String get prefillSkipperNew => 'New skipper';
+
+  @override
   String get boatLicenceLabel => 'Boat licence no.';
 
   @override

@@ -234,13 +234,9 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       ref.invalidate(chartersProvider);
       if (!mounted) return;
 
-      final charter = _charter;
-      if (widget.type == 'checkIn' && closed &&
-          charter != null && !charter.safetyBriefingDone) {
-        context.go('/logbook/${widget.charterId}/briefing');
-      } else {
-        context.pop();
-      }
+      // Safety Briefing sa NEspúšťa automaticky — užívateľ ho otvorí sám
+      // (blikajúca ikona v detaile plavby pripomína).
+      context.pop();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));

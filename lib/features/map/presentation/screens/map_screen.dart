@@ -1058,29 +1058,21 @@ class _WindArrow extends StatelessWidget {
             : kn < 30
                 ? Colors.orange.shade800
                 : Colors.red.shade700;
-    // Žiadne Icon shadows — na Androide sa tieň rotovanej ikony kreslí
-    // posunutý a vyzerá ako druhá "fantómová" biela šípka. Čitateľnosť
-    // rieši polopriehľadné biele pozadie.
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.65),
-        borderRadius: BorderRadius.circular(10),
+    // Bez pozadia aj bez Icon shadows (tieň rotovanej ikony sa na Androide
+    // kreslí posunutý — vyzerá ako fantómová šípka).
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Transform.rotate(
+        // meteorologický smer = odkiaľ fúka; šípka ukazuje kam fúka
+        angle: (point.dirDeg + 180) * math.pi / 180,
+        child: Icon(Icons.navigation, color: color, size: 20),
       ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Transform.rotate(
-          // meteorologický smer = odkiaľ fúka; šípka ukazuje kam fúka
-          angle: (point.dirDeg + 180) * math.pi / 180,
-          child: Icon(Icons.navigation, color: color, size: 20),
-        ),
-        Text('${kn.round()}',
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            )),
-      ]),
-    );
+      Text('${kn.round()}',
+          style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          )),
+    ]);
   }
 }
 

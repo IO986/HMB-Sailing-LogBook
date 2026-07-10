@@ -212,6 +212,26 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   Future<void> _save(BuildContext context, Charter charter,
       List<({String name, String role})> members) async {
     if (_saving) return;
+
+    // Briefing bez podpisov nemá hodnotu — ulož len keď je podpísaný
+    // každý člen posádky (nakreslený ťah alebo už uložený podpis).
+    final unsigned = <String>[];
+    for (var i = 0; i < members.length; i++) {
+      final hasDrawn = (_strokes[i] ?? const []).isNotEmpty;
+      final hasSaved = _existingPaths[i] != null;
+      if (!hasDrawn && !hasSaved) unsigned.add(members[i].name);
+    }
+    if (members.isEmpty || unsigned.isNotEmpty) {
+      final l = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(members.isEmpty
+            ? l.briefingNoCrew
+            : '${l.briefingSignHere}: ${unsigned.join(", ")}'),
+        backgroundColor: Colors.orange.shade800,
+      ));
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final db = ref.read(databaseProvider);
