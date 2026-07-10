@@ -25,6 +25,8 @@ class MarinePoiSheet extends ConsumerWidget {
     final (icon, color, typeLabel) = switch (poi.type) {
       'anchorage' => (Icons.anchor, Colors.teal.shade700, 'Kotvisko'),
       'marina' => (Icons.sailing, Colors.indigo.shade600, 'Marína'),
+      'fuel' => (Icons.local_gas_station, Colors.orange.shade800,
+          'Tankovacia stanica'),
       _ => (Icons.directions_boat, Colors.blueGrey.shade700, 'Prístav'),
     };
 

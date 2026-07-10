@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -6,13 +7,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 
+import '../../../../core/providers/night_mode_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
+import '../../../../core/services/tile_cache.dart';
+import '../../../../core/services/wind_grid_service.dart';
+import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
@@ -43,6 +48,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   // Pod týmto zoomom POI nesťahujeme — bbox by bol príliš veľký.
   static const _poiMinZoom = 9.0;
 
+  // Pravítko / plánovanie trasy: body ťukané na mapu (so snapom na
+  // existujúce waypointy), súčet NM, kurz poslednej nohy, ETA pri SOG.
+  bool _rulerActive = false;
+  final List<LatLng> _rulerPoints = [];
+
   @override
   void initState() {
     super.initState();
@@ -57,17 +67,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     super.dispose();
   }
 
-  /// Debounced aktualizácia viditeľného výrezu pre POI vrstvu — až keď sa
-  /// mapa na chvíľu ustáli, nie počas každého frame posunu.
+  /// Debounced aktualizácia viditeľného výrezu pre POI/veternú vrstvu —
+  /// až keď sa mapa na chvíľu ustáli, nie počas každého frame posunu.
   void _schedulePoiRefresh() {
-    if (!ref.read(mapNotifierProvider).showMarinePois) return;
+    final st = ref.read(mapNotifierProvider);
+    if (!st.showMarinePois && !st.showWindGrid) return;
     _poiDebounce?.cancel();
     _poiDebounce = Timer(const Duration(milliseconds: 700), () {
       if (!mounted || !_mapReady) return;
       final camera = _mapController.camera;
-      if (camera.zoom < _poiMinZoom) return;
-      ref.read(marinePoiBoundsProvider.notifier).state =
-          camera.visibleBounds;
+      // POI pod min zoomom nefetchuje (service kešuje po bunkách),
+      // veterná mriežka funguje pri každom zoome.
+      if (camera.zoom < _poiMinZoom &&
+          !ref.read(mapNotifierProvider).showWindGrid) {
+        return;
+      }
+      ref.read(mapViewBoundsProvider.notifier).state = camera.visibleBounds;
     });
   }
 
@@ -128,6 +143,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final showMarinePois = mapState.showMarinePois;
     final marinePois =
         ref.watch(marinePoisProvider).valueOrNull ?? const <MarinePoi>[];
+    final radarUrl = mapState.showRainRadar
+        ? ref.watch(rainRadarUrlProvider).valueOrNull
+        : null;
+    final windPoints = mapState.showWindGrid
+        ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
+        : const <WindPoint>[];
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -174,18 +195,33 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               initialZoom: 10,
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
+              onTap: (_, ll) => _onRulerTap(ll),
               onPositionChanged: (_, __) => _schedulePoiRefresh(),
             ),
             children: [
 
               // ── Base layer ───────────────────────────────────
+              // V nočnom režime tmavé dlaždice — svetlá OSM mapa by cez
+              // červený filter oslepovala; tmavý podklad zachová kontrast.
               if (_baseMap == BaseMap.osm)
-                TileLayer(
-                  key: ValueKey('osm_$_tileKey'),
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.hmb.sailinglog',
-                  maxZoom: 19,
-                ),
+                if (ref.watch(nightModeProvider))
+                  TileLayer(
+                    key: ValueKey('osm_dark_$_tileKey'),
+                    urlTemplate:
+                        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                    subdomains: const ['a', 'b', 'c', 'd'],
+                    userAgentPackageName: 'com.hmb.sailinglog',
+                    maxZoom: 19,
+                    tileProvider: CachingTileProvider('dark'),
+                  )
+                else
+                  TileLayer(
+                    key: ValueKey('osm_$_tileKey'),
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.hmb.sailinglog',
+                    maxZoom: 19,
+                    tileProvider: CachingTileProvider('osm'),
+                  ),
 
               if (_baseMap == BaseMap.satellite) ...[
                 // ESRI satelitné snímky
@@ -216,6 +252,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 18,
+                  tileProvider: CachingTileProvider('seamark'),
+                ),
+
+              // ── Zrážkový radar (RainViewer) ───────────────────
+              if (radarUrl != null)
+                Opacity(
+                  opacity: 0.7,
+                  child: TileLayer(
+                    key: ValueKey('radar_$radarUrl'),
+                    urlTemplate: radarUrl,
+                    userAgentPackageName: 'com.hmb.sailinglog',
+                    maxZoom: 19,
+                  ),
                 ),
 
               // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
@@ -231,6 +280,50 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       ),
                     ),
                 ]),
+
+              // ── Šípky vetra (Open-Meteo mriežka) ─────────────
+              if (windPoints.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (final w in windPoints)
+                    Marker(
+                      point: LatLng(w.lat, w.lon),
+                      width: 46, height: 46,
+                      child: _WindArrow(point: w),
+                    ),
+                ]),
+
+              // ── Pravítko / trasa ─────────────────────────────
+              if (_rulerPoints.isNotEmpty) ...[
+                PolylineLayer(polylines: [
+                  Polyline(
+                    points: _rulerPoints,
+                    color: Colors.purple.shade400,
+                    strokeWidth: 3,
+                    pattern: const StrokePattern.dotted(),
+                  ),
+                ]),
+                MarkerLayer(markers: [
+                  for (var i = 0; i < _rulerPoints.length; i++)
+                    Marker(
+                      point: _rulerPoints[i],
+                      width: 22, height: 22,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.purple.shade400,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Center(
+                          child: Text('${i + 1}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                ]),
+              ],
 
               // ── GPS track (živý tracking, alebo náhľad zvolenej plavby) ──
               if (trackPoints.isNotEmpty)
@@ -398,9 +491,31 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         duration: Duration(seconds: 3),
                       ));
                     } else {
-                      ref.read(marinePoiBoundsProvider.notifier).state =
+                      ref.read(mapViewBoundsProvider.notifier).state =
                           _mapController.camera.visibleBounds;
                     }
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
+              MapLayerToggle(
+                icon: Icons.water_drop,
+                label: 'Radar',
+                isActive: mapState.showRainRadar,
+                onToggle: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleRainRadar(),
+              ),
+              const SizedBox(height: 8),
+              MapLayerToggle(
+                icon: Icons.air,
+                label: 'Vietor',
+                isActive: mapState.showWindGrid,
+                onToggle: () {
+                  ref.read(mapNotifierProvider.notifier).toggleWindGrid();
+                  if (ref.read(mapNotifierProvider).showWindGrid &&
+                      _mapReady) {
+                    ref.read(mapViewBoundsProvider.notifier).state =
+                        _mapController.camera.visibleBounds;
                   }
                 },
               ),
@@ -428,8 +543,43 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onPressed: () => context.push('/gpx-import'),
                 child: const Icon(Icons.file_upload_outlined),
               ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
+                heroTag: 'ruler',
+                tooltip: 'Pravítko / trasa',
+                onPressed: () => setState(() {
+                  _rulerActive = !_rulerActive;
+                  if (!_rulerActive) _rulerPoints.clear();
+                }),
+                backgroundColor: _rulerActive ? Colors.purple.shade400 : null,
+                child: Icon(Icons.straighten,
+                    color: _rulerActive ? Colors.white : null),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
+                heroTag: 'offlineDl',
+                tooltip: 'Stiahnuť oblasť offline',
+                onPressed: () => _openOfflineDownload(context),
+                child: const Icon(Icons.download_for_offline_outlined),
+              ),
             ]),
           ),
+
+          // ── Panel pravítka / trasy ────────────────────────────
+          if (_rulerActive)
+            Positioned(
+              bottom: 100,
+              left: 12,
+              child: _RulerPanel(
+                points: _rulerPoints,
+                onUndo: _rulerPoints.isEmpty
+                    ? null
+                    : () => setState(() => _rulerPoints.removeLast()),
+                onClear: _rulerPoints.isEmpty
+                    ? null
+                    : () => setState(() => _rulerPoints.clear()),
+              ),
+            ),
 
           // ── Banner: prezeranie inej plavby ────────────────────
           if (isPreviewing)
@@ -535,11 +685,64 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
+  /// Ťuknutie v režime pravítka: pridá bod, so snapom na blízky waypoint
+  /// (do ~30 px), aby sa dala trasa plánovať presne cez uložené ciele.
+  void _onRulerTap(LatLng ll) {
+    if (!_rulerActive) return;
+    final wps = ref.read(waypointsProvider).valueOrNull ?? const <Waypoint>[];
+    LatLng snapped = ll;
+    final zoom = _mapController.camera.zoom;
+    // ~30 px v stupňoch: 360° / (256 * 2^zoom) px-na-stupeň
+    final snapDeg = 30 * 360 / (256 * math.pow(2, zoom));
+    for (final wp in wps) {
+      if ((wp.latitude - ll.latitude).abs() < snapDeg &&
+          (wp.longitude - ll.longitude).abs() < snapDeg) {
+        snapped = LatLng(wp.latitude, wp.longitude);
+        break;
+      }
+    }
+    setState(() => _rulerPoints.add(snapped));
+  }
+
   void _showPoiDetail(MarinePoi poi) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (_) => MarinePoiSheet(poi: poi),
+    );
+  }
+
+  /// Stiahne dlaždice aktuálne viditeľnej oblasti (OSM + seamark) pre
+  /// offline použitie: od aktuálneho zoomu po +3 úrovne hlbšie.
+  void _openOfflineDownload(BuildContext context) {
+    if (!_mapReady) return;
+    final bounds = _mapController.camera.visibleBounds;
+    final minZ = _mapController.camera.zoom.floor();
+    final maxZ = (minZ + 3).clamp(minZ, 17);
+    final perLayer = TileRegionDownloader.countTiles(bounds, minZ, maxZ);
+    final total = perLayer * TileRegionDownloader.layers.length;
+
+    if (total > TileRegionDownloader.maxTiles) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            'Oblasť je príliš veľká ($total dlaždíc). Priblíž mapu a skús znova.'),
+        duration: const Duration(seconds: 4),
+      ));
+      return;
+    }
+
+    final downloader = TileRegionDownloader();
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (sheetCtx) => _OfflineDownloadSheet(
+        downloader: downloader,
+        bounds: bounds,
+        minZ: minZ,
+        maxZ: maxZ,
+        total: total,
+      ),
     );
   }
 
@@ -742,6 +945,228 @@ class _Btn extends StatelessWidget {
   );
 }
 
+// ── Offline download sheet ────────────────────────────────────
+
+class _OfflineDownloadSheet extends StatefulWidget {
+  final TileRegionDownloader downloader;
+  final LatLngBounds bounds;
+  final int minZ, maxZ, total;
+  const _OfflineDownloadSheet({
+    required this.downloader,
+    required this.bounds,
+    required this.minZ,
+    required this.maxZ,
+    required this.total,
+  });
+
+  @override
+  State<_OfflineDownloadSheet> createState() => _OfflineDownloadSheetState();
+}
+
+class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
+  int _done = 0;
+  bool _running = false;
+  bool _finished = false;
+  int _errors = 0;
+
+  Future<void> _start() async {
+    setState(() => _running = true);
+    final errors = await widget.downloader.download(
+      widget.bounds, widget.minZ, widget.maxZ,
+      (done, total) { if (mounted) setState(() => _done = done); },
+    );
+    if (mounted) {
+      setState(() {
+        _running = false;
+        _finished = true;
+        _errors = errors;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Row(children: [
+            const Icon(Icons.download_for_offline_outlined),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text('Offline mapa viditeľnej oblasti',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            ),
+          ]),
+          const SizedBox(height: 8),
+          Text(
+            'Mapa + seamarky, zoom ${widget.minZ}–${widget.maxZ}, '
+            '${widget.total} dlaždíc (~${(widget.total * 15 / 1024).toStringAsFixed(0)} MB). '
+            'Stiahnuté oblasti fungujú na mori bez signálu.',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          ),
+          const SizedBox(height: 16),
+          if (_running || _finished) ...[
+            LinearProgressIndicator(
+                value: widget.total == 0 ? 1 : _done / widget.total),
+            const SizedBox(height: 8),
+            Text(_finished
+                ? (_errors == 0
+                    ? 'Hotovo — $_done dlaždíc uložených'
+                    : 'Hotovo s chybami: $_errors dlaždíc sa nepodarilo stiahnuť')
+                : '$_done / ${widget.total}'),
+            const SizedBox(height: 12),
+          ],
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            TextButton(
+              onPressed: () {
+                widget.downloader.cancel();
+                Navigator.pop(context);
+              },
+              child: Text(_finished ? 'Zavrieť' : 'Zrušiť'),
+            ),
+            const SizedBox(width: 8),
+            if (!_running && !_finished)
+              FilledButton.icon(
+                onPressed: _start,
+                icon: const Icon(Icons.download),
+                label: const Text('Stiahnuť'),
+              ),
+          ]),
+        ]),
+      ),
+    );
+  }
+}
+
+// ── Wind arrow ────────────────────────────────────────────────
+
+class _WindArrow extends StatelessWidget {
+  final WindPoint point;
+  const _WindArrow({required this.point});
+
+  @override
+  Widget build(BuildContext context) {
+    final kn = point.speedKn;
+    final color = kn < 10
+        ? Colors.green.shade600
+        : kn < 20
+            ? Colors.amber.shade700
+            : kn < 30
+                ? Colors.orange.shade800
+                : Colors.red.shade700;
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Transform.rotate(
+        // meteorologický smer = odkiaľ fúka; šípka ukazuje kam fúka
+        angle: (point.dirDeg + 180) * math.pi / 180,
+        child: Icon(Icons.navigation, color: color, size: 22,
+            shadows: const [Shadow(color: Colors.white, blurRadius: 3)]),
+      ),
+      Text('${kn.round()}',
+          style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            shadows: const [Shadow(color: Colors.white, blurRadius: 3)],
+          )),
+    ]);
+  }
+}
+
+// ── Ruler / route panel ───────────────────────────────────────
+
+class _RulerPanel extends StatelessWidget {
+  final List<LatLng> points;
+  final VoidCallback? onUndo;
+  final VoidCallback? onClear;
+  const _RulerPanel({required this.points, this.onUndo, this.onClear});
+
+  static double _bearingDeg(LatLng a, LatLng b) {
+    final lat1 = a.latitude * math.pi / 180;
+    final lat2 = b.latitude * math.pi / 180;
+    final dLon = (b.longitude - a.longitude) * math.pi / 180;
+    final y = math.sin(dLon) * math.cos(lat2);
+    final x = math.cos(lat1) * math.sin(lat2) -
+        math.sin(lat1) * math.cos(lat2) * math.cos(dLon);
+    return (math.atan2(y, x) * 180 / math.pi + 360) % 360;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var totalNm = 0.0;
+    for (var i = 1; i < points.length; i++) {
+      totalNm += DistanceCalculator.distanceNm(
+        points[i - 1].latitude, points[i - 1].longitude,
+        points[i].latitude, points[i].longitude,
+      );
+    }
+    final brg = points.length >= 2
+        ? _bearingDeg(points[points.length - 2], points.last)
+        : null;
+
+    // ETA pri aktuálnej rýchlosti (GPS SOG) — len keď sa reálne hýbeme.
+    final pos = LocationService().lastPosition;
+    final sogKn = pos != null ? pos.speed * 1.94384 : 0.0;
+    String? eta;
+    if (totalNm > 0 && sogKn > 0.5) {
+      final hours = totalNm / sogKn;
+      final h = hours.floor();
+      final m = ((hours - h) * 60).round();
+      eta = '${h}h ${m}min @ ${sogKn.toStringAsFixed(1)}kn';
+    }
+
+    return Material(
+      elevation: 3,
+      borderRadius: BorderRadius.circular(12),
+      color: Colors.purple.shade400,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.straighten, color: Colors.white, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                points.isEmpty
+                    ? 'Ťukni body na mape'
+                    : '${totalNm.toStringAsFixed(1)} NM'
+                        '${brg != null ? '  ·  ${brg.toStringAsFixed(0)}°' : ''}',
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13),
+              ),
+              if (onUndo != null) ...[
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: onUndo,
+                  child: const Icon(Icons.undo, color: Colors.white, size: 18),
+                ),
+              ],
+              if (onClear != null) ...[
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: onClear,
+                  child: const Icon(Icons.delete_outline,
+                      color: Colors.white, size: 18),
+                ),
+              ],
+            ]),
+            if (eta != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text('ETA $eta',
+                    style: const TextStyle(color: Colors.white70, fontSize: 11)),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ── Marine POI Marker ─────────────────────────────────────────
 
 class _MarinePoiMarker extends StatelessWidget {
@@ -753,6 +1178,7 @@ class _MarinePoiMarker extends StatelessWidget {
     final (icon, color) = switch (type) {
       'anchorage' => (Icons.anchor, Colors.teal.shade700),
       'marina' => (Icons.sailing, Colors.indigo.shade600),
+      'fuel' => (Icons.local_gas_station, Colors.orange.shade800),
       _ => (Icons.directions_boat, Colors.blueGrey.shade700),
     };
     return Container(

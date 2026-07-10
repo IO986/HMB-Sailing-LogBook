@@ -3,10 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-/// Prístav / marína / kotvisko z OpenStreetMap (Overpass API).
+/// Prístav / marína / kotvisko / tankovacia stanica z OpenStreetMap
+/// (Overpass API).
 class MarinePoi {
   final String id; // "node/123" | "way/456" — unikátne naprieč dotazmi
-  final String type; // anchorage | marina | harbour
+  final String type; // anchorage | marina | harbour | fuel
   final double lat;
   final double lon;
   final String? name;
@@ -132,6 +133,8 @@ class MarinePoiService {
   way["seamark:type"~"^(anchorage|harbour|marina)\$"]($bbox);
   node["leisure"="marina"]($bbox);
   way["leisure"="marina"]($bbox);
+  node["waterway"="fuel"]($bbox);
+  way["waterway"="fuel"]($bbox);
 );
 out center 300;
 ''';
@@ -156,7 +159,9 @@ out center 300;
 
         final seamark = tags['seamark:type'];
         final String type;
-        if (seamark == 'anchorage') {
+        if (tags['waterway'] == 'fuel') {
+          type = 'fuel';
+        } else if (seamark == 'anchorage') {
           type = 'anchorage';
         } else if (seamark == 'marina' || tags['leisure'] == 'marina') {
           type = 'marina';
