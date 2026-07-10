@@ -1473,7 +1473,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noTarget => 'Kein Ziel';
 
   @override
-  String get selectWaypointHint => 'Wegpunkt auswählen...';
+  String get selectWaypointHint => 'Zum Wegpunkt navigieren';
 
   @override
   String get sessionStats => 'Reisestatistik';
@@ -1738,7 +1738,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';

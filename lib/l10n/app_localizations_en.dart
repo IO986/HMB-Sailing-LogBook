@@ -1466,7 +1466,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noTarget => 'No target';
 
   @override
-  String get selectWaypointHint => 'Select waypoint...';
+  String get selectWaypointHint => 'Navigate to waypoint';
 
   @override
   String get sessionStats => 'Voyage statistics';
@@ -1725,7 +1725,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
