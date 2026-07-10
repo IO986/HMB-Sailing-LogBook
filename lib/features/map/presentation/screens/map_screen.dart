@@ -263,6 +263,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     key: ValueKey('radar_$radarUrl'),
                     urlTemplate: radarUrl,
                     userAgentPackageName: 'com.hmb.sailinglog',
+                    // RainViewer dlaždice končia pri zoome 12 — hlbšie ich
+                    // server nemá ("zoom level not supported"), flutter_map
+                    // ich od tejto úrovne škáluje sám.
+                    maxNativeZoom: 12,
                     maxZoom: 19,
                   ),
                 ),
@@ -1055,21 +1059,29 @@ class _WindArrow extends StatelessWidget {
             : kn < 30
                 ? Colors.orange.shade800
                 : Colors.red.shade700;
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      Transform.rotate(
-        // meteorologický smer = odkiaľ fúka; šípka ukazuje kam fúka
-        angle: (point.dirDeg + 180) * math.pi / 180,
-        child: Icon(Icons.navigation, color: color, size: 22,
-            shadows: const [Shadow(color: Colors.white, blurRadius: 3)]),
+    // Žiadne Icon shadows — na Androide sa tieň rotovanej ikony kreslí
+    // posunutý a vyzerá ako druhá "fantómová" biela šípka. Čitateľnosť
+    // rieši polopriehľadné biele pozadie.
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(10),
       ),
-      Text('${kn.round()}',
-          style: TextStyle(
-            color: color,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            shadows: const [Shadow(color: Colors.white, blurRadius: 3)],
-          )),
-    ]);
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Transform.rotate(
+          // meteorologický smer = odkiaľ fúka; šípka ukazuje kam fúka
+          angle: (point.dirDeg + 180) * math.pi / 180,
+          child: Icon(Icons.navigation, color: color, size: 20),
+        ),
+        Text('${kn.round()}',
+            style: TextStyle(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            )),
+      ]),
+    );
   }
 }
 
