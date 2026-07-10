@@ -31,8 +31,8 @@ class MarinePoiService {
   MarinePoiService._();
 
   final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 25),
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 20),
     headers: {
       // Overpass vracia 406 na požiadavky bez User-Agent (dio ho sám
       // neposiela) — overené na zariadení aj curl-om s prázdnym UA.
@@ -94,6 +94,25 @@ class MarinePoiService {
     return result;
   }
 
+  Future<Response> _post(String endpoint, String query) => _dio.post(
+        endpoint,
+        data: {'data': query},
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      );
+
+  /// Hlavný server dostane 4 s — ak dovtedy neodpovie (typicky preťaženie,
+  /// 504), letí dotaz na mirror. Pomalá odpoveď hlavného servera sa tým
+  /// nezruší, len sa na ňu nečaká.
+  Future<Response> _fetchWithFallback(String query) async {
+    try {
+      return await _post(_endpoints[0], query)
+          .timeout(const Duration(seconds: 4));
+    } catch (e) {
+      debugPrint('[POI] primary slow/failed ($e), using mirror');
+      return _post(_endpoints[1], query);
+    }
+  }
+
   Future<void> _fetchCells(List<(int, int)> cells) async {
     for (final (cx, cy) in cells) {
       _inFlight.add(_cellKey(cx, cy));
@@ -107,7 +126,7 @@ class MarinePoiService {
     final bbox = '$south,$west,$north,$east';
 
     final query = '''
-[out:json][timeout:25];
+[out:json][timeout:15];
 (
   node["seamark:type"~"^(anchorage|harbour|marina)\$"]($bbox);
   way["seamark:type"~"^(anchorage|harbour|marina)\$"]($bbox);
@@ -118,22 +137,7 @@ out center 300;
 ''';
 
     try {
-      Response? resp;
-      Object? lastError;
-      for (final endpoint in _endpoints) {
-        try {
-          resp = await _dio.post(
-            endpoint,
-            data: {'data': query},
-            options: Options(contentType: Headers.formUrlEncodedContentType),
-          );
-          break;
-        } catch (e) {
-          lastError = e;
-          debugPrint('[POI] $endpoint failed, trying next: $e');
-        }
-      }
-      if (resp == null) throw lastError!;
+      final resp = await _fetchWithFallback(query);
       final elements = (resp.data['elements'] as List?) ?? const [];
 
       // Najprv priprav prázdne bunky, aby sa oblasť bez POI tiež zapamätala.
