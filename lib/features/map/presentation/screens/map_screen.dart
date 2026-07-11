@@ -195,7 +195,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
               onTap: (_, ll) => _onRulerTap(ll),
-              onPositionChanged: (_, __) => _schedulePoiRefresh(),
+              onPositionChanged: (_, hasGesture) {
+                // Ručný posun mapy vypne GPS follow — inak ju každý GPS
+                // update strhne späť. GPS tlačidlo follow znova zapne.
+                if (hasGesture &&
+                    ref.read(mapNotifierProvider).followGps) {
+                  ref.read(mapNotifierProvider.notifier).setFollowGps(false);
+                }
+                _schedulePoiRefresh();
+              },
             ),
             children: [
 
