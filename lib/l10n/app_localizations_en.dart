@@ -1739,7 +1739,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, charter contacts, crew with the skipper\'s licences, and vessel photos (max 3)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -1781,7 +1781,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done.';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';
@@ -2033,6 +2033,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crewBadge => 'CREW';
+
+  @override
+  String get vesselTypeSailboat => 'Sailboat';
+
+  @override
+  String get vesselTypeMotorBoat => 'Motor boat';
+
+  @override
+  String get sbNeedsVesselCard =>
+      'Fill in the vessel and crew card first — the Safety Briefing needs the crew list for signatures.';
 
   @override
   String get prefillSkipperTitle => 'Fill in saved skipper details?';

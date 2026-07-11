@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -83,6 +84,41 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         if (idx < 0) return const Scaffold(body: Center(child: Text('Not found')));
         final charter = charters[idx];
         final members = _buildMembers(charter);
+
+        // SB je podmienený vyplnenou kartou lode a posádky — bez lode a
+        // skippera nemá kto a za čo podpisovať.
+        final detailsComplete = (charter.vesselName?.isNotEmpty ?? false) &&
+            (charter.skipperName?.isNotEmpty ?? false);
+        if (!detailsComplete) {
+          final l = AppLocalizations.of(context);
+          return Scaffold(
+            appBar: AppBar(title: Text(l.safetyBriefingScreenTitle)),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.directions_boat_outlined,
+                        size: 48, color: Colors.grey.shade500),
+                    const SizedBox(height: 16),
+                    Text(l.sbNeedsVesselCard,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 15)),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      icon: const Icon(Icons.directions_boat),
+                      label: Text(l.editCharter),
+                      onPressed: () =>
+                          context.go('/logbook/${widget.charterId}/edit'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
         _init(widget.charterId, members);
 
         return Scaffold(

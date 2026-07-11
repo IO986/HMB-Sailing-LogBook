@@ -1752,7 +1752,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Charter-Kontakte, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -1794,7 +1794,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist.';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.';
 
   @override
   String get guideCompassTitle => 'Peilkompass';
@@ -2046,6 +2046,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get crewBadge => 'CREW';
+
+  @override
+  String get vesselTypeSailboat => 'Segelboot';
+
+  @override
+  String get vesselTypeMotorBoat => 'Motorboot';
+
+  @override
+  String get sbNeedsVesselCard =>
+      'Fülle zuerst die Schiffs- und Crew-Karte aus — die Sicherheitseinweisung braucht die Crew-Liste für Unterschriften.';
 
   @override
   String get prefillSkipperTitle => 'Gespeicherte Skipper-Daten übernehmen?';

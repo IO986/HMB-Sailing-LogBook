@@ -22,7 +22,6 @@ import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
-import '../widgets/map_layer_toggle.dart';
 
 // Explicit imports needed for CircleLayer
 import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
@@ -467,24 +466,37 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             right: 12,
             child: Column(children: [
               // Prepínač mapa / satelit
-              _MapTypeButton(
-                current: _baseMap,
-                onChanged: (v) => setState(() => _baseMap = v),
+              _layerFab(
+                heroTag: 'baseOsm',
+                tooltip: 'Mapa',
+                icon: Icons.map,
+                active: _baseMap == BaseMap.osm,
+                onPressed: () => setState(() => _baseMap = BaseMap.osm),
               ),
               const SizedBox(height: 8),
-              MapLayerToggle(
+              _layerFab(
+                heroTag: 'baseSat',
+                tooltip: 'Satelit',
+                icon: Icons.satellite_alt,
+                active: _baseMap == BaseMap.satellite,
+                onPressed: () => setState(() => _baseMap = BaseMap.satellite),
+              ),
+              const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'seamarks',
+                tooltip: 'Seamarky',
                 icon: Icons.anchor,
-                label: 'Seamarky',
-                isActive: showSeamarks,
-                onToggle: () =>
+                active: showSeamarks,
+                onPressed: () =>
                     ref.read(mapNotifierProvider.notifier).toggleSeamarks(),
               ),
               const SizedBox(height: 8),
-              MapLayerToggle(
+              _layerFab(
+                heroTag: 'pois',
+                tooltip: 'Prístavy a kotviská',
                 icon: Icons.directions_boat,
-                label: 'Prístavy',
-                isActive: showMarinePois,
-                onToggle: () {
+                active: showMarinePois,
+                onPressed: () {
                   ref.read(mapNotifierProvider.notifier).toggleMarinePois();
                   final nowOn =
                       ref.read(mapNotifierProvider).showMarinePois;
@@ -502,19 +514,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              MapLayerToggle(
+              _layerFab(
+                heroTag: 'radar',
+                tooltip: 'Zrážkový radar',
                 icon: Icons.water_drop,
-                label: 'Radar',
-                isActive: mapState.showRainRadar,
-                onToggle: () =>
+                active: mapState.showRainRadar,
+                onPressed: () =>
                     ref.read(mapNotifierProvider.notifier).toggleRainRadar(),
               ),
               const SizedBox(height: 8),
-              MapLayerToggle(
+              _layerFab(
+                heroTag: 'wind',
+                tooltip: 'Vietor',
                 icon: Icons.air,
-                label: 'Vietor',
-                isActive: mapState.showWindGrid,
-                onToggle: () {
+                active: mapState.showWindGrid,
+                onPressed: () {
                   ref.read(mapNotifierProvider.notifier).toggleWindGrid();
                   if (ref.read(mapNotifierProvider).showWindGrid &&
                       _mapReady) {
@@ -564,7 +578,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // ── Panel pravítka / trasy ────────────────────────────
           if (_rulerActive)
             Positioned(
-              bottom: 224,
+              bottom: 280,
               left: 12,
               child: _RulerPanel(
                 points: _rulerPoints,
@@ -606,36 +620,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
-          // ── Zoom (vľavo, nekryje sa s pravým stĺpcom vrstiev) ──
+          // ── GPS + zoom (vľavo dole, GPS zarovnané nad +) ──────
           Positioned(
             bottom: 100,
             left: 12,
             child: Column(children: [
-              FloatingActionButton.small(
-                heroTag: 'zi',
-                onPressed: () => _mapController.move(
-                    _mapController.camera.center,
-                    _mapController.camera.zoom + 1),
-                child: const Icon(Icons.add),
-              ),
-              const SizedBox(height: 8),
-              FloatingActionButton.small(
-                heroTag: 'zo',
-                onPressed: () => _mapController.move(
-                    _mapController.camera.center,
-                    _mapController.camera.zoom - 1),
-                child: const Icon(Icons.remove),
-              ),
-            ]),
-          ),
-
-          // ── Current position (vpravo dole) ────────────────────
-          Positioned(
-            bottom: 100,
-            right: 12,
-            child: Column(children: [
-              FloatingActionButton.small(
+              _layerFab(
                 heroTag: 'cp',
+                tooltip: 'Sleduj GPS',
+                icon: Icons.my_location,
+                active: followGps,
                 onPressed: () {
                   final notifier = ref.read(mapNotifierProvider.notifier);
                   if (followGps) {
@@ -650,13 +644,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     _mapController.camera.zoom,
                   );
                 },
-                backgroundColor: followGps
-                    ? Theme.of(context).colorScheme.primary
-                    : null,
-                child: Icon(
-                  Icons.my_location,
-                  color: followGps ? Colors.white : null,
-                ),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
+                heroTag: 'zi',
+                onPressed: () => _mapController.move(
+                    _mapController.camera.center,
+                    _mapController.camera.zoom + 1),
+                child: const Icon(Icons.add),
+              ),
+              const SizedBox(height: 8),
+              FloatingActionButton.small(
+                heroTag: 'zo',
+                onPressed: () => _mapController.move(
+                    _mapController.camera.center,
+                    _mapController.camera.zoom - 1),
+                child: const Icon(Icons.remove),
               ),
             ]),
           ),
@@ -678,6 +681,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  /// Jednotné okrúhle tlačidlo vrstvy/prepínača — bez popisu, aktívne má
+  /// plnú primary farbu, identifikáciu nesie ikona + tooltip.
+  Widget _layerFab({
+    required String heroTag,
+    required String tooltip,
+    required IconData icon,
+    required bool active,
+    required VoidCallback onPressed,
+  }) {
+    return FloatingActionButton.small(
+      heroTag: heroTag,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      backgroundColor:
+          active ? Theme.of(context).colorScheme.primary : null,
+      child: Icon(icon,
+          color: active ? Theme.of(context).colorScheme.onPrimary : null),
     );
   }
 
@@ -868,84 +891,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ),
     );
   }
-}
-
-// ── Map Type Button ───────────────────────────────────────────
-
-class _MapTypeButton extends StatelessWidget {
-  final BaseMap current;
-  final Function(BaseMap) onChanged;
-  const _MapTypeButton({required this.current, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
-      ),
-      child: Column(
-        children: [
-          _Btn(
-            icon: Icons.map,
-            label: 'Mapa',
-            active: current == BaseMap.osm,
-            onTap: () => onChanged(BaseMap.osm),
-            top: true,
-          ),
-          const Divider(height: 1),
-          _Btn(
-            icon: Icons.satellite_alt,
-            label: 'Satelit',
-            active: current == BaseMap.satellite,
-            onTap: () => onChanged(BaseMap.satellite),
-            top: false,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Btn extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool active;
-  final VoidCallback onTap;
-  final bool top;
-  const _Btn({required this.icon, required this.label,
-      required this.active, required this.onTap, required this.top});
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.vertical(
-        top: top ? const Radius.circular(8) : Radius.zero,
-        bottom: !top ? const Radius.circular(8) : Radius.zero),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: active
-            ? Theme.of(context).colorScheme.primaryContainer
-            : Colors.white,
-        borderRadius: BorderRadius.vertical(
-            top: top ? const Radius.circular(8) : Radius.zero,
-            bottom: !top ? const Radius.circular(8) : Radius.zero),
-      ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 20,
-            color: active
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey.shade600),
-        Text(label, style: TextStyle(
-            fontSize: 10,
-            color: active
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey.shade600)),
-      ]),
-    ),
-  );
 }
 
 // ── Offline download sheet ────────────────────────────────────

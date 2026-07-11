@@ -62,6 +62,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _vesselCtrl = TextEditingController();
   final _modelCtrl = TextEditingController();
   String? _vesselType;
+  bool _typeOther = false;
+  final _vesselTypeCustomCtrl = TextEditingController();
   final _callsignCtrl = TextEditingController();
   final _mmsiCtrl = TextEditingController();
   final _companyCtrl = TextEditingController();
@@ -85,8 +87,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now().add(const Duration(days: 7));
 
-  // ── Kontakty / posádka / fotky ──
-  final List<TextEditingController> _contactCtrls = [];
+  // ── Posádka / fotky ──
   final List<_CrewEntry> _crew = [];
   final List<String> _photos = [];
 
@@ -168,6 +169,18 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       _vesselCtrl.text = c.vesselName ?? '';
       _modelCtrl.text = c.vesselModel ?? '';
       _vesselType = c.vesselType;
+      // Hodnota mimo štandardných chipov (aj legacy voľný text) → "Iné"
+      final lNow = AppLocalizations.of(context);
+      final standardTypes = {
+        lNow.vesselTypeSailboat,
+        lNow.vesselTypeCatamaran,
+        lNow.vesselTypeMotorBoat,
+      };
+      if ((c.vesselType?.isNotEmpty ?? false) &&
+          !standardTypes.contains(c.vesselType)) {
+        _typeOther = true;
+        _vesselTypeCustomCtrl.text = c.vesselType!;
+      }
       _callsignCtrl.text = c.callsign ?? '';
       _mmsiCtrl.text = c.mmsi ?? '';
       _companyCtrl.text = c.charterCompany ?? '';
@@ -187,13 +200,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       _dateFrom = c.dateFrom;
       _dateTo = c.dateTo;
       _notesCtrl.text = c.notes ?? '';
-
-      // Kontakty
-      for (final ctrl in _contactCtrls) ctrl.dispose();
-      _contactCtrls.clear();
-      for (final p in _decodeStringList(c.contactsJson)) {
-        _contactCtrls.add(TextEditingController(text: p));
-      }
 
       // Posádka: primárne crewJson, fallback na staré skipperName/crewNames
       for (final e in _crew) e.dispose();
@@ -305,22 +311,35 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             runSpacing: 8,
             children: [
               for (final t in [
-                l.vesselTypeMonohull,
+                l.vesselTypeSailboat,
                 l.vesselTypeCatamaran,
-                l.vesselTypeTrimaran,
-                l.vesselTypeMotorYacht,
-                l.vesselTypeGulet,
-                l.vesselTypeDinghy,
-                l.vesselTypeRib,
-                l.vesselTypeOther,
+                l.vesselTypeMotorBoat,
               ])
                 ChoiceChip(
                   label: Text(t),
-                  selected: _vesselType == t,
-                  onSelected: (_) => setState(() => _vesselType = t),
+                  selected: !_typeOther && _vesselType == t,
+                  onSelected: (_) => setState(() {
+                    _typeOther = false;
+                    _vesselType = t;
+                  }),
                 ),
+              ChoiceChip(
+                label: Text(l.vesselTypeOther),
+                selected: _typeOther,
+                onSelected: (_) => setState(() => _typeOther = true),
+              ),
             ],
           ),
+          if (_typeOther) ...[
+            const SizedBox(height: 8),
+            TextField(
+              controller: _vesselTypeCustomCtrl,
+              decoration: InputDecoration(
+                labelText: l.vesselType,
+                isDense: true,
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           Row(children: [
             Expanded(child: TextField(
@@ -375,17 +394,17 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           ),
           const SizedBox(height: 12),
           Row(children: [
-            Expanded(child: _numField(_waterTankCtrl, l.waterTankLabel, suffix: 'L')),
-            const SizedBox(width: 12),
-            Expanded(child: _numField(_fuelTankCtrl, l.fuelTankLabel, suffix: 'L')),
-          ]),
-          const SizedBox(height: 12),
-          Row(children: [
             Expanded(child: _numField(
                 _engineHoursStartCtrl, l.engineHoursStartLabel, suffix: 'h')),
             const SizedBox(width: 12),
             Expanded(child: _numField(
                 _engineHoursEndCtrl, l.engineHoursEndLabel, suffix: 'h')),
+          ]),
+          const SizedBox(height: 12),
+          Row(children: [
+            Expanded(child: _numField(_waterTankCtrl, l.waterTankLabel, suffix: 'L')),
+            const SizedBox(width: 12),
+            Expanded(child: _numField(_fuelTankCtrl, l.fuelTankLabel, suffix: 'L')),
           ]),
           const SizedBox(height: 20),
 
@@ -420,38 +439,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             const SizedBox(width: 12),
             Expanded(child: _dateField(l.dateTo, _dateTo, () => _pickDate(false))),
           ]),
-          const SizedBox(height: 20),
-
-          // ── KONTAKTY CHARTRU ─────────────────────────────────
-          _Section(l.charterContactsSection),
-          Text(l.charterContactsHint,
-              style: TextStyle(fontSize: 12, color: Theme.of(context).hintColor)),
-          const SizedBox(height: 8),
-          ..._contactCtrls.asMap().entries.map((e) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(children: [
-                  Expanded(child: TextField(
-                    controller: e.value,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                  )),
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
-                    onPressed: () => setState(() {
-                      e.value.dispose();
-                      _contactCtrls.removeAt(e.key);
-                    }),
-                  ),
-                ]),
-              )),
-          if (_contactCtrls.length < 3)
-            _DashedAddButton(
-              label: l.addPhoneNumber,
-              onTap: () =>
-                  setState(() => _contactCtrls.add(TextEditingController())),
-            ),
           const SizedBox(height: 20),
 
           // ── POSÁDKA ──────────────────────────────────────────
@@ -824,11 +811,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           ));
     }
 
-    final contacts = _contactCtrls
-        .map((c) => c.text.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
-
     final companion = ChartersCompanion(
       id: _existing != null ? Value(_existing!.id) : const Value.absent(),
       title: Value(title),
@@ -836,7 +818,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       dateTo: Value(_dateTo),
       vesselName: Value(_emptyNull(_vesselCtrl.text)),
       vesselModel: Value(_emptyNull(_modelCtrl.text)),
-      vesselType: Value(_vesselType),
+      vesselType: Value(
+          _typeOther ? _emptyNull(_vesselTypeCustomCtrl.text) : _vesselType),
       callsign: Value(_emptyNull(_callsignCtrl.text)),
       mmsi: Value(_emptyNull(_mmsiCtrl.text)),
       charterCompany: Value(_emptyNull(_companyCtrl.text)),
@@ -853,7 +836,6 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       homePort: Value(_emptyNull(_homePortCtrl.text)),
       country: Value(_emptyNull(_countryCtrl.text)),
       cruisingArea: Value(_emptyNull(_areaCtrl.text)),
-      contactsJson: Value(contacts.isEmpty ? null : jsonEncode(contacts)),
       photosJson: Value(_photos.isEmpty ? null : jsonEncode(_photos)),
       crewJson: Value(crewJson),
       skipperName: Value(_emptyNull(skipper?.nameCtrl.text ?? '')),
@@ -894,8 +876,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     _waterTankCtrl.dispose(); _fuelTankCtrl.dispose();
     _engineHoursStartCtrl.dispose(); _engineHoursEndCtrl.dispose();
     _homePortCtrl.dispose(); _countryCtrl.dispose(); _areaCtrl.dispose();
-    _notesCtrl.dispose();
-    for (final c in _contactCtrls) c.dispose();
+    _notesCtrl.dispose(); _vesselTypeCustomCtrl.dispose();
     for (final c in _crew) c.dispose();
     super.dispose();
   }
