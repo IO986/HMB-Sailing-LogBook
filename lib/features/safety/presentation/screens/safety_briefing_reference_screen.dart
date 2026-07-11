@@ -10,12 +10,13 @@ class SafetyBriefingReferenceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.of(context).safetyBriefingRefTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          for (final section in SafetyBriefingContent.sections)
+          for (final section in SafetyBriefingContent.sectionsFor(locale))
             Card(
               margin: const EdgeInsets.only(bottom: 10),
               child: Padding(

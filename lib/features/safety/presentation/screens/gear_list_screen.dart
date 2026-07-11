@@ -37,8 +37,11 @@ class _GearListScreenState extends State<GearListScreen> {
       _categories = decoded.map((k, v) =>
           MapEntry(k, List<String>.from(v as List)));
     } else {
+      final locale = mounted
+          ? Localizations.localeOf(context).languageCode
+          : 'sk';
       _categories = Map<String, List<String>>.from(
-          IndividualGearContent.categories.map(
+          IndividualGearContent.categoriesFor(locale).map(
               (k, v) => MapEntry(k, List<String>.from(v))));
     }
 

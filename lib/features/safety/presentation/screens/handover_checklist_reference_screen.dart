@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/config/hmb_handbook.dart';
+import '../../../charter/services/handover_checklist.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Čisto informačný (read-only) prehľad check-in/check-out checklistu
@@ -33,6 +33,15 @@ class _HandoverChecklistReferenceScreenState
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    // Rovnaké definície ako interaktívny protokol — SK plne, ostatné
+    // jazyky zatiaľ anglicky (itemLabel fallback).
+    final code = Localizations.localeOf(context).languageCode;
+    Map<String, List<String>> asMap(List<HandoverCategoryDef> cats) => {
+          for (final c in cats)
+            categoryLabel(code, c): [
+              for (final i in c.items) itemLabel(code, i)
+            ],
+        };
     return Scaffold(
       appBar: AppBar(
         title: Text(l.handoverChecklistRefTitle),
@@ -42,8 +51,8 @@ class _HandoverChecklistReferenceScreenState
         ]),
       ),
       body: TabBarView(controller: _tabCtrl, children: [
-        _ChecklistList(categories: YachtHandoverChecklist.checkIn),
-        _ChecklistList(categories: YachtHandoverChecklist.checkOut),
+        _ChecklistList(categories: asMap(checkInCategories)),
+        _ChecklistList(categories: asMap(checkOutCategories)),
       ]),
     );
   }
