@@ -76,3 +76,9 @@ AAB/
 *.swp
 *.DS_Store
 *.zip
+
+# Secrets & local artifacts – never commit
+key.txt
+.debug-info/
+screenshots/
+*.gpx
