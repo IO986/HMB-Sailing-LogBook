@@ -24,16 +24,19 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 // ── Emergency region provider ─────────────────────────────────
 
-final emergencyRegionProvider = FutureProvider<EmergencyRegion?>((ref) async {
+final emergencyRegionProvider =
+    FutureProvider.family<EmergencyRegion?, String>((ref, locale) async {
   final pos = GpsTrackingService().lastPosition;
   if (pos != null) {
-    return EmergencyContacts.getRegionForLocation(pos.latitude, pos.longitude);
+    return EmergencyContacts.getRegionForLocation(
+        pos.latitude, pos.longitude, locale);
   }
   // Skús získať polohu priamo
   try {
     final p = await Geolocator.getLastKnownPosition();
     if (p != null) {
-      return EmergencyContacts.getRegionForLocation(p.latitude, p.longitude);
+      return EmergencyContacts.getRegionForLocation(
+          p.latitude, p.longitude, locale);
     }
   } catch (_) {}
   return null;
@@ -629,7 +632,8 @@ class _EmergencyCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final regionAsync = ref.watch(emergencyRegionProvider);
+    final locale = Localizations.localeOf(context).languageCode;
+    final regionAsync = ref.watch(emergencyRegionProvider(locale));
 
     return Card(
       child: Padding(
@@ -643,7 +647,7 @@ class _EmergencyCard extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.refresh, size: 20),
               tooltip: AppLocalizations.of(context).updateByPosition,
-              onPressed: () => ref.invalidate(emergencyRegionProvider),
+              onPressed: () => ref.invalidate(emergencyRegionProvider(locale)),
             ),
           ]),
 
@@ -680,7 +684,8 @@ class _EmergencyCard extends ConsumerWidget {
           const SizedBox(height: 12),
 
           // Univerzálne kontakty
-          ...EmergencyContacts.universal.map((c) => _ContactTile(contact: c)),
+          ...EmergencyContacts.universalFor(locale)
+              .map((c) => _ContactTile(contact: c)),
 
           // Regionálne kontakty
           regionAsync.when(
