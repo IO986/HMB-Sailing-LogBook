@@ -3,9 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../core/services/gps_tracking_service.dart';
-import 'package:drift/drift.dart' show Value;
-import '../../../core/database/app_database.dart';
-import '../../../main.dart';
 import '../../../core/services/background_service.dart';
 
 final isTrackingProvider = StateProvider<bool>((ref) => false);
@@ -25,23 +22,16 @@ class TrackingState {
   final bool isTracking;
   final bool isLoading;
   final String? error;
-  final bool showEndVoyageDialog; // zobraziť dialog po ukončení posledného dňa
-  final int? endedCharterId;
   const TrackingState({
     this.isTracking = false,
     this.isLoading = false,
     this.error,
-    this.showEndVoyageDialog = false,
-    this.endedCharterId,
   });
-  TrackingState copyWith({bool? isTracking, bool? isLoading, String? error,
-      bool? showEndVoyageDialog, int? endedCharterId}) =>
+  TrackingState copyWith({bool? isTracking, bool? isLoading, String? error}) =>
       TrackingState(
         isTracking: isTracking ?? this.isTracking,
         isLoading: isLoading ?? this.isLoading,
         error: error,
-        showEndVoyageDialog: showEndVoyageDialog ?? this.showEndVoyageDialog,
-        endedCharterId: endedCharterId ?? this.endedCharterId,
       );
 }
 
@@ -73,41 +63,6 @@ class TrackingNotifier extends Notifier<TrackingState> {
     } catch (e) { debugPrint('[TRACKING] Stop err: $e'); }
     ref.read(isTrackingProvider.notifier).state = false;
     state = state.copyWith(isLoading: false, isTracking: false);
-  }
-
-  void clearEndVoyageDialog() {
-    state = state.copyWith(showEndVoyageDialog: false, endedCharterId: null);
-  }
-
-  Future<void> extendVoyage(int charterId) async {
-    // Predĺž plavbu o 1 deň
-    final db = ref.read(databaseProvider);
-    final charters = await db.getAllCharters();
-    final charter = charters.firstWhere((c) => c.id == charterId);
-    await db.updateCharter(ChartersCompanion(
-      id: Value(charter.id),
-      title: Value(charter.title),
-      dateFrom: Value(charter.dateFrom),
-      dateTo: Value(charter.dateTo.add(const Duration(days: 1))),
-      createdAt: Value(charter.createdAt),
-    ));
-    clearEndVoyageDialog();
-  }
-
-  Future<void> endVoyage(int charterId) async {
-    // Označ plavbu ako ukončenú (checkOut)
-    final db = ref.read(databaseProvider);
-    final charters = await db.getAllCharters();
-    final charter = charters.firstWhere((c) => c.id == charterId);
-    await db.updateCharter(ChartersCompanion(
-      id: Value(charter.id),
-      title: Value(charter.title),
-      dateFrom: Value(charter.dateFrom),
-      dateTo: Value(charter.dateTo),
-      createdAt: Value(charter.createdAt),
-      checkOutDone: const Value(true),
-    ));
-    clearEndVoyageDialog();
   }
 
   String _friendly(String e) {

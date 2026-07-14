@@ -752,6 +752,17 @@ class AppLocalizationsSk extends AppLocalizations {
   String get checkOutProtocol => 'Check-out protokol';
 
   @override
+  String get nextStepLabel => 'Ďalší krok';
+
+  @override
+  String get readyToTrackHint => 'Pripravené na tracking';
+
+  @override
+  String wizardStepHeader(int step, int total, String label) {
+    return 'Krok $step/$total · $label';
+  }
+
+  @override
   String get safetyBriefingShort => 'Safety\nBrífing';
 
   @override
@@ -1455,7 +1466,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get noTarget => 'Žiadny cieľ';
 
   @override
-  String get selectWaypointHint => 'Vyber waypoint...';
+  String get selectWaypointHint => 'Naviguj k waypointu';
 
   @override
   String get sessionStats => 'Štatistiky plavby';
@@ -1577,7 +1588,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get marineReferenceTile => 'Signály & abeceda';
 
   @override
-  String get navInstruments => 'Nástroje';
+  String get navInstruments => 'Lodné prístroje';
 
   @override
   String get enterPort => 'Zadaj prístav...';
@@ -1708,14 +1719,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideQuickStartBody =>
-      '1. Otvor Denník → stlač + → vyber \"Nová plavba\"\n2. Vyplň názov lode a zadaj predpokladaný počet dní\n3. Tracking štartuje automaticky – telefón si ulož do vrecka\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF';
+      '1. Ťukni na veľké tlačidlo \"Spustiť plavbu\" hore (na Mape, v Denníku alebo pri Prístrojoch) – vyber frekvenciu zápisov a tracking beží, nič iné netreba vypĺňať vopred\n2. Ak máš rozostavanú plavbu, appka sa opýta: pokračovať v nej, alebo nový záznam\n3. Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) doplň kedykoľvek – appka ich pripomenie farebnými chipmi v Denníku\n4. Počas dňa pridávaj záznamy: čas, pozícia, poznámka\n5. Na konci plavby otvor Nastavenia → Export PDF\n\nAppka beží na celú obrazovku – systémové lišty telefónu zobrazíš potiahnutím prsta od horného alebo spodného okraja.';
 
   @override
   String get guideMapTitle => 'Mapa';
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš';
+      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web, hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Radar – zrážkový radar nad mapou (RainViewer), snímka sa obnovuje ~každých 10 minút\n• Vietor – šípky smeru a sily vetra (uzly) v mriežke pre viditeľnú oblasť\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) – stiahne viditeľnú oblasť (mapa + seamarky, aktuálny zoom +3 úrovne) na použitie bez signálu; navyše každá prezretá dlaždica sa ukladá automaticky\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš';
 
   @override
   String get guideInstrTitle => 'Námorné prístroje';
@@ -1729,7 +1740,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Denník je hlavná záložka pre správu pláv.\n\n• Stlač + (FAB) → \"Nová plavba\" pre vytvorenie chárteru\n• Tracking sa spúšťa z tohto dialógu – pozícia sa zaznamená automaticky\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)';
+      'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš';
 
   @override
   String get guideMilesTitle => 'Kniha míľ';
@@ -1771,7 +1782,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking pre pokračovanie existujúcej plavby sa dá spustiť až po dokončení Safety Briefingu danej plavby.';
+      'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.';
 
   @override
   String get guideCompassTitle => 'Námerový kompas';
@@ -1799,7 +1810,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.';
+      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -1901,4 +1912,199 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get skipperOtherCertsHint =>
       'napr. Yachtmaster, RYA, STCW, záchranárske kurzy...';
+
+  @override
+  String get continueLastVoyageTitle => 'Pokračovať v poslednej plavbe?';
+
+  @override
+  String get continueVoyageAction => 'Pokračovať';
+
+  @override
+  String get newRecordAction => 'Nový záznam';
+
+  @override
+  String get missingCheckInChip => 'Chýba Check-in';
+
+  @override
+  String get missingBriefingChip => 'Chýba SB';
+
+  @override
+  String get missingDetailsChip => 'Chýba karta lode/posádky';
+
+  @override
+  String get missingCheckOutChip => 'Chýba Check-out';
+
+  @override
+  String get vesselModel => 'Model';
+
+  @override
+  String get vesselTypeMonohull => 'Jednotrupové';
+
+  @override
+  String get vesselTypeCatamaran => 'Katamarán';
+
+  @override
+  String get vesselTypeTrimaran => 'Trimaran';
+
+  @override
+  String get vesselTypeMotorYacht => 'Motorová jachta';
+
+  @override
+  String get vesselTypeGulet => 'Gulet';
+
+  @override
+  String get vesselTypeDinghy => 'Čln';
+
+  @override
+  String get vesselTypeRib => 'RIB';
+
+  @override
+  String get vesselTypeOther => 'Iné';
+
+  @override
+  String get charterCompanyLabel => 'Charterová spoločnosť';
+
+  @override
+  String get yachtParamsSection => 'Parametre jachty';
+
+  @override
+  String get berthsLabel => 'Lôžka';
+
+  @override
+  String get yearBuiltLabel => 'Rok výroby';
+
+  @override
+  String get waterTankLabel => 'Nádrž na vodu';
+
+  @override
+  String get fuelTankLabel => 'Palivová nádrž';
+
+  @override
+  String get engineHoursStartLabel => 'Motohodiny · začiatok';
+
+  @override
+  String get engineHoursEndLabel => 'Motohodiny · koniec';
+
+  @override
+  String get whereWhenSection => 'Kde & kedy';
+
+  @override
+  String get countryLabel => 'Krajina';
+
+  @override
+  String get cruisingAreaLabel => 'Oblasť plavby';
+
+  @override
+  String get charterContactsSection => 'Kontakty chartru';
+
+  @override
+  String get charterContactsHint =>
+      'Až 3 čísla pre hovor / WhatsApp / SMS. Vždy s medzinárodnou predvoľbou (napr. +385...).';
+
+  @override
+  String get addPhoneNumber => 'Pridať telefónne číslo';
+
+  @override
+  String get costsSection => 'Náklady';
+
+  @override
+  String get charterPriceLabel => 'Cena charteru';
+
+  @override
+  String get currencyLabel => 'Mena';
+
+  @override
+  String get addCostItem => 'Pridať náklad';
+
+  @override
+  String get costName => 'Názov nákladu';
+
+  @override
+  String get crewSectionHint =>
+      'Ťuknite na odznak na nastavenie kapitána — ostatní sú posádka.';
+
+  @override
+  String get addCrewMember => 'Pridať člena posádky';
+
+  @override
+  String get crewNameLabel => 'Meno';
+
+  @override
+  String get skipperBadge => 'SKIPPER';
+
+  @override
+  String get crewBadge => 'CREW';
+
+  @override
+  String get vesselTypeSailboat => 'Plachetnica';
+
+  @override
+  String get vesselTypeMotorBoat => 'Motorový čln';
+
+  @override
+  String get sbNeedsVesselCard =>
+      'Najprv vyplň kartu lode a posádky — Safety Briefing potrebuje zoznam členov posádky na podpisy.';
+
+  @override
+  String get prefillSkipperTitle => 'Doplniť uložené údaje skippera?';
+
+  @override
+  String get prefillSkipperFill => 'Doplniť';
+
+  @override
+  String get prefillSkipperNew => 'Nový skipper';
+
+  @override
+  String get boatLicenceLabel => 'Č. lodného preukazu';
+
+  @override
+  String get radioLicenceLabel => 'Č. rádiového preukazu';
+
+  @override
+  String get vesselPhotosSection => 'Fotky plavidla (max 3)';
+
+  @override
+  String get addPhotoLabel => 'Pridať';
+
+  @override
+  String get createVoyageButton => 'Vytvoriť plavbu';
+
+  @override
+  String get saveVoyageButton => 'Uložiť plavbu';
+
+  @override
+  String get costBaseCharter => 'Základná cena charteru';
+
+  @override
+  String get costDeposit => 'Kaucia';
+
+  @override
+  String get costDinghyOutboard => 'Čln / prívesný motor';
+
+  @override
+  String get costOutboardFuel => 'Palivo prívesného motora';
+
+  @override
+  String get costTransitLog => 'Transit log';
+
+  @override
+  String get costTouristTax => 'Pobytová daň';
+
+  @override
+  String get costFinalCleaning => 'Záverečné upratovanie';
+
+  @override
+  String get costLinenTowels => 'Posteľná bielizeň a uteráky';
+
+  @override
+  String get costWifi => 'WiFi';
+
+  @override
+  String get costSupKayak => 'SUP / kajak';
+
+  @override
+  String get costSkipperFee => 'Poplatok za skippera';
+
+  @override
+  String get costHostessFee => 'Poplatok za hostesku';
 }

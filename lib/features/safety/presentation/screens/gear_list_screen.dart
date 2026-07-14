@@ -27,31 +27,71 @@ class _GearListScreenState extends State<GearListScreen> {
     _load();
   }
 
+  /// Prekladová mapa: text (kategórie/položky) v KTOROMKOĽVEK jazyku →
+  /// text v aktuálnom jazyku. Defaultný zoznam má vo všetkých jazykoch
+  /// rovnakú štruktúru, takže sa mapuje podľa pozície.
+  static (Map<String, String>, Map<String, String>) _translationMaps(
+      String currentLocale) {
+    final current = IndividualGearContent.categoriesFor(currentLocale)
+        .entries
+        .toList();
+    final catMap = <String, String>{};
+    final itemMap = <String, String>{};
+    for (final loc in ['sk', 'en', 'de', 'es', 'uk']) {
+      final cats = IndividualGearContent.categoriesFor(loc).entries.toList();
+      for (var c = 0; c < cats.length && c < current.length; c++) {
+        catMap[cats[c].key] = current[c].key;
+        for (var i = 0;
+            i < cats[c].value.length && i < current[c].value.length;
+            i++) {
+          itemMap[cats[c].value[i]] = current[c].value[i];
+        }
+      }
+    }
+    return (catMap, itemMap);
+  }
+
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
+    final locale =
+        mounted ? Localizations.localeOf(context).languageCode : 'sk';
 
     // Načítaj vlastné položky (ak existujú)
     final savedItems = prefs.getString(_itemsKey);
     if (savedItems != null) {
       final decoded = Map<String, dynamic>.from(jsonDecode(savedItems));
-      _categories = decoded.map((k, v) =>
+      final saved = decoded.map((k, v) =>
           MapEntry(k, List<String>.from(v as List)));
+      // Uložený zoznam vznikol v jazyku, v akom bol vtedy nastavený —
+      // defaultné položky premapuj na aktuálny jazyk, vlastné nechaj.
+      final (catMap, itemMap) = _translationMaps(locale);
+      _categories = {
+        for (final e in saved.entries)
+          catMap[e.key] ?? e.key: [
+            for (final item in e.value) itemMap[item] ?? item
+          ],
+      };
     } else {
       _categories = Map<String, List<String>>.from(
-          IndividualGearContent.categories.map(
+          IndividualGearContent.categoriesFor(locale).map(
               (k, v) => MapEntry(k, List<String>.from(v))));
     }
 
-    // Načítaj stav zabalenia
+    // Načítaj stav zabalenia — kľúče premapuj na aktuálny jazyk a drž len
+    // tie, ktoré existujú v zozname (inak by počítadlo rástlo o kľúče
+    // zo starého jazyka).
     final savedPacked = prefs.getString(_stateKey);
     _packed = {
       for (final cat in _categories.entries)
         for (final item in cat.value) item: false,
     };
     if (savedPacked != null) {
-      final decoded = Map<String, bool>.from(
-          (jsonDecode(savedPacked) as Map).map((k, v) => MapEntry(k, v as bool)));
-      _packed.addAll(decoded);
+      final (_, itemMap) = _translationMaps(locale);
+      final decoded = (jsonDecode(savedPacked) as Map)
+          .map((k, v) => MapEntry(itemMap[k] ?? k as String, v as bool));
+      for (final e in decoded.entries) {
+        if (_packed.containsKey(e.key)) _packed[e.key] = e.value;
+      }
     }
 
     setState(() => _loading = false);

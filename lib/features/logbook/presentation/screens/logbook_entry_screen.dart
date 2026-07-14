@@ -13,6 +13,7 @@ import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../main.dart';
+import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 // Spôsob plavby - multi-select
@@ -202,13 +203,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         const SizedBox(height: 16),
 
         _Sec(l.weatherSeaSection),
-        _WeatherConditionTile(
+        _WeatherConditionField(
           condition: _weatherCondition,
-          onTap: () async {
-            final picked = await Navigator.push<String>(context,
-              MaterialPageRoute(builder: (_) => _WeatherConditionPicker(initial: _weatherCondition)));
-            if (picked != null) setState(() => _weatherCondition = picked);
-          },
+          onChanged: (v) => setState(() => _weatherCondition = v),
         ),
         const SizedBox(height: 12),
         Row(children: [
@@ -448,25 +445,6 @@ class _PhotoPicker extends StatelessWidget {
 
 // ── Weather condition data ────────────────────────────────────
 
-typedef _WCEntry = ({String key, String emoji});
-
-const List<_WCEntry> _wcList = [
-  (key: 'sunny',          emoji: '☀️'),
-  (key: 'partly_cloudy',  emoji: '⛅'),
-  (key: 'overcast',       emoji: '☁️'),
-  (key: 'light_rain',     emoji: '🌦'),
-  (key: 'rain',           emoji: '🌧'),
-  (key: 'heavy_rain',     emoji: '🌧'),
-  (key: 'drizzle',        emoji: '🌂'),
-  (key: 'thunderstorm',   emoji: '⛈'),
-  (key: 'iso_thunder',    emoji: '🌩'),
-  (key: 'hail',           emoji: '🌨'),
-  (key: 'dust',           emoji: '🌫'),
-  (key: 'foggy',          emoji: '🌁'),
-  (key: 'windy',          emoji: '💨'),
-  (key: 'cold',           emoji: '❄️'),
-];
-
 String _wcLabel(AppLocalizations l, String key) {
   switch (key) {
     case 'sunny':         return l.wcSunny;
@@ -487,117 +465,74 @@ String _wcLabel(AppLocalizations l, String key) {
   }
 }
 
-String? _wcEmoji(String? key) =>
-    key == null ? null : _wcList.where((e) => e.key == key).map((e) => e.emoji).firstOrNull;
-
 // ── Weather condition tile (tappable) ────────────────────────
 
-class _WeatherConditionTile extends StatelessWidget {
+class _WeatherConditionField extends StatefulWidget {
   final String? condition;
-  final VoidCallback onTap;
-  const _WeatherConditionTile({required this.condition, required this.onTap});
+  final ValueChanged<String> onChanged;
+  const _WeatherConditionField({required this.condition, required this.onChanged});
+
+  @override
+  State<_WeatherConditionField> createState() => _WeatherConditionFieldState();
+}
+
+class _WeatherConditionFieldState extends State<_WeatherConditionField> {
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final emoji = _wcEmoji(condition);
-    final label = condition != null ? _wcLabel(l, condition!) : null;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.4)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(children: [
-          if (emoji != null)
-            Text(emoji, style: const TextStyle(fontSize: 26))
-          else
-            Icon(Icons.wb_cloudy_outlined, size: 26,
+    final emoji = wcEmoji(widget.condition);
+    final label = widget.condition != null ? _wcLabel(l, widget.condition!) : null;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      InkWell(
+        onTap: () => setState(() => _expanded = !_expanded),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.4)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(children: [
+            if (emoji != null)
+              Text(emoji, style: const TextStyle(fontSize: 26))
+            else
+              Icon(Icons.wb_cloudy_outlined, size: 26,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(l.weatherConditionLabel,
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              Text(label ?? '—',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: label != null
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  )),
+            ])),
+            Icon(_expanded ? Icons.expand_less : Icons.expand_more,
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.weatherConditionLabel,
-                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-            Text(label ?? '—',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: label != null
-                      ? Theme.of(context).colorScheme.onSurface
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                )),
-          ])),
-          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant),
-        ]),
+          ]),
+        ),
       ),
-    );
-  }
-}
-
-// ── Weather condition picker screen ──────────────────────────
-
-class _WeatherConditionPicker extends StatefulWidget {
-  final String? initial;
-  const _WeatherConditionPicker({this.initial});
-
-  @override
-  State<_WeatherConditionPicker> createState() => _WCPickerState();
-}
-
-class _WCPickerState extends State<_WeatherConditionPicker> {
-  String? _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _selected = widget.initial;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.weatherConditionTitle),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: l.save,
-            onPressed: () => Navigator.pop(context, _selected),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close),
-            tooltip: l.cancel,
-            onPressed: () => Navigator.pop(context, null),
-          ),
-        ],
-      ),
-      body: ListView.separated(
-        itemCount: _wcList.length,
-        separatorBuilder: (_, __) => const Divider(height: 1, indent: 72),
-        itemBuilder: (ctx, i) {
-          final wc = _wcList[i];
-          final selected = _selected == wc.key;
-          return ListTile(
-            leading: Text(wc.emoji, style: const TextStyle(fontSize: 30)),
-            title: Text(_wcLabel(l, wc.key),
-                style: TextStyle(
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                  color: selected ? Theme.of(context).colorScheme.primary : null,
-                )),
-            trailing: Radio<String>(
-              value: wc.key,
-              groupValue: _selected,
-              onChanged: (v) => setState(() => _selected = v),
-            ),
-            onTap: () => setState(() => _selected = wc.key),
+      if (_expanded) ...[
+        const SizedBox(height: 8),
+        Wrap(spacing: 8, runSpacing: 8, children: wcList.map((wc) {
+          final selected = widget.condition == wc.key;
+          return ChoiceChip(
+            avatar: Text(wc.emoji, style: const TextStyle(fontSize: 16)),
+            label: Text(_wcLabel(l, wc.key)),
+            selected: selected,
+            onSelected: (_) {
+              widget.onChanged(wc.key);
+              setState(() => _expanded = false);
+            },
           );
-        },
-      ),
-    );
+        }).toList()),
+      ],
+    ]);
   }
 }
 

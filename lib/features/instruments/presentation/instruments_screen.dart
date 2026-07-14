@@ -449,24 +449,46 @@ class _VmgWpTile extends StatelessWidget {
           Expanded(
             flex: 4,
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // WP name + tap hint
-              Row(children: [
-                Icon(Icons.place,
-                    size: 11,
-                    color: hasData ? const Color(0xFFFFAA00) : Colors.white24),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    wp?.name ?? AppLocalizations.of(context).selectWaypointHint,
-                    style: TextStyle(
-                      color: hasData ? Colors.white70 : Colors.white24,
-                      fontSize: 11,
-                      overflow: TextOverflow.ellipsis,
+              // WP name; bez vybraného waypointu výrazné oranžové tlačidlo,
+              // nie nenápadný sivý hint (užívatelia ho prehliadali).
+              Container(
+                padding: hasData
+                    ? EdgeInsets.zero
+                    : const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                decoration: hasData
+                    ? null
+                    : BoxDecoration(
+                        color: const Color(0xFFFFAA00).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: const Color(0xFFFFAA00)
+                                .withValues(alpha: 0.7)),
+                      ),
+                child: Row(children: [
+                  Icon(hasData ? Icons.place : Icons.near_me,
+                      size: hasData ? 11 : 13,
+                      color: const Color(0xFFFFAA00)),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      wp?.name ?? AppLocalizations.of(context).selectWaypointHint,
+                      style: TextStyle(
+                        color: hasData
+                            ? Colors.white70
+                            : const Color(0xFFFFAA00),
+                        fontSize: 11,
+                        fontWeight: hasData ? FontWeight.normal : FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
-                ),
-                const Icon(Icons.chevron_right, size: 14, color: Colors.white24),
-              ]),
+                  Icon(Icons.chevron_right,
+                      size: 14,
+                      color: hasData
+                          ? Colors.white24
+                          : const Color(0xFFFFAA00)),
+                ]),
+              ),
               const SizedBox(height: 6),
               Row(children: [
                 _WpStat('DIST',

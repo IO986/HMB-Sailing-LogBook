@@ -74,7 +74,9 @@ class PdfExportService {
       author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
-    pdf.addPage(_titlePage(charter, days, entriesByDay, skipperProfile, docId, rev));
+    final vesselPhotos = await _loadVesselPhotos(charter);
+    pdf.addPage(_titlePage(
+        charter, days, entriesByDay, skipperProfile, docId, rev, vesselPhotos));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
@@ -244,9 +246,29 @@ class PdfExportService {
 
   // ── Title Page ────────────────────────────────────────────────
 
+  /// Všetky fotky lode z karty lode (Charters.photosJson, max 3).
+  static Future<List<pw.MemoryImage>> _loadVesselPhotos(Charter charter) async {
+    final json = charter.photosJson;
+    if (json == null || json.isEmpty) return const [];
+    try {
+      final paths =
+          (jsonDecode(json) as List).map((e) => e.toString()).toList();
+      final images = <pw.MemoryImage>[];
+      for (final p in paths) {
+        final file = File(p);
+        if (await file.exists()) {
+          images.add(pw.MemoryImage(await file.readAsBytes()));
+        }
+      }
+      return images;
+    } catch (_) {
+      return const [];
+    }
+  }
+
   static pw.Page _titlePage(Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper,
-      String docId, int revision) {
+      String docId, int revision, List<pw.MemoryImage> vesselPhotos) {
     final fmt = DateFormat('d. MMM yyyy');
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
@@ -255,23 +277,51 @@ class PdfExportService {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
       build: (ctx) => pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-        // Header
+        // Header: vľavo názov + dátum, vpravo fotka lode (ak je nahratá)
         pw.Container(
           width: double.infinity,
           padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: pw.BoxDecoration(color: _navy,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
-          child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text('HMB SAILING LOG', style: pw.TextStyle(
-                color: PdfColors.white, fontSize: 9, letterSpacing: 3)),
-            pw.SizedBox(height: 6),
-            pw.Text(_ascii(charter.title), style: pw.TextStyle(
-                color: PdfColors.white, fontSize: 24, fontWeight: pw.FontWeight.bold)),
-            pw.SizedBox(height: 3),
-            pw.Text('${fmt.format(charter.dateFrom)} - ${fmt.format(charter.dateTo)}',
-                style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
+          child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+            pw.Expanded(
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+                pw.Text('HMB SAILING LOG', style: pw.TextStyle(
+                    color: PdfColors.white, fontSize: 9, letterSpacing: 3)),
+                pw.SizedBox(height: 6),
+                pw.Text(_ascii(charter.title), style: pw.TextStyle(
+                    color: PdfColors.white, fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                pw.SizedBox(height: 3),
+                pw.Text('${fmt.format(charter.dateFrom)} - ${fmt.format(charter.dateTo)}',
+                    style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
+              ]),
+            ),
+            if (vesselPhotos.isNotEmpty) ...[
+              pw.SizedBox(width: 12),
+              pw.ClipRRect(
+                horizontalRadius: 4,
+                verticalRadius: 4,
+                child: pw.Image(vesselPhotos.first,
+                    width: 110, height: 74, fit: pw.BoxFit.cover),
+              ),
+            ],
           ]),
         ),
+        // Ďalšie fotky lode (2. a 3.) pod hlavičkou vedľa seba
+        if (vesselPhotos.length > 1) ...[
+          pw.SizedBox(height: 8),
+          pw.Row(children: [
+            for (final img in vesselPhotos.skip(1)) ...[
+              pw.ClipRRect(
+                horizontalRadius: 4,
+                verticalRadius: 4,
+                child: pw.Image(img,
+                    width: 160, height: 100, fit: pw.BoxFit.cover),
+              ),
+              pw.SizedBox(width: 8),
+            ],
+          ]),
+        ],
         pw.SizedBox(height: 14),
 
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -281,12 +331,12 @@ class PdfExportService {
             if (charter.homePort != null) 'Domovsky pristav: ${_ascii(charter.homePort!)}',
             if (charter.mmsi != null) 'MMSI: ${charter.mmsi!}',
             if (charter.callsign != null) 'Volaci znak: ${charter.callsign!}',
-            if (charter.vesselLengthM != null || charter.vesselBeamM != null || charter.vesselDraftM != null)
-              'Rozmery: ${[
-                if (charter.vesselLengthM != null) '${charter.vesselLengthM!.toStringAsFixed(1)}m',
-                if (charter.vesselBeamM != null) '${charter.vesselBeamM!.toStringAsFixed(1)}m',
-                if (charter.vesselDraftM != null) '${charter.vesselDraftM!.toStringAsFixed(1)}m',
-              ].join(' x ')}',
+            if (charter.vesselLengthM != null)
+              'Dlzka: ${charter.vesselLengthM!.toStringAsFixed(1)} m',
+            if (charter.vesselBeamM != null)
+              'Sirka: ${charter.vesselBeamM!.toStringAsFixed(1)} m',
+            if (charter.vesselDraftM != null)
+              'Ponor: ${charter.vesselDraftM!.toStringAsFixed(1)} m',
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('POSADKA', [

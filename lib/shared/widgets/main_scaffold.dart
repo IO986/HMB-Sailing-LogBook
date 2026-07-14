@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
+import 'tracking_control_bar.dart';
 import '../../core/services/gps_tracking_service.dart';
 import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
@@ -198,16 +199,16 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
 
   static const _tabData = [
     (icon: Icons.map_outlined,        activeIcon: Icons.map,          path: '/map'),
-    (icon: Icons.speed_outlined,      activeIcon: Icons.speed,        path: '/instruments'),
     (icon: Icons.book_outlined,       activeIcon: Icons.book,         path: '/logbook'),
     (icon: Icons.cloud_outlined,      activeIcon: Icons.cloud,        path: '/weather'),
+    (icon: Icons.speed_outlined,      activeIcon: Icons.speed,        path: '/instruments'),
     (icon: Icons.shield_outlined,     activeIcon: Icons.shield,       path: '/safety'),
     (icon: Icons.explore_outlined,    activeIcon: Icons.explore,      path: '/compass'),
     (icon: Icons.settings_outlined,   activeIcon: Icons.settings,     path: '/settings'),
   ];
 
   List<String> _labels(AppLocalizations l) => [
-    l.navMap, l.navInstruments, l.navLogbook, l.navWeather, l.navSafety, l.navCompass, l.navSettings,
+    l.navMap, l.navLogbook, l.navWeather, l.navInstruments, l.navSafety, l.navCompass, l.navSettings,
   ];
 
   int _idx(BuildContext ctx) {
@@ -313,12 +314,20 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     final l = AppLocalizations.of(context);
     final labels = _labels(l);
     final isTracking = ref.watch(isTrackingProvider);
+    // Map, Denník, Lodné prístroje — the control bar lives there regardless
+    // of tracking state, so Start is always one tap away where sailing
+    // happens. Path-based, so tab reordering can't silently break it.
+    final showControlBar = const {'/map', '/logbook', '/instruments'}
+        .contains(_tabData[currentIndex].path);
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (_, __) => _handleBack(context),
       child: Scaffold(
-        body: widget.child,
+        body: Column(children: [
+          if (showControlBar) const TrackingControlBar(),
+          Expanded(child: widget.child),
+        ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         floatingActionButton: isTracking
             ? FloatingActionButton(

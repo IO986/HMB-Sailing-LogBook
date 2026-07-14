@@ -1,8 +1,12 @@
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
+import '../../../core/services/marine_poi_service.dart';
+import '../../../core/services/rain_radar_service.dart';
+import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
 
@@ -58,6 +62,39 @@ final dayEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
   return ref.read(databaseProvider).watchMappableEntriesForDay(dayLogId);
 });
 
+/// Aktuálny viditeľný výrez mapy — map_screen ho aktualizuje (debounced)
+/// pri posune/zoome; POI aj veterná vrstva naň reagujú.
+final mapViewBoundsProvider = StateProvider<LatLngBounds?>((_) => null);
+
+/// Kotviská/maríny/prístavy/tankovanie pre viditeľný výrez (Overpass API,
+/// kešované po bunkách v MarinePoiService). Prázdne, kým je vrstva vypnutá.
+final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
+  final show = ref.watch(
+      mapNotifierProvider.select((s) => s.showMarinePois));
+  if (!show) return const [];
+  final bounds = ref.watch(mapViewBoundsProvider);
+  if (bounds == null) return const [];
+  return MarinePoiService().fetchForBounds(bounds);
+});
+
+/// URL šablóna dlaždíc najnovšej radarovej snímky (RainViewer), alebo null.
+final rainRadarUrlProvider = FutureProvider<String?>((ref) async {
+  final show = ref.watch(
+      mapNotifierProvider.select((s) => s.showRainRadar));
+  if (!show) return null;
+  return RainRadarService().latestTileUrl();
+});
+
+/// Mriežka šípok vetra pre viditeľný výrez (Open-Meteo).
+final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
+  final show = ref.watch(
+      mapNotifierProvider.select((s) => s.showWindGrid));
+  if (!show) return const [];
+  final bounds = ref.watch(mapViewBoundsProvider);
+  if (bounds == null) return const [];
+  return WindGridService().fetchForBounds(bounds);
+});
+
 class MapNotifier extends Notifier<MapState> {
   @override
   MapState build() => const MapState();
@@ -70,26 +107,46 @@ class MapNotifier extends Notifier<MapState> {
   void toggleSeamarks() =>
       state = state.copyWith(showSeamarks: !state.showSeamarks);
 
+  void toggleMarinePois() =>
+      state = state.copyWith(showMarinePois: !state.showMarinePois);
+
+  void toggleRainRadar() =>
+      state = state.copyWith(showRainRadar: !state.showRainRadar);
+
+  void toggleWindGrid() =>
+      state = state.copyWith(showWindGrid: !state.showWindGrid);
+
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
-  void previewDay(int dayLogId, String label) => state = MapState(
-        showSeamarks: state.showSeamarks,
-        followGps: state.followGps,
+  void previewDay(int dayLogId, String label) => state = _withPreview(
         previewDayLogId: dayLogId,
         previewLabel: label,
       );
 
   /// Zobraz spojenú trasu celej plavby (všetky dni).
-  void previewCharter(int charterId, String label) => state = MapState(
-        showSeamarks: state.showSeamarks,
-        followGps: state.followGps,
+  void previewCharter(int charterId, String label) => state = _withPreview(
         previewCharterId: charterId,
         previewLabel: label,
       );
 
   /// Vráť sa k živej trase aktuálneho trackingu.
-  void clearPreview() => state = MapState(
+  void clearPreview() => state = _withPreview();
+
+  /// Nový stav so zachovanými vrstvami, ale nastaveným/vynulovaným preview
+  /// (copyWith nevie nulovať, preto samostatný helper).
+  MapState _withPreview({
+    int? previewDayLogId,
+    int? previewCharterId,
+    String? previewLabel,
+  }) =>
+      MapState(
         showSeamarks: state.showSeamarks,
+        showMarinePois: state.showMarinePois,
+        showRainRadar: state.showRainRadar,
+        showWindGrid: state.showWindGrid,
         followGps: state.followGps,
+        previewDayLogId: previewDayLogId,
+        previewCharterId: previewCharterId,
+        previewLabel: previewLabel,
       );
 
   Future<void> addWaypoint(String name, double lat, double lon) async {
@@ -118,6 +175,12 @@ class MapNotifier extends Notifier<MapState> {
 
 class MapState {
   final bool showSeamarks;
+  /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
+  final bool showMarinePois;
+  /// Zrážkový radar (RainViewer overlay).
+  final bool showRainRadar;
+  /// Šípky vetra v mriežke (Open-Meteo).
+  final bool showWindGrid;
   final bool followGps;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
@@ -127,6 +190,9 @@ class MapState {
   final String? previewLabel;
   const MapState({
     this.showSeamarks = true,
+    this.showMarinePois = false,
+    this.showRainRadar = false,
+    this.showWindGrid = false,
     this.followGps = true,
     this.previewDayLogId,
     this.previewCharterId,
@@ -134,12 +200,18 @@ class MapState {
   });
   MapState copyWith({
     bool? showSeamarks,
+    bool? showMarinePois,
+    bool? showRainRadar,
+    bool? showWindGrid,
     bool? followGps,
     int? previewDayLogId,
     int? previewCharterId,
     String? previewLabel,
   }) => MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
+        showMarinePois: showMarinePois ?? this.showMarinePois,
+        showRainRadar: showRainRadar ?? this.showRainRadar,
+        showWindGrid: showWindGrid ?? this.showWindGrid,
         followGps: followGps ?? this.followGps,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,

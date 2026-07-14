@@ -26,19 +26,37 @@ void main() {
     expect(allKeys.toSet().length, allKeys.length);
   });
 
-  test('itemLabel returns Slovak for sk locale, English otherwise', () {
+  test('itemLabel returns the matching language for every app locale', () {
     final item = checkInCategories.first.items.first;
     expect(itemLabel('sk', item), item.labelSk);
     expect(itemLabel('en', item), item.labelEn);
-    expect(itemLabel('de', item), item.labelEn);
-    expect(itemLabel('es', item), item.labelEn);
-    expect(itemLabel('uk', item), item.labelEn);
+    expect(itemLabel('de', item), item.labelDe);
+    expect(itemLabel('es', item), item.labelEs);
+    expect(itemLabel('uk', item), item.labelUk);
+    // Neznámy jazyk padá na angličtinu.
+    expect(itemLabel('fr', item), item.labelEn);
   });
 
-  test('categoryLabel returns Slovak for sk locale, English otherwise', () {
+  test('categoryLabel returns the matching language for every app locale', () {
     final cat = checkInCategories.first;
     expect(categoryLabel('sk', cat), cat.labelSk);
     expect(categoryLabel('en', cat), cat.labelEn);
+    expect(categoryLabel('de', cat), cat.labelDe);
+    expect(categoryLabel('es', cat), cat.labelEs);
+    expect(categoryLabel('uk', cat), cat.labelUk);
+  });
+
+  test('every checklist item has non-empty labels in all 5 languages', () {
+    for (final cat in [...checkInCategories, ...checkOutCategories]) {
+      for (final lbl in [cat.labelSk, cat.labelEn, cat.labelDe, cat.labelEs, cat.labelUk]) {
+        expect(lbl, isNotEmpty);
+      }
+      for (final item in cat.items) {
+        for (final lbl in [item.labelSk, item.labelEn, item.labelDe, item.labelEs, item.labelUk]) {
+          expect(lbl, isNotEmpty, reason: 'item ${item.key}');
+        }
+      }
+    }
   });
 
   test('findItemDef resolves a known key and returns null for unknown key', () {

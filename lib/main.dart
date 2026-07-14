@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -50,6 +51,11 @@ final raymarineNeverConfiguredProvider = Provider<bool>((ref) => true);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Celoobrazovkový režim: skryje status bar aj navigačnú lištu telefónu.
+  // Sticky = swipe od okraja ich dočasne zobrazí, potom sa samy schovajú.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
   for (final locale in ['sk', 'en', 'de', 'es', 'uk']) {
     await initializeDateFormatting(locale, null);
   }

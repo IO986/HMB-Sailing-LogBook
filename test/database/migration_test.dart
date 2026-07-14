@@ -20,52 +20,68 @@ void main() {
     verifier = SchemaVerifier(GeneratedHelper());
   });
 
-  test('onCreate builds a schema matching the current (v12) snapshot', () async {
-    final connection = await verifier.startAt(12);
+  test('onCreate builds a schema matching the current (v14) snapshot', () async {
+    final connection = await verifier.startAt(14);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
   });
 
-  test('migrate v7 to current (v12)', () async {
+  test('migrate v7 to current (v14)', () async {
     final connection = await verifier.startAt(7);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
   });
 
-  test('migrate v8 to current (v12)', () async {
+  test('migrate v8 to current (v14)', () async {
     final connection = await verifier.startAt(8);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
   });
 
-  test('migrate v9 to current (v12)', () async {
+  test('migrate v9 to current (v14)', () async {
     final connection = await verifier.startAt(9);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
   });
 
-  test('migrate v10 to current (v12): handoverProtocols.extraNotes', () async {
+  test('migrate v10 to current (v14): handoverProtocols.extraNotes', () async {
     final connection = await verifier.startAt(10);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
   });
 
-  test('migrate v11 to current (v12): logbook record fields', () async {
+  test('migrate v11 to current (v14): logbook record fields', () async {
     final connection = await verifier.startAt(11);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
+  });
+
+  test('migrate v12 to current (v14): Charters.source', () async {
+    final connection = await verifier.startAt(12);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 14);
+  });
+
+  test('migrate v13 to current (v14): extended charter form fields', () async {
+    final connection = await verifier.startAt(13);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 14);
   });
 
   // PRAVIDLO: pri každom zvýšení schemaVersion pridaj nový

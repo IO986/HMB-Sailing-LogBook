@@ -5,35 +5,19 @@ import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../../services/voyage_progress.dart';
 import '../../../tracking/providers/tracking_provider.dart';
-import '../../../tracking/presentation/widgets/tracking_start_sheet.dart';
 import '../../../../core/services/gps_tracking_service.dart';
+import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
-class CharterListScreen extends ConsumerStatefulWidget {
+class CharterListScreen extends ConsumerWidget {
   const CharterListScreen({super.key});
 
   @override
-  ConsumerState<CharterListScreen> createState() => _CharterListScreenState();
-}
-
-class _CharterListScreenState extends ConsumerState<CharterListScreen> {
-  void _showStartSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => const TrackingStartSheet(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final chartersAsync = ref.watch(chartersProvider);
-    final isTracking = ref.watch(isTrackingProvider);
     final l = AppLocalizations.of(context);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -46,147 +30,17 @@ class _CharterListScreenState extends ConsumerState<CharterListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          if (isTracking)
-            _ActiveTrackingBanner()
-          else
-            _StartTrackingCard(onStart: _showStartSheet),
-          Expanded(
-            child: chartersAsync.when(
-              data: (charters) => charters.isEmpty
-                  ? const _EmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 100),
-                      itemCount: charters.length,
-                      itemBuilder: (ctx, i) => _CharterCard(charter: charters[i]),
-                    ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('$e')),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Active Tracking Banner ────────────────────────────────────
-
-class _ActiveTrackingBanner extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final trackingState = ref.watch(trackingNotifierProvider);
-    final elapsed = ref.watch(elapsedTimeProvider);
-    final posAsync = ref.watch(positionStreamProvider);
-    final l = AppLocalizations.of(context);
-
-    final dur = elapsed.valueOrNull ?? Duration.zero;
-    final h = dur.inHours.toString().padLeft(2, '0');
-    final m = dur.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final s = dur.inSeconds.remainder(60).toString().padLeft(2, '0');
-
-    final sogMs = posAsync.valueOrNull?.speed ?? 0.0;
-    final sogKn = (sogMs * 1.94384).toStringAsFixed(1);
-
-    return Material(
-      color: Colors.green.shade700,
-      child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(children: [
-            Container(
-              width: 8, height: 8,
-              margin: const EdgeInsets.only(right: 8),
-              decoration: const BoxDecoration(
-                  color: Colors.white, shape: BoxShape.circle),
-            ),
-            Text('$h:$m:$s', style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'monospace',
-                fontSize: 17)),
-            const SizedBox(width: 16),
-            const Icon(Icons.speed, color: Colors.white70, size: 14),
-            const SizedBox(width: 4),
-            Text('$sogKn kn', style: const TextStyle(color: Colors.white70, fontSize: 14)),
-            const Spacer(),
-            OutlinedButton.icon(
-              onPressed: trackingState.isLoading ? null : () => _confirmStop(context, ref, l),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white54),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      body: chartersAsync.when(
+        data: (charters) => charters.isEmpty
+            ? const _EmptyState()
+            : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 100),
+                itemCount: charters.length,
+                itemBuilder: (ctx, i) => _CharterCard(charter: charters[i]),
               ),
-              icon: const Icon(Icons.stop, size: 16),
-              label: Text(l.stop, style: const TextStyle(fontSize: 13)),
-            ),
-          ]),
-        ),
-    );
-  }
-
-  void _confirmStop(BuildContext context, WidgetRef ref, AppLocalizations l) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.stop),
-        content: Text(l.endVoyageContent),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
-            onPressed: () {
-              Navigator.pop(ctx);
-              ref.read(trackingNotifierProvider.notifier).stopTracking();
-            },
-            icon: const Icon(Icons.stop),
-            label: Text(l.stop),
-          ),
-        ],
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('$e')),
       ),
-    );
-  }
-}
-
-// ── Start Tracking Card ───────────────────────────────────────
-
-class _StartTrackingCard extends ConsumerWidget {
-  final VoidCallback onStart;
-  const _StartTrackingCard({required this.onStart});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final trackingState = ref.watch(trackingNotifierProvider);
-    final l = AppLocalizations.of(context);
-    final cs = Theme.of(context).colorScheme;
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 10, 12, 2),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: cs.primaryContainer.withOpacity(0.25),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: cs.primary.withOpacity(0.25)),
-      ),
-      child: Row(children: [
-        Icon(Icons.gps_fixed, color: cs.primary, size: 20),
-        const SizedBox(width: 10),
-        Expanded(child: Text(l.trackingInProgress,
-            style: TextStyle(color: cs.primary, fontWeight: FontWeight.w500))),
-        ElevatedButton.icon(
-          onPressed: trackingState.isLoading ? null : onStart,
-          icon: trackingState.isLoading
-              ? const SizedBox(width: 16, height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2))
-              : const Icon(Icons.play_arrow, size: 18),
-          label: Text(trackingState.isLoading ? l.starting : l.startTracking,
-              style: const TextStyle(fontSize: 13)),
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
-        ),
-      ]),
     );
   }
 }
@@ -201,6 +55,8 @@ class _CharterCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fmt = DateFormat('d. MMM yyyy', 'sk');
     final days = charter.dateTo.difference(charter.dateFrom).inDays + 1;
+    final isNew = ref.watch(voyageProgressProvider(charter.id))
+        .maybeWhen(data: (p) => p.isNew, orElse: () => false);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -214,9 +70,18 @@ class _CharterCard extends ConsumerWidget {
             children: [
               Row(children: [
                 Expanded(
-                  child: Text(charter.title,
-                      style: Theme.of(context).textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isNew)
+                        Text(AppLocalizations.of(context).newVoyage,
+                            style: TextStyle(fontSize: 11, color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w600)),
+                      Text(charter.title,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
                 ),
                 PopupMenuButton<String>(
                   onSelected: (v) async {
@@ -319,6 +184,7 @@ class _CharterCard extends ConsumerWidget {
                   _Badge(AppLocalizations.of(context).checkOutDone, Colors.orange),
                 ],
               ]),
+              VoyageReminderChips(charterId: charter.id),
             ],
           ),
         ),

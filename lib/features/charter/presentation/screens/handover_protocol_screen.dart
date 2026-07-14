@@ -115,6 +115,19 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       }
     }
 
+    // Rovnaké údaje sa nepýtajú dvakrát: motohodiny a charterová spoločnosť
+    // zadané v karte lode sa sem predvyplnia (a naopak pri uložení, viď
+    // _save). Nič neprepisuj, len doplň prázdne polia.
+    if (_engineHoursCtrl.text.isEmpty && _charter != null) {
+      final hours =
+          _isCheckOut ? _charter!.engineHoursEnd : _charter!.engineHoursStart;
+      if (hours != null) _engineHoursCtrl.text = hours.toString();
+    }
+    if (_companyNameCtrl.text.isEmpty &&
+        (_charter?.charterCompany?.isNotEmpty ?? false)) {
+      _companyNameCtrl.text = _charter!.charterCompany!;
+    }
+
     if (mounted) setState(() => _loading = false);
   }
 
@@ -197,14 +210,33 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
       ));
 
+      final closed = skipperSignedAt != null && companySignedAt != null;
+      // Spätný zápis zdieľaných údajov do karty lode: motohodiny z check-in
+      // = začiatok, z check-out = koniec; názov charterovej spoločnosti.
+      final engineHours = double.tryParse(_engineHoursCtrl.text);
+      final companyName = _companyNameCtrl.text.trim();
       await db.updateCharter(ChartersCompanion(
         id: Value(widget.charterId),
-        checkInDone: widget.type == 'checkIn' ? const Value(true) : const Value.absent(),
-        checkOutDone: widget.type == 'checkOut' ? const Value(true) : const Value.absent(),
+        checkInDone: widget.type == 'checkIn' ? Value(closed) : const Value.absent(),
+        checkOutDone: widget.type == 'checkOut' ? Value(closed) : const Value.absent(),
+        engineHoursStart: widget.type == 'checkIn' && engineHours != null
+            ? Value(engineHours)
+            : const Value.absent(),
+        engineHoursEnd: widget.type == 'checkOut' && engineHours != null
+            ? Value(engineHours)
+            : const Value.absent(),
+        charterCompany: companyName.isNotEmpty &&
+                (_charter?.charterCompany?.isEmpty ?? true)
+            ? Value(companyName)
+            : const Value.absent(),
       ));
 
       ref.invalidate(chartersProvider);
-      if (mounted) context.pop();
+      if (!mounted) return;
+
+      // Safety Briefing sa NEspúšťa automaticky — užívateľ ho otvorí sám
+      // (blikajúca ikona v detaile plavby pripomína).
+      context.pop();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));

@@ -5,14 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
-import '../../../tracking/providers/tracking_provider.dart';
 
 // ── Screen ────────────────────────────────────────────────────
 
@@ -86,6 +84,41 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         if (idx < 0) return const Scaffold(body: Center(child: Text('Not found')));
         final charter = charters[idx];
         final members = _buildMembers(charter);
+
+        // SB je podmienený vyplnenou kartou lode a posádky — bez lode a
+        // skippera nemá kto a za čo podpisovať.
+        final detailsComplete = (charter.vesselName?.isNotEmpty ?? false) &&
+            (charter.skipperName?.isNotEmpty ?? false);
+        if (!detailsComplete) {
+          final l = AppLocalizations.of(context);
+          return Scaffold(
+            appBar: AppBar(title: Text(l.safetyBriefingScreenTitle)),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.directions_boat_outlined,
+                        size: 48, color: Colors.grey.shade500),
+                    const SizedBox(height: 16),
+                    Text(l.sbNeedsVesselCard,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 15)),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      icon: const Icon(Icons.directions_boat),
+                      label: Text(l.editCharter),
+                      onPressed: () =>
+                          context.go('/logbook/${widget.charterId}/edit'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
         _init(widget.charterId, members);
 
         return Scaffold(
@@ -215,6 +248,26 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   Future<void> _save(BuildContext context, Charter charter,
       List<({String name, String role})> members) async {
     if (_saving) return;
+
+    // Briefing bez podpisov nemá hodnotu — ulož len keď je podpísaný
+    // každý člen posádky (nakreslený ťah alebo už uložený podpis).
+    final unsigned = <String>[];
+    for (var i = 0; i < members.length; i++) {
+      final hasDrawn = (_strokes[i] ?? const []).isNotEmpty;
+      final hasSaved = _existingPaths[i] != null;
+      if (!hasDrawn && !hasSaved) unsigned.add(members[i].name);
+    }
+    if (members.isEmpty || unsigned.isNotEmpty) {
+      final l = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(members.isEmpty
+            ? l.briefingNoCrew
+            : '${l.briefingSignHere}: ${unsigned.join(", ")}'),
+        backgroundColor: Colors.orange.shade800,
+      ));
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final db = ref.read(databaseProvider);
@@ -258,18 +311,10 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
 
       if (context.mounted) {
         final l = AppLocalizations.of(context);
-        final capturedCharter = charter;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(l.briefingSavedOk),
           backgroundColor: Colors.green.shade700,
-          duration: const Duration(seconds: 8),
-          action: SnackBarAction(
-            label: l.startTracking,
-            textColor: Colors.white,
-            onPressed: () {
-              if (mounted) _startTrackingNow(context, capturedCharter);
-            },
-          ),
+          duration: const Duration(seconds: 3),
         ));
       }
     } catch (e, st) {
@@ -284,45 +329,6 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-  }
-
-  Future<void> _startTrackingNow(BuildContext context, Charter charter) async {
-    if (!mounted) return;
-    final db = ref.read(databaseProvider);
-    final today = DateTime.now();
-    final days = await db.getDayLogs(charter.id);
-    if (!mounted) return;
-
-    DayLog dayLog;
-    final todayLog = days.where((d) =>
-        d.date.year == today.year &&
-        d.date.month == today.month &&
-        d.date.day == today.day).toList();
-
-    if (todayLog.isNotEmpty) {
-      dayLog = todayLog.first;
-    } else {
-      dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-        charterId: charter.id,
-        date: today,
-      ));
-      if (!mounted) return;
-      ref.invalidate(dayLogsProvider(charter.id));
-    }
-
-    if (!mounted) return;
-    final prefs = await SharedPreferences.getInstance();
-    final logInterval = prefs.getInt('pending_log_interval') ?? 60;
-    await prefs.remove('pending_log_interval');
-
-    final dayFmt = DateFormat('EEE d.M.', 'sk');
-    await ref.read(trackingNotifierProvider.notifier).startTracking(
-      '${dayFmt.format(today)}: ${dayLog.portFrom ?? charter.title}',
-      dayLogId: dayLog.id,
-      logIntervalSeconds: logInterval,
-    );
-
-    if (context.mounted) context.go('/map');
   }
 }
 

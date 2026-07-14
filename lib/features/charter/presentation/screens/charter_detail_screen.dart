@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../../services/voyage_progress.dart';
+import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class CharterDetailScreen extends ConsumerWidget {
@@ -23,27 +25,38 @@ class CharterDetailScreen extends ConsumerWidget {
         try { charter = charters.firstWhere((c) => c.id == charterId); }
         catch (_) { return Scaffold(body: Center(child: Text(AppLocalizations.of(context).voyageNotFound))); }
 
+        // Nevyplnené karty blikajú, kým ich užívateľ nedokončí:
+        // SB (briefing), handshake (check-in/out), loď (karta lode/posádky).
+        final progress = ref.watch(voyageProgressProvider(charterId)).valueOrNull;
+        final reminders = progress?.reminders ?? const <VoyageReminder>[];
+        final l = AppLocalizations.of(context);
+
         return Scaffold(
           appBar: AppBar(
             title: Text(charter.title, overflow: TextOverflow.ellipsis),
             actions: [
-              charter.safetyBriefingDone
-                  ? IconButton(
-                      icon: const Icon(Icons.health_and_safety_outlined),
-                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
-                      onPressed: () => context.go('/logbook/$charterId/briefing'),
-                    )
-                  : _BlinkingSbIconButton(
-                      tooltip: AppLocalizations.of(context).briefingOpenBriefing,
-                      onPressed: () => context.go('/logbook/$charterId/briefing'),
-                    ),
-              IconButton(
-                icon: const Icon(Icons.handshake_outlined),
-                tooltip: AppLocalizations.of(context).handoverMenuTitle,
+              _MaybeBlinkingIconButton(
+                blink: !charter.safetyBriefingDone,
+                icon: Icons.health_and_safety_outlined,
+                blinkIcon: Icons.health_and_safety,
+                tooltip: l.briefingOpenBriefing,
+                onPressed: () => context.go('/logbook/$charterId/briefing'),
+              ),
+              _MaybeBlinkingIconButton(
+                blink: reminders.contains(VoyageReminder.checkIn) ||
+                    reminders.contains(VoyageReminder.checkOut),
+                icon: Icons.handshake_outlined,
+                blinkIcon: Icons.handshake,
+                tooltip: l.handoverMenuTitle,
                 onPressed: () => _showHandoverMenu(context, ref, charterId),
               ),
-              IconButton(icon: const Icon(Icons.edit),
-                  onPressed: () => context.go('/logbook/$charterId/edit')),
+              _MaybeBlinkingIconButton(
+                blink: reminders.contains(VoyageReminder.details),
+                icon: Icons.directions_boat_outlined,
+                blinkIcon: Icons.directions_boat,
+                tooltip: l.editCharter,
+                onPressed: () => context.go('/logbook/$charterId/edit'),
+              ),
               IconButton(
                 icon: const Icon(Icons.picture_as_pdf),
                 onPressed: () => context.go('/logbook/$charterId/export'),
@@ -63,21 +76,54 @@ class CharterDetailScreen extends ConsumerWidget {
   }
 }
 
-class _BlinkingSbIconButton extends StatefulWidget {
+/// IconButton, ktorý červeno bliká, kým [blink] platí — signalizuje
+/// nevyplnenú kartu (SB, check-in/out, karta lode/posádky).
+class _MaybeBlinkingIconButton extends StatefulWidget {
+  final bool blink;
+  final IconData icon;
+  final IconData blinkIcon;
   final String tooltip;
   final VoidCallback onPressed;
-  const _BlinkingSbIconButton({required this.tooltip, required this.onPressed});
+  const _MaybeBlinkingIconButton({
+    required this.blink,
+    required this.icon,
+    required this.blinkIcon,
+    required this.tooltip,
+    required this.onPressed,
+  });
 
   @override
-  State<_BlinkingSbIconButton> createState() => _BlinkingSbIconButtonState();
+  State<_MaybeBlinkingIconButton> createState() =>
+      _MaybeBlinkingIconButtonState();
 }
 
-class _BlinkingSbIconButtonState extends State<_BlinkingSbIconButton>
+class _MaybeBlinkingIconButtonState extends State<_MaybeBlinkingIconButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 700),
-  )..repeat(reverse: true);
+  );
+
+  @override
+  void didUpdateWidget(covariant _MaybeBlinkingIconButton old) {
+    super.didUpdateWidget(old);
+    _syncAnimation();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _syncAnimation();
+  }
+
+  void _syncAnimation() {
+    if (widget.blink && !_controller.isAnimating) {
+      _controller.repeat(reverse: true);
+    } else if (!widget.blink && _controller.isAnimating) {
+      _controller.stop();
+      _controller.value = 1;
+    }
+  }
 
   @override
   void dispose() {
@@ -87,10 +133,17 @@ class _BlinkingSbIconButtonState extends State<_BlinkingSbIconButton>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.blink) {
+      return IconButton(
+        icon: Icon(widget.icon),
+        tooltip: widget.tooltip,
+        onPressed: widget.onPressed,
+      );
+    }
     return IconButton(
       icon: FadeTransition(
         opacity: Tween(begin: 0.3, end: 1.0).animate(_controller),
-        child: const Icon(Icons.health_and_safety, color: Colors.red),
+        child: Icon(widget.blinkIcon, color: Colors.red),
       ),
       tooltip: widget.tooltip,
       onPressed: widget.onPressed,
@@ -173,44 +226,7 @@ class _Body extends ConsumerWidget {
               _InfoRow(Icons.group, AppLocalizations.of(context).crew, crew.join(', ')),
             if (totalNm > 0)
               _InfoRow(Icons.straighten, AppLocalizations.of(context).total, '${totalNm.toStringAsFixed(1)} NM'),
-            // Status badges
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Wrap(spacing: 6, children: [
-                _Badge(
-                  charter.safetyBriefingDone
-                      ? AppLocalizations.of(context).briefingDone
-                      : AppLocalizations.of(context).briefingPending,
-                  charter.safetyBriefingDone ? Colors.green : Colors.red,
-                ),
-                if (charter.checkInDone) _Badge(AppLocalizations.of(context).checkInDone, Colors.blue),
-                if (charter.checkOutDone) _Badge(AppLocalizations.of(context).checkOutDone, Colors.orange),
-              ]),
-            ),
-            if (!charter.safetyBriefingDone)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: InkWell(
-                  onTap: () => context.go('/logbook/${charter.id}/briefing'),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade200),
-                    ),
-                    child: Row(children: [
-                      Icon(Icons.warning_amber_rounded, size: 16, color: Colors.red.shade700),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(
-                        AppLocalizations.of(context).briefingPendingListWarning,
-                        style: TextStyle(fontSize: 12, color: Colors.red.shade800, fontWeight: FontWeight.w600),
-                      )),
-                      Icon(Icons.chevron_right, size: 18, color: Colors.red.shade700),
-                    ]),
-                  ),
-                ),
-              ),
+            VoyageReminderChips(charterId: charter.id),
           ]),
         )),
         const SizedBox(height: 8),
@@ -276,23 +292,6 @@ class _InfoRow extends StatelessWidget {
       Text('$label: ', style: const TextStyle(color: Colors.grey, fontSize: 13)),
       Expanded(child: Text(value, style: const TextStyle(fontSize: 13))),
     ]),
-  );
-}
-
-class _Badge extends StatelessWidget {
-  final String label;
-  final Color color;
-  const _Badge(this.label, this.color);
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-    decoration: BoxDecoration(
-      color: color.withOpacity(0.15),
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: color.withOpacity(0.4)),
-    ),
-    child: Text(label, style: TextStyle(fontSize: 11, color: color,
-        fontWeight: FontWeight.w600)),
   );
 }
 
