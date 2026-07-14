@@ -2140,4 +2140,49 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get locationQualityMocked => '⚠️ Fake-Standort erkannt';
+
+  @override
+  String get syncQueueTitle => 'Sync-Warteschlange';
+
+  @override
+  String get syncQueueEmpty => 'Warteschlange ist leer';
+
+  @override
+  String get syncNowAction => 'Jetzt synchronisieren';
+
+  @override
+  String get syncRetryFailedAction => 'Erneut versuchen';
+
+  @override
+  String get syncStatusPending => 'Wartend';
+
+  @override
+  String get syncStatusSending => 'Wird gesendet';
+
+  @override
+  String get syncStatusSent => 'Gesendet';
+
+  @override
+  String get syncStatusFailed => 'Fehlgeschlagen';
+
+  @override
+  String get syncStatusConflict => 'Konflikt';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Versuch $n';
+  }
+
+  @override
+  String get syncOffline => 'offline';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n wartend';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n fehlgeschlagen';
+  }
 }

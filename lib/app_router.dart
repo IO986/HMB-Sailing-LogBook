@@ -20,6 +20,7 @@ import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
 import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
+import 'features/sync/presentation/screens/sync_queue_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -34,6 +35,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (c, s) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/sync-queue',
+        builder: (c, s) => const SyncQueueScreen(),
       ),
       ShellRoute(
         builder: (c, s, child) => MainScaffold(child: child),

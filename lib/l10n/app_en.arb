@@ -726,5 +726,22 @@
   "locationQualityCached": "⚠️ Last known location · {mins} min ago",
   "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
   "locationQualityUnknown": "Accuracy unknown",
-  "locationQualityMocked": "⚠️ Mock location detected"
+  "locationQualityMocked": "⚠️ Mock location detected",
+
+  "syncQueueTitle": "Sync queue",
+  "syncQueueEmpty": "Queue is empty",
+  "syncNowAction": "Sync now",
+  "syncRetryFailedAction": "Retry failed",
+  "syncStatusPending": "Pending",
+  "syncStatusSending": "Sending",
+  "syncStatusSent": "Sent",
+  "syncStatusFailed": "Failed",
+  "syncStatusConflict": "Conflict",
+  "syncRetryCount": "Attempt {n}",
+  "@syncRetryCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncOffline": "offline",
+  "syncPendingCount": "{n} pending",
+  "@syncPendingCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncFailedCount": "{n} failed",
+  "@syncFailedCount": { "placeholders": { "n": { "type": "int" } } }
 }

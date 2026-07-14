@@ -726,5 +726,22 @@
   "locationQualityCached": "⚠️ Останнє відоме місцезнаходження · {mins} хв тому",
   "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
   "locationQualityUnknown": "Точність невідома",
-  "locationQualityMocked": "⚠️ Виявлено фальшиве місцезнаходження"
+  "locationQualityMocked": "⚠️ Виявлено фальшиве місцезнаходження",
+
+  "syncQueueTitle": "Черга синхронізації",
+  "syncQueueEmpty": "Черга порожня",
+  "syncNowAction": "Синхронізувати зараз",
+  "syncRetryFailedAction": "Повторити",
+  "syncStatusPending": "Очікує",
+  "syncStatusSending": "Надсилається",
+  "syncStatusSent": "Надіслано",
+  "syncStatusFailed": "Помилка",
+  "syncStatusConflict": "Конфлікт",
+  "syncRetryCount": "Спроба {n}",
+  "@syncRetryCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncOffline": "офлайн",
+  "syncPendingCount": "{n} в черзі",
+  "@syncPendingCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncFailedCount": "{n} помилок",
+  "@syncFailedCount": { "placeholders": { "n": { "type": "int" } } }
 }

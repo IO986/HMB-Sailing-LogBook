@@ -2128,4 +2128,49 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get locationQualityMocked => '⚠️ Zistená falošná poloha';
+
+  @override
+  String get syncQueueTitle => 'Fronta synchronizácie';
+
+  @override
+  String get syncQueueEmpty => 'Fronta je prázdna';
+
+  @override
+  String get syncNowAction => 'Synchronizovať teraz';
+
+  @override
+  String get syncRetryFailedAction => 'Skúsiť znova';
+
+  @override
+  String get syncStatusPending => 'Čaká';
+
+  @override
+  String get syncStatusSending => 'Odosiela sa';
+
+  @override
+  String get syncStatusSent => 'Odoslané';
+
+  @override
+  String get syncStatusFailed => 'Zlyhalo';
+
+  @override
+  String get syncStatusConflict => 'Konflikt';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Pokus $n';
+  }
+
+  @override
+  String get syncOffline => 'offline';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n čakajú';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n zlyhalo';
+  }
 }

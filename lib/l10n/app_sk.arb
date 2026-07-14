@@ -726,5 +726,22 @@
   "locationQualityCached": "⚠️ Posledná známa poloha · pred {mins} min",
   "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
   "locationQualityUnknown": "Presnosť neznáma",
-  "locationQualityMocked": "⚠️ Zistená falošná poloha"
+  "locationQualityMocked": "⚠️ Zistená falošná poloha",
+
+  "syncQueueTitle": "Fronta synchronizácie",
+  "syncQueueEmpty": "Fronta je prázdna",
+  "syncNowAction": "Synchronizovať teraz",
+  "syncRetryFailedAction": "Skúsiť znova",
+  "syncStatusPending": "Čaká",
+  "syncStatusSending": "Odosiela sa",
+  "syncStatusSent": "Odoslané",
+  "syncStatusFailed": "Zlyhalo",
+  "syncStatusConflict": "Konflikt",
+  "syncRetryCount": "Pokus {n}",
+  "@syncRetryCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncOffline": "offline",
+  "syncPendingCount": "{n} čakajú",
+  "@syncPendingCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncFailedCount": "{n} zlyhalo",
+  "@syncFailedCount": { "placeholders": { "n": { "type": "int" } } }
 }

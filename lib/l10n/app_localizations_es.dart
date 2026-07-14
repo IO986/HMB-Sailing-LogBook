@@ -2134,4 +2134,49 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get locationQualityMocked => '⚠️ Ubicación falsa detectada';
+
+  @override
+  String get syncQueueTitle => 'Cola de sincronización';
+
+  @override
+  String get syncQueueEmpty => 'La cola está vacía';
+
+  @override
+  String get syncNowAction => 'Sincronizar ahora';
+
+  @override
+  String get syncRetryFailedAction => 'Reintentar';
+
+  @override
+  String get syncStatusPending => 'Pendiente';
+
+  @override
+  String get syncStatusSending => 'Enviando';
+
+  @override
+  String get syncStatusSent => 'Enviado';
+
+  @override
+  String get syncStatusFailed => 'Fallido';
+
+  @override
+  String get syncStatusConflict => 'Conflicto';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Intento $n';
+  }
+
+  @override
+  String get syncOffline => 'sin conexión';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n pendientes';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n fallidos';
+  }
 }

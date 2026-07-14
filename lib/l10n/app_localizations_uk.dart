@@ -2131,4 +2131,49 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get locationQualityMocked => '⚠️ Виявлено фальшиве місцезнаходження';
+
+  @override
+  String get syncQueueTitle => 'Черга синхронізації';
+
+  @override
+  String get syncQueueEmpty => 'Черга порожня';
+
+  @override
+  String get syncNowAction => 'Синхронізувати зараз';
+
+  @override
+  String get syncRetryFailedAction => 'Повторити';
+
+  @override
+  String get syncStatusPending => 'Очікує';
+
+  @override
+  String get syncStatusSending => 'Надсилається';
+
+  @override
+  String get syncStatusSent => 'Надіслано';
+
+  @override
+  String get syncStatusFailed => 'Помилка';
+
+  @override
+  String get syncStatusConflict => 'Конфлікт';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Спроба $n';
+  }
+
+  @override
+  String get syncOffline => 'офлайн';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n в черзі';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n помилок';
+  }
 }

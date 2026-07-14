@@ -702,6 +702,11 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteOutboxRow(String id) =>
       (delete(outboxRows)..where((r) => r.id.equals(id))).go();
+
+  /// Every outbox row, for the sync queue screen's item list. Counts for
+  /// the header badge come from `OutboxRepository.watchQueue()` instead —
+  /// this is only for rendering the actual list.
+  Stream<List<OutboxRow>> watchAllOutboxRows() => select(outboxRows).watch();
 }
 
 LazyDatabase _openConnection() {

@@ -15,6 +15,7 @@ import '../../core/services/raymarine_connection_service.dart';
 import '../../core/services/udp_receiver_service.dart';
 import '../../core/providers/raymarine_providers.dart';
 import '../../features/help/presentation/screens/user_guide_screen.dart';
+import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
@@ -325,8 +326,13 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       onPopInvokedWithResult: (_, __) => _handleBack(context),
       child: Scaffold(
         body: Column(children: [
-          if (showControlBar)
-            const SafeArea(bottom: false, child: TrackingControlBar()),
+          SafeArea(
+            bottom: false,
+            child: Column(children: [
+              const SyncQueueBadge(),
+              if (showControlBar) const TrackingControlBar(),
+            ]),
+          ),
           Expanded(child: widget.child),
         ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,

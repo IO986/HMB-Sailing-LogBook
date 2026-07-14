@@ -726,5 +726,22 @@
   "locationQualityCached": "⚠️ Última ubicación conocida · hace {mins} min",
   "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
   "locationQualityUnknown": "Precisión desconocida",
-  "locationQualityMocked": "⚠️ Ubicación falsa detectada"
+  "locationQualityMocked": "⚠️ Ubicación falsa detectada",
+
+  "syncQueueTitle": "Cola de sincronización",
+  "syncQueueEmpty": "La cola está vacía",
+  "syncNowAction": "Sincronizar ahora",
+  "syncRetryFailedAction": "Reintentar",
+  "syncStatusPending": "Pendiente",
+  "syncStatusSending": "Enviando",
+  "syncStatusSent": "Enviado",
+  "syncStatusFailed": "Fallido",
+  "syncStatusConflict": "Conflicto",
+  "syncRetryCount": "Intento {n}",
+  "@syncRetryCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncOffline": "sin conexión",
+  "syncPendingCount": "{n} pendientes",
+  "@syncPendingCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncFailedCount": "{n} fallidos",
+  "@syncFailedCount": { "placeholders": { "n": { "type": "int" } } }
 }

@@ -4123,6 +4123,84 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'⚠️ Zistená falošná poloha'**
   String get locationQualityMocked;
+
+  /// No description provided for @syncQueueTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fronta synchronizácie'**
+  String get syncQueueTitle;
+
+  /// No description provided for @syncQueueEmpty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fronta je prázdna'**
+  String get syncQueueEmpty;
+
+  /// No description provided for @syncNowAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Synchronizovať teraz'**
+  String get syncNowAction;
+
+  /// No description provided for @syncRetryFailedAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skúsiť znova'**
+  String get syncRetryFailedAction;
+
+  /// No description provided for @syncStatusPending.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čaká'**
+  String get syncStatusPending;
+
+  /// No description provided for @syncStatusSending.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odosiela sa'**
+  String get syncStatusSending;
+
+  /// No description provided for @syncStatusSent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odoslané'**
+  String get syncStatusSent;
+
+  /// No description provided for @syncStatusFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zlyhalo'**
+  String get syncStatusFailed;
+
+  /// No description provided for @syncStatusConflict.
+  ///
+  /// In sk, this message translates to:
+  /// **'Konflikt'**
+  String get syncStatusConflict;
+
+  /// No description provided for @syncRetryCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokus {n}'**
+  String syncRetryCount(int n);
+
+  /// No description provided for @syncOffline.
+  ///
+  /// In sk, this message translates to:
+  /// **'offline'**
+  String get syncOffline;
+
+  /// No description provided for @syncPendingCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} čakajú'**
+  String syncPendingCount(int n);
+
+  /// No description provided for @syncFailedCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} zlyhalo'**
+  String syncFailedCount(int n);
 }
 
 class _AppLocalizationsDelegate

@@ -2127,4 +2127,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationQualityMocked => '⚠️ Mock location detected';
+
+  @override
+  String get syncQueueTitle => 'Sync queue';
+
+  @override
+  String get syncQueueEmpty => 'Queue is empty';
+
+  @override
+  String get syncNowAction => 'Sync now';
+
+  @override
+  String get syncRetryFailedAction => 'Retry failed';
+
+  @override
+  String get syncStatusPending => 'Pending';
+
+  @override
+  String get syncStatusSending => 'Sending';
+
+  @override
+  String get syncStatusSent => 'Sent';
+
+  @override
+  String get syncStatusFailed => 'Failed';
+
+  @override
+  String get syncStatusConflict => 'Conflict';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Attempt $n';
+  }
+
+  @override
+  String get syncOffline => 'offline';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n pending';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n failed';
+  }
 }

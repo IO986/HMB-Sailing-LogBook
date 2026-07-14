@@ -726,5 +726,22 @@
   "locationQualityCached": "⚠️ Letzte bekannte Position · vor {mins} Min.",
   "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
   "locationQualityUnknown": "Genauigkeit unbekannt",
-  "locationQualityMocked": "⚠️ Fake-Standort erkannt"
+  "locationQualityMocked": "⚠️ Fake-Standort erkannt",
+
+  "syncQueueTitle": "Sync-Warteschlange",
+  "syncQueueEmpty": "Warteschlange ist leer",
+  "syncNowAction": "Jetzt synchronisieren",
+  "syncRetryFailedAction": "Erneut versuchen",
+  "syncStatusPending": "Wartend",
+  "syncStatusSending": "Wird gesendet",
+  "syncStatusSent": "Gesendet",
+  "syncStatusFailed": "Fehlgeschlagen",
+  "syncStatusConflict": "Konflikt",
+  "syncRetryCount": "Versuch {n}",
+  "@syncRetryCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncOffline": "offline",
+  "syncPendingCount": "{n} wartend",
+  "@syncPendingCount": { "placeholders": { "n": { "type": "int" } } },
+  "syncFailedCount": "{n} fehlgeschlagen",
+  "@syncFailedCount": { "placeholders": { "n": { "type": "int" } } }
 }
