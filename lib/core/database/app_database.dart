@@ -139,6 +139,11 @@ class TrackPoints extends Table {
   RealColumn get speed => real().nullable()();
   RealColumn get course => real().nullable()();
   RealColumn get accuracy => real().nullable()();
+  // Doplnkové polia z LocationFix (hmb_core) – staré riadky majú NULL,
+  // spätne sa nedopočítavajú.
+  RealColumn get accuracyMeters => real().nullable()();
+  TextColumn get locationSource => text().nullable()();
+  BoolColumn get isMocked => boolean().nullable()();
 }
 
 /// GPS session (jedna plavba/deň)
@@ -266,7 +271,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -355,6 +360,11 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.costCurrency);
         await m.addColumn(charters, charters.photosJson);
         await m.addColumn(charters, charters.crewJson);
+      }
+      if (from < 15) {
+        await m.addColumn(trackPoints, trackPoints.accuracyMeters);
+        await m.addColumn(trackPoints, trackPoints.locationSource);
+        await m.addColumn(trackPoints, trackPoints.isMocked);
       }
     },
     beforeOpen: (details) async {

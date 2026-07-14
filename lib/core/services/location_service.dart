@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../models/marine_instrument_data.dart';
 import 'raymarine_connection_service.dart';
@@ -22,7 +23,9 @@ class LocationService {
   factory LocationService() => _i;
   LocationService._();
 
-  StreamSubscription<Position>? _androidSub;
+  final _gps = GeolocatorLocationService();
+
+  StreamSubscription<LocationFix>? _androidSub;
   StreamSubscription<MarineInstrumentData>? _raymarineSub;
   StreamSubscription<MarineInstrumentData>? _udpSub;
   Timer? _fallbackCheckTimer;
@@ -57,35 +60,48 @@ class LocationService {
   }
 
   Future<void> _initAndroidGps() async {
-    final svcOn = await Geolocator.isLocationServiceEnabled();
-    if (!svcOn) return;
+    var availability = await _gps.checkAvailability();
+    if (!availability.serviceEnabled) return;
 
-    var perm = await Geolocator.checkPermission();
-    if (perm == LocationPermission.denied) {
-      perm = await Geolocator.requestPermission();
+    if (availability.permission == LocationPermissionState.denied) {
+      await _gps.requestPermission();
+      availability = await _gps.checkAvailability();
     }
-    if (perm == LocationPermission.deniedForever) return;
+    if (!availability.usable) return;
 
-    // Načítaj poslednú known position okamžite
+    // Načítaj poslednú known position okamžite (bez čakania na live fix)
     try {
-      final last = await Geolocator.getLastKnownPosition();
+      final last = await _gps.getBest(
+        config: const LocationConfig(
+          quickFixTimeout: Duration.zero,
+          preciseFixTimeout: Duration.zero,
+        ),
+      );
       if (last != null) {
-        _lastAndroidPosition = last;
+        _lastAndroidPosition = _fixToPosition(last);
         _reEvaluateSource();
       }
     } catch (_) {}
 
     // Spusti stream
-    _androidSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.best,
-        distanceFilter: 5,
-      ),
-    ).listen((pos) {
-      _lastAndroidPosition = pos;
+    _androidSub = _gps.watch().listen((fix) {
+      _lastAndroidPosition = _fixToPosition(fix);
       _reEvaluateSource();
     }, onError: (e) => debugPrint('[LOC] Android GPS error: $e'));
   }
+
+  Position _fixToPosition(LocationFix fix) => Position(
+        latitude: fix.latitude,
+        longitude: fix.longitude,
+        timestamp: fix.timestamp,
+        accuracy: fix.accuracyMeters,
+        altitude: fix.altitudeMeters ?? 0,
+        altitudeAccuracy: 0,
+        heading: fix.headingDegrees ?? 0,
+        headingAccuracy: 0,
+        speed: fix.speedMps ?? 0,
+        speedAccuracy: 0,
+      );
 
   void _listenToNmea() {
     _raymarineSub = RaymarineConnectionService().dataStream
