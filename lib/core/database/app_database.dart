@@ -260,6 +260,42 @@ class HandoverProtocols extends Table {
       ];
 }
 
+/// SQL-native backing store for `hmb_core`'s generic sync outbox
+/// (`OutboxRepository`/`RecordStore` — see `lib/sync/drift_outbox_record_store.dart`).
+/// Column shape mirrors `OutboxItem` field-for-field so `payload`/
+/// `attachments` round-trip through JSON without reinterpreting them —
+/// this app never reads those columns' contents directly, only
+/// `hmb_core`'s own (de)serialization does.
+///
+/// Table name is explicitly `outbox` (not the pluralized default) to match
+/// TASK_SYNC_ENGINE.md section 5 exactly; the Dart class is `OutboxRows`
+/// (not `Outbox`/`OutboxItem`) so the drift-generated row type doesn't
+/// collide with `hmb_core`'s own `OutboxItem` class where both are
+/// imported together.
+class OutboxRows extends Table {
+  @override
+  String get tableName => 'outbox';
+
+  TextColumn get id => text()();
+  TextColumn get entityType => text()();
+  TextColumn get entityId => text().nullable()();
+  TextColumn get operation => text()();
+  TextColumn get payload => text()();
+  TextColumn get attachments => text()();
+  TextColumn get status => text()();
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get lastAttemptAt => dateTime().nullable()();
+  DateTimeColumn get syncedAt => dateTime().nullable()();
+  TextColumn get errorMessage => text().nullable()();
+  IntColumn get lastHttpStatus => integer().nullable()();
+  TextColumn get version => text().nullable()();
+  TextColumn get remoteId => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 // ─────────────────────────────────────────────────────────────
 // DATABASE
 // ─────────────────────────────────────────────────────────────
@@ -267,7 +303,7 @@ class HandoverProtocols extends Table {
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
-  HistoricalVoyages, HandoverProtocols,
+  HistoricalVoyages, HandoverProtocols, OutboxRows,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -276,12 +312,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_outbox_status_created '
+        'ON outbox (status, created_at)',
+      );
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -375,6 +415,13 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(logbookEntries, logbookEntries.accuracyMeters);
         await m.addColumn(logbookEntries, logbookEntries.locationSource);
         await m.addColumn(logbookEntries, logbookEntries.isMocked);
+      }
+      if (from < 17) {
+        await m.createTable(outboxRows);
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_outbox_status_created '
+          'ON outbox (status, created_at)',
+        );
       }
     },
     beforeOpen: (details) async {
@@ -642,6 +689,19 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteHandoverProtocolsForCharter(int charterId) =>
       (delete(handoverProtocols)..where((h) => h.charterId.equals(charterId))).go();
+
+  // ── Outbox (hmb_core sync engine RecordStore backing) ──────────
+
+  Future<void> upsertOutboxRow(OutboxRowsCompanion row) =>
+      into(outboxRows).insertOnConflictUpdate(row);
+
+  Future<OutboxRow?> getOutboxRow(String id) =>
+      (select(outboxRows)..where((r) => r.id.equals(id))).getSingleOrNull();
+
+  Future<List<OutboxRow>> getAllOutboxRows() => select(outboxRows).get();
+
+  Future<void> deleteOutboxRow(String id) =>
+      (delete(outboxRows)..where((r) => r.id.equals(id))).go();
 }
 
 LazyDatabase _openConnection() {
