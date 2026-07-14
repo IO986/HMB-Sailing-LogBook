@@ -240,31 +240,57 @@ class _FlagWaveImageState extends State<_FlagWaveImage> {
   }
 }
 
+/// Mesh warp cez Canvas.drawVertices — susedné bunky zdieľajú presne tie isté
+/// vrcholy, takže deformácia je spojitá a nevidno žiadne rezy/švy (na rozdiel
+/// od predošlej verzie, ktorá kreslila nezávislé zvislé pásiky
+/// cez drawImageRect a na ich hraniciach bol viditeľný schodovitý skok).
 class _FlagWavePainter extends CustomPainter {
   final ui.Image image;
   final double time;
-  static const _strips = 28;
-  static const _amplitude = 6.0;
+  static const _cols = 32;
+  static const _amplitude = 7.0;
   static const _wavelength = 1.3;
 
   _FlagWavePainter({required this.image, required this.time});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..filterQuality = FilterQuality.low;
-    final srcStripW = image.width / _strips;
-    final dstStripW = size.width / _strips;
-    for (var i = 0; i < _strips; i++) {
-      final t = i / (_strips - 1);
-      final srcRect = Rect.fromLTWH(
-          i * srcStripW, 0, srcStripW + 1, image.height.toDouble());
-      // Amplitúda rastie smerom k pravému okraju (voľný koniec vlajky),
-      // ľavý okraj (pri "stožiari") sa takmer nehýbe.
-      final dy = _amplitude * t * math.sin(2 * math.pi * (t * _wavelength - time));
-      final dstRect = Rect.fromLTWH(
-          i * dstStripW, dy, dstStripW + 1, size.height);
-      canvas.drawImageRect(image, srcRect, dstRect, paint);
+    final imgW = image.width.toDouble();
+    final imgH = image.height.toDouble();
+    final scale = size.width / imgW;
+
+    final positions = <Offset>[];
+    final texCoords = <Offset>[];
+    for (var row = 0; row < 2; row++) {
+      final y = row == 0 ? 0.0 : size.height;
+      final srcY = row == 0 ? 0.0 : imgH;
+      for (var col = 0; col <= _cols; col++) {
+        final t = col / _cols;
+        // Amplitúda rastie smerom k pravému (voľnému) okraju, ľavý okraj
+        // ("stožiar") sa takmer nehýbe — ako pripevnená vlajka vo vetre.
+        final dy = _amplitude * t * math.sin(2 * math.pi * (t * _wavelength - time));
+        positions.add(Offset(col * imgW / _cols * scale, y + dy));
+        texCoords.add(Offset(col * imgW / _cols, srcY));
+      }
     }
+
+    final indices = <int>[];
+    const rowStride = _cols + 1;
+    for (var col = 0; col < _cols; col++) {
+      final tl = col, tr = col + 1, bl = rowStride + col, br = rowStride + col + 1;
+      indices.addAll([tl, bl, tr, tr, bl, br]);
+    }
+
+    final vertices = ui.Vertices(
+      ui.VertexMode.triangles,
+      positions,
+      textureCoordinates: texCoords,
+      indices: indices,
+    );
+    final paint = Paint()
+      ..shader = ImageShader(image, TileMode.clamp, TileMode.clamp, Matrix4.identity().storage)
+      ..filterQuality = FilterQuality.low;
+    canvas.drawVertices(vertices, BlendMode.srcOver, paint);
   }
 
   @override
