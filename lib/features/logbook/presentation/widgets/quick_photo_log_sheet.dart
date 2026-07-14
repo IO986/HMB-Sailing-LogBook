@@ -9,6 +9,7 @@ import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
+import '../../../../shared/widgets/location_quality_badge.dart';
 
 /// Mini-formulár po odfotení POI počas trackingu — potvrdí rýchly
 /// denníkový záznam s fotkou, GPS/časom zachyteným automaticky.
@@ -23,6 +24,13 @@ class QuickPhotoLogSheet extends ConsumerStatefulWidget {
 class _QuickPhotoLogSheetState extends ConsumerState<QuickPhotoLogSheet> {
   final _noteCtrl = TextEditingController();
   bool _saving = false;
+
+  // Poloha sa zachytí raz pri otvorení sheetu (čas fotky), nie znova pri
+  // uložení – medzitým mohla prísť čerstvejšia/horšia poloha.
+  late final _pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+  late final _locationSource = _pos != null ? LocationService().lastSource?.name : null;
+  late final _isMocked = _pos != null ? LocationService().lastIsMocked : null;
+  final _capturedAt = DateTime.now().toUtc();
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +54,13 @@ class _QuickPhotoLogSheetState extends ConsumerState<QuickPhotoLogSheet> {
           const SizedBox(height: 16),
           Text(l.quickPhotoLogTitle,
               style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          LocationQualityBadge(
+            accuracyMeters: (_pos != null && _pos.accuracy > 0) ? _pos.accuracy : null,
+            locationSource: _locationSource,
+            isMocked: _isMocked,
+            timestamp: _capturedAt,
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: _noteCtrl,
@@ -77,18 +92,21 @@ class _QuickPhotoLogSheetState extends ConsumerState<QuickPhotoLogSheet> {
 
   Future<void> _save() async {
     setState(() => _saving = true);
-    final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    final pos = _pos;
     final note = _noteCtrl.text.trim();
     await ref.read(databaseProvider).insertLogbookEntry(LogbookEntriesCompanion.insert(
       dayLogId: Value(GpsTrackingService().activeDayLogId),
       sessionId: Value(GpsTrackingService().currentSession?.sessionId),
-      timestamp: DateTime.now().toUtc(),
+      timestamp: _capturedAt,
       latitude: Value(pos?.latitude),
       longitude: Value(pos?.longitude),
       sog: Value(pos != null ? pos.speed * 1.94384 : null),
       cog: Value(pos?.heading),
       skipperNote: Value(note.isEmpty ? null : note),
       photoPath: Value(widget.photoPath),
+      accuracyMeters: Value((pos != null && pos.accuracy > 0) ? pos.accuracy : null),
+      locationSource: Value(_locationSource),
+      isMocked: Value(_isMocked),
     ));
     if (mounted) Navigator.pop(context);
   }

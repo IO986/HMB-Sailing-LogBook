@@ -2119,4 +2119,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get costHostessFee => 'Hostessen-Gebühr';
+
+  @override
+  String locationQualityPrecise(int m) {
+    return 'GPS ±$m m';
+  }
+
+  @override
+  String locationQualityApproximate(int m) {
+    return '⚠️ Ungefähre Position · ±$m m · Netzwerkortung';
+  }
+
+  @override
+  String locationQualityCached(int mins) {
+    return '⚠️ Letzte bekannte Position · vor $mins Min.';
+  }
+
+  @override
+  String get locationQualityUnknown => 'Genauigkeit unbekannt';
+
+  @override
+  String get locationQualityMocked => '⚠️ Fake-Standort erkannt';
 }

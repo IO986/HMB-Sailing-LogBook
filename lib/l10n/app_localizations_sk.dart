@@ -2107,4 +2107,25 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get costHostessFee => 'Poplatok za hostesku';
+
+  @override
+  String locationQualityPrecise(int m) {
+    return 'GPS ±$m m';
+  }
+
+  @override
+  String locationQualityApproximate(int m) {
+    return '⚠️ Približná poloha · ±$m m · sieťová lokalizácia';
+  }
+
+  @override
+  String locationQualityCached(int mins) {
+    return '⚠️ Posledná známa poloha · pred $mins min';
+  }
+
+  @override
+  String get locationQualityUnknown => 'Presnosť neznáma';
+
+  @override
+  String get locationQualityMocked => '⚠️ Zistená falošná poloha';
 }

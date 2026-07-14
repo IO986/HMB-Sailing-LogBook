@@ -717,5 +717,14 @@
   "costWifi": "WiFi",
   "costSupKayak": "SUP / kajak",
   "costSkipperFee": "Poplatok za skippera",
-  "costHostessFee": "Poplatok za hostesku"
+  "costHostessFee": "Poplatok za hostesku",
+
+  "locationQualityPrecise": "GPS ±{m} m",
+  "@locationQualityPrecise": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityApproximate": "⚠️ Približná poloha · ±{m} m · sieťová lokalizácia",
+  "@locationQualityApproximate": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityCached": "⚠️ Posledná známa poloha · pred {mins} min",
+  "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
+  "locationQualityUnknown": "Presnosť neznáma",
+  "locationQualityMocked": "⚠️ Zistená falošná poloha"
 }

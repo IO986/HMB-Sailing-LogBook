@@ -377,6 +377,9 @@ class GpsTrackingService {
       waterTemp: drift.Value(waterTmp),
       skipperNote: drift.Value(entryNote),
       isAutoEntry: const drift.Value(true),
+      accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
+      locationSource: drift.Value(LocationService().lastSource?.name),
+      isMocked: drift.Value(LocationService().lastIsMocked),
     ));
 
     debugPrint('[GPS] Auto entry created OK');

@@ -4093,6 +4093,36 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Poplatok za hostesku'**
   String get costHostessFee;
+
+  /// No description provided for @locationQualityPrecise.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS ±{m} m'**
+  String locationQualityPrecise(int m);
+
+  /// No description provided for @locationQualityApproximate.
+  ///
+  /// In sk, this message translates to:
+  /// **'⚠️ Približná poloha · ±{m} m · sieťová lokalizácia'**
+  String locationQualityApproximate(int m);
+
+  /// No description provided for @locationQualityCached.
+  ///
+  /// In sk, this message translates to:
+  /// **'⚠️ Posledná známa poloha · pred {mins} min'**
+  String locationQualityCached(int mins);
+
+  /// No description provided for @locationQualityUnknown.
+  ///
+  /// In sk, this message translates to:
+  /// **'Presnosť neznáma'**
+  String get locationQualityUnknown;
+
+  /// No description provided for @locationQualityMocked.
+  ///
+  /// In sk, this message translates to:
+  /// **'⚠️ Zistená falošná poloha'**
+  String get locationQualityMocked;
 }
 
 class _AppLocalizationsDelegate

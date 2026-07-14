@@ -126,6 +126,11 @@ class LogbookEntries extends Table {
   BoolColumn get isAutoEntry => boolean().withDefault(const Constant(false))();
   TextColumn get weatherCondition => text().nullable()();
   TextColumn get photoPath => text().nullable()();
+  // Kvalita GPS fixu z LocationFix (hmb_core) – staré riadky (pred v16)
+  // majú NULL, spätne sa nedopočítava.
+  RealColumn get accuracyMeters => real().nullable()();
+  TextColumn get locationSource => text().nullable()();
+  BoolColumn get isMocked => boolean().nullable()();
 }
 
 /// GPS track pointy
@@ -271,7 +276,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -365,6 +370,11 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(trackPoints, trackPoints.accuracyMeters);
         await m.addColumn(trackPoints, trackPoints.locationSource);
         await m.addColumn(trackPoints, trackPoints.isMocked);
+      }
+      if (from < 16) {
+        await m.addColumn(logbookEntries, logbookEntries.accuracyMeters);
+        await m.addColumn(logbookEntries, logbookEntries.locationSource);
+        await m.addColumn(logbookEntries, logbookEntries.isMocked);
       }
     },
     beforeOpen: (details) async {

@@ -717,5 +717,14 @@
   "costWifi": "WiFi",
   "costSupKayak": "SUP / каяк",
   "costSkipperFee": "Плата за шкіпера",
-  "costHostessFee": "Плата за хостес"
+  "costHostessFee": "Плата за хостес",
+
+  "locationQualityPrecise": "GPS ±{m} м",
+  "@locationQualityPrecise": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityApproximate": "⚠️ Приблизне місцезнаходження · ±{m} м · мережеве визначення",
+  "@locationQualityApproximate": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityCached": "⚠️ Останнє відоме місцезнаходження · {mins} хв тому",
+  "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
+  "locationQualityUnknown": "Точність невідома",
+  "locationQualityMocked": "⚠️ Виявлено фальшиве місцезнаходження"
 }

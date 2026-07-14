@@ -2113,4 +2113,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get costHostessFee => 'Tarifa de azafata';
+
+  @override
+  String locationQualityPrecise(int m) {
+    return 'GPS ±$m m';
+  }
+
+  @override
+  String locationQualityApproximate(int m) {
+    return '⚠️ Ubicación aproximada · ±$m m · localización por red';
+  }
+
+  @override
+  String locationQualityCached(int mins) {
+    return '⚠️ Última ubicación conocida · hace $mins min';
+  }
+
+  @override
+  String get locationQualityUnknown => 'Precisión desconocida';
+
+  @override
+  String get locationQualityMocked => '⚠️ Ubicación falsa detectada';
 }

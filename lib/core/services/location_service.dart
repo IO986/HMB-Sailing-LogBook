@@ -33,11 +33,22 @@ class LocationService {
   final _ctrl = StreamController<Position>.broadcast();
   Position? _lastPosition;
   Position? _lastAndroidPosition;
+  LocationSource? _lastAndroidSource;
+  bool _lastAndroidIsMocked = false;
+  LocationSource? _lastSource;
+  bool _lastIsMocked = false;
   bool _initialized = false;
   bool _usingRaymarine = false;
 
   Stream<Position> get stream => _ctrl.stream;
   Position? get lastPosition => _lastPosition;
+
+  /// Zdroj poslednej emitovanej polohy (gnss/network/cached/unknown), na
+  /// ukladanie kvality fixu spolu so záznamom (denník, quick-photo).
+  LocationSource? get lastSource => _lastSource;
+
+  /// True, ak platforma poslednú emitovanú polohu nahlásila ako mockovanú.
+  bool get lastIsMocked => _lastIsMocked;
 
   /// True, ak posledná emitovaná poloha pochádza z lodných inštrumentov.
   bool get isUsingInstrumentGps => _usingRaymarine;
@@ -79,6 +90,8 @@ class LocationService {
       );
       if (last != null) {
         _lastAndroidPosition = _fixToPosition(last);
+        _lastAndroidSource = last.source;
+        _lastAndroidIsMocked = last.isMocked;
         _reEvaluateSource();
       }
     } catch (_) {}
@@ -86,6 +99,8 @@ class LocationService {
     // Spusti stream
     _androidSub = _gps.watch().listen((fix) {
       _lastAndroidPosition = _fixToPosition(fix);
+      _lastAndroidSource = fix.source;
+      _lastAndroidIsMocked = fix.isMocked;
       _reEvaluateSource();
     }, onError: (e) => debugPrint('[LOC] Android GPS error: $e'));
   }
@@ -139,6 +154,8 @@ class LocationService {
       );
       _usingRaymarine = true;
       _lastPosition = pos;
+      _lastSource = LocationSource.gnss;
+      _lastIsMocked = false;
       _ctrl.add(pos);
       return;
     }
@@ -147,6 +164,8 @@ class LocationService {
     if (_lastAndroidPosition != null) {
       _usingRaymarine = false;
       _lastPosition = _lastAndroidPosition;
+      _lastSource = _lastAndroidSource;
+      _lastIsMocked = _lastAndroidIsMocked;
       _ctrl.add(_lastAndroidPosition!);
     }
   }

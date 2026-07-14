@@ -2110,4 +2110,25 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get costHostessFee => 'Плата за хостес';
+
+  @override
+  String locationQualityPrecise(int m) {
+    return 'GPS ±$m м';
+  }
+
+  @override
+  String locationQualityApproximate(int m) {
+    return '⚠️ Приблизне місцезнаходження · ±$m м · мережеве визначення';
+  }
+
+  @override
+  String locationQualityCached(int mins) {
+    return '⚠️ Останнє відоме місцезнаходження · $mins хв тому';
+  }
+
+  @override
+  String get locationQualityUnknown => 'Точність невідома';
+
+  @override
+  String get locationQualityMocked => '⚠️ Виявлено фальшиве місцезнаходження';
 }

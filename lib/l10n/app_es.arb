@@ -717,5 +717,14 @@
   "costWifi": "WiFi",
   "costSupKayak": "SUP / kayak",
   "costSkipperFee": "Tarifa de patrón",
-  "costHostessFee": "Tarifa de azafata"
+  "costHostessFee": "Tarifa de azafata",
+
+  "locationQualityPrecise": "GPS ±{m} m",
+  "@locationQualityPrecise": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityApproximate": "⚠️ Ubicación aproximada · ±{m} m · localización por red",
+  "@locationQualityApproximate": { "placeholders": { "m": { "type": "int" } } },
+  "locationQualityCached": "⚠️ Última ubicación conocida · hace {mins} min",
+  "@locationQualityCached": { "placeholders": { "mins": { "type": "int" } } },
+  "locationQualityUnknown": "Precisión desconocida",
+  "locationQualityMocked": "⚠️ Ubicación falsa detectada"
 }

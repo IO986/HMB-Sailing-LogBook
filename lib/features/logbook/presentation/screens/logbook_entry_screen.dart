@@ -14,6 +14,7 @@ import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
+import '../../../../shared/widgets/location_quality_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 // Spôsob plavby - multi-select
@@ -38,6 +39,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   bool _loading = false;
   DateTime _ts = DateTime.now().toUtc();
   double? _lat, _lon, _sog, _cog;
+  double? _accuracyMeters;
+  String? _locationSource;
+  bool? _isMocked;
   int? _existingId;
 
   final _noteCtrl = TextEditingController();
@@ -74,6 +78,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _ts = e.timestamp;
         _lat = e.latitude; _lon = e.longitude;
         _sog = e.sog; _cog = e.cog;
+        _accuracyMeters = e.accuracyMeters;
+        _locationSource = e.locationSource;
+        _isMocked = e.isMocked;
         _windSpeedCtrl.text = e.windSpeed?.toStringAsFixed(0) ?? '';
         _windDirCtrl.text = e.windDirection?.toStringAsFixed(0) ?? '';
         _waveCtrl.text = e.waveHeight?.toStringAsFixed(1) ?? '';
@@ -108,6 +115,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
       _lat = pos?.latitude; _lon = pos?.longitude;
       _sog = pos != null ? pos.speed * 1.94384 : null;
       _cog = pos?.heading;
+      _accuracyMeters = (pos != null && pos.accuracy > 0) ? pos.accuracy : null;
+      _locationSource = pos != null ? LocationService().lastSource?.name : null;
+      _isMocked = pos != null ? LocationService().lastIsMocked : null;
     });
     try {
       var w = await WeatherService().getCurrentWeather();
@@ -200,6 +210,15 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _NavRow(l.longitude, _lon?.toStringAsFixed(6) ?? '-'),
         _NavRow('SOG', _sog != null ? '${_sog!.toStringAsFixed(1)} kn' : '-'),
         _NavRow('COG', _cog != null ? '${_cog!.toStringAsFixed(0)}°' : '-'),
+        if (_lat != null && _lon != null) ...[
+          const SizedBox(height: 4),
+          LocationQualityBadge(
+            accuracyMeters: _accuracyMeters,
+            locationSource: _locationSource,
+            isMocked: _isMocked,
+            timestamp: _ts,
+          ),
+        ],
         const SizedBox(height: 16),
 
         _Sec(l.weatherSeaSection),
@@ -309,7 +328,21 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
         waterLevel: Value(_waterLevel),
+        accuracyMeters: Value(_accuracyMeters),
+        locationSource: Value(_locationSource),
+        isMocked: Value(_isMocked),
       ));
+      if (mounted && _lat != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: LocationQualityBadge(
+            accuracyMeters: _accuracyMeters,
+            locationSource: _locationSource,
+            isMocked: _isMocked,
+            timestamp: _ts,
+          ),
+          duration: const Duration(seconds: 3),
+        ));
+      }
     }
 
     setState(() => _loading = false);
