@@ -7,7 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'dart:convert';
 import '../../../../core/config/emergency_contacts.dart';
+import '../../../charter/providers/charter_provider.dart';
 import 'mayday_card_screen.dart';
 import 'gear_list_screen.dart';
 import 'colreg_screen.dart';
@@ -706,6 +708,38 @@ class _EmergencyCard extends ConsumerWidget {
             loading: () => const SizedBox(),
             error: (_, __) => const SizedBox(),
           ),
+
+          // Kontakty chartru (z karty plavby/lode, ak sú vyplnené)
+          Consumer(builder: (context, ref, __) {
+            final voyageAsync = ref.watch(openVoyageProvider);
+            final phones = voyageAsync.valueOrNull?.contactsJson;
+            if (phones == null) return const SizedBox();
+            List<String> numbers;
+            try {
+              numbers = (jsonDecode(phones) as List).map((e) => e.toString()).toList();
+            } catch (_) {
+              numbers = const [];
+            }
+            if (numbers.isEmpty) return const SizedBox();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(AppLocalizations.of(context).charterContactsSection,
+                      style: TextStyle(fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary)),
+                ),
+                for (final e in numbers.asMap().entries)
+                  _ContactTile(contact: EmergencyContact(
+                      name: numbers.length > 1
+                          ? '${AppLocalizations.of(context).charterContactsSection} ${e.key + 1}'
+                          : AppLocalizations.of(context).charterContactsSection,
+                      number: e.value,
+                      display: e.value)),
+              ],
+            );
+          }),
         ]),
       ),
     );

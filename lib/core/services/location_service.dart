@@ -33,6 +33,13 @@ class LocationService {
   final _ctrl = StreamController<Position>.broadcast();
   final ValueNotifier<LocationAvailability?> availability = ValueNotifier(null);
   Position? _lastPosition;
+  // Posledný fix, ktorý sa reálne poslal do streamu — _reEvaluateSource() sa
+  // volá aj z 4s fallback timeru bez ohľadu na to, či prišiel nový fix;
+  // bez dedupe by tak do streamu tieklo to isté staré position donekonečna
+  // (potvrdené v teréne: GPX export mal desiatky identických duplicitných
+  // bodov na tú istú sekundu a periodické auto-záznamy denníka z nich brali
+  // zastaraný SOG/COG).
+  Position? _lastEmittedPosition;
   Position? _lastAndroidPosition;
   LocationSource? _lastAndroidSource;
   bool _lastAndroidIsMocked = false;
@@ -183,7 +190,7 @@ class LocationService {
       _lastPosition = pos;
       _lastSource = LocationSource.gnss;
       _lastIsMocked = false;
-      _ctrl.add(pos);
+      _emit(pos);
       return;
     }
 
@@ -193,8 +200,21 @@ class LocationService {
       _lastPosition = _lastAndroidPosition;
       _lastSource = _lastAndroidSource;
       _lastIsMocked = _lastAndroidIsMocked;
-      _ctrl.add(_lastAndroidPosition!);
+      _emit(_lastAndroidPosition!);
     }
+  }
+
+  /// Do streamu pošle fix len ak je od posledného odoslaného skutočne iný —
+  /// pozri komentár pri _lastEmittedPosition.
+  void _emit(Position pos) {
+    final last = _lastEmittedPosition;
+    final same = last != null &&
+        last.timestamp == pos.timestamp &&
+        last.latitude == pos.latitude &&
+        last.longitude == pos.longitude;
+    if (same) return;
+    _lastEmittedPosition = pos;
+    _ctrl.add(pos);
   }
 
   void dispose() {

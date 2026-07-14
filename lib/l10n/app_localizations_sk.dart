@@ -178,7 +178,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get stop => 'Zastaviť';
 
   @override
-  String get stopTrackingDay => 'Ukončiť tracking pre tento deň?';
+  String get stopTrackingDay => 'Ukončiť tracking?';
 
   @override
   String get startVoyage => 'Spustiť plavbu';

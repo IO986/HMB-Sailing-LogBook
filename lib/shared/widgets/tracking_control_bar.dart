@@ -41,7 +41,7 @@ class _StartPill extends ConsumerWidget {
                     child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.play_arrow, size: 22),
             label: Text(
-              trackingState.isLoading ? l.starting : l.startVoyage,
+              trackingState.isLoading ? l.starting : l.startTracking,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(

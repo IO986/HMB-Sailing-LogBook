@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+    <!-- Sailboat silhouette for the tracking-active status bar icon.
+         v1 used the full viewport — Android's icon inset clipped the hull,
+         leaving only sail+mast (read as a leaf). v2 stayed inside a safe
+         box but kept a 2.5dp-tall hull, which shrinks to near-nothing at
+         actual status-bar render size, so it still read as a leaf (the sail
+         triangle dominates at that scale). This version merges mast into
+         the sail's straight edge and makes the hull ~4.5dp tall/bold so it
+         reads clearly next to the sail even at tiny size. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,5 L12,14 L18,14 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,15 L20,15 L17,19 Q12,20 7,19 Z" />
+</vector>

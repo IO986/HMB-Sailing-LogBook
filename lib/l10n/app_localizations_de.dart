@@ -180,7 +180,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stop => 'Stoppen';
 
   @override
-  String get stopTrackingDay => 'Tracking für heute beenden?';
+  String get stopTrackingDay => 'Tracking beenden?';
 
   @override
   String get startVoyage => 'Fahrt starten';

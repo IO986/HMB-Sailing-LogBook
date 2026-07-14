@@ -41,6 +41,15 @@ class GpsTrackingService {
   double _totalDistanceNm = 0.0;
   LatLng? _lastTrackPoint;
 
+  // Course over ground počítaný z bearing medzi poslednými dvoma fixmi —
+  // Position.heading z telefónu je nespoľahlivý (pri nízkej rýchlosti alebo
+  // bez pohybu často hlási 0°, potvrdené na testovacej jazde: COG ostával
+  // 0° takmer po celý čas napriek reálnemu pohybu). Bearing sa prepočíta len
+  // keď sa poloha posunula aspoň o _minCourseDistM, inak GPS šum/duplicitné
+  // fixy vygenerujú náhodný/nulový kurz.
+  static const double _minCourseDistM = 8;
+  double? _lastComputedCourseDeg;
+
   Stream<Position> get positionStream => _posCtrl.stream;
   Position? get lastPosition => _lastPosition ?? LocationService().lastPosition;
   bool get isTracking => _posSub != null;
@@ -89,9 +98,18 @@ class GpsTrackingService {
 
     _currentSession = await _db!.getActiveSession();
     _trackCache.clear();
-    _totalDistanceNm = 0.0;
+    // Základ pre NM je to, čo už bolo pre tento deň uložené — plavba sa
+    // môže cez deň viackrát zastaviť/spustiť (reštart appky, prestávka),
+    // a bez tohto sa pri každom ďalšom stopTracking() prepočítaná vzdialenosť
+    // predošlých úsekov strácala (potvrdené: export ukázal "0.0 NM celkom"
+    // napriek správnej trase na mape).
+    _totalDistanceNm = dayLogId != null
+        ? (await _db!.getDayLogById(dayLogId))?.distanceNm ?? 0.0
+        : 0.0;
     _lastTrackPoint = null;
-    debugPrint('[GPS] Session created: ${_currentSession?.sessionId}');
+    _lastComputedCourseDeg = null;
+    debugPrint('[GPS] Session created: ${_currentSession?.sessionId}, '
+        'starting NM: ${_totalDistanceNm.toStringAsFixed(2)}');
 
     // Použi LocationService stream (GPS je už aktívne)
     _posSub = LocationService().stream.listen(
@@ -236,11 +254,14 @@ class GpsTrackingService {
       debugPrint('[GPS] Session ended: ${_currentSession!.sessionId}, '
           '${_totalDistanceNm.toStringAsFixed(2)} NM');
 
-      // Ulož NM do DayLog ak tam ešte nie je
-      if (_activeDayLogId != null && _totalDistanceNm > 0) {
+      // Ulož NM do DayLog — vždy prepíš aktuálnym súčtom (_totalDistanceNm už
+      // v sebe má aj vzdialenosť z predošlých úsekov toho istého dňa, viď
+      // startTracking). Predošlá podmienka "len keď je 0" ticho zahadzovala
+      // vzdialenosť pri druhom a ďalšom reštarte trackingu v ten istý deň.
+      if (_activeDayLogId != null) {
         try {
           final dayLog = await _db!.getDayLogById(_activeDayLogId!);
-          if (dayLog != null && dayLog.distanceNm == 0) {
+          if (dayLog != null) {
             await _db!.updateDayLog(DayLogsCompanion(
               id: drift.Value(dayLog.id),
               distanceNm: drift.Value(_totalDistanceNm),
@@ -276,15 +297,29 @@ class GpsTrackingService {
     _posCtrl.add(pos);
     if (_db == null || _currentSession == null) return;
 
-    await _checkCourseChange(pos);
-
-    // Track cache + NM accumulation
+    // Bearing k aktuálnemu fixu z predošlého bodu — kým je _lastTrackPoint
+    // ešte "predošlý" bod (prepíše sa až nižšie). Pri zanedbateľnom posune
+    // (GPS šum, duplicitný fix) ponechaj posledný známy kurz.
     final latLng = LatLng(pos.latitude, pos.longitude);
+    double distM = 0;
     if (_lastTrackPoint != null) {
-      final d = DistanceCalculator.distanceNm(
+      distM = DistanceCalculator.distanceM(
         _lastTrackPoint!.latitude, _lastTrackPoint!.longitude,
         pos.latitude, pos.longitude,
       );
+      if (distM >= _minCourseDistM) {
+        _lastComputedCourseDeg = DistanceCalculator.bearing(
+          _lastTrackPoint!.latitude, _lastTrackPoint!.longitude,
+          pos.latitude, pos.longitude,
+        );
+      }
+    }
+
+    await _checkCourseChange(pos);
+
+    // Track cache + NM accumulation
+    if (_lastTrackPoint != null) {
+      final d = distM / 1852; // m -> NM
       if (d < 10) _totalDistanceNm += d; // Ignoruj GPS skoky > 10 NM
     }
     _lastTrackPoint = latLng;
@@ -297,7 +332,7 @@ class GpsTrackingService {
       longitude: pos.longitude,
       altitude: drift.Value(pos.altitude),
       speed: drift.Value(_kts(pos.speed)),
-      course: drift.Value(pos.heading),
+      course: drift.Value(_lastComputedCourseDeg ?? pos.heading),
       accuracy: drift.Value(pos.accuracy),
     ));
 
@@ -345,7 +380,9 @@ class GpsTrackingService {
     final windFresh = nmea != null && freshField(nmea.windLastUpdate);
 
     final sog = (nmea?.sogKnots) ?? _kts(pos.speed);
-    final cog = (nmea?.cogDegrees) ?? pos.heading;
+    // pos.heading z telefónu je nespoľahlivý (často 0°) — uprednostni kurz
+    // dopočítaný z bearing medzi poslednými GPS bodmi.
+    final cog = (nmea?.cogDegrees) ?? _lastComputedCourseDeg ?? pos.heading;
     final windSpd = windFresh ? nmea.windSpeedKnots : weather?.windSpeed;
     final windDir = windFresh ? nmea.windAngleDegrees : weather?.windDirection;
     final waterTmp = nmea?.waterTempCelsius ?? weather?.waterTemp;
@@ -387,7 +424,11 @@ class GpsTrackingService {
 
   Future<void> _checkCourseChange(Position pos) async {
     if (_kts(pos.speed) < 0.5) return;
-    final course = pos.heading;
+    // Bez spoľahlivo dopočítaného kurzu (ešte žiadny predošlý bod, alebo
+    // posledný posun bol pod _minCourseDistM) nemá zmysel porovnávať —
+    // pos.heading z telefónu býva 0°/nespoľahlivý.
+    final course = _lastComputedCourseDeg;
+    if (course == null) return;
     if (_lastLoggedCourse == null) { _lastLoggedCourse = course; return; }
 
     double diff = (course - _lastLoggedCourse!).abs();
