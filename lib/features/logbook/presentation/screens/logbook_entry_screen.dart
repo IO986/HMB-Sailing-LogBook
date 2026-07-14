@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/weather_repository.dart';
@@ -286,14 +288,17 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   Future<void> _save() async {
     setState(() => _loading = true);
     final db = ref.read(databaseProvider);
+    final engine = ref.read(syncEngineProvider);
 
     // Ulož sail modes ako prefix do poznámky
     final modesStr = _sailModes.isNotEmpty ? _sailModes.join(',') : 'motor';
     final note = _noteCtrl.text.trim();
     final fullNote = '[${modesStr}]${note.isNotEmpty ? " $note" : ""}';
+    final payload = _buildPayload(fullNote);
+    final attachments = await _buildAttachments();
 
     if (_existingId != null) {
-      await db.updateLogbookEntry(_existingId!, LogbookEntriesCompanion(
+      final companion = LogbookEntriesCompanion(
         windSpeed: Value(double.tryParse(_windSpeedCtrl.text)),
         windDirection: Value(double.tryParse(_windDirCtrl.text)),
         waveHeight: Value(double.tryParse(_waveCtrl.text)),
@@ -307,9 +312,20 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
         waterLevel: Value(_waterLevel),
-      ));
+      );
+      // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
+      await db.transaction(() async {
+        await db.updateLogbookEntry(_existingId!, companion);
+        await engine.enqueue(
+          entityType: 'log_entry',
+          operation: SyncOperation.update,
+          entityId: _existingId.toString(),
+          payload: payload,
+          attachments: attachments,
+        );
+      });
     } else {
-      await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
+      final companion = LogbookEntriesCompanion.insert(
         dayLogId: Value(widget.dayLogId),
         sessionId: Value(GpsTrackingService().currentSession?.sessionId),
         timestamp: _ts,
@@ -331,7 +347,19 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         accuracyMeters: Value(_accuracyMeters),
         locationSource: Value(_locationSource),
         isMocked: Value(_isMocked),
-      ));
+      );
+
+      late final int newId;
+      await db.transaction(() async {
+        newId = await db.insertLogbookEntry(companion);
+        await engine.enqueue(
+          entityType: 'log_entry',
+          entityId: newId.toString(),
+          payload: payload,
+          attachments: attachments,
+        );
+      });
+
       if (mounted && _lat != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: LocationQualityBadge(
@@ -347,6 +375,44 @@ class _State extends ConsumerState<LogbookEntryScreen> {
 
     setState(() => _loading = false);
     if (mounted) context.pop();
+  }
+
+  /// Čo pôjde na server — mapovanie doménového modelu na opaque payload,
+  /// ktorý `hmb_core` nikdy neinterpretuje.
+  Map<String, dynamic> _buildPayload(String note) => {
+        'dayLogId': widget.dayLogId,
+        'timestamp': _ts.toUtc().toIso8601String(),
+        'latitude': _lat,
+        'longitude': _lon,
+        'sog': _sog,
+        'cog': _cog,
+        'windSpeed': double.tryParse(_windSpeedCtrl.text),
+        'windDirection': double.tryParse(_windDirCtrl.text),
+        'waveHeight': double.tryParse(_waveCtrl.text),
+        'fuelConsumed': double.tryParse(_fuelCtrl.text),
+        'engineHours': double.tryParse(_engineCtrl.text),
+        'airTemp': double.tryParse(_airTempCtrl.text),
+        'waterTemp': double.tryParse(_waterTempCtrl.text),
+        'airPressure': double.tryParse(_pressureCtrl.text),
+        'skipperNote': note,
+        'weatherCondition': _weatherCondition,
+        'fuelLevel': _fuelLevel,
+        'waterLevel': _waterLevel,
+      };
+
+  Future<List<Attachment>> _buildAttachments() async {
+    final path = _photoPath;
+    if (path == null) return const [];
+    final file = File(path);
+    if (!await file.exists()) return const [];
+    return [
+      Attachment(
+        localPath: path,
+        field: 'photo',
+        mimeType: 'image/jpeg',
+        sizeBytes: await file.length(),
+      ),
+    ];
   }
 
   @override

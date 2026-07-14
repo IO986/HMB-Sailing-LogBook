@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -94,7 +96,10 @@ class _QuickPhotoLogSheetState extends ConsumerState<QuickPhotoLogSheet> {
     setState(() => _saving = true);
     final pos = _pos;
     final note = _noteCtrl.text.trim();
-    await ref.read(databaseProvider).insertLogbookEntry(LogbookEntriesCompanion.insert(
+    final db = ref.read(databaseProvider);
+    final engine = ref.read(syncEngineProvider);
+
+    final companion = LogbookEntriesCompanion.insert(
       dayLogId: Value(GpsTrackingService().activeDayLogId),
       sessionId: Value(GpsTrackingService().currentSession?.sessionId),
       timestamp: _capturedAt,
@@ -107,7 +112,39 @@ class _QuickPhotoLogSheetState extends ConsumerState<QuickPhotoLogSheet> {
       accuracyMeters: Value((pos != null && pos.accuracy > 0) ? pos.accuracy : null),
       locationSource: Value(_locationSource),
       isMocked: Value(_isMocked),
-    ));
+    );
+
+    final payload = {
+      'dayLogId': GpsTrackingService().activeDayLogId,
+      'timestamp': _capturedAt.toIso8601String(),
+      'latitude': pos?.latitude,
+      'longitude': pos?.longitude,
+      'sog': pos != null ? pos.speed * 1.94384 : null,
+      'cog': pos?.heading,
+      'skipperNote': note.isEmpty ? null : note,
+    };
+    final file = File(widget.photoPath);
+    final attachments = await file.exists()
+        ? [
+            Attachment(
+              localPath: widget.photoPath,
+              field: 'photo',
+              mimeType: 'image/jpeg',
+              sizeBytes: await file.length(),
+            ),
+          ]
+        : const <Attachment>[];
+
+    // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
+    await db.transaction(() async {
+      await db.insertLogbookEntry(companion);
+      await engine.enqueue(
+        entityType: 'log_entry',
+        payload: payload,
+        attachments: attachments,
+      );
+    });
+
     if (mounted) Navigator.pop(context);
   }
 

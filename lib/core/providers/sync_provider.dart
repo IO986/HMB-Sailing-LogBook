@@ -38,7 +38,7 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
     transport: StrapiTransport(
       baseUrl: kApiBase,
       authToken: () => AccountService().token ?? '',
-      collectionByEntityType: const {'logbook_entry': 'logbook-entries'},
+      collectionByEntityType: const {'log_entry': 'log-entries'},
     ),
     connectivity: ref.watch(connectivityServiceProvider),
   );
