@@ -325,7 +325,8 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       onPopInvokedWithResult: (_, __) => _handleBack(context),
       child: Scaffold(
         body: Column(children: [
-          if (showControlBar) const TrackingControlBar(),
+          if (showControlBar)
+            const SafeArea(bottom: false, child: TrackingControlBar()),
           Expanded(child: widget.child),
         ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,

@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hmb_core/hmb_core.dart' hide LocationService;
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 
@@ -51,6 +54,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   // existujúce waypointy), súčet NM, kurz poslednej nohy, ETA pri SOG.
   bool _rulerActive = false;
   final List<LatLng> _rulerPoints = [];
+
+  // Rotácia mapy (dvoma prstami) — kompas hore sa zobrazí len keď je mapa
+  // pootočená a resetne ju späť na north-up.
+  double _mapRotationDeg = 0;
 
   @override
   void initState() {
@@ -195,12 +202,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
               onTap: (_, ll) => _onRulerTap(ll),
-              onPositionChanged: (_, hasGesture) {
+              onPositionChanged: (camera, hasGesture) {
                 // Ručný posun mapy vypne GPS follow — inak ju každý GPS
                 // update strhne späť. GPS tlačidlo follow znova zapne.
                 if (hasGesture &&
                     ref.read(mapNotifierProvider).followGps) {
                   ref.read(mapNotifierProvider.notifier).setFollowGps(false);
+                }
+                if (camera.rotation != _mapRotationDeg) {
+                  setState(() => _mapRotationDeg = camera.rotation);
                 }
                 _schedulePoiRefresh();
               },
@@ -468,6 +478,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ],
           ),
 
+          // ── Kompas: vždy viditeľný, ihla ukazuje sever ────────
+          // Ťuknutím sa mapa (ak je pootočená dvoma prstami) vráti na
+          // north-up.
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 12,
+            child: _NorthResetButton(
+              rotationDeg: _mapRotationDeg,
+              onPressed: () {
+                _mapController.rotate(0);
+                setState(() => _mapRotationDeg = 0);
+              },
+            ),
+          ),
+
           // ── Ovládacie prvky ──────────────────────────────────
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
@@ -598,6 +623,58 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     : () => setState(() => _rulerPoints.clear()),
               ),
             ),
+
+          // ── Banner: poloha nepovolená / GPS vypnuté ───────────
+          ValueListenableBuilder<LocationAvailability?>(
+            valueListenable: LocationService().availability,
+            builder: (context, avail, _) {
+              if (avail == null || avail.usable) return const SizedBox();
+              final serviceOff = !avail.serviceEnabled;
+              return Positioned(
+                top: MediaQuery.of(context).padding.top + 8,
+                left: 12,
+                right: 72,
+                child: Material(
+                  elevation: 2,
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.red.shade700,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Row(children: [
+                      const Icon(Icons.location_off, color: Colors.white, size: 16),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          serviceOff
+                              ? 'GPS je vypnuté'
+                              : 'Poloha nie je povolená',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => serviceOff
+                            ? AppSettings.openAppSettings(
+                                type: AppSettingsType.location)
+                            : (avail.canRequest
+                                ? LocationService().retryPermission()
+                                : AppSettings.openAppSettings(
+                                    type: AppSettingsType.location)),
+                        child: Text(
+                          serviceOff || !avail.canRequest ? 'Nastavenia' : 'Povoliť',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+              );
+            },
+          ),
 
           // ── Banner: prezeranie inej plavby ────────────────────
           if (isPreviewing)
@@ -1204,6 +1281,117 @@ class _MobMarkerState extends State<_MobMarker>
       ]),
     );
   }
+}
+
+// ── North reset button ─────────────────────────────────────────
+
+class _NorthResetButton extends StatelessWidget {
+  final double rotationDeg;
+  final VoidCallback onPressed;
+  const _NorthResetButton({required this.rotationDeg, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 3,
+      shape: const CircleBorder(),
+      color: Colors.white,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          // Ružica otočená o -X° oproti rotácii mapy o X° — hrot N ukazuje
+          // vždy na skutočný sever bez ohľadu na natočenie mapy.
+          child: CustomPaint(
+            painter: _CompassRosePainter(rotationDeg: rotationDeg),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Zjednodušená námorná ružica: 4 hlavné hroty (N červený, ostatné tmavé)
+/// + 4 vedľajšie hroty, s popiskou "N".
+class _CompassRosePainter extends CustomPainter {
+  final double rotationDeg;
+  _CompassRosePainter({required this.rotationDeg});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final r = size.width / 2 - 4;
+
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(-rotationDeg * math.pi / 180);
+
+    ui.Path spike(double angleDeg, double length, double halfWidth) {
+      final rad = angleDeg * math.pi / 180;
+      final tip = Offset(length * math.sin(rad), -length * math.cos(rad));
+      final baseL = Offset(
+          halfWidth * math.sin(rad + math.pi / 2), -halfWidth * math.cos(rad + math.pi / 2));
+      final baseR = Offset(
+          halfWidth * math.sin(rad - math.pi / 2), -halfWidth * math.cos(rad - math.pi / 2));
+      return ui.Path()
+        ..moveTo(tip.dx, tip.dy)
+        ..lineTo(baseL.dx, baseL.dy)
+        ..lineTo(0, 0)
+        ..lineTo(baseR.dx, baseR.dy)
+        ..close();
+    }
+
+    final darkPaint = Paint()..color = Colors.blueGrey.shade800;
+    final lightPaint = Paint()..color = Colors.blueGrey.shade200;
+    final northPaint = Paint()..color = Colors.red.shade700;
+    final outline = Paint()
+      ..color = Colors.blueGrey.shade900
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.6;
+
+    // Vedľajšie (kratšie) hroty NE/SE/SW/NW.
+    for (final a in [45.0, 135.0, 225.0, 315.0]) {
+      final p = spike(a, r * 0.62, r * 0.14);
+      canvas.drawPath(p, lightPaint);
+      canvas.drawPath(p, outline);
+    }
+
+    // Hlavné hroty E/S/W (tmavé) a N (červený).
+    for (final a in [90.0, 180.0, 270.0]) {
+      final p = spike(a, r * 0.92, r * 0.2);
+      canvas.drawPath(p, darkPaint);
+      canvas.drawPath(p, outline);
+    }
+    final northSpike = spike(0, r * 0.92, r * 0.2);
+    canvas.drawPath(northSpike, northPaint);
+    canvas.drawPath(northSpike, outline);
+
+    // Stredový krúžok.
+    canvas.drawCircle(Offset.zero, r * 0.16, Paint()..color = Colors.white);
+    canvas.drawCircle(Offset.zero, r * 0.16, outline);
+
+    // Popiska "N" nad severným hrotom.
+    final tp = TextPainter(
+      text: TextSpan(
+        text: 'N',
+        style: TextStyle(
+          color: Colors.red.shade700,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textDirection: ui.TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, Offset(-tp.width / 2, -r - tp.height - 1));
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _CompassRosePainter oldDelegate) =>
+      oldDelegate.rotationDeg != rotationDeg;
 }
 
 // ── GPS Marker ────────────────────────────────────────────────

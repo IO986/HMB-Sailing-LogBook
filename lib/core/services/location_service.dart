@@ -31,6 +31,7 @@ class LocationService {
   Timer? _fallbackCheckTimer;
 
   final _ctrl = StreamController<Position>.broadcast();
+  final ValueNotifier<LocationAvailability?> availability = ValueNotifier(null);
   Position? _lastPosition;
   Position? _lastAndroidPosition;
   LocationSource? _lastAndroidSource;
@@ -65,20 +66,46 @@ class LocationService {
     // prehodnotenie).
     _fallbackCheckTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       _reEvaluateSource();
+      // Zachytí povolenie polohy udelené cez systémové nastavenia bez
+      // reštartu appky — len kontrola stavu, nepýta znova (to robí až
+      // explicitný retryPermission() z UI).
+      if (_androidSub == null) _refreshAvailabilityAndMaybeStart();
     });
 
     debugPrint('[LOC] Location service started');
   }
 
   Future<void> _initAndroidGps() async {
-    var availability = await _gps.checkAvailability();
-    if (!availability.serviceEnabled) return;
-
-    if (availability.permission == LocationPermissionState.denied) {
+    var avail = await _gps.checkAvailability();
+    if (avail.permission == LocationPermissionState.denied) {
       await _gps.requestPermission();
-      availability = await _gps.checkAvailability();
+      avail = await _gps.checkAvailability();
     }
-    if (!availability.usable) return;
+    availability.value = avail;
+    if (!avail.usable) return;
+    await _startAndroidStream();
+  }
+
+  /// Kontrola stavu bez pýtania permission — zachytí povolenie/zapnutie GPS
+  /// zmenené mimo appky (systémové nastavenia), kým appka beží.
+  Future<void> _refreshAvailabilityAndMaybeStart() async {
+    final avail = await _gps.checkAvailability();
+    availability.value = avail;
+    if (avail.usable) await _startAndroidStream();
+  }
+
+  /// Explicitný retry z UI (napr. banner "Poloha nepovolená") — jediné
+  /// miesto okrem prvého spustenia, ktoré smie zobraziť systémový dialóg.
+  Future<bool> retryPermission() async {
+    await _gps.requestPermission();
+    final avail = await _gps.checkAvailability();
+    availability.value = avail;
+    if (avail.usable) await _startAndroidStream();
+    return avail.usable;
+  }
+
+  Future<void> _startAndroidStream() async {
+    if (_androidSub != null) return;
 
     // Načítaj poslednú known position okamžite (bez čakania na live fix)
     try {
