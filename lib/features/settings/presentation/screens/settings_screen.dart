@@ -1,17 +1,23 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/config/api_constants.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/skipper_profile.dart';
+import '../../../../core/models/sync_settings.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
+import '../../../../core/providers/sync_settings_provider.dart';
+import '../../../../core/services/account_service.dart';
 import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
@@ -616,38 +622,295 @@ class _LiveTag extends StatelessWidget {
       );
 }
 
-// ── Online účet ───────────────────────────────────────────────
+// ── Synchronizácia ───────────────────────────────────────────────
 
-class _AccountSection extends StatelessWidget {
+const _syncIntervalOptions = [5, 15, 30];
+
+class _AccountSection extends ConsumerStatefulWidget {
   const _AccountSection();
+
+  @override
+  ConsumerState<_AccountSection> createState() => _AccountSectionState();
+}
+
+class _AccountSectionState extends ConsumerState<_AccountSection> {
+  final _urlCtrl = TextEditingController();
+  final _tokenCtrl = TextEditingController();
+  bool _fieldsInitialized = false;
+  bool _urlTouched = false;
+
+  bool _testing = false;
+  bool? _testSuccess; // null = not tested yet
+  String? _testDetail;
+
+  @override
+  void dispose() {
+    _urlCtrl.dispose();
+    _tokenCtrl.dispose();
+    super.dispose();
+  }
+
+  void _initFieldsOnce(SyncSettings settings, String? token) {
+    if (_fieldsInitialized) return;
+    _fieldsInitialized = true;
+    _urlCtrl.text = settings.customUrl;
+    _tokenCtrl.text = token ?? '';
+  }
+
+  String? _urlErrorText(AppLocalizations l) {
+    if (!_urlTouched) return null;
+    return switch (validateSyncServerUrl(_urlCtrl.text)) {
+      null => null,
+      SyncUrlError.empty => l.syncUrlErrorEmpty,
+      SyncUrlError.invalid => l.syncUrlErrorInvalid,
+      SyncUrlError.httpsRequired => l.syncUrlErrorHttps,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
+    final settingsAsync = ref.watch(syncSettingsProvider);
+    final tokenAsync = ref.watch(syncCustomTokenProvider);
 
-    return Card(
-      child: ListTile(
-        leading: Icon(Icons.cloud_outlined, color: colorScheme.primary),
-        title: Text(l.onlineAccount),
-        subtitle: Text(l.onlineAccountDesc),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            'v2.0',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
-            ),
-          ),
+    return settingsAsync.when(
+      loading: () => const Card(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator()),
         ),
       ),
+      error: (e, _) => Card(child: ListTile(title: Text('$e'))),
+      data: (settings) {
+        _initFieldsOnce(settings, tokenAsync.valueOrNull);
+        final isCustom = settings.target == SyncTarget.custom;
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  secondary: Icon(Icons.cloud_outlined,
+                      color: Theme.of(context).colorScheme.primary),
+                  title: Text(l.syncEnableToggle),
+                  subtitle: Text(l.syncEnableToggleDesc),
+                  value: settings.enabled,
+                  onChanged: (v) =>
+                      ref.read(syncSettingsProvider.notifier).setEnabled(v),
+                ),
+                if (settings.enabled) ...[
+                  const Divider(height: 24),
+                  Text(l.syncTargetLabel,
+                      style: Theme.of(context).textTheme.labelLarge),
+                  RadioListTile<SyncTarget>(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: Text(l.syncTargetHmbAcademy),
+                    value: SyncTarget.hmbAcademy,
+                    groupValue: settings.target,
+                    onChanged: (v) => ref
+                        .read(syncSettingsProvider.notifier)
+                        .setTarget(v!),
+                  ),
+                  RadioListTile<SyncTarget>(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: Text(l.syncTargetCustom),
+                    value: SyncTarget.custom,
+                    groupValue: settings.target,
+                    onChanged: (v) => ref
+                        .read(syncSettingsProvider.notifier)
+                        .setTarget(v!),
+                  ),
+                  if (isCustom) ...[
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _urlCtrl,
+                      decoration: InputDecoration(
+                        labelText: l.syncCustomUrlLabel,
+                        hintText: 'https://example.com',
+                        isDense: true,
+                        errorText: _urlErrorText(l),
+                      ),
+                      keyboardType: TextInputType.url,
+                      onChanged: (_) => setState(() => _urlTouched = true),
+                      onEditingComplete: () => ref
+                          .read(syncSettingsProvider.notifier)
+                          .setCustomUrl(_urlCtrl.text),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _tokenCtrl,
+                      decoration: InputDecoration(
+                        labelText: l.syncCustomTokenLabel,
+                        isDense: true,
+                      ),
+                      obscureText: true,
+                      onEditingComplete: () => writeSyncCustomToken(
+                              _tokenCtrl.text)
+                          .then((_) => ref.invalidate(syncCustomTokenProvider)),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      icon: _testing
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.wifi_tethering),
+                      label: Text(l.syncTestConnectionAction),
+                      onPressed: _testing ? null : () => _testConnection(l),
+                    ),
+                  ),
+                  if (_testSuccess != null) ...[
+                    const SizedBox(height: 8),
+                    Row(children: [
+                      Icon(
+                        _testSuccess! ? Icons.check_circle : Icons.error,
+                        color: _testSuccess! ? Colors.green : Colors.red,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          _testSuccess!
+                              ? l.syncTestSuccess
+                              : l.syncTestFailure(_testDetail ?? ''),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _testSuccess!
+                                ? Colors.green.shade700
+                                : Colors.red.shade700,
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ],
+                  const Divider(height: 24),
+                  Text(l.syncIntervalLabel,
+                      style: Theme.of(context).textTheme.labelLarge),
+                  const SizedBox(height: 8),
+                  SegmentedButton<int>(
+                    segments: _syncIntervalOptions
+                        .map((m) => ButtonSegment(
+                              value: m,
+                              label: Text(l.syncIntervalMinutes(m)),
+                            ))
+                        .toList(),
+                    selected: {settings.intervalMinutes},
+                    onSelectionChanged: (s) => ref
+                        .read(syncSettingsProvider.notifier)
+                        .setIntervalMinutes(s.first),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(l.syncIntervalNote,
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  const SizedBox(height: 16),
+                  Text(l.syncAttachmentPolicyLabel,
+                      style: Theme.of(context).textTheme.labelLarge),
+                  const SizedBox(height: 8),
+                  SegmentedButton<AttachmentSyncPolicy>(
+                    segments: [
+                      ButtonSegment(
+                        value: AttachmentSyncPolicy.never,
+                        label: Text(l.syncAttachmentNever),
+                      ),
+                      ButtonSegment(
+                        value: AttachmentSyncPolicy.wifiOnly,
+                        label: Text(l.syncAttachmentWifiOnly),
+                      ),
+                      ButtonSegment(
+                        value: AttachmentSyncPolicy.always,
+                        label: Text(l.syncAttachmentAlways),
+                      ),
+                    ],
+                    selected: {settings.attachmentPolicy},
+                    onSelectionChanged: (s) => ref
+                        .read(syncSettingsProvider.notifier)
+                        .setAttachmentPolicy(s.first),
+                  ),
+                  const Divider(height: 24),
+                ],
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.sync),
+                  title: Text(l.syncQueueTitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/sync-queue'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Future<void> _testConnection(AppLocalizations l) async {
+    setState(() {
+      _testing = true;
+      _testSuccess = null;
+      _testDetail = null;
+    });
+
+    final settings = ref.read(syncSettingsProvider).valueOrNull ?? const SyncSettings();
+    String baseUrl;
+    String token;
+
+    if (settings.target == SyncTarget.hmbAcademy) {
+      baseUrl = kApiBase;
+      token = AccountService().token ?? '';
+    } else {
+      final urlError = validateSyncServerUrl(_urlCtrl.text);
+      if (urlError != null) {
+        setState(() {
+          _testing = false;
+          _testSuccess = false;
+          _testDetail = switch (urlError) {
+            SyncUrlError.empty => l.syncUrlErrorEmpty,
+            SyncUrlError.invalid => l.syncUrlErrorInvalid,
+            SyncUrlError.httpsRequired => l.syncUrlErrorHttps,
+          };
+        });
+        return;
+      }
+      baseUrl = _urlCtrl.text.trim();
+      token = _tokenCtrl.text;
+    }
+
+    try {
+      final dio = Dio(BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 8),
+        headers: {'Authorization': 'Bearer $token'},
+      ));
+      // Reachability only — any HTTP response (even 404) proves DNS/TLS/
+      // routing work; a network/TLS/timeout exception is the real failure.
+      final response =
+          await dio.get<dynamic>('/', options: Options(validateStatus: (_) => true));
+      if (!mounted) return;
+      setState(() {
+        _testing = false;
+        _testSuccess = true;
+        _testDetail = 'HTTP ${response.statusCode}';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _testing = false;
+        _testSuccess = false;
+        _testDetail = e is DioException ? (e.message ?? e.toString()) : e.toString();
+      });
+    }
   }
 }
 

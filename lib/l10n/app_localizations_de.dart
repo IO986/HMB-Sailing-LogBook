@@ -2185,4 +2185,70 @@ class AppLocalizationsDe extends AppLocalizations {
   String syncFailedCount(int n) {
     return '$n fehlgeschlagen';
   }
+
+  @override
+  String get syncEnableToggle => 'Logbuch synchronisieren';
+
+  @override
+  String get syncEnableToggleDesc =>
+      'Einträge an den Server senden, solange die App offen und online ist';
+
+  @override
+  String get syncTargetLabel => 'Sync-Ziel';
+
+  @override
+  String get syncTargetHmbAcademy => 'HMB Sailing Academy (hmba.boats)';
+
+  @override
+  String get syncTargetCustom => 'Eigener Server';
+
+  @override
+  String get syncCustomUrlLabel => 'Server-URL';
+
+  @override
+  String get syncCustomTokenLabel => 'Token';
+
+  @override
+  String get syncTestConnectionAction => 'Verbindung testen';
+
+  @override
+  String get syncTestSuccess => 'Verbindung funktioniert';
+
+  @override
+  String syncTestFailure(String detail) {
+    return 'Fehlgeschlagen: $detail';
+  }
+
+  @override
+  String get syncUrlErrorEmpty => 'Server-URL eingeben';
+
+  @override
+  String get syncUrlErrorInvalid => 'Ungültige URL';
+
+  @override
+  String get syncUrlErrorHttps => 'URL muss mit https:// beginnen';
+
+  @override
+  String get syncIntervalLabel => 'Sync-Intervall';
+
+  @override
+  String syncIntervalMinutes(int n) {
+    return '$n Min.';
+  }
+
+  @override
+  String get syncIntervalNote =>
+      'Synchronisierung läuft nur, solange die App geöffnet ist';
+
+  @override
+  String get syncAttachmentPolicyLabel => 'Anhänge (Fotos)';
+
+  @override
+  String get syncAttachmentNever => 'Nie';
+
+  @override
+  String get syncAttachmentWifiOnly => 'Nur WLAN';
+
+  @override
+  String get syncAttachmentAlways => 'Immer';
 }

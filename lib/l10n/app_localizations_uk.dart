@@ -2176,4 +2176,70 @@ class AppLocalizationsUk extends AppLocalizations {
   String syncFailedCount(int n) {
     return '$n помилок';
   }
+
+  @override
+  String get syncEnableToggle => 'Синхронізувати журнал';
+
+  @override
+  String get syncEnableToggleDesc =>
+      'Надсилати записи на сервер, поки застосунок відкритий і онлайн';
+
+  @override
+  String get syncTargetLabel => 'Ціль синхронізації';
+
+  @override
+  String get syncTargetHmbAcademy => 'HMB Sailing Academy (hmba.boats)';
+
+  @override
+  String get syncTargetCustom => 'Власний сервер';
+
+  @override
+  String get syncCustomUrlLabel => 'URL сервера';
+
+  @override
+  String get syncCustomTokenLabel => 'Токен';
+
+  @override
+  String get syncTestConnectionAction => 'Перевірити з\'єднання';
+
+  @override
+  String get syncTestSuccess => 'З\'єднання працює';
+
+  @override
+  String syncTestFailure(String detail) {
+    return 'Помилка: $detail';
+  }
+
+  @override
+  String get syncUrlErrorEmpty => 'Введіть URL сервера';
+
+  @override
+  String get syncUrlErrorInvalid => 'Недійсний URL';
+
+  @override
+  String get syncUrlErrorHttps => 'URL має починатися з https://';
+
+  @override
+  String get syncIntervalLabel => 'Інтервал синхронізації';
+
+  @override
+  String syncIntervalMinutes(int n) {
+    return '$n хв';
+  }
+
+  @override
+  String get syncIntervalNote =>
+      'Синхронізація працює, лише поки застосунок відкритий';
+
+  @override
+  String get syncAttachmentPolicyLabel => 'Вкладення (фото)';
+
+  @override
+  String get syncAttachmentNever => 'Ніколи';
+
+  @override
+  String get syncAttachmentWifiOnly => 'Лише через Wi-Fi';
+
+  @override
+  String get syncAttachmentAlways => 'Завжди';
 }

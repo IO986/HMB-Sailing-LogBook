@@ -2173,4 +2173,70 @@ class AppLocalizationsSk extends AppLocalizations {
   String syncFailedCount(int n) {
     return '$n zlyhalo';
   }
+
+  @override
+  String get syncEnableToggle => 'Synchronizovať denník';
+
+  @override
+  String get syncEnableToggleDesc =>
+      'Odosielať záznamy na server, keď je appka otvorená a online';
+
+  @override
+  String get syncTargetLabel => 'Cieľ synchronizácie';
+
+  @override
+  String get syncTargetHmbAcademy => 'HMB Sailing Academy (hmba.boats)';
+
+  @override
+  String get syncTargetCustom => 'Vlastný server';
+
+  @override
+  String get syncCustomUrlLabel => 'URL servera';
+
+  @override
+  String get syncCustomTokenLabel => 'Token';
+
+  @override
+  String get syncTestConnectionAction => 'Otestovať pripojenie';
+
+  @override
+  String get syncTestSuccess => 'Pripojenie funguje';
+
+  @override
+  String syncTestFailure(String detail) {
+    return 'Zlyhalo: $detail';
+  }
+
+  @override
+  String get syncUrlErrorEmpty => 'Zadaj URL servera';
+
+  @override
+  String get syncUrlErrorInvalid => 'Neplatná URL';
+
+  @override
+  String get syncUrlErrorHttps => 'URL musí začínať https://';
+
+  @override
+  String get syncIntervalLabel => 'Interval synchronizácie';
+
+  @override
+  String syncIntervalMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get syncIntervalNote =>
+      'Synchronizácia beží, kým je aplikácia otvorená';
+
+  @override
+  String get syncAttachmentPolicyLabel => 'Prílohy (fotky)';
+
+  @override
+  String get syncAttachmentNever => 'Nikdy';
+
+  @override
+  String get syncAttachmentWifiOnly => 'Len na Wi-Fi';
+
+  @override
+  String get syncAttachmentAlways => 'Vždy';
 }

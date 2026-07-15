@@ -4201,6 +4201,126 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'{n} zlyhalo'**
   String syncFailedCount(int n);
+
+  /// No description provided for @syncEnableToggle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Synchronizovať denník'**
+  String get syncEnableToggle;
+
+  /// No description provided for @syncEnableToggleDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odosielať záznamy na server, keď je appka otvorená a online'**
+  String get syncEnableToggleDesc;
+
+  /// No description provided for @syncTargetLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cieľ synchronizácie'**
+  String get syncTargetLabel;
+
+  /// No description provided for @syncTargetHmbAcademy.
+  ///
+  /// In sk, this message translates to:
+  /// **'HMB Sailing Academy (hmba.boats)'**
+  String get syncTargetHmbAcademy;
+
+  /// No description provided for @syncTargetCustom.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlastný server'**
+  String get syncTargetCustom;
+
+  /// No description provided for @syncCustomUrlLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'URL servera'**
+  String get syncCustomUrlLabel;
+
+  /// No description provided for @syncCustomTokenLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Token'**
+  String get syncCustomTokenLabel;
+
+  /// No description provided for @syncTestConnectionAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otestovať pripojenie'**
+  String get syncTestConnectionAction;
+
+  /// No description provided for @syncTestSuccess.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojenie funguje'**
+  String get syncTestSuccess;
+
+  /// No description provided for @syncTestFailure.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zlyhalo: {detail}'**
+  String syncTestFailure(String detail);
+
+  /// No description provided for @syncUrlErrorEmpty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zadaj URL servera'**
+  String get syncUrlErrorEmpty;
+
+  /// No description provided for @syncUrlErrorInvalid.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neplatná URL'**
+  String get syncUrlErrorInvalid;
+
+  /// No description provided for @syncUrlErrorHttps.
+  ///
+  /// In sk, this message translates to:
+  /// **'URL musí začínať https://'**
+  String get syncUrlErrorHttps;
+
+  /// No description provided for @syncIntervalLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Interval synchronizácie'**
+  String get syncIntervalLabel;
+
+  /// No description provided for @syncIntervalMinutes.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} min'**
+  String syncIntervalMinutes(int n);
+
+  /// No description provided for @syncIntervalNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Synchronizácia beží, kým je aplikácia otvorená'**
+  String get syncIntervalNote;
+
+  /// No description provided for @syncAttachmentPolicyLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prílohy (fotky)'**
+  String get syncAttachmentPolicyLabel;
+
+  /// No description provided for @syncAttachmentNever.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nikdy'**
+  String get syncAttachmentNever;
+
+  /// No description provided for @syncAttachmentWifiOnly.
+  ///
+  /// In sk, this message translates to:
+  /// **'Len na Wi-Fi'**
+  String get syncAttachmentWifiOnly;
+
+  /// No description provided for @syncAttachmentAlways.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vždy'**
+  String get syncAttachmentAlways;
 }
 
 class _AppLocalizationsDelegate
