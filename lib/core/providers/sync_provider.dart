@@ -1,12 +1,18 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../main.dart';
 import '../../sync/drift_outbox_record_store.dart';
+import '../../sync/rest_transport.dart';
 import '../../sync/strapi_transport.dart';
+import '../../sync/sync_entity_types.dart';
+import '../../sync/sync_policy_transport.dart';
 import '../config/api_constants.dart';
 import '../database/app_database.dart';
+import '../models/sync_settings.dart';
 import '../services/account_service.dart';
+import 'sync_settings_provider.dart';
 
 /// Shared so the sync engine and the queue-status UI observe the exact same
 /// connectivity signal (one platform-channel listener, not two).
@@ -27,22 +33,94 @@ final outboxRepositoryProvider = Provider<OutboxRepository>((ref) {
   return OutboxRepository(store: DriftOutboxRecordStore(db));
 });
 
-/// TODO: `baseUrl`/`collectionByEntityType` are placeholders until the
-/// Strapi CMS is provisioned, and nothing in the app calls `enqueue()` yet —
-/// domain writes (logbook entries, quick-photo) still go straight to drift.
-/// This wiring only makes the queue UI (badge + queue screen) functional
-/// and ready to observe/drive once that's connected.
+Future<bool> _isOnWifi() async {
+  final results = await Connectivity().checkConnectivity();
+  return results.contains(ConnectivityResult.wifi);
+}
+
+/// A transport that always reports every item as a non-retryable failure —
+/// used only when the custom-server URL is missing/invalid, so a bad
+/// setting surfaces as "failed" in the queue instead of crashing provider
+/// construction (`RestTransport` throws on a non-HTTPS/unparsable URL).
+class _MisconfiguredTransport implements SyncTransport {
+  @override
+  int get batchSize => 1;
+
+  @override
+  Future<bool> isReachable() async => false;
+
+  @override
+  Future<List<SyncItemResult>> push(List<OutboxItem> batch) async => [
+        for (final item in batch)
+          SyncItemResult(
+            itemId: item.id,
+            outcome: SyncItemOutcome.failure,
+            retryable: false,
+            errorMessage:
+                'custom sync server URL is missing or invalid (must be HTTPS)',
+          ),
+      ];
+}
+
+SyncTransport _buildBaseTransport(
+  SyncSettings settings,
+  String appVersion,
+  String Function() customAuthToken,
+) {
+  switch (settings.target) {
+    case SyncTarget.hmbAcademy:
+      return StrapiTransport(
+        baseUrl: kApiBase,
+        authToken: () => AccountService().token ?? '',
+        collectionByEntityType: kDefaultStrapiCollections,
+        appVersion: appVersion,
+      );
+    case SyncTarget.custom:
+      try {
+        return RestTransport(
+          baseUrl: settings.customUrl,
+          authToken: customAuthToken,
+          appVersion: appVersion,
+        );
+      } catch (_) {
+        return _MisconfiguredTransport();
+      }
+  }
+}
+
+/// The transport actually used for a sync cycle: picked per
+/// [SyncSettings.target] and wrapped with the enabled/attachment-policy
+/// gates hmb_core doesn't know about. Rebuilds whenever settings change;
+/// the custom token itself is re-read fresh on every push (via `ref.read`
+/// in the closure below), not baked in at construction, so saving/clearing
+/// it doesn't require rebuilding this provider.
+final syncTransportProvider = Provider<SyncTransport>((ref) {
+  final settings = ref.watch(syncSettingsProvider).valueOrNull ?? const SyncSettings();
+  final appVersion = ref.watch(appVersionProvider);
+
+  return SyncPolicyTransport(
+    inner: _buildBaseTransport(
+      settings,
+      appVersion,
+      () => ref.read(syncCustomTokenProvider).valueOrNull ?? '',
+    ),
+    isSyncEnabled: () => settings.enabled,
+    attachmentPolicy: () => settings.attachmentPolicy,
+    isOnWifi: _isOnWifi,
+  );
+});
+
 final syncEngineProvider = Provider<SyncEngine>((ref) {
+  final settings = ref.watch(syncSettingsProvider).valueOrNull ?? const SyncSettings();
   final engine = SyncEngine(
     repository: ref.watch(outboxRepositoryProvider),
-    transport: StrapiTransport(
-      baseUrl: kApiBase,
-      authToken: () => AccountService().token ?? '',
-      collectionByEntityType: const {'log_entry': 'log-entries'},
-    ),
+    transport: ref.watch(syncTransportProvider),
     connectivity: ref.watch(connectivityServiceProvider),
+    config: SyncConfig(periodicRetry: Duration(minutes: settings.intervalMinutes)),
   );
-  engine.start();
+  // No background/foreground service, no WorkManager — this timer only
+  // runs while the app process is alive, by design (see docs/SYNC_API.md).
+  if (settings.enabled) engine.start();
   ref.onDispose(engine.dispose);
   return engine;
 });

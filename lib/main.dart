@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
 import 'core/database/app_database.dart';
@@ -49,6 +50,12 @@ void wireDatabaseSingletons(AppDatabase db) {
 /// použije sa na zobrazenie jednorazovej výzvy na splash/map obrazovke.
 final raymarineNeverConfiguredProvider = Provider<bool>((ref) => true);
 
+/// Naplnené raz pri štarte (pred `runApp`) — pozri `main()`. Rovnaký vzor
+/// ako `_currentDb`/`databaseProvider`: appka číta verziu synchrónne
+/// (napr. do sync envelope), bez opakovaného `PackageInfo.fromPlatform()`.
+String _appVersion = 'unknown';
+final appVersionProvider = Provider<String>((ref) => _appVersion);
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -59,6 +66,9 @@ Future<void> main() async {
   for (final locale in ['sk', 'en', 'de', 'es', 'uk']) {
     await initializeDateFormatting(locale, null);
   }
+
+  final packageInfo = await PackageInfo.fromPlatform();
+  _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
   final db = _currentDb;
   await db.fixOrphanedSessions();

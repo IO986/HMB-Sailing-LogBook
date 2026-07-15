@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
+import 'sync_envelope.dart';
+
 /// SyncTransport for hmba.boats' Strapi backend. Lives entirely in the app —
 /// `hmb_core` never imports Strapi, never sees a collection name, never sees
 /// this file.
 ///
-/// - `POST {baseUrl}/api/{collection}`, body `{"data": {...payload, "clientId": item.id}}`
+/// - `POST {baseUrl}/api/{collection}`, body `{"data": <envelope>}` — see
+///   `buildSyncEnvelope` / docs/SYNC_API.md for the envelope shape.
 /// - `clientId` is unique in Strapi, so a collision on it is idempotency
 ///   working as intended, not a failure — mapped to [SyncItemOutcome.duplicate].
 /// - Attachments are uploaded first via `POST /api/upload` (multipart); the
-///   returned file id is merged into the payload under the attachment's
-///   `field` name before the record itself is created.
+///   returned file id becomes that attachment's entry in the envelope's
+///   `attachments` array (not merged into `payload`).
 /// - `entityType` → Strapi collection mapping is the app's own concern
 ///   ([collectionByEntityType]), never `hmb_core`'s.
 class StrapiTransport implements SyncTransport {
@@ -18,14 +21,17 @@ class StrapiTransport implements SyncTransport {
     required String baseUrl,
     required String Function() authToken,
     required Map<String, String> collectionByEntityType,
+    required String appVersion,
     Dio? dio,
   })  : _authToken = authToken,
         _collectionByEntityType = collectionByEntityType,
+        _appVersion = appVersion,
         _dio = dio ?? Dio(BaseOptions(baseUrl: baseUrl));
 
   final Dio _dio;
   final String Function() _authToken;
   final Map<String, String> _collectionByEntityType;
+  final String _appVersion;
 
   @override
   // Strapi has no bulk-create endpoint for a single content type — one
@@ -52,12 +58,15 @@ class StrapiTransport implements SyncTransport {
       );
     }
 
-    final payload = Map<String, dynamic>.from(item.payload);
+    final attachments = <Map<String, dynamic>>[];
     for (final attachment in item.attachments) {
       // Already uploaded on a previous attempt (retry) — reuse the id
       // instead of uploading again.
       if (attachment.remoteRef != null) {
-        payload[attachment.field] = attachment.remoteRef;
+        attachments.add({
+          'field': attachment.field,
+          'remoteRef': attachment.remoteRef,
+        });
         continue;
       }
       final fileId = await _uploadAttachment(attachment);
@@ -70,15 +79,19 @@ class StrapiTransport implements SyncTransport {
           retryable: true,
         );
       }
-      payload[attachment.field] = fileId;
+      attachments.add({'field': attachment.field, 'remoteRef': fileId.toString()});
     }
+
+    final envelope = buildSyncEnvelope(
+      item: item,
+      appVersion: _appVersion,
+      attachments: attachments,
+    );
 
     try {
       final response = await _dio.post<Map<String, dynamic>>(
         '/api/$collection',
-        data: {
-          'data': {...payload, 'clientId': item.id},
-        },
+        data: {'data': envelope},
         options: Options(headers: _headers()),
       );
       final remoteId =

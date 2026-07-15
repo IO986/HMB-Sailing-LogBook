@@ -46,38 +46,51 @@ ResponseBody _jsonBody(Object data, int status) => ResponseBody.fromString(
   return (dio: dio, adapter: adapter);
 }
 
+StrapiTransport _transport({
+  required Dio dio,
+  Map<String, String> collectionByEntityType = const {'record': 'records'},
+}) =>
+    StrapiTransport(
+      baseUrl: 'https://cms.example',
+      authToken: () => 'tok',
+      collectionByEntityType: collectionByEntityType,
+      appVersion: '1.2.3+45',
+      dio: dio,
+    );
+
 OutboxItem _item({List<Attachment> attachments = const []}) => OutboxItem(
       id: 'item-1',
       entityType: 'record',
       operation: SyncOperation.create,
       payload: const {'note': 'hi'},
-      createdAt: DateTime.utc(2026, 1, 1),
+      createdAt: DateTime.utc(2026, 1, 1, 9, 12, 3),
       attachments: attachments,
     );
 
 void main() {
-  test('posts to /api/{collection} with clientId + auth header, keeps remoteId', () async {
+  test('posts to /api/{collection} with the envelope under data, keeps remoteId', () async {
     final d = _dioWith(
       (options) async => _jsonBody({
         'data': {'id': 42},
       }, 200),
     );
-    final transport = StrapiTransport(
-      baseUrl: 'https://cms.example',
-      authToken: () => 'tok',
-      collectionByEntityType: const {'record': 'records'},
-      dio: d.dio,
-    );
+    final transport = _transport(dio: d.dio);
 
     final results = await transport.push([_item()]);
 
     final sent = d.adapter.requests.single;
     expect(sent.path, '/api/records');
     expect(sent.headers['Authorization'], 'Bearer tok');
-    final body = sent.data as Map<String, dynamic>;
-    final inner = body['data'] as Map<String, dynamic>;
-    expect(inner['clientId'], 'item-1');
-    expect(inner['note'], 'hi');
+
+    final envelope =
+        (sent.data as Map<String, dynamic>)['data'] as Map<String, dynamic>;
+    expect(envelope['clientId'], 'item-1');
+    expect(envelope['entityType'], 'record');
+    expect(envelope['operation'], 'create');
+    expect(envelope['appVersion'], '1.2.3+45');
+    expect(envelope['payload'], {'note': 'hi'});
+    expect(envelope['attachments'], isEmpty);
+    expect(envelope['timestamp'], startsWith('2026-01-01T'));
 
     expect(results.single.itemId, 'item-1');
     expect(results.single.outcome, SyncItemOutcome.success);
@@ -88,12 +101,7 @@ void main() {
     final d = _dioWith((options) async {
       fail('should never reach the network for an unmapped entityType');
     });
-    final transport = StrapiTransport(
-      baseUrl: 'https://cms.example',
-      authToken: () => 'tok',
-      collectionByEntityType: const {},
-      dio: d.dio,
-    );
+    final transport = _transport(dio: d.dio, collectionByEntityType: const {});
 
     final results = await transport.push([_item()]);
     expect(results.single.outcome, SyncItemOutcome.failure);
@@ -104,13 +112,7 @@ void main() {
   group('duplicate (clientId collision)', () {
     test('409 maps to duplicate', () async {
       final d = _dioWith((options) async => _jsonBody(const {}, 409));
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
-      final results = await transport.push([_item()]);
+      final results = await _transport(dio: d.dio).push([_item()]);
       expect(results.single.outcome, SyncItemOutcome.duplicate);
     });
 
@@ -120,25 +122,13 @@ void main() {
           'error': {'message': 'This attribute must be unique (clientId)'},
         }, 400),
       );
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
-      final results = await transport.push([_item()]);
+      final results = await _transport(dio: d.dio).push([_item()]);
       expect(results.single.outcome, SyncItemOutcome.duplicate);
     });
 
     test('duplicate is never marked retryable (it is treated as sent)', () async {
       final d = _dioWith((options) async => _jsonBody(const {}, 409));
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
-      final results = await transport.push([_item()]);
+      final results = await _transport(dio: d.dio).push([_item()]);
       expect(results.single.retryable, isFalse);
     });
   });
@@ -147,13 +137,7 @@ void main() {
     for (final status in [408, 429, 500, 502, 503]) {
       test('$status is retryable', () async {
         final d = _dioWith((options) async => _jsonBody(const {}, status));
-        final transport = StrapiTransport(
-          baseUrl: 'https://cms.example',
-          authToken: () => 't',
-          collectionByEntityType: const {'record': 'records'},
-          dio: d.dio,
-        );
-        final results = await transport.push([_item()]);
+        final results = await _transport(dio: d.dio).push([_item()]);
         expect(results.single.outcome, SyncItemOutcome.failure);
         expect(results.single.retryable, isTrue);
       });
@@ -166,13 +150,7 @@ void main() {
           type: DioExceptionType.connectionTimeout,
         ),
       );
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
-      final results = await transport.push([_item()]);
+      final results = await _transport(dio: d.dio).push([_item()]);
       expect(results.single.outcome, SyncItemOutcome.failure);
       expect(results.single.retryable, isTrue);
     });
@@ -182,13 +160,7 @@ void main() {
     for (final status in [400, 401, 403, 404, 422]) {
       test('$status (not a duplicate) is non-retryable', () async {
         final d = _dioWith((options) async => _jsonBody(const {}, status));
-        final transport = StrapiTransport(
-          baseUrl: 'https://cms.example',
-          authToken: () => 't',
-          collectionByEntityType: const {'record': 'records'},
-          dio: d.dio,
-        );
-        final results = await transport.push([_item()]);
+        final results = await _transport(dio: d.dio).push([_item()]);
         expect(results.single.outcome, SyncItemOutcome.failure);
         expect(results.single.retryable, isFalse);
       });
@@ -214,7 +186,7 @@ void main() {
       } catch (_) {}
     });
 
-    test('uploads via /api/upload first, merges file id into the payload field', () async {
+    test('uploads via /api/upload first, adds the file id to envelope.attachments', () async {
       final d = _dioWith((options) async {
         if (options.path == '/api/upload') {
           return _jsonBody([
@@ -225,12 +197,7 @@ void main() {
           'data': {'id': 1},
         }, 200);
       });
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
+      final transport = _transport(dio: d.dio);
 
       final item = _item(
         attachments: [
@@ -246,10 +213,11 @@ void main() {
 
       expect(d.adapter.requests[0].path, '/api/upload');
       expect(d.adapter.requests[1].path, '/api/records');
-      final recordBody =
-          (d.adapter.requests[1].data as Map<String, dynamic>)['data']
-              as Map<String, dynamic>;
-      expect(recordBody['photo'], 7);
+      final envelope = (d.adapter.requests[1].data as Map<String, dynamic>)['data']
+          as Map<String, dynamic>;
+      final attachments = envelope['attachments'] as List<dynamic>;
+      expect(attachments.single, {'field': 'photo', 'remoteRef': '7'});
+      expect(envelope['payload'], {'note': 'hi'}); // attachment never merged in here
       expect(results.single.outcome, SyncItemOutcome.success);
     });
 
@@ -260,12 +228,7 @@ void main() {
         }
         fail('record must never be posted when its attachment failed to upload');
       });
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
+      final transport = _transport(dio: d.dio);
 
       final item = _item(
         attachments: [
@@ -293,12 +256,7 @@ void main() {
           'data': {'id': 1},
         }, 200);
       });
-      final transport = StrapiTransport(
-        baseUrl: 'https://cms.example',
-        authToken: () => 't',
-        collectionByEntityType: const {'record': 'records'},
-        dio: d.dio,
-      );
+      final transport = _transport(dio: d.dio);
 
       final item = _item(
         attachments: const [
@@ -315,9 +273,10 @@ void main() {
 
       expect(d.adapter.requests, hasLength(1));
       expect(results.single.outcome, SyncItemOutcome.success);
-      final recordBody =
+      final envelope =
           (captured.data as Map<String, dynamic>)['data'] as Map<String, dynamic>;
-      expect(recordBody['photo'], '7'); // reused the existing remoteRef
+      final attachments = envelope['attachments'] as List<dynamic>;
+      expect(attachments.single, {'field': 'photo', 'remoteRef': '7'}); // reused
     });
   });
 }
