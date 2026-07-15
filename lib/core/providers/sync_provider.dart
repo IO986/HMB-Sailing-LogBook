@@ -12,6 +12,7 @@ import '../config/api_constants.dart';
 import '../database/app_database.dart';
 import '../models/sync_settings.dart';
 import '../services/account_service.dart';
+import '../services/gps_tracking_service.dart';
 import 'sync_settings_provider.dart';
 
 /// Shared so the sync engine and the queue-status UI observe the exact same
@@ -122,6 +123,13 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
   // runs while the app process is alive, by design (see docs/SYNC_API.md).
   if (settings.enabled) engine.start();
   ref.onDispose(engine.dispose);
+
+  // GpsTrackingService is a plain singleton outside Riverpod (no `ref` of
+  // its own) — this is the one place it can be handed the live engine, and
+  // it re-runs whenever this provider rebuilds (e.g. settings change swaps
+  // the transport), so it never holds a stale/disposed engine.
+  GpsTrackingService().setSyncEngine(engine);
+
   return engine;
 });
 

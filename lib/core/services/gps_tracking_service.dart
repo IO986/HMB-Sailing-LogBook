@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hmb_core/hmb_core.dart' hide LocationService;
 import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:uuid/uuid.dart';
 
@@ -30,6 +31,7 @@ class GpsTrackingService {
   Timer? _weatherTimer;
   int? _activeDayLogId;
   int _logIntervalSeconds = 3600;
+  SyncEngine? _syncEngine;
 
   // Course change detection
   double? _lastLoggedCourse;
@@ -61,6 +63,14 @@ class GpsTrackingService {
   void setDatabase(AppDatabase db) {
     _db = db;
     debugPrint('[GPS] DB set');
+  }
+
+  /// Prepojené z `syncEngineProvider` (viď sync_provider.dart), akonáhle je
+  /// vytvorený prvý riverpod `ProviderContainer` — táto trieda je singleton
+  /// mimo riverpod, takže `enqueue()` musí dostať `SyncEngine` takto, nie
+  /// cez `ref`.
+  void setSyncEngine(SyncEngine engine) {
+    _syncEngine = engine;
   }
 
   Future<bool> _checkPermission() async {
@@ -398,7 +408,7 @@ class GpsTrackingService {
     // Vždy použi aktuálny čas — pos.timestamp je čas GPS fixu (môže byť starý z cache).
     final entryTimestamp = DateTime.now().toUtc();
 
-    await _db!.insertLogbookEntry(LogbookEntriesCompanion.insert(
+    final companion = LogbookEntriesCompanion.insert(
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
       timestamp: entryTimestamp,
@@ -417,7 +427,44 @@ class GpsTrackingService {
       accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
       locationSource: drift.Value(LocationService().lastSource?.name),
       isMocked: drift.Value(LocationService().lastIsMocked),
-    ));
+    );
+
+    // Rovnaká payload shape ako manuálny zápis (logbook_entry_screen.dart) —
+    // accuracyMeters/locationSource/isMocked ostávajú zámerne lokálne, viď
+    // KROK "enqueue wiring".
+    final payload = {
+      'dayLogId': _activeDayLogId,
+      'timestamp': entryTimestamp.toIso8601String(),
+      'latitude': pos.latitude,
+      'longitude': pos.longitude,
+      'sog': sog,
+      'cog': cog,
+      'windSpeed': windSpd,
+      'windDirection': windDir,
+      'waveHeight': weather?.waveHeight,
+      'airPressure': weather?.airPressure,
+      'airTemp': weather?.airTemp,
+      'waterTemp': waterTmp,
+      'skipperNote': entryNote,
+    };
+
+    final engine = _syncEngine;
+    if (engine == null) {
+      // syncEngineProvider ešte nebol vytvorený (napr. appka sa ešte len
+      // spúšťa) — zapíš aspoň lokálne, nezahadzuj záznam.
+      debugPrint('[GPS] Auto entry: sync engine not wired yet, local-only write');
+      await _db!.insertLogbookEntry(companion);
+    } else {
+      // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
+      await _db!.transaction(() async {
+        final newId = await _db!.insertLogbookEntry(companion);
+        await engine.enqueue(
+          entityType: 'log_entry',
+          entityId: newId.toString(),
+          payload: payload,
+        );
+      });
+    }
 
     debugPrint('[GPS] Auto entry created OK');
   }
