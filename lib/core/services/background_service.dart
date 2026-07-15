@@ -32,8 +32,8 @@ class BackgroundService {
         autoStart: false,
         isForegroundMode: true,
         notificationChannelId: 'sailing_tracking',
-        initialNotificationTitle: 'Sailing Logbook',
-        initialNotificationContent: 'GPS tracking aktívny',
+        initialNotificationTitle: 'SAILLOG',
+        initialNotificationContent: 'Tracking plavby beží',
         foregroundServiceNotificationId: 888,
       ),
       iosConfiguration: IosConfiguration(

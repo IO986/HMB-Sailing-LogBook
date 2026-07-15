@@ -91,6 +91,9 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final List<_CrewEntry> _crew = [];
   final List<String> _photos = [];
 
+  // ── Kontakty chartru (max 3, telefónne čísla) ──
+  final List<TextEditingController> _contactCtrls = [];
+
   final _notesCtrl = TextEditingController();
   bool _loading = false;
   Charter? _existing;
@@ -234,6 +237,13 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       _photos
         ..clear()
         ..addAll(_decodeStringList(c.photosJson));
+
+      // Kontakty chartru
+      for (final ctrl in _contactCtrls) ctrl.dispose();
+      _contactCtrls
+        ..clear()
+        ..addAll(_decodeStringList(c.contactsJson)
+            .map((s) => TextEditingController(text: s)));
     });
   }
 
@@ -367,6 +377,41 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               prefixIcon: const Icon(Icons.business),
             ),
           ),
+          const SizedBox(height: 20),
+
+          // ── KONTAKTY CHARTRU ─────────────────────────────────
+          _Section(l.charterContactsSection),
+          Text(l.charterContactsHint,
+              style: TextStyle(fontSize: 12, color: Theme.of(context).hintColor)),
+          const SizedBox(height: 8),
+          ..._contactCtrls.asMap().entries.map((e) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(children: [
+                  Expanded(
+                    child: TextField(
+                      controller: e.value,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: l.addPhoneNumber,
+                        prefixIcon: const Icon(Icons.call),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() {
+                      e.value.dispose();
+                      _contactCtrls.removeAt(e.key);
+                    }),
+                  ),
+                ]),
+              )),
+          if (_contactCtrls.length < 3)
+            _DashedAddButton(
+              label: l.addPhoneNumber,
+              onTap: () => setState(
+                  () => _contactCtrls.add(TextEditingController())),
+            ),
           const SizedBox(height: 20),
 
           // ── PARAMETRE JACHTY ─────────────────────────────────
@@ -837,6 +882,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       country: Value(_emptyNull(_countryCtrl.text)),
       cruisingArea: Value(_emptyNull(_areaCtrl.text)),
       photosJson: Value(_photos.isEmpty ? null : jsonEncode(_photos)),
+      contactsJson: Value(_contactPhones.isEmpty ? null : jsonEncode(_contactPhones)),
       crewJson: Value(crewJson),
       skipperName: Value(_emptyNull(skipper?.nameCtrl.text ?? '')),
       crewNames: Value(others.isEmpty ? null : others.join('|')),
@@ -878,8 +924,14 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     _homePortCtrl.dispose(); _countryCtrl.dispose(); _areaCtrl.dispose();
     _notesCtrl.dispose(); _vesselTypeCustomCtrl.dispose();
     for (final c in _crew) c.dispose();
+    for (final c in _contactCtrls) c.dispose();
     super.dispose();
   }
+
+  List<String> get _contactPhones => _contactCtrls
+      .map((c) => c.text.trim())
+      .where((s) => s.isNotEmpty)
+      .toList();
 }
 
 class _Section extends StatelessWidget {

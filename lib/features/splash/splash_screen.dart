@@ -1,4 +1,8 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,9 +15,13 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _fade, _scale, _tagline;
+
+  // Nepretržité vlnenie loga ako vlajka vo vetre — beží celý čas, kým je
+  // splash zobrazený, nezávisle od nástupnej fade/scale animácie.
+  late final AnimationController _waveCtrl;
 
   static const _langs = [
     ('🇸🇰', 'Slovenčina', 'sk'),
@@ -37,6 +45,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     _tagline = CurvedAnimation(
         parent: _ctrl,
         curve: const Interval(0.5, 0.9, curve: Curves.easeIn));
+
+    _waveCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2400))
+      ..repeat();
 
     _ctrl.forward().then((_) async {
       await Future.delayed(const Duration(milliseconds: 400));
@@ -112,6 +124,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void dispose() {
     _ctrl.dispose();
+    _waveCtrl.dispose();
     super.dispose();
   }
 
@@ -135,36 +148,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 scale: _scale,
                 child: FadeTransition(
                   opacity: _fade,
-                  child: Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.1),
-                      border: Border.all(
-                          color: Colors.white.withOpacity(0.3), width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 30)
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Image.asset(
-                      'assets/icons/app_icon.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) => const Icon(
-                          Icons.sailing,
-                          color: Colors.white,
-                          size: 80),
-                    ),
+                  child: _FlagWaveImage(
+                    assetPath: 'assets/icons/hmb_logo_splash.png',
+                    width: 260,
+                    wave: _waveCtrl,
                   ),
                 ),
               ),
               const SizedBox(height: 32),
               FadeTransition(
                 opacity: _fade,
-                child: const Text('HMB Sailing Log',
+                child: const Text('SAILLOG',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
@@ -190,6 +184,117 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       ),
     );
   }
+}
+
+/// Logo vlnené ako vlajka vo vetre: obrázok sa rozreže na zvislé pásiky a
+/// každý sa zvisle posunie podľa sínusovky, s amplitúdou rastúcou od ľavého
+/// (pevného) k pravému (voľnému) okraju — presné mesh-warpovanie by
+/// vyžadovalo fragment shader, tento efekt lacno vyzerá takmer rovnako.
+class _FlagWaveImage extends StatefulWidget {
+  final String assetPath;
+  final double width;
+  final Animation<double> wave;
+  const _FlagWaveImage(
+      {required this.assetPath, required this.width, required this.wave});
+
+  @override
+  State<_FlagWaveImage> createState() => _FlagWaveImageState();
+}
+
+class _FlagWaveImageState extends State<_FlagWaveImage> {
+  ui.Image? _image;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final data = await rootBundle.load(widget.assetPath);
+    final codec =
+        await ui.instantiateImageCodec(data.buffer.asUint8List());
+    final frame = await codec.getNextFrame();
+    if (mounted) setState(() => _image = frame.image);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final image = _image;
+    if (image == null) {
+      // Placeholder rovnakej šírky, kým sa obrázok dekóduje — zabráni
+      // poskoku layoutu pri objavení loga.
+      return SizedBox(width: widget.width, height: widget.width * 0.5);
+    }
+    final height = widget.width * image.height / image.width;
+    return SizedBox(
+      width: widget.width,
+      height: height,
+      child: AnimatedBuilder(
+        animation: widget.wave,
+        builder: (_, __) => CustomPaint(
+          painter: _FlagWavePainter(image: image, time: widget.wave.value),
+        ),
+      ),
+    );
+  }
+}
+
+/// Mesh warp cez Canvas.drawVertices — susedné bunky zdieľajú presne tie isté
+/// vrcholy, takže deformácia je spojitá a nevidno žiadne rezy/švy (na rozdiel
+/// od predošlej verzie, ktorá kreslila nezávislé zvislé pásiky
+/// cez drawImageRect a na ich hraniciach bol viditeľný schodovitý skok).
+class _FlagWavePainter extends CustomPainter {
+  final ui.Image image;
+  final double time;
+  static const _cols = 32;
+  static const _amplitude = 7.0;
+  static const _wavelength = 1.3;
+
+  _FlagWavePainter({required this.image, required this.time});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final imgW = image.width.toDouble();
+    final imgH = image.height.toDouble();
+    final scale = size.width / imgW;
+
+    final positions = <Offset>[];
+    final texCoords = <Offset>[];
+    for (var row = 0; row < 2; row++) {
+      final y = row == 0 ? 0.0 : size.height;
+      final srcY = row == 0 ? 0.0 : imgH;
+      for (var col = 0; col <= _cols; col++) {
+        final t = col / _cols;
+        // Amplitúda rastie smerom k pravému (voľnému) okraju, ľavý okraj
+        // ("stožiar") sa takmer nehýbe — ako pripevnená vlajka vo vetre.
+        final dy = _amplitude * t * math.sin(2 * math.pi * (t * _wavelength - time));
+        positions.add(Offset(col * imgW / _cols * scale, y + dy));
+        texCoords.add(Offset(col * imgW / _cols, srcY));
+      }
+    }
+
+    final indices = <int>[];
+    const rowStride = _cols + 1;
+    for (var col = 0; col < _cols; col++) {
+      final tl = col, tr = col + 1, bl = rowStride + col, br = rowStride + col + 1;
+      indices.addAll([tl, bl, tr, tr, bl, br]);
+    }
+
+    final vertices = ui.Vertices(
+      ui.VertexMode.triangles,
+      positions,
+      textureCoordinates: texCoords,
+      indices: indices,
+    );
+    final paint = Paint()
+      ..shader = ImageShader(image, TileMode.clamp, TileMode.clamp, Matrix4.identity().storage)
+      ..filterQuality = FilterQuality.low;
+    canvas.drawVertices(vertices, BlendMode.srcOver, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _FlagWavePainter old) => old.time != time;
 }
 
 class _Waves extends StatelessWidget {

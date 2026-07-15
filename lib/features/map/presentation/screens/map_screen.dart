@@ -55,9 +55,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   bool _rulerActive = false;
   final List<LatLng> _rulerPoints = [];
 
-  // Rotácia mapy (dvoma prstami) — kompas hore sa zobrazí len keď je mapa
-  // pootočená a resetne ju späť na north-up.
+  // Rotácia mapy (dvoma prstami) — kompas hore ju resetne späť na north-up.
   double _mapRotationDeg = 0;
+  // Lock na sever — podržanie ružice vypne gesto rotácie úplne.
+  bool _northLocked = false;
 
   @override
   void initState() {
@@ -199,9 +200,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             options: MapOptions(
               initialCenter: const LatLng(43.5, 16.4),
               initialZoom: 10,
+              maxZoom: 19,
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
               onTap: (_, ll) => _onRulerTap(ll),
+              // Lock na sever (dlhé podržanie ružice) vypne gesto rotácie —
+              // mapa ostane north-up, kým používateľ zámok znova neuvoľní.
+              interactionOptions: InteractionOptions(
+                flags: _northLocked
+                    ? InteractiveFlag.all & ~InteractiveFlag.rotate
+                    : InteractiveFlag.all,
+              ),
               onPositionChanged: (camera, hasGesture) {
                 // Ručný posun mapy vypne GPS follow — inak ju každý GPS
                 // update strhne späť. GPS tlačidlo follow znova zapne.
@@ -480,15 +489,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           // ── Kompas: vždy viditeľný, ihla ukazuje sever ────────
           // Ťuknutím sa mapa (ak je pootočená dvoma prstami) vráti na
-          // north-up.
+          // north-up. Podržaním sa rotácia zamkne/odomkne na sever.
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
             left: 12,
             child: _NorthResetButton(
               rotationDeg: _mapRotationDeg,
-              onPressed: () {
+              locked: _northLocked,
+              onTap: () {
                 _mapController.rotate(0);
                 setState(() => _mapRotationDeg = 0);
+              },
+              onLongPress: () {
+                setState(() {
+                  _northLocked = !_northLocked;
+                  if (_northLocked) {
+                    _mapController.rotate(0);
+                    _mapRotationDeg = 0;
+                  }
+                });
               },
             ),
           ),
@@ -877,6 +896,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _mapController.fitCamera(CameraFit.bounds(
         bounds: LatLngBounds.fromPoints(points),
         padding: const EdgeInsets.all(40),
+        // Bez tohto CameraFit.bounds vie pre tesne zhlukované body (napr.
+        // krátky deň pri móle) dopočítať zoom ďaleko za maxZoom dlaždíc —
+        // mapa potom zmizne (žiadne dlaždice na danej úrovni), zostane
+        // viditeľná len trasa/vektorová vrstva. Prepínanie mapa/satelit
+        // nepomôže, obe majú rovnaký strop.
+        maxZoom: 17,
       ));
     } catch (_) {}
   }
@@ -1287,26 +1312,55 @@ class _MobMarkerState extends State<_MobMarker>
 
 class _NorthResetButton extends StatelessWidget {
   final double rotationDeg;
-  final VoidCallback onPressed;
-  const _NorthResetButton({required this.rotationDeg, required this.onPressed});
+  final bool locked;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+  const _NorthResetButton({
+    required this.rotationDeg,
+    required this.locked,
+    required this.onTap,
+    required this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       elevation: 3,
-      shape: const CircleBorder(),
+      shape: CircleBorder(
+        side: locked
+            ? BorderSide(color: Colors.blue.shade600, width: 2)
+            : BorderSide.none,
+      ),
       color: Colors.white,
       child: InkWell(
         customBorder: const CircleBorder(),
-        onTap: onPressed,
+        onTap: onTap,
+        onLongPress: onLongPress,
         child: SizedBox(
           width: 44,
           height: 44,
-          // Ružica otočená o -X° oproti rotácii mapy o X° — hrot N ukazuje
-          // vždy na skutočný sever bez ohľadu na natočenie mapy.
-          child: CustomPaint(
-            painter: _CompassRosePainter(rotationDeg: rotationDeg),
-          ),
+          child: Stack(children: [
+            // Ružica otočená o -X° oproti rotácii mapy o X° — hrot N
+            // ukazuje vždy na skutočný sever bez ohľadu na natočenie mapy.
+            CustomPaint(
+              size: const Size(44, 44),
+              painter: _CompassRosePainter(rotationDeg: rotationDeg),
+            ),
+            if (locked)
+              Positioned(
+                right: 1,
+                bottom: 1,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade600,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1),
+                  ),
+                  child: const Icon(Icons.lock, color: Colors.white, size: 9),
+                ),
+              ),
+          ]),
         ),
       ),
     );
