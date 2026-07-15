@@ -6,9 +6,10 @@ import '../core/models/sync_settings.dart';
 /// knows nothing about: the user's enable/disable toggle, and the
 /// attachment Wi-Fi policy.
 ///
-/// Skipped items come back as a retryable [SyncItemOutcome.failure] (they
-/// stay `pending` and get retried on the engine's normal schedule) — see
-/// docs/SYNC_API.md for the trade-off this implies for `retryCount`.
+/// Skipped items come back as [SyncItemOutcome.deferred], not `failure` —
+/// they were never actually attempted, so they cost nothing against
+/// `retryCount` and are retried again next cycle without limit, until the
+/// gate clears. See docs/SYNC_API.md §7.
 class SyncPolicyTransport implements SyncTransport {
   SyncPolicyTransport({
     required SyncTransport inner,
@@ -64,8 +65,7 @@ class SyncPolicyTransport implements SyncTransport {
 
   SyncItemResult _skip(OutboxItem item, String reason) => SyncItemResult(
         itemId: item.id,
-        outcome: SyncItemOutcome.failure,
-        retryable: true,
+        outcome: SyncItemOutcome.deferred,
         errorMessage: reason,
       );
 }

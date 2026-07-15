@@ -2160,6 +2160,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get syncStatusConflict => 'Конфлікт';
 
   @override
+  String get syncStatusDeferred => 'Відкладено';
+
+  @override
   String syncRetryCount(int n) {
     return 'Спроба $n';
   }
@@ -2170,6 +2173,11 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String syncPendingCount(int n) {
     return '$n в черзі';
+  }
+
+  @override
+  String syncDeferredCount(int n) {
+    return '$n відкладено';
   }
 
   @override

@@ -55,7 +55,7 @@ void main() {
   });
 
   group('sync disabled', () {
-    test('every item comes back as a retryable failure, inner never called', () async {
+    test('every item comes back deferred, not a failure, inner never called', () async {
       final inner = _FakeInner();
       final policy = SyncPolicyTransport(
         inner: inner,
@@ -69,8 +69,7 @@ void main() {
       expect(inner.calls, isEmpty);
       expect(results, hasLength(2));
       for (final r in results) {
-        expect(r.outcome, SyncItemOutcome.failure);
-        expect(r.retryable, isTrue);
+        expect(r.outcome, SyncItemOutcome.deferred);
       }
     });
 
@@ -98,8 +97,7 @@ void main() {
       final results = await policy.push([_item('photo-item', attachments: _photo)]);
 
       expect(inner.calls, isEmpty);
-      expect(results.single.outcome, SyncItemOutcome.failure);
-      expect(results.single.retryable, isTrue);
+      expect(results.single.outcome, SyncItemOutcome.deferred);
     });
 
     test('items without attachments still sync normally', () async {
@@ -131,8 +129,7 @@ void main() {
       final results = await policy.push([_item('photo-item', attachments: _photo)]);
 
       expect(inner.calls, isEmpty);
-      expect(results.single.outcome, SyncItemOutcome.failure);
-      expect(results.single.retryable, isTrue);
+      expect(results.single.outcome, SyncItemOutcome.deferred);
     });
 
     test('items with attachments are sent when on Wi-Fi', () async {
@@ -167,8 +164,7 @@ void main() {
       expect(inner.calls.single.map((i) => i.id), ['plain']);
       final byId = {for (final r in results) r.itemId: r};
       expect(byId['plain']!.outcome, SyncItemOutcome.success);
-      expect(byId['photo-item']!.outcome, SyncItemOutcome.failure);
-      expect(byId['photo-item']!.retryable, isTrue);
+      expect(byId['photo-item']!.outcome, SyncItemOutcome.deferred);
     });
   });
 

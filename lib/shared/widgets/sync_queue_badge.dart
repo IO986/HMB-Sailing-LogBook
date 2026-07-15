@@ -22,7 +22,8 @@ class SyncQueueBadge extends ConsumerWidget {
         (!online ||
             snapshot.pending > 0 ||
             snapshot.failed > 0 ||
-            snapshot.conflicts > 0);
+            snapshot.conflicts > 0 ||
+            snapshot.deferred > 0);
 
     return ClipRect(
       child: AnimatedAlign(
@@ -58,6 +59,10 @@ class _BadgeContent extends StatelessWidget {
     final segments = <String>[
       if (!online) l.syncOffline,
       if (snapshot.pending > 0) l.syncPendingCount(snapshot.pending),
+      // Distinct from "pending"/"failed" — held back by a local policy
+      // (sync disabled, Wi-Fi-only attachments), not an attempt that
+      // happened and didn't work.
+      if (snapshot.deferred > 0) l.syncDeferredCount(snapshot.deferred),
       if (snapshot.failed > 0) l.syncFailedCount(snapshot.failed),
     ];
 

@@ -4178,6 +4178,12 @@ abstract class AppLocalizations {
   /// **'Konflikt'**
   String get syncStatusConflict;
 
+  /// No description provided for @syncStatusDeferred.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odložené'**
+  String get syncStatusDeferred;
+
   /// No description provided for @syncRetryCount.
   ///
   /// In sk, this message translates to:
@@ -4195,6 +4201,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'{n} čakajú'**
   String syncPendingCount(int n);
+
+  /// No description provided for @syncDeferredCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} odložených'**
+  String syncDeferredCount(int n);
 
   /// No description provided for @syncFailedCount.
   ///

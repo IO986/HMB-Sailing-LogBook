@@ -152,17 +152,35 @@ app or regaining connectivity also triggers an immediate attempt.
 
 ### Attachment policy and retry budget
 
-The attachment setting (`nikdy` / `len na Wi-Fi` / `vždy`) is enforced
-entirely client-side, before your endpoint is ever called: on `len na
-Wi-Fi`, an item with an attachment is deferred (not sent) while the device
-is on mobile data. A deferred item is reported to the sync engine as a
-retryable failure so it stays queued — **this does consume the same
-retry-attempt budget as a genuine server error.** In practice this means an
-item with a photo, stuck for many consecutive periodic cycles on mobile
-data only, can eventually be marked "failed" (requiring a manual "Skúsiť
-znova" tap) purely because of the Wi-Fi policy, not because your server
-ever rejected it. This is a known trade-off of keeping the retry/give-up
-logic identical regardless of *why* an attempt didn't happen.
+The attachment setting (`nikdy` / `len na Wi-Fi` / `vždy`) — and the
+sync enable/disable toggle — are enforced entirely client-side, before
+your endpoint is ever called: on `len na Wi-Fi`, an item with an
+attachment is held back while the device is on mobile data; with sync
+disabled, nothing is attempted at all.
+
+Neither case reaches your server, and **neither spends retry budget.**
+`SyncPolicyTransport` reports a held-back item as `hmb_core`'s
+`SyncItemOutcome.deferred` — a distinct outcome from a real `failure`.
+The sync engine leaves the item's `retryCount` and last-attempt time
+untouched for a `deferred` result: it isn't treated as an attempt at all,
+so it can never exhaust `maxRetries` and can never end up "failed" purely
+because of a local policy. The item is simply re-evaluated against the
+same policy on the next cycle (periodic timer, app foreground, or
+connectivity restored) and sent as soon as the gate clears — indefinitely,
+with no backoff growth, since `retryCount` never moves.
+
+This is a structural guarantee, not a convention your server needs to
+account for: because `deferred` never reaches a transport's `push()` at
+all, your endpoint has no way to distinguish "the app hasn't tried yet"
+from "the app tried and a policy held it back" — both look identical from
+the server side (no request happened).
+
+**In the UI**, this status is surfaced as "Odložené" (deferred) — visually
+and structurally distinct from "Zlyhalo" (failed, `SyncStatus.failed`) in
+both the queue screen and the header badge, backed by a dedicated
+`deferred` count in the sync queue snapshot (not inferred from error-text
+matching). A deferred item never shows a retry count, since none was
+spent.
 
 ### "Test connection"
 

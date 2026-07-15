@@ -115,6 +115,13 @@ class _QueueItemTile extends StatelessWidget {
       SyncStatus.sent => (Icons.check_circle, Colors.green, l.syncStatusSent),
       SyncStatus.failed => (Icons.error_outline, Colors.red, l.syncStatusFailed),
       SyncStatus.conflict => (Icons.warning_amber, Colors.orange, l.syncStatusConflict),
+      // Held back by a local policy (sync disabled, Wi-Fi-only attachments),
+      // never a real attempt — not the same as "failed". No retry count:
+      // it's never spent for this status. The specific reason (which
+      // policy) shows in the errorMessage line below, same as other
+      // statuses.
+      SyncStatus.deferred =>
+        (Icons.pause_circle_outline, Colors.blueGrey, l.syncStatusDeferred),
     };
 
     return Card(
@@ -125,7 +132,11 @@ class _QueueItemTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$label · ${l.syncRetryCount(row.retryCount)}'),
+            Text(
+              status == SyncStatus.deferred
+                  ? label
+                  : '$label · ${l.syncRetryCount(row.retryCount)}',
+            ),
             if (row.errorMessage != null)
               Text(
                 row.errorMessage!,
