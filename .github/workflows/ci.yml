@@ -16,13 +16,19 @@ jobs:
       # layout as local dev. Pinned to a tag, not a branch, so CI builds
       # against a known-stable hmb_core release rather than whatever main
       # happens to contain at build time.
+      #
+      # actions/checkout's `path` input refuses to place a repo outside the
+      # primary checkout directory (path-traversal guard on `../hmb_core`),
+      # so this is a plain `git clone` straight into the sibling location
+      # instead. The PAT in the URL is never printed — Actions masks any
+      # string matching a registered secret in logs.
       - name: Checkout hmb_core
-        uses: actions/checkout@v4
-        with:
-          repository: IO986/hmb_core
-          ref: v1.0.0
-          token: ${{ secrets.HMB_CORE_PAT }}
-          path: ../hmb_core
+        env:
+          HMB_CORE_PAT: ${{ secrets.HMB_CORE_PAT }}
+        run: |
+          git clone --branch v1.0.0 --depth 1 \
+            https://x-access-token:${HMB_CORE_PAT}@github.com/IO986/hmb_core.git \
+            ../hmb_core
 
       - uses: subosito/flutter-action@v2
         with:
