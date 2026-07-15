@@ -11,6 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # hmb_core is a separate private repo, consumed as a sibling path
+      # dependency (pubspec.yaml: `hmb_core: { path: ../hmb_core }`) — same
+      # layout as local dev. Pinned to a tag, not a branch, so CI builds
+      # against a known-stable hmb_core release rather than whatever main
+      # happens to contain at build time.
+      - name: Checkout hmb_core
+        uses: actions/checkout@v4
+        with:
+          repository: IO986/hmb_core
+          ref: v1.0.0
+          token: ${{ secrets.HMB_CORE_PAT }}
+          path: ../hmb_core
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
