@@ -1274,24 +1274,6 @@ abstract class AppLocalizations {
   /// **'Len orientačné dáta (typický smer/rýchlosť z pilotných máp) — nie pre presnú navigáciu, prúdy sa sezónne menia.'**
   String get oceanCurrentsDisclaimer;
 
-  /// No description provided for @tideDataSection.
-  ///
-  /// In sk, this message translates to:
-  /// **'Dáta prílivu/odlivu'**
-  String get tideDataSection;
-
-  /// No description provided for @tideApiKeyLabel.
-  ///
-  /// In sk, this message translates to:
-  /// **'WorldTides API kľúč'**
-  String get tideApiKeyLabel;
-
-  /// No description provided for @tideApiKeyDesc.
-  ///
-  /// In sk, this message translates to:
-  /// **'Voliteľné — zapne predikcie prílivu/odlivu celosvetovo (worldtides.info, dostupný free tier). Nechaj prázdne ak prílivy nepotrebuješ.'**
-  String get tideApiKeyDesc;
-
   /// No description provided for @tideCardTitle.
   ///
   /// In sk, this message translates to:
@@ -1310,12 +1292,6 @@ abstract class AppLocalizations {
   /// **'Najbližší odliv'**
   String get nextLowTideLabel;
 
-  /// No description provided for @noTideApiKey.
-  ///
-  /// In sk, this message translates to:
-  /// **'Pridaj WorldTides API kľúč v Nastaveniach pre predikcie prílivu/odlivu'**
-  String get noTideApiKey;
-
   /// No description provided for @noTideData.
   ///
   /// In sk, this message translates to:
@@ -1333,6 +1309,96 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Sťahujem predpoveď prílivu...'**
   String get downloadingTides;
+
+  /// No description provided for @tideMslWarning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Výšky sú nad strednou hladinou mora, nie nad mapovým datom — nikdy ich nepoužívaj na hĺbku pod kýlom.'**
+  String get tideMslWarning;
+
+  /// No description provided for @tideNoCoverage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre túto polohu nemáme dáta o prílive — je mimo oblasti morskej predpovede.'**
+  String get tideNoCoverage;
+
+  /// No description provided for @tideDownloadFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď prílivu sa nepodarilo stiahnuť. Skontroluj pripojenie a skús znova.'**
+  String get tideDownloadFailed;
+
+  /// No description provided for @tideForecastExpired.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložená predpoveď prílivu sa minula.'**
+  String get tideForecastExpired;
+
+  /// No description provided for @tideForecastFarAway.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď bola stiahnutá {km} km odtiaľto — stiahni ju znova pre túto polohu.'**
+  String tideForecastFarAway(int km);
+
+  /// No description provided for @tideForecastStale.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuté {when} — pre najnovšiu predpoveď stiahni znova.'**
+  String tideForecastStale(String when);
+
+  /// No description provided for @oceanCurrentCardTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Morský prúd'**
+  String get oceanCurrentCardTitle;
+
+  /// No description provided for @oceanCurrentSetsToward.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tečie smerom na (rýchlosť v uzloch)'**
+  String get oceanCurrentSetsToward;
+
+  /// No description provided for @oceanCurrentNoCoverage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre túto polohu nemáme dáta o prúde.'**
+  String get oceanCurrentNoCoverage;
+
+  /// No description provided for @oceanCurrentUnavailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď prúdu nie je dostupná — skontroluj pripojenie.'**
+  String get oceanCurrentUnavailable;
+
+  /// No description provided for @tideOtherArea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď pre inú oblasť'**
+  String get tideOtherArea;
+
+  /// No description provided for @tideAreaSearchLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prístav, mesto alebo zátoka'**
+  String get tideAreaSearchLabel;
+
+  /// No description provided for @tideAreaSearchHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. Split'**
+  String get tideAreaSearchHint;
+
+  /// No description provided for @tideAreaNoResults.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nič sa nenašlo — skús iný názov.'**
+  String get tideAreaNoResults;
+
+  /// No description provided for @tideForecastForArea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpoveď pre {place}'**
+  String tideForecastForArea(String place);
 
   /// No description provided for @settingsTitle.
   ///
@@ -3605,7 +3671,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideWeatherBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď'**
+  /// **'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď\n\nSlnko, mesiac a prílivy:\n• Východ, západ slnka a fáza mesiaca sa počítajú priamo v zariadení — internet netreba\n• Ťuknutím na obnoviť v karte Príliv/odliv stiahneš 7-dňovú predpoveď (zadarmo, bez API kľúča)\n• Prílivy sa kešujú, takže zostanú čitateľné aj offline; karta ťa upozorní, keď je predpoveď stará alebo stiahnutá ďaleko odtiaľto\n• ⚠ Výšky prílivu sú nad strednou hladinou mora, nie nad mapovým datom — nikdy ich nepoužívaj na výpočet hĺbky pod kýlom\n\nMorský prúd:\n• Karta Morský prúd ukazuje reálnu predpoveď pre tvoju polohu v uzloch a smer, KAM prúd tečie\n• Na mape tlačidlo s dvojšípkou vykreslí mriežku prúdu pre viditeľnú oblasť; šípky ukazujú, kam sa voda pohybuje\n• Nezamieňaj s vrstvou Oceánske prúdy — tá je referenčná mapa veľkých globálnych prúdov'**
   String get guideWeatherBody;
 
   /// No description provided for @guideSafetyMobTitle.

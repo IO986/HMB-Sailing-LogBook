@@ -14,7 +14,6 @@ import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
-import '../../../../core/providers/tide_settings_provider.dart';
 import '../../../../core/services/account_service.dart';
 import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -43,10 +42,6 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             _Section(l.onlineAccount),
             const _AccountSection(),
-            const SizedBox(height: 16),
-
-            _Section(l.tideDataSection),
-            const _TideSection(),
             const SizedBox(height: 16),
 
             _Section(l.measurementUnits),
@@ -622,63 +617,6 @@ class _LiveTag extends StatelessWidget {
           ],
         ),
       );
-}
-
-// ── Prílivy/odlivy (WorldTides API kľúč) ────────────────────────
-
-class _TideSection extends ConsumerStatefulWidget {
-  const _TideSection();
-
-  @override
-  ConsumerState<_TideSection> createState() => _TideSectionState();
-}
-
-class _TideSectionState extends ConsumerState<_TideSection> {
-  final _keyCtrl = TextEditingController();
-  bool _fieldInitialized = false;
-
-  @override
-  void dispose() {
-    _keyCtrl.dispose();
-    super.dispose();
-  }
-
-  void _initFieldOnce(String? key) {
-    if (_fieldInitialized) return;
-    _fieldInitialized = true;
-    _keyCtrl.text = key ?? '';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final keyAsync = ref.watch(tideApiKeyProvider);
-    _initFieldOnce(keyAsync.valueOrNull);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l.tideApiKeyDesc,
-                style: const TextStyle(fontSize: 12, color: Colors.grey)),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _keyCtrl,
-              decoration: InputDecoration(
-                labelText: l.tideApiKeyLabel,
-                isDense: true,
-              ),
-              obscureText: true,
-              onEditingComplete: () => writeTideApiKey(_keyCtrl.text)
-                  .then((_) => ref.invalidate(tideApiKeyProvider)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 // ── Synchronizácia ───────────────────────────────────────────────

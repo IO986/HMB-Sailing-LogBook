@@ -209,7 +209,8 @@ class WeatherSnapshots extends Table {
 
 /// Kešované predikcie prílivu/odlivu (online fetch, offline zobrazenie —
 /// rovnaký vzor ako [WeatherSnapshots]). `heightM` je výška hladiny nad
-/// lokálnym referenčným datumom poskytovateľa (nie absolútna hĺbka).
+/// strednou hladinou mora (MSL), nie nad mapovým datom (LAT) a nie absolútna
+/// hĺbka — na hĺbku pod kýlom sa nesmie použiť.
 class TideSnapshots extends Table {
   IntColumn get id => integer().autoIncrement()();
   RealColumn get latitude => real()();
@@ -219,6 +220,12 @@ class TideSnapshots extends Table {
   RealColumn get heightM => real()();
   /// 'high' / 'low' pri extrémoch (z providera), inak null (bod na krivke).
   TextColumn get extremeType => text().nullable()();
+  /// Názov miesta, ak si ho používateľ vybral ručne (napr. "Split, Croatia").
+  TextColumn get locationLabel => text().nullable()();
+  /// True, ak predpoveď patrí ručne zvolenej oblasti, nie aktuálnej polohe —
+  /// vtedy sa nesmie hlásiť, že je stiahnutá "ďaleko odtiaľto".
+  BoolColumn get manualSelection =>
+      boolean().withDefault(const Constant(false))();
 }
 
 /// Ručne zadaná historická plavba (spred používania appky) – plne sa
@@ -326,7 +333,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -438,7 +445,13 @@ class AppDatabase extends _$AppDatabase {
         );
       }
       if (from < 18) {
+        // createTable stavia AKTUÁLNY tvar tabuľky, teda už aj so stĺpcami
+        // pridanými v v19 — preto sa nasledujúci blok pre tieto DB preskočí.
         await m.createTable(tideSnapshots);
+      }
+      if (from >= 18 && from < 19) {
+        await m.addColumn(tideSnapshots, tideSnapshots.locationLabel);
+        await m.addColumn(tideSnapshots, tideSnapshots.manualSelection);
       }
     },
     beforeOpen: (details) async {
@@ -658,6 +671,15 @@ class AppDatabase extends _$AppDatabase {
       into(tideSnapshots).insert(e);
 
   Future<void> clearAllTides() => delete(tideSnapshots).go();
+
+  /// Atomicky nahradí celú kešu novou sadou. Stará keš zmizne až vtedy, keď
+  /// sú nové dáta po ruke — zlyhaný fetch tak nesmie pripraviť používateľa
+  /// o predpoveď, ktorá dovtedy fungovala.
+  Future<void> replaceTides(List<TideSnapshotsCompanion> rows) =>
+      transaction(() async {
+        await delete(tideSnapshots).go();
+        await batch((b) => b.insertAll(tideSnapshots, rows));
+      });
 
   Future<List<TideSnapshot>> getTideSnapshots() =>
       (select(tideSnapshots)..orderBy([(t) => OrderingTerm(expression: t.time)]))

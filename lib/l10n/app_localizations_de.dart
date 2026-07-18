@@ -628,16 +628,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nur Orientierungsdaten (typische Richtung/Geschwindigkeit aus Seekarten) — nicht für präzise Navigation; Strömungen variieren saisonal.';
 
   @override
-  String get tideDataSection => 'Gezeitendaten';
-
-  @override
-  String get tideApiKeyLabel => 'WorldTides API-Schlüssel';
-
-  @override
-  String get tideApiKeyDesc =>
-      'Optional — aktiviert weltweite Gezeitenvorhersagen (worldtides.info, kostenlose Stufe verfügbar). Leer lassen, um Gezeiten zu überspringen.';
-
-  @override
   String get tideCardTitle => 'Gezeiten';
 
   @override
@@ -647,10 +637,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nextLowTideLabel => 'Nächste Ebbe';
 
   @override
-  String get noTideApiKey =>
-      'Füge in den Einstellungen einen WorldTides API-Schlüssel hinzu, um Gezeitenvorhersagen zu aktivieren';
-
-  @override
   String get noTideData => 'Noch keine Gezeitendaten';
 
   @override
@@ -658,6 +644,64 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get downloadingTides => 'Gezeitenvorhersage wird heruntergeladen...';
+
+  @override
+  String get tideMslWarning =>
+      'Höhen beziehen sich auf den mittleren Meeresspiegel, nicht auf das Kartennull — niemals für die Wassertiefe unter dem Kiel verwenden.';
+
+  @override
+  String get tideNoCoverage =>
+      'Für diese Position gibt es keine Gezeitendaten — sie liegt außerhalb des Seewettergebiets.';
+
+  @override
+  String get tideDownloadFailed =>
+      'Gezeitenvorhersage konnte nicht heruntergeladen werden. Prüfe die Verbindung und versuche es erneut.';
+
+  @override
+  String get tideForecastExpired =>
+      'Die gespeicherte Gezeitenvorhersage ist abgelaufen.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'Vorhersage wurde $km km von hier heruntergeladen — lade sie für diese Position neu.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Heruntergeladen am $when — für die aktuelle Vorhersage neu laden.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Meeresströmung';
+
+  @override
+  String get oceanCurrentSetsToward => 'Setzt nach (Geschwindigkeit in Knoten)';
+
+  @override
+  String get oceanCurrentNoCoverage =>
+      'Für diese Position gibt es keine Strömungsdaten.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Strömungsvorhersage nicht verfügbar — prüfe die Verbindung.';
+
+  @override
+  String get tideOtherArea => 'Vorhersage für ein anderes Gebiet';
+
+  @override
+  String get tideAreaSearchLabel => 'Hafen, Ort oder Bucht';
+
+  @override
+  String get tideAreaSearchHint => 'z. B. Split';
+
+  @override
+  String get tideAreaNoResults =>
+      'Nichts gefunden — versuche einen anderen Namen.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Vorhersage für $place';
+  }
 
   @override
   String get settingsTitle => 'Einstellungen';
@@ -1865,7 +1909,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Die Wetter-Registerkarte zeigt die Vorhersage für deine aktuelle Position.\n\n• Aktualisiert sich automatisch bei Positionsänderung\n• Wind, Wellen, Temperatur und Bedingungen für die kommenden Stunden\n• Offline: letzte gespeicherte Vorhersage wird angezeigt';
+      'Die Wetter-Registerkarte zeigt die Vorhersage für deine aktuelle Position.\n\n• Aktualisiert sich automatisch bei Positionsänderung\n• Wind, Wellen, Temperatur und Bedingungen für die kommenden Stunden\n• Offline: letzte gespeicherte Vorhersage wird angezeigt\n\nSonne, Mond und Gezeiten:\n• Sonnenauf- und -untergang sowie die Mondphase werden auf dem Gerät berechnet — ohne Verbindung\n• Tippe auf Aktualisieren in der Gezeiten-Karte für eine 7-Tage-Vorhersage (kostenlos, ohne API-Schlüssel)\n• Gezeiten werden zwischengespeichert und bleiben offline lesbar; die Karte warnt, wenn die Vorhersage alt ist oder weit von hier geladen wurde\n• ⚠ Gezeitenhöhen beziehen sich auf den mittleren Meeresspiegel, nicht auf das Kartennull — niemals für die Wassertiefe unter dem Kiel verwenden\n\nMeeresströmung:\n• Die Karte Meeresströmung zeigt die echte Vorhersage für deine Position in Knoten und die Richtung, in die die Strömung setzt\n• Auf der Karte zeichnet die Doppelpfeil-Schaltfläche ein Strömungsgitter für den sichtbaren Bereich; die Pfeile zeigen, wohin das Wasser fließt\n• Nicht zu verwechseln mit der Ebene Ozeanströmungen — das ist eine Referenzkarte der großen globalen Strömungen';
 
   @override
   String get guideSafetyMobTitle => 'MOB & Anker';

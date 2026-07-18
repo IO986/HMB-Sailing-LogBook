@@ -9,26 +9,39 @@ class TideService {
   AppDatabase? _db;
   void setDatabase(AppDatabase db) => _db = db;
 
-  Future<List<TidePoint>> getForecast() async {
-    if (_db == null) return [];
-    final snaps = await _db!.getTideSnapshots();
-    return snaps
-        .map((e) => TidePoint(
-              time: e.time,
-              heightM: e.heightM,
-              extremeType: e.extremeType,
-            ))
-        .toList();
+  /// Kešovaná predpoveď aj s pôvodom (miesto + čas stiahnutia), aby volajúci
+  /// vedel varovať pri starých alebo vzdialených dátach.
+  Future<TideForecast> getForecast() async {
+    final db = _db;
+    if (db == null) return TideForecast.empty;
+
+    final snaps = await db.getTideSnapshots();
+    if (snaps.isEmpty) return TideForecast.empty;
+
+    // Keš vždy patrí jednému miestu a jednému stiahnutiu (replaceTides ju
+    // nahrádza celú), takže stačí prvý riadok.
+    final origin = snaps.first;
+
+    return TideForecast(
+      points: [
+        for (final e in snaps)
+          TidePoint(
+            time: e.time,
+            heightM: e.heightM,
+            extremeType: e.extremeType,
+          ),
+      ],
+      latitude: origin.latitude,
+      longitude: origin.longitude,
+      downloadedAt: origin.downloadedAt,
+      locationLabel: origin.locationLabel,
+      manualSelection: origin.manualSelection,
+    );
   }
 
   /// Najbližší nadchádzajúci príliv/odliv (extrém), alebo null bez dát.
   Future<TidePoint?> getNextExtreme() async {
-    final points = await getForecast();
-    final now = DateTime.now().toUtc();
-    final future = points
-        .where((p) => p.extremeType != null && p.time.isAfter(now))
-        .toList()
-      ..sort((a, b) => a.time.compareTo(b.time));
-    return future.isEmpty ? null : future.first;
+    final forecast = await getForecast();
+    return forecast.nextExtremeAfter(DateTime.now());
   }
 }

@@ -1,6 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+/// A place the user can pick to fetch a forecast for.
+class GeocodedPlace {
+  final String name;
+  final double latitude;
+  final double longitude;
+
+  const GeocodedPlace({
+    required this.name,
+    required this.latitude,
+    required this.longitude,
+  });
+}
+
 class GeocodingService {
   static final GeocodingService _i = GeocodingService._();
   factory GeocodingService() => _i;
@@ -12,6 +25,49 @@ class GeocodingService {
     receiveTimeout: const Duration(seconds: 8),
     headers: {'User-Agent': 'HMBSailingLogbook/1.0 (https://logbook.hmba.boats)'},
   ));
+
+  /// Forward search: place name → candidate positions.
+  ///
+  /// Used to fetch a forecast for somewhere other than where you are —
+  /// planning a Croatian trip from a landlocked home has to work.
+  /// Returns an empty list on any failure.
+  Future<List<GeocodedPlace>> searchPlaces(String query) async {
+    if (query.trim().length < 2) return const [];
+    try {
+      final resp = await _dio.get('/search', queryParameters: {
+        'format': 'json',
+        'q': query.trim(),
+        'limit': '8',
+        'addressdetails': '1',
+      });
+
+      final data = resp.data as List?;
+      if (data == null) return const [];
+
+      return [
+        for (final raw in data)
+          if (raw is Map<String, dynamic>)
+            GeocodedPlace(
+              name: _shortName(raw),
+              latitude: double.parse(raw['lat'] as String),
+              longitude: double.parse(raw['lon'] as String),
+            ),
+      ];
+    } catch (e) {
+      debugPrint('[GEO] Place search failed: $e');
+      return const [];
+    }
+  }
+
+  /// "Split, Split-Dalmatia County, Croatia" → "Split, Croatia" — enough to
+  /// tell two same-named places apart without filling the row.
+  static String _shortName(Map<String, dynamic> raw) {
+    final display = (raw['display_name'] as String?) ?? '';
+    final parts = display.split(',').map((p) => p.trim()).toList();
+    if (parts.isEmpty) return display;
+    if (parts.length == 1) return parts.first;
+    return '${parts.first}, ${parts.last}';
+  }
 
   /// Reverse geocode GPS → human-readable port/marina/bay name.
   /// Returns null on any failure.

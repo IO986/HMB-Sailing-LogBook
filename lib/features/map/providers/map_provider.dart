@@ -1,10 +1,11 @@
-import 'package:flutter_map/flutter_map.dart';
+﻿import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/marine_poi_service.dart';
+import '../../../core/services/ocean_current_service.dart';
 import '../../../core/services/rain_radar_service.dart';
 import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
@@ -95,6 +96,18 @@ final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
   return WindGridService().fetchForBounds(bounds);
 });
 
+/// Mriežka šípok reálneho morského prúdu pre viditeľný výrez (Open-Meteo).
+/// Odlišná od [MapState.showOceanCurrents], ktorá kreslí curated globálne
+/// prúdy — táto je predpoveď pre práve zobrazené miesto.
+final currentGridProvider = FutureProvider<List<SeaCurrentPoint>>((ref) async {
+  final show = ref.watch(
+      mapNotifierProvider.select((s) => s.showCurrentGrid));
+  if (!show) return const [];
+  final bounds = ref.watch(mapViewBoundsProvider);
+  if (bounds == null) return const [];
+  return OceanCurrentService().fetchForBounds(bounds);
+});
+
 class MapNotifier extends Notifier<MapState> {
   @override
   MapState build() => const MapState();
@@ -118,6 +131,9 @@ class MapNotifier extends Notifier<MapState> {
 
   void toggleOceanCurrents() =>
       state = state.copyWith(showOceanCurrents: !state.showOceanCurrents);
+
+  void toggleCurrentGrid() =>
+      state = state.copyWith(showCurrentGrid: !state.showCurrentGrid);
 
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
   void previewDay(int dayLogId, String label) => state = _withPreview(
@@ -147,6 +163,7 @@ class MapNotifier extends Notifier<MapState> {
         showRainRadar: state.showRainRadar,
         showWindGrid: state.showWindGrid,
         showOceanCurrents: state.showOceanCurrents,
+        showCurrentGrid: state.showCurrentGrid,
         followGps: state.followGps,
         previewDayLogId: previewDayLogId,
         previewCharterId: previewCharterId,
@@ -187,6 +204,8 @@ class MapState {
   final bool showWindGrid;
   /// Referenčná vrstva hlavných oceánskych prúdov (lokálne curated dáta).
   final bool showOceanCurrents;
+  /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
+  final bool showCurrentGrid;
   final bool followGps;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
@@ -200,6 +219,7 @@ class MapState {
     this.showRainRadar = false,
     this.showWindGrid = false,
     this.showOceanCurrents = false,
+    this.showCurrentGrid = false,
     this.followGps = true,
     this.previewDayLogId,
     this.previewCharterId,
@@ -211,6 +231,7 @@ class MapState {
     bool? showRainRadar,
     bool? showWindGrid,
     bool? showOceanCurrents,
+    bool? showCurrentGrid,
     bool? followGps,
     int? previewDayLogId,
     int? previewCharterId,
@@ -221,6 +242,7 @@ class MapState {
         showRainRadar: showRainRadar ?? this.showRainRadar,
         showWindGrid: showWindGrid ?? this.showWindGrid,
         showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
+        showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
         followGps: followGps ?? this.followGps,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,

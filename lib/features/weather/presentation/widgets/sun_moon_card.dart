@@ -48,6 +48,9 @@ class SunMoonCard extends StatelessWidget {
                       ?.copyWith(fontWeight: FontWeight.bold)),
             ]),
             const SizedBox(height: 12),
+            // Pevné šírky tu predtým pretiekli na užších displejoch (a pri
+            // dlhších prekladoch názvov fáz). Obe polovice sú preto pružné
+            // a texty sa smú zalomiť.
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -76,30 +79,39 @@ class SunMoonCard extends StatelessWidget {
                           ],
                         ),
                 ),
-                SizedBox(
-                  width: 72,
-                  height: 72,
-                  child: CustomPaint(
-                    painter: _MoonPhasePainter(
-                      illumination: illumination,
-                      waxing: waxing,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                SizedBox(
-                  width: 96,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(phaseNames[phaseIndex],
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 13)),
-                      Text(
-                          '${l.moonIlluminationLabel}: '
-                          '${(illumination * 100).round()}%',
-                          style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CustomPaint(
+                          painter: _MoonPhasePainter(
+                            illumination: illumination,
+                            waxing: waxing,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(phaseNames[phaseIndex],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13)),
+                            Text(
+                                '${l.moonIlluminationLabel}: '
+                                '${(illumination * 100).round()}%',
+                                style: const TextStyle(
+                                    fontSize: 11, color: Colors.grey)),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -122,7 +134,13 @@ class _SunRow extends StatelessWidget {
   Widget build(BuildContext context) => Row(children: [
         Icon(icon, size: 18, color: Colors.grey),
         const SizedBox(width: 8),
-        Text('$label: ', style: const TextStyle(color: Colors.grey)),
+        // Popisky sú preložené do 5 jazykov a niektoré sú výrazne dlhšie —
+        // musia sa smieť skrátiť, nie pretiecť.
+        Flexible(
+          child: Text('$label: ',
+              style: const TextStyle(color: Colors.grey),
+              overflow: TextOverflow.ellipsis),
+        ),
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
       ]);
 }

@@ -627,16 +627,6 @@ class AppLocalizationsUk extends AppLocalizations {
       'Лише орієнтовні дані (типовий напрямок/швидкість за лоційними картами) — не для точної навігації; течії сезонно змінюються.';
 
   @override
-  String get tideDataSection => 'Дані припливів';
-
-  @override
-  String get tideApiKeyLabel => 'API-ключ WorldTides';
-
-  @override
-  String get tideApiKeyDesc =>
-      'Необов\'язково — вмикає прогнози припливів у всьому світі (worldtides.info, доступний безкоштовний рівень). Залиште порожнім, щоб пропустити.';
-
-  @override
   String get tideCardTitle => 'Приплив/відплив';
 
   @override
@@ -646,10 +636,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get nextLowTideLabel => 'Найближчий відплив';
 
   @override
-  String get noTideApiKey =>
-      'Додайте API-ключ WorldTides у Налаштуваннях для прогнозів припливів';
-
-  @override
   String get noTideData => 'Ще немає даних про приплив';
 
   @override
@@ -657,6 +643,62 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get downloadingTides => 'Завантаження прогнозу припливів...';
+
+  @override
+  String get tideMslWarning =>
+      'Висоти подано над середнім рівнем моря, а не над нулем карти — ніколи не використовуйте їх для глибини під кілем.';
+
+  @override
+  String get tideNoCoverage =>
+      'Для цієї позиції немає даних про приплив — вона поза зоною морського прогнозу.';
+
+  @override
+  String get tideDownloadFailed =>
+      'Не вдалося завантажити прогноз припливів. Перевірте з\'єднання та спробуйте ще раз.';
+
+  @override
+  String get tideForecastExpired => 'Збережений прогноз припливів вичерпано.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'Прогноз завантажено за $km км звідси — завантажте його для цієї позиції.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Завантажено $when — завантажте знову для найновішого прогнозу.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Морська течія';
+
+  @override
+  String get oceanCurrentSetsToward => 'Тече у напрямку (швидкість у вузлах)';
+
+  @override
+  String get oceanCurrentNoCoverage =>
+      'Для цієї позиції немає даних про течію.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Прогноз течії недоступний — перевірте з\'єднання.';
+
+  @override
+  String get tideOtherArea => 'Прогноз для іншого району';
+
+  @override
+  String get tideAreaSearchLabel => 'Порт, місто або бухта';
+
+  @override
+  String get tideAreaSearchHint => 'напр. Split';
+
+  @override
+  String get tideAreaNoResults => 'Нічого не знайдено — спробуйте іншу назву.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Прогноз для $place';
+  }
 
   @override
   String get settingsTitle => 'Налаштування';
@@ -1855,7 +1897,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Вкладка Погода показує прогноз за поточним місцезнаходженням.\n\n• Оновлюється автоматично при зміні позиції\n• Показує вітер, хвилі, температуру та умови на найближчі години\n• Без інтернету: відображається останній збережений прогноз';
+      'Вкладка Погода показує прогноз за поточним місцезнаходженням.\n\n• Оновлюється автоматично при зміні позиції\n• Показує вітер, хвилі, температуру та умови на найближчі години\n• Без інтернету: відображається останній збережений прогноз\n\nСонце, місяць і припливи:\n• Схід, захід сонця та фаза місяця обчислюються на пристрої — інтернет не потрібен\n• Натисніть оновити на картці Приплив/відплив, щоб завантажити 7-денний прогноз (безкоштовно, без API-ключа)\n• Припливи кешуються й лишаються доступними офлайн; картка попередить, якщо прогноз старий або завантажений далеко звідси\n• ⚠ Висоти припливу подано над середнім рівнем моря, а не над нулем карти — ніколи не використовуйте їх для глибини під кілем\n\nМорська течія:\n• Картка Морська течія показує реальний прогноз для вашої позиції у вузлах і напрямок, КУДИ тече течія\n• На карті кнопка з подвійною стрілкою малює сітку течії для видимої області; стрілки вказують, куди рухається вода\n• Не плутайте з шаром Океанічні течії — це довідкова карта великих глобальних течій';
 
   @override
   String get guideSafetyMobTitle => 'МЗБ і якір';

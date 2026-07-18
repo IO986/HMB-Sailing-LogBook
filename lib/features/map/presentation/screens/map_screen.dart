@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -18,6 +18,7 @@ import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
+import '../../../../core/services/ocean_current_service.dart';
 import '../../../../core/services/tile_cache.dart';
 import '../../../../core/services/wind_grid_service.dart';
 import '../../../../core/utils/distance_calculator.dart';
@@ -79,15 +80,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// až keď sa mapa na chvíľu ustáli, nie počas každého frame posunu.
   void _schedulePoiRefresh() {
     final st = ref.read(mapNotifierProvider);
-    if (!st.showMarinePois && !st.showWindGrid) return;
+    if (!st.showMarinePois && !st.showWindGrid && !st.showCurrentGrid) return;
     _poiDebounce?.cancel();
     _poiDebounce = Timer(const Duration(milliseconds: 700), () {
       if (!mounted || !_mapReady) return;
       final camera = _mapController.camera;
       // POI pod min zoomom nefetchuje (service kešuje po bunkách),
-      // veterná mriežka funguje pri každom zoome.
-      if (camera.zoom < _poiMinZoom &&
-          !ref.read(mapNotifierProvider).showWindGrid) {
+      // veterná a prúdová mriežka fungujú pri každom zoome.
+      final gridOn = ref.read(mapNotifierProvider).showWindGrid ||
+          ref.read(mapNotifierProvider).showCurrentGrid;
+      if (camera.zoom < _poiMinZoom && !gridOn) {
         return;
       }
       ref.read(mapViewBoundsProvider.notifier).state = camera.visibleBounds;
@@ -157,6 +159,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final windPoints = mapState.showWindGrid
         ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
         : const <WindPoint>[];
+    final currentPoints = mapState.showCurrentGrid
+        ? (ref.watch(currentGridProvider).valueOrNull ?? const <SeaCurrentPoint>[])
+        : const <SeaCurrentPoint>[];
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -320,6 +325,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       point: LatLng(w.lat, w.lon),
                       width: 46, height: 46,
                       child: _WindArrow(point: w),
+                    ),
+                ]),
+
+              // ── Šípky morského prúdu (Open-Meteo mriežka) ────
+              if (currentPoints.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (final c in currentPoints)
+                    Marker(
+                      point: LatLng(c.lat, c.lon),
+                      width: 46, height: 46,
+                      child: _CurrentArrowMarker(point: c),
                     ),
                 ]),
 
@@ -574,10 +590,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
 
           // ── Ovládacie prvky ──────────────────────────────────
+          // Stĺpec je ohraničený aj zdola (rovnaké odsadenie ako GPS/zoom
+          // vľavo), aby posledné tlačidlá nezaliezali pod spodnú lištu.
+          // Keď sa na nízky displej nezmestia, dá sa v ňom rolovať.
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
+            bottom: 100,
             right: 12,
-            child: Column(children: [
+            child: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
               // Prepínač mapa / satelit
               _layerFab(
                 heroTag: 'baseOsm',
@@ -661,6 +682,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onLongPress: () => context.push('/ocean-currents'),
               ),
               const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'currentGrid',
+                tooltip: 'Morský prúd — predpoveď (kt)',
+                icon: Icons.double_arrow,
+                active: mapState.showCurrentGrid,
+                onPressed: () {
+                  ref.read(mapNotifierProvider.notifier).toggleCurrentGrid();
+                  if (ref.read(mapNotifierProvider).showCurrentGrid &&
+                      _mapReady) {
+                    ref.read(mapViewBoundsProvider.notifier).state =
+                        _mapController.camera.visibleBounds;
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'voyagePreview',
                 tooltip: 'Prehľad plavby',
@@ -695,7 +731,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onPressed: () => _openOfflineDownload(context),
                 child: const Icon(Icons.download_for_offline_outlined),
               ),
-            ]),
+              ]),
+            ),
           ),
 
           // ── Panel pravítka / trasy ────────────────────────────
@@ -1197,6 +1234,42 @@ class _WindArrow extends StatelessWidget {
         child: Icon(Icons.navigation, color: color, size: 20),
       ),
       Text('${kn.round()}',
+          style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          )),
+    ]);
+  }
+}
+
+// ── Ocean current arrow ───────────────────────────────────────
+
+class _CurrentArrowMarker extends StatelessWidget {
+  final SeaCurrentPoint point;
+  const _CurrentArrowMarker({required this.point});
+
+  @override
+  Widget build(BuildContext context) {
+    final kn = point.speedKn;
+    // Prúdy sú rádovo slabšie než vietor — prahy v desatinách uzla, inak by
+    // bolo všetko rovnako zelené.
+    final color = kn < 0.5
+        ? Colors.green.shade600
+        : kn < 1.5
+            ? Colors.teal.shade600
+            : kn < 3
+                ? Colors.orange.shade800
+                : Colors.red.shade700;
+
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      Transform.rotate(
+        // Oceánografická konvencia: smer je KAM prúd tečie, takže sa šípka
+        // otáča priamo o dirDeg (na rozdiel od vetra, kde sa pridáva 180°).
+        angle: point.dirDeg * math.pi / 180,
+        child: Icon(Icons.double_arrow, color: color, size: 20),
+      ),
+      Text(kn.toStringAsFixed(1),
           style: TextStyle(
             color: color,
             fontSize: 10,

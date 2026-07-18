@@ -626,16 +626,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Datos solo orientativos (dirección/velocidad típica según cartas de pilotaje) — no para navegación de precisión; las corrientes varían estacionalmente.';
 
   @override
-  String get tideDataSection => 'Datos de mareas';
-
-  @override
-  String get tideApiKeyLabel => 'Clave API de WorldTides';
-
-  @override
-  String get tideApiKeyDesc =>
-      'Opcional — activa predicciones de mareas en todo el mundo (worldtides.info, nivel gratuito disponible). Déjalo vacío para omitir las mareas.';
-
-  @override
   String get tideCardTitle => 'Marea';
 
   @override
@@ -645,10 +635,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nextLowTideLabel => 'Próxima bajamar';
 
   @override
-  String get noTideApiKey =>
-      'Añade una clave API de WorldTides en Ajustes para activar las predicciones de mareas';
-
-  @override
   String get noTideData => 'Aún no hay datos de mareas';
 
   @override
@@ -656,6 +642,64 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get downloadingTides => 'Descargando predicción de mareas...';
+
+  @override
+  String get tideMslWarning =>
+      'Las alturas son sobre el nivel medio del mar, no sobre el cero hidrográfico — nunca las uses para la profundidad bajo la quilla.';
+
+  @override
+  String get tideNoCoverage =>
+      'No hay datos de mareas para esta posición — está fuera del área de predicción marina.';
+
+  @override
+  String get tideDownloadFailed =>
+      'No se pudo descargar la predicción de mareas. Comprueba la conexión e inténtalo de nuevo.';
+
+  @override
+  String get tideForecastExpired =>
+      'La predicción de mareas guardada ha caducado.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'La predicción se descargó a $km km de aquí — vuelve a descargarla para esta posición.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Descargada el $when — vuelve a descargarla para la predicción más reciente.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Corriente marina';
+
+  @override
+  String get oceanCurrentSetsToward => 'Va hacia (velocidad en nudos)';
+
+  @override
+  String get oceanCurrentNoCoverage =>
+      'No hay datos de corriente para esta posición.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Predicción de corriente no disponible — comprueba la conexión.';
+
+  @override
+  String get tideOtherArea => 'Predicción para otra zona';
+
+  @override
+  String get tideAreaSearchLabel => 'Puerto, población o bahía';
+
+  @override
+  String get tideAreaSearchHint => 'p. ej. Split';
+
+  @override
+  String get tideAreaNoResults =>
+      'No se encontró nada — prueba con otro nombre.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Predicción para $place';
+  }
 
   @override
   String get settingsTitle => 'Ajustes';
@@ -1859,7 +1903,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'La pestaña Tiempo muestra el pronóstico según tu posición actual.\n\n• Se actualiza automáticamente al cambiar de posición\n• Muestra viento, oleaje, temperatura y condiciones para las próximas horas\n• Sin conexión: se muestra el último pronóstico guardado';
+      'La pestaña Tiempo muestra el pronóstico según tu posición actual.\n\n• Se actualiza automáticamente al cambiar de posición\n• Muestra viento, oleaje, temperatura y condiciones para las próximas horas\n• Sin conexión: se muestra el último pronóstico guardado\n\nSol, luna y mareas:\n• El orto, el ocaso y la fase lunar se calculan en el dispositivo — sin conexión\n• Toca actualizar en la tarjeta de Marea para descargar una predicción de 7 días (gratis, sin clave API)\n• Las mareas se guardan en caché y siguen visibles sin conexión; la tarjeta avisa si la predicción es antigua o se descargó lejos de aquí\n• ⚠ Las alturas de marea son sobre el nivel medio del mar, no sobre el cero hidrográfico — nunca las uses para calcular la profundidad bajo la quilla\n\nCorriente marina:\n• La tarjeta Corriente marina muestra la predicción real para tu posición en nudos y la dirección hacia la que va la corriente\n• En el mapa, el botón de doble flecha dibuja una malla de corriente para el área visible; las flechas indican hacia dónde se mueve el agua\n• No confundir con la capa Corrientes oceánicas — esa es una carta de referencia de las grandes corrientes globales';
 
   @override
   String get guideSafetyMobTitle => 'MOB y ancla';

@@ -21,6 +21,7 @@ import 'core/services/tide_service.dart';
 import 'core/services/weather_repository.dart';
 import 'core/services/weather_service.dart';
 import 'core/services/account_service.dart';
+import 'core/providers/tide_settings_provider.dart';
 import 'core/services/sync_service.dart';
 import 'features/export/services/export_service.dart';
 import 'l10n/app_localizations.dart';
@@ -83,6 +84,10 @@ Future<void> main() async {
   await LocationService().init();
   wireDatabaseSingletons(db);
   await AccountService().init();
+
+  // Prílivy prešli z WorldTides (platené, kľúč) na Open-Meteo (bez kľúča).
+  // Kto si kľúč stihol uložiť, nemá dôvod nechať si ho v zariadení ležať.
+  await purgeLegacyTideApiKey();
 
   await BackgroundService.init();
 

@@ -1,6 +1,23 @@
 import 'package:drift/drift.dart' as drift;
-import 'tide_forecast_service.dart';
+import 'package:flutter/foundation.dart';
+
 import '../database/app_database.dart';
+import '../models/tide_data.dart';
+import 'tide_forecast_service.dart';
+
+/// Výsledok pokusu o stiahnutie predpovede — volajúci potrebuje rozlíšiť
+/// "nepodarilo sa spojiť" od "toto miesto proste prílivy nemá", inak by
+/// jachtár vo vnútrozemí donekonečna klikal na obnoviť.
+enum TideSyncResult {
+  /// Nová predpoveď je stiahnutá a uložená.
+  updated,
+
+  /// Miesto nemá morské pokrytie (vnútrozemie). Stará keš zostáva.
+  noCoverage,
+
+  /// Fetch zlyhal (offline, výpadok API). Stará keš zostáva použiteľná.
+  failed,
+}
 
 class TideRepository {
   static final TideRepository _i = TideRepository._();
@@ -10,42 +27,48 @@ class TideRepository {
   AppDatabase? _db;
   void setDatabase(AppDatabase db) => _db = db;
 
-  final _forecast = TideForecastService();
+  TideForecastService _forecast = TideForecastService();
 
-  Future<void> syncTides({
+  @visibleForTesting
+  void setForecastService(TideForecastService service) => _forecast = service;
+
+  /// [locationLabel] a [manualSelection] sa vyplnia, keď si oblasť zvolil
+  /// používateľ (napr. plánuje plavbu z domu ďaleko od mora).
+  Future<TideSyncResult> syncTides({
     required double lat,
     required double lon,
-    required String apiKey,
+    String? locationLabel,
+    bool manualSelection = false,
   }) async {
     final db = _db;
-    if (db == null) return;
-    await db.clearAllTides();
+    if (db == null) return TideSyncResult.failed;
 
-    final data = await _forecast.fetchTides(lat: lat, lon: lon, apiKey: apiKey);
+    // Fetch ide vždy PRED zápisom. Keš sa nahradí až keď sú nové dáta v ruke,
+    // takže obnovenie bez signálu nechá pôvodnú predpoveď nedotknutú.
+    final List<TidePoint> points;
+    try {
+      points = await _forecast.fetchTides(lat: lat, lon: lon);
+    } catch (_) {
+      return TideSyncResult.failed;
+    }
+
+    if (points.isEmpty) return TideSyncResult.noCoverage;
+
     final now = DateTime.now();
+    await db.replaceTides([
+      for (final p in points)
+        TideSnapshotsCompanion.insert(
+          latitude: lat,
+          longitude: lon,
+          time: p.time,
+          downloadedAt: now,
+          heightM: p.heightM,
+          extremeType: drift.Value(p.extremeType),
+          locationLabel: drift.Value(locationLabel),
+          manualSelection: drift.Value(manualSelection),
+        ),
+    ]);
 
-    final heights = (data['heights'] as List?) ?? const [];
-    for (final h in heights) {
-      final map = h as Map<String, dynamic>;
-      await db.insertTideSnapshot(TideSnapshotsCompanion.insert(
-        latitude: lat, longitude: lon,
-        time: DateTime.fromMillisecondsSinceEpoch((map['dt'] as int) * 1000, isUtc: true),
-        downloadedAt: now,
-        heightM: (map['height'] as num).toDouble(),
-      ));
-    }
-
-    final extremes = (data['extremes'] as List?) ?? const [];
-    for (final e in extremes) {
-      final map = e as Map<String, dynamic>;
-      final type = (map['type'] as String).toLowerCase(); // "High" / "Low"
-      await db.insertTideSnapshot(TideSnapshotsCompanion.insert(
-        latitude: lat, longitude: lon,
-        time: DateTime.fromMillisecondsSinceEpoch((map['dt'] as int) * 1000, isUtc: true),
-        downloadedAt: now,
-        heightM: (map['height'] as num).toDouble(),
-        extremeType: drift.Value(type),
-      ));
-    }
+    return TideSyncResult.updated;
   }
 }

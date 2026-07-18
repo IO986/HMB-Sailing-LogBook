@@ -625,16 +625,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reference data only (typical direction/speed from pilot charts) — not for precision navigation; currents vary seasonally.';
 
   @override
-  String get tideDataSection => 'Tide Data';
-
-  @override
-  String get tideApiKeyLabel => 'WorldTides API key';
-
-  @override
-  String get tideApiKeyDesc =>
-      'Optional — enables tide predictions worldwide (worldtides.info, free tier available). Leave empty to skip tide data.';
-
-  @override
   String get tideCardTitle => 'Tide';
 
   @override
@@ -644,10 +634,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextLowTideLabel => 'Next low tide';
 
   @override
-  String get noTideApiKey =>
-      'Add a WorldTides API key in Settings to enable tide predictions';
-
-  @override
   String get noTideData => 'No tide data yet';
 
   @override
@@ -655,6 +641,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get downloadingTides => 'Downloading tide forecast...';
+
+  @override
+  String get tideMslWarning =>
+      'Heights are above mean sea level, not chart datum — never use them for depth under the keel.';
+
+  @override
+  String get tideNoCoverage =>
+      'No tide data for this position — it is outside the marine forecast area.';
+
+  @override
+  String get tideDownloadFailed =>
+      'Could not download the tide forecast. Check your connection and try again.';
+
+  @override
+  String get tideForecastExpired => 'The stored tide forecast has run out.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'Forecast was downloaded $km km from here — re-download it for this position.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Downloaded $when — re-download for the latest forecast.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Sea current';
+
+  @override
+  String get oceanCurrentSetsToward => 'Sets toward (speed in knots)';
+
+  @override
+  String get oceanCurrentNoCoverage => 'No current data for this position.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Current forecast unavailable — check your connection.';
+
+  @override
+  String get tideOtherArea => 'Forecast for another area';
+
+  @override
+  String get tideAreaSearchLabel => 'Port, town or bay';
+
+  @override
+  String get tideAreaSearchHint => 'e.g. Split';
+
+  @override
+  String get tideAreaNoResults => 'Nothing found — try a different name.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Forecast for $place';
+  }
 
   @override
   String get settingsTitle => 'Settings';
@@ -1851,7 +1892,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• Shows wind, waves, temperature and conditions for the coming hours\n• If offline, the last saved forecast is displayed';
+      'The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• Shows wind, waves, temperature and conditions for the coming hours\n• If offline, the last saved forecast is displayed\n\nSun, moon and tides:\n• Sunrise, sunset and the moon phase are calculated on the device — no connection needed\n• Tap refresh on the Tide card to download a 7-day tide forecast (free, no API key)\n• Tides are cached, so they stay readable offline; the card warns you when the forecast is old or was downloaded far from here\n• ⚠ Tide heights are above mean sea level, not chart datum — never use them to work out depth under the keel\n\nSea current:\n• The Sea current card shows the real forecast for your position in knots, and the direction the current sets toward\n• On the map, the double-arrow button draws a current grid for the visible area; the arrows point the way the water moves\n• Not to be confused with the Ocean currents layer — that one is a reference chart of the great global currents';
 
   @override
   String get guideSafetyMobTitle => 'MOB & Anchor';

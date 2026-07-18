@@ -625,16 +625,6 @@ class AppLocalizationsSk extends AppLocalizations {
       'Len orientačné dáta (typický smer/rýchlosť z pilotných máp) — nie pre presnú navigáciu, prúdy sa sezónne menia.';
 
   @override
-  String get tideDataSection => 'Dáta prílivu/odlivu';
-
-  @override
-  String get tideApiKeyLabel => 'WorldTides API kľúč';
-
-  @override
-  String get tideApiKeyDesc =>
-      'Voliteľné — zapne predikcie prílivu/odlivu celosvetovo (worldtides.info, dostupný free tier). Nechaj prázdne ak prílivy nepotrebuješ.';
-
-  @override
   String get tideCardTitle => 'Príliv/odliv';
 
   @override
@@ -644,10 +634,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get nextLowTideLabel => 'Najbližší odliv';
 
   @override
-  String get noTideApiKey =>
-      'Pridaj WorldTides API kľúč v Nastaveniach pre predikcie prílivu/odlivu';
-
-  @override
   String get noTideData => 'Zatiaľ žiadne dáta o prílive';
 
   @override
@@ -655,6 +641,61 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get downloadingTides => 'Sťahujem predpoveď prílivu...';
+
+  @override
+  String get tideMslWarning =>
+      'Výšky sú nad strednou hladinou mora, nie nad mapovým datom — nikdy ich nepoužívaj na hĺbku pod kýlom.';
+
+  @override
+  String get tideNoCoverage =>
+      'Pre túto polohu nemáme dáta o prílive — je mimo oblasti morskej predpovede.';
+
+  @override
+  String get tideDownloadFailed =>
+      'Predpoveď prílivu sa nepodarilo stiahnuť. Skontroluj pripojenie a skús znova.';
+
+  @override
+  String get tideForecastExpired => 'Uložená predpoveď prílivu sa minula.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'Predpoveď bola stiahnutá $km km odtiaľto — stiahni ju znova pre túto polohu.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Stiahnuté $when — pre najnovšiu predpoveď stiahni znova.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Morský prúd';
+
+  @override
+  String get oceanCurrentSetsToward => 'Tečie smerom na (rýchlosť v uzloch)';
+
+  @override
+  String get oceanCurrentNoCoverage => 'Pre túto polohu nemáme dáta o prúde.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Predpoveď prúdu nie je dostupná — skontroluj pripojenie.';
+
+  @override
+  String get tideOtherArea => 'Predpoveď pre inú oblasť';
+
+  @override
+  String get tideAreaSearchLabel => 'Prístav, mesto alebo zátoka';
+
+  @override
+  String get tideAreaSearchHint => 'napr. Split';
+
+  @override
+  String get tideAreaNoResults => 'Nič sa nenašlo — skús iný názov.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Predpoveď pre $place';
+  }
 
   @override
   String get settingsTitle => 'Nastavenia';
@@ -1852,7 +1893,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď';
+      'Záložka Počasie zobrazuje predpoveď podľa aktuálnej polohy.\n\n• Aktualizuje sa automaticky pri zmene polohy\n• Zobrazuje vietor, vlny, teplotu a podmienky nasledujúcich hodín\n• Ak nemáš internet, zobrazí sa posledná uložená predpoveď\n\nSlnko, mesiac a prílivy:\n• Východ, západ slnka a fáza mesiaca sa počítajú priamo v zariadení — internet netreba\n• Ťuknutím na obnoviť v karte Príliv/odliv stiahneš 7-dňovú predpoveď (zadarmo, bez API kľúča)\n• Prílivy sa kešujú, takže zostanú čitateľné aj offline; karta ťa upozorní, keď je predpoveď stará alebo stiahnutá ďaleko odtiaľto\n• ⚠ Výšky prílivu sú nad strednou hladinou mora, nie nad mapovým datom — nikdy ich nepoužívaj na výpočet hĺbky pod kýlom\n\nMorský prúd:\n• Karta Morský prúd ukazuje reálnu predpoveď pre tvoju polohu v uzloch a smer, KAM prúd tečie\n• Na mape tlačidlo s dvojšípkou vykreslí mriežku prúdu pre viditeľnú oblasť; šípky ukazujú, kam sa voda pohybuje\n• Nezamieňaj s vrstvou Oceánske prúdy — tá je referenčná mapa veľkých globálnych prúdov';
 
   @override
   String get guideSafetyMobTitle => 'MOB a kotva';

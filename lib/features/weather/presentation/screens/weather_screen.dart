@@ -12,6 +12,7 @@ import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/models/marine_instrument_data.dart';
+import '../widgets/ocean_current_card.dart';
 import '../widgets/sun_moon_card.dart';
 import '../widgets/tide_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
@@ -244,6 +245,11 @@ class _WeatherContent extends ConsumerWidget {
         Builder(builder: (context) {
           final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
           return TideCard(lat: pos?.latitude, lon: pos?.longitude);
+        }),
+        const SizedBox(height: 12),
+        Builder(builder: (context) {
+          final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+          return OceanCurrentCard(lat: pos?.latitude, lon: pos?.longitude);
         }),
         const SizedBox(height: 12),
         _WindChart(forecast: forecast),
