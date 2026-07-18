@@ -11,6 +11,7 @@ import '../../providers/charter_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
+import '../../../weather/presentation/widgets/sun_moon_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
@@ -70,6 +71,7 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
             charterId: widget.charterId,
             isTracking: isTracking,
             activeDayLogId: GpsTrackingService().activeDayLogId,
+            date: _day!.date,
           ),
     );
   }
@@ -82,10 +84,12 @@ class _EntriesTab extends ConsumerWidget {
   final int dayLogId, charterId;
   final bool isTracking;
   final int? activeDayLogId;
+  final DateTime date;
 
   const _EntriesTab({
     required this.dayLogId, required this.charterId,
     required this.isTracking, required this.activeDayLogId,
+    required this.date,
   });
 
   @override
@@ -104,6 +108,21 @@ class _EntriesTab extends ConsumerWidget {
               isThisDay: isThisDay,
               dayLogId: dayLogId,
             ),
+          )),
+
+          // Slnko/mesiac pre tento deň (odvodené z polohy prvého záznamu)
+          SliverToBoxAdapter(child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Builder(builder: (context) {
+              final withPos = entries.where(
+                  (e) => e.latitude != null && e.longitude != null);
+              final firstWithPos = withPos.isEmpty ? null : withPos.first;
+              return SunMoonCard(
+                lat: firstWithPos?.latitude,
+                lon: firstWithPos?.longitude,
+                date: date,
+              );
+            }),
           )),
 
           // Header záznamy

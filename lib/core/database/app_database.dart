@@ -207,6 +207,20 @@ class WeatherSnapshots extends Table {
   RealColumn get precipitation => real().nullable()();               // mm
 }
 
+/// Kešované predikcie prílivu/odlivu (online fetch, offline zobrazenie —
+/// rovnaký vzor ako [WeatherSnapshots]). `heightM` je výška hladiny nad
+/// lokálnym referenčným datumom poskytovateľa (nie absolútna hĺbka).
+class TideSnapshots extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  RealColumn get latitude => real()();
+  RealColumn get longitude => real()();
+  DateTimeColumn get time => dateTime()();
+  DateTimeColumn get downloadedAt => dateTime()();
+  RealColumn get heightM => real()();
+  /// 'high' / 'low' pri extrémoch (z providera), inak null (bod na krivke).
+  TextColumn get extremeType => text().nullable()();
+}
+
 /// Ručne zadaná historická plavba (spred používania appky) – plne sa
 /// počíta do súhrnov v Knihe míľ.
 class HistoricalVoyages extends Table {
@@ -303,7 +317,7 @@ class OutboxRows extends Table {
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
-  HistoricalVoyages, HandoverProtocols, OutboxRows,
+  HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -312,7 +326,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -422,6 +436,9 @@ class AppDatabase extends _$AppDatabase {
           'CREATE INDEX IF NOT EXISTS idx_outbox_status_created '
           'ON outbox (status, created_at)',
         );
+      }
+      if (from < 18) {
+        await m.createTable(tideSnapshots);
       }
     },
     beforeOpen: (details) async {
@@ -633,6 +650,17 @@ class AppDatabase extends _$AppDatabase {
   Future<List<WeatherSnapshot>> getWeatherSnapshots() =>
       (select(weatherSnapshots)
             ..orderBy([(w) => OrderingTerm(expression: w.forecastTime)]))
+          .get();
+
+  // ── Tide ──────────────────────────────────────────────────────
+
+  Future<int> insertTideSnapshot(TideSnapshotsCompanion e) =>
+      into(tideSnapshots).insert(e);
+
+  Future<void> clearAllTides() => delete(tideSnapshots).go();
+
+  Future<List<TideSnapshot>> getTideSnapshots() =>
+      (select(tideSnapshots)..orderBy([(t) => OrderingTerm(expression: t.time)]))
           .get();
 
   // ── Crew Signatures ───────────────────────────────────────────

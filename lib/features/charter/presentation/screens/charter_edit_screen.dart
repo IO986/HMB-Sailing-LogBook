@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -841,19 +842,30 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     ]);
 
     // Údaje skippera sa uložia ako predvoľba pre budúce plavby (nahrádza
-    // zrušený Profil skippera v Nastaveniach).
+    // zrušený Profil skippera v Nastaveniach). Best-effort: na niektorých
+    // zariadeniach vie flutter_secure_storage (EncryptedSharedPreferences)
+    // na read/write zamrznúť natrvalo — voyage save sa na tom nesmie zaseknúť.
     if (skipper != null && skipper.nameCtrl.text.trim().isNotEmpty) {
-      final old = await ref.read(skipperProfileProvider.future);
-      await ref.read(skipperProfileProvider.notifier).save(SkipperProfile(
-            fullName: skipper.nameCtrl.text.trim(),
-            licenseType: old.licenseType,
-            licenseNumber: skipper.boatLicCtrl.text.trim(),
-            licenseAuthority: old.licenseAuthority,
-            licenseExpiry: old.licenseExpiry,
-            vhfNumber: skipper.radioLicCtrl.text.trim(),
-            vhfExpiry: old.vhfExpiry,
-            otherCerts: skipper.otherCertsCtrl.text.trim(),
-          ));
+      try {
+        final old = await ref
+            .read(skipperProfileProvider.future)
+            .timeout(const Duration(seconds: 5));
+        await ref
+            .read(skipperProfileProvider.notifier)
+            .save(SkipperProfile(
+              fullName: skipper.nameCtrl.text.trim(),
+              licenseType: old.licenseType,
+              licenseNumber: skipper.boatLicCtrl.text.trim(),
+              licenseAuthority: old.licenseAuthority,
+              licenseExpiry: old.licenseExpiry,
+              vhfNumber: skipper.radioLicCtrl.text.trim(),
+              vhfExpiry: old.vhfExpiry,
+              otherCerts: skipper.otherCertsCtrl.text.trim(),
+            ))
+            .timeout(const Duration(seconds: 5));
+      } on TimeoutException catch (_) {
+        // skipper profile cache is best-effort; voyage data must still save
+      }
     }
 
     final companion = ChartersCompanion(

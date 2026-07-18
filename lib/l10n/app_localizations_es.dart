@@ -573,6 +573,91 @@ class AppLocalizationsEs extends AppLocalizations {
   String get beaufort12 => 'Huracán';
 
   @override
+  String get sunAndMoonCard => 'Sol y Luna';
+
+  @override
+  String get sunriseLabel => 'Amanecer';
+
+  @override
+  String get sunsetLabel => 'Atardecer';
+
+  @override
+  String get moonPhaseLabel => 'Fase lunar';
+
+  @override
+  String get moonIlluminationLabel => 'Iluminado';
+
+  @override
+  String get moonPhaseNew => 'Luna nueva';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Creciente';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Cuarto creciente';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Gibosa creciente';
+
+  @override
+  String get moonPhaseFull => 'Luna llena';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Gibosa menguante';
+
+  @override
+  String get moonPhaseLastQuarter => 'Cuarto menguante';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Menguante';
+
+  @override
+  String get noSunMoonGps =>
+      'Se necesita posición GPS para el amanecer/atardecer';
+
+  @override
+  String get oceanCurrentsTitle => 'Corrientes oceánicas';
+
+  @override
+  String get oceanCurrentsTooltip => 'Corrientes oceánicas';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Datos solo orientativos (dirección/velocidad típica según cartas de pilotaje) — no para navegación de precisión; las corrientes varían estacionalmente.';
+
+  @override
+  String get tideDataSection => 'Datos de mareas';
+
+  @override
+  String get tideApiKeyLabel => 'Clave API de WorldTides';
+
+  @override
+  String get tideApiKeyDesc =>
+      'Opcional — activa predicciones de mareas en todo el mundo (worldtides.info, nivel gratuito disponible). Déjalo vacío para omitir las mareas.';
+
+  @override
+  String get tideCardTitle => 'Marea';
+
+  @override
+  String get nextHighTideLabel => 'Próxima pleamar';
+
+  @override
+  String get nextLowTideLabel => 'Próxima bajamar';
+
+  @override
+  String get noTideApiKey =>
+      'Añade una clave API de WorldTides en Ajustes para activar las predicciones de mareas';
+
+  @override
+  String get noTideData => 'Aún no hay datos de mareas';
+
+  @override
+  String get downloadTides => 'Descargar predicción de mareas';
+
+  @override
+  String get downloadingTides => 'Descargando predicción de mareas...';
+
+  @override
   String get settingsTitle => 'Ajustes';
 
   @override

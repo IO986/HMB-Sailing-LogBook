@@ -21,6 +21,7 @@ import '../../../../core/services/marine_poi_service.dart';
 import '../../../../core/services/tile_cache.dart';
 import '../../../../core/services/wind_grid_service.dart';
 import '../../../../core/utils/distance_calculator.dart';
+import '../../../../core/config/ocean_currents_content.dart';
 import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
@@ -413,6 +414,66 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ]),
               ],
 
+              // ── Oceánske prúdy: referenčné dáta (smer + rýchlosť) ────
+              if (mapState.showOceanCurrents) ...[
+                PolylineLayer(polylines: [
+                  for (final c in oceanCurrents)
+                    Polyline(
+                      points: [for (final p in c.path) LatLng(p.lat, p.lon)],
+                      color: Colors.cyan.shade700.withValues(alpha: 0.7),
+                      strokeWidth: 3,
+                    ),
+                ]),
+                MarkerLayer(markers: [
+                  for (final c in oceanCurrents) ...[
+                    for (var i = 0; i < c.path.length - 1; i++)
+                      Marker(
+                        point: LatLng(
+                          (c.path[i].lat + c.path[i + 1].lat) / 2,
+                          (c.path[i].lon + c.path[i + 1].lon) / 2,
+                        ),
+                        width: 24, height: 24,
+                        child: Transform.rotate(
+                          angle: DistanceCalculator.bearing(
+                                c.path[i].lat, c.path[i].lon,
+                                c.path[i + 1].lat, c.path[i + 1].lon,
+                              ) *
+                              math.pi /
+                              180,
+                          child: Icon(Icons.arrow_upward,
+                              color: Colors.cyan.shade900,
+                              size: 20,
+                              shadows: const [
+                                Shadow(color: Colors.white, blurRadius: 3)
+                              ]),
+                        ),
+                      ),
+                    Marker(
+                      point: LatLng(
+                        c.path[c.path.length ~/ 2].lat,
+                        c.path[c.path.length ~/ 2].lon,
+                      ),
+                      width: 90, height: 20,
+                      child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '${c.speedKtMin.toStringAsFixed(0)}-'
+                          '${c.speedKtMax.toStringAsFixed(0)} kt',
+                          style: const TextStyle(
+                              fontSize: 10, color: Colors.black87),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ]),
+              ],
+
               // ── MOB marker ──────────────────────────────────────────
               if (mob.isActive && mob.mobLat != null && mob.mobLon != null)
                 MarkerLayer(markers: [
@@ -588,6 +649,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         _mapController.camera.visibleBounds;
                   }
                 },
+              ),
+              const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'oceanCurrents',
+                tooltip: 'Oceánske prúdy (podrž pre zoznam)',
+                icon: Icons.moving,
+                active: mapState.showOceanCurrents,
+                onPressed: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleOceanCurrents(),
+                onLongPress: () => context.push('/ocean-currents'),
               ),
               const SizedBox(height: 8),
               FloatingActionButton.small(
@@ -796,8 +867,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     required IconData icon,
     required bool active,
     required VoidCallback onPressed,
+    VoidCallback? onLongPress,
   }) {
-    return FloatingActionButton.small(
+    final fab = FloatingActionButton.small(
       heroTag: heroTag,
       tooltip: tooltip,
       onPressed: onPressed,
@@ -806,6 +878,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       child: Icon(icon,
           color: active ? Theme.of(context).colorScheme.onPrimary : null),
     );
+    return onLongPress == null
+        ? fab
+        : GestureDetector(onLongPress: onLongPress, child: fab);
   }
 
   void _onMapTap(LatLng ll) {

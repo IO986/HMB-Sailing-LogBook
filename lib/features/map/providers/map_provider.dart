@@ -116,6 +116,9 @@ class MapNotifier extends Notifier<MapState> {
   void toggleWindGrid() =>
       state = state.copyWith(showWindGrid: !state.showWindGrid);
 
+  void toggleOceanCurrents() =>
+      state = state.copyWith(showOceanCurrents: !state.showOceanCurrents);
+
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
   void previewDay(int dayLogId, String label) => state = _withPreview(
         previewDayLogId: dayLogId,
@@ -143,6 +146,7 @@ class MapNotifier extends Notifier<MapState> {
         showMarinePois: state.showMarinePois,
         showRainRadar: state.showRainRadar,
         showWindGrid: state.showWindGrid,
+        showOceanCurrents: state.showOceanCurrents,
         followGps: state.followGps,
         previewDayLogId: previewDayLogId,
         previewCharterId: previewCharterId,
@@ -181,6 +185,8 @@ class MapState {
   final bool showRainRadar;
   /// Šípky vetra v mriežke (Open-Meteo).
   final bool showWindGrid;
+  /// Referenčná vrstva hlavných oceánskych prúdov (lokálne curated dáta).
+  final bool showOceanCurrents;
   final bool followGps;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
@@ -193,6 +199,7 @@ class MapState {
     this.showMarinePois = false,
     this.showRainRadar = false,
     this.showWindGrid = false,
+    this.showOceanCurrents = false,
     this.followGps = true,
     this.previewDayLogId,
     this.previewCharterId,
@@ -203,6 +210,7 @@ class MapState {
     bool? showMarinePois,
     bool? showRainRadar,
     bool? showWindGrid,
+    bool? showOceanCurrents,
     bool? followGps,
     int? previewDayLogId,
     int? previewCharterId,
@@ -212,6 +220,7 @@ class MapState {
         showMarinePois: showMarinePois ?? this.showMarinePois,
         showRainRadar: showRainRadar ?? this.showRainRadar,
         showWindGrid: showWindGrid ?? this.showWindGrid,
+        showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
         followGps: followGps ?? this.followGps,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,

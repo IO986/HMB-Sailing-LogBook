@@ -10,6 +10,7 @@ import 'features/charter/presentation/screens/safety_briefing_screen.dart';
 import 'features/charter/presentation/screens/handover_protocol_screen.dart';
 import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
+import 'features/map/presentation/screens/ocean_currents_screen.dart';
 import 'features/weather/presentation/screens/weather_screen.dart';
 import 'features/safety/presentation/screens/safety_screen.dart';
 import 'features/compass/presentation/screens/compass_screen.dart';
@@ -110,6 +111,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: '/gpx-import', builder: (c, s) => const GpxImportScreen()),
+          GoRoute(path: '/ocean-currents', builder: (c, s) => const OceanCurrentsScreen()),
           GoRoute(path: '/instruments', builder: (c, s) => const InstrumentsScreen()),
           GoRoute(path: '/weather', builder: (c, s) => const WeatherScreen()),
           GoRoute(

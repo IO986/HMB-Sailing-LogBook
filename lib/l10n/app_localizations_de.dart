@@ -575,6 +575,91 @@ class AppLocalizationsDe extends AppLocalizations {
   String get beaufort12 => 'Orkan';
 
   @override
+  String get sunAndMoonCard => 'Sonne & Mond';
+
+  @override
+  String get sunriseLabel => 'Sonnenaufgang';
+
+  @override
+  String get sunsetLabel => 'Sonnenuntergang';
+
+  @override
+  String get moonPhaseLabel => 'Mondphase';
+
+  @override
+  String get moonIlluminationLabel => 'Beleuchtet';
+
+  @override
+  String get moonPhaseNew => 'Neumond';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Zunehmende Sichel';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Erstes Viertel';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Zunehmender Mond';
+
+  @override
+  String get moonPhaseFull => 'Vollmond';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Abnehmender Mond';
+
+  @override
+  String get moonPhaseLastQuarter => 'Letztes Viertel';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Abnehmende Sichel';
+
+  @override
+  String get noSunMoonGps =>
+      'GPS-Position für Sonnenauf-/-untergang erforderlich';
+
+  @override
+  String get oceanCurrentsTitle => 'Meeresströmungen';
+
+  @override
+  String get oceanCurrentsTooltip => 'Meeresströmungen';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Nur Orientierungsdaten (typische Richtung/Geschwindigkeit aus Seekarten) — nicht für präzise Navigation; Strömungen variieren saisonal.';
+
+  @override
+  String get tideDataSection => 'Gezeitendaten';
+
+  @override
+  String get tideApiKeyLabel => 'WorldTides API-Schlüssel';
+
+  @override
+  String get tideApiKeyDesc =>
+      'Optional — aktiviert weltweite Gezeitenvorhersagen (worldtides.info, kostenlose Stufe verfügbar). Leer lassen, um Gezeiten zu überspringen.';
+
+  @override
+  String get tideCardTitle => 'Gezeiten';
+
+  @override
+  String get nextHighTideLabel => 'Nächste Flut';
+
+  @override
+  String get nextLowTideLabel => 'Nächste Ebbe';
+
+  @override
+  String get noTideApiKey =>
+      'Füge in den Einstellungen einen WorldTides API-Schlüssel hinzu, um Gezeitenvorhersagen zu aktivieren';
+
+  @override
+  String get noTideData => 'Noch keine Gezeitendaten';
+
+  @override
+  String get downloadTides => 'Gezeitenvorhersage herunterladen';
+
+  @override
+  String get downloadingTides => 'Gezeitenvorhersage wird heruntergeladen...';
+
+  @override
   String get settingsTitle => 'Einstellungen';
 
   @override

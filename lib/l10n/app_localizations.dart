@@ -1172,6 +1172,168 @@ abstract class AppLocalizations {
   /// **'Orkán'**
   String get beaufort12;
 
+  /// No description provided for @sunAndMoonCard.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slnko a mesiac'**
+  String get sunAndMoonCard;
+
+  /// No description provided for @sunriseLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Východ slnka'**
+  String get sunriseLabel;
+
+  /// No description provided for @sunsetLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Západ slnka'**
+  String get sunsetLabel;
+
+  /// No description provided for @moonPhaseLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fáza mesiaca'**
+  String get moonPhaseLabel;
+
+  /// No description provided for @moonIlluminationLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Osvetlené'**
+  String get moonIlluminationLabel;
+
+  /// No description provided for @moonPhaseNew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Novmesiac'**
+  String get moonPhaseNew;
+
+  /// No description provided for @moonPhaseWaxingCrescent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dorastajúci kosáčik'**
+  String get moonPhaseWaxingCrescent;
+
+  /// No description provided for @moonPhaseFirstQuarter.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prvá štvrť'**
+  String get moonPhaseFirstQuarter;
+
+  /// No description provided for @moonPhaseWaxingGibbous.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dorastajúci mesiac'**
+  String get moonPhaseWaxingGibbous;
+
+  /// No description provided for @moonPhaseFull.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spln'**
+  String get moonPhaseFull;
+
+  /// No description provided for @moonPhaseWaningGibbous.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cúvajúci mesiac'**
+  String get moonPhaseWaningGibbous;
+
+  /// No description provided for @moonPhaseLastQuarter.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posledná štvrť'**
+  String get moonPhaseLastQuarter;
+
+  /// No description provided for @moonPhaseWaningCrescent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cúvajúci kosáčik'**
+  String get moonPhaseWaningCrescent;
+
+  /// No description provided for @noSunMoonGps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre východ/západ slnka je potrebná GPS poloha'**
+  String get noSunMoonGps;
+
+  /// No description provided for @oceanCurrentsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oceánske prúdy'**
+  String get oceanCurrentsTitle;
+
+  /// No description provided for @oceanCurrentsTooltip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oceánske prúdy'**
+  String get oceanCurrentsTooltip;
+
+  /// No description provided for @oceanCurrentsDisclaimer.
+  ///
+  /// In sk, this message translates to:
+  /// **'Len orientačné dáta (typický smer/rýchlosť z pilotných máp) — nie pre presnú navigáciu, prúdy sa sezónne menia.'**
+  String get oceanCurrentsDisclaimer;
+
+  /// No description provided for @tideDataSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dáta prílivu/odlivu'**
+  String get tideDataSection;
+
+  /// No description provided for @tideApiKeyLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'WorldTides API kľúč'**
+  String get tideApiKeyLabel;
+
+  /// No description provided for @tideApiKeyDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Voliteľné — zapne predikcie prílivu/odlivu celosvetovo (worldtides.info, dostupný free tier). Nechaj prázdne ak prílivy nepotrebuješ.'**
+  String get tideApiKeyDesc;
+
+  /// No description provided for @tideCardTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Príliv/odliv'**
+  String get tideCardTitle;
+
+  /// No description provided for @nextHighTideLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najbližší príliv'**
+  String get nextHighTideLabel;
+
+  /// No description provided for @nextLowTideLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najbližší odliv'**
+  String get nextLowTideLabel;
+
+  /// No description provided for @noTideApiKey.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridaj WorldTides API kľúč v Nastaveniach pre predikcie prílivu/odlivu'**
+  String get noTideApiKey;
+
+  /// No description provided for @noTideData.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zatiaľ žiadne dáta o prílive'**
+  String get noTideData;
+
+  /// No description provided for @downloadTides.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuť predpoveď prílivu'**
+  String get downloadTides;
+
+  /// No description provided for @downloadingTides.
+  ///
+  /// In sk, this message translates to:
+  /// **'Sťahujem predpoveď prílivu...'**
+  String get downloadingTides;
+
   /// No description provided for @settingsTitle.
   ///
   /// In sk, this message translates to:

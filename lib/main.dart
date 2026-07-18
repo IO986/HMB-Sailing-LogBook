@@ -16,6 +16,8 @@ import 'core/services/gps_tracking_service.dart';
 import 'core/services/location_service.dart';
 import 'core/services/raymarine_connection_service.dart';
 import 'core/services/udp_receiver_service.dart';
+import 'core/services/tide_repository.dart';
+import 'core/services/tide_service.dart';
 import 'core/services/weather_repository.dart';
 import 'core/services/weather_service.dart';
 import 'core/services/account_service.dart';
@@ -42,6 +44,8 @@ void wireDatabaseSingletons(AppDatabase db) {
   GpsTrackingService().setDatabase(db);
   WeatherService().setDatabase(db);
   WeatherRepository().setDatabase(db);
+  TideService().setDatabase(db);
+  TideRepository().setDatabase(db);
   ExportService().setDatabase(db);
   SyncService().setDatabase(db);
 }

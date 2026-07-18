@@ -573,6 +573,90 @@ class AppLocalizationsSk extends AppLocalizations {
   String get beaufort12 => 'Orkán';
 
   @override
+  String get sunAndMoonCard => 'Slnko a mesiac';
+
+  @override
+  String get sunriseLabel => 'Východ slnka';
+
+  @override
+  String get sunsetLabel => 'Západ slnka';
+
+  @override
+  String get moonPhaseLabel => 'Fáza mesiaca';
+
+  @override
+  String get moonIlluminationLabel => 'Osvetlené';
+
+  @override
+  String get moonPhaseNew => 'Novmesiac';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Dorastajúci kosáčik';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Prvá štvrť';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Dorastajúci mesiac';
+
+  @override
+  String get moonPhaseFull => 'Spln';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Cúvajúci mesiac';
+
+  @override
+  String get moonPhaseLastQuarter => 'Posledná štvrť';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Cúvajúci kosáčik';
+
+  @override
+  String get noSunMoonGps => 'Pre východ/západ slnka je potrebná GPS poloha';
+
+  @override
+  String get oceanCurrentsTitle => 'Oceánske prúdy';
+
+  @override
+  String get oceanCurrentsTooltip => 'Oceánske prúdy';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Len orientačné dáta (typický smer/rýchlosť z pilotných máp) — nie pre presnú navigáciu, prúdy sa sezónne menia.';
+
+  @override
+  String get tideDataSection => 'Dáta prílivu/odlivu';
+
+  @override
+  String get tideApiKeyLabel => 'WorldTides API kľúč';
+
+  @override
+  String get tideApiKeyDesc =>
+      'Voliteľné — zapne predikcie prílivu/odlivu celosvetovo (worldtides.info, dostupný free tier). Nechaj prázdne ak prílivy nepotrebuješ.';
+
+  @override
+  String get tideCardTitle => 'Príliv/odliv';
+
+  @override
+  String get nextHighTideLabel => 'Najbližší príliv';
+
+  @override
+  String get nextLowTideLabel => 'Najbližší odliv';
+
+  @override
+  String get noTideApiKey =>
+      'Pridaj WorldTides API kľúč v Nastaveniach pre predikcie prílivu/odlivu';
+
+  @override
+  String get noTideData => 'Zatiaľ žiadne dáta o prílive';
+
+  @override
+  String get downloadTides => 'Stiahnuť predpoveď prílivu';
+
+  @override
+  String get downloadingTides => 'Sťahujem predpoveď prílivu...';
+
+  @override
   String get settingsTitle => 'Nastavenia';
 
   @override

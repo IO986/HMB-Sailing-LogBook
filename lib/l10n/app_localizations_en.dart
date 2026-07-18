@@ -573,6 +573,90 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beaufort12 => 'Hurricane';
 
   @override
+  String get sunAndMoonCard => 'Sun & Moon';
+
+  @override
+  String get sunriseLabel => 'Sunrise';
+
+  @override
+  String get sunsetLabel => 'Sunset';
+
+  @override
+  String get moonPhaseLabel => 'Moon phase';
+
+  @override
+  String get moonIlluminationLabel => 'Illuminated';
+
+  @override
+  String get moonPhaseNew => 'New Moon';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Waxing Crescent';
+
+  @override
+  String get moonPhaseFirstQuarter => 'First Quarter';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Waxing Gibbous';
+
+  @override
+  String get moonPhaseFull => 'Full Moon';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Waning Gibbous';
+
+  @override
+  String get moonPhaseLastQuarter => 'Last Quarter';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Waning Crescent';
+
+  @override
+  String get noSunMoonGps => 'GPS position needed for sunrise/sunset';
+
+  @override
+  String get oceanCurrentsTitle => 'Ocean Currents';
+
+  @override
+  String get oceanCurrentsTooltip => 'Ocean currents';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Reference data only (typical direction/speed from pilot charts) — not for precision navigation; currents vary seasonally.';
+
+  @override
+  String get tideDataSection => 'Tide Data';
+
+  @override
+  String get tideApiKeyLabel => 'WorldTides API key';
+
+  @override
+  String get tideApiKeyDesc =>
+      'Optional — enables tide predictions worldwide (worldtides.info, free tier available). Leave empty to skip tide data.';
+
+  @override
+  String get tideCardTitle => 'Tide';
+
+  @override
+  String get nextHighTideLabel => 'Next high tide';
+
+  @override
+  String get nextLowTideLabel => 'Next low tide';
+
+  @override
+  String get noTideApiKey =>
+      'Add a WorldTides API key in Settings to enable tide predictions';
+
+  @override
+  String get noTideData => 'No tide data yet';
+
+  @override
+  String get downloadTides => 'Download tide forecast';
+
+  @override
+  String get downloadingTides => 'Downloading tide forecast...';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

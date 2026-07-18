@@ -575,6 +575,90 @@ class AppLocalizationsUk extends AppLocalizations {
   String get beaufort12 => 'Ураган';
 
   @override
+  String get sunAndMoonCard => 'Сонце та Місяць';
+
+  @override
+  String get sunriseLabel => 'Схід сонця';
+
+  @override
+  String get sunsetLabel => 'Захід сонця';
+
+  @override
+  String get moonPhaseLabel => 'Фаза місяця';
+
+  @override
+  String get moonIlluminationLabel => 'Освітлено';
+
+  @override
+  String get moonPhaseNew => 'Новий місяць';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Молодий місяць';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Перша чверть';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Зростаючий місяць';
+
+  @override
+  String get moonPhaseFull => 'Повний місяць';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Спадаючий місяць';
+
+  @override
+  String get moonPhaseLastQuarter => 'Остання чверть';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Старий місяць';
+
+  @override
+  String get noSunMoonGps => 'Потрібна GPS-позиція для сходу/заходу сонця';
+
+  @override
+  String get oceanCurrentsTitle => 'Океанські течії';
+
+  @override
+  String get oceanCurrentsTooltip => 'Океанські течії';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Лише орієнтовні дані (типовий напрямок/швидкість за лоційними картами) — не для точної навігації; течії сезонно змінюються.';
+
+  @override
+  String get tideDataSection => 'Дані припливів';
+
+  @override
+  String get tideApiKeyLabel => 'API-ключ WorldTides';
+
+  @override
+  String get tideApiKeyDesc =>
+      'Необов\'язково — вмикає прогнози припливів у всьому світі (worldtides.info, доступний безкоштовний рівень). Залиште порожнім, щоб пропустити.';
+
+  @override
+  String get tideCardTitle => 'Приплив/відплив';
+
+  @override
+  String get nextHighTideLabel => 'Найближчий приплив';
+
+  @override
+  String get nextLowTideLabel => 'Найближчий відплив';
+
+  @override
+  String get noTideApiKey =>
+      'Додайте API-ключ WorldTides у Налаштуваннях для прогнозів припливів';
+
+  @override
+  String get noTideData => 'Ще немає даних про приплив';
+
+  @override
+  String get downloadTides => 'Завантажити прогноз припливів';
+
+  @override
+  String get downloadingTides => 'Завантаження прогнозу припливів...';
+
+  @override
   String get settingsTitle => 'Налаштування';
 
   @override
