@@ -595,9 +595,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // Keď sa na nízky displej nezmestia, dá sa v ňom rolovať.
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
-            bottom: 100,
+            // Menšia rezerva než pri ľavom stĺpci (GPS/zoom): tam sú tri
+            // tlačidlá a miesta dosť, tu ich je dvanásť a pri bottom: 100
+            // sa posledné tri orezali, hoci pod nimi zostávala prázdna mapa.
+            bottom: 16,
             right: 12,
             child: SingleChildScrollView(
+              // Odsadenie zdola, nech posledné tlačidlo nekončí zarovno s
+              // okrajom výrezu, keď sa odroluje nadol.
+              padding: const EdgeInsets.only(bottom: 12),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
               // Prepínač mapa / satelit
               _layerFab(
