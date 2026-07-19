@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
@@ -187,6 +187,36 @@ class CrewSignatures extends Table {
   DateTimeColumn get signedAt => dateTime().nullable()();
 }
 
+/// Službukonajúca posádka — JEDEN RIADOK NA OSOBU.
+///
+/// Dvaja ľudia môžu nastúpiť do služby naraz, ale končia nezávisle, preto sa
+/// spoločný nástup ukladá ako viac riadkov s rovnakým [fromUtc]; každý sa
+/// uzatvára samostatne. Bežiaca služba = `toUtc IS NULL` — to je stav, ktorý
+/// appka ukazuje kontrole na palube počas plavby.
+///
+/// Služba patrí charteru, nie dňu: [dayLogId] je len pomocný odkaz na deň,
+/// v ktorom služba začala. Zaradenie do dňa (napr. v PDF) sa počíta prienikom
+/// časov, aby služba cez polnoc nevypadla z druhého dňa.
+class DutyPeriods extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get charterId => integer().references(Charters, #id)();
+  IntColumn get dayLogId => integer().nullable().references(DayLogs, #id)();
+
+  /// Odpis mena z posádky chartera v čase založenia. Zámerne nie FK: meno sa
+  /// v charteri môže neskôr opraviť, ale už zapísaná služba je dôkazný záznam
+  /// a meniť sa nesmie.
+  TextColumn get crewName => text()();
+  TextColumn get role => text().withDefault(const Constant('crew'))(); // 'skipper' | 'crew'
+
+  DateTimeColumn get fromUtc => dateTime()();
+  DateTimeColumn get toUtc => dateTime().nullable()();   // NULL = služba beží
+  TextColumn get note => text().nullable()();
+
+  /// True, ak službu uzavrel systém (napr. check-out), nie skipper ručne.
+  BoolColumn get isAutoClosed => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 /// Počasie cache
 class WeatherSnapshots extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -325,6 +355,7 @@ class OutboxRows extends Table {
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
+  DutyPeriods,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -333,7 +364,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -453,6 +484,12 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(tideSnapshots, tideSnapshots.locationLabel);
         await m.addColumn(tideSnapshots, tideSnapshots.manualSelection);
       }
+      if (from < 20) {
+        // Rovnaká pasca ako pri tideSnapshots vyššie: createTable stavia
+        // AKTUÁLNY tvar, takže prípadný neskorší addColumn blok pre
+        // dutyPeriods musí byť strážený `from >= 20`.
+        await m.createTable(dutyPeriods);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -501,6 +538,7 @@ class AppDatabase extends _$AppDatabase {
     }
     await deleteSignaturesForCharter(id);
     await deleteHandoverProtocolsForCharter(id);
+    await deleteDutyPeriodsForCharter(id);
     await (delete(charters)..where((c) => c.id.equals(id))).go();
   }
 
@@ -521,6 +559,10 @@ class AppDatabase extends _$AppDatabase {
       (update(dayLogs)..where((t) => t.id.equals(d.id.value))).write(d);
 
   Future<void> deleteDayLog(int id) async {
+    // Služby sa NEmažú — patria charteru, nie dňu, a sú dôkazný záznam.
+    // Odkaz na deň sa len vynuluje, inak by FK zhodilo mazanie dňa.
+    await (update(dutyPeriods)..where((w) => w.dayLogId.equals(id)))
+        .write(const DutyPeriodsCompanion(dayLogId: Value(null)));
     await (delete(logbookEntries)..where((e) => e.dayLogId.equals(id))).go();
     await (delete(sailingSessions)..where((s) => s.dayLogId.equals(id))).go();
     await (delete(dayLogs)..where((d) => d.id.equals(id))).go();
@@ -704,6 +746,79 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteSignaturesForCharter(int charterId) =>
       (delete(crewSignatures)..where((s) => s.charterId.equals(charterId))).go();
+
+  // ── Duty Periods (službukonajúca posádka) ────────────────────
+
+  /// Práve bežiace služby (`toUtc IS NULL`). Stream, aby inšpekčná obrazovka
+  /// zostala živá aj keď službu založí iná obrazovka.
+  Stream<List<DutyPeriod>> watchRunningDuties(int charterId) =>
+      (select(dutyPeriods)
+            ..where((w) => w.charterId.equals(charterId) & w.toUtc.isNull())
+            ..orderBy([(w) => OrderingTerm(expression: w.fromUtc)]))
+          .watch();
+
+  Future<List<DutyPeriod>> getRunningDuties(int charterId) =>
+      (select(dutyPeriods)
+            ..where((w) => w.charterId.equals(charterId) & w.toUtc.isNull())
+            ..orderBy([(w) => OrderingTerm(expression: w.fromUtc)]))
+          .get();
+
+  Stream<List<DutyPeriod>> watchDutiesForCharter(int charterId) =>
+      (select(dutyPeriods)
+            ..where((w) => w.charterId.equals(charterId))
+            ..orderBy([(w) => OrderingTerm.desc(w.fromUtc)]))
+          .watch();
+
+  /// Služby, ktoré zasahujú do okna [from, to). Bežiaca služba (`toUtc` NULL)
+  /// sa počíta ako trvajúca donekonečna, takže do okna zasiahne vždy, keď
+  /// začala pred jeho koncom.
+  ///
+  /// Toto je metóda, ktorou sa služby zaraďujú do dní — nie cez `dayLogId`,
+  /// aby služba cez polnoc vyšla na oboch denných stranách.
+  Future<List<DutyPeriod>> getDutiesOverlapping(
+    int charterId,
+    DateTime fromUtc,
+    DateTime toUtc,
+  ) =>
+      (select(dutyPeriods)
+            ..where((w) =>
+                w.charterId.equals(charterId) &
+                w.fromUtc.isSmallerThanValue(toUtc) &
+                (w.toUtc.isNull() | w.toUtc.isBiggerThanValue(fromUtc)))
+            ..orderBy([(w) => OrderingTerm(expression: w.fromUtc)]))
+          .get();
+
+  Future<int> insertDutyPeriod(DutyPeriodsCompanion w) =>
+      into(dutyPeriods).insert(w);
+
+  Future<void> closeDutyPeriod(int id, DateTime toUtc,
+          {bool isAutoClosed = false}) =>
+      (update(dutyPeriods)..where((w) => w.id.equals(id))).write(
+        DutyPeriodsCompanion(
+          toUtc: Value(toUtc),
+          isAutoClosed: Value(isAutoClosed),
+        ),
+      );
+
+  /// Uzavrie všetky bežiace služby chartera — použije sa pri check-oute.
+  /// Zámerne sa nevolá na časovači: automaticky dopísaný koniec by bol čas,
+  /// ktorý skipper nikdy nevidel.
+  Future<void> closeAllRunningDuties(int charterId, DateTime toUtc) =>
+      (update(dutyPeriods)
+            ..where((w) => w.charterId.equals(charterId) & w.toUtc.isNull()))
+          .write(DutyPeriodsCompanion(
+        toUtc: Value(toUtc),
+        isAutoClosed: const Value(true),
+      ));
+
+  Future<void> updateDutyPeriod(int id, DutyPeriodsCompanion w) =>
+      (update(dutyPeriods)..where((t) => t.id.equals(id))).write(w);
+
+  Future<void> deleteDutyPeriod(int id) =>
+      (delete(dutyPeriods)..where((w) => w.id.equals(id))).go();
+
+  Future<void> deleteDutyPeriodsForCharter(int charterId) =>
+      (delete(dutyPeriods)..where((w) => w.charterId.equals(charterId))).go();
 
   // ── Historical Voyages (Kniha míľ) ─────────────────────────────
 
