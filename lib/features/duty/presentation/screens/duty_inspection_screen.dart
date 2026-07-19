@@ -145,8 +145,12 @@ class _DutyBlock extends StatelessWidget {
                 fontWeight: FontWeight.bold)),
         const SizedBox(height: 6),
         Text(
+          // .toUtc() is not redundant: drift hands back DateTime objects
+          // flagged local, so formatting fromUtc directly would print the
+          // local time under a UTC label — wrong on the one screen an
+          // inspector copies times from.
           '${l.dutySince(DateFormat('HH:mm').format(local))}  '
-          '(${DateFormat('HH:mm').format(duty.fromUtc)} UTC)',
+          '(${DateFormat('HH:mm').format(duty.fromUtc.toUtc())} UTC)',
           style: const TextStyle(color: Colors.white70, fontSize: 15),
         ),
         const SizedBox(height: 2),

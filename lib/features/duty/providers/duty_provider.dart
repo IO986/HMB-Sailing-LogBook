@@ -1,4 +1,5 @@
 ﻿import 'package:drift/drift.dart' as drift;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
@@ -47,14 +48,6 @@ final dutyClockProvider = StreamProvider.autoDispose<DateTime>((ref) =>
     Stream<DateTime>.periodic(
         const Duration(seconds: 1), (_) => DateTime.now()));
 
-/// Coarse tick for elapsed times shown in hours and minutes.
-///
-/// The duty card lives in the Safety tab, which stays alive as the user moves
-/// around the app. Driving it from [dutyClockProvider] would rebuild that list
-/// once a second to change a number that only moves once a minute.
-final dutyMinuteClockProvider = StreamProvider.autoDispose<DateTime>((ref) =>
-    Stream<DateTime>.periodic(
-        const Duration(seconds: 30), (_) => DateTime.now()));
 
 /// Bridges drift rows to the pure rules in duty_rules.dart.
 extension DutyPeriodRules on DutyPeriod {
@@ -108,14 +101,17 @@ class DutyController {
         fromUtc: fromUtc,
         createdAt: now,
       ));
-      await _writeLogEntry(dutyStartNote(m.name), LogbookEventType.dutyStart);
+      await _writeLogEntry(dutyStartNote(m.name), LogbookEventType.dutyStart,
+          at: fromUtc);
     }
   }
 
   /// Ends one person's duty. Independent per row by construction.
   Future<void> endDuty(DutyPeriod duty, {DateTime? at}) async {
-    await _db.closeDutyPeriod(duty.id, (at ?? DateTime.now()).toUtc());
-    await _writeLogEntry(dutyEndNote(duty.crewName), LogbookEventType.dutyEnd);
+    final toUtc = (at ?? DateTime.now()).toUtc();
+    await _db.closeDutyPeriod(duty.id, toUtc);
+    await _writeLogEntry(dutyEndNote(duty.crewName), LogbookEventType.dutyEnd,
+        at: toUtc);
   }
 
   /// Records a duty after the fact. [toUtc] may be null, which starts a duty
@@ -137,6 +133,17 @@ class DutyController {
       note: drift.Value(note),
       createdAt: DateTime.now(),
     ));
+
+    // A duty filled in afterwards belongs in the logbook exactly like one
+    // started live — otherwise it reaches the PDF only as a band and never as
+    // an entry, which is what happened on the boat.
+    await _writeLogEntry(
+        dutyStartNote(member.name), LogbookEventType.dutyStart,
+        at: fromUtc);
+    if (toUtc != null) {
+      await _writeLogEntry(dutyEndNote(member.name), LogbookEventType.dutyEnd,
+          at: toUtc);
+    }
   }
 
   Future<void> editDuty({
@@ -188,7 +195,11 @@ class DutyController {
   ///
   /// Failure is swallowed: the duty record itself is the evidence, and losing
   /// the narrative entry must never take the duty down with it.
-  Future<void> _writeLogEntry(String note, LogbookEventType event) async {
+  /// [at] is the moment the duty actually began or ended, which is not "now"
+  /// for a duty filled in after the fact — stamping those with the current
+  /// time would drop them at the wrong place in the day's timeline.
+  Future<void> _writeLogEntry(String note, LogbookEventType event,
+      {DateTime? at}) async {
     try {
       final dayLogId = await _resolveDayLogId();
       final session = await _db.getActiveSession();
@@ -197,15 +208,18 @@ class DutyController {
       await _db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(dayLogId),
         sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now().toUtc(),
+        timestamp: (at ?? DateTime.now()).toUtc(),
         latitude: drift.Value(pos?.latitude),
         longitude: drift.Value(pos?.longitude),
         skipperNote: drift.Value(note),
         eventType: drift.Value(event.code),
         isAutoEntry: const drift.Value(true),
       ));
-    } catch (_) {
-      // Intentionally ignored — see doc comment.
+    } catch (e, st) {
+      // Swallowed so a failed narrative entry cannot take the duty record down
+      // with it — but never silently: a silent catch here already hid a real
+      // failure once, and left nothing in the log to work from.
+      debugPrint('[DUTY] Log entry failed: $e\n$st');
     }
   }
 }

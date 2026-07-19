@@ -132,10 +132,11 @@ class _RunningRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    // Coarse tick: this row shows hours and minutes, and the Safety tab stays
-    // alive, so a per-second rebuild would be 60x the work for no visible gain.
-    final now = ref.watch(dutyMinuteClockProvider).valueOrNull ?? DateTime.now();
-    final elapsed = now.toUtc().difference(duty.fromUtc);
+    // No ticking clock here: the card is a record of when someone came on
+    // duty, not a stopwatch. The long-duty warning is evaluated whenever the
+    // card rebuilds, which is often enough for a 12-hour threshold and costs
+    // no timer at all.
+    final elapsed = DateTime.now().toUtc().difference(duty.fromUtc.toUtc());
     final tooLong = elapsed > _longDuty;
 
     return Padding(
@@ -146,8 +147,8 @@ class _RunningRow extends ConsumerWidget {
             Text(duty.crewName,
                 style: const TextStyle(fontWeight: FontWeight.w600)),
             Text(
-              '${l.dutySince(TimeOfDay.fromDateTime(duty.fromUtc.toLocal()).format(context))}'
-              '  ·  ${l.dutyElapsed(elapsed.inHours, elapsed.inMinutes % 60)}',
+              l.dutySince(TimeOfDay.fromDateTime(duty.fromUtc.toLocal())
+                  .format(context)),
               style: TextStyle(
                   fontSize: 12,
                   color: tooLong
@@ -161,8 +162,16 @@ class _RunningRow extends ConsumerWidget {
           ]),
         ),
         TextButton(
-          onPressed: () =>
-              ref.read(dutyControllerProvider).endDuty(duty),
+          // Awaited and caught: an un-awaited future here failed into nothing,
+          // so a duty that would not end looked like a dead button.
+          onPressed: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            try {
+              await ref.read(dutyControllerProvider).endDuty(duty);
+            } catch (e) {
+              messenger.showSnackBar(SnackBar(content: Text('$e')));
+            }
+          },
           child: Text(l.dutyEndAction),
         ),
       ]),

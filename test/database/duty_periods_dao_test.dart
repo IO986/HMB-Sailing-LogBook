@@ -184,6 +184,36 @@ void main() {
     });
   });
 
+  group('timestamps come back from drift flagged local', () {
+    // Found on a device, not here: the inspection screen printed the local
+    // time under a UTC label because these tests build DutyPeriod objects by
+    // hand with DateTime.utc(), which never reproduces what drift returns.
+    test('the stored instant survives a round trip', () async {
+      final charter = await makeCharter();
+      final instant = DateTime.utc(2026, 7, 19, 15, 58);
+      await startDuty(charter, 'Ján', from: instant);
+
+      final read = (await db.getRunningDuties(charter)).single;
+
+      expect(read.fromUtc.toUtc(), instant,
+          reason: 'the instant itself must be preserved');
+      expect(read.fromUtc.isAtSameMomentAs(instant), isTrue);
+    });
+
+    test('drift returns a local-flagged DateTime, so UTC output needs toUtc()',
+        () async {
+      final charter = await makeCharter();
+      await startDuty(charter, 'Ján', from: DateTime.utc(2026, 7, 19, 15, 58));
+
+      final read = (await db.getRunningDuties(charter)).single;
+
+      // Pins the behaviour: if a drift upgrade ever starts returning UTC, this
+      // fails and every .toUtc() added for display can be revisited.
+      expect(read.fromUtc.isUtc, isFalse,
+          reason: 'drift returns local DateTimes; display code must convert');
+    });
+  });
+
   group('edit', () {
     test('updateDutyPeriod can reopen a closed duty', () async {
       final charter = await makeCharter();

@@ -12,7 +12,9 @@ import '../../../core/database/app_database.dart';
 import '../../../core/models/logbook_event_type.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
+import '../../../core/services/moon_calculator.dart';
 import '../../miles/services/miles_calculator.dart';
+import '../../miles/services/solar_calculator.dart';
 import '../../charter/services/handover_checklist.dart';
 import '../../duty/domain/duty_rules.dart';
 import '../../duty/providers/duty_provider.dart' show DutyPeriodRules;
@@ -602,6 +604,12 @@ class PdfExportService {
             ]),
           ),
           pw.SizedBox(height: 6),
+        ],
+
+        // ── Slnko a mesiac ──
+        if (_sunMoonBand(day.date, sorted, l) != null) ...[
+          _sunMoonBand(day.date, sorted, l)!,
+          pw.SizedBox(height: 8),
         ],
 
         // ── Službukonajúca posádka ──
@@ -1718,6 +1726,41 @@ class PdfExportService {
   }
 
   /// Diakritika → ASCII pre PDF
+  /// Sunrise, sunset and moon phase for the day, derived from the first entry
+  /// that has a position.
+  ///
+  /// Lives in the export rather than on the day-log screen: it is part of the
+  /// record of the day, not something to check while sailing — for that there
+  /// is the Weather tab.
+  static pw.Widget? _sunMoonBand(
+      DateTime day, List<LogbookEntry> entries, AppLocalizations l) {
+    final withPos =
+        entries.where((e) => e.latitude != null && e.longitude != null);
+    if (withPos.isEmpty) return null;
+    final first = withPos.first;
+
+    final times = SolarCalculator.sunriseSunsetUtc(
+        day, first.latitude!, first.longitude!);
+    final phaseNames = [
+      l.moonPhaseNew, l.moonPhaseWaxingCrescent, l.moonPhaseFirstQuarter,
+      l.moonPhaseWaxingGibbous, l.moonPhaseFull, l.moonPhaseWaningGibbous,
+      l.moonPhaseLastQuarter, l.moonPhaseWaningCrescent,
+    ];
+    final phase = phaseNames[MoonCalculator.phaseIndex(day)];
+    final illum = (MoonCalculator.illumination(day) * 100).round();
+    final fmt = DateFormat('HH:mm');
+
+    String utc(DateTime? t) => t == null ? '-' : '${fmt.format(t.toUtc())} UTC';
+
+    return pw.Row(children: [
+      _wRow('${l.sunriseLabel}:', utc(times.sunrise)),
+      pw.SizedBox(width: 14),
+      _wRow('${l.sunsetLabel}:', utc(times.sunset)),
+      pw.SizedBox(width: 14),
+      _wRow('${l.moonPhaseLabel}:', '${_pdfText(phase)}  $illum%'),
+    ]);
+  }
+
   /// Who was on duty on this day, one line per person.
   ///
   /// Periods are clipped to the day and marked with arrows when they run past
@@ -1737,11 +1780,14 @@ class PdfExportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: rows.map((c) {
+        // UTC, matching the entries table on the same page. .toUtc() is not
+        // redundant — drift hands back DateTime objects flagged local, so
+        // formatting them directly would print local time as UTC.
         final from = '${c.clippedStart ? '<- ' : ''}'
-            '${fmt.format(c.fromUtc.toLocal())}';
+            '${fmt.format(c.fromUtc.toUtc())}';
         final to = c.duty.isRunning
             ? l.logDutyStillRunning
-            : '${fmt.format(c.toUtc.toLocal())}${c.clippedEnd ? ' ->' : ''}';
+            : '${fmt.format(c.toUtc.toUtc())}${c.clippedEnd ? ' ->' : ''}';
         return pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 1.5),
           child: pw.Row(children: [

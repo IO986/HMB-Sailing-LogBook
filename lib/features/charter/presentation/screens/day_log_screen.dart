@@ -111,20 +111,8 @@ class _EntriesTab extends ConsumerWidget {
             ),
           )),
 
-          // Slnko/mesiac pre tento deň (odvodené z polohy prvého záznamu)
-          SliverToBoxAdapter(child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Builder(builder: (context) {
-              final withPos = entries.where(
-                  (e) => e.latitude != null && e.longitude != null);
-              final firstWithPos = withPos.isEmpty ? null : withPos.first;
-              return SunMoonCard(
-                lat: firstWithPos?.latitude,
-                lon: firstWithPos?.longitude,
-                date: date,
-              );
-            }),
-          )),
+          // Slnko/mesiac tu zámerne nie je — patrí do PDF exportu dňa, kde je
+          // súčasťou záznamu. Na obrazovke ho nájdeš v Počasí.
 
           // Header záznamy
           SliverToBoxAdapter(child: Padding(
