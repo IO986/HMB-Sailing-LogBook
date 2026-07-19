@@ -2,8 +2,10 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmb_sailing_log/core/services/ocean_current_service.dart';
+import 'package:latlong2/latlong.dart';
 
 class _FakeAdapter implements HttpClientAdapter {
   _FakeAdapter(this._handler);
@@ -119,6 +121,65 @@ void main() {
         () => f.service.fetchForecast(lat: 43.5, lon: 16.44),
         throwsA(isA<DioException>()),
       );
+    });
+  });
+
+  group('OceanCurrentService.fetchForBounds', () {
+    // The wind layer samples cell centres of a 4x4 grid — eighths 1,3,5,7 of
+    // the span. If the current layer used the same formula both sets of
+    // arrows would land on identical coordinates and overlap on screen.
+    List<double> windGridFractions() =>
+        [for (var i = 0; i < 4; i++) (i + 0.5) / 4];
+
+    test('samples points the wind grid never uses, so arrows interleave',
+        () async {
+      final f = _serviceWith((_) async => _jsonBody([
+            for (var i = 0; i < 9; i++)
+              {
+                'current': {
+                  'ocean_current_velocity': 1.852,
+                  'ocean_current_direction': 90,
+                }
+              }
+          ]));
+
+      await f.service.fetchForBounds(
+        LatLngBounds(const LatLng(0, 0), const LatLng(8, 8)),
+      );
+
+      final request = f.adapter.requests.single;
+      final lats = request.uri.queryParameters['latitude']!
+          .split(',')
+          .map(double.parse)
+          .toSet();
+      final lons = request.uri.queryParameters['longitude']!
+          .split(',')
+          .map(double.parse)
+          .toSet();
+
+      // Span is 8 degrees, so wind sits at 1, 3, 5, 7 and current at 2, 4, 6.
+      final windLats = windGridFractions().map((f) => f * 8).toSet();
+      expect(lats.intersection(windLats), isEmpty);
+      expect(lons.intersection(windLats), isEmpty);
+      expect(lats, {2.0, 4.0, 6.0});
+    });
+
+    test('every sampled point stays inside the requested bounds', () async {
+      final f = _serviceWith((_) async => _jsonBody(const []));
+      await f.service.fetchForBounds(
+        LatLngBounds(const LatLng(43, 16), const LatLng(44, 17)),
+      );
+
+      final request = f.adapter.requests.single;
+      final lats = request.uri.queryParameters['latitude']!
+          .split(',')
+          .map(double.parse);
+      final lons = request.uri.queryParameters['longitude']!
+          .split(',')
+          .map(double.parse);
+
+      expect(lats.every((v) => v > 43 && v < 44), isTrue);
+      expect(lons.every((v) => v > 16 && v < 17), isTrue);
     });
   });
 

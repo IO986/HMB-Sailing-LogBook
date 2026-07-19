@@ -33,6 +33,11 @@ import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
 
 enum BaseMap { osm, satellite }
 
+/// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
+/// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
+/// môže byť vždy len jedna.
+enum _MapPanel { none, layers, tools }
+
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
@@ -56,6 +61,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   // existujúce waypointy), súčet NM, kurz poslednej nohy, ETA pri SOG.
   bool _rulerActive = false;
   final List<LatLng> _rulerPoints = [];
+
+  _MapPanel _openPanel = _MapPanel.none;
 
   // Rotácia mapy (dvoma prstami) — kompas hore ju resetne späť na north-up.
   double _mapRotationDeg = 0;
@@ -605,22 +612,42 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // okrajom výrezu, keď sa odroluje nadol.
               padding: const EdgeInsets.only(bottom: 12),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-              // Prepínač mapa / satelit
+              // Základná mapa je jeden prepínač namiesto dvoch tlačidiel —
+              // ikona ukazuje, na čo sa prepne.
               _layerFab(
-                heroTag: 'baseOsm',
-                tooltip: 'Mapa',
-                icon: Icons.map,
-                active: _baseMap == BaseMap.osm,
-                onPressed: () => setState(() => _baseMap = BaseMap.osm),
+                heroTag: 'baseMap',
+                tooltip: _baseMap == BaseMap.osm ? 'Satelit' : 'Mapa',
+                icon: _baseMap == BaseMap.osm
+                    ? Icons.satellite_alt
+                    : Icons.map,
+                active: _baseMap == BaseMap.satellite,
+                onPressed: () => setState(() => _baseMap =
+                    _baseMap == BaseMap.osm ? BaseMap.satellite : BaseMap.osm),
               ),
               const SizedBox(height: 8),
+
+              // ── Vrstvy ───────────────────────────────────────
               _layerFab(
-                heroTag: 'baseSat',
-                tooltip: 'Satelit',
-                icon: Icons.satellite_alt,
-                active: _baseMap == BaseMap.satellite,
-                onPressed: () => setState(() => _baseMap = BaseMap.satellite),
+                heroTag: 'layersGroup',
+                tooltip: 'Vrstvy',
+                icon: _openPanel == _MapPanel.layers
+                    ? Icons.close
+                    : Icons.layers,
+                // Zvýraznené aj po zbalení, keď je nejaká vrstva zapnutá —
+                // inak by sa nedalo poznať, že je niečo aktívne.
+                active: _openPanel == _MapPanel.layers ||
+                    showSeamarks ||
+                    showMarinePois ||
+                    mapState.showRainRadar ||
+                    mapState.showWindGrid ||
+                    mapState.showOceanCurrents ||
+                    mapState.showCurrentGrid,
+                onPressed: () => setState(() => _openPanel =
+                    _openPanel == _MapPanel.layers
+                        ? _MapPanel.none
+                        : _MapPanel.layers),
               ),
+              if (_openPanel == _MapPanel.layers) ...[
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'seamarks',
@@ -702,6 +729,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   }
                 },
               ),
+              ],
+
+              // ── Nástroje ─────────────────────────────────────
+              const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'toolsGroup',
+                tooltip: 'Nástroje',
+                icon: _openPanel == _MapPanel.tools
+                    ? Icons.close
+                    : Icons.handyman_outlined,
+                active: _openPanel == _MapPanel.tools ||
+                    _rulerActive ||
+                    isPreviewing,
+                onPressed: () => setState(() => _openPanel =
+                    _openPanel == _MapPanel.tools
+                        ? _MapPanel.none
+                        : _MapPanel.tools),
+              ),
+              if (_openPanel == _MapPanel.tools) ...[
               const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'voyagePreview',
@@ -737,6 +783,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onPressed: () => _openOfflineDownload(context),
                 child: const Icon(Icons.download_for_offline_outlined),
               ),
+              ],
               ]),
             ),
           ),

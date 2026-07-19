@@ -115,7 +115,12 @@ class OceanCurrentService {
 
   // ── Mapa: mriežka cez viditeľný výrez ─────────────────────────
 
-  static const _grid = 4; // 4×4 bodov, rovnako ako vetrová mriežka
+  /// Vetrová mriežka vzorkuje stredy buniek 4×4, teda zlomky 1/8, 3/8, 5/8,
+  /// 7/8 výrezu. Prúd preto vzorkuje rohy tých istých buniek — 2/8, 4/8, 6/8 —
+  /// takže obe mriežky sa prekladajú a šípky si nesadnú na seba. Body zostávajú
+  /// tam, kde ich dáta naozaj platia; neposúva sa kresba, ale vzorkovanie.
+  static const _grid = 3; // 3×3 bodov, posunuté o pol bunky oproti vetru
+  static const _windGrid = 4;
   List<SeaCurrentPoint>? _cache;
   String? _cacheKey;
   DateTime? _fetchedAt;
@@ -139,9 +144,10 @@ class OceanCurrentService {
     final lons = <double>[];
     for (var i = 0; i < _grid; i++) {
       for (var j = 0; j < _grid; j++) {
-        lats.add(
-            bounds.south + (bounds.north - bounds.south) * (i + 0.5) / _grid);
-        lons.add(bounds.west + (bounds.east - bounds.west) * (j + 0.5) / _grid);
+        lats.add(bounds.south +
+            (bounds.north - bounds.south) * (i + 1) / _windGrid);
+        lons.add(
+            bounds.west + (bounds.east - bounds.west) * (j + 1) / _windGrid);
       }
     }
 
