@@ -812,6 +812,18 @@ abstract class AppLocalizations {
   /// **'Zoznam vybavenia'**
   String get gearList;
 
+  /// No description provided for @logDutySection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Služba posádky'**
+  String get logDutySection;
+
+  /// No description provided for @logDutyStillRunning.
+  ///
+  /// In sk, this message translates to:
+  /// **'trvá'**
+  String get logDutyStillRunning;
+
   /// No description provided for @logEventAnchorDropped.
   ///
   /// In sk, this message translates to:

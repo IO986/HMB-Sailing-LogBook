@@ -387,6 +387,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get gearList => 'Lista de equipos';
 
   @override
+  String get logDutySection => 'Guardia';
+
+  @override
+  String get logDutyStillRunning => 'en curso';
+
+  @override
   String get logEventAnchorDropped => 'Ancla fondeada';
 
   @override

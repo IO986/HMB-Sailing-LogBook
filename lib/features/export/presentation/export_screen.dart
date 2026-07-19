@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 import 'dart:typed_data';
 import 'package:drift/drift.dart' as drift show Value;
 import 'package:flutter/material.dart';
@@ -220,6 +220,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         await ref.read(skipperProfileProvider.future).catchError((_) => const SkipperProfile());
 
     // 2. Generovanie PDF bajtov (zobraz progress)
+    // Zachytené pred ďalšími awaitmi — context sa cez ne prenášať nemá.
+    final l10n = AppLocalizations.of(context);
     BuildContext? dialogCtx;
     showDialog(
       context: context,
@@ -256,10 +258,18 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         final freshDay = await ref.read(databaseProvider).getDayLogById(_day!.id) ?? _day!;
 
         final entries = _entriesByDay[freshDay.id] ?? [];
+        final dayStart = DateTime(
+            freshDay.date.year, freshDay.date.month, freshDay.date.day);
+        final duties = await ref.read(databaseProvider).getDutiesOverlapping(
+            _charter!.id, dayStart.toUtc(),
+            dayStart.add(const Duration(days: 1)).toUtc());
+
         pdfBytes = await PdfExportService.buildDayPdfBytes(
           charter: _charter!,
           day: freshDay,
           entries: entries,
+          l10n: l10n,
+          duties: duties,
           mapScreenshot: _mapScreenshots[freshDay.id],
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
@@ -285,11 +295,20 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         }
         final db = ref.read(databaseProvider);
         final newRevision = await db.incrementPdfRevision(_charter!.id);
+        final dutiesByDay = <int, List<DutyPeriod>>{};
+        for (final d in freshDays) {
+          final s = DateTime(d.date.year, d.date.month, d.date.day);
+          dutiesByDay[d.id] = await db.getDutiesOverlapping(
+              _charter!.id, s.toUtc(), s.add(const Duration(days: 1)).toUtc());
+        }
+
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
           charter: _charter!,
           days: freshDays,
           entriesByDay: _entriesByDay,
           mapScreenshots: _mapScreenshots,
+          l10n: l10n,
+          dutiesByDay: dutiesByDay,
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
           crewSignatures: _crewSignatures,

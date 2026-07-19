@@ -134,6 +134,8 @@
   "maydayCard": "Mayday karta",
   "yachtHandover": "Odovzdanie jachty",
   "gearList": "Zoznam vybavenia",
+  "logDutySection": "Služba posádky",
+  "logDutyStillRunning": "trvá",
   "logEventAnchorDropped": "Kotva spustená",
   "logEventAnchorRaised": "Kotva zdvihnutá",
   "logEventDriftOut": "Drift – prekročený perimeter",

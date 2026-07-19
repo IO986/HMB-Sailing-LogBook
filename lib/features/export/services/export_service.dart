@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +26,8 @@ class ExportService {
   }) async {
     final db = _db;
     if (db == null) return;
+    // Captured before the first await - context must not be used across one.
+    final l10n = AppLocalizations.of(context);
 
     BuildContext? dialogCtx;
     if (context.mounted) {
@@ -63,11 +65,20 @@ class ExportService {
       final checkInProtocol = await db.getHandoverProtocol(charter.id, 'checkIn');
       final checkOutProtocol = await db.getHandoverProtocol(charter.id, 'checkOut');
 
+      final dutiesByDay = <int, List<DutyPeriod>>{};
+      for (final day in days) {
+        final start = DateTime(day.date.year, day.date.month, day.date.day);
+        dutiesByDay[day.id] = await db.getDutiesOverlapping(
+            charter.id, start.toUtc(), start.add(const Duration(days: 1)).toUtc());
+      }
+
       final pdf = await PdfExportService.exportCharter(
         charter: charter,
         days: days,
         entriesByDay: entriesByDay,
         mapScreenshots: mapScreenshots ?? {},
+        l10n: l10n,
+        dutiesByDay: dutiesByDay,
         signatureImage: signatureImage,
         checkInProtocol: checkInProtocol,
         checkInChecklist:
@@ -109,6 +120,8 @@ class ExportService {
   }) async {
     final db = _db;
     if (db == null) return;
+    // Captured before the first await - context must not be used across one.
+    final l10n = AppLocalizations.of(context);
 
     BuildContext? dialogCtx;
     if (context.mounted) {
@@ -137,10 +150,16 @@ class ExportService {
             await db.getTrackPointsForSession(s.sessionId);
       }
 
+      final dayStart = DateTime(day.date.year, day.date.month, day.date.day);
+      final duties = await db.getDutiesOverlapping(charter.id, dayStart.toUtc(),
+          dayStart.add(const Duration(days: 1)).toUtc());
+
       final pdf = await PdfExportService.exportDay(
         charter: charter,
         day: day,
         entries: entries,
+        l10n: l10n,
+        duties: duties,
         mapScreenshot: mapScreenshot,
         signatureImage: signatureImage,
       );
@@ -186,6 +205,8 @@ class ExportService {
   }) async {
     final db = _db;
     if (db == null) return;
+    // Captured before the first await - context must not be used across one.
+    final l10n = AppLocalizations.of(context);
 
     BuildContext? dialogCtx;
     if (context.mounted) {
@@ -249,6 +270,8 @@ class ExportService {
   }) async {
     final db = _db;
     if (db == null) return;
+    // Captured before the first await - context must not be used across one.
+    final l10n = AppLocalizations.of(context);
 
     BuildContext? dialogCtx;
     if (context.mounted) {

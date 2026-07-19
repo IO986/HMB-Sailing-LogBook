@@ -388,6 +388,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get gearList => 'Ausrüstungsliste';
 
   @override
+  String get logDutySection => 'Wachdienst';
+
+  @override
+  String get logDutyStillRunning => 'laufend';
+
+  @override
   String get logEventAnchorDropped => 'Anker gefallen';
 
   @override

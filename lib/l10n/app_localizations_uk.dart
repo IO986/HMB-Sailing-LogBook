@@ -388,6 +388,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get gearList => 'Список обладнання';
 
   @override
+  String get logDutySection => 'Вахта екіпажу';
+
+  @override
+  String get logDutyStillRunning => 'триває';
+
+  @override
   String get logEventAnchorDropped => 'Якір віддано';
 
   @override

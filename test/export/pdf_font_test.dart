@@ -48,6 +48,25 @@ void main() {
     }
   });
 
+  test('symbols the PDF prints are covered — and the arrow is not', () async {
+    final cmap =
+        TtfParser(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'))
+            .charToGlyphIndexMap;
+
+    // Printed directly, so they must exist.
+    for (final entry in {'°': 0x00B0, '–': 0x2013, '·': 0x00B7, '©': 0x00A9}
+        .entries) {
+      expect(cmap[entry.value], isNotNull,
+          reason: 'font is missing ${entry.key}');
+    }
+
+    // Noto Sans has no arrows. _pdfText substitutes '->' for exactly this
+    // reason; if a future font does include them, that substitution can go.
+    expect(cmap[0x2192], isNull,
+        reason: 'font now has U+2192 — the _pdfText arrow substitution can be '
+            'dropped');
+  });
+
   test('a document with the font renders Slovak and Cyrillic without throwing',
       () async {
     final base =

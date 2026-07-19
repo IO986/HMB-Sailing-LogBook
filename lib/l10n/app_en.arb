@@ -134,6 +134,8 @@
   "maydayCard": "Mayday Card",
   "yachtHandover": "Yacht handover",
   "gearList": "Gear list",
+  "logDutySection": "Crew on duty",
+  "logDutyStillRunning": "ongoing",
   "logEventAnchorDropped": "Anchor dropped",
   "logEventAnchorRaised": "Anchor raised",
   "logEventDriftOut": "Drift – perimeter exceeded",

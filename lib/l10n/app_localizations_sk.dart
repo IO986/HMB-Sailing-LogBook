@@ -386,6 +386,12 @@ class AppLocalizationsSk extends AppLocalizations {
   String get gearList => 'Zoznam vybavenia';
 
   @override
+  String get logDutySection => 'Služba posádky';
+
+  @override
+  String get logDutyStillRunning => 'trvá';
+
+  @override
   String get logEventAnchorDropped => 'Kotva spustená';
 
   @override

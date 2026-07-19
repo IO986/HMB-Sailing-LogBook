@@ -134,6 +134,8 @@
   "maydayCard": "Mayday-Karte",
   "yachtHandover": "Yachtübergabe",
   "gearList": "Ausrüstungsliste",
+  "logDutySection": "Wachdienst",
+  "logDutyStillRunning": "laufend",
   "logEventAnchorDropped": "Anker gefallen",
   "logEventAnchorRaised": "Anker gelichtet",
   "logEventDriftOut": "Drift – Radius überschritten",

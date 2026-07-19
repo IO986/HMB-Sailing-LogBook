@@ -134,6 +134,8 @@
   "maydayCard": "Картка Mayday",
   "yachtHandover": "Передача яхти",
   "gearList": "Список обладнання",
+  "logDutySection": "Вахта екіпажу",
+  "logDutyStillRunning": "триває",
   "logEventAnchorDropped": "Якір віддано",
   "logEventAnchorRaised": "Якір вибрано",
   "logEventDriftOut": "Дрейф – радіус перевищено",

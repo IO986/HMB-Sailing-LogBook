@@ -9,9 +9,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
+import '../../../core/models/logbook_event_type.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
 import '../../miles/services/miles_calculator.dart';
 import '../../charter/services/handover_checklist.dart';
+import '../../duty/domain/duty_rules.dart';
+import '../../duty/providers/duty_provider.dart' show DutyPeriodRules;
 
 class PdfExportService {
   /// Bundled Unicode font, loaded once per process.
@@ -80,6 +84,8 @@ class PdfExportService {
     required List<DayLog> days,
     required Map<int, List<LogbookEntry>> entriesByDay,
     required Map<int, Uint8List?> mapScreenshots,
+    required AppLocalizations l10n,
+    Map<int, List<DutyPeriod>> dutiesByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
@@ -104,7 +110,8 @@ class PdfExportService {
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
-      for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos, docId, rev)) {
+      for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos,
+          docId, rev, l10n, dutiesByDay[day.id] ?? const [])) {
         pdf.addPage(page);
       }
     }
@@ -145,6 +152,8 @@ class PdfExportService {
     required Charter charter,
     required DayLog day,
     required List<LogbookEntry> entries,
+    required AppLocalizations l10n,
+    List<DutyPeriod> duties = const [],
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
@@ -153,7 +162,8 @@ class PdfExportService {
     const rev = 0;
     final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
-    for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev)) {
+    for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev,
+        l10n, duties)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
@@ -184,6 +194,8 @@ class PdfExportService {
     required List<DayLog> days,
     required Map<int, List<LogbookEntry>> entriesByDay,
     required Map<int, Uint8List?> mapScreenshots,
+    required AppLocalizations l10n,
+    Map<int, List<DutyPeriod>> dutiesByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     HandoverProtocol? checkInProtocol,
@@ -194,6 +206,7 @@ class PdfExportService {
     final bytes = await buildCharterPdfBytes(
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
+      l10n: l10n, dutiesByDay: dutiesByDay,
       skipperProfile: skipperProfile,
       checkInProtocol: checkInProtocol, checkInChecklist: checkInChecklist,
       checkOutProtocol: checkOutProtocol, checkOutChecklist: checkOutChecklist,
@@ -205,12 +218,15 @@ class PdfExportService {
     required Charter charter,
     required DayLog day,
     required List<LogbookEntry> entries,
+    required AppLocalizations l10n,
+    List<DutyPeriod> duties = const [],
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
   }) async {
     final bytes = await buildDayPdfBytes(
       charter: charter, day: day, entries: entries,
+      l10n: l10n, duties: duties,
       mapScreenshot: mapScreenshot, signatureImage: signatureImage,
       skipperProfile: skipperProfile);
     return saveBytesToFile(bytes, 'day_${day.id}');
@@ -466,7 +482,8 @@ class PdfExportService {
 
   static List<pw.Page> _dayPages(Charter charter, DayLog day,
       List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
-      String docId, int revision) {
+      String docId, int revision, AppLocalizations l,
+      List<DutyPeriod> duties) {
     final pages = <pw.Page>[];
     final dayName = DateFormat('EEEE d. MMMM yyyy').format(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
@@ -475,14 +492,18 @@ class PdfExportService {
     final sorted = [...entries]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     // Voyage start/end entries
-    final voyageStart = sorted.where((e) {
-      final n = e.skipperNote ?? '';
-      return n.contains('voyageStart') || n.contains('Začiatok plavby') || n.contains('Start voyage');
-    }).toList();
-    final voyageEnd = sorted.where((e) {
-      final n = e.skipperNote ?? '';
-      return n.contains('voyageEnd') || n.contains('Koniec plavby') || n.contains('End voyage');
-    }).toList();
+    // Recognised by the stored event type, with the old note matching kept only
+    // as a fallback for rows written before v21 — see LogbookEventType.
+    final voyageStart = sorted
+        .where((e) =>
+            LogbookEventType.resolve(e.eventType, e.skipperNote) ==
+            LogbookEventType.voyageStart)
+        .toList();
+    final voyageEnd = sorted
+        .where((e) =>
+            LogbookEventType.resolve(e.eventType, e.skipperNote) ==
+            LogbookEventType.voyageEnd)
+        .toList();
 
     pages.add(pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -500,7 +521,7 @@ class PdfExportService {
               pw.Text(_pdfText(dayName), style: pw.TextStyle(
                   color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 13)),
               pw.SizedBox(height: 2),
-              pw.Text('${_pdfText(day.portFrom ?? "?")} → ${_pdfText(day.portTo ?? "?")}',
+              pw.Text(_pdfText('${day.portFrom ?? "?"} → ${day.portTo ?? "?"}'),
                   style: pw.TextStyle(color: PdfColors.grey200, fontSize: 10)),
             ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
@@ -580,12 +601,21 @@ class PdfExportService {
           pw.SizedBox(height: 6),
         ],
 
+        // ── Službukonajúca posádka ──
+        if (duties.isNotEmpty) ...[
+          pw.Text(l.logDutySection.toUpperCase(), style: pw.TextStyle(
+              color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
+          pw.SizedBox(height: 3),
+          _dutyBand(duties, day.date, l),
+          pw.SizedBox(height: 8),
+        ],
+
         // ── Záznamy ──
         if (sorted.isNotEmpty) ...[
           pw.Text('ZAZNAMY DENNIKA', style: pw.TextStyle(
               color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
           pw.SizedBox(height: 3),
-          _entriesTable(sorted.take(18).toList(), photos),
+          _entriesTable(sorted.take(18).toList(), photos, l),
         ],
 
         pw.Spacer(),
@@ -605,7 +635,7 @@ class PdfExportService {
             pw.Text('${_pdfText(dayName)} – pokracovanie',
                 style: pw.TextStyle(color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
             pw.SizedBox(height: 8),
-            _entriesTable(chunk, photos),
+            _entriesTable(chunk, photos, l),
             pw.Spacer(),
             _footer('${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
           ]),
@@ -617,7 +647,8 @@ class PdfExportService {
 
   // ── Entries Table (rozšírená) ─────────────────────────────────
 
-  static pw.Widget _entriesTable(List<LogbookEntry> entries, Map<int, Uint8List> photos) {
+  static pw.Widget _entriesTable(List<LogbookEntry> entries,
+      Map<int, Uint8List> photos, AppLocalizations l) {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       columnWidths: {
@@ -646,6 +677,13 @@ class PdfExportService {
             sailMode = _sailModeLabel(modeMatch.group(1)!);
             noteText = noteText.substring(modeMatch.end);
           }
+          // An automatic entry is printed from its event type, so the reader
+          // gets it in their own language instead of the stored English.
+          final eventLabel = _eventLabel(
+              LogbookEventType.resolve(entry.eventType, entry.skipperNote),
+              noteText,
+              l);
+          if (eventLabel != null) noteText = eventLabel;
           // Extract data source tag before stripping auto entries
           String? srcLabel;
           if (noteText.startsWith('Auto') || noteText.startsWith('Automatick')) {
@@ -1669,12 +1707,93 @@ class PdfExportService {
   }
 
   /// Diakritika → ASCII pre PDF
+  /// Who was on duty on this day, one line per person.
+  ///
+  /// Periods are clipped to the day and marked with arrows when they run past
+  /// it, because a duty is stored as a single row even when it crosses
+  /// midnight — splitting it would turn one real event into two records.
+  static pw.Widget _dutyBand(
+      List<DutyPeriod> duties, DateTime day, AppLocalizations l) {
+    final localMidnight = DateTime(day.year, day.month, day.day);
+    final now = DateTime.now().toUtc();
+    final fmt = DateFormat('HH:mm');
+
+    final rows = duties
+        .map((d) => clipToDay(d.toInterval(), localMidnight, now))
+        .toList()
+      ..sort((a, b) => a.fromUtc.compareTo(b.fromUtc));
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: rows.map((c) {
+        final from = '${c.clippedStart ? '<- ' : ''}'
+            '${fmt.format(c.fromUtc.toLocal())}';
+        final to = c.duty.isRunning
+            ? l.logDutyStillRunning
+            : '${fmt.format(c.toUtc.toLocal())}${c.clippedEnd ? ' ->' : ''}';
+        return pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 1.5),
+          child: pw.Row(children: [
+            pw.SizedBox(
+              width: 120,
+              child: pw.Text(_pdfText(c.duty.crewName),
+                  style: const pw.TextStyle(fontSize: 8)),
+            ),
+            pw.Text('$from - $to',
+                style: pw.TextStyle(fontSize: 8, color: _dgrey)),
+          ]),
+        );
+      }).toList(),
+    );
+  }
+
+  /// Translated label for an automatic entry, or null if it has none.
+  ///
+  /// Mirrors the day-log screen so the PDF and the app never disagree about
+  /// what an entry says. MOB is left as stored — the same word at sea in every
+  /// language covered here.
+  static String? _eventLabel(
+      LogbookEventType? event, String? note, AppLocalizations l) {
+    switch (event) {
+      case LogbookEventType.voyageStart:
+        return l.voyageStart;
+      case LogbookEventType.voyageEnd:
+        return l.voyageEnd;
+      case LogbookEventType.anchorDropped:
+        return l.logEventAnchorDropped;
+      case LogbookEventType.anchorRaised:
+        return l.logEventAnchorRaised;
+      case LogbookEventType.driftOut:
+        return l.logEventDriftOut;
+      case LogbookEventType.driftIn:
+        return l.logEventDriftIn;
+      case LogbookEventType.dutyStart:
+        return l.logEventDutyStart(_crewFromNote(note));
+      case LogbookEventType.dutyEnd:
+        return l.logEventDutyEnd(_crewFromNote(note));
+      default:
+        return null;
+    }
+  }
+
+  /// The crew name carried in a duty note ('Duty start: Ján Novák').
+  static String _crewFromNote(String? note) {
+    if (note == null) return '';
+    final i = note.indexOf(':');
+    return i == -1 ? '' : note.substring(i + 1).trim();
+  }
+
   /// Text on its way into the PDF.
   ///
   /// This used to strip diacritics, because the built-in Helvetica could not
   /// draw them. With Noto Sans bundled (see [_theme]) that is no longer true,
-  /// so it passes text through untouched - names and Cyrillic now print as
-  /// written. Kept as a single funnel rather than inlined at 53 call sites;
-  /// do NOT reintroduce transliteration here.
-  static String _pdfText(String s) => s;
+  /// so letters, diacritics and Cyrillic now print as written. Do NOT
+  /// reintroduce transliteration of letters here.
+  ///
+  /// Arrows are the exception: Noto Sans has no U+2192/U+2190, and the pdf
+  /// package only *warns* about a missing glyph before dropping it, so the
+  /// port-to-port heading would have lost the arrow silently. Kept as a single
+  /// funnel rather than inlined at 53 call sites.
+  static String _pdfText(String s) =>
+      s.replaceAll('→', '->').replaceAll('←', '<-');
 }

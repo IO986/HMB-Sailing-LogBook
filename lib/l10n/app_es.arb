@@ -134,6 +134,8 @@
   "maydayCard": "Tarjeta Mayday",
   "yachtHandover": "Entrega del yate",
   "gearList": "Lista de equipos",
+  "logDutySection": "Guardia",
+  "logDutyStillRunning": "en curso",
   "logEventAnchorDropped": "Ancla fondeada",
   "logEventAnchorRaised": "Ancla levada",
   "logEventDriftOut": "Garreo – radio excedido",
