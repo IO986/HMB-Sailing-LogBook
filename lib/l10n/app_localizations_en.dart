@@ -2219,6 +2219,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.';
 
   @override
+  String get guideDutyTitle => 'Crew on duty';
+
+  @override
+  String get guideDutyBody =>
+      'A record of who was on watch and when — in Safety, above the anchor alarm.\n\n• Come on duty — pick one or several people at once; each then goes off duty separately\n• Names come from the voyage crew. If no crew is set, the button takes you to the voyage card\n• The start time can be corrected if you pressed the button late\n• Show for inspection — a full-screen card to hand over on board: who is on duty, since when, local and UTC time. Nothing can be changed from it\n• Duty roster — fill in a past duty or edit one. Leave the \"to\" time empty and the duty keeps running\n• A night watch across midnight is one record, not two. It appears on both days in the PDF, marked with an arrow\n• Coming on and going off duty are both written to the logbook and the PDF export\n\nNote: the app never ends a duty by itself. After 12 hours it only warns you — an end time you did not observe would be invented data.';
+
+  @override
   String get guideCompassTitle => 'Sighting Compass';
 
   @override
@@ -2244,7 +2251,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.';
+      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

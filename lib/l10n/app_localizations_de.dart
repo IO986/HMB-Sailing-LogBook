@@ -2237,6 +2237,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.';
 
   @override
+  String get guideDutyTitle => 'Wachdienst';
+
+  @override
+  String get guideDutyBody =>
+      'Ein Nachweis darüber, wer wann Wache hatte — unter Sicherheit, über dem Ankeralarm.\n\n• Wache übernehmen — eine oder mehrere Personen gleichzeitig wählen; jede beendet ihre Wache dann einzeln\n• Die Namen stammen aus der Crew der Fahrt. Ist keine Crew erfasst, führt die Schaltfläche zur Fahrtkarte\n• Die Anfangszeit lässt sich korrigieren, wenn du zu spät gedrückt hast\n• Für Kontrolle anzeigen — eine bildschirmfüllende Karte zum Vorzeigen an Bord: wer Wache hat, seit wann, Orts- und UTC-Zeit. Von dort ist nichts änderbar\n• Wachplan — Wache nachtragen oder bearbeiten. Ohne Endzeit läuft die Wache weiter\n• Eine Nachtwache über Mitternacht ist ein Eintrag, nicht zwei. Im PDF erscheint sie an beiden Tagen, mit Pfeil markiert\n• Beginn und Ende werden ins Logbuch und in den PDF-Export geschrieben\n\nHinweis: Die App beendet eine Wache nie von selbst. Nach 12 Stunden warnt sie nur — eine Endzeit, die du nicht beobachtet hast, wäre erfunden.';
+
+  @override
   String get guideCompassTitle => 'Peilkompass';
 
   @override
@@ -2262,7 +2269,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';

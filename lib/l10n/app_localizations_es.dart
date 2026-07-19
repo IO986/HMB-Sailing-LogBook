@@ -2230,6 +2230,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.';
 
   @override
+  String get guideDutyTitle => 'Guardia de la tripulación';
+
+  @override
+  String get guideDutyBody =>
+      'Un registro de quién estuvo de guardia y cuándo — en Seguridad, sobre la alarma de fondeo.\n\n• Entrar de guardia — elige a una o varias personas a la vez; cada una sale de guardia por separado\n• Los nombres salen de la tripulación de la travesía. Si no hay tripulación, el botón te lleva a la ficha de la travesía\n• La hora de inicio se puede corregir si pulsaste tarde\n• Mostrar para inspección — una tarjeta a pantalla completa para entregar a bordo: quién está de guardia, desde cuándo, hora local y UTC. No permite cambiar nada\n• Rol de guardias — añade una guardia pasada o edítala. Si dejas la hora \"hasta\" vacía, la guardia sigue en curso\n• Una guardia nocturna que cruza medianoche es un solo registro, no dos. En el PDF aparece en ambos días, marcada con una flecha\n• La entrada y la salida de guardia se escriben en el diario y en el PDF\n\nNota: la app nunca cierra una guardia por su cuenta. A las 12 horas solo avisa — una hora de fin que no presenciaste sería un dato inventado.';
+
+  @override
   String get guideCompassTitle => 'Brújula de navegación';
 
   @override
@@ -2255,7 +2262,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';

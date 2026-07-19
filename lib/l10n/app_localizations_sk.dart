@@ -2220,6 +2220,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.';
 
   @override
+  String get guideDutyTitle => 'Služba posádky';
+
+  @override
+  String get guideDutyBody =>
+      'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Nastúpiť do služby — vyber jedného alebo viacerých ľudí naraz; každý sa potom ukončuje samostatne\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Čas nástupu sa dá opraviť, ak si tlačidlo stlačil neskôr\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu\n\nPozn.: appka službu nikdy neukončí sama. Po 12 hodinách len upozorní — koniec, ktorý si nevidel, by bol vymyslený údaj.';
+
+  @override
   String get guideCompassTitle => 'Námerový kompas';
 
   @override
@@ -2245,7 +2252,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.';
+      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
