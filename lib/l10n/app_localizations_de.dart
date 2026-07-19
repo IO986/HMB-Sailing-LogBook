@@ -582,6 +582,95 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfForCharterCompany => 'Für die Charterfirma';
 
   @override
+  String get dutyRoster => 'Wachdienst';
+
+  @override
+  String get dutyStartAction => 'Wache übernehmen';
+
+  @override
+  String get dutyEndAction => 'Beenden';
+
+  @override
+  String get dutyStartTitle => 'Wer übernimmt die Wache?';
+
+  @override
+  String get dutyRunningChip => 'IM DIENST';
+
+  @override
+  String dutySince(String time) {
+    return 'seit $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h Std. $m Min.';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Derzeit hat niemand Wache';
+
+  @override
+  String get dutyInspectionView => 'Für Kontrolle anzeigen';
+
+  @override
+  String get dutyRosterHistory => 'Wachplan';
+
+  @override
+  String get dutyAddRetrospective => 'Wache nachtragen';
+
+  @override
+  String get dutyEditTitle => 'Wache bearbeiten';
+
+  @override
+  String get dutyDeleteTitle => 'Wache löschen?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'Der Wacheintrag für $name wird gelöscht.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'Für diese Fahrt ist keine Crew erfasst';
+
+  @override
+  String get dutyDefineCrew => 'Crew erfassen';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'Das Ende muss nach dem Beginn liegen.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name hat zu dieser Zeit bereits Wache.';
+  }
+
+  @override
+  String get dutyErrorFutureStart =>
+      'Der Beginn kann nicht in der Zukunft liegen.';
+
+  @override
+  String get dutyNoteLabel => 'Anmerkung';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'Seit $hours Std. im Dienst — vergessen zu beenden?';
+  }
+
+  @override
+  String get dutyFrom => 'Von';
+
+  @override
+  String get dutyTo => 'Bis';
+
+  @override
+  String get dutyToOngoing => '— noch im Dienst';
+
+  @override
+  String get dutySelectPerson => 'Crewmitglied wählen';
+
+  @override
+  String get dutyNoRecords => 'Noch keine Wachen erfasst';
+
+  @override
   String get logDutySection => 'Wachdienst';
 
   @override

@@ -580,6 +580,94 @@ class AppLocalizationsSk extends AppLocalizations {
   String get pdfForCharterCompany => 'Za charterovú spoločnosť';
 
   @override
+  String get dutyRoster => 'Služba posádky';
+
+  @override
+  String get dutyStartAction => 'Nastúpiť do služby';
+
+  @override
+  String get dutyEndAction => 'Ukončiť';
+
+  @override
+  String get dutyStartTitle => 'Kto nastupuje do služby?';
+
+  @override
+  String get dutyRunningChip => 'SLÚŽI';
+
+  @override
+  String dutySince(String time) {
+    return 'od $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Momentálne nikto neslúži';
+
+  @override
+  String get dutyInspectionView => 'Zobraziť pre kontrolu';
+
+  @override
+  String get dutyRosterHistory => 'Rozpis služieb';
+
+  @override
+  String get dutyAddRetrospective => 'Doplniť službu';
+
+  @override
+  String get dutyEditTitle => 'Upraviť službu';
+
+  @override
+  String get dutyDeleteTitle => 'Zmazať službu?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'Záznam služby pre $name bude zmazaný.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'Plavba nemá zadanú posádku';
+
+  @override
+  String get dutyDefineCrew => 'Doplniť posádku';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'Koniec musí byť po začiatku.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name už v tomto čase slúži.';
+  }
+
+  @override
+  String get dutyErrorFutureStart => 'Začiatok nemôže byť v budúcnosti.';
+
+  @override
+  String get dutyNoteLabel => 'Poznámka';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'Služba beží $hours h — nezabudol si ju ukončiť?';
+  }
+
+  @override
+  String get dutyFrom => 'Od';
+
+  @override
+  String get dutyTo => 'Do';
+
+  @override
+  String get dutyToOngoing => '— stále slúži';
+
+  @override
+  String get dutySelectPerson => 'Vyber člena posádky';
+
+  @override
+  String get dutyNoRecords => 'Zatiaľ žiadne služby';
+
+  @override
   String get logDutySection => 'Služba posádky';
 
   @override

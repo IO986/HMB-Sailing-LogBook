@@ -583,6 +583,94 @@ class AppLocalizationsUk extends AppLocalizations {
   String get pdfForCharterCompany => 'За чартерну компанію';
 
   @override
+  String get dutyRoster => 'Вахта екіпажу';
+
+  @override
+  String get dutyStartAction => 'Заступити на вахту';
+
+  @override
+  String get dutyEndAction => 'Завершити';
+
+  @override
+  String get dutyStartTitle => 'Хто заступає на вахту?';
+
+  @override
+  String get dutyRunningChip => 'НА ВАХТІ';
+
+  @override
+  String dutySince(String time) {
+    return 'з $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h год $m хв';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Зараз ніхто не на вахті';
+
+  @override
+  String get dutyInspectionView => 'Показати для перевірки';
+
+  @override
+  String get dutyRosterHistory => 'Графік вахт';
+
+  @override
+  String get dutyAddRetrospective => 'Додати вахту';
+
+  @override
+  String get dutyEditTitle => 'Редагувати вахту';
+
+  @override
+  String get dutyDeleteTitle => 'Видалити вахту?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'Запис вахти для $name буде видалено.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'Для цього рейсу не задано екіпаж';
+
+  @override
+  String get dutyDefineCrew => 'Додати екіпаж';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'Кінець має бути після початку.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name вже на вахті в цей час.';
+  }
+
+  @override
+  String get dutyErrorFutureStart => 'Початок не може бути в майбутньому.';
+
+  @override
+  String get dutyNoteLabel => 'Нотатка';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'На вахті $hours год — не забули завершити?';
+  }
+
+  @override
+  String get dutyFrom => 'З';
+
+  @override
+  String get dutyTo => 'До';
+
+  @override
+  String get dutyToOngoing => '— ще на вахті';
+
+  @override
+  String get dutySelectPerson => 'Виберіть члена екіпажу';
+
+  @override
+  String get dutyNoRecords => 'Вахт поки немає';
+
+  @override
   String get logDutySection => 'Вахта екіпажу';
 
   @override

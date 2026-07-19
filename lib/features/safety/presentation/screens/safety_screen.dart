@@ -22,6 +22,7 @@ import 'package:drift/drift.dart' as drift;
 import '../../../../core/services/location_service.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
+import '../../../duty/presentation/widgets/duty_card.dart';
 import '../../../../main.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -281,6 +282,9 @@ class SafetyScreen extends ConsumerWidget {
         children: [
           _MobSection(),
           const SizedBox(height: 16),
+          // Above the anchor alarm: a running duty is the more routine thing
+          // to check, and the one an inspection asks about.
+          const DutyCard(),
           _AnchorCard(),
           const SizedBox(height: 16),
           const _HmbHandbookCard(),

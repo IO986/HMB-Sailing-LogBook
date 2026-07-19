@@ -38,13 +38,23 @@ final dutyCrewProvider =
   );
 });
 
-/// One-second tick driving the "on duty for 1 h 34 m" text.
+/// One-second tick, for the inspection screen only — it is the one place that
+/// prints seconds.
 ///
-/// autoDispose so the timer stops when no screen is showing elapsed time —
-/// this runs on a phone that may be on battery for a week.
+/// autoDispose so the timer stops when no screen is showing it; this runs on a
+/// phone that may be on battery for a week.
 final dutyClockProvider = StreamProvider.autoDispose<DateTime>((ref) =>
     Stream<DateTime>.periodic(
         const Duration(seconds: 1), (_) => DateTime.now()));
+
+/// Coarse tick for elapsed times shown in hours and minutes.
+///
+/// The duty card lives in the Safety tab, which stays alive as the user moves
+/// around the app. Driving it from [dutyClockProvider] would rebuild that list
+/// once a second to change a number that only moves once a minute.
+final dutyMinuteClockProvider = StreamProvider.autoDispose<DateTime>((ref) =>
+    Stream<DateTime>.periodic(
+        const Duration(seconds: 30), (_) => DateTime.now()));
 
 /// Bridges drift rows to the pure rules in duty_rules.dart.
 extension DutyPeriodRules on DutyPeriod {

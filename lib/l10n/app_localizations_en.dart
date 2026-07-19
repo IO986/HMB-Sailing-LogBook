@@ -581,6 +581,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfForCharterCompany => 'For the charter company';
 
   @override
+  String get dutyRoster => 'Crew on duty';
+
+  @override
+  String get dutyStartAction => 'Come on duty';
+
+  @override
+  String get dutyEndAction => 'End';
+
+  @override
+  String get dutyStartTitle => 'Who is coming on duty?';
+
+  @override
+  String get dutyRunningChip => 'ON DUTY';
+
+  @override
+  String dutySince(String time) {
+    return 'since $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Nobody is on duty';
+
+  @override
+  String get dutyInspectionView => 'Show for inspection';
+
+  @override
+  String get dutyRosterHistory => 'Duty roster';
+
+  @override
+  String get dutyAddRetrospective => 'Add a past duty';
+
+  @override
+  String get dutyEditTitle => 'Edit duty';
+
+  @override
+  String get dutyDeleteTitle => 'Delete duty?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'The duty record for $name will be deleted.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'No crew defined for this voyage';
+
+  @override
+  String get dutyDefineCrew => 'Add crew';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'The end must be after the start.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name is already on duty at that time.';
+  }
+
+  @override
+  String get dutyErrorFutureStart => 'The start cannot be in the future.';
+
+  @override
+  String get dutyNoteLabel => 'Note';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'On duty for $hours h — was it left open?';
+  }
+
+  @override
+  String get dutyFrom => 'From';
+
+  @override
+  String get dutyTo => 'To';
+
+  @override
+  String get dutyToOngoing => '— still on duty';
+
+  @override
+  String get dutySelectPerson => 'Select a crew member';
+
+  @override
+  String get dutyNoRecords => 'No duties recorded yet';
+
+  @override
   String get logDutySection => 'Crew on duty';
 
   @override

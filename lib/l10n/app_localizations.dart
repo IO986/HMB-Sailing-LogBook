@@ -1196,6 +1196,162 @@ abstract class AppLocalizations {
   /// **'Za charterovú spoločnosť'**
   String get pdfForCharterCompany;
 
+  /// No description provided for @dutyRoster.
+  ///
+  /// In sk, this message translates to:
+  /// **'Služba posádky'**
+  String get dutyRoster;
+
+  /// No description provided for @dutyStartAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nastúpiť do služby'**
+  String get dutyStartAction;
+
+  /// No description provided for @dutyEndAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ukončiť'**
+  String get dutyEndAction;
+
+  /// No description provided for @dutyStartTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kto nastupuje do služby?'**
+  String get dutyStartTitle;
+
+  /// No description provided for @dutyRunningChip.
+  ///
+  /// In sk, this message translates to:
+  /// **'SLÚŽI'**
+  String get dutyRunningChip;
+
+  /// No description provided for @dutySince.
+  ///
+  /// In sk, this message translates to:
+  /// **'od {time}'**
+  String dutySince(String time);
+
+  /// No description provided for @dutyElapsed.
+  ///
+  /// In sk, this message translates to:
+  /// **'{h} h {m} min'**
+  String dutyElapsed(int h, int m);
+
+  /// No description provided for @dutyNobodyOnDuty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Momentálne nikto neslúži'**
+  String get dutyNobodyOnDuty;
+
+  /// No description provided for @dutyInspectionView.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zobraziť pre kontrolu'**
+  String get dutyInspectionView;
+
+  /// No description provided for @dutyRosterHistory.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rozpis služieb'**
+  String get dutyRosterHistory;
+
+  /// No description provided for @dutyAddRetrospective.
+  ///
+  /// In sk, this message translates to:
+  /// **'Doplniť službu'**
+  String get dutyAddRetrospective;
+
+  /// No description provided for @dutyEditTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upraviť službu'**
+  String get dutyEditTitle;
+
+  /// No description provided for @dutyDeleteTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať službu?'**
+  String get dutyDeleteTitle;
+
+  /// No description provided for @dutyDeleteConfirm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznam služby pre {name} bude zmazaný.'**
+  String dutyDeleteConfirm(String name);
+
+  /// No description provided for @dutyNoCrewDefined.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba nemá zadanú posádku'**
+  String get dutyNoCrewDefined;
+
+  /// No description provided for @dutyDefineCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Doplniť posádku'**
+  String get dutyDefineCrew;
+
+  /// No description provided for @dutyErrorEndBeforeStart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Koniec musí byť po začiatku.'**
+  String get dutyErrorEndBeforeStart;
+
+  /// No description provided for @dutyErrorOverlap.
+  ///
+  /// In sk, this message translates to:
+  /// **'{name} už v tomto čase slúži.'**
+  String dutyErrorOverlap(String name);
+
+  /// No description provided for @dutyErrorFutureStart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Začiatok nemôže byť v budúcnosti.'**
+  String get dutyErrorFutureStart;
+
+  /// No description provided for @dutyNoteLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poznámka'**
+  String get dutyNoteLabel;
+
+  /// No description provided for @dutyLongRunningWarning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Služba beží {hours} h — nezabudol si ju ukončiť?'**
+  String dutyLongRunningWarning(int hours);
+
+  /// No description provided for @dutyFrom.
+  ///
+  /// In sk, this message translates to:
+  /// **'Od'**
+  String get dutyFrom;
+
+  /// No description provided for @dutyTo.
+  ///
+  /// In sk, this message translates to:
+  /// **'Do'**
+  String get dutyTo;
+
+  /// No description provided for @dutyToOngoing.
+  ///
+  /// In sk, this message translates to:
+  /// **'— stále slúži'**
+  String get dutyToOngoing;
+
+  /// No description provided for @dutySelectPerson.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyber člena posádky'**
+  String get dutySelectPerson;
+
+  /// No description provided for @dutyNoRecords.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zatiaľ žiadne služby'**
+  String get dutyNoRecords;
+
   /// No description provided for @logDutySection.
   ///
   /// In sk, this message translates to:

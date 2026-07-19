@@ -581,6 +581,94 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pdfForCharterCompany => 'Por la empresa de chárter';
 
   @override
+  String get dutyRoster => 'Guardia';
+
+  @override
+  String get dutyStartAction => 'Entrar de guardia';
+
+  @override
+  String get dutyEndAction => 'Terminar';
+
+  @override
+  String get dutyStartTitle => '¿Quién entra de guardia?';
+
+  @override
+  String get dutyRunningChip => 'DE GUARDIA';
+
+  @override
+  String dutySince(String time) {
+    return 'desde $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Nadie está de guardia';
+
+  @override
+  String get dutyInspectionView => 'Mostrar para inspección';
+
+  @override
+  String get dutyRosterHistory => 'Rol de guardias';
+
+  @override
+  String get dutyAddRetrospective => 'Añadir guardia pasada';
+
+  @override
+  String get dutyEditTitle => 'Editar guardia';
+
+  @override
+  String get dutyDeleteTitle => '¿Eliminar guardia?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'Se eliminará el registro de guardia de $name.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'Esta travesía no tiene tripulación';
+
+  @override
+  String get dutyDefineCrew => 'Añadir tripulación';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'El fin debe ser posterior al inicio.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name ya está de guardia en ese momento.';
+  }
+
+  @override
+  String get dutyErrorFutureStart => 'El inicio no puede estar en el futuro.';
+
+  @override
+  String get dutyNoteLabel => 'Nota';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'De guardia $hours h — ¿quedó abierta?';
+  }
+
+  @override
+  String get dutyFrom => 'Desde';
+
+  @override
+  String get dutyTo => 'Hasta';
+
+  @override
+  String get dutyToOngoing => '— sigue de guardia';
+
+  @override
+  String get dutySelectPerson => 'Selecciona un tripulante';
+
+  @override
+  String get dutyNoRecords => 'Aún no hay guardias';
+
+  @override
   String get logDutySection => 'Guardia';
 
   @override
