@@ -92,6 +92,21 @@ Implementácia `lib/features/cloud/data/google_drive_storage.dart` cez
 `google_sign_in` + `googleapis` (Drive v3) +
 `extension_google_sign_in_as_googleapis_auth`.
 
+**Proton Drive zatiaľ nejde** (overené 2026-07-19). Proton nemá verejné API;
+stavia SDK, ktorého preview je na GitHube, ale **autentifikácia pre samostatné
+integrácie tretích strán ešte nie je podporovaná** — používateľa by sme nemali
+ako prihlásiť. Produkčná pripravenosť je cielená na koniec 2026 / začiatok
+2027 a je to odhad. Neoficiálny most `henrybear327/Proton-API-Bridge` (Go,
+reverzne inžinierovaný, používa ho rclone) sa z Fluttera nedá rozumne použiť.
+K tomu je Proton E2E šifrovaný, takže nahranie znamená implementovať ich
+kľúčovú hierarchiu, nie len poslať bajty s tokenom.
+
+**Ak je cieľom nedávať dáta Googlu, jednoduchší je WebDAV** (Nextcloud,
+ownCloud, Koofr, vlastný server): URL + meno + heslo + HTTP PUT, žiadny OAuth,
+žiadne SHA-1 ani Play App Signing, a `dio` je už v projekte. Menej práce než
+Google Drive. Ako druhá implementácia `CloudStorageProvider` dáva zmysel skôr
+než Proton.
+
 Priečinky sa pri `drive.file` dajú vytvárať a appka ich potom vidí (sú jej
 vlastné). Štruktúra zrkadlí lokálnu z `export_service.dart:335-356`:
 `HMB Sailing Log / {nazov_plavby} / Day_{yyyy-MM-dd}`.
