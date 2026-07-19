@@ -80,6 +80,40 @@ void main() {
     return bytes.length;
   }
 
+  /// The charter PDF exercises the title page, the summary page and the
+  /// safety-briefing page — none of which the day PDF touches.
+  Future<int> buildCharterLength(Locale locale) async {
+    final l10n = await AppLocalizations.delegate.load(locale);
+    final bytes = await PdfExportService.buildCharterPdfBytes(
+      charter: charter(),
+      days: [dayLog()],
+      entriesByDay: {
+        10: [
+          entry('Anchor dropped', LogbookEventType.anchorDropped.code, 8),
+          entry('Duty start: Ján Novák', LogbookEventType.dutyStart.code, 9),
+        ]
+      },
+      mapScreenshots: const {},
+      l10n: l10n,
+      dutiesByDay: {
+        10: [duty('Ján Novák', 9, 13), duty('Peter Kováč', 22, null)]
+      },
+      crewSignatures: [
+        CrewSignature(
+            id: 1, charterId: 1, crewName: 'Ján Novák', role: 'skipper'),
+        CrewSignature(id: 2, charterId: 1, crewName: 'Peter Kováč', role: 'crew'),
+      ],
+    );
+    return bytes.length;
+  }
+
+  test('builds a charter PDF in every supported locale', () async {
+    for (final locale in AppLocalizations.supportedLocales) {
+      expect(await buildCharterLength(locale), greaterThan(1000),
+          reason: 'charter export failed for ${locale.languageCode}');
+    }
+  });
+
   test('builds a day PDF in Slovak', () async {
     expect(await buildLength(const Locale('sk')), greaterThan(1000));
   });

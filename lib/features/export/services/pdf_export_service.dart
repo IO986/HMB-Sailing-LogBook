@@ -106,6 +106,7 @@ class PdfExportService {
     );
     final vesselPhotos = await _loadVesselPhotos(charter);
     pdf.addPage(_titlePage(
+      l10n,
         charter, days, entriesByDay, skipperProfile, docId, rev, vesselPhotos));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
@@ -115,18 +116,18 @@ class PdfExportService {
         pdf.addPage(page);
       }
     }
-    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev));
-    final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev);
+    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev, l10n));
+    final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev, l10n);
     pdf.addPage(sbPage);
 
     if (checkInProtocol != null && checkInChecklist != null) {
       pdf.addPage(await _handoverProtocolPage(
-          charter: charter, protocol: checkInProtocol, checklist: checkInChecklist,
+          l: l10n, charter: charter, protocol: checkInProtocol, checklist: checkInChecklist,
           docId: docId, revision: rev));
     }
     if (checkOutProtocol != null && checkOutChecklist != null) {
       pdf.addPage(await _handoverProtocolPage(
-          charter: charter, protocol: checkOutProtocol, checklist: checkOutChecklist,
+          l: l10n, charter: charter, protocol: checkOutProtocol, checklist: checkOutChecklist,
           docId: docId, revision: rev));
     }
 
@@ -136,6 +137,7 @@ class PdfExportService {
           docId: docId, revision: rev);
       final hash = sha256.convert(utf8.encode(canonical)).toString();
       pdf.addPage(_signaturePage(
+        l: l10n,
         signatureImage: signatureImage,
         signerName: charter.skipperName,
         signedAt: DateTime.now().toUtc(),
@@ -172,6 +174,7 @@ class PdfExportService {
         docId: docId, revision: rev);
       final hash = sha256.convert(utf8.encode(canonical)).toString();
       pdf.addPage(_signaturePage(
+        l: l10n,
         signatureImage: signatureImage,
         signerName: charter.skipperName,
         signedAt: DateTime.now().toUtc(),
@@ -306,7 +309,7 @@ class PdfExportService {
     }
   }
 
-  static pw.Page _titlePage(Charter charter, List<DayLog> days,
+  static pw.Page _titlePage(AppLocalizations l, Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper,
       String docId, int revision, List<pw.MemoryImage> vesselPhotos) {
     final fmt = DateFormat('d. MMM yyyy');
@@ -365,7 +368,7 @@ class PdfExportService {
         pw.SizedBox(height: 14),
 
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-          pw.Expanded(child: _infoBox('LOD', [
+          pw.Expanded(child: _infoBox(l.pdfVesselLabel.toUpperCase(), [
             _pdfText(charter.vesselName ?? '-'),
             if (charter.vesselType != null) _pdfText(charter.vesselType!),
             if (charter.homePort != null) 'Domovsky pristav: ${_pdfText(charter.homePort!)}',
@@ -379,8 +382,8 @@ class PdfExportService {
               'Ponor: ${charter.vesselDraftM!.toStringAsFixed(1)} m',
           ])),
           pw.SizedBox(width: 8),
-          pw.Expanded(child: _infoBox('POSADKA', [
-            if (charter.skipperName != null) 'Kapitan: ${_pdfText(charter.skipperName!)}',
+          pw.Expanded(child: _infoBox(l.pdfCrewSection.toUpperCase(), [
+            if (charter.skipperName != null) '${l.pdfSkipperLabel}: ${_pdfText(charter.skipperName!)}',
             ...crew.map((c) => '- ${_pdfText(c)}'),
             if (crew.isEmpty && charter.skipperName == null) '-',
           ])),
@@ -403,7 +406,7 @@ class PdfExportService {
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
             ),
             child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Text('SKIPPER – LICENCIE', style: pw.TextStyle(
+              pw.Text(l.pdfSkipperLicences.toUpperCase(), style: pw.TextStyle(
                   color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
               pw.SizedBox(height: 4),
               pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -438,7 +441,7 @@ class PdfExportService {
           pw.SizedBox(height: 10),
         ],
 
-        pw.Text('PREHLAD DNI', style: pw.TextStyle(color: _navy,
+        pw.Text(l.pdfDaysOverview.toUpperCase(), style: pw.TextStyle(color: _navy,
             fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
         pw.SizedBox(height: 6),
         pw.Table(
@@ -453,7 +456,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              ['Datum', 'Odkial', 'Kam', 'NM', 'Bft', 'Zazn.'].map((h) =>
+              [l.pdfDateLabel, l.pdfColFrom, l.pdfColTo, 'NM', 'Bft', l.pdfColEntriesShort].map((h) =>
                 _hcell(h)).toList()),
             ...days.asMap().entries.map((e) {
               final d = e.value;
@@ -529,10 +532,10 @@ class PdfExportService {
                 pw.Text('${day.distanceNm.toStringAsFixed(1)} NM', style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
               if (voyageStart.isNotEmpty)
-                pw.Text('ODCHOD ${DateFormat('HH:mm').format(voyageStart.first.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfDeparture.toUpperCase()} ${DateFormat('HH:mm').format(voyageStart.first.timestamp.toUtc())} UTC',
                     style: pw.TextStyle(color: PdfColors.green200, fontSize: 8)),
               if (voyageEnd.isNotEmpty)
-                pw.Text('PRICHOD ${DateFormat('HH:mm').format(voyageEnd.last.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfArrival.toUpperCase()} ${DateFormat('HH:mm').format(voyageEnd.last.timestamp.toUtc())} UTC',
                     style: pw.TextStyle(color: PdfColors.orange200, fontSize: 8)),
             ]),
           ]),
@@ -547,19 +550,19 @@ class PdfExportService {
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3))),
           child: pw.Row(children: [
             if (charter.vesselName != null) ...[
-              pw.Text('Lod: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+              pw.Text('${l.pdfVesselLabel}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
               pw.Text(_pdfText(charter.vesselName!),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(width: 12),
             ],
             if (charter.skipperName != null) ...[
-              pw.Text('Kapitan: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+              pw.Text('${l.pdfSkipperLabel}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
               pw.Text(_pdfText(charter.skipperName!),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(width: 12),
             ],
             if (crew.isNotEmpty) ...[
-              pw.Text('Posadka: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+              pw.Text('${l.pdfCrewSection}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
               pw.Text(crew.map(_pdfText).join(', '),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
             ],
@@ -576,11 +579,11 @@ class PdfExportService {
             child: screenshot != null
                 ? pw.ClipRRect(horizontalRadius: 4, verticalRadius: 4,
                     child: pw.Image(pw.MemoryImage(screenshot), fit: pw.BoxFit.cover))
-                : pw.Center(child: pw.Text('GPS mapa nedostupna',
+                : pw.Center(child: pw.Text(l.pdfMapUnavailable,
                     style: pw.TextStyle(color: _dgrey, fontSize: 9))),
           )),
           pw.SizedBox(width: 8),
-          pw.Expanded(flex: 2, child: _weatherBox(day, sorted)),
+          pw.Expanded(flex: 2, child: _weatherBox(day, sorted, l)),
         ]),
         pw.SizedBox(height: 6),
 
@@ -592,7 +595,7 @@ class PdfExportService {
             decoration: pw.BoxDecoration(color: _lblue,
                 borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4))),
             child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Text('SPRAVA SKIPPERA', style: pw.TextStyle(
+              pw.Text(l.pdfSkipperMessage.toUpperCase(), style: pw.TextStyle(
                   color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
               pw.SizedBox(height: 3),
               pw.Text(_pdfText(day.skipperNote!), style: const pw.TextStyle(fontSize: 9)),
@@ -612,7 +615,7 @@ class PdfExportService {
 
         // ── Záznamy ──
         if (sorted.isNotEmpty) ...[
-          pw.Text('ZAZNAMY DENNIKA', style: pw.TextStyle(
+          pw.Text(l.pdfEntriesSection.toUpperCase(), style: pw.TextStyle(
               color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
           pw.SizedBox(height: 3),
           _entriesTable(sorted.take(18).toList(), photos, l),
@@ -665,7 +668,7 @@ class PdfExportService {
       },
       children: [
         pw.TableRow(decoration: pw.BoxDecoration(color: _blue), children:
-          ['Cas UTC', 'GPS', 'SOG', 'COG', 'Vietor', 'hPa', 'T/°C', 'Pohon', 'Poc.', 'Poznamka']
+          [l.pdfColTimeUtc, 'GPS', 'SOG', 'COG', l.pdfColWind, 'hPa', 'T/°C', l.pdfColPropulsion, l.pdfColWeatherShort, l.pdfColNote]
               .map((h) => _hcell(h)).toList()),
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
@@ -804,7 +807,8 @@ class PdfExportService {
   // ── Summary Page ──────────────────────────────────────────────
 
   static pw.Page _summaryPage(Charter charter, List<DayLog> days,
-      Map<int, List<LogbookEntry>> entriesByDay, String docId, int revision) {
+      Map<int, List<LogbookEntry>> entriesByDay, String docId, int revision,
+      AppLocalizations l) {
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
     final maxBft = days.fold<int>(0, (s, d) {
@@ -820,14 +824,14 @@ class PdfExportService {
           padding: const pw.EdgeInsets.all(16),
           decoration: pw.BoxDecoration(color: _navy,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
-          child: pw.Text('ZAVERECNY PREHLAD PLAVBY', style: pw.TextStyle(
+          child: pw.Text(l.pdfVoyageSummary.toUpperCase(), style: pw.TextStyle(
               color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold))),
         pw.SizedBox(height: 14),
 
         pw.Row(children: [
           _statBox('CELKOVA\nVZDIALENOST', '${totalNm.toStringAsFixed(1)} NM', _blue),
           pw.SizedBox(width: 6),
-          _statBox('POCET DNI', '${days.length}', _green),
+          _statBox(l.pdfDayCount.toUpperCase(), '${days.length}', _green),
           pw.SizedBox(width: 6),
           _statBox('ZAZNAMY\nDENNIKA', '$totalEntries', _dgrey),
           pw.SizedBox(width: 6),
@@ -835,7 +839,7 @@ class PdfExportService {
         ]),
         pw.SizedBox(height: 14),
 
-        pw.Text('DENNY PREHLAD', style: pw.TextStyle(
+        pw.Text(l.pdfDaySummary.toUpperCase(), style: pw.TextStyle(
             color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
         pw.SizedBox(height: 6),
         pw.Table(
@@ -850,7 +854,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              ['Den', 'Odkial', 'Kam', 'NM (GPS)', 'Bft', 'Zaz.'].map((h) => _hcell(h)).toList()),
+              [l.pdfColDay, l.pdfColFrom, l.pdfColTo, 'NM (GPS)', 'Bft', l.pdfColEntriesShort].map((h) => _hcell(h)).toList()),
             ...days.asMap().entries.map((e) {
               final d = e.value;
               final cnt = entriesByDay[d.id]?.length ?? 0;
@@ -870,7 +874,7 @@ class PdfExportService {
               );
             }),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
-              _cell('SPOLU', bold: true), _cell(''), _cell(''),
+              _cell(l.pdfTotalLabel.toUpperCase(), bold: true), _cell(''), _cell(''),
               _cell('${totalNm.toStringAsFixed(1)} NM', bold: true),
               _cell(''), _cell('$totalEntries', bold: true),
             ]),
@@ -887,23 +891,24 @@ class PdfExportService {
 
   // ── Safety Briefing Page ─────────────────────────────────────
 
-  static const _sbItems = [
-    'Zachranne vesty – umiestnenie a pouzitie',
-    'Zachranny kruh a MOB postup',
-    'Svetlice – typy a pouzitie',
-    'EPIRB / PLB – aktivacia',
-    'VHF radio – kanal 16, Mayday postup',
-    'Hasiaci pristroj – umiestnenie a pouzitie',
-    'Lekarnička – umiestnenie',
-    'Nuzove vypnutie motora',
-    'Uniky – voda, plyn',
-    'Kotva a retaz – postup kotvenia',
-    'Pravidla na palube',
-    'Nuzove kontakty a VHF 16',
-  ];
+  static List<String> _sbItems(AppLocalizations l) => [
+        l.pdfSbLifejackets,
+        l.pdfSbLifebuoy,
+        l.pdfSbFlares,
+        l.pdfSbEpirb,
+        l.pdfSbVhf,
+        l.pdfSbExtinguisher,
+        l.pdfSbFirstAid,
+        l.pdfSbEngineStop,
+        l.pdfSbLeaks,
+        l.pdfSbAnchor,
+        l.pdfSbRules,
+        l.pdfSbEmergencyContacts,
+      ];
 
   static Future<pw.Page> _safetyBriefingPage(
-      Charter charter, List<CrewSignature> sigs, String docId, int revision) async {
+      Charter charter, List<CrewSignature> sigs, String docId, int revision,
+      AppLocalizations l) async {
     // Load signature images
     final sigImages = <int, pw.MemoryImage>{};
     for (var i = 0; i < sigs.length; i++) {
@@ -929,7 +934,7 @@ class PdfExportService {
           decoration: pw.BoxDecoration(color: _navy,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text('BEZPECNOSTNY BRIEFING', style: pw.TextStyle(
+            pw.Text(l.pdfSafetyBriefing.toUpperCase(), style: pw.TextStyle(
                 color: PdfColors.white, fontSize: 9, letterSpacing: 2,
                 fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 3),
@@ -940,7 +945,7 @@ class PdfExportService {
         pw.SizedBox(height: 12),
 
         // Checklist in 2 columns
-        pw.Text('CHECKLIST', style: pw.TextStyle(
+        pw.Text(l.pdfChecklistSection.toUpperCase(), style: pw.TextStyle(
             color: _navy, fontWeight: pw.FontWeight.bold,
             fontSize: 8, letterSpacing: 1)),
         pw.SizedBox(height: 6),
@@ -955,11 +960,11 @@ class PdfExportService {
               1: const pw.FlexColumnWidth(1),
             },
             children: List.generate(
-              (_sbItems.length / 2).ceil(),
+              (_sbItems(l).length / 2).ceil(),
               (row) {
-                final left = _sbItems[row * 2];
+                final left = _sbItems(l)[row * 2];
                 final rightIdx = row * 2 + 1;
-                final right = rightIdx < _sbItems.length ? _sbItems[rightIdx] : null;
+                final right = rightIdx < _sbItems(l).length ? _sbItems(l)[rightIdx] : null;
                 return pw.TableRow(
                   decoration: pw.BoxDecoration(
                       color: row.isEven ? _lgrey : PdfColors.white),
@@ -975,7 +980,7 @@ class PdfExportService {
         pw.SizedBox(height: 14),
 
         // Crew signatures
-        pw.Text('PODPISY POSADKY', style: pw.TextStyle(
+        pw.Text(l.pdfCrewSignatures.toUpperCase(), style: pw.TextStyle(
             color: _navy, fontWeight: pw.FontWeight.bold,
             fontSize: 8, letterSpacing: 1)),
         pw.SizedBox(height: 6),
@@ -987,15 +992,16 @@ class PdfExportService {
             borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
           ),
           child: pw.Text(
-            'Vsetci clenovia posadky boli oboznameni a porozumeli bezpecnostnym '
-            'pravidlam. Potvrdzuju to podpisom.',
-            style: pw.TextStyle(fontSize: 8.5, fontStyle: pw.FontStyle.italic),
+            l.pdfBriefingDeclaration,
+            // Kurzíva zámerne nie: ThemeData.withFont nenastavuje italic rez,
+            // takže by text spadol na Helvetica-Oblique, ktorá nevie Unicode.
+            style: pw.TextStyle(fontSize: 8.5, color: _dgrey),
           ),
         ),
         pw.SizedBox(height: 10),
 
         if (sigs.isEmpty)
-          pw.Text('Ziadne podpisy', style: pw.TextStyle(color: _dgrey, fontSize: 9))
+          pw.Text(l.pdfNoSignatures, style: pw.TextStyle(color: _dgrey, fontSize: 9))
         else
           pw.Wrap(spacing: 10, runSpacing: 10, children: [
             for (var i = 0; i < sigs.length; i++)
@@ -1009,7 +1015,7 @@ class PdfExportService {
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                   pw.Text(_pdfText(sigs[i].crewName),
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
-                  pw.Text(sigs[i].role == 'skipper' ? 'Kapitan' : 'Posadka',
+                  pw.Text(sigs[i].role == 'skipper' ? l.pdfSkipperLabel : l.pdfCrewSection,
                       style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
                   pw.SizedBox(height: 4),
                   pw.Container(
@@ -1023,7 +1029,7 @@ class PdfExportService {
                     child: sigImages.containsKey(i)
                         ? pw.Padding(padding: const pw.EdgeInsets.all(3),
                             child: pw.Image(sigImages[i]!, fit: pw.BoxFit.contain))
-                        : pw.Center(child: pw.Text('Nepodpisane',
+                        : pw.Center(child: pw.Text(l.pdfUnsigned,
                             style: pw.TextStyle(color: _dgrey, fontSize: 7))),
                   ),
                   if (sigs[i].signedAt != null) ...[
@@ -1062,6 +1068,7 @@ class PdfExportService {
   // ── Signature Page ────────────────────────────────────────────
 
   static pw.Page _signaturePage({
+    required AppLocalizations l,
     required Uint8List signatureImage,
     required String? signerName,
     required DateTime signedAt,
@@ -1087,7 +1094,7 @@ class PdfExportService {
           decoration: pw.BoxDecoration(color: _navy,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text('PODPIS SKIPPERA', style: pw.TextStyle(
+            pw.Text(l.pdfSkipperSignature.toUpperCase(), style: pw.TextStyle(
                 color: PdfColors.white, fontSize: 10, fontWeight: pw.FontWeight.bold, letterSpacing: 2)),
             pw.SizedBox(height: 3),
             pw.Text(_pdfText(docTitle), style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
@@ -1110,10 +1117,10 @@ class PdfExportService {
         pw.SizedBox(height: 12),
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text('OVERENIE INTEGRITY DOKUMENTU', style: pw.TextStyle(
+            pw.Text(l.pdfIntegrityCheck.toUpperCase(), style: pw.TextStyle(
                 color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
             pw.SizedBox(height: 6),
-            pw.Text('SHA-256 odtlacok dat dennika:',
+            pw.Text(l.pdfSha256Label,
                 style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
             pw.SizedBox(height: 3),
             pw.Text(hash.substring(0, 32), style: pw.TextStyle(
@@ -1121,8 +1128,7 @@ class PdfExportService {
             pw.Text(hash.substring(32), style: pw.TextStyle(
                 fontSize: 7, fontWeight: pw.FontWeight.bold, color: PdfColor.fromHex('#2C3E50'))),
             pw.SizedBox(height: 8),
-            pw.Text('Odtlacok pokryva nazov plavby, lod, posadku a vsetky '
-                'zaznamy (cas UTC, GPS, rychlost, kurz). Akakolvek zmena dat zmeni odtlacok.',
+            pw.Text(l.pdfHashCoverage,
                 style: pw.TextStyle(color: _dgrey, fontSize: 7)),
           ])),
           pw.SizedBox(width: 20),
@@ -1132,7 +1138,7 @@ class PdfExportService {
               data: qrData, width: 90, height: 90,
             ),
             pw.SizedBox(height: 4),
-            pw.Text('Overovaci QR', style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+            pw.Text(l.pdfVerifyQr, style: pw.TextStyle(color: _dgrey, fontSize: 7)),
           ]),
         ]),
         pw.Spacer(),
@@ -1143,7 +1149,8 @@ class PdfExportService {
 
   // ── Weather Box ───────────────────────────────────────────────
 
-  static pw.Widget _weatherBox(DayLog day, List<LogbookEntry> entries) {
+  static pw.Widget _weatherBox(
+      DayLog day, List<LogbookEntry> entries, AppLocalizations l) {
     final rows = <pw.Widget>[];
     if (day.beaufortMorning != null) rows.add(_wRow('Rano', 'Bft ${day.beaufortMorning}'));
     if (day.beaufortNoon != null) rows.add(_wRow('Poludnie', 'Bft ${day.beaufortNoon}'));
@@ -1204,7 +1211,7 @@ class PdfExportService {
       }
     }
 
-    if (rows.isEmpty) rows.add(pw.Text('Bez udajov', style: pw.TextStyle(color: _dgrey, fontSize: 8)));
+    if (rows.isEmpty) rows.add(pw.Text(l.pdfNoData, style: pw.TextStyle(color: _dgrey, fontSize: 8)));
 
     return pw.Container(
       height: 120,
@@ -1212,7 +1219,7 @@ class PdfExportService {
       decoration: pw.BoxDecoration(color: _lblue,
           borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4))),
       child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-        pw.Text('POCASIE', style: pw.TextStyle(color: _navy,
+        pw.Text(l.pdfWeatherSection.toUpperCase(), style: pw.TextStyle(color: _navy,
             fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
         pw.SizedBox(height: 4),
         ...rows,
@@ -1299,6 +1306,7 @@ class PdfExportService {
   // ── Handover protokol (check-in/check-out) ───────────────────
 
   static Future<Uint8List> exportHandoverProtocol({
+    required AppLocalizations l,
     required Charter charter,
     required HandoverProtocol protocol,
     required List<ChecklistItem> checklist,
@@ -1313,7 +1321,7 @@ class PdfExportService {
 
     final pdf = pw.Document(
       theme: await _theme(),
-      title: 'Odovzdavaci protokol $typeLabel',
+      title: '${l.pdfHandoverTitle} $typeLabel',
       creator: 'HMB Sailing Log',
     );
 
@@ -1328,7 +1336,7 @@ class PdfExportService {
               decoration: pw.BoxDecoration(color: _navy,
                   borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
               child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                pw.Text('ODOVZDAVACI PROTOKOL - $typeLabel', style: pw.TextStyle(
+                pw.Text('${l.pdfHandoverTitle.toUpperCase()} - $typeLabel', style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 4),
                 pw.Text(_pdfText('${charter.title}  |  ${charter.vesselName ?? "-"}'
@@ -1343,7 +1351,7 @@ class PdfExportService {
         docId: docId, revision: 0,
       ),
       build: (ctx) => _handoverProtocolContent(
-        protocol: protocol, checklist: checklist, thumbnails: thumbnails,
+        l: l, protocol: protocol, checklist: checklist, thumbnails: thumbnails,
         skipperSig: skipperSig, companySig: companySig, fmt: fmt,
       ),
     ));
@@ -1356,6 +1364,7 @@ class PdfExportService {
   /// `exportHandoverProtocol`, aj vloženým do hlavného PDF denníka plavby
   /// (`buildCharterPdfBytes`).
   static List<pw.Widget> _handoverProtocolContent({
+    required AppLocalizations l,
     required HandoverProtocol protocol,
     required List<ChecklistItem> checklist,
     required Map<String, Uint8List> thumbnails,
@@ -1365,29 +1374,29 @@ class PdfExportService {
   }) {
     return [
       pw.Row(children: [
-        _statBox('MOTOHODINY', protocol.engineHours?.toStringAsFixed(1) ?? '-', _navy),
+        _statBox(l.pdfEngineHours.toUpperCase(), protocol.engineHours?.toStringAsFixed(1) ?? '-', _navy),
         pw.SizedBox(width: 6),
-        _statBox('PALIVO', protocol.fuelLevel != null ? '${protocol.fuelLevel}%' : '-', _blue),
+        _statBox(l.pdfFuelLabel.toUpperCase(), protocol.fuelLevel != null ? '${protocol.fuelLevel}%' : '-', _blue),
         pw.SizedBox(width: 6),
-        _statBox('VODA', protocol.waterLevel != null ? '${protocol.waterLevel}%' : '-', _green),
+        _statBox(l.pdfWaterLabel.toUpperCase(), protocol.waterLevel != null ? '${protocol.waterLevel}%' : '-', _green),
       ]),
       pw.SizedBox(height: 16),
 
-      pw.Text('KONTROLNY ZOZNAM', style: pw.TextStyle(
+      pw.Text(l.pdfChecklistSection.toUpperCase(), style: pw.TextStyle(
           color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
       pw.SizedBox(height: 6),
-      _handoverChecklistTable(checklist, thumbnails),
+      _handoverChecklistTable(checklist, thumbnails, l),
 
       if (protocol.extraNotes != null && protocol.extraNotes!.isNotEmpty) ...[
         pw.SizedBox(height: 12),
-        pw.Text('DALSIE POZNAMKY', style: pw.TextStyle(
+        pw.Text(l.pdfMoreNotes.toUpperCase(), style: pw.TextStyle(
             color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9, letterSpacing: 1)),
         pw.SizedBox(height: 4),
         pw.Text(_pdfText(protocol.extraNotes!), style: const pw.TextStyle(fontSize: 9)),
       ],
 
       pw.SizedBox(height: 32),
-      pw.Text('PODPISY', style: pw.TextStyle(
+      pw.Text(l.pdfSignatures.toUpperCase(), style: pw.TextStyle(
           color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
       pw.SizedBox(height: 8),
       pw.Row(children: [
@@ -1397,7 +1406,7 @@ class PdfExportService {
         )),
         pw.SizedBox(width: 16),
         pw.Expanded(child: _handoverSignatureBlock(
-          title: 'Za charterovu spolocnost',
+          title: l.pdfForCharterCompany,
           name: protocol.companyRepName != null
               ? '${protocol.companyRepName}${protocol.companyName != null ? " (${protocol.companyName})" : ""}'
               : null,
@@ -1412,6 +1421,7 @@ class PdfExportService {
   /// `exportHandoverProtocol`, len ako ďalšia MultiPage v existujúcom
   /// dokumente namiesto vlastného `pw.Document`.
   static Future<pw.Page> _handoverProtocolPage({
+    required AppLocalizations l,
     required Charter charter,
     required HandoverProtocol protocol,
     required List<ChecklistItem> checklist,
@@ -1434,13 +1444,13 @@ class PdfExportService {
               margin: const pw.EdgeInsets.only(bottom: 14),
               decoration: pw.BoxDecoration(color: _navy,
                   borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
-              child: pw.Text('ODOVZDAVACI PROTOKOL - $typeLabel', style: pw.TextStyle(
+              child: pw.Text('${l.pdfHandoverTitle.toUpperCase()} - $typeLabel', style: pw.TextStyle(
                   color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(_pdfText(charter.title), docId: docId, revision: revision),
       build: (ctx) => _handoverProtocolContent(
-        protocol: protocol, checklist: checklist, thumbnails: thumbnails,
+        l: l, protocol: protocol, checklist: checklist, thumbnails: thumbnails,
         skipperSig: skipperSig, companySig: companySig, fmt: fmt,
       ),
     );
@@ -1474,12 +1484,12 @@ class PdfExportService {
   /// Tabuľka checklistu zoskupená podľa kategórií (rovnaké kategórie ako v
   /// `handover_checklist.dart`) – funguje pre check-in aj check-out
   /// zoznam, keďže kľúče položiek sú medzi oboma naprieč unikátne.
-  static pw.Widget _handoverChecklistTable(
-      List<ChecklistItem> checklist, Map<String, Uint8List> thumbnails) {
+  static pw.Widget _handoverChecklistTable(List<ChecklistItem> checklist,
+      Map<String, Uint8List> thumbnails, AppLocalizations l) {
     final byKey = {for (final i in checklist) i.itemKey: i};
     final rows = <pw.TableRow>[
       pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-        ['Polozka', 'Stav', 'Poznamka / poloha', 'Foto'].map((h) => _hcell(h)).toList()),
+        [l.pdfColItem, l.pdfColStatus, l.pdfColNotePosition, l.pdfColPhoto].map((h) => _hcell(h)).toList()),
     ];
 
     for (final category in [...checkInCategories, ...checkOutCategories]) {
@@ -1562,6 +1572,7 @@ class PdfExportService {
   // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
 
   static Future<Uint8List> exportMilesCertificate({
+    required AppLocalizations l,
     required MilesAggregate aggregate,
     String? signerName,
   }) async {
@@ -1570,7 +1581,7 @@ class PdfExportService {
 
     final pdf = pw.Document(
       theme: await _theme(),
-      title: 'Potvrdenie o najazdenych miliach',
+      title: l.pdfMilesTitle,
       creator: 'HMB Sailing Log',
     );
 
@@ -1584,7 +1595,7 @@ class PdfExportService {
               margin: const pw.EdgeInsets.only(bottom: 14),
               decoration: pw.BoxDecoration(color: _navy,
                   borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
-              child: pw.Text('POTVRDENIE O NAJAZDENYCH MILIACH', style: pw.TextStyle(
+              child: pw.Text(l.pdfMilesTitle.toUpperCase(), style: pw.TextStyle(
                   color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
             )
           : pw.SizedBox(),
@@ -1615,7 +1626,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              ['Datum od-do', 'Lod', 'Oblast', 'NM', 'Rola'].map((h) => _hcell(h)).toList()),
+              [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, 'NM', l.pdfColRole].map((h) => _hcell(h)).toList()),
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
                 _cell('${v.isManualEntry ? "* " : ""}${fmt.format(v.dateFrom)}-${fmt.format(v.dateTo)}'),
@@ -1626,7 +1637,7 @@ class PdfExportService {
               ],
             )),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
-              _cell('SPOLU', bold: true), _cell(''), _cell(''),
+              _cell(l.pdfTotalLabel.toUpperCase(), bold: true), _cell(''), _cell(''),
               _cell(aggregate.totalNm.toStringAsFixed(1), bold: true), _cell(''),
             ]),
           ],

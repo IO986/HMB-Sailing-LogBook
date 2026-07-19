@@ -295,7 +295,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get unknownVessel => 'Neznáma loď';
 
   @override
-  String get captain => 'Kapitán';
+  String get captain => 'Skipper';
 
   @override
   String get crew => 'Posádka';
@@ -384,6 +384,200 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get gearList => 'Zoznam vybavenia';
+
+  @override
+  String get pdfEntriesSection => 'Záznamy denníka';
+
+  @override
+  String get pdfSkipperMessage => 'Správa skippera';
+
+  @override
+  String get pdfWeatherSection => 'Počasie';
+
+  @override
+  String get pdfDaySummary => 'Denný prehľad';
+
+  @override
+  String get pdfDaysOverview => 'Prehľad dní';
+
+  @override
+  String get pdfVoyageSummary => 'Záverečný prehľad plavby';
+
+  @override
+  String get pdfCrewSection => 'Posádka';
+
+  @override
+  String get pdfSignatures => 'Podpisy';
+
+  @override
+  String get pdfCrewSignatures => 'Podpisy posádky';
+
+  @override
+  String get pdfSkipperSignature => 'Podpis skippera';
+
+  @override
+  String get pdfSkipperLicences => 'Skipper – licencie';
+
+  @override
+  String get pdfSafetyBriefing => 'Bezpečnostný brífing';
+
+  @override
+  String get pdfChecklistSection => 'Kontrolný zoznam';
+
+  @override
+  String get pdfMoreNotes => 'Ďalšie poznámky';
+
+  @override
+  String get pdfIntegrityCheck => 'Overenie integrity dokumentu';
+
+  @override
+  String get pdfHandoverTitle => 'Odovzdávací protokol';
+
+  @override
+  String get pdfMilesTitle => 'Potvrdenie o najazdených míľach';
+
+  @override
+  String get pdfDeparture => 'Odchod';
+
+  @override
+  String get pdfArrival => 'Príchod';
+
+  @override
+  String get pdfTotalLabel => 'Spolu';
+
+  @override
+  String get pdfDayCount => 'Počet dní';
+
+  @override
+  String get pdfEngineHours => 'Motohodiny';
+
+  @override
+  String get pdfFuelLabel => 'Palivo';
+
+  @override
+  String get pdfWaterLabel => 'Voda';
+
+  @override
+  String get pdfVesselLabel => 'Loď';
+
+  @override
+  String get pdfSkipperLabel => 'Skipper';
+
+  @override
+  String get pdfDateLabel => 'Dátum';
+
+  @override
+  String get pdfColFrom => 'Odkiaľ';
+
+  @override
+  String get pdfColTo => 'Kam';
+
+  @override
+  String get pdfColEntriesShort => 'Zázn.';
+
+  @override
+  String get pdfColTimeUtc => 'Čas UTC';
+
+  @override
+  String get pdfColWind => 'Vietor';
+
+  @override
+  String get pdfColPropulsion => 'Pohon';
+
+  @override
+  String get pdfColWeatherShort => 'Poč.';
+
+  @override
+  String get pdfColNote => 'Poznámka';
+
+  @override
+  String get pdfColDay => 'Deň';
+
+  @override
+  String get pdfColItem => 'Položka';
+
+  @override
+  String get pdfColStatus => 'Stav';
+
+  @override
+  String get pdfColNotePosition => 'Poznámka / poloha';
+
+  @override
+  String get pdfColPhoto => 'Foto';
+
+  @override
+  String get pdfColDateRange => 'Dátum od-do';
+
+  @override
+  String get pdfColArea => 'Oblasť';
+
+  @override
+  String get pdfColRole => 'Rola';
+
+  @override
+  String get pdfNoData => 'Bez údajov';
+
+  @override
+  String get pdfMapUnavailable => 'GPS mapa nedostupná';
+
+  @override
+  String get pdfUnsigned => 'Nepodpísané';
+
+  @override
+  String get pdfNoSignatures => 'Žiadne podpisy';
+
+  @override
+  String get pdfSha256Label => 'SHA-256 odtlačok dát denníka:';
+
+  @override
+  String get pdfVerifyQr => 'Overovací QR';
+
+  @override
+  String get pdfSbLifejackets => 'Záchranné vesty – umiestnenie a použitie';
+
+  @override
+  String get pdfSbLifebuoy => 'Záchranný kruh a MOB postup';
+
+  @override
+  String get pdfSbFlares => 'Svetlice – typy a použitie';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – aktivácia';
+
+  @override
+  String get pdfSbVhf => 'VHF rádio – kanál 16, Mayday postup';
+
+  @override
+  String get pdfSbExtinguisher => 'Hasiaci prístroj – umiestnenie a použitie';
+
+  @override
+  String get pdfSbFirstAid => 'Lekárnička – umiestnenie';
+
+  @override
+  String get pdfSbEngineStop => 'Núdzové vypnutie motora';
+
+  @override
+  String get pdfSbLeaks => 'Úniky – voda, plyn';
+
+  @override
+  String get pdfSbAnchor => 'Kotva a reťaz – postup kotvenia';
+
+  @override
+  String get pdfSbRules => 'Pravidlá na palube';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Núdzové kontakty a VHF 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'Všetci členovia posádky boli oboznámení a porozumeli bezpečnostným pravidlám. Potvrdzujú to podpisom.';
+
+  @override
+  String get pdfHashCoverage =>
+      'Odtlačok pokrýva názov plavby, loď, posádku a všetky záznamy (čas UTC, GPS, rýchlosť, kurz). Akákoľvek zmena dát zmení odtlačok.';
+
+  @override
+  String get pdfForCharterCompany => 'Za charterovú spoločnosť';
 
   @override
   String get logDutySection => 'Služba posádky';
@@ -875,10 +1069,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get vesselFlag => 'Vlajka registrácie';
 
   @override
-  String get captainFirstName => 'Meno kapitána';
+  String get captainFirstName => 'Meno skippera';
 
   @override
-  String get captainLastName => 'Priezvisko kapitána';
+  String get captainLastName => 'Priezvisko skippera';
 
   @override
   String get captainQualification => 'Najvyššia dosiahnutá kvalifikácia';
@@ -1900,7 +2094,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu kapitána, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis';
+      'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis';
 
   @override
   String get guideHandoverTitle => 'Odovzdávací protokol (check-in/check-out)';
@@ -1990,7 +2184,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get briefingOpenBriefing => 'Safety Briefing';
 
   @override
-  String get briefingSkipper => 'Kapitán';
+  String get briefingSkipper => 'Skipper';
 
   @override
   String get briefingCrew => 'Posádka';
@@ -2174,7 +2368,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get crewSectionHint =>
-      'Ťuknite na odznak na nastavenie kapitána — ostatní sú posádka.';
+      'Ťuknite na odznak na nastavenie skippera — ostatní sú posádka.';
 
   @override
   String get addCrewMember => 'Pridať člena posádky';

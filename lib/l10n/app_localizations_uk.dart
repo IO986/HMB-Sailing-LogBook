@@ -297,7 +297,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get unknownVessel => 'Невідоме судно';
 
   @override
-  String get captain => 'Капітан';
+  String get captain => 'Шкіпер';
 
   @override
   String get crew => 'Екіпаж';
@@ -386,6 +386,201 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get gearList => 'Список обладнання';
+
+  @override
+  String get pdfEntriesSection => 'Записи журналу';
+
+  @override
+  String get pdfSkipperMessage => 'Звіт шкіпера';
+
+  @override
+  String get pdfWeatherSection => 'Погода';
+
+  @override
+  String get pdfDaySummary => 'Денний огляд';
+
+  @override
+  String get pdfDaysOverview => 'Огляд днів';
+
+  @override
+  String get pdfVoyageSummary => 'Підсумок рейсу';
+
+  @override
+  String get pdfCrewSection => 'Екіпаж';
+
+  @override
+  String get pdfSignatures => 'Підписи';
+
+  @override
+  String get pdfCrewSignatures => 'Підписи екіпажу';
+
+  @override
+  String get pdfSkipperSignature => 'Підпис шкіпера';
+
+  @override
+  String get pdfSkipperLicences => 'Шкіпер – ліцензії';
+
+  @override
+  String get pdfSafetyBriefing => 'Інструктаж з безпеки';
+
+  @override
+  String get pdfChecklistSection => 'Контрольний список';
+
+  @override
+  String get pdfMoreNotes => 'Додаткові нотатки';
+
+  @override
+  String get pdfIntegrityCheck => 'Перевірка цілісності документа';
+
+  @override
+  String get pdfHandoverTitle => 'Акт передачі';
+
+  @override
+  String get pdfMilesTitle => 'Підтвердження пройдених миль';
+
+  @override
+  String get pdfDeparture => 'Відхід';
+
+  @override
+  String get pdfArrival => 'Прихід';
+
+  @override
+  String get pdfTotalLabel => 'Разом';
+
+  @override
+  String get pdfDayCount => 'Кількість днів';
+
+  @override
+  String get pdfEngineHours => 'Мотогодини';
+
+  @override
+  String get pdfFuelLabel => 'Паливо';
+
+  @override
+  String get pdfWaterLabel => 'Вода';
+
+  @override
+  String get pdfVesselLabel => 'Судно';
+
+  @override
+  String get pdfSkipperLabel => 'Шкіпер';
+
+  @override
+  String get pdfDateLabel => 'Дата';
+
+  @override
+  String get pdfColFrom => 'Звідки';
+
+  @override
+  String get pdfColTo => 'Куди';
+
+  @override
+  String get pdfColEntriesShort => 'Зап.';
+
+  @override
+  String get pdfColTimeUtc => 'Час UTC';
+
+  @override
+  String get pdfColWind => 'Вітер';
+
+  @override
+  String get pdfColPropulsion => 'Рушій';
+
+  @override
+  String get pdfColWeatherShort => 'Пог.';
+
+  @override
+  String get pdfColNote => 'Нотатка';
+
+  @override
+  String get pdfColDay => 'День';
+
+  @override
+  String get pdfColItem => 'Позиція';
+
+  @override
+  String get pdfColStatus => 'Стан';
+
+  @override
+  String get pdfColNotePosition => 'Нотатка / позиція';
+
+  @override
+  String get pdfColPhoto => 'Фото';
+
+  @override
+  String get pdfColDateRange => 'Дата з-по';
+
+  @override
+  String get pdfColArea => 'Район';
+
+  @override
+  String get pdfColRole => 'Роль';
+
+  @override
+  String get pdfNoData => 'Немає даних';
+
+  @override
+  String get pdfMapUnavailable => 'GPS-карта недоступна';
+
+  @override
+  String get pdfUnsigned => 'Не підписано';
+
+  @override
+  String get pdfNoSignatures => 'Немає підписів';
+
+  @override
+  String get pdfSha256Label => 'SHA-256 відбиток даних журналу:';
+
+  @override
+  String get pdfVerifyQr => 'QR для перевірки';
+
+  @override
+  String get pdfSbLifejackets =>
+      'Рятувальні жилети – розміщення та використання';
+
+  @override
+  String get pdfSbLifebuoy => 'Рятувальний круг і процедура MOB';
+
+  @override
+  String get pdfSbFlares => 'Сигнальні ракети – типи та використання';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – активація';
+
+  @override
+  String get pdfSbVhf => 'VHF радіо – канал 16, процедура Mayday';
+
+  @override
+  String get pdfSbExtinguisher => 'Вогнегасник – розміщення та використання';
+
+  @override
+  String get pdfSbFirstAid => 'Аптечка – розміщення';
+
+  @override
+  String get pdfSbEngineStop => 'Аварійне вимкнення двигуна';
+
+  @override
+  String get pdfSbLeaks => 'Витоки – вода, газ';
+
+  @override
+  String get pdfSbAnchor => 'Якір і ланцюг – процедура якоріння';
+
+  @override
+  String get pdfSbRules => 'Правила на борту';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Екстрені контакти та VHF 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'Усі члени екіпажу були ознайомлені з правилами безпеки, зрозуміли їх і підтверджують це підписом.';
+
+  @override
+  String get pdfHashCoverage =>
+      'Відбиток охоплює назву рейсу, судно, екіпаж і всі записи (час UTC, GPS, швидкість, курс). Будь-яка зміна даних змінює відбиток.';
+
+  @override
+  String get pdfForCharterCompany => 'За чартерну компанію';
 
   @override
   String get logDutySection => 'Вахта екіпажу';
@@ -878,10 +1073,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get vesselFlag => 'Прапор реєстрації';
 
   @override
-  String get captainFirstName => 'Ім\'я капітана';
+  String get captainFirstName => 'Ім\'я шкіпера';
 
   @override
-  String get captainLastName => 'Прізвище капітана';
+  String get captainLastName => 'Прізвище шкіпера';
 
   @override
   String get captainQualification => 'Найвища здобута кваліфікація';
@@ -1904,7 +2099,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Зведення всіх рейсів в одному місці (значок у Журналі).\n\n• Загальна кількість морських миль, дні у морі, кількість рейсів і нічні години\n• Розподіл за роком і за судном\n• Фільтр за роком\n• Натисни на рейс (також трекований/імпортований), щоб заповнити запис книги миль – маршрут, прапор судна, ім\'я та кваліфікацію капітана, підпис що підтверджує милі\n• Кнопка + – додай історичне плавання до початку використання додатку (повністю враховується у зведеннях, у списку позначене зірочкою)\n• Експорт PDF підтвердження пройдених миль з місцем для підпису';
+      'Зведення всіх рейсів в одному місці (значок у Журналі).\n\n• Загальна кількість морських миль, дні у морі, кількість рейсів і нічні години\n• Розподіл за роком і за судном\n• Фільтр за роком\n• Натисни на рейс (також трекований/імпортований), щоб заповнити запис книги миль – маршрут, прапор судна, ім\'я та кваліфікацію шкіпера, підпис що підтверджує милі\n• Кнопка + – додай історичне плавання до початку використання додатку (повністю враховується у зведеннях, у списку позначене зірочкою)\n• Експорт PDF підтвердження пройдених миль з місцем для підпису';
 
   @override
   String get guideHandoverTitle => 'Протокол передачі (check-in/check-out)';
@@ -2178,7 +2373,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get crewSectionHint =>
-      'Торкнись значка, щоб призначити капітана — решта є екіпажем.';
+      'Торкнись значка, щоб призначити шкіпера — решта є екіпажем.';
 
   @override
   String get addCrewMember => 'Додати члена екіпажу';

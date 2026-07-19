@@ -253,13 +253,15 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     final protocol = await db.getHandoverProtocol(widget.charterId, widget.type);
     if (protocol == null) return;
 
+    // Captured before the await — context must not be used across one.
+    final l = AppLocalizations.of(context);
     final bytes = await PdfExportService.exportHandoverProtocol(
+      l: l,
       charter: charter,
       protocol: protocol,
       checklist: checklistFromJson(protocol.checklistJson),
     );
     if (!mounted) return;
-    final l = AppLocalizations.of(context);
     final title = widget.type == 'checkOut' ? l.checkOutProtocol : l.checkInProtocol;
     final fileName = 'HMB_Protokol_${widget.type}_${DateFormat('yyyyMMdd_HHmm').format(DateTime.now())}';
     Navigator.of(context).push(MaterialPageRoute(

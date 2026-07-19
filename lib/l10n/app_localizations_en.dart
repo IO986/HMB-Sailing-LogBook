@@ -296,7 +296,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownVessel => 'Unknown vessel';
 
   @override
-  String get captain => 'Captain';
+  String get captain => 'Skipper';
 
   @override
   String get crew => 'Crew';
@@ -385,6 +385,200 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gearList => 'Gear list';
+
+  @override
+  String get pdfEntriesSection => 'Logbook entries';
+
+  @override
+  String get pdfSkipperMessage => 'Skipper\'s report';
+
+  @override
+  String get pdfWeatherSection => 'Weather';
+
+  @override
+  String get pdfDaySummary => 'Daily summary';
+
+  @override
+  String get pdfDaysOverview => 'Days overview';
+
+  @override
+  String get pdfVoyageSummary => 'Voyage summary';
+
+  @override
+  String get pdfCrewSection => 'Crew';
+
+  @override
+  String get pdfSignatures => 'Signatures';
+
+  @override
+  String get pdfCrewSignatures => 'Crew signatures';
+
+  @override
+  String get pdfSkipperSignature => 'Skipper\'s signature';
+
+  @override
+  String get pdfSkipperLicences => 'Skipper – licences';
+
+  @override
+  String get pdfSafetyBriefing => 'Safety briefing';
+
+  @override
+  String get pdfChecklistSection => 'Checklist';
+
+  @override
+  String get pdfMoreNotes => 'Additional notes';
+
+  @override
+  String get pdfIntegrityCheck => 'Document integrity check';
+
+  @override
+  String get pdfHandoverTitle => 'Handover protocol';
+
+  @override
+  String get pdfMilesTitle => 'Certificate of sea miles';
+
+  @override
+  String get pdfDeparture => 'Departure';
+
+  @override
+  String get pdfArrival => 'Arrival';
+
+  @override
+  String get pdfTotalLabel => 'Total';
+
+  @override
+  String get pdfDayCount => 'Days';
+
+  @override
+  String get pdfEngineHours => 'Engine hours';
+
+  @override
+  String get pdfFuelLabel => 'Fuel';
+
+  @override
+  String get pdfWaterLabel => 'Water';
+
+  @override
+  String get pdfVesselLabel => 'Vessel';
+
+  @override
+  String get pdfSkipperLabel => 'Skipper';
+
+  @override
+  String get pdfDateLabel => 'Date';
+
+  @override
+  String get pdfColFrom => 'From';
+
+  @override
+  String get pdfColTo => 'To';
+
+  @override
+  String get pdfColEntriesShort => 'Entries';
+
+  @override
+  String get pdfColTimeUtc => 'Time UTC';
+
+  @override
+  String get pdfColWind => 'Wind';
+
+  @override
+  String get pdfColPropulsion => 'Propulsion';
+
+  @override
+  String get pdfColWeatherShort => 'Wx';
+
+  @override
+  String get pdfColNote => 'Note';
+
+  @override
+  String get pdfColDay => 'Day';
+
+  @override
+  String get pdfColItem => 'Item';
+
+  @override
+  String get pdfColStatus => 'Status';
+
+  @override
+  String get pdfColNotePosition => 'Note / position';
+
+  @override
+  String get pdfColPhoto => 'Photo';
+
+  @override
+  String get pdfColDateRange => 'Date from-to';
+
+  @override
+  String get pdfColArea => 'Area';
+
+  @override
+  String get pdfColRole => 'Role';
+
+  @override
+  String get pdfNoData => 'No data';
+
+  @override
+  String get pdfMapUnavailable => 'GPS map unavailable';
+
+  @override
+  String get pdfUnsigned => 'Unsigned';
+
+  @override
+  String get pdfNoSignatures => 'No signatures';
+
+  @override
+  String get pdfSha256Label => 'SHA-256 digest of the logbook data:';
+
+  @override
+  String get pdfVerifyQr => 'Verification QR';
+
+  @override
+  String get pdfSbLifejackets => 'Lifejackets – location and use';
+
+  @override
+  String get pdfSbLifebuoy => 'Lifebuoy and MOB procedure';
+
+  @override
+  String get pdfSbFlares => 'Flares – types and use';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – activation';
+
+  @override
+  String get pdfSbVhf => 'VHF radio – channel 16, Mayday procedure';
+
+  @override
+  String get pdfSbExtinguisher => 'Fire extinguisher – location and use';
+
+  @override
+  String get pdfSbFirstAid => 'First-aid kit – location';
+
+  @override
+  String get pdfSbEngineStop => 'Emergency engine shutdown';
+
+  @override
+  String get pdfSbLeaks => 'Leaks – water, gas';
+
+  @override
+  String get pdfSbAnchor => 'Anchor and chain – anchoring procedure';
+
+  @override
+  String get pdfSbRules => 'Rules on board';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Emergency contacts and VHF 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'All crew members have been briefed on and understood the safety rules, and confirm this by signing.';
+
+  @override
+  String get pdfHashCoverage =>
+      'The digest covers the voyage name, vessel, crew and every entry (UTC time, GPS, speed, course). Any change to the data changes the digest.';
+
+  @override
+  String get pdfForCharterCompany => 'For the charter company';
 
   @override
   String get logDutySection => 'Crew on duty';
@@ -874,10 +1068,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vesselFlag => 'Flag of registration';
 
   @override
-  String get captainFirstName => 'Captain\'s first name';
+  String get captainFirstName => 'Skipper\'s first name';
 
   @override
-  String get captainLastName => 'Captain\'s last name';
+  String get captainLastName => 'Skipper\'s last name';
 
   @override
   String get captainQualification => 'Highest qualification held';

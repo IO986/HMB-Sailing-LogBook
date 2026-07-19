@@ -60,7 +60,8 @@ class MilesBookScreen extends ConsumerWidget {
       {required bool saveLocally}) async {
     final l = AppLocalizations.of(context);
     try {
-      final pdfBytes = await PdfExportService.exportMilesCertificate(aggregate: agg);
+      final pdfBytes =
+          await PdfExportService.exportMilesCertificate(l: l, aggregate: agg);
       final fileName = 'HMB_Kniha_Mil_${DateTime.now().millisecondsSinceEpoch}.pdf';
       if (saveLocally) {
         await FilePicker.platform.saveFile(

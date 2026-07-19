@@ -647,7 +647,7 @@ abstract class AppLocalizations {
   /// No description provided for @captain.
   ///
   /// In sk, this message translates to:
-  /// **'Kapitán'**
+  /// **'Skipper'**
   String get captain;
 
   /// No description provided for @crew.
@@ -811,6 +811,390 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Zoznam vybavenia'**
   String get gearList;
+
+  /// No description provided for @pdfEntriesSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznamy denníka'**
+  String get pdfEntriesSection;
+
+  /// No description provided for @pdfSkipperMessage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Správa skippera'**
+  String get pdfSkipperMessage;
+
+  /// No description provided for @pdfWeatherSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počasie'**
+  String get pdfWeatherSection;
+
+  /// No description provided for @pdfDaySummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denný prehľad'**
+  String get pdfDaySummary;
+
+  /// No description provided for @pdfDaysOverview.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prehľad dní'**
+  String get pdfDaysOverview;
+
+  /// No description provided for @pdfVoyageSummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záverečný prehľad plavby'**
+  String get pdfVoyageSummary;
+
+  /// No description provided for @pdfCrewSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posádka'**
+  String get pdfCrewSection;
+
+  /// No description provided for @pdfSignatures.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy'**
+  String get pdfSignatures;
+
+  /// No description provided for @pdfCrewSignatures.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy posádky'**
+  String get pdfCrewSignatures;
+
+  /// No description provided for @pdfSkipperSignature.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpis skippera'**
+  String get pdfSkipperSignature;
+
+  /// No description provided for @pdfSkipperLicences.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skipper – licencie'**
+  String get pdfSkipperLicences;
+
+  /// No description provided for @pdfSafetyBriefing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnostný brífing'**
+  String get pdfSafetyBriefing;
+
+  /// No description provided for @pdfChecklistSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kontrolný zoznam'**
+  String get pdfChecklistSection;
+
+  /// No description provided for @pdfMoreNotes.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ďalšie poznámky'**
+  String get pdfMoreNotes;
+
+  /// No description provided for @pdfIntegrityCheck.
+  ///
+  /// In sk, this message translates to:
+  /// **'Overenie integrity dokumentu'**
+  String get pdfIntegrityCheck;
+
+  /// No description provided for @pdfHandoverTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odovzdávací protokol'**
+  String get pdfHandoverTitle;
+
+  /// No description provided for @pdfMilesTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Potvrdenie o najazdených míľach'**
+  String get pdfMilesTitle;
+
+  /// No description provided for @pdfDeparture.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odchod'**
+  String get pdfDeparture;
+
+  /// No description provided for @pdfArrival.
+  ///
+  /// In sk, this message translates to:
+  /// **'Príchod'**
+  String get pdfArrival;
+
+  /// No description provided for @pdfTotalLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spolu'**
+  String get pdfTotalLabel;
+
+  /// No description provided for @pdfDayCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počet dní'**
+  String get pdfDayCount;
+
+  /// No description provided for @pdfEngineHours.
+  ///
+  /// In sk, this message translates to:
+  /// **'Motohodiny'**
+  String get pdfEngineHours;
+
+  /// No description provided for @pdfFuelLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Palivo'**
+  String get pdfFuelLabel;
+
+  /// No description provided for @pdfWaterLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Voda'**
+  String get pdfWaterLabel;
+
+  /// No description provided for @pdfVesselLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Loď'**
+  String get pdfVesselLabel;
+
+  /// No description provided for @pdfSkipperLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skipper'**
+  String get pdfSkipperLabel;
+
+  /// No description provided for @pdfDateLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátum'**
+  String get pdfDateLabel;
+
+  /// No description provided for @pdfColFrom.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odkiaľ'**
+  String get pdfColFrom;
+
+  /// No description provided for @pdfColTo.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kam'**
+  String get pdfColTo;
+
+  /// No description provided for @pdfColEntriesShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zázn.'**
+  String get pdfColEntriesShort;
+
+  /// No description provided for @pdfColTimeUtc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čas UTC'**
+  String get pdfColTimeUtc;
+
+  /// No description provided for @pdfColWind.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vietor'**
+  String get pdfColWind;
+
+  /// No description provided for @pdfColPropulsion.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pohon'**
+  String get pdfColPropulsion;
+
+  /// No description provided for @pdfColWeatherShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poč.'**
+  String get pdfColWeatherShort;
+
+  /// No description provided for @pdfColNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poznámka'**
+  String get pdfColNote;
+
+  /// No description provided for @pdfColDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deň'**
+  String get pdfColDay;
+
+  /// No description provided for @pdfColItem.
+  ///
+  /// In sk, this message translates to:
+  /// **'Položka'**
+  String get pdfColItem;
+
+  /// No description provided for @pdfColStatus.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stav'**
+  String get pdfColStatus;
+
+  /// No description provided for @pdfColNotePosition.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poznámka / poloha'**
+  String get pdfColNotePosition;
+
+  /// No description provided for @pdfColPhoto.
+  ///
+  /// In sk, this message translates to:
+  /// **'Foto'**
+  String get pdfColPhoto;
+
+  /// No description provided for @pdfColDateRange.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátum od-do'**
+  String get pdfColDateRange;
+
+  /// No description provided for @pdfColArea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oblasť'**
+  String get pdfColArea;
+
+  /// No description provided for @pdfColRole.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rola'**
+  String get pdfColRole;
+
+  /// No description provided for @pdfNoData.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez údajov'**
+  String get pdfNoData;
+
+  /// No description provided for @pdfMapUnavailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS mapa nedostupná'**
+  String get pdfMapUnavailable;
+
+  /// No description provided for @pdfUnsigned.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nepodpísané'**
+  String get pdfUnsigned;
+
+  /// No description provided for @pdfNoSignatures.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne podpisy'**
+  String get pdfNoSignatures;
+
+  /// No description provided for @pdfSha256Label.
+  ///
+  /// In sk, this message translates to:
+  /// **'SHA-256 odtlačok dát denníka:'**
+  String get pdfSha256Label;
+
+  /// No description provided for @pdfVerifyQr.
+  ///
+  /// In sk, this message translates to:
+  /// **'Overovací QR'**
+  String get pdfVerifyQr;
+
+  /// No description provided for @pdfSbLifejackets.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záchranné vesty – umiestnenie a použitie'**
+  String get pdfSbLifejackets;
+
+  /// No description provided for @pdfSbLifebuoy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záchranný kruh a MOB postup'**
+  String get pdfSbLifebuoy;
+
+  /// No description provided for @pdfSbFlares.
+  ///
+  /// In sk, this message translates to:
+  /// **'Svetlice – typy a použitie'**
+  String get pdfSbFlares;
+
+  /// No description provided for @pdfSbEpirb.
+  ///
+  /// In sk, this message translates to:
+  /// **'EPIRB / PLB – aktivácia'**
+  String get pdfSbEpirb;
+
+  /// No description provided for @pdfSbVhf.
+  ///
+  /// In sk, this message translates to:
+  /// **'VHF rádio – kanál 16, Mayday postup'**
+  String get pdfSbVhf;
+
+  /// No description provided for @pdfSbExtinguisher.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hasiaci prístroj – umiestnenie a použitie'**
+  String get pdfSbExtinguisher;
+
+  /// No description provided for @pdfSbFirstAid.
+  ///
+  /// In sk, this message translates to:
+  /// **'Lekárnička – umiestnenie'**
+  String get pdfSbFirstAid;
+
+  /// No description provided for @pdfSbEngineStop.
+  ///
+  /// In sk, this message translates to:
+  /// **'Núdzové vypnutie motora'**
+  String get pdfSbEngineStop;
+
+  /// No description provided for @pdfSbLeaks.
+  ///
+  /// In sk, this message translates to:
+  /// **'Úniky – voda, plyn'**
+  String get pdfSbLeaks;
+
+  /// No description provided for @pdfSbAnchor.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotva a reťaz – postup kotvenia'**
+  String get pdfSbAnchor;
+
+  /// No description provided for @pdfSbRules.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pravidlá na palube'**
+  String get pdfSbRules;
+
+  /// No description provided for @pdfSbEmergencyContacts.
+  ///
+  /// In sk, this message translates to:
+  /// **'Núdzové kontakty a VHF 16'**
+  String get pdfSbEmergencyContacts;
+
+  /// No description provided for @pdfBriefingDeclaration.
+  ///
+  /// In sk, this message translates to:
+  /// **'Všetci členovia posádky boli oboznámení a porozumeli bezpečnostným pravidlám. Potvrdzujú to podpisom.'**
+  String get pdfBriefingDeclaration;
+
+  /// No description provided for @pdfHashCoverage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odtlačok pokrýva názov plavby, loď, posádku a všetky záznamy (čas UTC, GPS, rýchlosť, kurz). Akákoľvek zmena dát zmení odtlačok.'**
+  String get pdfHashCoverage;
+
+  /// No description provided for @pdfForCharterCompany.
+  ///
+  /// In sk, this message translates to:
+  /// **'Za charterovú spoločnosť'**
+  String get pdfForCharterCompany;
 
   /// No description provided for @logDutySection.
   ///
@@ -1733,13 +2117,13 @@ abstract class AppLocalizations {
   /// No description provided for @captainFirstName.
   ///
   /// In sk, this message translates to:
-  /// **'Meno kapitána'**
+  /// **'Meno skippera'**
   String get captainFirstName;
 
   /// No description provided for @captainLastName.
   ///
   /// In sk, this message translates to:
-  /// **'Priezvisko kapitána'**
+  /// **'Priezvisko skippera'**
   String get captainLastName;
 
   /// No description provided for @captainQualification.
@@ -3683,7 +4067,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMilesBody.
   ///
   /// In sk, this message translates to:
-  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu kapitána, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis'**
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis'**
   String get guideMilesBody;
 
   /// No description provided for @guideHandoverTitle.
@@ -3845,7 +4229,7 @@ abstract class AppLocalizations {
   /// No description provided for @briefingSkipper.
   ///
   /// In sk, this message translates to:
-  /// **'Kapitán'**
+  /// **'Skipper'**
   String get briefingSkipper;
 
   /// No description provided for @briefingCrew.
@@ -4199,7 +4583,7 @@ abstract class AppLocalizations {
   /// No description provided for @crewSectionHint.
   ///
   /// In sk, this message translates to:
-  /// **'Ťuknite na odznak na nastavenie kapitána — ostatní sú posádka.'**
+  /// **'Ťuknite na odznak na nastavenie skippera — ostatní sú posádka.'**
   String get crewSectionHint;
 
   /// No description provided for @addCrewMember.

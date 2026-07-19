@@ -296,7 +296,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unknownVessel => 'Embarcación desconocida';
 
   @override
-  String get captain => 'Capitán';
+  String get captain => 'Patrón';
 
   @override
   String get crew => 'Tripulación';
@@ -385,6 +385,200 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get gearList => 'Lista de equipos';
+
+  @override
+  String get pdfEntriesSection => 'Registros del diario';
+
+  @override
+  String get pdfSkipperMessage => 'Informe del patrón';
+
+  @override
+  String get pdfWeatherSection => 'Meteorología';
+
+  @override
+  String get pdfDaySummary => 'Resumen diario';
+
+  @override
+  String get pdfDaysOverview => 'Resumen de días';
+
+  @override
+  String get pdfVoyageSummary => 'Resumen de la travesía';
+
+  @override
+  String get pdfCrewSection => 'Tripulación';
+
+  @override
+  String get pdfSignatures => 'Firmas';
+
+  @override
+  String get pdfCrewSignatures => 'Firmas de la tripulación';
+
+  @override
+  String get pdfSkipperSignature => 'Firma del patrón';
+
+  @override
+  String get pdfSkipperLicences => 'Patrón – titulaciones';
+
+  @override
+  String get pdfSafetyBriefing => 'Briefing de seguridad';
+
+  @override
+  String get pdfChecklistSection => 'Lista de control';
+
+  @override
+  String get pdfMoreNotes => 'Notas adicionales';
+
+  @override
+  String get pdfIntegrityCheck => 'Verificación de integridad del documento';
+
+  @override
+  String get pdfHandoverTitle => 'Acta de entrega';
+
+  @override
+  String get pdfMilesTitle => 'Certificado de millas navegadas';
+
+  @override
+  String get pdfDeparture => 'Salida';
+
+  @override
+  String get pdfArrival => 'Llegada';
+
+  @override
+  String get pdfTotalLabel => 'Total';
+
+  @override
+  String get pdfDayCount => 'Días';
+
+  @override
+  String get pdfEngineHours => 'Horas de motor';
+
+  @override
+  String get pdfFuelLabel => 'Combustible';
+
+  @override
+  String get pdfWaterLabel => 'Agua';
+
+  @override
+  String get pdfVesselLabel => 'Embarcación';
+
+  @override
+  String get pdfSkipperLabel => 'Patrón';
+
+  @override
+  String get pdfDateLabel => 'Fecha';
+
+  @override
+  String get pdfColFrom => 'Desde';
+
+  @override
+  String get pdfColTo => 'Hasta';
+
+  @override
+  String get pdfColEntriesShort => 'Reg.';
+
+  @override
+  String get pdfColTimeUtc => 'Hora UTC';
+
+  @override
+  String get pdfColWind => 'Viento';
+
+  @override
+  String get pdfColPropulsion => 'Propulsión';
+
+  @override
+  String get pdfColWeatherShort => 'Met.';
+
+  @override
+  String get pdfColNote => 'Nota';
+
+  @override
+  String get pdfColDay => 'Día';
+
+  @override
+  String get pdfColItem => 'Elemento';
+
+  @override
+  String get pdfColStatus => 'Estado';
+
+  @override
+  String get pdfColNotePosition => 'Nota / posición';
+
+  @override
+  String get pdfColPhoto => 'Foto';
+
+  @override
+  String get pdfColDateRange => 'Fecha desde-hasta';
+
+  @override
+  String get pdfColArea => 'Zona';
+
+  @override
+  String get pdfColRole => 'Rol';
+
+  @override
+  String get pdfNoData => 'Sin datos';
+
+  @override
+  String get pdfMapUnavailable => 'Mapa GPS no disponible';
+
+  @override
+  String get pdfUnsigned => 'Sin firmar';
+
+  @override
+  String get pdfNoSignatures => 'Sin firmas';
+
+  @override
+  String get pdfSha256Label => 'Huella SHA-256 de los datos del diario:';
+
+  @override
+  String get pdfVerifyQr => 'QR de verificación';
+
+  @override
+  String get pdfSbLifejackets => 'Chalecos salvavidas – ubicación y uso';
+
+  @override
+  String get pdfSbLifebuoy => 'Aro salvavidas y procedimiento MOB';
+
+  @override
+  String get pdfSbFlares => 'Bengalas – tipos y uso';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – activación';
+
+  @override
+  String get pdfSbVhf => 'Radio VHF – canal 16, procedimiento Mayday';
+
+  @override
+  String get pdfSbExtinguisher => 'Extintor – ubicación y uso';
+
+  @override
+  String get pdfSbFirstAid => 'Botiquín – ubicación';
+
+  @override
+  String get pdfSbEngineStop => 'Parada de emergencia del motor';
+
+  @override
+  String get pdfSbLeaks => 'Fugas – agua, gas';
+
+  @override
+  String get pdfSbAnchor => 'Ancla y cadena – procedimiento de fondeo';
+
+  @override
+  String get pdfSbRules => 'Normas a bordo';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Contactos de emergencia y VHF 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'Todos los tripulantes han sido informados y han comprendido las normas de seguridad, y lo confirman con su firma.';
+
+  @override
+  String get pdfHashCoverage =>
+      'La huella cubre el nombre de la travesía, la embarcación, la tripulación y todos los registros (hora UTC, GPS, velocidad, rumbo). Cualquier cambio en los datos altera la huella.';
+
+  @override
+  String get pdfForCharterCompany => 'Por la empresa de chárter';
 
   @override
   String get logDutySection => 'Guardia';
@@ -2184,7 +2378,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get crewSectionHint =>
-      'Toca la insignia para designar al capitán — el resto es tripulación.';
+      'Toca la insignia para designar al patrón — el resto es tripulación.';
 
   @override
   String get addCrewMember => 'Añadir tripulante';

@@ -297,7 +297,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unknownVessel => 'Unbekanntes Schiff';
 
   @override
-  String get captain => 'Kapitän';
+  String get captain => 'Skipper';
 
   @override
   String get crew => 'Besatzung';
@@ -386,6 +386,200 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get gearList => 'Ausrüstungsliste';
+
+  @override
+  String get pdfEntriesSection => 'Logbucheinträge';
+
+  @override
+  String get pdfSkipperMessage => 'Bericht des Skippers';
+
+  @override
+  String get pdfWeatherSection => 'Wetter';
+
+  @override
+  String get pdfDaySummary => 'Tagesübersicht';
+
+  @override
+  String get pdfDaysOverview => 'Übersicht der Tage';
+
+  @override
+  String get pdfVoyageSummary => 'Törnzusammenfassung';
+
+  @override
+  String get pdfCrewSection => 'Crew';
+
+  @override
+  String get pdfSignatures => 'Unterschriften';
+
+  @override
+  String get pdfCrewSignatures => 'Unterschriften der Crew';
+
+  @override
+  String get pdfSkipperSignature => 'Unterschrift des Skippers';
+
+  @override
+  String get pdfSkipperLicences => 'Skipper – Lizenzen';
+
+  @override
+  String get pdfSafetyBriefing => 'Sicherheitseinweisung';
+
+  @override
+  String get pdfChecklistSection => 'Checkliste';
+
+  @override
+  String get pdfMoreNotes => 'Weitere Anmerkungen';
+
+  @override
+  String get pdfIntegrityCheck => 'Prüfung der Dokumentintegrität';
+
+  @override
+  String get pdfHandoverTitle => 'Übergabeprotokoll';
+
+  @override
+  String get pdfMilesTitle => 'Bestätigung der Seemeilen';
+
+  @override
+  String get pdfDeparture => 'Abfahrt';
+
+  @override
+  String get pdfArrival => 'Ankunft';
+
+  @override
+  String get pdfTotalLabel => 'Gesamt';
+
+  @override
+  String get pdfDayCount => 'Anzahl Tage';
+
+  @override
+  String get pdfEngineHours => 'Motorstunden';
+
+  @override
+  String get pdfFuelLabel => 'Kraftstoff';
+
+  @override
+  String get pdfWaterLabel => 'Wasser';
+
+  @override
+  String get pdfVesselLabel => 'Schiff';
+
+  @override
+  String get pdfSkipperLabel => 'Skipper';
+
+  @override
+  String get pdfDateLabel => 'Datum';
+
+  @override
+  String get pdfColFrom => 'Von';
+
+  @override
+  String get pdfColTo => 'Nach';
+
+  @override
+  String get pdfColEntriesShort => 'Einträge';
+
+  @override
+  String get pdfColTimeUtc => 'Zeit UTC';
+
+  @override
+  String get pdfColWind => 'Wind';
+
+  @override
+  String get pdfColPropulsion => 'Antrieb';
+
+  @override
+  String get pdfColWeatherShort => 'Wetter';
+
+  @override
+  String get pdfColNote => 'Anmerkung';
+
+  @override
+  String get pdfColDay => 'Tag';
+
+  @override
+  String get pdfColItem => 'Position';
+
+  @override
+  String get pdfColStatus => 'Zustand';
+
+  @override
+  String get pdfColNotePosition => 'Anmerkung / Position';
+
+  @override
+  String get pdfColPhoto => 'Foto';
+
+  @override
+  String get pdfColDateRange => 'Datum von-bis';
+
+  @override
+  String get pdfColArea => 'Gebiet';
+
+  @override
+  String get pdfColRole => 'Rolle';
+
+  @override
+  String get pdfNoData => 'Keine Daten';
+
+  @override
+  String get pdfMapUnavailable => 'GPS-Karte nicht verfügbar';
+
+  @override
+  String get pdfUnsigned => 'Nicht unterschrieben';
+
+  @override
+  String get pdfNoSignatures => 'Keine Unterschriften';
+
+  @override
+  String get pdfSha256Label => 'SHA-256-Prüfsumme der Logbuchdaten:';
+
+  @override
+  String get pdfVerifyQr => 'Prüf-QR';
+
+  @override
+  String get pdfSbLifejackets => 'Rettungswesten – Ort und Gebrauch';
+
+  @override
+  String get pdfSbLifebuoy => 'Rettungsring und MOB-Verfahren';
+
+  @override
+  String get pdfSbFlares => 'Signalmittel – Typen und Gebrauch';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – Aktivierung';
+
+  @override
+  String get pdfSbVhf => 'UKW-Funk – Kanal 16, Mayday-Verfahren';
+
+  @override
+  String get pdfSbExtinguisher => 'Feuerlöscher – Ort und Gebrauch';
+
+  @override
+  String get pdfSbFirstAid => 'Erste-Hilfe-Kasten – Ort';
+
+  @override
+  String get pdfSbEngineStop => 'Not-Aus des Motors';
+
+  @override
+  String get pdfSbLeaks => 'Lecks – Wasser, Gas';
+
+  @override
+  String get pdfSbAnchor => 'Anker und Kette – Ankerverfahren';
+
+  @override
+  String get pdfSbRules => 'Regeln an Bord';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Notfallkontakte und UKW 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'Alle Crewmitglieder wurden über die Sicherheitsregeln unterrichtet, haben sie verstanden und bestätigen dies mit ihrer Unterschrift.';
+
+  @override
+  String get pdfHashCoverage =>
+      'Die Prüfsumme umfasst Törnname, Schiff, Crew und alle Einträge (UTC-Zeit, GPS, Geschwindigkeit, Kurs). Jede Datenänderung ändert die Prüfsumme.';
+
+  @override
+  String get pdfForCharterCompany => 'Für die Charterfirma';
 
   @override
   String get logDutySection => 'Wachdienst';
@@ -883,10 +1077,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get vesselFlag => 'Registrierungsflagge';
 
   @override
-  String get captainFirstName => 'Vorname des Kapitäns';
+  String get captainFirstName => 'Vorname des Skippers';
 
   @override
-  String get captainLastName => 'Nachname des Kapitäns';
+  String get captainLastName => 'Nachname des Skippers';
 
   @override
   String get captainQualification => 'Höchste erreichte Qualifikation';
@@ -1916,7 +2110,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Kapitäns, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld';
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld';
 
   @override
   String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
@@ -2190,7 +2384,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get crewSectionHint =>
-      'Tippe auf das Abzeichen, um den Kapitän festzulegen — der Rest ist Crew.';
+      'Tippe auf das Abzeichen, um den Skipper festzulegen — der Rest ist Crew.';
 
   @override
   String get addCrewMember => 'Crew-Mitglied hinzufügen';
