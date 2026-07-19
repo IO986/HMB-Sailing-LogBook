@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "en",
 
   "appTitle": "HMB Sailing Log",
@@ -134,6 +134,15 @@
   "maydayCard": "Mayday Card",
   "yachtHandover": "Yacht handover",
   "gearList": "Gear list",
+  "logEventAnchorDropped": "Anchor dropped",
+  "logEventAnchorRaised": "Anchor raised",
+  "logEventDriftOut": "Drift – perimeter exceeded",
+  "logEventDriftIn": "Drift – vessel returned",
+  "logEventDutyStart": "On duty: {name}",
+  "@logEventDutyStart": { "placeholders": { "name": { "type": "String" } } },
+  "logEventDutyEnd": "Off duty: {name}",
+  "@logEventDutyEnd": { "placeholders": { "name": { "type": "String" } } },
+
   "colreg": "COLREG",
   "emergencyContacts": "Emergency contacts",
   "backToToc": "Back to contents",

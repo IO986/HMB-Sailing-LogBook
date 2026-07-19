@@ -387,6 +387,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gearList => 'Gear list';
 
   @override
+  String get logEventAnchorDropped => 'Anchor dropped';
+
+  @override
+  String get logEventAnchorRaised => 'Anchor raised';
+
+  @override
+  String get logEventDriftOut => 'Drift – perimeter exceeded';
+
+  @override
+  String get logEventDriftIn => 'Drift – vessel returned';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'On duty: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Off duty: $name';
+  }
+
+  @override
   String get colreg => 'COLREG';
 
   @override

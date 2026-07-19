@@ -388,6 +388,28 @@ class AppLocalizationsUk extends AppLocalizations {
   String get gearList => 'Список обладнання';
 
   @override
+  String get logEventAnchorDropped => 'Якір віддано';
+
+  @override
+  String get logEventAnchorRaised => 'Якір вибрано';
+
+  @override
+  String get logEventDriftOut => 'Дрейф – радіус перевищено';
+
+  @override
+  String get logEventDriftIn => 'Дрейф – судно повернулось у радіус';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'Заступив на вахту: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Зійшов з вахти: $name';
+  }
+
+  @override
   String get colreg => 'МППЗС';
 
   @override

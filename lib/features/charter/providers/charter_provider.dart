@@ -39,6 +39,18 @@ Future<Charter> createQuickCharter(WidgetRef ref) async {
 
 final selectedCharterProvider = StateProvider<Charter?>((ref) => null);
 
+/// The charter the app should act on right now: whatever the user has open,
+/// otherwise the voyage still awaiting checkout.
+///
+/// Exists so that features which can be reached from more than one place —
+/// the duty card in Safety and the duty inspection screen, for instance —
+/// cannot end up showing different charters.
+final activeCharterProvider = FutureProvider<Charter?>((ref) async {
+  final selected = ref.watch(selectedCharterProvider);
+  if (selected != null) return selected;
+  return ref.watch(openVoyageProvider.future);
+});
+
 final dayLogsProvider = FutureProvider.family<List<DayLog>, int>((ref, charterId) async {
   final db = ref.watch(databaseProvider);
   return db.getDayLogs(charterId);

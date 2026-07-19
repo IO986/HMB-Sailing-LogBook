@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +21,7 @@ import '../../../../core/services/anchor_alarm_service.dart';
 import 'package:drift/drift.dart' as drift;
 import '../../../../core/services/location_service.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/logbook_event_type.dart';
 import '../../../../main.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -79,6 +80,7 @@ class MobNotifier extends Notifier<MobState> {
         latitude: drift.Value(lat),
         longitude: drift.Value(lon),
         skipperNote: const drift.Value('Man overboard'),
+        eventType: drift.Value(LogbookEventType.mob.code),
         isAutoEntry: const drift.Value(true),
       ));
       debugPrint('[MOB] Logged MOB activation');
@@ -110,6 +112,7 @@ class MobNotifier extends Notifier<MobState> {
         latitude: drift.Value(pos?.latitude ?? lat),
         longitude: drift.Value(pos?.longitude ?? lon),
         skipperNote: const drift.Value('MOB cancelled'),
+        eventType: drift.Value(LogbookEventType.mobCancelled.code),
         isAutoEntry: const drift.Value(true),
       ));
       debugPrint('[MOB] Logged MOB deactivation');
@@ -181,6 +184,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
         latitude: drift.Value(lat),
         longitude: drift.Value(lon),
         skipperNote: const drift.Value('Anchor dropped'),
+        eventType: drift.Value(LogbookEventType.anchorDropped.code),
         isAutoEntry: const drift.Value(true),
       ));
       debugPrint('[ANCHOR] Logged anchor drop');
@@ -200,16 +204,18 @@ class AnchorNotifier extends Notifier<AnchorState> {
       );
       // Zápis pri začiatku/konci driftu + zvukový alarm
       if (!wasDrifting && nowDrifting) {
-        _logDrift(pos, 'Drift - perimeter exceeded');
+        _logDrift(pos, 'Drift - perimeter exceeded', LogbookEventType.driftOut);
         AnchorAlarmService().startAlarm();
       } else if (wasDrifting && !nowDrifting) {
-        _logDrift(pos, 'Drift - vessel back in perimeter');
+        _logDrift(
+            pos, 'Drift - vessel back in perimeter', LogbookEventType.driftIn);
         AnchorAlarmService().stopAlarm();
       }
     });
   }
 
-  Future<void> _logDrift(Position pos, String note) async {
+  Future<void> _logDrift(
+      Position pos, String note, LogbookEventType event) async {
     try {
       final db = ref.read(databaseProvider);
       final session = await db.getActiveSession();
@@ -220,6 +226,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
         latitude: drift.Value(pos.latitude),
         longitude: drift.Value(pos.longitude),
         skipperNote: drift.Value(note),
+        eventType: drift.Value(event.code),
         isAutoEntry: const drift.Value(true),
       ));
     } catch (e) { debugPrint('[ANCHOR] Drift log error: $e'); }
@@ -240,6 +247,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
           latitude: drift.Value(pos?.latitude),
           longitude: drift.Value(pos?.longitude),
           skipperNote: const drift.Value('Anchor raised'),
+          eventType: drift.Value(LogbookEventType.anchorRaised.code),
           isAutoEntry: const drift.Value(true),
         ));
       } catch (_) {}

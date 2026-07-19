@@ -387,6 +387,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get gearList => 'Lista de equipos';
 
   @override
+  String get logEventAnchorDropped => 'Ancla fondeada';
+
+  @override
+  String get logEventAnchorRaised => 'Ancla levada';
+
+  @override
+  String get logEventDriftOut => 'Garreo – radio excedido';
+
+  @override
+  String get logEventDriftIn => 'Garreo – barco de vuelta en el radio';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'Entra de guardia: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Sale de guardia: $name';
+  }
+
+  @override
   String get colreg => 'COLREG';
 
   @override

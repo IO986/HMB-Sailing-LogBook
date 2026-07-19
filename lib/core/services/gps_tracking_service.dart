@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/foundation.dart';
@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:uuid/uuid.dart';
 
 import '../database/app_database.dart';
+import '../models/logbook_event_type.dart';
 import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
 import 'geocoding_service.dart';
@@ -162,7 +163,8 @@ class GpsTrackingService {
       _lastPosition = existing;
       debugPrint('[GPS] First entry: using existing position');
       await Future.delayed(const Duration(seconds: 2));
-      await createAutomaticLogbookEntry(note: 'Voyage start');
+      await createAutomaticLogbookEntry(
+          note: 'Voyage start', event: LogbookEventType.voyageStart);
       _geocodeDeparture(existing.latitude, existing.longitude);
       return;
     }
@@ -181,7 +183,8 @@ class GpsTrackingService {
         onTimeout: () => throw TimeoutException('GPS timeout'),
       );
       _lastPosition = pos;
-      await createAutomaticLogbookEntry(note: 'Voyage start');
+      await createAutomaticLogbookEntry(
+          note: 'Voyage start', event: LogbookEventType.voyageStart);
       _geocodeDeparture(pos.latitude, pos.longitude);
     } catch (e) {
       debugPrint('[GPS] First entry failed: $e');
@@ -241,7 +244,8 @@ class GpsTrackingService {
 
     // Záverečný záznam + geocoding príchodu
     if (_lastPosition != null) {
-      await createAutomaticLogbookEntry(note: 'Voyage end');
+      await createAutomaticLogbookEntry(
+          note: 'Voyage end', event: LogbookEventType.voyageEnd);
       _geocodeArrival(_lastPosition!.latitude, _lastPosition!.longitude);
     }
 
@@ -367,7 +371,7 @@ class GpsTrackingService {
     return null;
   }
 
-  Future<void> createAutomaticLogbookEntry({String? note}) async {
+  Future<void> createAutomaticLogbookEntry({String? note, LogbookEventType? event}) async {
     if (_currentSession == null || _db == null) {
       debugPrint('[GPS] Cannot create entry: no session or db');
       return;
@@ -423,6 +427,7 @@ class GpsTrackingService {
       airTemp: drift.Value(weather?.airTemp),
       waterTemp: drift.Value(waterTmp),
       skipperNote: drift.Value(entryNote),
+      eventType: drift.Value(event?.code),
       isAutoEntry: const drift.Value(true),
       accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
       locationSource: drift.Value(LocationService().lastSource?.name),

@@ -388,6 +388,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get gearList => 'Ausrüstungsliste';
 
   @override
+  String get logEventAnchorDropped => 'Anker gefallen';
+
+  @override
+  String get logEventAnchorRaised => 'Anker gelichtet';
+
+  @override
+  String get logEventDriftOut => 'Drift – Radius überschritten';
+
+  @override
+  String get logEventDriftIn => 'Drift – Schiff zurück im Radius';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'Wache übernommen: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Wache beendet: $name';
+  }
+
+  @override
   String get colreg => 'KVR';
 
   @override

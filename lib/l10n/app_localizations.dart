@@ -812,6 +812,42 @@ abstract class AppLocalizations {
   /// **'Zoznam vybavenia'**
   String get gearList;
 
+  /// No description provided for @logEventAnchorDropped.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotva spustená'**
+  String get logEventAnchorDropped;
+
+  /// No description provided for @logEventAnchorRaised.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotva zdvihnutá'**
+  String get logEventAnchorRaised;
+
+  /// No description provided for @logEventDriftOut.
+  ///
+  /// In sk, this message translates to:
+  /// **'Drift – prekročený perimeter'**
+  String get logEventDriftOut;
+
+  /// No description provided for @logEventDriftIn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Drift – loď späť v perimetri'**
+  String get logEventDriftIn;
+
+  /// No description provided for @logEventDutyStart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nástup do služby: {name}'**
+  String logEventDutyStart(String name);
+
+  /// No description provided for @logEventDutyEnd.
+  ///
+  /// In sk, this message translates to:
+  /// **'Koniec služby: {name}'**
+  String logEventDutyEnd(String name);
+
   /// No description provided for @colreg.
   ///
   /// In sk, this message translates to:

@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "de",
 
   "appTitle": "HMB Sailing Log",
@@ -134,6 +134,15 @@
   "maydayCard": "Mayday-Karte",
   "yachtHandover": "Yachtübergabe",
   "gearList": "Ausrüstungsliste",
+  "logEventAnchorDropped": "Anker gefallen",
+  "logEventAnchorRaised": "Anker gelichtet",
+  "logEventDriftOut": "Drift – Radius überschritten",
+  "logEventDriftIn": "Drift – Schiff zurück im Radius",
+  "logEventDutyStart": "Wache übernommen: {name}",
+  "@logEventDutyStart": { "placeholders": { "name": { "type": "String" } } },
+  "logEventDutyEnd": "Wache beendet: {name}",
+  "@logEventDutyEnd": { "placeholders": { "name": { "type": "String" } } },
+
   "colreg": "KVR",
   "emergencyContacts": "Notfallkontakte",
   "backToToc": "Zurück zum Inhalt",

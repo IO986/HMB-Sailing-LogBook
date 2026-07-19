@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
@@ -264,23 +265,91 @@ class _EntryTile extends StatelessWidget {
   final VoidCallback onTap;
   const _EntryTile({required this.entry, required this.onDelete, required this.onTap});
 
-  static _AnchorKind _anchorKind(String? note) {
-    if (note == null) return _AnchorKind.none;
-    if (note.contains('Anchor dropped')) return _AnchorKind.dropped;
-    if (note.contains('Anchor raised'))  return _AnchorKind.raised;
-    if (note.contains('Drift - perimeter exceeded')) return _AnchorKind.driftOut;
-    if (note.contains('Drift - vessel back'))        return _AnchorKind.driftIn;
-    return _AnchorKind.none;
+  /// Anchor events come from the stored event type, not from the note text —
+  /// that is what lets the note itself be written in the user's language.
+  static _AnchorKind _anchorKind(LogbookEventType? event) {
+    switch (event) {
+      case LogbookEventType.anchorDropped:
+        return _AnchorKind.dropped;
+      case LogbookEventType.anchorRaised:
+        return _AnchorKind.raised;
+      case LogbookEventType.driftOut:
+        return _AnchorKind.driftOut;
+      case LogbookEventType.driftIn:
+        return _AnchorKind.driftIn;
+      default:
+        return _AnchorKind.none;
+    }
+  }
+
+  /// Translated label for an automatic entry, or null if it has none.
+  ///
+  /// MOB is deliberately left as stored: it is the same word at sea in every
+  /// language these locales cover.
+  static String? _eventLabel(
+      LogbookEventType? event, String? note, AppLocalizations l) {
+    switch (event) {
+      case LogbookEventType.voyageStart:
+        return l.voyageStart;
+      case LogbookEventType.voyageEnd:
+        return l.voyageEnd;
+      case LogbookEventType.anchorDropped:
+        return l.logEventAnchorDropped;
+      case LogbookEventType.anchorRaised:
+        return l.logEventAnchorRaised;
+      case LogbookEventType.driftOut:
+        return l.logEventDriftOut;
+      case LogbookEventType.driftIn:
+        return l.logEventDriftIn;
+      case LogbookEventType.dutyStart:
+        return l.logEventDutyStart(_crewFromNote(note));
+      case LogbookEventType.dutyEnd:
+        return l.logEventDutyEnd(_crewFromNote(note));
+      default:
+        return null;
+    }
+  }
+
+  static Color _eventColor(LogbookEventType? event) {
+    switch (event) {
+      case LogbookEventType.voyageStart:
+        return Colors.green;
+      case LogbookEventType.voyageEnd:
+        return Colors.red;
+      case LogbookEventType.anchorDropped:
+        return Colors.blue;
+      case LogbookEventType.anchorRaised:
+        return Colors.blueGrey;
+      case LogbookEventType.driftOut:
+        return Colors.red.shade700;
+      case LogbookEventType.driftIn:
+        return Colors.orange.shade700;
+      case LogbookEventType.dutyStart:
+        return Colors.teal.shade700;
+      case LogbookEventType.dutyEnd:
+        return Colors.teal.shade300;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  /// The crew name carried in a duty note ('Duty start: Ján Novák').
+  static String _crewFromNote(String? note) {
+    if (note == null) return '';
+    final i = note.indexOf(':');
+    return i == -1 ? '' : note.substring(i + 1).trim();
   }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final fmt = DateFormat('HH:mm');
-    final isFirst = entry.skipperNote == 'Voyage start' || entry.skipperNote == 'Začiatok plavby';
-    final isLast  = entry.skipperNote == 'Voyage end'   || entry.skipperNote == 'Koniec plavby';
+    final event   = LogbookEventType.resolve(entry.eventType, entry.skipperNote);
+    final isFirst = event == LogbookEventType.voyageStart;
+    final isLast  = event == LogbookEventType.voyageEnd;
     final isAuto  = entry.isAutoEntry;
-    final anchor  = _anchorKind(entry.skipperNote);
+    final anchor  = _anchorKind(event);
+    final eventLabel = _eventLabel(event, entry.skipperNote, l);
     final parsed  = _parseNote(entry.skipperNote);
     final note    = isFirst ? '' : (isLast ? '' : (anchor != _AnchorKind.none ? '' : parsed.note));
 
@@ -443,18 +512,12 @@ class _EntryTile extends StatelessWidget {
                   ),
 
                 // Event labels
-                if (isFirst)
-                  Text(l.voyageStart, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green))
-                else if (isLast)
-                  Text(l.voyageEnd, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red))
-                else if (anchor == _AnchorKind.dropped)
-                  Text('Anchor dropped', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blue))
-                else if (anchor == _AnchorKind.raised)
-                  Text('Anchor raised', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.blueGrey))
-                else if (anchor == _AnchorKind.driftOut)
-                  Text('Drift – perimeter exceeded', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.red.shade700))
-                else if (anchor == _AnchorKind.driftIn)
-                  Text('Drift – vessel returned', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.orange.shade700)),
+                if (eventLabel != null)
+                  Text(eventLabel,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: _eventColor(event))),
               ],
             )),
 

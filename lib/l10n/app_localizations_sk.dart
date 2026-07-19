@@ -386,6 +386,28 @@ class AppLocalizationsSk extends AppLocalizations {
   String get gearList => 'Zoznam vybavenia';
 
   @override
+  String get logEventAnchorDropped => 'Kotva spustená';
+
+  @override
+  String get logEventAnchorRaised => 'Kotva zdvihnutá';
+
+  @override
+  String get logEventDriftOut => 'Drift – prekročený perimeter';
+
+  @override
+  String get logEventDriftIn => 'Drift – loď späť v perimetri';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'Nástup do služby: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Koniec služby: $name';
+  }
+
+  @override
   String get colreg => 'COLREG';
 
   @override

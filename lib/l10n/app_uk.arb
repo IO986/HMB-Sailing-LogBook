@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "uk",
 
   "appTitle": "HMB Sailing Log",
@@ -134,6 +134,15 @@
   "maydayCard": "Картка Mayday",
   "yachtHandover": "Передача яхти",
   "gearList": "Список обладнання",
+  "logEventAnchorDropped": "Якір віддано",
+  "logEventAnchorRaised": "Якір вибрано",
+  "logEventDriftOut": "Дрейф – радіус перевищено",
+  "logEventDriftIn": "Дрейф – судно повернулось у радіус",
+  "logEventDutyStart": "Заступив на вахту: {name}",
+  "@logEventDutyStart": { "placeholders": { "name": { "type": "String" } } },
+  "logEventDutyEnd": "Зійшов з вахти: {name}",
+  "@logEventDutyEnd": { "placeholders": { "name": { "type": "String" } } },
+
   "colreg": "МППЗС",
   "emergencyContacts": "Екстрені контакти",
   "backToToc": "Назад до змісту",

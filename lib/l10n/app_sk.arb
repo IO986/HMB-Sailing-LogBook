@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "sk",
 
   "appTitle": "HMB Sailing Log",
@@ -134,6 +134,15 @@
   "maydayCard": "Mayday karta",
   "yachtHandover": "Odovzdanie jachty",
   "gearList": "Zoznam vybavenia",
+  "logEventAnchorDropped": "Kotva spustená",
+  "logEventAnchorRaised": "Kotva zdvihnutá",
+  "logEventDriftOut": "Drift – prekročený perimeter",
+  "logEventDriftIn": "Drift – loď späť v perimetri",
+  "logEventDutyStart": "Nástup do služby: {name}",
+  "@logEventDutyStart": { "placeholders": { "name": { "type": "String" } } },
+  "logEventDutyEnd": "Koniec služby: {name}",
+  "@logEventDutyEnd": { "placeholders": { "name": { "type": "String" } } },
+
   "colreg": "COLREG",
   "emergencyContacts": "Núdzové kontakty",
   "backToToc": "Späť na obsah",

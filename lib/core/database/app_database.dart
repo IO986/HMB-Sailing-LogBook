@@ -124,6 +124,16 @@ class LogbookEntries extends Table {
   TextColumn get crewNames => text().nullable()();
   TextColumn get skipperNote => text().nullable()();
   BoolColumn get isAutoEntry => boolean().withDefault(const Constant(false))();
+
+  /// Machine-readable kind of an automatic entry (see [LogbookEventType]),
+  /// e.g. 'anchor_dropped'. NULL for ordinary manual entries.
+  ///
+  /// Exists so the UI and the PDF can recognise an event without matching on
+  /// the note text. That matching is why `skipperNote` accumulated three
+  /// spellings of "voyage start" — including a raw l10n key that leaked into
+  /// the database — and why the note could never be translated. Rows written
+  /// before v21 have NULL here and are resolved from the note as a fallback.
+  TextColumn get eventType => text().nullable()();
   TextColumn get weatherCondition => text().nullable()();
   TextColumn get photoPath => text().nullable()();
   // Kvalita GPS fixu z LocationFix (hmb_core) – staré riadky (pred v16)
@@ -364,7 +374,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -489,6 +499,11 @@ class AppDatabase extends _$AppDatabase {
         // AKTUÁLNY tvar, takže prípadný neskorší addColumn blok pre
         // dutyPeriods musí byť strážený `from >= 20`.
         await m.createTable(dutyPeriods);
+      }
+      if (from < 21) {
+        // logbookEntries sa v onUpgrade nikdy nevytvára cez createTable,
+        // takže tu pasca vyššie neplatí a addColumn stačí bez gardy.
+        await m.addColumn(logbookEntries, logbookEntries.eventType);
       }
     },
     beforeOpen: (details) async {

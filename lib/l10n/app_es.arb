@@ -1,4 +1,4 @@
-{
+﻿{
   "@@locale": "es",
 
   "appTitle": "HMB Sailing Log",
@@ -134,6 +134,15 @@
   "maydayCard": "Tarjeta Mayday",
   "yachtHandover": "Entrega del yate",
   "gearList": "Lista de equipos",
+  "logEventAnchorDropped": "Ancla fondeada",
+  "logEventAnchorRaised": "Ancla levada",
+  "logEventDriftOut": "Garreo – radio excedido",
+  "logEventDriftIn": "Garreo – barco de vuelta en el radio",
+  "logEventDutyStart": "Entra de guardia: {name}",
+  "@logEventDutyStart": { "placeholders": { "name": { "type": "String" } } },
+  "logEventDutyEnd": "Sale de guardia: {name}",
+  "@logEventDutyEnd": { "placeholders": { "name": { "type": "String" } } },
+
   "colreg": "COLREG",
   "emergencyContacts": "Contactos de emergencia",
   "backToToc": "Volver al índice",
