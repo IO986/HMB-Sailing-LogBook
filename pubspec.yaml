@@ -68,3 +68,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/maps/
+    # Bundled, not fetched via PdfGoogleFonts: the charter PDF has to be
+    # exportable at sea with no signal. Covers Latin Extended + Cyrillic,
+    # which the PDF's built-in Helvetica does not.
+    - assets/fonts/

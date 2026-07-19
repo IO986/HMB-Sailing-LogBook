@@ -1,8 +1,9 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:barcode/barcode.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -13,6 +14,28 @@ import '../../miles/services/miles_calculator.dart';
 import '../../charter/services/handover_checklist.dart';
 
 class PdfExportService {
+  /// Bundled Unicode font, loaded once per process.
+  ///
+  /// The PDF format's built-in Helvetica covers Latin-1 only: no Latin
+  /// Extended-A (č š ž ť ď ľ ň ŕ) and no Cyrillic. That is why every string
+  /// used to be transliterated before printing, so a crew member named
+  /// "Ján Novák" appeared in the charter PDF as "Jan Novak" — wrong in a
+  /// document meant to serve as evidence — and why Ukrainian could not be
+  /// rendered at all.
+  ///
+  /// Bundled as an asset rather than fetched through PdfGoogleFonts: the PDF
+  /// has to be exportable at sea, with no connection.
+  static pw.ThemeData? _themeCache;
+
+  static Future<pw.ThemeData> _theme() async {
+    if (_themeCache != null) return _themeCache!;
+    final base =
+        pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'));
+    final bold =
+        pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Bold.ttf'));
+    return _themeCache = pw.ThemeData.withFont(base: base, bold: bold);
+  }
+
   static final _navy  = PdfColor.fromHex('#0A2342');
   static final _blue  = PdfColor.fromHex('#1A5276');
   static final _lgrey = PdfColor.fromHex('#F2F3F4');
@@ -70,8 +93,9 @@ class PdfExportService {
     final rev    = pdfRevision;
 
     final pdf = pw.Document(
-      title: _ascii(charter.title),
-      author: _ascii(charter.skipperName ?? 'HMB Sailing Log'),
+      theme: await _theme(),
+      title: _pdfText(charter.title),
+      author: _pdfText(charter.skipperName ?? 'HMB Sailing Log'),
       creator: 'HMB Sailing Log',
     );
     final vesselPhotos = await _loadVesselPhotos(charter);
@@ -127,7 +151,7 @@ class PdfExportService {
   }) async {
     final docId = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
     const rev = 0;
-    final pdf = pw.Document();
+    final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
     for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev)) {
       pdf.addPage(page);
@@ -289,7 +313,7 @@ class PdfExportService {
                 pw.Text('HMB SAILING LOG', style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 9, letterSpacing: 3)),
                 pw.SizedBox(height: 6),
-                pw.Text(_ascii(charter.title), style: pw.TextStyle(
+                pw.Text(_pdfText(charter.title), style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 24, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 3),
                 pw.Text('${fmt.format(charter.dateFrom)} - ${fmt.format(charter.dateTo)}',
@@ -326,9 +350,9 @@ class PdfExportService {
 
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           pw.Expanded(child: _infoBox('LOD', [
-            _ascii(charter.vesselName ?? '-'),
-            if (charter.vesselType != null) _ascii(charter.vesselType!),
-            if (charter.homePort != null) 'Domovsky pristav: ${_ascii(charter.homePort!)}',
+            _pdfText(charter.vesselName ?? '-'),
+            if (charter.vesselType != null) _pdfText(charter.vesselType!),
+            if (charter.homePort != null) 'Domovsky pristav: ${_pdfText(charter.homePort!)}',
             if (charter.mmsi != null) 'MMSI: ${charter.mmsi!}',
             if (charter.callsign != null) 'Volaci znak: ${charter.callsign!}',
             if (charter.vesselLengthM != null)
@@ -340,15 +364,15 @@ class PdfExportService {
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('POSADKA', [
-            if (charter.skipperName != null) 'Kapitan: ${_ascii(charter.skipperName!)}',
-            ...crew.map((c) => '- ${_ascii(c)}'),
+            if (charter.skipperName != null) 'Kapitan: ${_pdfText(charter.skipperName!)}',
+            ...crew.map((c) => '- ${_pdfText(c)}'),
             if (crew.isEmpty && charter.skipperName == null) '-',
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('PREHLAD', [
             '${days.length} dni plavby',
             '${totalNm.toStringAsFixed(1)} NM celkom',
-            if (charter.notes != null) _ascii(charter.notes!),
+            if (charter.notes != null) _pdfText(charter.notes!),
           ])),
         ]),
         pw.SizedBox(height: 10),
@@ -368,30 +392,30 @@ class PdfExportService {
               pw.SizedBox(height: 4),
               pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                 if (skipper.fullName.isNotEmpty) ...[
-                  pw.Expanded(child: _wRow('Meno', _ascii(skipper.fullName))),
+                  pw.Expanded(child: _wRow('Meno', _pdfText(skipper.fullName))),
                 ],
                 if (skipper.licenseType.isNotEmpty || skipper.licenseNumber.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     'Licencia',
-                    _ascii('${skipper.licenseType} ${skipper.licenseNumber}'.trim()),
+                    _pdfText('${skipper.licenseType} ${skipper.licenseNumber}'.trim()),
                   )),
                 ],
                 if (skipper.licenseAuthority.isNotEmpty || skipper.licenseExpiry.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     'Vydal / Plat.',
-                    _ascii('${skipper.licenseAuthority}  ${skipper.licenseExpiry}'.trim()),
+                    _pdfText('${skipper.licenseAuthority}  ${skipper.licenseExpiry}'.trim()),
                   )),
                 ],
                 if (skipper.vhfNumber.isNotEmpty || skipper.vhfExpiry.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     'VHF/SRC',
-                    _ascii('${skipper.vhfNumber}  ${skipper.vhfExpiry}'.trim()),
+                    _pdfText('${skipper.vhfNumber}  ${skipper.vhfExpiry}'.trim()),
                   )),
                 ],
               ]),
               if (skipper.otherCerts.isNotEmpty) ...[
                 pw.SizedBox(height: 3),
-                _wRow('Ine cert.', _ascii(skipper.otherCerts)),
+                _wRow('Ine cert.', _pdfText(skipper.otherCerts)),
               ],
             ]),
           ),
@@ -420,8 +444,8 @@ class PdfExportService {
               return pw.TableRow(decoration: pw.BoxDecoration(
                   color: e.key.isEven ? _lgrey : PdfColors.white), children: [
                 _cell(DateFormat('EEE d.M.').format(d.date)),
-                _cell(_ascii(d.portFrom ?? '-')),
-                _cell(_ascii(d.portTo ?? '-')),
+                _cell(_pdfText(d.portFrom ?? '-')),
+                _cell(_pdfText(d.portTo ?? '-')),
                 _cell(d.distanceNm.toStringAsFixed(1)),
                 _cell(() {
                   final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -433,7 +457,7 @@ class PdfExportService {
           ],
         ),
         pw.Spacer(),
-        _footer(_ascii(charter.title), docId: docId, revision: revision),
+        _footer(_pdfText(charter.title), docId: docId, revision: revision),
       ]),
     );
   }
@@ -473,10 +497,10 @@ class PdfExportService {
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(5))),
           child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Text(_ascii(dayName), style: pw.TextStyle(
+              pw.Text(_pdfText(dayName), style: pw.TextStyle(
                   color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 13)),
               pw.SizedBox(height: 2),
-              pw.Text('${_ascii(day.portFrom ?? "?")} → ${_ascii(day.portTo ?? "?")}',
+              pw.Text('${_pdfText(day.portFrom ?? "?")} → ${_pdfText(day.portTo ?? "?")}',
                   style: pw.TextStyle(color: PdfColors.grey200, fontSize: 10)),
             ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
@@ -503,19 +527,19 @@ class PdfExportService {
           child: pw.Row(children: [
             if (charter.vesselName != null) ...[
               pw.Text('Lod: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(_ascii(charter.vesselName!),
+              pw.Text(_pdfText(charter.vesselName!),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(width: 12),
             ],
             if (charter.skipperName != null) ...[
               pw.Text('Kapitan: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(_ascii(charter.skipperName!),
+              pw.Text(_pdfText(charter.skipperName!),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(width: 12),
             ],
             if (crew.isNotEmpty) ...[
               pw.Text('Posadka: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(crew.map(_ascii).join(', '),
+              pw.Text(crew.map(_pdfText).join(', '),
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
             ],
           ]),
@@ -550,7 +574,7 @@ class PdfExportService {
               pw.Text('SPRAVA SKIPPERA', style: pw.TextStyle(
                   color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
               pw.SizedBox(height: 3),
-              pw.Text(_ascii(day.skipperNote!), style: const pw.TextStyle(fontSize: 9)),
+              pw.Text(_pdfText(day.skipperNote!), style: const pw.TextStyle(fontSize: 9)),
             ]),
           ),
           pw.SizedBox(height: 6),
@@ -565,7 +589,7 @@ class PdfExportService {
         ],
 
         pw.Spacer(),
-        _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
+        _footer('${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
       ]),
     ));
 
@@ -578,12 +602,12 @@ class PdfExportService {
           pageFormat: PdfPageFormat.a4,
           margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
           build: (ctx) => pw.Column(children: [
-            pw.Text('${_ascii(dayName)} – pokracovanie',
+            pw.Text('${_pdfText(dayName)} – pokracovanie',
                 style: pw.TextStyle(color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
             pw.SizedBox(height: 8),
             _entriesTable(chunk, photos),
             pw.Spacer(),
-            _footer('${_ascii(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
+            _footer('${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
           ]),
         ));
       }
@@ -681,7 +705,7 @@ class PdfExportService {
               // Pohon + motor/nadrze
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  pw.Text(_ascii(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
+                  pw.Text(_pdfText(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
                       style: const pw.TextStyle(fontSize: 7.5)),
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
@@ -726,7 +750,7 @@ class PdfExportService {
                                 fontSize: 5.5, fontWeight: pw.FontWeight.bold)),
                       ),
                     if (noteText.isNotEmpty)
-                      pw.Text(_ascii(noteText),
+                      pw.Text(_pdfText(noteText),
                           style: const pw.TextStyle(fontSize: 7.5),
                           maxLines: 3, overflow: pw.TextOverflow.clip),
                   ],
@@ -796,8 +820,8 @@ class PdfExportService {
                 decoration: pw.BoxDecoration(color: e.key.isEven ? _lgrey : PdfColors.white),
                 children: [
                   _cell(DateFormat('EEE d.M.').format(d.date)),
-                  _cell(_ascii(d.portFrom ?? '-')),
-                  _cell(_ascii(d.portTo ?? '-')),
+                  _cell(_pdfText(d.portFrom ?? '-')),
+                  _cell(_pdfText(d.portTo ?? '-')),
                   _cell('${d.distanceNm.toStringAsFixed(1)} NM'),
                   _cell(() {
                     final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -871,7 +895,7 @@ class PdfExportService {
                 color: PdfColors.white, fontSize: 9, letterSpacing: 2,
                 fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 3),
-            pw.Text(_ascii(charter.title),
+            pw.Text(_pdfText(charter.title),
                 style: pw.TextStyle(color: PdfColors.grey200, fontSize: 11)),
           ]),
         ),
@@ -945,7 +969,7 @@ class PdfExportService {
                   borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                 ),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  pw.Text(_ascii(sigs[i].crewName),
+                  pw.Text(_pdfText(sigs[i].crewName),
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
                   pw.Text(sigs[i].role == 'skipper' ? 'Kapitan' : 'Posadka',
                       style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
@@ -974,7 +998,7 @@ class PdfExportService {
           ]),
 
         pw.Spacer(),
-        _footer('${_ascii(charter.title)}  |  Bezpecnostny briefing', docId: docId, revision: revision),
+        _footer('${_pdfText(charter.title)}  |  Bezpecnostny briefing', docId: docId, revision: revision),
       ]),
     );
   }
@@ -992,7 +1016,7 @@ class PdfExportService {
             borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
           ),
         ),
-        pw.Expanded(child: pw.Text(_ascii(text), style: const pw.TextStyle(fontSize: 8))),
+        pw.Expanded(child: pw.Text(_pdfText(text), style: const pw.TextStyle(fontSize: 8))),
       ]),
     );
   }
@@ -1013,7 +1037,7 @@ class PdfExportService {
     final qrData = 'HMB-LOG:v2'
         '|id:$docId'
         '|rev:$revision'
-        '|signer:${_ascii(signerName ?? "Skipper")}'
+        '|signer:${_pdfText(signerName ?? "Skipper")}'
         '|ts:${signedAt.toIso8601String()}'
         '|sha256:$shortHash';
 
@@ -1028,7 +1052,7 @@ class PdfExportService {
             pw.Text('PODPIS SKIPPERA', style: pw.TextStyle(
                 color: PdfColors.white, fontSize: 10, fontWeight: pw.FontWeight.bold, letterSpacing: 2)),
             pw.SizedBox(height: 3),
-            pw.Text(_ascii(docTitle), style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
+            pw.Text(_pdfText(docTitle), style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
           ]),
         ),
         pw.SizedBox(height: 20),
@@ -1041,7 +1065,7 @@ class PdfExportService {
         ),
         pw.SizedBox(height: 6),
         if (signerName != null)
-          pw.Text(_ascii(signerName), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+          pw.Text(_pdfText(signerName), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
         pw.Text('Podpisane: $timeStr UTC', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
         pw.SizedBox(height: 20),
         pw.Divider(color: PdfColors.grey300),
@@ -1074,7 +1098,7 @@ class PdfExportService {
           ]),
         ]),
         pw.Spacer(),
-        _footer('${_ascii(docTitle)}  |  Podpisany $timeStr UTC', docId: docId, revision: revision),
+        _footer('${_pdfText(docTitle)}  |  Podpisany $timeStr UTC', docId: docId, revision: revision),
       ]),
     );
   }
@@ -1095,7 +1119,7 @@ class PdfExportService {
       }
     }
     if (day.windDirection != null) {
-      rows.add(_wRow('Smer', _ascii(day.windDirection!)));
+      rows.add(_wRow('Smer', _pdfText(day.windDirection!)));
     } else {
       final withDir = entries.where((e) => e.windDirection != null).toList();
       if (withDir.isNotEmpty) {
@@ -1111,7 +1135,7 @@ class PdfExportService {
       rows.add(_wRow('Tlak', '${avg.toStringAsFixed(0)} hPa'));
     }
 
-    if (day.seaState != null) rows.add(_wRow('More', _ascii(day.seaState!)));
+    if (day.seaState != null) rows.add(_wRow('More', _pdfText(day.seaState!)));
     if (day.waveHeightM != null) {
       rows.add(_wRow('Vlny', '${day.waveHeightM!.toStringAsFixed(1)} m'));
     } else {
@@ -1250,6 +1274,7 @@ class PdfExportService {
     final companySig = await _loadHandoverSignature(protocol.companySignaturePath);
 
     final pdf = pw.Document(
+      theme: await _theme(),
       title: 'Odovzdavaci protokol $typeLabel',
       creator: 'HMB Sailing Log',
     );
@@ -1268,7 +1293,7 @@ class PdfExportService {
                 pw.Text('ODOVZDAVACI PROTOKOL - $typeLabel', style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 4),
-                pw.Text(_ascii('${charter.title}  |  ${charter.vesselName ?? "-"}'
+                pw.Text(_pdfText('${charter.title}  |  ${charter.vesselName ?? "-"}'
                     '  |  ${charter.callsign ?? charter.mmsi ?? ""}'),
                     style: pw.TextStyle(color: PdfColors.grey200, fontSize: 9)),
               ]),
@@ -1276,7 +1301,7 @@ class PdfExportService {
           : pw.SizedBox(),
       footer: (ctx) => _footer(
         'Datum/miesto: ${fmt.format(protocol.dateTimeUtc.toLocal())}'
-        '${protocol.location != null ? "  |  ${_ascii(protocol.location!)}" : ""}',
+        '${protocol.location != null ? "  |  ${_pdfText(protocol.location!)}" : ""}',
         docId: docId, revision: 0,
       ),
       build: (ctx) => _handoverProtocolContent(
@@ -1320,7 +1345,7 @@ class PdfExportService {
         pw.Text('DALSIE POZNAMKY', style: pw.TextStyle(
             color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9, letterSpacing: 1)),
         pw.SizedBox(height: 4),
-        pw.Text(_ascii(protocol.extraNotes!), style: const pw.TextStyle(fontSize: 9)),
+        pw.Text(_pdfText(protocol.extraNotes!), style: const pw.TextStyle(fontSize: 9)),
       ],
 
       pw.SizedBox(height: 32),
@@ -1375,7 +1400,7 @@ class PdfExportService {
                   color: PdfColors.white, fontSize: 14, fontWeight: pw.FontWeight.bold)),
             )
           : pw.SizedBox(),
-      footer: (ctx) => _footer(_ascii(charter.title), docId: docId, revision: revision),
+      footer: (ctx) => _footer(_pdfText(charter.title), docId: docId, revision: revision),
       build: (ctx) => _handoverProtocolContent(
         protocol: protocol, checklist: checklist, thumbnails: thumbnails,
         skipperSig: skipperSig, companySig: companySig, fmt: fmt,
@@ -1428,7 +1453,7 @@ class PdfExportService {
         children: [
           pw.Padding(
             padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-            child: pw.Text(_ascii(category.labelSk),
+            child: pw.Text(_pdfText(category.labelSk),
                 style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: _navy)),
           ),
           _cell(''), _cell(''), _cell(''),
@@ -1445,9 +1470,9 @@ class PdfExportService {
           decoration: pw.BoxDecoration(
               color: item.status == ChecklistStatus.ok ? PdfColors.white : PdfColor.fromHex('#FDEBD0')),
           children: [
-            _cell(_ascii(label)),
+            _cell(_pdfText(label)),
             _cell(_handoverStatusLabel(item.status), bold: item.status != ChecklistStatus.ok),
-            _cell(_ascii(noteParts.join(' '))),
+            _cell(_pdfText(noteParts.join(' '))),
             thumbnails.containsKey(item.itemKey)
                 ? pw.Container(
                     padding: const pw.EdgeInsets.all(2),
@@ -1479,7 +1504,7 @@ class PdfExportService {
     required DateFormat fmt,
   }) {
     return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-      pw.Text(_ascii(title), style: pw.TextStyle(fontSize: 8, color: _dgrey, fontWeight: pw.FontWeight.bold)),
+      pw.Text(_pdfText(title), style: pw.TextStyle(fontSize: 8, color: _dgrey, fontWeight: pw.FontWeight.bold)),
       pw.SizedBox(height: 4),
       if (signature != null)
         pw.Image(pw.MemoryImage(signature), height: 50, fit: pw.BoxFit.contain, alignment: pw.Alignment.centerLeft)
@@ -1489,7 +1514,7 @@ class PdfExportService {
       pw.Container(decoration: const pw.BoxDecoration(
           border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
       pw.SizedBox(height: 4),
-      pw.Text(_ascii(name ?? '-'), style: const pw.TextStyle(fontSize: 8.5)),
+      pw.Text(_pdfText(name ?? '-'), style: const pw.TextStyle(fontSize: 8.5)),
       if (signedAt != null)
         pw.Text('Podpisane: ${fmt.format(signedAt.toLocal())}',
             style: pw.TextStyle(fontSize: 7, color: _dgrey)),
@@ -1506,6 +1531,7 @@ class PdfExportService {
     final fmt = DateFormat('d.M.yyyy');
 
     final pdf = pw.Document(
+      theme: await _theme(),
       title: 'Potvrdenie o najazdenych miliach',
       creator: 'HMB Sailing Log',
     );
@@ -1555,10 +1581,10 @@ class PdfExportService {
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
                 _cell('${v.isManualEntry ? "* " : ""}${fmt.format(v.dateFrom)}-${fmt.format(v.dateTo)}'),
-                _cell(_ascii(v.vesselName)),
-                _cell(_ascii(v.area ?? '-')),
+                _cell(_pdfText(v.vesselName)),
+                _cell(_pdfText(v.area ?? '-')),
                 _cell(v.distanceNm.toStringAsFixed(1)),
-                _cell(_ascii(v.role ?? '-')),
+                _cell(_pdfText(v.role ?? '-')),
               ],
             )),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
@@ -1580,7 +1606,7 @@ class PdfExportService {
             pw.Container(width: 200, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text(_ascii('Podpis: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text(_pdfText('Podpis: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
           ])),
           pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Container(width: 150, decoration: const pw.BoxDecoration(
@@ -1643,14 +1669,12 @@ class PdfExportService {
   }
 
   /// Diakritika → ASCII pre PDF
-  static String _ascii(String s) => s
-    .replaceAll('á','a').replaceAll('ä','a').replaceAll('č','c').replaceAll('ď','d')
-    .replaceAll('é','e').replaceAll('í','i').replaceAll('ĺ','l').replaceAll('ľ','l')
-    .replaceAll('ň','n').replaceAll('ó','o').replaceAll('ô','o').replaceAll('ŕ','r')
-    .replaceAll('š','s').replaceAll('ť','t').replaceAll('ú','u').replaceAll('ý','y')
-    .replaceAll('ž','z').replaceAll('Á','A').replaceAll('Č','C').replaceAll('Ď','D')
-    .replaceAll('É','E').replaceAll('Í','I').replaceAll('Ľ','L').replaceAll('Ň','N')
-    .replaceAll('Ó','O').replaceAll('Š','S').replaceAll('Ť','T').replaceAll('Ú','U')
-    .replaceAll('Ý','Y').replaceAll('Ž','Z').replaceAll('→','->').replaceAll('·','.')
-    .replaceAll('©','(c)').replaceAll('–','-').replaceAll('°','°');
+  /// Text on its way into the PDF.
+  ///
+  /// This used to strip diacritics, because the built-in Helvetica could not
+  /// draw them. With Noto Sans bundled (see [_theme]) that is no longer true,
+  /// so it passes text through untouched - names and Cyrillic now print as
+  /// written. Kept as a single funnel rather than inlined at 53 call sites;
+  /// do NOT reintroduce transliteration here.
+  static String _pdfText(String s) => s;
 }
