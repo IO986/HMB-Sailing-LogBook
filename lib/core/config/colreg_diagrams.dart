@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+/// Label baked into a diagram. Slovak has a full translation, every other
+/// locale falls back to English — the same rule as ColregContent.chaptersFor.
+String _t(BuildContext context, String sk, String en) =>
+    Localizations.localeOf(context).languageCode == 'sk' ? sk : en;
+
 /// Mapuje diagramKey na widget. Vracia null ak diagram neexistuje.
 Widget? buildColregDiagram(String key, {double height = 180}) {
   switch (key) {
@@ -132,8 +137,9 @@ class _BlindSpotsDiagram extends StatelessWidget {
           Positioned(top: 50, child: _BoatShape(color: Colors.blueGrey.shade700, size: 36)),
         ]),
         const SizedBox(height: 8),
-        const Text('Slepý uhol za prednou plachtou',
-            style: TextStyle(fontSize: 11, color: Colors.black54)),
+        Text(_t(context, 'Slepý uhol za prednou plachtou',
+                'Blind spot behind the headsail'),
+            style: const TextStyle(fontSize: 11, color: Colors.black54)),
       ]),
     ),
   );
@@ -177,7 +183,8 @@ class _BearingTestDiagram extends StatelessWidget {
     child: Row(children: [
       Expanded(child: _bearingFrame('T1', 0.62)),
       Container(width: 1, color: Colors.black12),
-      Expanded(child: _bearingFrame('T2 (o 5 min)', 0.38)),
+      Expanded(child: _bearingFrame(
+          _t(context, 'T2 (o 5 min)', 'T2 (5 min later)'), 0.38)),
     ]),
   );
 
@@ -210,9 +217,11 @@ class _PositiveActionDiagram extends StatelessWidget {
   Widget build(BuildContext context) => _DiagramFrame(
     height: height,
     child: Row(children: [
-      _scenario('A: Pôvodný kurz', 0),
-      _scenario('B: Malá zmena\n(nezreteľné)', 0.18),
-      _scenario('C: Výrazná zmena\n(zreteľné)', 0.55),
+      _scenario(_t(context, 'A: Pôvodný kurz', 'A: Original course'), 0),
+      _scenario(_t(context, 'B: Malá zmena\n(nezreteľné)',
+          'B: Small alteration\n(not apparent)'), 0.18),
+      _scenario(_t(context, 'C: Výrazná zmena\n(zreteľné)',
+          'C: Large alteration\n(readily apparent)'), 0.55),
     ].map((w) => Expanded(child: w)).toList()),
   );
 
@@ -243,8 +252,10 @@ class _NarrowChannelDiagram extends StatelessWidget {
       child: Stack(children: [
         // Kanál
         Positioned.fill(child: CustomPaint(painter: _ChannelPainter())),
-        const Positioned(left: 8, top: 8, child: Text('✗ stred', style: TextStyle(fontSize: 10, color: Colors.red))),
-        const Positioned(right: 8, top: 8, child: Text('✓ pravobok', style: TextStyle(fontSize: 10, color: Colors.green))),
+        Positioned(left: 8, top: 8, child: Text(_t(context, '✗ stred', '✗ mid-channel'),
+            style: const TextStyle(fontSize: 10, color: Colors.red))),
+        Positioned(right: 8, top: 8, child: Text(_t(context, '✓ pravobok', '✓ starboard side'),
+            style: const TextStyle(fontSize: 10, color: Colors.green))),
       ]),
     ),
   );
@@ -350,12 +361,16 @@ class _SailboatOppositeTackDiagram extends StatelessWidget {
       Positioned(left: 30, top: 50, child: Column(children: [
         _BoatShape(angle: math.pi * 0.15, color: Colors.red.shade700, size: 36),
         const SizedBox(height: 4),
-        const Text('Vietr ľavobok\n→ uvoľní cestu', style: TextStyle(fontSize: 9), textAlign: TextAlign.center),
+        Text(_t(context, 'Vietr ľavobok\n→ uvoľní cestu',
+                'Port tack\n→ gives way'),
+            style: const TextStyle(fontSize: 9), textAlign: TextAlign.center),
       ])),
       Positioned(right: 30, top: 50, child: Column(children: [
         _BoatShape(angle: -math.pi * 0.15, color: Colors.green.shade700, size: 36),
         const SizedBox(height: 4),
-        const Text('Vietr pravobok\n→ drzí kurz', style: TextStyle(fontSize: 9), textAlign: TextAlign.center),
+        Text(_t(context, 'Vietr pravobok\n→ drzí kurz',
+                'Starboard tack\n→ stands on'),
+            style: const TextStyle(fontSize: 9), textAlign: TextAlign.center),
       ])),
       Positioned(top: 8, left: 0, right: 0, child: Center(
         child: Icon(Icons.air, color: Colors.blue.shade300, size: 20))),
@@ -373,12 +388,16 @@ class _SailboatSameTackDiagram extends StatelessWidget {
       Positioned(left: 40, top: 30, child: Column(children: [
         _BoatShape(color: Colors.red.shade700, size: 32),
         const SizedBox(height: 4),
-        const Text('Vetrná strana\n→ uvoľní cestu', style: TextStyle(fontSize: 9), textAlign: TextAlign.center),
+        Text(_t(context, 'Vetrná strana\n→ uvoľní cestu',
+                'Windward boat\n→ gives way'),
+            style: const TextStyle(fontSize: 9), textAlign: TextAlign.center),
       ])),
       Positioned(left: 40, bottom: 20, child: Column(children: [
         _BoatShape(color: Colors.green.shade700, size: 32),
         const SizedBox(height: 4),
-        const Text('Záveterná strana\n→ drzí kurz', style: TextStyle(fontSize: 9), textAlign: TextAlign.center),
+        Text(_t(context, 'Záveterná strana\n→ drzí kurz',
+                'Leeward boat\n→ stands on'),
+            style: const TextStyle(fontSize: 9), textAlign: TextAlign.center),
       ])),
       Positioned(top: 8, right: 16, child: Icon(Icons.air, color: Colors.blue.shade300, size: 20)),
     ]),
@@ -405,8 +424,10 @@ class _OvertakingSectorDiagram extends StatelessWidget {
           ),
         ),
         Positioned(top: 10, child: _BoatShape(color: Colors.blueGrey.shade700, size: 32)),
-        const Positioned(bottom: 6, child: Text('Sektor predbiehania (67,5° + 67,5°)',
-            style: TextStyle(fontSize: 10, color: Colors.black54))),
+        Positioned(bottom: 6, child: Text(
+            _t(context, 'Sektor predbiehania (67,5° + 67,5°)',
+                'Overtaking sector (67.5° + 67.5°)'),
+            style: const TextStyle(fontSize: 10, color: Colors.black54))),
       ]),
     ),
   );
@@ -429,8 +450,9 @@ class _HeadOnDiagram extends StatelessWidget {
         child: Transform.rotate(angle: -math.pi/2, child: const Icon(Icons.arrow_forward, color: Colors.green, size: 18)))),
       Positioned(right: 8, top: 0, bottom: 0, child: Center(
         child: Transform.rotate(angle: math.pi/2, child: const Icon(Icons.arrow_forward, color: Colors.green, size: 18)))),
-      const Positioned(bottom: 4, left: 0, right: 0, child: Center(
-        child: Text('Obe odbočia DOPRAVA', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.green)))),
+      Positioned(bottom: 4, left: 0, right: 0, child: Center(
+        child: Text(_t(context, 'Obe odbočia DOPRAVA', 'Both alter to STARBOARD'),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.green)))),
     ]),
   );
 }
@@ -448,10 +470,12 @@ class _CrossingDiagram extends StatelessWidget {
           angle: -math.pi / 4, color: Colors.green.shade700, size: 32)),
       Positioned(right: 30, bottom: 60, child: _BoatShape(
           angle: math.pi * 0.85, color: Colors.red.shade700, size: 32)),
-      Positioned(left: 12, bottom: 4, child: const Text('A: drzí kurz\n(stand-on)',
-          style: TextStyle(fontSize: 9, color: Colors.green))),
-      Positioned(right: 12, bottom: 4, child: const Text('B: uvoľní cestu\n(give-way)',
-          style: TextStyle(fontSize: 9, color: Colors.red))),
+      Positioned(left: 12, bottom: 4, child: Text(
+          _t(context, 'A: drzí kurz\n(stand-on)', 'A: stands on\n(stand-on)'),
+          style: const TextStyle(fontSize: 9, color: Colors.green))),
+      Positioned(right: 12, bottom: 4, child: Text(
+          _t(context, 'B: uvoľní cestu\n(give-way)', 'B: keeps clear\n(give-way)'),
+          style: const TextStyle(fontSize: 9, color: Colors.red))),
     ]),
   );
 }
@@ -469,9 +493,11 @@ class _FogRadarDiagram extends StatelessWidget {
         spacing: 16, runSpacing: 10,
         alignment: WrapAlignment.center,
         children: [
-          _miniCase('Spredu', math.pi, true),
-          _miniCase('Ľavobok/za\ntraversom vľavo', math.pi * 0.75, true),
-          _miniCase('Pravobok/za\ntraversom vpravo', -math.pi * 0.75, false),
+          _miniCase(_t(context, 'Spredu', 'From ahead'), math.pi, true),
+          _miniCase(_t(context, 'Ľavobok/za\ntraversom vľavo',
+              'Port side/abaft\nthe port beam'), math.pi * 0.75, true),
+          _miniCase(_t(context, 'Pravobok/za\ntraversom vpravo',
+              'Starboard side/abaft\nthe starboard beam'), -math.pi * 0.75, false),
         ],
       ),
     ),
@@ -579,11 +605,11 @@ class _PowerVesselLightsDiagram extends StatelessWidget {
         _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       ]),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.white, label: 'Stožárové (vpredu)'),
-        (color: Colors.green, label: 'Pravobok (zelené)'),
-        (color: Colors.red, label: 'Ľavobok (červené)'),
-        (color: Colors.white, label: 'Záďové (biele)'),
+      _LightIconRow(lights: [
+        (color: Colors.white, label: _t(context, 'Stožárové (vpredu)', 'Masthead (forward)')),
+        (color: Colors.green, label: _t(context, 'Pravobok (zelené)', 'Starboard (green)')),
+        (color: Colors.red, label: _t(context, 'Ľavobok (červené)', 'Port (red)')),
+        (color: Colors.white, label: _t(context, 'Záďové (biele)', 'Stern (white)')),
       ]),
     ])),
   );
@@ -598,10 +624,10 @@ class _SailboatLightsDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.green, label: 'Pravobok (zelené)'),
-        (color: Colors.red, label: 'Ľavobok (červené)'),
-        (color: Colors.white, label: 'Záďové (biele)'),
+      _LightIconRow(lights: [
+        (color: Colors.green, label: _t(context, 'Pravobok (zelené)', 'Starboard (green)')),
+        (color: Colors.red, label: _t(context, 'Ľavobok (červené)', 'Port (red)')),
+        (color: Colors.white, label: _t(context, 'Záďové (biele)', 'Stern (white)')),
       ]),
     ])),
   );
@@ -616,11 +642,11 @@ class _TrawlerLightsDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.green, label: 'Zelené (vrchné)'),
-        (color: Colors.white, label: 'Biele (spodné)'),
-        (color: Colors.green, label: 'Pravobok'),
-        (color: Colors.red, label: 'Ľavobok'),
+      _LightIconRow(lights: [
+        (color: Colors.green, label: _t(context, 'Zelené (vrchné)', 'Green (upper)')),
+        (color: Colors.white, label: _t(context, 'Biele (spodné)', 'White (lower)')),
+        (color: Colors.green, label: _t(context, 'Pravobok', 'Starboard')),
+        (color: Colors.red, label: _t(context, 'Ľavobok', 'Port')),
       ]),
     ])),
   );
@@ -635,11 +661,11 @@ class _FishingLightsDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.red, label: 'Červené (vrchné)'),
-        (color: Colors.white, label: 'Biele (spodné)'),
-        (color: Colors.green, label: 'Pravobok'),
-        (color: Colors.red, label: 'Ľavobok'),
+      _LightIconRow(lights: [
+        (color: Colors.red, label: _t(context, 'Červené (vrchné)', 'Red (upper)')),
+        (color: Colors.white, label: _t(context, 'Biele (spodné)', 'White (lower)')),
+        (color: Colors.green, label: _t(context, 'Pravobok', 'Starboard')),
+        (color: Colors.red, label: _t(context, 'Ľavobok', 'Port')),
       ]),
     ])),
   );
@@ -654,9 +680,9 @@ class _NotUnderCommandDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.red, label: 'Červené (vrchné)'),
-        (color: Colors.red, label: 'Červené (spodné)'),
+      _LightIconRow(lights: [
+        (color: Colors.red, label: _t(context, 'Červené (vrchné)', 'Red (upper)')),
+        (color: Colors.red, label: _t(context, 'Červené (spodné)', 'Red (lower)')),
       ]),
     ])),
   );
@@ -671,10 +697,10 @@ class _RestrictedManeuverDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.red, label: 'Červené'),
-        (color: Colors.white, label: 'Biele'),
-        (color: Colors.red, label: 'Červené'),
+      _LightIconRow(lights: [
+        (color: Colors.red, label: _t(context, 'Červené', 'Red')),
+        (color: Colors.white, label: _t(context, 'Biele', 'White')),
+        (color: Colors.red, label: _t(context, 'Červené', 'Red')),
       ]),
     ])),
   );
@@ -689,10 +715,10 @@ class _DraftConstrainedDiagram extends StatelessWidget {
     child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       _BoatShape(color: Colors.blueGrey.shade800, size: 50),
       const SizedBox(width: 20),
-      _LightIconRow(lights: const [
-        (color: Colors.red, label: 'Červené (1)'),
-        (color: Colors.red, label: 'Červené (2)'),
-        (color: Colors.red, label: 'Červené (3)'),
+      _LightIconRow(lights: [
+        (color: Colors.red, label: _t(context, 'Červené (1)', 'Red (1)')),
+        (color: Colors.red, label: _t(context, 'Červené (2)', 'Red (2)')),
+        (color: Colors.red, label: _t(context, 'Červené (3)', 'Red (3)')),
       ]),
     ])),
   );

@@ -54,7 +54,8 @@ class _TableOfContents extends StatelessWidget {
           child: Text(AppLocalizations.of(context).tableOfContents, style: const TextStyle(
               fontWeight: FontWeight.bold, letterSpacing: 1, color: Colors.grey)),
         ),
-        ...ColregContent.chapters.map((chapter) => _ChapterTile(
+        ...ColregContent.chaptersFor(Localizations.localeOf(context).languageCode)
+            .map((chapter) => _ChapterTile(
           chapter: chapter,
           onSelect: onSelect,
         )),
@@ -117,7 +118,9 @@ class _ChapterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chapter = ColregContent.chapters.firstWhere((c) => c.id == chapterId);
+    final chapter = ColregContent
+        .chaptersFor(Localizations.localeOf(context).languageCode)
+        .firstWhere((c) => c.id == chapterId);
 
     return ListView(
       padding: const EdgeInsets.all(16),
