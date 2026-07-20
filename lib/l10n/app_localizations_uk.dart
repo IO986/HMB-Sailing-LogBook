@@ -182,6 +182,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get stopTrackingDay => 'Зупинити відстеження?';
 
   @override
+  String get finishingDayExport => 'Зберігаю день і готую експорт...';
+
+  @override
   String get startVoyage => 'Розпочати плавання';
 
   @override

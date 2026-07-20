@@ -1,15 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:drift/native.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 import 'package:hmb_sailing_log/core/database/app_database.dart';
-import 'package:hmb_sailing_log/core/models/sync_settings.dart';
-import 'package:hmb_sailing_log/core/providers/sync_provider.dart';
-import 'package:hmb_sailing_log/core/providers/sync_settings_provider.dart';
+import 'package:hmb_sailing_log/core/models/skipper_profile.dart';
 import 'package:hmb_sailing_log/features/cloud/services/auto_export_service.dart';
-import 'package:hmb_sailing_log/main.dart';
 import 'package:hmb_sailing_log/sync/drift_outbox_record_store.dart';
 import 'package:hmb_sailing_log/sync/sync_entity_types.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -29,17 +26,13 @@ class _NeverCalledTransport implements SyncTransport {
   }
 }
 
-/// `AutoExportService.exportAndEnqueueDay` takes a `Ref`, not a
-/// `ProviderContainer` — this exposes the container's own `Ref` so the
-/// service can be called the same way it would be from inside a provider.
-final _refProvider = Provider<Ref>((ref) => ref);
-
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() => initializeDateFormatting('sk', null));
 
   late AppDatabase db;
   late OutboxRepository repository;
+  late SyncEngine engine;
   late int dayLogId;
   late Directory storageDir;
 
@@ -55,6 +48,11 @@ void main() {
 
     db = AppDatabase.forTesting(NativeDatabase.memory());
     repository = OutboxRepository(store: DriftOutboxRecordStore(db));
+    engine = SyncEngine(
+      repository: repository,
+      transport: _NeverCalledTransport(),
+      connectivity: ValueConnectivityService(online: false),
+    );
 
     final charter = await db.insertCharter(ChartersCompanion.insert(
       title: 'Plavba testov 2026',
@@ -74,31 +72,13 @@ void main() {
     await storageDir.delete(recursive: true);
   });
 
-  ProviderContainer buildContainer({required bool cloudEnabled}) {
-    final engine = SyncEngine(
-      repository: repository,
-      transport: _NeverCalledTransport(),
-      connectivity: ValueConnectivityService(online: false),
-    );
-    return ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      syncEngineProvider.overrideWithValue(engine),
-      syncSettingsProvider.overrideWith(
-        () => _FixedSyncSettings(SyncSettings(cloudEnabled: cloudEnabled)),
-      ),
-    ]);
-  }
-
   test('cloud export enabled: queues PDF + GPX, files exist on disk', () async {
-    final container = buildContainer(cloudEnabled: true);
-    addTearDown(container.dispose);
-    // AsyncNotifierProvider starts out loading — without this, the
-    // service's synchronous `.valueOrNull` read races the notifier's own
-    // build() and sees null (falls back to cloudEnabled: false).
-    await container.read(syncSettingsProvider.future);
-
     await AutoExportService().exportAndEnqueueDay(
-      ref: container.read(_refProvider),
+      db: db,
+      engine: engine,
+      cloudEnabled: true,
+      locale: const Locale('sk'),
+      skipperProfile: const SkipperProfile(),
       dayLogId: dayLogId,
     );
 
@@ -113,12 +93,12 @@ void main() {
   });
 
   test('cloud export disabled: builds files locally but queues nothing', () async {
-    final container = buildContainer(cloudEnabled: false);
-    addTearDown(container.dispose);
-    await container.read(syncSettingsProvider.future);
-
     await AutoExportService().exportAndEnqueueDay(
-      ref: container.read(_refProvider),
+      db: db,
+      engine: engine,
+      cloudEnabled: false,
+      locale: const Locale('sk'),
+      skipperProfile: const SkipperProfile(),
       dayLogId: dayLogId,
     );
 
@@ -137,13 +117,4 @@ class _FakePathProviderPlatform extends PathProviderPlatform {
   Future<String?> getApplicationDocumentsPath() async => _path;
   @override
   Future<String?> getExternalStoragePath() async => _path;
-}
-
-/// Serves a fixed [SyncSettings] value without touching SharedPreferences —
-/// AsyncNotifierProvider.overrideWith needs a notifier, not a bare value.
-class _FixedSyncSettings extends SyncSettingsNotifier {
-  _FixedSyncSettings(this._value);
-  final SyncSettings _value;
-  @override
-  Future<SyncSettings> build() async => _value;
 }

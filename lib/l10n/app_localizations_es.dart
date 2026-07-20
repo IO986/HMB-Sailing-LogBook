@@ -182,6 +182,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stopTrackingDay => '¿Detener el seguimiento?';
 
   @override
+  String get finishingDayExport =>
+      'Guardando el día y preparando la exportación...';
+
+  @override
   String get startVoyage => 'Iniciar travesía';
 
   @override

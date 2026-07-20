@@ -63,6 +63,7 @@
   "logbookBtn": "Logbook",
   "stop": "Stop",
   "stopTrackingDay": "Stop tracking?",
+  "finishingDayExport": "Saving the day and preparing export...",
   "startVoyage": "Start voyage",
   "starting": "Starting...",
   "newVoyage": "New voyage",

@@ -1,16 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 import 'package:intl/intl.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/models/skipper_profile.dart';
-import '../../../core/providers/locale_provider.dart';
-import '../../../core/providers/skipper_profile_provider.dart';
-import '../../../core/providers/sync_provider.dart';
-import '../../../core/providers/sync_settings_provider.dart';
 import '../../../core/utils/gpx_exporter.dart';
-import '../../../main.dart';
 import '../../../sync/sync_entity_types.dart';
 import '../../export/services/export_service.dart';
 import '../../export/services/pdf_export_service.dart';
@@ -24,17 +19,26 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 /// the manual export, so an auto-uploaded day looks identical to one the
 /// skipper exported by hand.
 ///
+/// Takes its dependencies as plain values, not a Riverpod `Ref` — `Ref` and
+/// `WidgetRef` are unrelated types on the `flutter_riverpod` version this
+/// app pins, so a single `Ref`-typed parameter can't accept a call from a
+/// `WidgetRef`-only context like `handleStopTap`
+/// (`tracking_control_dialogs.dart`). The caller resolves whatever it needs
+/// with its own `ref.read(...)`, whichever flavor of `ref` it has.
+///
 /// [mapScreenshot] is captured by the caller, not here — this class has no
 /// `BuildContext` to capture from (see day_map_view.dart / §3: the capture
-/// needs a `View`/`MediaQuery` ancestor). `handleStopTap`
-/// (`tracking_control_dialogs.dart`) is where that context lives.
+/// needs a `View`/`MediaQuery` ancestor).
 class AutoExportService {
   Future<void> exportAndEnqueueDay({
-    required Ref ref,
+    required AppDatabase db,
+    required SyncEngine engine,
+    required bool cloudEnabled,
+    required Locale locale,
+    required SkipperProfile skipperProfile,
     required int dayLogId,
     Uint8List? mapScreenshot,
   }) async {
-    final db = ref.read(databaseProvider);
     final day = await db.getDayLogById(dayLogId);
     if (day == null) return;
     final charter = await db.getCharterById(day.charterId);
@@ -53,10 +57,7 @@ class AutoExportService {
       dayStart.add(const Duration(days: 1)).toUtc(),
     );
 
-    final l10n = await AppLocalizations.delegate.load(ref.read(localeProvider));
-    final skipperProfile = await ref
-        .read(skipperProfileProvider.future)
-        .catchError((_) => const SkipperProfile());
+    final l10n = await AppLocalizations.delegate.load(locale);
 
     final pdfBytes = await PdfExportService.buildDayPdfBytes(
       charter: charter,
@@ -90,15 +91,14 @@ class AutoExportService {
 
     // Gate at the write site, same lesson as bod 1/2 (docs/HANDOVER.md,
     // sync fixy 20. 7.): an outbox row must never be created while the
-    // feature is off, or it queues forever with nothing to send it.
-    // Awaits the provider's own future rather than `.valueOrNull` — this
-    // can run before syncSettingsProvider has ever resolved elsewhere in
-    // the app, and `.valueOrNull` would silently read as "disabled" during
-    // that race, dropping a real cloud-export-enabled day on the floor.
-    final cloudEnabled = (await ref.read(syncSettingsProvider.future)).cloudEnabled;
+    // feature is off, or it queues forever with nothing to send it. The
+    // caller is responsible for resolving `cloudEnabled` from a fully
+    // *resolved* settings read (e.g. `await ref.read(syncSettingsProvider
+    // .future)`), not a possibly-still-loading `.valueOrNull` — the latter
+    // races the settings provider's own initialization and can silently
+    // read as "disabled" even when the user has cloud export on.
     if (!cloudEnabled) return;
 
-    final engine = ref.read(syncEngineProvider);
     final dateStr = DateFormat('yyyy-MM-dd').format(day.date);
     final folder = ['HMB_Sailing_Log_DATA', charter.title, 'Day_$dateStr'];
 

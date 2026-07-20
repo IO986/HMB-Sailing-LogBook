@@ -177,19 +177,28 @@ implementácie (plán, §10) sú hotové a overené na Honore:**
 **Bod 4 — hotový, testy zelené (zatiaľ neoverené na Honore):**
 
 - Nový `lib/features/cloud/services/auto_export_service.dart` —
-  `AutoExportService.exportAndEnqueueDay({required Ref ref, required int
-  dayLogId, Uint8List? mapScreenshot})`. Znovupoužíva presne tie isté
-  buildery ako ručný export (`PdfExportService.buildDayPdfBytes`,
-  `GpxExporter.buildDayGpxBytes`) a rovnaké trvalé úložisko
-  (`ExportService.saveBytesLocally`, teraz public — predtým `_saveBytesLocally`,
-  premenované na znovupoužitie naprieč triedami) — auto-nahraný deň
-  vyzerá identicky ako ručne exportovaný.
+  `AutoExportService.exportAndEnqueueDay({required AppDatabase db, required
+  SyncEngine engine, required bool cloudEnabled, required Locale locale,
+  required SkipperProfile skipperProfile, required int dayLogId, Uint8List?
+  mapScreenshot})`. Znovupoužíva presne tie isté buildery ako ručný export
+  (`PdfExportService.buildDayPdfBytes`, `GpxExporter.buildDayGpxBytes`) a
+  rovnaké trvalé úložisko (`ExportService.saveBytesLocally`, teraz public —
+  predtým `_saveBytesLocally`, premenované na znovupoužitie naprieč
+  triedami) — auto-nahraný deň vyzerá identicky ako ručne exportovaný.
 - `mapScreenshot` sa **nezachytáva vnútri tejto triedy** — nemá
   `BuildContext`. Volajúci (bod 5, `handleStopTap`) odfotí mapu a bajty
   odovzdá dnu.
-- Gate na `settings.cloudEnabled` je teraz `await ref.read(syncSettingsProvider.future)`,
-  nie `.valueOrNull` — druhý spôsob počas testovania odhalil reálny race:
-  ak `syncSettingsProvider` v appke ešte nikdy nedobehol (headless volanie
+- **Berie hotové hodnoty, nie Riverpod `Ref`** — objavené pri zapájaní do
+  bodu 5: na verzii `flutter_riverpod` (2.6.1), ktorú appka používa, `Ref`
+  a `WidgetRef` sú **nesúvisiace typy** (nie je medzi nimi vzťah
+  podtyp/nadtyp). Pôvodný návrh s `required Ref ref` by sa nedal zavolať z
+  `handleStopTap`, ktoré má len `WidgetRef`. Volajúci si teda sám prečíta
+  všetko cez svoj vlastný `ref.read(...)` a pošle hotové hodnoty — čistejšie
+  aj ľahšie testovateľné (test už nepotrebuje `ProviderContainer`).
+- Gate na `cloudEnabled` sa počíta u volajúceho cez
+  `await ref.read(syncSettingsProvider.future)`, nie `.valueOrNull` —
+  druhý spôsob počas testovania odhalil reálny race: ak
+  `syncSettingsProvider` v appke ešte nikdy nedobehol (headless volanie
   skôr, než niečo iné prečíta nastavenia), `.valueOrNull` je `null` a
   `cloudEnabled ?? false` potichu vynechá enqueue aj keď má používateľ
   cloud export zapnutý. `await .future` čaká na skutočnú hodnotu.
@@ -202,9 +211,31 @@ implementácie (plán, §10) sú hotové a overené na Honore:**
   — `GpxExporter.buildDayGpxBytes` volá `DateFormat(..., 'sk')` a appka
   túto inicializáciu bežne robí v `main.dart`, testy nie automaticky.
 
-**Ďalší krok:** bod 5 z poradia — spúšťač na konci dňa v `handleStopTap`
-(zachytenie `dayLogId` pred `stopTracking()`, odfotenie mapy, volanie
-`AutoExportService`), potom ručné tlačidlo v exporte a check-out chartera.
+**Bod 5 — hotový (spúšťač na konci dňa), testy zelené, zatiaľ neoverené na
+Honore:**
+
+- `handleStopTap` (`tracking_control_dialogs.dart`): po potvrdení zachytí
+  `GpsTrackingService().activeDayLogId` **pred** `stopTracking()` (ktoré ho
+  nuluje), ukáže progress dialóg (`l.finishingDayExport`), odfotí mapu dňa
+  mimo stromu (`_captureDayMap` — načíta track pointy dňa cez
+  `db.getSessionsForDay`/`getTrackPointsForSession`, `captureFromWidget`
+  s `context:` a 2s `delay`), zastaví tracking, zavolá
+  `AutoExportService.exportAndEnqueueDay(...)`. Zlyhanie snímky (výnimka,
+  `context` už nemounted) nikdy nezastaví uloženie dňa — PDF sa spraví aj
+  bez mapy, používateľ dostane `pdfMapUnavailable` hlášku (nikdy potichu,
+  presne podľa plánu §3).
+- Cesta „Zastaviť a ukončiť" (`main_scaffold.dart`, appka sa hneď
+  ukončí): rovnaké zachytenie `dayLogId` pred `stopTracking()`, ale
+  **bez** snímky mapy (niet času na `captureFromWidget`) a volanie
+  `AutoExportService` sa **awaituje** pred `SystemNavigator.pop()` — je to
+  čisto lokálna práca (PDF/GPX zostavenie + zápis súboru + outbox insert,
+  žiadna sieť), takže musí dobehnúť skôr, než proces zomrie, inak by sa
+  deň stratil úplne, nielen neodoslal.
+- Nový l10n reťazec `finishingDayExport` (5 jazykov).
+
+**Ďalší krok:** bod 6 — ručné tlačidlo v `export_screen.dart` a check-out
+chartera (`handover_protocol_screen.dart`). Predtým treba na Honore reálne
+overiť celý reťazec bodov 3–5 (ukončenie dňa so zapnutým cloud exportom).
 
 ## Prostredie
 

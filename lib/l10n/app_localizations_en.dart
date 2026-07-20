@@ -182,6 +182,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stopTrackingDay => 'Stop tracking?';
 
   @override
+  String get finishingDayExport => 'Saving the day and preparing export...';
+
+  @override
   String get startVoyage => 'Start voyage';
 
   @override

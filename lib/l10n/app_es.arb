@@ -63,6 +63,7 @@
   "logbookBtn": "Diario",
   "stop": "Detener",
   "stopTrackingDay": "¿Detener el seguimiento?",
+  "finishingDayExport": "Guardando el día y preparando la exportación...",
   "startVoyage": "Iniciar travesía",
   "starting": "Iniciando...",
   "newVoyage": "Nueva travesía",

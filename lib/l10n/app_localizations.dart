@@ -428,6 +428,12 @@ abstract class AppLocalizations {
   /// **'Ukončiť tracking?'**
   String get stopTrackingDay;
 
+  /// No description provided for @finishingDayExport.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ukladám deň a pripravujem export...'**
+  String get finishingDayExport;
+
   /// No description provided for @startVoyage.
   ///
   /// In sk, this message translates to:

@@ -9,12 +9,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import 'tracking_control_bar.dart';
+import '../../core/models/skipper_profile.dart';
+import '../../core/providers/locale_provider.dart';
+import '../../core/providers/skipper_profile_provider.dart';
+import '../../core/providers/sync_provider.dart';
+import '../../core/providers/sync_settings_provider.dart';
 import '../../core/services/gps_tracking_service.dart';
 import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
 import '../../core/services/udp_receiver_service.dart';
 import '../../core/providers/raymarine_providers.dart';
+import '../../features/cloud/services/auto_export_service.dart';
 import '../../features/help/presentation/screens/user_guide_screen.dart';
+import '../../main.dart';
 import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -279,7 +286,31 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
           OutlinedButton.icon(
             onPressed: () async {
               Navigator.pop(ctx);
+              // Captured before stopTracking() nulls it (same trap as
+              // handleStopTap, docs/plan_cloud_export.md §5).
+              final dayLogId = GpsTrackingService().activeDayLogId;
               await ref.read(trackingNotifierProvider.notifier).stopTracking();
+              // No map screenshot here on purpose — this path kills the
+              // process right after, no BuildContext-driven off-tree
+              // capture can finish in time. The enqueue itself is awaited
+              // (it's local: PDF/GPX build + file write + outbox insert,
+              // no network) so the day isn't lost; only the upload is what
+              // waits for the next launch.
+              if (dayLogId != null) {
+                final cloudEnabled =
+                    (await ref.read(syncSettingsProvider.future)).cloudEnabled;
+                final skipperProfile = await ref
+                    .read(skipperProfileProvider.future)
+                    .catchError((_) => const SkipperProfile());
+                await AutoExportService().exportAndEnqueueDay(
+                  db: ref.read(databaseProvider),
+                  engine: ref.read(syncEngineProvider),
+                  cloudEnabled: cloudEnabled,
+                  locale: ref.read(localeProvider),
+                  skipperProfile: skipperProfile,
+                  dayLogId: dayLogId,
+                );
+              }
               SystemNavigator.pop(animated: true);
             },
             icon: const Icon(Icons.stop, color: Colors.red),

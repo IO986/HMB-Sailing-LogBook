@@ -398,7 +398,14 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
    čítať `.valueOrNull` — headless volanie môže bežať skôr, než nastavenia
    niekde inde v appke vôbec dobehnú, a `.valueOrNull` by v tom okne potichu
    čítal ako vypnuté (detaily `docs/HANDOVER.md`).
-5. Spúšťač na konci dňa v `handleStopTap`.
+5. **Hotové 20. 7., testy zelené (ešte neoverené na Honore).** Spúšťač na
+   konci dňa v `handleStopTap`, aj v núdzovej ceste „Zastaviť a ukončiť"
+   (`main_scaffold.dart`) — druhá bez snímky mapy, ale s awaitovaným
+   enqueue pred `SystemNavigator.pop()`. Poučenie: `AutoExportService`
+   napokon berie hotové hodnoty (`AppDatabase`, `SyncEngine`, `bool`,
+   `Locale`, `SkipperProfile`), nie Riverpod `Ref` — na `flutter_riverpod`
+   2.6.1 sú `Ref` a `WidgetRef` nesúvisiace typy, takže pôvodný návrh s
+   `Ref` by sa nedal zavolať z `handleStopTap` (má len `WidgetRef`).
 5. Ručné tlačidlo v exporte.
 6. Check-out chartera.
 7. Príručka v 5 jazykoch + `docs/SYNC_API.md` (nový typ `cloud_export`).

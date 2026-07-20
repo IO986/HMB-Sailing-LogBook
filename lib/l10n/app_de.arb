@@ -63,6 +63,7 @@
   "logbookBtn": "Logbuch",
   "stop": "Stoppen",
   "stopTrackingDay": "Tracking beenden?",
+  "finishingDayExport": "Tag wird gespeichert und Export vorbereitet...",
   "startVoyage": "Fahrt starten",
   "starting": "Starte...",
   "newVoyage": "Neue Fahrt",
