@@ -136,11 +136,13 @@ Použiteľné už existuje:
 - `GpxExporter.buildDayGpxBytes` (`lib/core/utils/gpx_exporter.dart`).
 - Poradie dotazov na dáta dňa odpozorovať z `export_service.dart:145-165`.
 
-Nový `lib/features/cloud/services/auto_export_service.dart`:
-`Future<void> exportAndEnqueueDay(int dayLogId)` — načíta charter, deň,
-záznamy, služby a sessions, vyrobí PDF aj GPX, uloží ich do **trvalého**
-adresára (`_buildExportDir`, nie do temp — súbor musí prežiť do ďalšieho
-spustenia appky) a zaradí do outboxu.
+**Hotové 20. 7.** `lib/features/cloud/services/auto_export_service.dart`:
+`Future<void> exportAndEnqueueDay({required Ref ref, required int dayLogId,
+Uint8List? mapScreenshot})` — načíta charter, deň, záznamy, služby a
+sessions, vyrobí PDF aj GPX, uloží ich do **trvalého** adresára cez
+`ExportService.saveBytesLocally` (predtým `_buildExportDir`/
+`_saveBytesLocally`, teraz public práve kvôli tomuto — nie do temp, súbor
+musí prežiť do ďalšieho spustenia appky) a zaradí do outboxu.
 
 **Mapa v PDF musí byť v oboch cestách.**
 
@@ -390,7 +392,12 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
    `tileProvider: CachingTileProvider(...)` aj na interaktívnej mape), a
    fade-in animácia dlaždíc nechávala visieť `AnimationController`y po
    `captureFromWidget` (opravené `TileDisplay.instantaneous()`).
-4. `AutoExportService` (PDF s mapou + GPX do trvalého adresára).
+4. **Hotové 20. 7., testy zelené (ešte neoverené na Honore).**
+   `AutoExportService` (PDF s mapou + GPX do trvalého adresára). Poučenie:
+   gate na `cloudEnabled` musí čakať na `syncSettingsProvider.future`, nie
+   čítať `.valueOrNull` — headless volanie môže bežať skôr, než nastavenia
+   niekde inde v appke vôbec dobehnú, a `.valueOrNull` by v tom okne potichu
+   čítal ako vypnuté (detaily `docs/HANDOVER.md`).
 5. Spúšťač na konci dňa v `handleStopTap`.
 5. Ručné tlačidlo v exporte.
 6. Check-out chartera.

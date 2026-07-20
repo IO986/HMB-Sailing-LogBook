@@ -230,7 +230,7 @@ class ExportService {
       final dateStr = '${day.date.day}.${day.date.month}.${day.date.year}';
       final docName = '${charter.title} $dateStr';
 
-      final pdfFile = await _saveBytesLocally(pdfBytes, docName, 'pdf',
+      final pdfFile = await saveBytesLocally(pdfBytes, docName, 'pdf',
           charterTitle: charter.title, dayDate: day.date);
       final shareFiles = <XFile>[XFile(pdfFile.path)];
 
@@ -292,7 +292,7 @@ class ExportService {
     }
 
     try {
-      final pdfFile = await _saveBytesLocally(pdfBytes, charter.title, 'pdf',
+      final pdfFile = await saveBytesLocally(pdfBytes, charter.title, 'pdf',
           charterTitle: charter.title);
       final shareFiles = <XFile>[XFile(pdfFile.path)];
 
@@ -355,8 +355,12 @@ class ExportService {
     return dir;
   }
 
-  /// Uloží bajty priamo do štruktúrovaného priečinka.
-  Future<File> _saveBytesLocally(Uint8List bytes, String docName, String ext,
+  /// Uloží bajty priamo do štruktúrovaného priečinka
+  /// (`HMB_LOGBOOK/Sail_Logs/{plavba}/Day_{dátum}`, pretrváva reštart appky).
+  /// Public — znovupoužíva ho aj `AutoExportService`
+  /// (`lib/features/cloud/services/auto_export_service.dart`), aby headless
+  /// export ukladal do rovnakej štruktúry ako ručný export.
+  Future<File> saveBytesLocally(Uint8List bytes, String docName, String ext,
       {String? charterTitle, DateTime? dayDate}) async {
     final dir = await _buildExportDir(charterTitle ?? docName, dayDate);
     final safe = docName

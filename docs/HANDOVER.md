@@ -174,8 +174,37 @@ implementácie (plán, §10) sú hotové a overené na Honore:**
   (žiadna sieť) — `DayMapView` preto dostal injektovateľný
   `tileProviderBuilder` parameter (default `CachingTileProvider.new`).
 
-**Ďalší krok:** bod 4 z poradia — `AutoExportService` (PDF s mapou + GPX do
-trvalého adresára).
+**Bod 4 — hotový, testy zelené (zatiaľ neoverené na Honore):**
+
+- Nový `lib/features/cloud/services/auto_export_service.dart` —
+  `AutoExportService.exportAndEnqueueDay({required Ref ref, required int
+  dayLogId, Uint8List? mapScreenshot})`. Znovupoužíva presne tie isté
+  buildery ako ručný export (`PdfExportService.buildDayPdfBytes`,
+  `GpxExporter.buildDayGpxBytes`) a rovnaké trvalé úložisko
+  (`ExportService.saveBytesLocally`, teraz public — predtým `_saveBytesLocally`,
+  premenované na znovupoužitie naprieč triedami) — auto-nahraný deň
+  vyzerá identicky ako ručne exportovaný.
+- `mapScreenshot` sa **nezachytáva vnútri tejto triedy** — nemá
+  `BuildContext`. Volajúci (bod 5, `handleStopTap`) odfotí mapu a bajty
+  odovzdá dnu.
+- Gate na `settings.cloudEnabled` je teraz `await ref.read(syncSettingsProvider.future)`,
+  nie `.valueOrNull` — druhý spôsob počas testovania odhalil reálny race:
+  ak `syncSettingsProvider` v appke ešte nikdy nedobehol (headless volanie
+  skôr, než niečo iné prečíta nastavenia), `.valueOrNull` je `null` a
+  `cloudEnabled ?? false` potichu vynechá enqueue aj keď má používateľ
+  cloud export zapnutý. `await .future` čaká na skutočnú hodnotu.
+- Test `test/cloud/auto_export_service_test.dart` — `flutter test` nemá
+  platform channel pre `path_provider`; namiesto vynechania testovania
+  (ako `test/services/backup_service_test.dart` robí pre `BackupService`)
+  sa tu nastavil `PathProviderPlatform.instance` na fake ukazujúci na
+  dočasný adresár, keďže "ukladá sa na trvalé miesto" je práve to hlavné,
+  čo bod 4 má overiť. Potreboval aj `initializeDateFormatting('sk', null)`
+  — `GpxExporter.buildDayGpxBytes` volá `DateFormat(..., 'sk')` a appka
+  túto inicializáciu bežne robí v `main.dart`, testy nie automaticky.
+
+**Ďalší krok:** bod 5 z poradia — spúšťač na konci dňa v `handleStopTap`
+(zachytenie `dayLogId` pred `stopTracking()`, odfotenie mapy, volanie
+`AutoExportService`), potom ručné tlačidlo v exporte a check-out chartera.
 
 ## Prostredie
 
