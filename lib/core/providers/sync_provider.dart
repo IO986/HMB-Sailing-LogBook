@@ -2,9 +2,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
+import '../../features/cloud/providers/cloud_provider.dart';
 import '../../main.dart';
+import '../../sync/cloud_upload_transport.dart';
 import '../../sync/drift_outbox_record_store.dart';
 import '../../sync/rest_transport.dart';
+import '../../sync/routing_transport.dart';
 import '../../sync/strapi_transport.dart';
 import '../../sync/sync_entity_types.dart';
 import '../../sync/sync_policy_transport.dart';
@@ -89,17 +92,23 @@ SyncTransport _buildBaseTransport(
   }
 }
 
-/// The transport actually used for a sync cycle: picked per
-/// [SyncSettings.target] and wrapped with the enabled/attachment-policy
-/// gates hmb_core doesn't know about. Rebuilds whenever settings change;
-/// the custom token itself is re-read fresh on every push (via `ref.read`
-/// in the closure below), not baked in at construction, so saving/clearing
-/// it doesn't require rebuilding this provider.
+/// The transport actually used for a sync cycle: routes between the
+/// existing backend branch and the cloud-export branch, per
+/// `docs/plan_cloud_export.md` §1. Each branch gets its **own**
+/// `SyncPolicyTransport` instance — a shared one would mean disabling
+/// backend sync also silently stops Drive uploads (see the doc for why).
+/// `attachmentPolicy`/`isOnWifi` are shared on purpose: the Wi-Fi-only
+/// attachment rule is about the device's connection, not which backend.
+///
+/// Rebuilds whenever settings change; the custom token itself is re-read
+/// fresh on every push (via `ref.read` in the closure below), not baked in
+/// at construction, so saving/clearing it doesn't require rebuilding this
+/// provider.
 final syncTransportProvider = Provider<SyncTransport>((ref) {
   final settings = ref.watch(syncSettingsProvider).valueOrNull ?? const SyncSettings();
   final appVersion = ref.watch(appVersionProvider);
 
-  return SyncPolicyTransport(
+  final backendTransport = SyncPolicyTransport(
     inner: _buildBaseTransport(
       settings,
       appVersion,
@@ -109,6 +118,15 @@ final syncTransportProvider = Provider<SyncTransport>((ref) {
     attachmentPolicy: () => settings.attachmentPolicy,
     isOnWifi: _isOnWifi,
   );
+
+  final cloudTransport = SyncPolicyTransport(
+    inner: CloudUploadTransport(provider: ref.watch(cloudStorageProviderProvider)),
+    isSyncEnabled: () => settings.cloudEnabled,
+    attachmentPolicy: () => settings.attachmentPolicy,
+    isOnWifi: _isOnWifi,
+  );
+
+  return RoutingTransport(cloudTransport: cloudTransport, defaultTransport: backendTransport);
 });
 
 final syncEngineProvider = Provider<SyncEngine>((ref) {
@@ -121,7 +139,12 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
   );
   // No background/foreground service, no WorkManager — this timer only
   // runs while the app process is alive, by design (see docs/SYNC_API.md).
-  if (settings.enabled) engine.start();
+  // Either toggle starts it: the periodic timer/connectivity listener just
+  // drive `syncNow()`, and RoutingTransport + each branch's own
+  // SyncPolicyTransport decide per-branch whether anything actually gets
+  // attempted — gating `start()` on `enabled` alone would leave cloud
+  // export never running automatically while backend sync is off.
+  if (settings.enabled || settings.cloudEnabled) engine.start();
   ref.onDispose(engine.dispose);
 
   // GpsTrackingService is a plain singleton outside Riverpod (no `ref` of

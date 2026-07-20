@@ -5185,6 +5185,60 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Nič na doplnenie — všetko je už vo fronte alebo odoslané'**
   String get syncBackfillNone;
+
+  /// No description provided for @syncCloudEnableToggle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cloud export (Google Drive)'**
+  String get syncCloudEnableToggle;
+
+  /// No description provided for @syncCloudEnableToggleDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prihlásenie a test nahrávania na Google Drive — automatické nahrávanie PDF a GPX pribudne neskôr'**
+  String get syncCloudEnableToggleDesc;
+
+  /// No description provided for @syncCloudSignInAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prihlásiť Google účet'**
+  String get syncCloudSignInAction;
+
+  /// No description provided for @syncCloudSignOutAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odhlásiť'**
+  String get syncCloudSignOutAction;
+
+  /// No description provided for @syncCloudSignedInAs.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prihlásený ako {email}'**
+  String syncCloudSignedInAs(String email);
+
+  /// No description provided for @syncCloudNotSignedIn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neprihlásený'**
+  String get syncCloudNotSignedIn;
+
+  /// No description provided for @syncCloudTestUploadAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Test nahrávania'**
+  String get syncCloudTestUploadAction;
+
+  /// No description provided for @syncCloudTestUploadSuccess.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nahraté (id: {fileId})'**
+  String syncCloudTestUploadSuccess(String fileId);
+
+  /// No description provided for @syncCloudTestUploadFailure.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zlyhalo: {detail}'**
+  String syncCloudTestUploadFailure(String detail);
 }
 
 class _AppLocalizationsDelegate

@@ -7,6 +7,12 @@ class SyncEntityType {
   static const instrumentSample = 'instrument_sample';
   static const photo = 'photo';
   static const vessel = 'vessel';
+
+  /// PDF/GPX day exports uploaded to a [CloudStorageProvider] — a purely
+  /// app-level type, never seen by `hmb_core` or `StrapiTransport`/
+  /// `RestTransport`. `RoutingTransport` routes this one to the cloud
+  /// branch, everything else to the existing backend transport.
+  static const cloudExport = 'cloud_export';
 }
 
 /// Default Strapi collection name per `entityType`, for

@@ -924,5 +924,17 @@
   "syncBackfillDesc": "Додає до черги записи, створені, поки синхронізацію було вимкнено",
   "syncBackfillResult": "Додано до черги: {n}",
   "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
-  "syncBackfillNone": "Немає чого додавати — усе вже в черзі або надіслано"
+  "syncBackfillNone": "Немає чого додавати — усе вже в черзі або надіслано",
+  "syncCloudEnableToggle": "Хмарний експорт (Google Drive)",
+  "syncCloudEnableToggleDesc": "Вхід і тестове завантаження на Google Drive — автоматичне завантаження PDF/GPX з'явиться пізніше",
+  "syncCloudSignInAction": "Увійти через Google",
+  "syncCloudSignOutAction": "Вийти",
+  "syncCloudSignedInAs": "Увійшли як {email}",
+  "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
+  "syncCloudNotSignedIn": "Не увійшли",
+  "syncCloudTestUploadAction": "Тестове завантаження",
+  "syncCloudTestUploadSuccess": "Завантажено (id: {fileId})",
+  "@syncCloudTestUploadSuccess": { "placeholders": { "fileId": { "type": "String" } } },
+  "syncCloudTestUploadFailure": "Помилка: {detail}",
+  "@syncCloudTestUploadFailure": { "placeholders": { "detail": { "type": "String" } } }
 }

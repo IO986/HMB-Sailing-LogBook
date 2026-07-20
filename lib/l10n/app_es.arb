@@ -924,5 +924,17 @@
   "syncBackfillDesc": "Añade a la cola las entradas creadas mientras la sincronización estaba desactivada",
   "syncBackfillResult": "{n} encoladas",
   "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
-  "syncBackfillNone": "Nada que encolar — todo ya está en cola o enviado"
+  "syncBackfillNone": "Nada que encolar — todo ya está en cola o enviado",
+  "syncCloudEnableToggle": "Exportación a la nube (Google Drive)",
+  "syncCloudEnableToggleDesc": "Iniciar sesión y subida de prueba a Google Drive — la subida automática de PDF/GPX llegará más adelante",
+  "syncCloudSignInAction": "Iniciar sesión con Google",
+  "syncCloudSignOutAction": "Cerrar sesión",
+  "syncCloudSignedInAs": "Sesión iniciada como {email}",
+  "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
+  "syncCloudNotSignedIn": "Sesión no iniciada",
+  "syncCloudTestUploadAction": "Subida de prueba",
+  "syncCloudTestUploadSuccess": "Subido (id: {fileId})",
+  "@syncCloudTestUploadSuccess": { "placeholders": { "fileId": { "type": "String" } } },
+  "syncCloudTestUploadFailure": "Fallo: {detail}",
+  "@syncCloudTestUploadFailure": { "placeholders": { "detail": { "type": "String" } } }
 }

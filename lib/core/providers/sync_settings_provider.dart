@@ -15,6 +15,8 @@ const _kTarget = 'sync_target';
 const _kCustomUrl = 'sync_custom_url';
 const _kIntervalMinutes = 'sync_interval_minutes';
 const _kAttachmentPolicy = 'sync_attachment_policy';
+const _kCloudEnabled = 'sync_cloud_enabled';
+const _kCloudProvider = 'sync_cloud_provider';
 
 // Custom-server token — secure storage only, never SharedPreferences,
 // never logged.
@@ -43,6 +45,11 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
         (p) => p.name == prefs.getString(_kAttachmentPolicy),
         orElse: () => AttachmentSyncPolicy.wifiOnly,
       ),
+      cloudEnabled: prefs.getBool(_kCloudEnabled) ?? false,
+      cloudProvider: CloudProvider.values.firstWhere(
+        (p) => p.name == prefs.getString(_kCloudProvider),
+        orElse: () => CloudProvider.googleDrive,
+      ),
     );
   }
 
@@ -53,6 +60,8 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
     await prefs.setString(_kCustomUrl, settings.customUrl);
     await prefs.setInt(_kIntervalMinutes, settings.intervalMinutes);
     await prefs.setString(_kAttachmentPolicy, settings.attachmentPolicy.name);
+    await prefs.setBool(_kCloudEnabled, settings.cloudEnabled);
+    await prefs.setString(_kCloudProvider, settings.cloudProvider.name);
     state = AsyncData(settings);
   }
 
@@ -79,6 +88,16 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
   Future<void> setAttachmentPolicy(AttachmentSyncPolicy policy) async {
     final current = state.valueOrNull ?? const SyncSettings();
     await _persist(current.copyWith(attachmentPolicy: policy));
+  }
+
+  Future<void> setCloudEnabled(bool value) async {
+    final current = state.valueOrNull ?? const SyncSettings();
+    await _persist(current.copyWith(cloudEnabled: value));
+  }
+
+  Future<void> setCloudProvider(CloudProvider provider) async {
+    final current = state.valueOrNull ?? const SyncSettings();
+    await _persist(current.copyWith(cloudProvider: provider));
   }
 }
 

@@ -2705,4 +2705,38 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get syncBackfillNone =>
       'Nič na doplnenie — všetko je už vo fronte alebo odoslané';
+
+  @override
+  String get syncCloudEnableToggle => 'Cloud export (Google Drive)';
+
+  @override
+  String get syncCloudEnableToggleDesc =>
+      'Prihlásenie a test nahrávania na Google Drive — automatické nahrávanie PDF a GPX pribudne neskôr';
+
+  @override
+  String get syncCloudSignInAction => 'Prihlásiť Google účet';
+
+  @override
+  String get syncCloudSignOutAction => 'Odhlásiť';
+
+  @override
+  String syncCloudSignedInAs(String email) {
+    return 'Prihlásený ako $email';
+  }
+
+  @override
+  String get syncCloudNotSignedIn => 'Neprihlásený';
+
+  @override
+  String get syncCloudTestUploadAction => 'Test nahrávania';
+
+  @override
+  String syncCloudTestUploadSuccess(String fileId) {
+    return 'Nahraté (id: $fileId)';
+  }
+
+  @override
+  String syncCloudTestUploadFailure(String detail) {
+    return 'Zlyhalo: $detail';
+  }
 }

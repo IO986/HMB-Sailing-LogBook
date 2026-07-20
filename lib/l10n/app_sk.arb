@@ -924,5 +924,17 @@
   "syncBackfillDesc": "Zaradí do fronty záznamy zapísané, kým bola synchronizácia vypnutá",
   "syncBackfillResult": "{n} doplnených do fronty",
   "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
-  "syncBackfillNone": "Nič na doplnenie — všetko je už vo fronte alebo odoslané"
+  "syncBackfillNone": "Nič na doplnenie — všetko je už vo fronte alebo odoslané",
+  "syncCloudEnableToggle": "Cloud export (Google Drive)",
+  "syncCloudEnableToggleDesc": "Prihlásenie a test nahrávania na Google Drive — automatické nahrávanie PDF a GPX pribudne neskôr",
+  "syncCloudSignInAction": "Prihlásiť Google účet",
+  "syncCloudSignOutAction": "Odhlásiť",
+  "syncCloudSignedInAs": "Prihlásený ako {email}",
+  "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
+  "syncCloudNotSignedIn": "Neprihlásený",
+  "syncCloudTestUploadAction": "Test nahrávania",
+  "syncCloudTestUploadSuccess": "Nahraté (id: {fileId})",
+  "@syncCloudTestUploadSuccess": { "placeholders": { "fileId": { "type": "String" } } },
+  "syncCloudTestUploadFailure": "Zlyhalo: {detail}",
+  "@syncCloudTestUploadFailure": { "placeholders": { "detail": { "type": "String" } } }
 }

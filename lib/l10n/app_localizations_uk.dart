@@ -2710,4 +2710,38 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get syncBackfillNone =>
       'Немає чого додавати — усе вже в черзі або надіслано';
+
+  @override
+  String get syncCloudEnableToggle => 'Хмарний експорт (Google Drive)';
+
+  @override
+  String get syncCloudEnableToggleDesc =>
+      'Вхід і тестове завантаження на Google Drive — автоматичне завантаження PDF/GPX з\'явиться пізніше';
+
+  @override
+  String get syncCloudSignInAction => 'Увійти через Google';
+
+  @override
+  String get syncCloudSignOutAction => 'Вийти';
+
+  @override
+  String syncCloudSignedInAs(String email) {
+    return 'Увійшли як $email';
+  }
+
+  @override
+  String get syncCloudNotSignedIn => 'Не увійшли';
+
+  @override
+  String get syncCloudTestUploadAction => 'Тестове завантаження';
+
+  @override
+  String syncCloudTestUploadSuccess(String fileId) {
+    return 'Завантажено (id: $fileId)';
+  }
+
+  @override
+  String syncCloudTestUploadFailure(String detail) {
+    return 'Помилка: $detail';
+  }
 }

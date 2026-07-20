@@ -2722,4 +2722,38 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get syncBackfillNone =>
       'Nichts nachzutragen — alles ist bereits in der Warteschlange oder gesendet';
+
+  @override
+  String get syncCloudEnableToggle => 'Cloud-Export (Google Drive)';
+
+  @override
+  String get syncCloudEnableToggleDesc =>
+      'Anmelden und Test-Upload zu Google Drive — automatischer PDF/GPX-Upload folgt später';
+
+  @override
+  String get syncCloudSignInAction => 'Mit Google anmelden';
+
+  @override
+  String get syncCloudSignOutAction => 'Abmelden';
+
+  @override
+  String syncCloudSignedInAs(String email) {
+    return 'Angemeldet als $email';
+  }
+
+  @override
+  String get syncCloudNotSignedIn => 'Nicht angemeldet';
+
+  @override
+  String get syncCloudTestUploadAction => 'Test-Upload';
+
+  @override
+  String syncCloudTestUploadSuccess(String fileId) {
+    return 'Hochgeladen (ID: $fileId)';
+  }
+
+  @override
+  String syncCloudTestUploadFailure(String detail) {
+    return 'Fehlgeschlagen: $detail';
+  }
 }

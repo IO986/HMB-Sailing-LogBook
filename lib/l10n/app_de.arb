@@ -924,5 +924,17 @@
   "syncBackfillDesc": "Nimmt Einträge, die bei ausgeschalteter Synchronisierung entstanden sind, in die Warteschlange auf",
   "syncBackfillResult": "{n} nachgetragen",
   "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
-  "syncBackfillNone": "Nichts nachzutragen — alles ist bereits in der Warteschlange oder gesendet"
+  "syncBackfillNone": "Nichts nachzutragen — alles ist bereits in der Warteschlange oder gesendet",
+  "syncCloudEnableToggle": "Cloud-Export (Google Drive)",
+  "syncCloudEnableToggleDesc": "Anmelden und Test-Upload zu Google Drive — automatischer PDF/GPX-Upload folgt später",
+  "syncCloudSignInAction": "Mit Google anmelden",
+  "syncCloudSignOutAction": "Abmelden",
+  "syncCloudSignedInAs": "Angemeldet als {email}",
+  "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
+  "syncCloudNotSignedIn": "Nicht angemeldet",
+  "syncCloudTestUploadAction": "Test-Upload",
+  "syncCloudTestUploadSuccess": "Hochgeladen (ID: {fileId})",
+  "@syncCloudTestUploadSuccess": { "placeholders": { "fileId": { "type": "String" } } },
+  "syncCloudTestUploadFailure": "Fehlgeschlagen: {detail}",
+  "@syncCloudTestUploadFailure": { "placeholders": { "detail": { "type": "String" } } }
 }

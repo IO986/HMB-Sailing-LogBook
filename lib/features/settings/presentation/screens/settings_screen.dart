@@ -15,7 +15,10 @@ import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
+import '../../../../features/cloud/domain/cloud_storage_provider.dart';
+import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../../core/services/account_service.dart';
 import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -644,6 +647,28 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
 
   bool _backfilling = false;
 
+  CloudAccount? _cloudAccount;
+  bool _cloudBusy = false;
+  bool? _cloudTestSuccess; // null = not tested yet
+  String? _cloudTestDetail;
+  bool _cloudAccountChecked = false;
+
+  /// Only runs once `cloudEnabled` is actually on — even the "silent"
+  /// restore call initializes `GoogleSignIn`/Credential Manager, which can
+  /// surface an account-picker sheet on some Android versions. Checking
+  /// unconditionally on every Settings screen open (regardless of whether
+  /// the user has ever touched the cloud toggle) showed exactly that prompt
+  /// with no user action behind it.
+  void _maybeCheckCloudAccount(bool cloudEnabled) {
+    if (!cloudEnabled || _cloudAccountChecked) return;
+    _cloudAccountChecked = true;
+    ref.read(cloudStorageProviderProvider).currentAccount.then((account) {
+      if (mounted) setState(() => _cloudAccount = account);
+    }).catchError((Object e) {
+      debugPrint('[Cloud] currentAccount check failed: $e');
+    });
+  }
+
   @override
   void dispose() {
     _urlCtrl.dispose();
@@ -684,6 +709,7 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       error: (e, _) => Card(child: ListTile(title: Text('$e'))),
       data: (settings) {
         _initFieldsOnce(settings, tokenAsync.valueOrNull);
+        _maybeCheckCloudAccount(settings.cloudEnabled);
         final isCustom = settings.target == SyncTarget.custom;
 
         return Card(
@@ -859,6 +885,77 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                   ),
                   const Divider(height: 24),
                 ],
+                // Cloud export is independent of the backend sync toggle
+                // above — its own `SyncPolicyTransport` on the eventual
+                // upload branch, per docs/plan_cloud_export.md §1 — so this
+                // stays visible (and usable) regardless of `settings.enabled`.
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  secondary: const Icon(Icons.cloud_upload_outlined),
+                  title: Text(l.syncCloudEnableToggle),
+                  subtitle: Text(l.syncCloudEnableToggleDesc),
+                  value: settings.cloudEnabled,
+                  onChanged: (v) =>
+                      ref.read(syncSettingsProvider.notifier).setCloudEnabled(v),
+                ),
+                if (settings.cloudEnabled) ...[
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.account_circle_outlined),
+                    title: Text(_cloudAccount != null
+                        ? l.syncCloudSignedInAs(_cloudAccount!.email)
+                        : l.syncCloudNotSignedIn),
+                    trailing: TextButton(
+                      onPressed: _cloudBusy
+                          ? null
+                          : (_cloudAccount == null ? _signInCloud : _signOutCloud),
+                      child: Text(_cloudAccount == null
+                          ? l.syncCloudSignInAction
+                          : l.syncCloudSignOutAction),
+                    ),
+                  ),
+                  if (_cloudAccount != null) ...[
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        icon: _cloudBusy
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.cloud_upload),
+                        label: Text(l.syncCloudTestUploadAction),
+                        onPressed: _cloudBusy ? null : () => _testCloudUpload(l),
+                      ),
+                    ),
+                    if (_cloudTestSuccess != null) ...[
+                      const SizedBox(height: 8),
+                      Row(children: [
+                        Icon(
+                          _cloudTestSuccess! ? Icons.check_circle : Icons.error,
+                          color: _cloudTestSuccess! ? Colors.green : Colors.red,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            _cloudTestSuccess!
+                                ? l.syncCloudTestUploadSuccess(_cloudTestDetail ?? '')
+                                : l.syncCloudTestUploadFailure(_cloudTestDetail ?? ''),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: _cloudTestSuccess!
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ],
+                  ],
+                  const Divider(height: 24),
+                ],
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.sync),
@@ -944,6 +1041,76 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(count == 0 ? l.syncBackfillNone : l.syncBackfillResult(count)),
     ));
+  }
+
+  Future<void> _signInCloud() async {
+    setState(() => _cloudBusy = true);
+    try {
+      final account = await ref.read(cloudStorageProviderProvider).signIn();
+      if (!mounted) return;
+      setState(() {
+        _cloudBusy = false;
+        if (account != null) _cloudAccount = account;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _cloudBusy = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Sign-in failed: $e')));
+    }
+  }
+
+  Future<void> _signOutCloud() async {
+    setState(() => _cloudBusy = true);
+    try {
+      await ref.read(cloudStorageProviderProvider).signOut();
+      if (!mounted) return;
+      setState(() {
+        _cloudBusy = false;
+        _cloudAccount = null;
+        _cloudTestSuccess = null;
+        _cloudTestDetail = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _cloudBusy = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Sign-out failed: $e')));
+    }
+  }
+
+  Future<void> _testCloudUpload(AppLocalizations l) async {
+    setState(() {
+      _cloudBusy = true;
+      _cloudTestSuccess = null;
+      _cloudTestDetail = null;
+    });
+    try {
+      final dir = await getTemporaryDirectory();
+      final now = DateTime.now();
+      final file = File('${dir.path}/hmb_cloud_test_${now.millisecondsSinceEpoch}.txt');
+      await file.writeAsString('HMB Sailing Log — test upload $now');
+      final fileId = await ref.read(cloudStorageProviderProvider).upload(
+            file: file,
+            fileName: 'test_upload_${now.millisecondsSinceEpoch}.txt',
+            folderPath: const ['HMB_Sailing_Log_DATA'],
+            mimeType: 'text/plain',
+          );
+      await file.delete();
+      if (!mounted) return;
+      setState(() {
+        _cloudBusy = false;
+        _cloudTestSuccess = true;
+        _cloudTestDetail = fileId;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _cloudBusy = false;
+        _cloudTestSuccess = false;
+        _cloudTestDetail = e.toString();
+      });
+    }
   }
 }
 

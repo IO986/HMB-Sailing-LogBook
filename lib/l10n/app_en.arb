@@ -924,5 +924,17 @@
   "syncBackfillDesc": "Adds entries created while sync was off to the upload queue",
   "syncBackfillResult": "{n} queued",
   "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
-  "syncBackfillNone": "Nothing to queue — everything is already queued or sent"
+  "syncBackfillNone": "Nothing to queue — everything is already queued or sent",
+  "syncCloudEnableToggle": "Cloud export (Google Drive)",
+  "syncCloudEnableToggleDesc": "Sign in and test upload to Google Drive — automatic PDF/GPX upload is coming later",
+  "syncCloudSignInAction": "Sign in with Google",
+  "syncCloudSignOutAction": "Sign out",
+  "syncCloudSignedInAs": "Signed in as {email}",
+  "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
+  "syncCloudNotSignedIn": "Not signed in",
+  "syncCloudTestUploadAction": "Test upload",
+  "syncCloudTestUploadSuccess": "Uploaded (id: {fileId})",
+  "@syncCloudTestUploadSuccess": { "placeholders": { "fileId": { "type": "String" } } },
+  "syncCloudTestUploadFailure": "Failed: {detail}",
+  "@syncCloudTestUploadFailure": { "placeholders": { "detail": { "type": "String" } } }
 }

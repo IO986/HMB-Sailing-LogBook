@@ -2703,4 +2703,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncBackfillNone =>
       'Nothing to queue — everything is already queued or sent';
+
+  @override
+  String get syncCloudEnableToggle => 'Cloud export (Google Drive)';
+
+  @override
+  String get syncCloudEnableToggleDesc =>
+      'Sign in and test upload to Google Drive — automatic PDF/GPX upload is coming later';
+
+  @override
+  String get syncCloudSignInAction => 'Sign in with Google';
+
+  @override
+  String get syncCloudSignOutAction => 'Sign out';
+
+  @override
+  String syncCloudSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get syncCloudNotSignedIn => 'Not signed in';
+
+  @override
+  String get syncCloudTestUploadAction => 'Test upload';
+
+  @override
+  String syncCloudTestUploadSuccess(String fileId) {
+    return 'Uploaded (id: $fileId)';
+  }
+
+  @override
+  String syncCloudTestUploadFailure(String detail) {
+    return 'Failed: $detail';
+  }
 }

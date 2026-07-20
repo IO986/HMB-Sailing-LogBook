@@ -61,6 +61,17 @@ príslušnú vetvu a spojí výsledky (engine ich páruje cez `itemId`, nie pora
 perzistenciu, backoff aj reakciu na obnovenie spojenia. Druhý by to
 duplikoval.
 
+**Poučenie z implementácie bodu 2 (20. 7.):** `CloudUploadTransport` sa pred
+pokusom o upload nesmie pýtať SDK, či je používateľ prihlásený —
+`attemptLightweightAuthentication()`/`currentAccount` na tomto zariadení
+vie ukázať account picker, aj keď je volaný "ticho". Keďže periodický sync
+tick beží na pozadí bez priamej akcie používateľa, takéto volanie by mohlo
+vyvolať Google dialóg mimo kontextu. Transport preto gate-uje na
+`CloudStorageProvider.isSignedInNow` — čisto in-memory príznak, nikdy
+nevolá platformové SDK — a keď je `false`, vráti `deferred` bez pokusu.
+Skutočné (opätovné) prihlásenie sa smie diať len z priamej akcie
+používateľa (tlačidlo v nastaveniach), nikdy z pozadia.
+
 ---
 
 ## 2. Rozhranie úložiska
@@ -77,7 +88,7 @@ abstract class CloudStorageProvider {
   Future<CloudAccount?> signIn();   // null = používateľ zrušil
   Future<void> signOut();
 
-  /// Nahrá súbor do [folderPath] (napr. ['HMB Sailing Log', 'Plavba 2026']).
+  /// Nahrá súbor do [folderPath] (napr. ['HMB_Sailing_Log_DATA', 'Plavba 2026']).
   /// Vracia identifikátor súboru v úložisku.
   Future<String> upload({
     required File file,
@@ -109,7 +120,7 @@ než Proton.
 
 Priečinky sa pri `drive.file` dajú vytvárať a appka ich potom vidí (sú jej
 vlastné). Štruktúra zrkadlí lokálnu z `export_service.dart:335-356`:
-`HMB Sailing Log / {nazov_plavby} / Day_{yyyy-MM-dd}`.
+`HMB_Sailing_Log_DATA / {nazov_plavby} / Day_{yyyy-MM-dd}`.
 
 ---
 
@@ -258,6 +269,7 @@ skôr než bod 1.
 | SHA-1 debug | `3C:4B:92:57:48:2C:20:9A:8B:D5:05:8C:A8:4D:BB:A5:97:CB:AE:6C` — **per-stroj**, z `~/.android/debug.keystore`; na inom počítači pretiahni znova cez `keytool -list -v -keystore ... -alias androiddebugkey -storepass android -keypass android` |
 | SHA-1 upload | `01:0C:5E:8C:F7:18:BC:C5:E4:20:C1:8B:FC:5E:36:B8:BF:8F:41:2F` |
 | SHA-1 Play App Signing | `90:49:70:2B:1F:F1:54:E6:99:D0:06:29:DE:A4:BF:50:5B:DA:4D:E3` |
+| Web client ID (`serverClientId`, bod 8) | `67335624649-fpmgdt6cae47i6i8qq5ll6upvaivnofa.apps.googleusercontent.com` |
 
 Pozor: `namespace` v Gradle je `com.sailinglogbook.app`, ale pre OAuth
 rozhoduje **`applicationId`**, teda `com.hmbsailinglogbook.app`
@@ -298,6 +310,17 @@ rozhoduje **`applicationId`**, teda `com.hmbsailinglogbook.app`
    v OAuth consent screen (bod 3) sú dve nesúvisiace veci s rovnakým názvom.
 7. Android client ID sa **nedáva do kódu** ani do `google-services.json`;
    `google_sign_in` ho na Androide páruje cez podpis a package name.
+8. **Objavené až pri implementácii bodu 1 z §10, pôvodne tu chýbalo:**
+   `google_sign_in` 7.x (aktuálna major verzia, viď §8 nižšie) vyžaduje na
+   Androide `serverClientId`, ak appka nepoužíva `google-services.json`/
+   Firebase — inak `GoogleSignIn.instance.initialize()`/`authenticate()`
+   zlyhá **potichu** (žiadna chybová hláška, tlačidlo len ostane vyšednuté).
+   Credentials → Create credentials → OAuth client ID → **Web application**
+   (redirect URI nechať prázdne). Vzniknutý Client ID (nie Secret — ten sa
+   pri tomto flow nepoužíva vôbec, appka nemá backend) ide priamo do kódu
+   ako `kGoogleWebClientId` v `lib/core/config/api_constants.dart` — na
+   rozdiel od Android clientov to **nie je** tajná hodnota (rovnaká logika
+   ako Firebase `default_web_client_id`).
 
 **Neskôr, pred publikovaním:** Play Console → Data safety doplniť, že appka
 pristupuje k súborom používateľa a nahráva ich na jeho Disk.
@@ -343,10 +366,11 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
 
 ## 10. Poradie
 
-1. `CloudStorageProvider` + `GoogleDriveStorage` + prihlásenie v sync karte.
-   Overiť, že sa dá prihlásiť a nahrať testovací súbor.
-2. `CloudUploadTransport` + `RoutingTransport` + zapojenie do
-   `sync_provider.dart`, s testami.
+1. **Hotové 20. 7., overené na Honore.** `CloudStorageProvider` +
+   `GoogleDriveStorage` + prihlásenie v sync karte. Overiť, že sa dá
+   prihlásiť a nahrať testovací súbor.
+2. **Hotové 20. 7., overené na Honore.** `CloudUploadTransport` +
+   `RoutingTransport` + zapojenie do `sync_provider.dart`, s testami.
 3. Vytiahnuť mapu dňa do `day_map_view.dart` a overiť `captureFromWidget`
    **na Honore** — či snímka mimo stromu naozaj obsahuje dlaždice.
    Toto je najrizikovejší kus; kým nezbehne, body 4 a 5 nemajú zmysel.
@@ -364,6 +388,6 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
 - `flutter test` — celá sada zelená (dnes 245).
 - Na Honore: prihlásiť účet, ukončiť deň v režime lietadlo, overiť čakajúce
   položky vo Fronte synchronizácie, obnoviť sieť a overiť súbory na Disku
-  v priečinku `HMB Sailing Log/{plavba}/Day_{dátum}`.
+  v priečinku `HMB_Sailing_Log_DATA/{plavba}/Day_{dátum}`.
 - Overiť, že vypnutie synchronizácie s backendom **nezastaví** nahrávanie na
   Disk — to je tá pasca s `isReachable`.

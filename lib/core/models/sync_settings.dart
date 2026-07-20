@@ -6,6 +6,11 @@ enum SyncTarget { hmbAcademy, custom }
 /// about the connection cost of photos.
 enum AttachmentSyncPolicy { never, wifiOnly, always }
 
+/// Which cloud backend the auto-export feature uploads to. Only
+/// [googleDrive] exists so far — see `docs/plan_cloud_export.md` §2 for why
+/// the interface is shaped to add others (WebDAV, Proton Drive) later.
+enum CloudProvider { googleDrive }
+
 class SyncSettings {
   const SyncSettings({
     this.enabled = false,
@@ -13,6 +18,8 @@ class SyncSettings {
     this.customUrl = '',
     this.intervalMinutes = 15,
     this.attachmentPolicy = AttachmentSyncPolicy.wifiOnly,
+    this.cloudEnabled = false,
+    this.cloudProvider = CloudProvider.googleDrive,
   });
 
   final bool enabled;
@@ -20,6 +27,8 @@ class SyncSettings {
   final String customUrl;
   final int intervalMinutes;
   final AttachmentSyncPolicy attachmentPolicy;
+  final bool cloudEnabled;
+  final CloudProvider cloudProvider;
 
   SyncSettings copyWith({
     bool? enabled,
@@ -27,6 +36,8 @@ class SyncSettings {
     String? customUrl,
     int? intervalMinutes,
     AttachmentSyncPolicy? attachmentPolicy,
+    bool? cloudEnabled,
+    CloudProvider? cloudProvider,
   }) =>
       SyncSettings(
         enabled: enabled ?? this.enabled,
@@ -34,6 +45,8 @@ class SyncSettings {
         customUrl: customUrl ?? this.customUrl,
         intervalMinutes: intervalMinutes ?? this.intervalMinutes,
         attachmentPolicy: attachmentPolicy ?? this.attachmentPolicy,
+        cloudEnabled: cloudEnabled ?? this.cloudEnabled,
+        cloudProvider: cloudProvider ?? this.cloudProvider,
       );
 }
 

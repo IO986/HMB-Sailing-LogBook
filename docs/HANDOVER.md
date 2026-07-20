@@ -110,9 +110,42 @@ službu). Podrobný postup je v pláne, §7.
       lokalizáciách/verziách volá inak, hľadaj "App signing key
       certificate"). Sailinglog je na testovacom kanáli, takže appku pre
       testerov podpisuje Google, nie upload kľúč.
+- [x] OAuth client **Web application** (zistené až pri testovaní bodu 1,
+      pôvodný plán o ňom nevedel) — `google_sign_in` 7.x na Androide
+      vyžaduje `serverClientId`, keď sa nepoužíva `google-services.json`/
+      Firebase (viď `google_sign_in_android`'s README, "Integration"). Bez
+      neho `initialize()`/`authenticate()` zlyhá potichu (žiadny
+      viditeľný efekt po stlačení "Prihlásiť"). Client ID
+      `67335624649-fpmgdt6cae47i6i8qq5ll6upvaivnofa.apps.googleusercontent.com`
+      je v `lib/core/config/api_constants.dart` (`kGoogleWebClientId`) —
+      nie je to tajný kľúč, smie byť v zdrojáku (rovnaké ako Firebase
+      `default_web_client_id`).
 
-KROK 0 hotový — môže sa začať bod 1 z poradia implementácie (plán, §10):
-`CloudStorageProvider` + `GoogleDriveStorage` + prihlásenie v sync karte.
+KROK 0 hotový (vrátane dodatočného Web clientu). **Body 1 a 2 z poradia
+implementácie (plán, §10) sú hotové a overené na Honore:**
+
+- Bod 1 — `CloudStorageProvider` + `GoogleDriveStorage` + prihlásenie v sync
+  karte + testy (`test/cloud/google_drive_storage_test.dart`), plus reálny
+  sign-in a test upload na zariadení do priečinka `HMB_Sailing_Log_DATA` na
+  Google Drive.
+- Bod 2 — `CloudUploadTransport` + `RoutingTransport`, zapojené do
+  `syncTransportProvider`/`syncEngineProvider` v `sync_provider.dart`
+  (`engine.start()` teraz beží aj keď je zapnutý len `cloudEnabled`, nielen
+  `enabled`). Testy: `test/sync/cloud_upload_transport_test.dart`,
+  `test/sync/routing_transport_test.dart` (vrátane kľúčového testu z plánu
+  §9 — vypnutý backend sync nezastaví cloud upload, a naopak).
+- Vedľajšia oprava počas testovania: `attemptLightweightAuthentication()`
+  na tomto zariadení nie je skutočne tichá (ukáže account picker aj bez
+  akcie), preto `CloudUploadTransport` gate-uje na `CloudStorageProvider.
+  isSignedInNow` (čisto in-memory, nikdy nevolá SDK) namiesto
+  `currentAccount` — inak by periodický sync tick vedel vyvolať Google
+  dialóg na pozadí, mimo akéhokoľvek used akcie.
+- Priečinok na Drive premenovaný na `HMB_Sailing_Log_DATA` (namiesto
+  medzerou oddeleného "HMB Sailing Log").
+
+**Ďalší krok:** bod 3 z poradia — vytiahnuť mapu dňa do `day_map_view.dart`
+a overiť `captureFromWidget` na Honore (najrizikovejší kus, kým nezbehne,
+body 4 a 5 nemajú zmysel).
 
 ## Prostredie
 
