@@ -624,6 +624,12 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(e) => OrderingTerm(expression: e.timestamp)]))
           .get();
 
+  /// Every entry in the whole database, not scoped to a day/session —
+  /// used by the sync backfill button to find entries that predate the
+  /// user turning sync on (see `lib/sync/log_entry_backfill_service.dart`).
+  Future<List<LogbookEntry>> getAllLogbookEntries() =>
+      select(logbookEntries).get();
+
   Future<int> insertLogbookEntry(LogbookEntriesCompanion e) =>
       into(logbookEntries).insert(e);
 

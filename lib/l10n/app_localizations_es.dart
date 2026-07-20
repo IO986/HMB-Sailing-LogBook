@@ -2699,4 +2699,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get syncAttachmentAlways => 'Siempre';
+
+  @override
+  String get syncBackfillAction => 'Encolar entradas anteriores';
+
+  @override
+  String get syncBackfillDesc =>
+      'Añade a la cola las entradas creadas mientras la sincronización estaba desactivada';
+
+  @override
+  String syncBackfillResult(int n) {
+    return '$n encoladas';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Nada que encolar — todo ya está en cola o enviado';
 }

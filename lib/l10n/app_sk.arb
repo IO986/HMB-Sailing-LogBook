@@ -919,5 +919,10 @@
   "syncAttachmentPolicyLabel": "Prílohy (fotky)",
   "syncAttachmentNever": "Nikdy",
   "syncAttachmentWifiOnly": "Len na Wi-Fi",
-  "syncAttachmentAlways": "Vždy"
+  "syncAttachmentAlways": "Vždy",
+  "syncBackfillAction": "Doplniť staršie záznamy",
+  "syncBackfillDesc": "Zaradí do fronty záznamy zapísané, kým bola synchronizácia vypnutá",
+  "syncBackfillResult": "{n} doplnených do fronty",
+  "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
+  "syncBackfillNone": "Nič na doplnenie — všetko je už vo fronte alebo odoslané"
 }

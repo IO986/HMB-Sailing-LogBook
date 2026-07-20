@@ -33,6 +33,7 @@ class GpsTrackingService {
   int? _activeDayLogId;
   int _logIntervalSeconds = 3600;
   SyncEngine? _syncEngine;
+  bool Function() _isSyncEnabled = () => false;
 
   // Course change detection
   double? _lastLoggedCourse;
@@ -69,9 +70,13 @@ class GpsTrackingService {
   /// Prepojené z `syncEngineProvider` (viď sync_provider.dart), akonáhle je
   /// vytvorený prvý riverpod `ProviderContainer` — táto trieda je singleton
   /// mimo riverpod, takže `enqueue()` musí dostať `SyncEngine` takto, nie
-  /// cez `ref`.
-  void setSyncEngine(SyncEngine engine) {
+  /// cez `ref`. `isSyncEnabled` je zámerne callback, nie bool zachytený raz
+  /// — `syncEngineProvider` sa prestavia pri každej zmene nastavení a
+  /// odovzdá čerstvý closure, takže vypnutie synchronizácie zaberie okamžite
+  /// aj počas bežiaceho trackingu.
+  void setSyncEngine(SyncEngine engine, bool Function() isSyncEnabled) {
     _syncEngine = engine;
+    _isSyncEnabled = isSyncEnabled;
   }
 
   Future<bool> _checkPermission() async {
@@ -454,10 +459,12 @@ class GpsTrackingService {
     };
 
     final engine = _syncEngine;
-    if (engine == null) {
-      // syncEngineProvider ešte nebol vytvorený (napr. appka sa ešte len
-      // spúšťa) — zapíš aspoň lokálne, nezahadzuj záznam.
-      debugPrint('[GPS] Auto entry: sync engine not wired yet, local-only write');
+    if (engine == null || !_isSyncEnabled()) {
+      // syncEngineProvider ešte nebol vytvorený, alebo je synchronizácia
+      // vypnutá — zapíš len lokálne. Pri vypnutej synchronizácii sa outbox
+      // riadok zámerne vôbec nevytvára (nie je len odložený), inak by fronta
+      // rástla donekonečna bez toho, aby sa to niekedy odoslalo.
+      debugPrint('[GPS] Auto entry: sync engine not wired yet or sync disabled, local-only write');
       await _db!.insertLogbookEntry(companion);
     } else {
       // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.

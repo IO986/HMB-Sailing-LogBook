@@ -128,7 +128,7 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
   // its own) — this is the one place it can be handed the live engine, and
   // it re-runs whenever this provider rebuilds (e.g. settings change swaps
   // the transport), so it never holds a stale/disposed engine.
-  GpsTrackingService().setSyncEngine(engine);
+  GpsTrackingService().setSyncEngine(engine, () => settings.enabled);
 
   return engine;
 });

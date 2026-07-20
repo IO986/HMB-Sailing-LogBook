@@ -26,7 +26,17 @@ class StrapiTransport implements SyncTransport {
   })  : _authToken = authToken,
         _collectionByEntityType = collectionByEntityType,
         _appVersion = appVersion,
-        _dio = dio ?? Dio(BaseOptions(baseUrl: baseUrl));
+        _dio = dio ??
+            Dio(BaseOptions(
+              baseUrl: baseUrl,
+              // Bez limitu Dio čaká na platformový default (na Androide s
+              // rádiom, ktoré marne hľadá signál, to môže byť rádovo minúty)
+              // — pri väčšej fronte to drží rádio aktívne oveľa dlhšie, než
+              // treba, a vybíja batériu.
+              connectTimeout: const Duration(seconds: 10),
+              sendTimeout: const Duration(seconds: 20),
+              receiveTimeout: const Duration(seconds: 20),
+            ));
 
   final Dio _dio;
   final String Function() _authToken;

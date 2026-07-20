@@ -919,5 +919,10 @@
   "syncAttachmentPolicyLabel": "Adjuntos (fotos)",
   "syncAttachmentNever": "Nunca",
   "syncAttachmentWifiOnly": "Solo con Wi-Fi",
-  "syncAttachmentAlways": "Siempre"
+  "syncAttachmentAlways": "Siempre",
+  "syncBackfillAction": "Encolar entradas anteriores",
+  "syncBackfillDesc": "Añade a la cola las entradas creadas mientras la sincronización estaba desactivada",
+  "syncBackfillResult": "{n} encoladas",
+  "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
+  "syncBackfillNone": "Nada que encolar — todo ya está en cola o enviado"
 }

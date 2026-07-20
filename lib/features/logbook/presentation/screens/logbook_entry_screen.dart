@@ -9,6 +9,7 @@ import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/sync_provider.dart';
+import '../../../../core/providers/sync_settings_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/weather_repository.dart';
@@ -289,6 +290,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     setState(() => _loading = true);
     final db = ref.read(databaseProvider);
     final engine = ref.read(syncEngineProvider);
+    final syncEnabled = ref.read(syncSettingsProvider).valueOrNull?.enabled ?? false;
 
     // Ulož sail modes ako prefix do poznámky
     final modesStr = _sailModes.isNotEmpty ? _sailModes.join(',') : 'motor';
@@ -314,15 +316,19 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         waterLevel: Value(_waterLevel),
       );
       // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
+      // Pri vypnutej synchronizácii sa enqueue vôbec nevolá, inak by outbox
+      // rástol donekonečna aj keď ho nič nikdy neodošle.
       await db.transaction(() async {
         await db.updateLogbookEntry(_existingId!, companion);
-        await engine.enqueue(
-          entityType: 'log_entry',
-          operation: SyncOperation.update,
-          entityId: _existingId.toString(),
-          payload: payload,
-          attachments: attachments,
-        );
+        if (syncEnabled) {
+          await engine.enqueue(
+            entityType: 'log_entry',
+            operation: SyncOperation.update,
+            entityId: _existingId.toString(),
+            payload: payload,
+            attachments: attachments,
+          );
+        }
       });
     } else {
       final companion = LogbookEntriesCompanion.insert(
@@ -352,12 +358,14 @@ class _State extends ConsumerState<LogbookEntryScreen> {
       late final int newId;
       await db.transaction(() async {
         newId = await db.insertLogbookEntry(companion);
-        await engine.enqueue(
-          entityType: 'log_entry',
-          entityId: newId.toString(),
-          payload: payload,
-          attachments: attachments,
-        );
+        if (syncEnabled) {
+          await engine.enqueue(
+            entityType: 'log_entry',
+            entityId: newId.toString(),
+            payload: payload,
+            attachments: attachments,
+          );
+        }
       });
 
       if (mounted && _lat != null) {

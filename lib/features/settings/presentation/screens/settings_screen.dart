@@ -13,7 +13,9 @@ import '../../../../core/models/sync_settings.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
+import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
+import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/account_service.dart';
 import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -640,6 +642,8 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
   bool? _testSuccess; // null = not tested yet
   String? _testDetail;
 
+  bool _backfilling = false;
+
   @override
   void dispose() {
     _urlCtrl.dispose();
@@ -835,6 +839,25 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                         .setAttachmentPolicy(s.first),
                   ),
                   const Divider(height: 24),
+                  Text(l.syncBackfillDesc,
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      icon: _backfilling
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.history),
+                      label: Text(l.syncBackfillAction),
+                      onPressed: _backfilling ? null : () => _backfill(l),
+                    ),
+                  ),
+                  const Divider(height: 24),
                 ],
                 ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -908,6 +931,19 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
         _testDetail = e is DioException ? (e.message ?? e.toString()) : e.toString();
       });
     }
+  }
+
+  Future<void> _backfill(AppLocalizations l) async {
+    setState(() => _backfilling = true);
+    final count = await backfillUnsyncedLogEntries(
+      db: ref.read(databaseProvider),
+      engine: ref.read(syncEngineProvider),
+    );
+    if (!mounted) return;
+    setState(() => _backfilling = false);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(count == 0 ? l.syncBackfillNone : l.syncBackfillResult(count)),
+    ));
   }
 }
 

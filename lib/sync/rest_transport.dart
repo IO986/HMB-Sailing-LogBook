@@ -24,7 +24,16 @@ class RestTransport implements SyncTransport {
     Dio? dio,
   })  : _authToken = authToken,
         _appVersion = appVersion,
-        _dio = dio ?? Dio(BaseOptions(baseUrl: _requireHttps(baseUrl)));
+        _dio = dio ??
+            Dio(BaseOptions(
+              baseUrl: _requireHttps(baseUrl),
+              // Same reasoning as StrapiTransport: no timeout means a
+              // doomed request can hold the radio "searching" far longer
+              // than useful, which compounds with a large queue.
+              connectTimeout: const Duration(seconds: 10),
+              sendTimeout: const Duration(seconds: 20),
+              receiveTimeout: const Duration(seconds: 20),
+            ));
 
   final Dio _dio;
   final String Function() _authToken;

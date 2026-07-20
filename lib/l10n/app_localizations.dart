@@ -5161,6 +5161,30 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Vždy'**
   String get syncAttachmentAlways;
+
+  /// No description provided for @syncBackfillAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Doplniť staršie záznamy'**
+  String get syncBackfillAction;
+
+  /// No description provided for @syncBackfillDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zaradí do fronty záznamy zapísané, kým bola synchronizácia vypnutá'**
+  String get syncBackfillDesc;
+
+  /// No description provided for @syncBackfillResult.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} doplnených do fronty'**
+  String syncBackfillResult(int n);
+
+  /// No description provided for @syncBackfillNone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nič na doplnenie — všetko je už vo fronte alebo odoslané'**
+  String get syncBackfillNone;
 }
 
 class _AppLocalizationsDelegate

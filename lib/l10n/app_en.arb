@@ -919,5 +919,10 @@
   "syncAttachmentPolicyLabel": "Attachments (photos)",
   "syncAttachmentNever": "Never",
   "syncAttachmentWifiOnly": "Wi-Fi only",
-  "syncAttachmentAlways": "Always"
+  "syncAttachmentAlways": "Always",
+  "syncBackfillAction": "Queue older entries",
+  "syncBackfillDesc": "Adds entries created while sync was off to the upload queue",
+  "syncBackfillResult": "{n} queued",
+  "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
+  "syncBackfillNone": "Nothing to queue — everything is already queued or sent"
 }

@@ -2689,4 +2689,20 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get syncAttachmentAlways => 'Vždy';
+
+  @override
+  String get syncBackfillAction => 'Doplniť staršie záznamy';
+
+  @override
+  String get syncBackfillDesc =>
+      'Zaradí do fronty záznamy zapísané, kým bola synchronizácia vypnutá';
+
+  @override
+  String syncBackfillResult(int n) {
+    return '$n doplnených do fronty';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Nič na doplnenie — všetko je už vo fronte alebo odoslané';
 }

@@ -2694,4 +2694,20 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncAttachmentAlways => 'Завжди';
+
+  @override
+  String get syncBackfillAction => 'Додати старіші записи';
+
+  @override
+  String get syncBackfillDesc =>
+      'Додає до черги записи, створені, поки синхронізацію було вимкнено';
+
+  @override
+  String syncBackfillResult(int n) {
+    return 'Додано до черги: $n';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Немає чого додавати — усе вже в черзі або надіслано';
 }

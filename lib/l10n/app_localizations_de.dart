@@ -2706,4 +2706,20 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get syncAttachmentAlways => 'Immer';
+
+  @override
+  String get syncBackfillAction => 'Ältere Einträge nachtragen';
+
+  @override
+  String get syncBackfillDesc =>
+      'Nimmt Einträge, die bei ausgeschalteter Synchronisierung entstanden sind, in die Warteschlange auf';
+
+  @override
+  String syncBackfillResult(int n) {
+    return '$n nachgetragen';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Nichts nachzutragen — alles ist bereits in der Warteschlange oder gesendet';
 }

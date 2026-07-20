@@ -919,5 +919,10 @@
   "syncAttachmentPolicyLabel": "Вкладення (фото)",
   "syncAttachmentNever": "Ніколи",
   "syncAttachmentWifiOnly": "Лише через Wi-Fi",
-  "syncAttachmentAlways": "Завжди"
+  "syncAttachmentAlways": "Завжди",
+  "syncBackfillAction": "Додати старіші записи",
+  "syncBackfillDesc": "Додає до черги записи, створені, поки синхронізацію було вимкнено",
+  "syncBackfillResult": "Додано до черги: {n}",
+  "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
+  "syncBackfillNone": "Немає чого додавати — усе вже в черзі або надіслано"
 }

@@ -2687,4 +2687,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncAttachmentAlways => 'Always';
+
+  @override
+  String get syncBackfillAction => 'Queue older entries';
+
+  @override
+  String get syncBackfillDesc =>
+      'Adds entries created while sync was off to the upload queue';
+
+  @override
+  String syncBackfillResult(int n) {
+    return '$n queued';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Nothing to queue — everything is already queued or sent';
 }

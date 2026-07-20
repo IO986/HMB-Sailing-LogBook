@@ -919,5 +919,10 @@
   "syncAttachmentPolicyLabel": "Anhänge (Fotos)",
   "syncAttachmentNever": "Nie",
   "syncAttachmentWifiOnly": "Nur WLAN",
-  "syncAttachmentAlways": "Immer"
+  "syncAttachmentAlways": "Immer",
+  "syncBackfillAction": "Ältere Einträge nachtragen",
+  "syncBackfillDesc": "Nimmt Einträge, die bei ausgeschalteter Synchronisierung entstanden sind, in die Warteschlange auf",
+  "syncBackfillResult": "{n} nachgetragen",
+  "@syncBackfillResult": { "placeholders": { "n": { "type": "int" } } },
+  "syncBackfillNone": "Nichts nachzutragen — alles ist bereits in der Warteschlange oder gesendet"
 }
