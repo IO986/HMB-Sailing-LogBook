@@ -889,6 +889,13 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deleteOutboxRow(String id) =>
       (delete(outboxRows)..where((r) => r.id.equals(id))).go();
 
+  /// Wipes the whole sync queue — used by the queue screen's "clear queue"
+  /// action for stale items a past policy change left stuck forever (e.g.
+  /// cloud_export entries queued before enqueue was gated on an actual
+  /// signed-in session). Safe: the outbox only ever holds already-persisted
+  /// domain data plus a delivery record, never the source of truth for it.
+  Future<void> deleteAllOutboxRows() => delete(outboxRows).go();
+
   /// Every outbox row, for the sync queue screen's item list. Counts for
   /// the header badge come from `OutboxRepository.watchQueue()` instead —
   /// this is only for rendering the actual list.

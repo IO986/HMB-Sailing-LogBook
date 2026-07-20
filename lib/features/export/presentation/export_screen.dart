@@ -6,10 +6,15 @@ import 'package:screenshot/screenshot.dart';
 import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/models/skipper_profile.dart';
+import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/skipper_profile_provider.dart';
+import '../../../core/providers/sync_provider.dart';
+import '../../../core/providers/sync_settings_provider.dart';
 import '../../../core/utils/distance_calculator.dart';
 import '../../../core/utils/gpx_exporter.dart';
 import '../../../main.dart';
+import '../../cloud/providers/cloud_provider.dart';
+import '../../cloud/services/auto_export_service.dart';
 import '../services/export_service.dart';
 import '../services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
@@ -363,6 +368,13 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               context, _charter!, _day!, pdfBytes!,
               signatureImage: signatureImage,
             );
+            // The skipper has now seen the preview and confirmed — this is
+            // the deliberate "done editing, ship it" moment (see
+            // handleStopTap's doc comment: Stop no longer auto-exports so
+            // entries can still be fixed here first). Cloud enqueue is
+            // gated on an actual signed-in session, same reasoning as
+            // tracking_control_dialogs.dart.
+            _maybeQueueToCloud(_day!.id, skipperProfile);
           } else {
             svc.exportCharterFromBytes(
               context, _charter!, pdfBytes!,
@@ -373,6 +385,29 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         },
       ),
     ));
+  }
+
+  /// Queues the day's PDF/GPX to Google Drive if cloud export is on and
+  /// there's an actual signed-in session — not just the toggle, so a stale
+  /// preference with no live session doesn't leave an item stuck
+  /// "odložené" forever (same reasoning as tracking_control_dialogs.dart's
+  /// handleStopTap). Rebuilds via `AutoExportService`, which reflects
+  /// whatever the skipper just edited in the Denník, not the PDF preview
+  /// bytes above (those already include the signature, which the auto
+  /// cloud copy intentionally does not).
+  void _maybeQueueToCloud(int dayLogId, SkipperProfile skipperProfile) {
+    final cloudEnabled = (ref.read(syncSettingsProvider).valueOrNull?.cloudEnabled ?? false) &&
+        ref.read(cloudStorageProviderProvider).isSignedInNow;
+    if (!cloudEnabled) return;
+    AutoExportService().exportAndEnqueueDay(
+      db: ref.read(databaseProvider),
+      engine: ref.read(syncEngineProvider),
+      cloudEnabled: true,
+      locale: ref.read(localeProvider),
+      skipperProfile: skipperProfile,
+      dayLogId: dayLogId,
+      mapScreenshot: _mapScreenshots[dayLogId],
+    );
   }
 }
 

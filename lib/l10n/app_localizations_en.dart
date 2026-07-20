@@ -182,9 +182,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stopTrackingDay => 'Stop tracking?';
 
   @override
-  String get finishingDayExport => 'Saving the day and preparing export...';
-
-  @override
   String get startVoyage => 'Start voyage';
 
   @override
@@ -2627,6 +2624,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get syncWifiOverrideBanner =>
+      'Attachment waiting for Wi-Fi (usually unavailable at sea).';
+
+  @override
+  String get syncWifiOverrideAction => 'Use mobile data';
+
+  @override
+  String get syncWifiOverrideActive => 'Mobile data allowed for attachments';
+
+  @override
+  String get syncClearQueueAction => 'Clear queue';
+
+  @override
+  String get syncClearQueueConfirmTitle => 'Clear the whole queue?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Removes every item in the sync queue, including already-sent ones. This cannot be undone.';
+
+  @override
+  String get syncClearQueueDone => 'Queue cleared';
+
+  @override
   String get syncEnableToggle => 'Sync logbook';
 
   @override
@@ -2712,7 +2732,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncCloudEnableToggleDesc =>
-      'Sign in and test upload to Google Drive — automatic PDF/GPX upload is coming later';
+      'Once signed in, each finished day\'s PDF and GPX upload to Google Drive automatically. Without sign-in, everything stays on the device.';
 
   @override
   String get syncCloudSignInAction => 'Sign in with Google';
@@ -2727,17 +2747,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Not signed in';
-
-  @override
-  String get syncCloudTestUploadAction => 'Test upload';
-
-  @override
-  String syncCloudTestUploadSuccess(String fileId) {
-    return 'Uploaded (id: $fileId)';
-  }
-
-  @override
-  String syncCloudTestUploadFailure(String detail) {
-    return 'Failed: $detail';
-  }
 }

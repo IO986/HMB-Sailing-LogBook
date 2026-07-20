@@ -428,12 +428,6 @@ abstract class AppLocalizations {
   /// **'Ukončiť tracking?'**
   String get stopTrackingDay;
 
-  /// No description provided for @finishingDayExport.
-  ///
-  /// In sk, this message translates to:
-  /// **'Ukladám deň a pripravujem export...'**
-  String get finishingDayExport;
-
   /// No description provided for @startVoyage.
   ///
   /// In sk, this message translates to:
@@ -5048,6 +5042,48 @@ abstract class AppLocalizations {
   /// **'{n} zlyhalo'**
   String syncFailedCount(int n);
 
+  /// No description provided for @syncWifiOverrideBanner.
+  ///
+  /// In sk, this message translates to:
+  /// **'Príloha čaká na Wi-Fi (na mori zvyčajne nedostupné).'**
+  String get syncWifiOverrideBanner;
+
+  /// No description provided for @syncWifiOverrideAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Použiť mobilné dáta'**
+  String get syncWifiOverrideAction;
+
+  /// No description provided for @syncWifiOverrideActive.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mobilné dáta povolené pre prílohy'**
+  String get syncWifiOverrideActive;
+
+  /// No description provided for @syncClearQueueAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vymazať frontu'**
+  String get syncClearQueueAction;
+
+  /// No description provided for @syncClearQueueConfirmTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vymazať celú frontu?'**
+  String get syncClearQueueConfirmTitle;
+
+  /// No description provided for @syncClearQueueConfirmContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odstráni všetky položky vo fronte synchronizácie vrátane už odoslaných. Túto akciu nemožno vrátiť.'**
+  String get syncClearQueueConfirmContent;
+
+  /// No description provided for @syncClearQueueDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Fronta vymazaná'**
+  String get syncClearQueueDone;
+
   /// No description provided for @syncEnableToggle.
   ///
   /// In sk, this message translates to:
@@ -5201,7 +5237,7 @@ abstract class AppLocalizations {
   /// No description provided for @syncCloudEnableToggleDesc.
   ///
   /// In sk, this message translates to:
-  /// **'Prihlásenie a test nahrávania na Google Drive — automatické nahrávanie PDF a GPX pribudne neskôr'**
+  /// **'Po prihlásení sa PDF a GPX z ukončeného dňa automaticky nahrajú na Google Drive. Bez prihlásenia zostáva všetko len v zariadení.'**
   String get syncCloudEnableToggleDesc;
 
   /// No description provided for @syncCloudSignInAction.
@@ -5227,24 +5263,6 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Neprihlásený'**
   String get syncCloudNotSignedIn;
-
-  /// No description provided for @syncCloudTestUploadAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Test nahrávania'**
-  String get syncCloudTestUploadAction;
-
-  /// No description provided for @syncCloudTestUploadSuccess.
-  ///
-  /// In sk, this message translates to:
-  /// **'Nahraté (id: {fileId})'**
-  String syncCloudTestUploadSuccess(String fileId);
-
-  /// No description provided for @syncCloudTestUploadFailure.
-  ///
-  /// In sk, this message translates to:
-  /// **'Zlyhalo: {detail}'**
-  String syncCloudTestUploadFailure(String detail);
 }
 
 class _AppLocalizationsDelegate

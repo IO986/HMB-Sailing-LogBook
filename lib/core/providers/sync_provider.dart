@@ -42,6 +42,13 @@ Future<bool> _isOnWifi() async {
   return results.contains(ConnectivityResult.wifi);
 }
 
+/// User's one-tap override of the Wi-Fi-only attachment policy — most boat
+/// trips have no Wi-Fi at all, so without this a cloud_export item (always
+/// has an attachment) would sit "odložené" forever. Session-only by design:
+/// resets on app restart rather than persisting, so a forgotten override
+/// doesn't quietly burn mobile data on a later trip.
+final allowMobileDataForAttachmentsProvider = StateProvider<bool>((ref) => false);
+
 /// A transport that always reports every item as a non-retryable failure —
 /// used only when the custom-server URL is missing/invalid, so a bad
 /// setting surfaces as "failed" in the queue instead of crashing provider
@@ -107,6 +114,8 @@ SyncTransport _buildBaseTransport(
 final syncTransportProvider = Provider<SyncTransport>((ref) {
   final settings = ref.watch(syncSettingsProvider).valueOrNull ?? const SyncSettings();
   final appVersion = ref.watch(appVersionProvider);
+  final allowMobileData = ref.watch(allowMobileDataForAttachmentsProvider);
+  Future<bool> isOnWifiOrOverridden() async => allowMobileData || await _isOnWifi();
 
   final backendTransport = SyncPolicyTransport(
     inner: _buildBaseTransport(
@@ -116,14 +125,14 @@ final syncTransportProvider = Provider<SyncTransport>((ref) {
     ),
     isSyncEnabled: () => settings.enabled,
     attachmentPolicy: () => settings.attachmentPolicy,
-    isOnWifi: _isOnWifi,
+    isOnWifi: isOnWifiOrOverridden,
   );
 
   final cloudTransport = SyncPolicyTransport(
     inner: CloudUploadTransport(provider: ref.watch(cloudStorageProviderProvider)),
     isSyncEnabled: () => settings.cloudEnabled,
     attachmentPolicy: () => settings.attachmentPolicy,
-    isOnWifi: _isOnWifi,
+    isOnWifi: isOnWifiOrOverridden,
   );
 
   return RoutingTransport(cloudTransport: cloudTransport, defaultTransport: backendTransport);

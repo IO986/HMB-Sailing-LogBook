@@ -182,9 +182,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get stopTrackingDay => 'Зупинити відстеження?';
 
   @override
-  String get finishingDayExport => 'Зберігаю день і готую експорт...';
-
-  @override
   String get startVoyage => 'Розпочати плавання';
 
   @override
@@ -2633,6 +2630,29 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get syncWifiOverrideBanner =>
+      'Вкладення очікує Wi-Fi (у морі зазвичай недоступний).';
+
+  @override
+  String get syncWifiOverrideAction => 'Використати мобільні дані';
+
+  @override
+  String get syncWifiOverrideActive => 'Мобільні дані дозволені для вкладень';
+
+  @override
+  String get syncClearQueueAction => 'Очистити чергу';
+
+  @override
+  String get syncClearQueueConfirmTitle => 'Очистити всю чергу?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Видаляє всі елементи черги синхронізації, включно з уже надісланими. Цю дію не можна скасувати.';
+
+  @override
+  String get syncClearQueueDone => 'Чергу очищено';
+
+  @override
   String get syncEnableToggle => 'Синхронізувати журнал';
 
   @override
@@ -2719,7 +2739,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncCloudEnableToggleDesc =>
-      'Вхід і тестове завантаження на Google Drive — автоматичне завантаження PDF/GPX з\'явиться пізніше';
+      'Після входу PDF і GPX кожного завершеного дня автоматично завантажуються на Google Drive. Без входу все залишається лише на пристрої.';
 
   @override
   String get syncCloudSignInAction => 'Увійти через Google';
@@ -2734,17 +2754,4 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Не увійшли';
-
-  @override
-  String get syncCloudTestUploadAction => 'Тестове завантаження';
-
-  @override
-  String syncCloudTestUploadSuccess(String fileId) {
-    return 'Завантажено (id: $fileId)';
-  }
-
-  @override
-  String syncCloudTestUploadFailure(String detail) {
-    return 'Помилка: $detail';
-  }
 }

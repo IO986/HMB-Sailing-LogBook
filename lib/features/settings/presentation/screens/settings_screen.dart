@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../../core/config/api_constants.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/sync_settings.dart';
 import '../../../../core/providers/locale_provider.dart';
@@ -18,8 +17,6 @@ import '../../../../core/providers/sync_settings_provider.dart';
 import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
-import 'package:path_provider/path_provider.dart';
-import '../../../../core/services/account_service.dart';
 import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
@@ -649,8 +646,6 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
 
   CloudAccount? _cloudAccount;
   bool _cloudBusy = false;
-  bool? _cloudTestSuccess; // null = not tested yet
-  String? _cloudTestDetail;
   bool _cloudAccountChecked = false;
 
   /// Only runs once `cloudEnabled` is actually on — even the "silent"
@@ -710,7 +705,10 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       data: (settings) {
         _initFieldsOnce(settings, tokenAsync.valueOrNull);
         _maybeCheckCloudAccount(settings.cloudEnabled);
-        final isCustom = settings.target == SyncTarget.custom;
+        // hmba.boats target is hidden for now (backend not ready) — the
+        // custom-server fields below are the only usable path, so always
+        // show them regardless of the persisted `settings.target` value.
+        const isCustom = true;
 
         return Card(
           child: Padding(
@@ -725,33 +723,22 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                   title: Text(l.syncEnableToggle),
                   subtitle: Text(l.syncEnableToggleDesc),
                   value: settings.enabled,
-                  onChanged: (v) =>
-                      ref.read(syncSettingsProvider.notifier).setEnabled(v),
+                  onChanged: (v) {
+                    ref.read(syncSettingsProvider.notifier).setEnabled(v);
+                    // hmba.boats is hidden for now (backend not ready) — the
+                    // picker above is gone, so force the only remaining,
+                    // actually-wired-up option. Without this, a persisted
+                    // default of SyncTarget.hmbAcademy would silently ignore
+                    // the custom URL/token fields shown below.
+                    if (settings.target != SyncTarget.custom) {
+                      ref
+                          .read(syncSettingsProvider.notifier)
+                          .setTarget(SyncTarget.custom);
+                    }
+                  },
                 ),
                 if (settings.enabled) ...[
                   const Divider(height: 24),
-                  Text(l.syncTargetLabel,
-                      style: Theme.of(context).textTheme.labelLarge),
-                  RadioListTile<SyncTarget>(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    title: Text(l.syncTargetHmbAcademy),
-                    value: SyncTarget.hmbAcademy,
-                    groupValue: settings.target,
-                    onChanged: (v) => ref
-                        .read(syncSettingsProvider.notifier)
-                        .setTarget(v!),
-                  ),
-                  RadioListTile<SyncTarget>(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    title: Text(l.syncTargetCustom),
-                    value: SyncTarget.custom,
-                    groupValue: settings.target,
-                    onChanged: (v) => ref
-                        .read(syncSettingsProvider.notifier)
-                        .setTarget(v!),
-                  ),
                   if (isCustom) ...[
                     const SizedBox(height: 8),
                     TextField(
@@ -914,46 +901,6 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                           : l.syncCloudSignOutAction),
                     ),
                   ),
-                  if (_cloudAccount != null) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        icon: _cloudBusy
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Icon(Icons.cloud_upload),
-                        label: Text(l.syncCloudTestUploadAction),
-                        onPressed: _cloudBusy ? null : () => _testCloudUpload(l),
-                      ),
-                    ),
-                    if (_cloudTestSuccess != null) ...[
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        Icon(
-                          _cloudTestSuccess! ? Icons.check_circle : Icons.error,
-                          color: _cloudTestSuccess! ? Colors.green : Colors.red,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            _cloudTestSuccess!
-                                ? l.syncCloudTestUploadSuccess(_cloudTestDetail ?? '')
-                                : l.syncCloudTestUploadFailure(_cloudTestDetail ?? ''),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: _cloudTestSuccess!
-                                  ? Colors.green.shade700
-                                  : Colors.red.shade700,
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ],
-                  ],
                   const Divider(height: 24),
                 ],
                 ListTile(
@@ -978,30 +925,26 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       _testDetail = null;
     });
 
-    final settings = ref.read(syncSettingsProvider).valueOrNull ?? const SyncSettings();
+    // hmba.boats target is hidden for now — only the custom server fields
+    // are reachable from this UI, so this always tests those.
     String baseUrl;
     String token;
 
-    if (settings.target == SyncTarget.hmbAcademy) {
-      baseUrl = kApiBase;
-      token = AccountService().token ?? '';
-    } else {
-      final urlError = validateSyncServerUrl(_urlCtrl.text);
-      if (urlError != null) {
-        setState(() {
-          _testing = false;
-          _testSuccess = false;
-          _testDetail = switch (urlError) {
-            SyncUrlError.empty => l.syncUrlErrorEmpty,
-            SyncUrlError.invalid => l.syncUrlErrorInvalid,
-            SyncUrlError.httpsRequired => l.syncUrlErrorHttps,
-          };
-        });
-        return;
-      }
-      baseUrl = _urlCtrl.text.trim();
-      token = _tokenCtrl.text;
+    final urlError = validateSyncServerUrl(_urlCtrl.text);
+    if (urlError != null) {
+      setState(() {
+        _testing = false;
+        _testSuccess = false;
+        _testDetail = switch (urlError) {
+          SyncUrlError.empty => l.syncUrlErrorEmpty,
+          SyncUrlError.invalid => l.syncUrlErrorInvalid,
+          SyncUrlError.httpsRequired => l.syncUrlErrorHttps,
+        };
+      });
+      return;
     }
+    baseUrl = _urlCtrl.text.trim();
+    token = _tokenCtrl.text;
 
     try {
       final dio = Dio(BaseOptions(
@@ -1068,8 +1011,6 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       setState(() {
         _cloudBusy = false;
         _cloudAccount = null;
-        _cloudTestSuccess = null;
-        _cloudTestDetail = null;
       });
     } catch (e) {
       if (!mounted) return;
@@ -1079,39 +1020,6 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
     }
   }
 
-  Future<void> _testCloudUpload(AppLocalizations l) async {
-    setState(() {
-      _cloudBusy = true;
-      _cloudTestSuccess = null;
-      _cloudTestDetail = null;
-    });
-    try {
-      final dir = await getTemporaryDirectory();
-      final now = DateTime.now();
-      final file = File('${dir.path}/hmb_cloud_test_${now.millisecondsSinceEpoch}.txt');
-      await file.writeAsString('HMB Sailing Log — test upload $now');
-      final fileId = await ref.read(cloudStorageProviderProvider).upload(
-            file: file,
-            fileName: 'test_upload_${now.millisecondsSinceEpoch}.txt',
-            folderPath: const ['HMB_Sailing_Log_DATA'],
-            mimeType: 'text/plain',
-          );
-      await file.delete();
-      if (!mounted) return;
-      setState(() {
-        _cloudBusy = false;
-        _cloudTestSuccess = true;
-        _cloudTestDetail = fileId;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _cloudBusy = false;
-        _cloudTestSuccess = false;
-        _cloudTestDetail = e.toString();
-      });
-    }
-  }
 }
 
 // ── Záloha dát ─────────────────────────────────────────────────

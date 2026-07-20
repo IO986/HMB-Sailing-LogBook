@@ -182,10 +182,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stopTrackingDay => '¿Detener el seguimiento?';
 
   @override
-  String get finishingDayExport =>
-      'Guardando el día y preparando la exportación...';
-
-  @override
   String get startVoyage => 'Iniciar travesía';
 
   @override
@@ -2639,6 +2635,29 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get syncWifiOverrideBanner =>
+      'Adjunto esperando Wi-Fi (normalmente no disponible en el mar).';
+
+  @override
+  String get syncWifiOverrideAction => 'Usar datos móviles';
+
+  @override
+  String get syncWifiOverrideActive => 'Datos móviles permitidos para adjuntos';
+
+  @override
+  String get syncClearQueueAction => 'Vaciar cola';
+
+  @override
+  String get syncClearQueueConfirmTitle => '¿Vaciar toda la cola?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Elimina todos los elementos de la cola de sincronización, incluidos los ya enviados. Esta acción no se puede deshacer.';
+
+  @override
+  String get syncClearQueueDone => 'Cola vaciada';
+
+  @override
   String get syncEnableToggle => 'Sincronizar diario';
 
   @override
@@ -2725,7 +2744,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get syncCloudEnableToggleDesc =>
-      'Iniciar sesión y subida de prueba a Google Drive — la subida automática de PDF/GPX llegará más adelante';
+      'Con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a Google Drive. Sin iniciar sesión, todo queda solo en el dispositivo.';
 
   @override
   String get syncCloudSignInAction => 'Iniciar sesión con Google';
@@ -2740,17 +2759,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Sesión no iniciada';
-
-  @override
-  String get syncCloudTestUploadAction => 'Subida de prueba';
-
-  @override
-  String syncCloudTestUploadSuccess(String fileId) {
-    return 'Subido (id: $fileId)';
-  }
-
-  @override
-  String syncCloudTestUploadFailure(String detail) {
-    return 'Fallo: $detail';
-  }
 }

@@ -178,9 +178,29 @@ seamark vrstvy — satelitná (ArcGIS World_Imagery), ktorú `DayMapView`
 používa ako podklad, sa v appke necachovala vôbec, ani na interaktívnej
 mape. Oboje opravené (viď `docs/HANDOVER.md`, bod 3).
 
-Postup pri ukončení dňa: potvrdenie → **odfotenie mapy mimo stromu**
-(s hláškou o priebehu, `delay` aspoň 2 s na dokreslenie dlaždíc) → zastavenie
-trackingu → zloženie PDF s obrázkom → zaradenie do fronty.
+**Druhý, závažnejší bug (nájdený a opravený 20. 7., po prvom reálnom teste
+na Honore):** aj s vyššie uvedenými opravami bola mapa v automaticky
+nahranom PDF **úplne biela** — ani podklad. Príčina nebola v čase (`delay`
+2 s → 4 s nič nezmenilo), ale v tom, že `screenshot` balíka
+`captureFromWidget` beží nad **vlastným, izolovaným `PipelineOwner`/
+`BuildOwner`** mimo reálneho `SchedulerBinding` appky. `flutter_map`'s
+dlaždice sa načítavajú asynchrónne (`CachingTileProvider._load` — súbor z
+disku + decode kodeku, aj keď je tile už cachovaná), a repaint po takom
+asynchrónnom dokončení sa v tejto izolovanej pipeline nikdy reálne
+neuplatnil. Riešenie: `_captureDayMap` prestal používať
+`captureFromWidget` úplne a namiesto toho vkladá `DayMapView` do
+**reálneho** stromu appky cez `OverlayEntry` posunutý mimo viditeľnú
+plochu (`Positioned(left: -2000, top: -2000)`) — presne ten istý mechanizmus
+ako `export_screen.dart`'s overene funkčný `_DayMapPreview` (bod 3), len
+neviditeľný. Detaily v `docs/HANDOVER.md`.
+
+**Zmena návrhu (rozhodnutie používateľa, 20. 7.): mapová snímka aj celý
+export sa presunuli preč z `handleStopTap`.** Pôvodne opísaný postup nižšie
+(potvrdenie → snímka mimo stromu → zastavenie → PDF → fronta, všetko
+automaticky v jednom ťahu) už neplatí — nahradil ho tok v §5 nižšie, kde
+Stop len uloží deň a otvorí Denník na úpravu, a samotný export (vrátane
+snímky mapy) sa deje až keď skipper explicitne potvrdí export. Text nižšie
+zostáva ako popis vyriešeného problému s mapou, nie ako aktuálny tok.
 
 **Ak sa snímka nepodarí** (nedokreslené dlaždice, výnimka): PDF sa vyrobí aj
 tak, vytlačí `pdfMapUnavailable`, ale používateľ dostane hlášku, že sa nahralo
@@ -225,26 +245,51 @@ synchronizáciou (viď `docs/HANDOVER.md`, sekcia „Sync fixy"). Cloud vetva
 potrebuje rovnaký gate pri zápise, inak sa ten istý bug zopakuje pre
 `cloud_export` položky.
 
+**Druhé poučenie, po prvom reálnom teste (20. 7.):** samotné
+`settings.cloudEnabled` (prepínač) **nestačí** — treba aj skutočný
+`CloudStorageProvider.isSignedInNow`. Ak je prepínač zapnutý, ale appka
+nemá v pamäti reálnu prihlásenú reláciu (napr. tesne po štarte appky),
+`cloud_export` položka sa aj tak zaradí do fronty, ale
+`CloudUploadTransport` (gate na `isSignedInNow`) ju nikdy neodošle — zostane
+„odložené" navždy. Presne takto vzniklo 23 zaseknutých položiek nájdených
+pri testovaní. Gate na zápise je teda
+`settings.cloudEnabled && cloudStorageProvider.isSignedInNow`, nie len prvé.
+
 ---
 
 ## 5. Spúšťače
 
-- **Koniec dňa** — v `handleStopTap`
-  (`tracking_control_dialogs.dart:133-153`), nie v bezkontextovom
-  `TrackingNotifier.stopTracking()`. Dôvod je mapa: odfotenie widgetu mimo
-  stromu potrebuje `BuildContext` (viď §3).
+**Zmenené 20. 7. (rozhodnutie používateľa):** Stop už **neexportuje priamo**
+— skipper má dostať šancu záznam ešte upraviť predtým, než sa zabalí do PDF
+a pošle na Drive. Skutočný spúšťač je teraz len jeden kód, volaný z dvoch
+miest:
+
+- **Koniec dňa (bežná cesta, appka ostáva otvorená)** — `handleStopTap`
+  (`tracking_control_dialogs.dart`) po potvrdení len zastaví tracking a
+  presmeruje na Denník dňa (`/logbook/{charterId}/day/{dayLogId}`; `charterId`
+  sa dočíta cez `db.getDayLogById(dayLogId)`). **Nezachytáva mapu, nevolá
+  `AutoExportService`.** Skipper si tu môže opraviť/doplniť záznamy.
   **Pozor:** `GpsTrackingService.stopTracking()` nuluje `_activeDayLogId`
-  (`gps_tracking_service.dart:311`), takže id treba zachytiť **pred** volaním.
-  **Druhá pasca:** cesta „Zastaviť a ukončiť" (`main_scaffold.dart:280-283`)
-  volá `SystemNavigator.pop()` hneď po zastavení. Priamy upload by appka
-  zabila; fronta to rieši sama, odošle sa pri ďalšom spustení. Nikdy nečakať
-  na dokončenie uploadu v tejto ceste.
+  (`gps_tracking_service.dart:311`), takže `dayLogId` treba prečítať
+  **pred** volaním, presne ako predtým.
+- **Skutočný export** — `export_screen.dart`'s `_doExport` (jednodňová
+  vetva, `widget.dayLogId != null`), presne to miesto, ktoré bolo v pláne
+  pôvodne bodom 6 („ručné tlačidlo"). Po podpise, náhľade (`PdfPreviewScreen`)
+  a potvrdení uloženia (`onSave`) sa navyše zavolá nová
+  `_maybeQueueToCloud(dayLogId, skipperProfile)` — zostaví PDF/GPX cez
+  `AutoExportService.exportAndEnqueueDay(...)` znova (z aktuálneho stavu DB,
+  teda vrátane práve vykonaných úprav) a zaradí do cloud fronty, ak
+  `cloudEnabled && isSignedInNow`. Mapová snímka pre túto vetvu je tá istá,
+  ktorú si obrazovka aj tak vyrobila na zobrazenie náhľadu (`_mapScreenshots`)
+  — žiadna duplicitná off-tree snímka.
+- **Cesta „Zastaviť a ukončiť"** (`main_scaffold.dart:280-283`, appka sa
+  hneď ukončí) zostáva **automatická** — niet tam čas na review obrazovku.
+  Zachytí `dayLogId` pred `stopTracking()`, zavolá `AutoExportService` (bez
+  mapy) **awaitnuto** pred `SystemNavigator.pop()` — je to čisto lokálna
+  práca (PDF/GPX + zápis súboru + outbox insert, žiadna sieť), musí
+  dobehnúť skôr, než proces zomrie.
 - **Check-out chartera** — `handover_protocol_screen.dart`, po uložení
-  check-out protokolu zaradiť charterové PDF.
-- **Ručne** — tlačidlo v `export_screen.dart` vedľa zdieľania. Neaktívne, kým
-  nie sú hotové snímky mapy; dovtedy ukazuje existujúcu hlášku
-  `generatingMaps`. Vďaka tomu ide na Disk PDF s mapou, na rozdiel od
-  automatu (viď §3).
+  check-out protokolu zaradiť charterové PDF. **Zatiaľ nespravené.**
 
 ---
 
@@ -265,6 +310,22 @@ potrebuje rovnaký gate pri zápise, inak sa ten istý bug zopakuje pre
   tlačidlo prihlásiť/odhlásiť s menom účtu, prepínače PDF a GPX.
 
 `attachmentPolicy` sa nezdvojuje — platí spoločne pre backend aj cloud.
+
+**Zmenené 20. 7., po prvom reálnom teste:**
+- Popis pri cloud prepínači (`syncCloudEnableToggleDesc`) aktualizovaný —
+  automatické nahrávanie po ukončení dňa už nie je „pribudne neskôr", je
+  hotové a popis to má povedať.
+- Tlačidlo „Test nahrávania" (dummy .txt na Drive, slúžilo len na overenie
+  bodu 1 počas vývoja) odstránené i s l10n kľúčmi.
+- `RadioListTile<SyncTarget>` picker (HMB Sailing Academy / Vlastný server)
+  dočasne odstránený — hmba.boats backend zatiaľ nie je pripravený.
+  Zapnutie synchronizácie teraz vynúti `SyncTarget.custom`.
+- Wi-Fi-only politika príloh dostala možnosť dočasného override
+  (`allowMobileDataForAttachmentsProvider`, session-only) s bannerom v
+  `sync_queue_screen.dart` — na mori Wi-Fi spravidla nie je, fronta by inak
+  čakala donekonečna.
+- `sync_queue_screen.dart` dostal aj tlačidlo „Vymazať frontu"
+  (`AppDatabase.deleteAllOutboxRows()`) pre staré zaseknuté položky.
 
 ---
 
@@ -398,26 +459,53 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
    čítať `.valueOrNull` — headless volanie môže bežať skôr, než nastavenia
    niekde inde v appke vôbec dobehnú, a `.valueOrNull` by v tom okne potichu
    čítal ako vypnuté (detaily `docs/HANDOVER.md`).
-5. **Hotové 20. 7., testy zelené (ešte neoverené na Honore).** Spúšťač na
-   konci dňa v `handleStopTap`, aj v núdzovej ceste „Zastaviť a ukončiť"
-   (`main_scaffold.dart`) — druhá bez snímky mapy, ale s awaitovaným
-   enqueue pred `SystemNavigator.pop()`. Poučenie: `AutoExportService`
-   napokon berie hotové hodnoty (`AppDatabase`, `SyncEngine`, `bool`,
-   `Locale`, `SkipperProfile`), nie Riverpod `Ref` — na `flutter_riverpod`
-   2.6.1 sú `Ref` a `WidgetRef` nesúvisiace typy, takže pôvodný návrh s
-   `Ref` by sa nedal zavolať z `handleStopTap` (má len `WidgetRef`).
-5. Ručné tlačidlo v exporte.
-6. Check-out chartera.
-7. Príručka v 5 jazykoch + `docs/SYNC_API.md` (nový typ `cloud_export`).
+5. **Hotové a overené na Honore 20. 7. (dva kolá).** Prvé kolo: spúšťač na
+   konci dňa priamo v `handleStopTap` + núdzová cesta „Zastaviť a ukončiť"
+   (`main_scaffold.dart`). Poučenie: `AutoExportService` napokon berie
+   hotové hodnoty (`AppDatabase`, `SyncEngine`, `bool`, `Locale`,
+   `SkipperProfile`), nie Riverpod `Ref` — na `flutter_riverpod` 2.6.1 sú
+   `Ref` a `WidgetRef` nesúvisiace typy. Reálny test na Honore odhalil bielu
+   mapu v PDF (viď §3) — opravené (`OverlayEntry` namiesto
+   `captureFromWidget`). Druhé kolo, po rozhodnutí používateľa: Stop už
+   priamo neexportuje, presúva sa na Denník na úpravu; export + cloud
+   enqueue presunuté do ručného exportu (bod 6, teraz zlúčený s týmto
+   bodom — viď §5). Cesta „Zastaviť a ukončiť" ostala automatická.
+6. **Hotové 20. 7., zlúčené s bodom 5 vyššie** — `export_screen.dart`'s
+   `_doExport`/`onSave` je teraz aj ten „ručný spúšťač", nie len zdieľanie
+   lokálneho súboru.
+7. Check-out chartera (`handover_protocol_screen.dart`) — **zatiaľ
+   nespravené**, ďalší krok.
+8. Príručka v 5 jazykoch + `docs/SYNC_API.md` (nový typ `cloud_export`) —
+   zatiaľ nespravené.
+
+**Vedľajšie položky vyriešené 20. 7. mimo pôvodného poradia:**
+- Cloud enqueue gate rozšírený o `isSignedInNow` (nielen prepínač) — viď §4.
+- Nastavenia vyčistené: popis pri prepínači cloud exportu, odstránené
+  tlačidlo „Test nahrávania", hmba.boats voľba dočasne skrytá.
+- `sync_queue_screen.dart`: nová možnosť „Použiť mobilné dáta" pre Wi-Fi-only
+  politiku príloh (bez toho fronta na mori čaká donekonečna), a tlačidlo
+  „Vymazať frontu" pre zaseknuté staré položky.
 
 ---
 
 ## Verifikácia
 
-- `flutter analyze lib test` — 0 errors (dnešný baseline).
-- `flutter test` — celá sada zelená (dnes 245).
+- `flutter analyze lib test` — 0 errors (dnešný baseline, 486 zvyšných
+  info-level lint issues, nič nové).
+- `flutter test` — celá sada zelená (267).
+- **Overené na Honore 20. 7.:** mapa v automaticky nahranom PDF ukazuje
+  reálne dlaždice (satelit + seamark), nie biely obdĺžnik — po oprave
+  popísanej v §3.
+- **Ešte treba overiť na Honore** (telefón bol koncom dňa 20. 7. odpojený
+  od USB): nový tok Stop → Denník (úprava záznamu) → `export_screen.dart`
+  (podpis, náhľad, potvrdenie) → cloud enqueue s `_maybeQueueToCloud`.
+  Predtým overené len staré, už nahradené priame volanie z `handleStopTap`.
 - Na Honore: prihlásiť účet, ukončiť deň v režime lietadlo, overiť čakajúce
   položky vo Fronte synchronizácie, obnoviť sieť a overiť súbory na Disku
   v priečinku `HMB_Sailing_Log_DATA/{plavba}/Day_{dátum}`.
 - Overiť, že vypnutie synchronizácie s backendom **nezastaví** nahrávanie na
   Disk — to je tá pasca s `isReachable`.
+- **Zatiaľ nespravené kvôli odpojenému telefónu:** vyčistenie 23 starých
+  zaseknutých položiek vo fronte na Honore — pribudlo namiesto toho trvalé
+  tlačidlo „Vymazať frontu" v `sync_queue_screen.dart`, použiť pri ďalšom
+  pripojení telefónu.

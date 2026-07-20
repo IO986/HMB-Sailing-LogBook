@@ -183,10 +183,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stopTrackingDay => 'Tracking beenden?';
 
   @override
-  String get finishingDayExport =>
-      'Tag wird gespeichert und Export vorbereitet...';
-
-  @override
   String get startVoyage => 'Fahrt starten';
 
   @override
@@ -2646,6 +2642,29 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get syncWifiOverrideBanner =>
+      'Anhang wartet auf WLAN (auf See meist nicht verfügbar).';
+
+  @override
+  String get syncWifiOverrideAction => 'Mobile Daten verwenden';
+
+  @override
+  String get syncWifiOverrideActive => 'Mobile Daten für Anhänge erlaubt';
+
+  @override
+  String get syncClearQueueAction => 'Warteschlange leeren';
+
+  @override
+  String get syncClearQueueConfirmTitle => 'Gesamte Warteschlange leeren?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Entfernt alle Einträge in der Sync-Warteschlange, auch bereits gesendete. Kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get syncClearQueueDone => 'Warteschlange geleert';
+
+  @override
   String get syncEnableToggle => 'Logbuch synchronisieren';
 
   @override
@@ -2732,7 +2751,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get syncCloudEnableToggleDesc =>
-      'Anmelden und Test-Upload zu Google Drive — automatischer PDF/GPX-Upload folgt später';
+      'Nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch zu Google Drive hochgeladen. Ohne Anmeldung bleibt alles nur auf dem Gerät.';
 
   @override
   String get syncCloudSignInAction => 'Mit Google anmelden';
@@ -2747,17 +2766,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Nicht angemeldet';
-
-  @override
-  String get syncCloudTestUploadAction => 'Test-Upload';
-
-  @override
-  String syncCloudTestUploadSuccess(String fileId) {
-    return 'Hochgeladen (ID: $fileId)';
-  }
-
-  @override
-  String syncCloudTestUploadFailure(String detail) {
-    return 'Fehlgeschlagen: $detail';
-  }
 }

@@ -181,9 +181,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get stopTrackingDay => 'Ukončiť tracking?';
 
   @override
-  String get finishingDayExport => 'Ukladám deň a pripravujem export...';
-
-  @override
   String get startVoyage => 'Spustiť plavbu';
 
   @override
@@ -2628,6 +2625,29 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get syncWifiOverrideBanner =>
+      'Príloha čaká na Wi-Fi (na mori zvyčajne nedostupné).';
+
+  @override
+  String get syncWifiOverrideAction => 'Použiť mobilné dáta';
+
+  @override
+  String get syncWifiOverrideActive => 'Mobilné dáta povolené pre prílohy';
+
+  @override
+  String get syncClearQueueAction => 'Vymazať frontu';
+
+  @override
+  String get syncClearQueueConfirmTitle => 'Vymazať celú frontu?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Odstráni všetky položky vo fronte synchronizácie vrátane už odoslaných. Túto akciu nemožno vrátiť.';
+
+  @override
+  String get syncClearQueueDone => 'Fronta vymazaná';
+
+  @override
   String get syncEnableToggle => 'Synchronizovať denník';
 
   @override
@@ -2714,7 +2734,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get syncCloudEnableToggleDesc =>
-      'Prihlásenie a test nahrávania na Google Drive — automatické nahrávanie PDF a GPX pribudne neskôr';
+      'Po prihlásení sa PDF a GPX z ukončeného dňa automaticky nahrajú na Google Drive. Bez prihlásenia zostáva všetko len v zariadení.';
 
   @override
   String get syncCloudSignInAction => 'Prihlásiť Google účet';
@@ -2729,17 +2749,4 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Neprihlásený';
-
-  @override
-  String get syncCloudTestUploadAction => 'Test nahrávania';
-
-  @override
-  String syncCloudTestUploadSuccess(String fileId) {
-    return 'Nahraté (id: $fileId)';
-  }
-
-  @override
-  String syncCloudTestUploadFailure(String detail) {
-    return 'Zlyhalo: $detail';
-  }
 }

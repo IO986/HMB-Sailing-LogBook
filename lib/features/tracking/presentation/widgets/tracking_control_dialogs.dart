@@ -1,25 +1,15 @@
-import 'dart:typed_data';
-
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
-import '../../../../core/models/skipper_profile.dart';
-import '../../../../core/providers/locale_provider.dart';
-import '../../../../core/providers/skipper_profile_provider.dart';
-import '../../../../core/providers/sync_provider.dart';
-import '../../../../core/providers/sync_settings_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
-import '../../../cloud/services/auto_export_service.dart';
-import '../../../export/presentation/widgets/day_map_view.dart';
 import '../../providers/tracking_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -142,11 +132,16 @@ Future<int> _defaultLogInterval() async {
 /// Stop always confirms first — no more "continue tomorrow / end voyage"
 /// branching here; that decision moved to the next Start tap instead.
 ///
-/// Also the trigger for cloud auto-export (`docs/plan_cloud_export.md` §5):
-/// captures the day's map off-tree, stops tracking, then builds + queues
-/// the day's PDF/GPX. `dayLogId` is read **before** `stopTracking()` —
+/// Deliberately does **not** auto-export: the day lands in the Denník so
+/// the skipper can still fix/finish entries first (weather, crew notes,
+/// duty periods) before anything gets built into a PDF or queued to
+/// Google Drive. `docs/plan_cloud_export.md` §5/§6 — the actual PDF/GPX
+/// build + cloud enqueue happens in `export_screen.dart`'s `_doExport`,
+/// triggered by the skipper explicitly opening the day's export (the PDF
+/// icon on this Denník screen), never automatically right after Stop.
+/// `dayLogId` is read **before** `stopTracking()` —
 /// `GpsTrackingService.stopTracking()` nulls `activeDayLogId`
-/// (gps_tracking_service.dart), so capturing it after would always be null.
+/// (gps_tracking_service.dart), so reading it after would always be null.
 Future<void> handleStopTap(BuildContext context, WidgetRef ref) async {
   final l = AppLocalizations.of(context);
   final ok = await showDialog<bool>(
@@ -167,82 +162,10 @@ Future<void> handleStopTap(BuildContext context, WidgetRef ref) async {
   if (!ok) return;
 
   final dayLogId = GpsTrackingService().activeDayLogId;
-
-  if (dayLogId == null) {
-    // No active day to export (shouldn't normally happen while tracking).
-    await ref.read(trackingNotifierProvider.notifier).stopTracking();
-    return;
-  }
-
-  BuildContext? dialogCtx;
-  if (context.mounted) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        dialogCtx = ctx;
-        return AlertDialog(
-          content: Row(children: [
-            const CircularProgressIndicator(),
-            const SizedBox(width: 20),
-            Expanded(child: Text(l.finishingDayExport)),
-          ]),
-        );
-      },
-    );
-  }
-
-  final mapScreenshot = await _captureDayMap(ref, dayLogId, context);
-  // Resolved before stopTracking()/export runs — none of this needs
-  // BuildContext, just whatever WidgetRef.read gives us.
-  final cloudEnabled = (await ref.read(syncSettingsProvider.future)).cloudEnabled;
-  final skipperProfile = await ref
-      .read(skipperProfileProvider.future)
-      .catchError((_) => const SkipperProfile());
-
   await ref.read(trackingNotifierProvider.notifier).stopTracking();
-  await AutoExportService().exportAndEnqueueDay(
-    db: ref.read(databaseProvider),
-    engine: ref.read(syncEngineProvider),
-    cloudEnabled: cloudEnabled,
-    locale: ref.read(localeProvider),
-    skipperProfile: skipperProfile,
-    dayLogId: dayLogId,
-    mapScreenshot: mapScreenshot,
-  );
+  if (dayLogId == null || !context.mounted) return;
 
-  if (dialogCtx != null && dialogCtx!.mounted) {
-    Navigator.of(dialogCtx!).pop();
-  }
-  if (mapScreenshot == null && context.mounted) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l.pdfMapUnavailable)));
-  }
-}
-
-/// Off-tree map capture for the day being closed — never lets a capture
-/// failure (unrendered tiles, missing context) stop the day from being
-/// saved; the PDF just gets built without a map and the caller tells the
-/// user so (`docs/plan_cloud_export.md` §3: "nikdy nie potichu").
-Future<Uint8List?> _captureDayMap(WidgetRef ref, int dayLogId, BuildContext context) async {
-  try {
-    final db = ref.read(databaseProvider);
-    final sessions = await db.getSessionsForDay(dayLogId);
-    final trackPoints = <TrackPoint>[];
-    for (final s in sessions) {
-      trackPoints.addAll(await db.getTrackPointsForSession(s.sessionId));
-    }
-    if (!context.mounted) return null;
-    return await ScreenshotController().captureFromWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(width: 360, height: 240, child: DayMapView(trackPoints: trackPoints)),
-        ),
-      ),
-      delay: const Duration(seconds: 2),
-      context: context,
-    );
-  } catch (_) {
-    return null;
-  }
+  final day = await ref.read(databaseProvider).getDayLogById(dayLogId);
+  if (day == null || !context.mounted) return;
+  context.go('/logbook/${day.charterId}/day/$dayLogId');
 }

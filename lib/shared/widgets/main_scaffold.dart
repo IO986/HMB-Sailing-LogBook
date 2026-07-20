@@ -19,6 +19,7 @@ import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
 import '../../core/services/udp_receiver_service.dart';
 import '../../core/providers/raymarine_providers.dart';
+import '../../features/cloud/providers/cloud_provider.dart';
 import '../../features/cloud/services/auto_export_service.dart';
 import '../../features/help/presentation/screens/user_guide_screen.dart';
 import '../../main.dart';
@@ -297,8 +298,11 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
               // no network) so the day isn't lost; only the upload is what
               // waits for the next launch.
               if (dayLogId != null) {
+                // Gated on the actual signed-in session — see the same
+                // comment in tracking_control_dialogs.dart's handleStopTap.
                 final cloudEnabled =
-                    (await ref.read(syncSettingsProvider.future)).cloudEnabled;
+                    (await ref.read(syncSettingsProvider.future)).cloudEnabled &&
+                        ref.read(cloudStorageProviderProvider).isSignedInNow;
                 final skipperProfile = await ref
                     .read(skipperProfileProvider.future)
                     .catchError((_) => const SkipperProfile());
