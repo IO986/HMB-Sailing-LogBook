@@ -254,7 +254,7 @@ class ExportService {
       _closeDialog(dialogCtx);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context).exportErrorMsg(e.toString())),
+          content: Text(l10n.exportErrorMsg(e.toString())),
           backgroundColor: Colors.red));
       }
     }
@@ -318,7 +318,7 @@ class ExportService {
       _closeDialog(dialogCtx);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.of(context).exportErrorMsg(e.toString())),
+          content: Text(l10n.exportErrorMsg(e.toString())),
           backgroundColor: Colors.red));
       }
     }

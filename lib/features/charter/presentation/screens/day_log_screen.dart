@@ -12,7 +12,6 @@ import '../../providers/charter_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
-import '../../../weather/presentation/widgets/sun_moon_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
