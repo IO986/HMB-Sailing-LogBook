@@ -42,7 +42,7 @@ SyncEngine ──► RoutingTransport                                  (nové, t
 
 **Každá vetva má vlastný `SyncPolicyTransport`.** Tým sa rieši pasca, ktorá by
 inak zabila celý návrh: `SyncPolicyTransport.isReachable()`
-(`lib/sync/sync_policy_transport.dart:32`) vracia `_isSyncEnabled() && ...`,
+(`lib/sync/sync_policy_transport.dart:33`) vracia `_isSyncEnabled() && ...`,
 takže jedna spoločná politika nad oboma vetvami by pri vypnutej synchronizácii
 s backendom zhasla aj nahrávanie na Disk. Dve inštancie, každá so svojím
 prepínačom, to riešia bez písania novej logiky — trieda sa použije presne
@@ -192,6 +192,16 @@ v úložisku. Chyba siete → `failure` s `retryable: true`; chýbajúce
 prihlásenie → `deferred`, aby sa nemíňal `retryCount` (rovnaká úvaha ako
 v `SyncPolicyTransport`, viď `docs/SYNC_API.md §7`).
 
+**Dôležité, poučenie z 20. 7.:** volanie `engine.enqueue(entityType:
+'cloud_export', ...)` musí byť podmienené `settings.cloudEnabled` **už na
+mieste zápisu** (v `AutoExportService`/`handleStopTap`/check-oute), nie až
+neskôr v `SyncPolicyTransport`/`RoutingTransport`. Presne tento bug sa dnes
+opravoval pre bežný log sync — `engine.enqueue()` sa volalo bez ohľadu na
+`settings.enabled`, takže outbox rástol donekonečna aj s vypnutou
+synchronizáciou (viď `docs/HANDOVER.md`, sekcia „Sync fixy"). Cloud vetva
+potrebuje rovnaký gate pri zápise, inak sa ten istý bug zopakuje pre
+`cloud_export` položky.
+
 ---
 
 ## 5. Spúšťače
@@ -201,7 +211,7 @@ v `SyncPolicyTransport`, viď `docs/SYNC_API.md §7`).
   `TrackingNotifier.stopTracking()`. Dôvod je mapa: odfotenie widgetu mimo
   stromu potrebuje `BuildContext` (viď §3).
   **Pozor:** `GpsTrackingService.stopTracking()` nuluje `_activeDayLogId`
-  (`gps_tracking_service.dart:306`), takže id treba zachytiť **pred** volaním.
+  (`gps_tracking_service.dart:311`), takže id treba zachytiť **pred** volaním.
   **Druhá pasca:** cesta „Zastaviť a ukončiť" (`main_scaffold.dart:280-283`)
   volá `SystemNavigator.pop()` hneď po zastavení. Priamy upload by appka
   zabila; fronta to rieši sama, odošle sa pri ďalšom spustení. Nikdy nečakať
@@ -226,9 +236,9 @@ v `SyncPolicyTransport`, viď `docs/SYNC_API.md §7`).
   `shared_preferences` a `setX` metódy, presne podľa existujúceho vzoru
   (`:49-82`). Prihlásený účet a token do `flutter_secure_storage`, rovnako ako
   `readSyncCustomToken` (`:7-28`).
-- UI **vnútri `_AccountSection`** (`settings_screen.dart:626`), pod dnešnými
+- UI **vnútri `_AccountSection`** (`settings_screen.dart:628`), pod dnešnými
   prepínačmi synchronizácie: `SwitchListTile` pre cloud, `RadioListTile`
-  pre poskytovateľa (rovnako ako dnešné `RadioListTile<SyncTarget>` na `:705`),
+  pre poskytovateľa (rovnako ako dnešné `RadioListTile<SyncTarget>` na `:709`),
   tlačidlo prihlásiť/odhlásiť s menom účtu, prepínače PDF a GPX.
 
 `attachmentPolicy` sa nezdvojuje — platí spoločne pre backend aj cloud.
@@ -245,14 +255,16 @@ skôr než bod 1.
 | položka | hodnota |
 |---|---|
 | Package name | `com.hmbsailinglogbook.app` |
-| SHA-1 debug | `C2:00:42:E8:39:BD:8E:DA:10:A6:F8:7A:75:F7:A8:C4:CD:80:9A:05` |
+| SHA-1 debug | `3C:4B:92:57:48:2C:20:9A:8B:D5:05:8C:A8:4D:BB:A5:97:CB:AE:6C` — **per-stroj**, z `~/.android/debug.keystore`; na inom počítači pretiahni znova cez `keytool -list -v -keystore ... -alias androiddebugkey -storepass android -keypass android` |
 | SHA-1 upload | `01:0C:5E:8C:F7:18:BC:C5:E4:20:C1:8B:FC:5E:36:B8:BF:8F:41:2F` |
+| SHA-1 Play App Signing | `90:49:70:2B:1F:F1:54:E6:99:D0:06:29:DE:A4:BF:50:5B:DA:4D:E3` |
 
 Pozor: `namespace` v Gradle je `com.sailinglogbook.app`, ale pre OAuth
 rozhoduje **`applicationId`**, teda `com.hmbsailinglogbook.app`
 (`android/app/build.gradle:43`).
 
-**Kroky:**
+**Kroky:** (hotové 20. 7. — konkrétne hodnoty a stav zaškrtávania sú v
+`docs/HANDOVER.md`, tu zostáva len postup ako referencia)
 1. console.cloud.google.com → **použiť existujúci projekt**, ak nejaký je.
    Nič sa neruší: appka dnes nepoužíva žiadnu Cloud službu (žiadny Firebase,
    žiadny `google-services.json`, žiadny Maps kľúč v manifeste — jediný
@@ -297,6 +309,15 @@ pristupuje k súborom používateľa a nahráva ich na jeho Disk.
 `google_sign_in`, `googleapis`, `extension_google_sign_in_as_googleapis_auth`.
 Prvé dva sú veľké; sledovať dopad na veľkosť APK (dnes debug 209 MB, release
 podstatne menej).
+
+**Ďalšie poučenie z 20. 7.:** `StrapiTransport`/`RestTransport` pôvodne
+nemali na Dio klientovi žiadny `connectTimeout`/`sendTimeout`/
+`receiveTimeout` — pri slabom/žiadnom signáli pokus visel na platformovom
+defaulte (rádovo minúty), čo pri väčšej fronte držalo rádio zbytočne
+dlho aktívne a vybíjalo batériu (opravené pridaním limitov 10s/20s/20s).
+`GoogleDriveStorage`/`CloudUploadTransport` musia mať rovnaké explicitné
+limity od začiatku — veľkorysejšie pre samotný upload PDF/GPX (väčšie
+súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
 
 ---
 
