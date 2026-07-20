@@ -1,10 +1,7 @@
-﻿import 'dart:math';
-import 'dart:typed_data';
+﻿import 'dart:typed_data';
 import 'package:drift/drift.dart' as drift show Value;
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 import 'package:screenshot/screenshot.dart';
 import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
@@ -18,6 +15,7 @@ import '../services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import 'signature_pad_dialog.dart';
 import 'pdf_preview_screen.dart';
+import 'widgets/day_map_view.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -394,34 +392,6 @@ class _DayMapPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Group points by session to avoid phantom lines between separate sessions
-    final bySession = <String, List<LatLng>>{};
-    for (final tp in trackPoints) {
-      final sid = tp.sessionId ?? '_';
-      bySession.putIfAbsent(sid, () => []).add(LatLng(tp.latitude, tp.longitude));
-    }
-
-    final allPoints = trackPoints
-        .map((p) => LatLng(p.latitude, p.longitude)).toList();
-
-    LatLng center = const LatLng(43.5, 16.4);
-    CameraFit? cameraFit;
-    if (allPoints.isNotEmpty) {
-      final avgLat = allPoints.map((p) => p.latitude).reduce((a, b) => a + b) / allPoints.length;
-      final avgLon = allPoints.map((p) => p.longitude).reduce((a, b) => a + b) / allPoints.length;
-      center = LatLng(avgLat, avgLon);
-
-      final minLat = allPoints.map((p) => p.latitude).reduce(min);
-      final maxLat = allPoints.map((p) => p.latitude).reduce(max);
-      final minLon = allPoints.map((p) => p.longitude).reduce(min);
-      final maxLon = allPoints.map((p) => p.longitude).reduce(max);
-      cameraFit = CameraFit.bounds(
-        bounds: LatLngBounds(LatLng(minLat, minLon), LatLng(maxLat, maxLon)),
-        padding: const EdgeInsets.all(28),
-        maxZoom: 14,
-      );
-    }
-
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -447,49 +417,7 @@ class _DayMapPreview extends StatelessWidget {
               height: 180,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: FlutterMap(
-                  options: MapOptions(
-                    initialCenter: center,
-                    initialZoom: 10.0,
-                    initialCameraFit: cameraFit,
-                    interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.none),
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://server.arcgisonline.com/ArcGIS/rest/services/'
-                          'World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                      userAgentPackageName: 'com.hmb.sailinglog',
-                    ),
-                    TileLayer(
-                      urlTemplate:
-                          'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.hmb.sailinglog',
-                    ),
-                    if (bySession.isNotEmpty)
-                      PolylineLayer(polylines: [
-                        for (final pts in bySession.values)
-                          if (pts.length >= 2)
-                            Polyline(points: pts, color: Colors.yellow, strokeWidth: 3),
-                      ]),
-                    if (allPoints.isNotEmpty)
-                      MarkerLayer(markers: [
-                        Marker(point: allPoints.first, width: 20, height: 20,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.green, shape: BoxShape.circle),
-                            child: const Icon(Icons.play_arrow,
-                                color: Colors.white, size: 14))),
-                        Marker(point: allPoints.last, width: 20, height: 20,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.red, shape: BoxShape.circle),
-                            child: const Icon(Icons.stop,
-                                color: Colors.white, size: 14))),
-                      ]),
-                  ],
-                ),
+                child: DayMapView(trackPoints: trackPoints),
               ),
             ),
           ),

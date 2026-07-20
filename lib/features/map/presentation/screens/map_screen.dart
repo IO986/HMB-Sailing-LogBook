@@ -271,6 +271,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       'World_Imagery/MapServer/tile/{z}/{y}/{x}',
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 19,
+                  tileProvider: CachingTileProvider('satellite'),
                 ),
                 // CartoDB labels navrch - free, bez API kľúča
                 TileLayer(

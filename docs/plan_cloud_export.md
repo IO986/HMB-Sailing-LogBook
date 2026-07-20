@@ -166,6 +166,16 @@ Dve podmienky, na ktorých to stojí, a obe sú splnené:
   má a beží, kým je appka živá — nie v bezkontextovom
   `TrackingNotifier.stopTracking()`.
 
+**Overené 20. 7. na Honore — obe podmienky platili presnejšie, než znelo
+vyššie:** `BuildContext` nie je len "kvôli MediaQuery a téme" ako všeobecná
+odporúčaná prax — bez odovzdania `context:` priamo do
+`captureFromWidget(...)` render úplne zlyhá (`No MediaQuery widget
+ancestor found`), lebo offscreen strom vtedy nie je napojený na žiadny
+`FlutterView`. A "dlaždice musia byť lokálne" platilo len pre OSM/dark/
+seamark vrstvy — satelitná (ArcGIS World_Imagery), ktorú `DayMapView`
+používa ako podklad, sa v appke necachovala vôbec, ani na interaktívnej
+mape. Oboje opravené (viď `docs/HANDOVER.md`, bod 3).
+
 Postup pri ukončení dňa: potvrdenie → **odfotenie mapy mimo stromu**
 (s hláškou o priebehu, `delay` aspoň 2 s na dokreslenie dlaždíc) → zastavenie
 trackingu → zloženie PDF s obrázkom → zaradenie do fronty.
@@ -371,9 +381,15 @@ súbory, pomalšie spojenie na mori), ale nikdy bez stropu.
    prihlásiť a nahrať testovací súbor.
 2. **Hotové 20. 7., overené na Honore.** `CloudUploadTransport` +
    `RoutingTransport` + zapojenie do `sync_provider.dart`, s testami.
-3. Vytiahnuť mapu dňa do `day_map_view.dart` a overiť `captureFromWidget`
-   **na Honore** — či snímka mimo stromu naozaj obsahuje dlaždice.
-   Toto je najrizikovejší kus; kým nezbehne, body 4 a 5 nemajú zmysel.
+3. **Hotové 20. 7., overené na Honore.** Vytiahnuť mapu dňa do
+   `day_map_view.dart` a overiť `captureFromWidget` **na Honore** — či
+   snímka mimo stromu naozaj obsahuje dlaždice. Toto bol najrizikovejší
+   kus; tri reálne problémy sa našli a opravili (detaily v
+   `docs/HANDOVER.md`): chýbajúci `context:` parameter (bez neho žiadna
+   `MediaQuery`), satelitná vrstva sa nikde necachovala (opravené
+   `tileProvider: CachingTileProvider(...)` aj na interaktívnej mape), a
+   fade-in animácia dlaždíc nechávala visieť `AnimationController`y po
+   `captureFromWidget` (opravené `TileDisplay.instantaneous()`).
 4. `AutoExportService` (PDF s mapou + GPX do trvalého adresára).
 5. Spúšťač na konci dňa v `handleStopTap`.
 5. Ručné tlačidlo v exporte.

@@ -143,9 +143,39 @@ implementácie (plán, §10) sú hotové a overené na Honore:**
 - Priečinok na Drive premenovaný na `HMB_Sailing_Log_DATA` (namiesto
   medzerou oddeleného "HMB Sailing Log").
 
-**Ďalší krok:** bod 3 z poradia — vytiahnuť mapu dňa do `day_map_view.dart`
-a overiť `captureFromWidget` na Honore (najrizikovejší kus, kým nezbehne,
-body 4 a 5 nemajú zmysel).
+**Bod 3 — hotový a overený na Honore, najrizikovejší kus zo `§10` je za nami:**
+
+- Mapa dňa vytiahnutá z `export_screen.dart`'s `_DayMapPreview` do
+  `lib/features/export/presentation/widgets/day_map_view.dart`
+  (`DayMapView`) — rovnaký widget pre foreground export aj budúci
+  headless auto-export.
+- Na Honore sa `captureFromWidget` **bez `context:` parametra** rozbil
+  úplne (`No MediaQuery widget ancestor found`) — offscreen render vtedy
+  nie je napojený na žiadny `FlutterView`. Oprava: vždy odovzdať `context:`
+  z volajúceho widgetu.
+- Väčšie zistenie presahujúce pôvodný plán: **satelitná vrstva (ArcGIS
+  World_Imagery) sa v appke necachovala vôbec, ani na interaktívnej mape.**
+  `TileCacheStore`/`CachingTileProvider` bol zapojený len pre OSM/dark/
+  seamark vrstvy. `map_screen.dart`'s satelitná `TileLayer` aj
+  `DayMapView`'s obe vrstvy teraz majú `tileProvider: CachingTileProvider(...)`
+  so zdieľanými `layerId` (`'satellite'`, `'seamark'`) — tak dlaždice
+  nacachované z bežného prezerania mapy (aj cez deň) sú k dispozícii aj
+  headless snímke. Overené naživo: prepnutie interaktívnej mapy na satelit
+  → počkanie → `DayMapView` capture mimo stromu ukázal reálny terén, nie
+  sivý obdĺžnik.
+- `DayMapView` dostal aj `TileDisplay.instantaneous()` namiesto default
+  fade-in — widget existuje len na to, aby sa odfotil, fade-in animácia
+  nemá čo animovať a v `captureFromWidget` necháva visieť
+  `AnimationController`y po zahodení stromu (scheduler to hlási ako leak).
+- Test `test/export/day_map_view_test.dart`: `captureFromWidget` musí bežať
+  cez `tester.runAsync(...)` — `testWidgets` má falošné hodiny, reálny
+  `delay:` v `captureFromWidget` bez toho nikdy neuplynie (10-minútový
+  timeout, dvakrát, kým sa na to prišlo). Tile provider v teste je fake
+  (žiadna sieť) — `DayMapView` preto dostal injektovateľný
+  `tileProviderBuilder` parameter (default `CachingTileProvider.new`).
+
+**Ďalší krok:** bod 4 z poradia — `AutoExportService` (PDF s mapou + GPX do
+trvalého adresára).
 
 ## Prostredie
 
