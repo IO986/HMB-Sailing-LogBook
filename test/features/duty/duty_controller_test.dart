@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show DatabaseConnection, Value;
+import 'package:drift/drift.dart' show DatabaseConnection;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
