@@ -1,6 +1,6 @@
 # Privacy Policy – HMB Sailing Log
 
-**Last updated: 2026-06-29**
+**Last updated: 2026-07-22**
 **App name:** HMB Sailing Log
 **Developer:** LacoSte© / IO986
 **Contact:** steclaco@gmail.com
@@ -37,6 +37,14 @@ HMB Sailing Log ("the App") is a personal sailing logbook for Android. This Priv
 - **Why:** To form your personal sailing logbook
 - **Storage:** Stored in a local SQLite database on your device. Synced to HMB cloud only if you are logged in and initiate sync.
 
+### 2.5 Cloud Export to Google Drive (Optional)
+- **What:** A PDF summary and a GPX track file for each sailing day you close (route, log entries, weather, crew/duty notes you entered)
+- **Why:** So your logbook survives even if the phone is lost or damaged at sea — the day's PDF/GPX uploads automatically once you finish editing it, no extra tap needed
+- **Sign-in:** Uses Google Sign-In. We request the **`drive.file`** scope only — the narrowest Google Drive scope that exists. It lets the App see and manage **only the files it creates itself**; it cannot browse, read, or modify anything else already in your Google Drive
+- **Storage:** Uploaded to **your own** Google Drive, under a folder named `HMB_Sailing_Log_DATA`. We (the developer) never receive or store a copy — the files live in your Drive, under your Google account, subject to Google's own privacy policy (https://policies.google.com/privacy)
+- **Optional:** Entirely opt-in — off by default. Turning it off, or never signing in, means nothing is uploaded; everything stays local on the device
+- **Your control:** You can revoke access anytime from your Google Account's "Third-party apps with account access" settings, or delete the uploaded files/folder directly in Google Drive
+
 ### 2.5 App Preferences
 - **What:** Language setting, unit preferences (temperature, wind, depth), marine instrument connection settings
 - **Why:** To remember your preferences across sessions
@@ -53,11 +61,11 @@ The App uses the following third-party services:
 | **Open-Meteo** | Marine weather forecast (no account required, open API) | https://open-meteo.com/en/terms |
 | **OpenStreetMap / OpenSeaMap** | Nautical map tiles (no account required) | https://wiki.openstreetmap.org/wiki/Privacy_Policy |
 | **Esri ArcGIS** | Satellite map tiles | https://www.esri.com/en-us/privacy/privacy-statements/privacy-statement |
+| **Google Sign-In / Google Drive** | Optional cloud export of day PDF/GPX (`drive.file` scope only, see §2.5) | https://policies.google.com/privacy |
 
 The App does **not** use:
 - Advertising networks
 - Analytics SDKs (Firebase, Crashlytics, etc.)
-- Social login providers
 
 ---
 
@@ -67,6 +75,7 @@ We do **not** sell, rent, or share your personal data with third parties for mar
 
 Your data may be shared only:
 - With the HMB cloud service (logbook.hmba.boats) if you create an account and sync
+- With your own Google Drive, if you enable Cloud export and sign in (§2.5) — the App can only create/manage files it made itself there, never access anything else in your Drive
 - When you explicitly export a PDF or GPX file and share it using Android's share functionality
 
 ---
@@ -75,6 +84,7 @@ Your data may be shared only:
 
 - **Local data:** Remains on your device until you delete the App or clear its data
 - **Cloud data:** If you delete your online account, all cloud data is deleted within 30 days
+- **Google Drive exports:** Remain in your Google Drive until you delete them yourself — we have no way to delete files from your Drive remotely
 - **Exported files:** Remain in your device's storage until you delete them manually
 
 ---

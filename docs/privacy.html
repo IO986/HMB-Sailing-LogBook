@@ -44,7 +44,7 @@
 </header>
 
 <main>
-  <p class="updated"><strong>Last updated:</strong> 2026-06-29 &nbsp;|&nbsp; <strong>App:</strong> HMB Sailing Log &nbsp;|&nbsp; <strong>Developer:</strong> LacoSte© / IO986 &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:steclaco@gmail.com">steclaco@gmail.com</a></p>
+  <p class="updated"><strong>Last updated:</strong> 2026-07-22 &nbsp;|&nbsp; <strong>App:</strong> HMB Sailing Log &nbsp;|&nbsp; <strong>Developer:</strong> LacoSte© / IO986 &nbsp;|&nbsp; <strong>Contact:</strong> <a href="mailto:steclaco@gmail.com">steclaco@gmail.com</a></p>
 
   <h2>1. Introduction</h2>
   <p>HMB Sailing Log ("the App") is a personal sailing logbook for Android. This Privacy Policy explains what data the App collects, how it is used, and your rights as a user.</p>
@@ -87,19 +87,31 @@
     <li><strong>Storage:</strong> Stored locally using Android SharedPreferences.</li>
   </ul>
 
+  <h3>2.6 Cloud Export to Google Drive (Optional)</h3>
+  <ul>
+    <li><strong>What:</strong> A PDF summary and a GPX track file for each sailing day you close (route, log entries, weather, crew/duty notes you entered)</li>
+    <li><strong>Why:</strong> So your logbook survives even if the phone is lost or damaged at sea — it uploads automatically once you finish editing the day, no extra tap needed</li>
+    <li><strong>Sign-in:</strong> Uses Google Sign-In, requesting only the <strong><code>drive.file</code></strong> scope — the narrowest Drive scope that exists. It lets the App see and manage <strong>only files it creates itself</strong>; it cannot browse, read, or modify anything else already in your Drive</li>
+    <li><strong>Storage:</strong> Uploaded to <strong>your own</strong> Google Drive, under a folder named <code>HMB_Sailing_Log_DATA</code>. We never receive or store a copy — the files live in your Drive, under your Google account, subject to <a href="https://policies.google.com/privacy" target="_blank">Google's own privacy policy</a></li>
+    <li><strong>Optional:</strong> Off by default. Without signing in, nothing is uploaded — everything stays local</li>
+    <li><strong>Your control:</strong> Revoke access anytime from your Google Account's "Third-party apps with account access" settings, or delete the files/folder directly in Google Drive</li>
+  </ul>
+
   <h2>3. Third-Party Services</h2>
   <table>
     <tr><th>Service</th><th>Purpose</th><th>Privacy Policy</th></tr>
     <tr><td>Open-Meteo</td><td>Marine weather forecast (no account required)</td><td><a href="https://open-meteo.com/en/terms" target="_blank">open-meteo.com</a></td></tr>
     <tr><td>OpenStreetMap / OpenSeaMap</td><td>Nautical map tiles (no account required)</td><td><a href="https://wiki.openstreetmap.org/wiki/Privacy_Policy" target="_blank">openstreetmap.org</a></td></tr>
     <tr><td>Esri ArcGIS</td><td>Satellite map tiles</td><td><a href="https://www.esri.com/en-us/privacy/privacy-statements/privacy-statement" target="_blank">esri.com</a></td></tr>
+    <tr><td>Google Sign-In / Google Drive</td><td>Optional cloud export of day PDF/GPX (<code>drive.file</code> scope only, see §2.6)</td><td><a href="https://policies.google.com/privacy" target="_blank">policies.google.com</a></td></tr>
   </table>
-  <p>The App does <strong>not</strong> use advertising networks, analytics SDKs (Firebase, Crashlytics etc.), or social login providers.</p>
+  <p>The App does <strong>not</strong> use advertising networks or analytics SDKs (Firebase, Crashlytics etc.).</p>
 
   <h2>4. Data Sharing</h2>
   <p>We do <strong>not</strong> sell, rent, or share your personal data with third parties for marketing purposes. Your data may be shared only:</p>
   <ul>
     <li>With the HMB cloud (logbook.hmba.boats) if you create an account and sync</li>
+    <li>With your own Google Drive, if you enable Cloud export and sign in (§2.6) — the App can only create/manage files it made itself there, never access anything else in your Drive</li>
     <li>When you explicitly export a PDF or GPX file and share it via Android's share functionality</li>
   </ul>
 
@@ -107,6 +119,7 @@
   <ul>
     <li><strong>Local data:</strong> Remains on your device until you delete the App or clear its data</li>
     <li><strong>Cloud data:</strong> Deleted within 30 days of account deletion</li>
+    <li><strong>Google Drive exports:</strong> Remain in your Google Drive until you delete them yourself — we have no way to delete files from your Drive remotely</li>
     <li><strong>Exported files:</strong> Remain in your device's storage until deleted manually</li>
   </ul>
 
