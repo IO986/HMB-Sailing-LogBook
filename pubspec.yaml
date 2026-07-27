@@ -1,7 +1,7 @@
 name: hmb_sailing_log
 description: HMB Sailing Log - profesionálny lodný denník pre jachtárov
 publish_to: 'none'
-version: 1.23.0+48
+version: 1.24.0+49
 
 environment:
   sdk: '>=3.4.0 <4.0.0'

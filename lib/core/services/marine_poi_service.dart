@@ -42,9 +42,14 @@ class MarinePoiService {
     },
   ));
 
-  // Hlavný endpoint + mirror — hlavný občas vracia 504 pri preťažení.
+  // Viac mirrorov — skúšajú sa v poradí, kým jeden neodpovie. Hlavný
+  // overpass-api.de často vracia 504 pri preťažení a kumi.systems prestal
+  // odpovedať vôbec (overené 27. 7. — timeout na oboch); maps.mail.ru aj
+  // private.coffee bežia, len pomalšie (~12 s), preto vyšší receiveTimeout.
   static const _endpoints = [
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
     'https://overpass-api.de/api/interpreter',
+    'https://overpass.private.coffee/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
   ];
   static const _cellDeg = 0.25;
@@ -109,17 +114,25 @@ class MarinePoiService {
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
 
-  /// Hlavný server dostane 4 s — ak dovtedy neodpovie (typicky preťaženie,
-  /// 504), letí dotaz na mirror. Pomalá odpoveď hlavného servera sa tým
-  /// nezruší, len sa na ňu nečaká.
+  /// Skúša endpointy po poradí. Každý dostane vlastný časový strop (Dio
+  /// `receiveTimeout`); pri chybe/timeoute/non-2xx sa ide na ďalší. Vyhodí
+  /// až keď zlyhajú všetky — volajúci to odchytí a nechá bunky nekešované.
   Future<Response> _fetchWithFallback(String query) async {
-    try {
-      return await _post(_endpoints[0], query)
-          .timeout(const Duration(seconds: 4));
-    } catch (e) {
-      debugPrint('[POI] primary slow/failed ($e), using mirror');
-      return _post(_endpoints[1], query);
+    Object? lastError;
+    for (final endpoint in _endpoints) {
+      try {
+        final resp = await _post(endpoint, query);
+        // Overpass vracia 200 s JSON; 504/429/preťaženie majú iný kód a
+        // Dio ich (validateStatus default) hodí ako výnimku — ale pre istotu.
+        if (resp.statusCode == 200 && resp.data is Map) return resp;
+        lastError = 'HTTP ${resp.statusCode}';
+        debugPrint('[POI] $endpoint returned ${resp.statusCode}, next mirror');
+      } catch (e) {
+        lastError = e;
+        debugPrint('[POI] $endpoint failed ($e), next mirror');
+      }
     }
+    throw Exception('all Overpass endpoints failed: $lastError');
   }
 
   Future<void> _fetchCells(List<(int, int)> cells) {
