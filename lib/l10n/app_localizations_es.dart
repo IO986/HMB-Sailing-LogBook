@@ -36,6 +36,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navSettings => 'Ajustes';
 
   @override
+  String get navCustomizeTitle => 'Menú inferior';
+
+  @override
+  String get navCustomizeHint =>
+      'Mantén y arrastra para reordenar los iconos. Usa el interruptor para ocultar una pestaña del menú inferior — Ajustes siempre se muestra.';
+
+  @override
+  String get navAlwaysShown => 'Siempre visible';
+
+  @override
+  String get navIconSizeLabel => 'Tamaño de iconos';
+
+  @override
+  String get navOpenHiddenTitle => 'Abrir pestañas ocultas';
+
+  @override
   String get cameraPermissionDenied =>
       'Acceso a la cámara denegado. Actívalo en los ajustes del dispositivo.';
 
@@ -153,6 +169,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guidePromptAction => 'Mostrar guía';
+
+  @override
+  String get notifPromptTitle => '¿Permitir notificaciones?';
+
+  @override
+  String get notifPromptBody =>
+      'Mientras se registra una travesía, una notificación permanece en la barra de estado y en la pantalla de bloqueo, para que veas que el seguimiento está activo y accedas rápido. Sin permiso, el sistema puede limitar el seguimiento en segundo plano.';
+
+  @override
+  String get notifPromptAllow => 'Permitir';
 
   @override
   String get trackingActiveTitle => 'Rastreo activo';

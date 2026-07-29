@@ -1,6 +1,7 @@
 ﻿import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
@@ -109,31 +110,95 @@ final currentGridProvider = FutureProvider<List<SeaCurrentPoint>>((ref) async {
 });
 
 class MapNotifier extends Notifier<MapState> {
+  // Kľúče do SharedPreferences pre uchované vrstvy/prepínače mapy.
+  static const _kSeamarks = 'map_show_seamarks';
+  static const _kMarinePois = 'map_show_marine_pois';
+  static const _kRainRadar = 'map_show_rain_radar';
+  static const _kWindGrid = 'map_show_wind_grid';
+  static const _kOceanCurrents = 'map_show_ocean_currents';
+  static const _kCurrentGrid = 'map_show_current_grid';
+  static const _kFollowGps = 'map_follow_gps';
+  static const _kNorthLocked = 'map_north_locked';
+
   @override
-  MapState build() => const MapState();
+  MapState build() {
+    // Notifier.build() musí vrátiť synchronne — vráti defaulty a hneď
+    // spustí asynchrónne načítanie uchovaných hodnôt, ktoré stav prepíše.
+    // Preview polia sa zámerne neukladajú (sú prechodné).
+    _load();
+    return const MapState();
+  }
 
-  void toggleFollowGps() =>
-      state = state.copyWith(followGps: !state.followGps);
+  Future<void> _load() async {
+    final p = await SharedPreferences.getInstance();
+    state = state.copyWith(
+      showSeamarks: p.getBool(_kSeamarks) ?? state.showSeamarks,
+      showMarinePois: p.getBool(_kMarinePois) ?? state.showMarinePois,
+      showRainRadar: p.getBool(_kRainRadar) ?? state.showRainRadar,
+      showWindGrid: p.getBool(_kWindGrid) ?? state.showWindGrid,
+      showOceanCurrents: p.getBool(_kOceanCurrents) ?? state.showOceanCurrents,
+      showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
+      followGps: p.getBool(_kFollowGps) ?? state.followGps,
+      northLocked: p.getBool(_kNorthLocked) ?? state.northLocked,
+    );
+  }
 
-  void setFollowGps(bool v) => state = state.copyWith(followGps: v);
+  Future<void> _persist() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setBool(_kSeamarks, state.showSeamarks);
+    await p.setBool(_kMarinePois, state.showMarinePois);
+    await p.setBool(_kRainRadar, state.showRainRadar);
+    await p.setBool(_kWindGrid, state.showWindGrid);
+    await p.setBool(_kOceanCurrents, state.showOceanCurrents);
+    await p.setBool(_kCurrentGrid, state.showCurrentGrid);
+    await p.setBool(_kFollowGps, state.followGps);
+    await p.setBool(_kNorthLocked, state.northLocked);
+  }
 
-  void toggleSeamarks() =>
-      state = state.copyWith(showSeamarks: !state.showSeamarks);
+  void toggleFollowGps() {
+    state = state.copyWith(followGps: !state.followGps);
+    _persist();
+  }
 
-  void toggleMarinePois() =>
-      state = state.copyWith(showMarinePois: !state.showMarinePois);
+  void setFollowGps(bool v) {
+    state = state.copyWith(followGps: v);
+    _persist();
+  }
 
-  void toggleRainRadar() =>
-      state = state.copyWith(showRainRadar: !state.showRainRadar);
+  void toggleSeamarks() {
+    state = state.copyWith(showSeamarks: !state.showSeamarks);
+    _persist();
+  }
 
-  void toggleWindGrid() =>
-      state = state.copyWith(showWindGrid: !state.showWindGrid);
+  void toggleMarinePois() {
+    state = state.copyWith(showMarinePois: !state.showMarinePois);
+    _persist();
+  }
 
-  void toggleOceanCurrents() =>
-      state = state.copyWith(showOceanCurrents: !state.showOceanCurrents);
+  void toggleRainRadar() {
+    state = state.copyWith(showRainRadar: !state.showRainRadar);
+    _persist();
+  }
 
-  void toggleCurrentGrid() =>
-      state = state.copyWith(showCurrentGrid: !state.showCurrentGrid);
+  void toggleWindGrid() {
+    state = state.copyWith(showWindGrid: !state.showWindGrid);
+    _persist();
+  }
+
+  void toggleOceanCurrents() {
+    state = state.copyWith(showOceanCurrents: !state.showOceanCurrents);
+    _persist();
+  }
+
+  void toggleCurrentGrid() {
+    state = state.copyWith(showCurrentGrid: !state.showCurrentGrid);
+    _persist();
+  }
+
+  void setNorthLocked(bool v) {
+    state = state.copyWith(northLocked: v);
+    _persist();
+  }
 
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
   void previewDay(int dayLogId, String label) => state = _withPreview(
@@ -165,6 +230,7 @@ class MapNotifier extends Notifier<MapState> {
         showOceanCurrents: state.showOceanCurrents,
         showCurrentGrid: state.showCurrentGrid,
         followGps: state.followGps,
+        northLocked: state.northLocked,
         previewDayLogId: previewDayLogId,
         previewCharterId: previewCharterId,
         previewLabel: previewLabel,
@@ -207,6 +273,9 @@ class MapState {
   /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
   final bool showCurrentGrid;
   final bool followGps;
+  /// Rotácia mapy zamknutá na sever (north-up). Podržaním kompasu sa
+  /// prepína; uchováva sa medzi spusteniami ako user setting.
+  final bool northLocked;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
   /// Ak nastavené, mapa zobrazuje spojenú trasu celej tejto plavby.
@@ -221,6 +290,7 @@ class MapState {
     this.showOceanCurrents = false,
     this.showCurrentGrid = false,
     this.followGps = true,
+    this.northLocked = false,
     this.previewDayLogId,
     this.previewCharterId,
     this.previewLabel,
@@ -233,6 +303,7 @@ class MapState {
     bool? showOceanCurrents,
     bool? showCurrentGrid,
     bool? followGps,
+    bool? northLocked,
     int? previewDayLogId,
     int? previewCharterId,
     String? previewLabel,
@@ -244,6 +315,7 @@ class MapState {
         showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
         showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
         followGps: followGps ?? this.followGps,
+        northLocked: northLocked ?? this.northLocked,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,
         previewLabel: previewLabel ?? this.previewLabel,

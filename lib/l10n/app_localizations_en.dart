@@ -36,6 +36,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSettings => 'Settings';
 
   @override
+  String get navCustomizeTitle => 'Bottom menu';
+
+  @override
+  String get navCustomizeHint =>
+      'Press and drag to reorder the icons. Use the switch to hide a tab from the bottom menu — Settings is always shown.';
+
+  @override
+  String get navAlwaysShown => 'Always shown';
+
+  @override
+  String get navIconSizeLabel => 'Icon size';
+
+  @override
+  String get navOpenHiddenTitle => 'Open hidden tabs';
+
+  @override
   String get cameraPermissionDenied =>
       'Camera access was denied. Enable it in device settings.';
 
@@ -153,6 +169,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guidePromptAction => 'Show me the guide';
+
+  @override
+  String get notifPromptTitle => 'Allow notifications?';
+
+  @override
+  String get notifPromptBody =>
+      'While a voyage is being tracked, a notification stays in the status bar and on the lock screen — so you can see tracking is active and reach it quickly. Without permission the system may limit background tracking.';
+
+  @override
+  String get notifPromptAllow => 'Allow';
 
   @override
   String get trackingActiveTitle => 'Tracking active';

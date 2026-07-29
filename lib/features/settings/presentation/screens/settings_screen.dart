@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/models/marine_instrument_data.dart';
 import '../../../../core/models/sync_settings.dart';
 import '../../../../core/providers/locale_provider.dart';
+import '../../../../core/providers/nav_prefs_provider.dart';
 import '../../../../core/providers/night_mode_provider.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/providers/sync_provider.dart';
@@ -117,6 +118,10 @@ class SettingsScreen extends ConsumerWidget {
                 onChanged: (_) => ref.read(nightModeProvider.notifier).toggle(),
               ),
             ),
+            const SizedBox(height: 16),
+
+            _Section(l.navCustomizeTitle),
+            const _BottomNavSection(),
             const SizedBox(height: 16),
 
             _Section(l.backupSection),
@@ -1199,5 +1204,122 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
         onTap: _busy ? null : _restore,
       ),
     ]));
+  }
+}
+
+// ── Prispôsobenie spodného menu ────────────────────────────────
+
+/// Drag-and-drop poradie kariet spodného menu + prepínač skrytia. Nastavenia
+/// (`/settings`) sú fixné (vždy zobrazené, posledné) — nie sú v zozname.
+/// Skryté karty sa dajú otvoriť tlačidlami nižšie (alternatívna navigácia).
+class _BottomNavSection extends ConsumerWidget {
+  const _BottomNavSection();
+
+  static String _label(AppLocalizations l, String path) => switch (path) {
+        '/map' => l.navMap,
+        '/logbook' => l.navLogbook,
+        '/weather' => l.navWeather,
+        '/instruments' => l.navInstruments,
+        '/safety' => l.navSafety,
+        '/compass' => l.navCompass,
+        kSettingsPath => l.navSettings,
+        _ => path,
+      };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final prefs = ref.watch(navPrefsProvider);
+    final notifier = ref.read(navPrefsProvider.notifier);
+    final hiddenPaths =
+        prefs.order.where((p) => prefs.hidden.contains(p)).toList();
+
+    return Card(
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l.navCustomizeHint,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Row(children: [
+            Expanded(child: Text(l.navIconSizeLabel)),
+            SegmentedButton<NavIconSize>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: NavIconSize.small, label: Text('S')),
+                ButtonSegment(value: NavIconSize.medium, label: Text('M')),
+                ButtonSegment(value: NavIconSize.large, label: Text('L')),
+              ],
+              selected: {prefs.iconSize},
+              onSelectionChanged: (s) => notifier.setIconSize(s.first),
+            ),
+          ]),
+        ),
+        const Divider(height: 1),
+        ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
+          itemCount: prefs.order.length,
+          onReorder: notifier.reorder,
+          itemBuilder: (ctx, i) {
+            final path = prefs.order[i];
+            final tab = navTabForPath(path);
+            final visible = !prefs.hidden.contains(path);
+            return ListTile(
+              key: ValueKey(path),
+              leading: ReorderableDragStartListener(
+                index: i,
+                child: const Icon(Icons.drag_handle, color: Colors.grey),
+              ),
+              title: Row(children: [
+                Icon(tab.icon, size: 20),
+                const SizedBox(width: 12),
+                Text(_label(l, path)),
+              ]),
+              trailing: Switch(
+                value: visible,
+                onChanged: (v) => notifier.setHidden(path, !v),
+              ),
+            );
+          },
+        ),
+        // Fixné Nastavenia — vždy zobrazené, mimo drag zoznamu.
+        ListTile(
+          leading: const SizedBox(
+              width: 24, child: Icon(Icons.lock_outline, size: 18, color: Colors.grey)),
+          title: Row(children: [
+            const Icon(Icons.settings_outlined, size: 20),
+            const SizedBox(width: 12),
+            Text(_label(l, kSettingsPath)),
+          ]),
+          trailing: Text(l.navAlwaysShown,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+        ),
+        if (hiddenPaths.isNotEmpty) ...[
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(l.navOpenHiddenTitle,
+                  style: Theme.of(context).textTheme.labelLarge),
+            ),
+          ),
+          for (final path in hiddenPaths)
+            ListTile(
+              leading: Icon(navTabForPath(path).icon),
+              title: Text(_label(l, path)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go(path),
+            ),
+        ],
+      ]),
+    );
   }
 }

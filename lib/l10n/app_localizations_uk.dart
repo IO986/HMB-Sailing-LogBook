@@ -36,6 +36,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get navSettings => 'Налаштування';
 
   @override
+  String get navCustomizeTitle => 'Нижнє меню';
+
+  @override
+  String get navCustomizeHint =>
+      'Утримуйте та перетягуйте, щоб змінити порядок іконок. Перемикачем приховайте вкладку з нижнього меню — Налаштування показуються завжди.';
+
+  @override
+  String get navAlwaysShown => 'Завжди показано';
+
+  @override
+  String get navIconSizeLabel => 'Розмір іконок';
+
+  @override
+  String get navOpenHiddenTitle => 'Відкрити приховані вкладки';
+
+  @override
   String get cameraPermissionDenied =>
       'Доступ до камери заборонено. Увімкніть його в налаштуваннях пристрою.';
 
@@ -153,6 +169,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guidePromptAction => 'Показати посібник';
+
+  @override
+  String get notifPromptTitle => 'Дозволити сповіщення?';
+
+  @override
+  String get notifPromptBody =>
+      'Під час запису плавання сповіщення залишається в рядку стану та на екрані блокування — ви бачите, що відстеження активне, і маєте швидкий доступ. Без дозволу система може обмежити відстеження у фоні.';
+
+  @override
+  String get notifPromptAllow => 'Дозволити';
 
   @override
   String get trackingActiveTitle => 'Трекінг активний';

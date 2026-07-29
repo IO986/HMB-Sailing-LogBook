@@ -36,6 +36,22 @@ class AppLocalizationsSk extends AppLocalizations {
   String get navSettings => 'Nastavenia';
 
   @override
+  String get navCustomizeTitle => 'Spodné menu';
+
+  @override
+  String get navCustomizeHint =>
+      'Podrž a potiahni pre zmenu poradia ikon. Prepínačom kartu skryješ zo spodného menu — Nastavenia sú vždy zobrazené.';
+
+  @override
+  String get navAlwaysShown => 'Vždy zobrazené';
+
+  @override
+  String get navIconSizeLabel => 'Veľkosť ikon';
+
+  @override
+  String get navOpenHiddenTitle => 'Otvoriť skryté karty';
+
+  @override
   String get cameraPermissionDenied =>
       'Prístup ku kamere bol zamietnutý. Povoľ ho v nastaveniach zariadenia.';
 
@@ -152,6 +168,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guidePromptAction => 'Ukázať príručku';
+
+  @override
+  String get notifPromptTitle => 'Povoliť upozornenia?';
+
+  @override
+  String get notifPromptBody =>
+      'Počas sledovania plavby beží upozornenie v systémovej lište a na zamknutej obrazovke — vidíš, že tracking je aktívny, a máš k nemu rýchly prístup. Bez povolenia môže systém sledovanie na pozadí obmedziť.';
+
+  @override
+  String get notifPromptAllow => 'Povoliť';
 
   @override
   String get trackingActiveTitle => 'Tracking aktívny';

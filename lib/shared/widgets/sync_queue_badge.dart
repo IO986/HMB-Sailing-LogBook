@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../core/providers/sync_provider.dart';
+import '../../core/providers/sync_settings_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 /// Persistent header strip: "● offline · 3 čakajú". Hidden (animated away)
@@ -17,8 +18,17 @@ class SyncQueueBadge extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final snapshot = ref.watch(syncQueueSnapshotProvider).valueOrNull;
     final online = ref.watch(isOnlineProvider).valueOrNull ?? true;
+    final settings = ref.watch(syncSettingsProvider).valueOrNull;
 
-    final visible = snapshot != null &&
+    // When neither backend sync nor cloud export is on, nothing in the queue
+    // is actionable — items just sit as "deferred" by SyncPolicyTransport, so
+    // showing "offline · N odložených" here only nags the user who has
+    // deliberately turned syncing off. Hide the badge entirely in that case.
+    final anySyncOn =
+        (settings?.enabled ?? false) || (settings?.cloudEnabled ?? false);
+
+    final visible = anySyncOn &&
+        snapshot != null &&
         (!online ||
             snapshot.pending > 0 ||
             snapshot.failed > 0 ||

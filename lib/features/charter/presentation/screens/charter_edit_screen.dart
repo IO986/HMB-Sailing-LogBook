@@ -863,8 +863,14 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               otherCerts: skipper.otherCertsCtrl.text.trim(),
             ))
             .timeout(const Duration(seconds: 5));
-      } on TimeoutException catch (_) {
-        // skipper profile cache is best-effort; voyage data must still save
+      } catch (_) {
+        // skipper profile cache is best-effort; voyage data must still save.
+        // Catch EVERYTHING, not just TimeoutException — on some devices
+        // flutter_secure_storage (EncryptedSharedPreferences) throws a
+        // PlatformException instead of hanging, and letting it propagate out
+        // of _save left `_loading` stuck true forever (infinite spinner, the
+        // voyage never saved). This is the same bug the timeout guard was
+        // meant to fix, just via a thrown error rather than a hang.
       }
     }
 

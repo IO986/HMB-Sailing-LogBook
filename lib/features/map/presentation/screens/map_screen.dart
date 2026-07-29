@@ -66,8 +66,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   // Rotácia mapy (dvoma prstami) — kompas hore ju resetne späť na north-up.
   double _mapRotationDeg = 0;
-  // Lock na sever — podržanie ružice vypne gesto rotácie úplne.
-  bool _northLocked = false;
+  // Lock na sever (podržanie ružice vypne gesto rotácie) je teraz uchovaný
+  // user setting v mapNotifierProvider (`northLocked`), nie lokálny stav —
+  // prežije reštart appky aj odchod z obrazovky mapy.
 
   @override
   void initState() {
@@ -220,7 +221,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // Lock na sever (dlhé podržanie ružice) vypne gesto rotácie —
               // mapa ostane north-up, kým používateľ zámok znova neuvoľní.
               interactionOptions: InteractionOptions(
-                flags: _northLocked
+                flags: mapState.northLocked
                     ? InteractiveFlag.all & ~InteractiveFlag.rotate
                     : InteractiveFlag.all,
               ),
@@ -580,19 +581,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             left: 12,
             child: _NorthResetButton(
               rotationDeg: _mapRotationDeg,
-              locked: _northLocked,
+              locked: mapState.northLocked,
               onTap: () {
                 _mapController.rotate(0);
                 setState(() => _mapRotationDeg = 0);
               },
               onLongPress: () {
-                setState(() {
-                  _northLocked = !_northLocked;
-                  if (_northLocked) {
-                    _mapController.rotate(0);
-                    _mapRotationDeg = 0;
-                  }
-                });
+                final nowLocked = !mapState.northLocked;
+                ref.read(mapNotifierProvider.notifier).setNorthLocked(nowLocked);
+                if (nowLocked) {
+                  _mapController.rotate(0);
+                  setState(() => _mapRotationDeg = 0);
+                }
               },
             ),
           ),

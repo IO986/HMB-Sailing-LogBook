@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
@@ -11,6 +12,7 @@ import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import 'tracking_control_bar.dart';
 import '../../core/models/skipper_profile.dart';
 import '../../core/providers/locale_provider.dart';
+import '../../core/providers/nav_prefs_provider.dart';
 import '../../core/providers/skipper_profile_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/providers/sync_settings_provider.dart';
@@ -43,8 +45,49 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _maybePromptUserGuide();
+      await _maybePromptNotifications();
       await _maybePromptRaymarineSetup();
     });
+  }
+
+  /// First-run only: vysvetlí, prečo appka chce notifikácie (upozornenie
+  /// v lište a na zamknutej obrazovke počas sledovania plavby) a vyžiada
+  /// povolenie POST_NOTIFICATIONS. Android 13+ ho inak nikdy nezobrazí sám
+  /// a foreground-service notifikácia by bola potichu skrytá.
+  Future<void> _maybePromptNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('notifications_prompted') ?? false) return;
+
+    // Ak už je povolené (napr. z predošlej verzie), len si to poznač a mlč.
+    if (await Permission.notification.isGranted) {
+      await prefs.setBool('notifications_prompted', true);
+      return;
+    }
+    await prefs.setBool('notifications_prompted', true);
+    if (!mounted) return;
+
+    final l = AppLocalizations.of(context);
+    final allow = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.notifications_active_outlined, size: 32),
+        title: Text(l.notifPromptTitle),
+        content: Text(l.notifPromptBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.notifPromptAllow),
+          ),
+        ],
+      ),
+    );
+    if (allow == true) {
+      await Permission.notification.request();
+    }
   }
 
   Future<void> _maybePromptUserGuide() async {
@@ -206,33 +249,39 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     }
   }
 
-  static const _tabData = [
-    (icon: Icons.map_outlined,        activeIcon: Icons.map,          path: '/map'),
-    (icon: Icons.book_outlined,       activeIcon: Icons.book,         path: '/logbook'),
-    (icon: Icons.cloud_outlined,      activeIcon: Icons.cloud,        path: '/weather'),
-    (icon: Icons.speed_outlined,      activeIcon: Icons.speed,        path: '/instruments'),
-    (icon: Icons.shield_outlined,     activeIcon: Icons.shield,       path: '/safety'),
-    (icon: Icons.explore_outlined,    activeIcon: Icons.explore,      path: '/compass'),
-    (icon: Icons.settings_outlined,   activeIcon: Icons.settings,     path: '/settings'),
-  ];
+  static String _labelForPath(AppLocalizations l, String path) => switch (path) {
+        '/map' => l.navMap,
+        '/logbook' => l.navLogbook,
+        '/weather' => l.navWeather,
+        '/instruments' => l.navInstruments,
+        '/safety' => l.navSafety,
+        '/compass' => l.navCompass,
+        kSettingsPath => l.navSettings,
+        _ => '',
+      };
 
-  List<String> _labels(AppLocalizations l) => [
-    l.navMap, l.navLogbook, l.navWeather, l.navInstruments, l.navSafety, l.navCompass, l.navSettings,
-  ];
-
-  int _idx(BuildContext ctx) {
+  String _currentPath(BuildContext ctx) {
     try {
-      final loc = GoRouterState.of(ctx).uri.path;
-      final i = _tabData.indexWhere((t) => loc.startsWith(t.path));
-      return i < 0 ? 0 : i;
-    } catch (_) { return 0; }
+      return GoRouterState.of(ctx).uri.path;
+    } catch (_) {
+      return '/map';
+    }
+  }
+
+  /// Index aktuálnej cesty v zozname viditeľných kariet [visiblePaths].
+  /// Keď je aktuálna obrazovka skrytá karta (otvorená cez Nastavenia) alebo
+  /// podstránka, zvýrazni Nastavenia (posledná, fixná) — tá je vstupom k nim.
+  int _idxIn(List<String> visiblePaths, BuildContext ctx) {
+    final loc = _currentPath(ctx);
+    final i = visiblePaths.indexWhere((p) => loc.startsWith(p));
+    if (i >= 0) return i;
+    return visiblePaths.length - 1; // /settings
   }
 
   void _handleBack(BuildContext context) {
     try {
       final loc = GoRouterState.of(context).uri.path;
-      final isMainTab = _tabData.any((t) => t.path == loc);
-      final currentIndex = _idx(context);
+      final isMainTab = kNavTabs.any((t) => t.path == loc);
 
       if (!isMainTab) {
         if (context.canPop()) {
@@ -243,7 +292,8 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         return;
       }
 
-      if (currentIndex != 0) {
+      // Z hociktorej karty späť vedie najprv na mapu; z mapy dvojklik = exit.
+      if (loc != '/map') {
         context.go('/map');
         return;
       }
@@ -346,15 +396,20 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = _idx(context);
     final l = AppLocalizations.of(context);
-    final labels = _labels(l);
     final isTracking = ref.watch(isTrackingProvider);
+    final navPrefs = ref.watch(navPrefsProvider);
+    // Viditeľné karty: user-usporiadané a neskryté presúvateľné + fixné
+    // Nastavenia vždy posledné. Nastavenia sa nedajú skryť ani presunúť,
+    // takže cez ne je vždy prístup k skrytým kartám.
+    final visiblePaths = [...navPrefs.visibleOrdered, kSettingsPath];
+    final currentIndex = _idxIn(visiblePaths, context);
     // Map, Denník, Lodné prístroje — the control bar lives there regardless
     // of tracking state, so Start is always one tap away where sailing
-    // happens. Path-based, so tab reordering can't silently break it.
+    // happens. Path-based (aktuálna cesta), takže preusporiadanie kariet
+    // to nerozbije.
     final showControlBar = const {'/map', '/logbook', '/instruments'}
-        .contains(_tabData[currentIndex].path);
+        .contains(_currentPath(context));
 
     return PopScope(
       canPop: false,
@@ -382,16 +437,21 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
             labelTextStyle: WidgetStateProperty.resolveWith((states) =>
-              const TextStyle(fontSize: 10, height: 1.1)),
+              TextStyle(fontSize: navPrefs.iconSize.labelFont, height: 1.1)),
           ),
           child: NavigationBar(
             selectedIndex: currentIndex,
-            onDestinationSelected: (i) => context.go(_tabData[i].path),
-            destinations: _tabData.map((t) => NavigationDestination(
-              icon: Icon(t.icon, size: 28),
-              selectedIcon: Icon(t.activeIcon, size: 28),
-              label: labels[_tabData.indexOf(t)],
-            )).toList(),
+            onDestinationSelected: (i) => context.go(visiblePaths[i]),
+            destinations: [
+              for (final path in visiblePaths)
+                NavigationDestination(
+                  icon: Icon(navTabForPath(path).icon,
+                      size: navPrefs.iconSize.iconDim),
+                  selectedIcon: Icon(navTabForPath(path).activeIcon,
+                      size: navPrefs.iconSize.iconDim),
+                  label: _labelForPath(l, path),
+                ),
+            ],
           ),
         ),
       ),

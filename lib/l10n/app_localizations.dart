@@ -158,6 +158,36 @@ abstract class AppLocalizations {
   /// **'Nastavenia'**
   String get navSettings;
 
+  /// No description provided for @navCustomizeTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Spodné menu'**
+  String get navCustomizeTitle;
+
+  /// No description provided for @navCustomizeHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podrž a potiahni pre zmenu poradia ikon. Prepínačom kartu skryješ zo spodného menu — Nastavenia sú vždy zobrazené.'**
+  String get navCustomizeHint;
+
+  /// No description provided for @navAlwaysShown.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vždy zobrazené'**
+  String get navAlwaysShown;
+
+  /// No description provided for @navIconSizeLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Veľkosť ikon'**
+  String get navIconSizeLabel;
+
+  /// No description provided for @navOpenHiddenTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otvoriť skryté karty'**
+  String get navOpenHiddenTitle;
+
   /// No description provided for @cameraPermissionDenied.
   ///
   /// In sk, this message translates to:
@@ -373,6 +403,24 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Ukázať príručku'**
   String get guidePromptAction;
+
+  /// No description provided for @notifPromptTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Povoliť upozornenia?'**
+  String get notifPromptTitle;
+
+  /// No description provided for @notifPromptBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počas sledovania plavby beží upozornenie v systémovej lište a na zamknutej obrazovke — vidíš, že tracking je aktívny, a máš k nemu rýchly prístup. Bez povolenia môže systém sledovanie na pozadí obmedziť.'**
+  String get notifPromptBody;
+
+  /// No description provided for @notifPromptAllow.
+  ///
+  /// In sk, this message translates to:
+  /// **'Povoliť'**
+  String get notifPromptAllow;
 
   /// No description provided for @trackingActiveTitle.
   ///

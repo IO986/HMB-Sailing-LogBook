@@ -36,6 +36,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navSettings => 'Einstellungen';
 
   @override
+  String get navCustomizeTitle => 'Untere Leiste';
+
+  @override
+  String get navCustomizeHint =>
+      'Halten und ziehen, um die Symbole neu anzuordnen. Mit dem Schalter blendest du einen Tab aus der unteren Leiste aus — Einstellungen werden immer angezeigt.';
+
+  @override
+  String get navAlwaysShown => 'Immer angezeigt';
+
+  @override
+  String get navIconSizeLabel => 'Symbolgröße';
+
+  @override
+  String get navOpenHiddenTitle => 'Ausgeblendete Tabs öffnen';
+
+  @override
   String get cameraPermissionDenied =>
       'Kamerazugriff wurde verweigert. Bitte in den Geräteeinstellungen aktivieren.';
 
@@ -154,6 +170,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guidePromptAction => 'Anleitung zeigen';
+
+  @override
+  String get notifPromptTitle => 'Benachrichtigungen erlauben?';
+
+  @override
+  String get notifPromptBody =>
+      'Während einer Fahrt bleibt eine Benachrichtigung in der Statusleiste und auf dem Sperrbildschirm — so siehst du, dass die Aufzeichnung läuft, und erreichst sie schnell. Ohne Erlaubnis kann das System die Hintergrundaufzeichnung einschränken.';
+
+  @override
+  String get notifPromptAllow => 'Erlauben';
 
   @override
   String get trackingActiveTitle => 'Tracking aktiv';
