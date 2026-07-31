@@ -108,10 +108,14 @@ Future<void> main() async {
   if (savedLocale != null) {
     initialLocale = savedLocale;
   } else {
-    // Auto-detect from system locale, fallback to EN
+    // Auto-detect from system locale, fallback to EN. Supported set is
+    // derived from AppLocalizations so newly added languages (cs, pl, …)
+    // are picked up automatically instead of a hand-maintained list.
     final systemLang =
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-    const supported = ['sk', 'en', 'de', 'es', 'uk'];
+    final supported = AppLocalizations.supportedLocales
+        .map((l) => l.languageCode)
+        .toSet();
     initialLocale = supported.contains(systemLang) ? systemLang : 'en';
   }
 
