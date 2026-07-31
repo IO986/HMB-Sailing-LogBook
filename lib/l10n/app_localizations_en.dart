@@ -2193,7 +2193,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.\n\nHow the boat connects: the app reads NMEA data over WiFi (TCP or UDP). A Raymarine MFD\'s own WiFi hotspot usually isn\'t enough — it\'s meant for Raymarine\'s apps and typically won\'t expose raw NMEA to third parties. You need an NMEA-to-WiFi gateway (e.g. Digital Yacht, Yacht Devices, Actisense, Quark-elec) wired to the boat\'s bus, which either creates its own hotspot or broadcasts NMEA onto the WiFi. Join that gateway\'s WiFi and enter its IP and port in Settings (or try Auto-detect).';
 
   @override
   String get guideLogbookTitle => 'Voyage Logbook';

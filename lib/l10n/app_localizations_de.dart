@@ -2211,7 +2211,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zu einem gewählten Wegpunkt; nach Auswahl siehst du Distanz/Peilung sowie einen Pfeil direkt auf der Kompassrose\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.';
+      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zu einem gewählten Wegpunkt; nach Auswahl siehst du Distanz/Peilung sowie einen Pfeil direkt auf der Kompassrose\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.\n\nSo verbindet sich das Boot: Die App liest NMEA-Daten über WiFi (TCP oder UDP). Der eigene WiFi-Hotspot eines Raymarine-MFD reicht meist nicht — er ist für Raymarines Apps gedacht und gibt rohe NMEA-Daten in der Regel nicht an Dritte frei. Du brauchst ein NMEA-zu-WiFi-Gateway (z. B. Digital Yacht, Yacht Devices, Actisense, Quark-elec) am Bus des Bootes, das entweder einen eigenen Hotspot erstellt oder NMEA ins WiFi sendet. Verbinde dich mit dessen WiFi und trage IP und Port in den Einstellungen ein (oder nutze Automatisch suchen).';
 
   @override
   String get guideLogbookTitle => 'Fahrtenbuch';
