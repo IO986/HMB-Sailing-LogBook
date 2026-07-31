@@ -25,10 +25,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   static const _langs = [
     ('🇸🇰', 'Slovenčina', 'sk'),
+    ('🇨🇿', 'Čeština', 'cs'),
     ('🇬🇧', 'English', 'en'),
     ('🇩🇪', 'Deutsch', 'de'),
     ('🇪🇸', 'Español', 'es'),
     ('🇺🇦', 'Українська', 'uk'),
+    ('🇵🇱', 'Polski', 'pl'),
+    ('🇬🇷', 'Ελληνικά', 'el'),
   ];
 
   @override

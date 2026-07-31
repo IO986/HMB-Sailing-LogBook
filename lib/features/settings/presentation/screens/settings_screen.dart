@@ -156,10 +156,13 @@ class SettingsScreen extends ConsumerWidget {
 
   static const _langs = [
     ('🇸🇰', 'Slovenčina', 'sk'),
+    ('🇨🇿', 'Čeština', 'cs'),
     ('🇬🇧', 'English', 'en'),
     ('🇩🇪', 'Deutsch', 'de'),
     ('🇪🇸', 'Español', 'es'),
     ('🇺🇦', 'Українська', 'uk'),
+    ('🇵🇱', 'Polski', 'pl'),
+    ('🇬🇷', 'Ελληνικά', 'el'),
   ];
 
   String _currentLangName(String code) {

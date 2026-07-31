@@ -74,8 +74,12 @@ enum ColregNoteType { info, warning, danger, story }
 class ColregContent {
   /// COLREG content for the given language code.
   ///
-  /// Slovak has its own full translation; every other locale falls back to
-  /// English until a translation for it exists.
+  /// Slovak has its own full translation. Czech (`cs`) reuses the Slovak
+  /// COLREG (mutually intelligible, per product decision). Every other
+  /// locale — including Polish (`pl`) and Greek (`el`) — falls back to
+  /// English.
   static List<ColregSection> chaptersFor(String languageCode) =>
-      languageCode == 'sk' ? colregChaptersSk : colregChaptersEn;
+      (languageCode == 'sk' || languageCode == 'cs')
+          ? colregChaptersSk
+          : colregChaptersEn;
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-/// Label baked into a diagram. Slovak has a full translation, every other
-/// locale falls back to English — the same rule as ColregContent.chaptersFor.
-String _t(BuildContext context, String sk, String en) =>
-    Localizations.localeOf(context).languageCode == 'sk' ? sk : en;
+/// Label baked into a diagram. Slovak (and Czech, which reuses the Slovak
+/// COLREG) use the Slovak label; every other locale falls back to English —
+/// the same rule as ColregContent.chaptersFor.
+String _t(BuildContext context, String sk, String en) {
+  final lang = Localizations.localeOf(context).languageCode;
+  return (lang == 'sk' || lang == 'cs') ? sk : en;
+}
 
 /// Mapuje diagramKey na widget. Vracia null ak diagram neexistuje.
 Widget? buildColregDiagram(String key, {double height = 180}) {
