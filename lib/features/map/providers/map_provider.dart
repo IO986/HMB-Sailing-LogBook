@@ -12,6 +12,10 @@ import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
 
+/// Podkladová mapa: OSM/tmavá dlaždicová mapa alebo satelitné snímky.
+/// Uchováva sa ako user setting v [MapState.baseMap].
+enum BaseMap { osm, satellite }
+
 final waypointsProvider = FutureProvider<List<Waypoint>>((ref) async {
   final db = ref.watch(databaseProvider);
   return db.getAllWaypoints();
@@ -119,6 +123,7 @@ class MapNotifier extends Notifier<MapState> {
   static const _kCurrentGrid = 'map_show_current_grid';
   static const _kFollowGps = 'map_follow_gps';
   static const _kNorthLocked = 'map_north_locked';
+  static const _kBaseMap = 'map_base_map';
 
   @override
   MapState build() {
@@ -140,6 +145,10 @@ class MapNotifier extends Notifier<MapState> {
       showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
       northLocked: p.getBool(_kNorthLocked) ?? state.northLocked,
+      baseMap: BaseMap.values.firstWhere(
+        (b) => b.name == p.getString(_kBaseMap),
+        orElse: () => state.baseMap,
+      ),
     );
   }
 
@@ -153,6 +162,7 @@ class MapNotifier extends Notifier<MapState> {
     await p.setBool(_kCurrentGrid, state.showCurrentGrid);
     await p.setBool(_kFollowGps, state.followGps);
     await p.setBool(_kNorthLocked, state.northLocked);
+    await p.setString(_kBaseMap, state.baseMap.name);
   }
 
   void toggleFollowGps() {
@@ -200,6 +210,13 @@ class MapNotifier extends Notifier<MapState> {
     _persist();
   }
 
+  void toggleBaseMap() {
+    state = state.copyWith(
+      baseMap: state.baseMap == BaseMap.osm ? BaseMap.satellite : BaseMap.osm,
+    );
+    _persist();
+  }
+
   /// Zobraz trasu vybraného dňa namiesto aktuálnej živej trasy.
   void previewDay(int dayLogId, String label) => state = _withPreview(
         previewDayLogId: dayLogId,
@@ -231,6 +248,7 @@ class MapNotifier extends Notifier<MapState> {
         showCurrentGrid: state.showCurrentGrid,
         followGps: state.followGps,
         northLocked: state.northLocked,
+        baseMap: state.baseMap,
         previewDayLogId: previewDayLogId,
         previewCharterId: previewCharterId,
         previewLabel: previewLabel,
@@ -276,6 +294,9 @@ class MapState {
   /// Rotácia mapy zamknutá na sever (north-up). Podržaním kompasu sa
   /// prepína; uchováva sa medzi spusteniami ako user setting.
   final bool northLocked;
+  /// Podkladová mapa (OSM vs satelit). Uchováva sa ako user setting —
+  /// prežije prepnutie tabu aj reštart appky.
+  final BaseMap baseMap;
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
   /// Ak nastavené, mapa zobrazuje spojenú trasu celej tejto plavby.
@@ -291,6 +312,7 @@ class MapState {
     this.showCurrentGrid = false,
     this.followGps = true,
     this.northLocked = false,
+    this.baseMap = BaseMap.osm,
     this.previewDayLogId,
     this.previewCharterId,
     this.previewLabel,
@@ -304,6 +326,7 @@ class MapState {
     bool? showCurrentGrid,
     bool? followGps,
     bool? northLocked,
+    BaseMap? baseMap,
     int? previewDayLogId,
     int? previewCharterId,
     String? previewLabel,
@@ -316,6 +339,7 @@ class MapState {
         showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
         followGps: followGps ?? this.followGps,
         northLocked: northLocked ?? this.northLocked,
+        baseMap: baseMap ?? this.baseMap,
         previewDayLogId: previewDayLogId ?? this.previewDayLogId,
         previewCharterId: previewCharterId ?? this.previewCharterId,
         previewLabel: previewLabel ?? this.previewLabel,

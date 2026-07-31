@@ -31,8 +31,6 @@ import '../widgets/waypoint_dialog.dart';
 // Explicit imports needed for CircleLayer
 import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
 
-enum BaseMap { osm, satellite }
-
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
 /// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
 /// môže byť vždy len jedna.
@@ -47,7 +45,6 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _mapController = MapController();
-  BaseMap _baseMap = BaseMap.osm;
   String? _lastMobFocus;
   bool _mapReady = false;
   int _tileKey = 0;
@@ -146,6 +143,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final mapState = ref.watch(mapNotifierProvider);
     final followGps = mapState.followGps;
+    final baseMap = mapState.baseMap;
     final showSeamarks = mapState.showSeamarks;
     final previewDayLogId = mapState.previewDayLogId;
     final previewCharterId = mapState.previewCharterId;
@@ -243,7 +241,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Base layer ───────────────────────────────────
               // V nočnom režime tmavé dlaždice — svetlá OSM mapa by cez
               // červený filter oslepovala; tmavý podklad zachová kontrast.
-              if (_baseMap == BaseMap.osm)
+              if (baseMap == BaseMap.osm)
                 if (ref.watch(nightModeProvider))
                   TileLayer(
                     key: ValueKey('osm_dark_$_tileKey'),
@@ -263,7 +261,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     tileProvider: CachingTileProvider('osm'),
                   ),
 
-              if (_baseMap == BaseMap.satellite) ...[
+              if (baseMap == BaseMap.satellite) ...[
                 // ESRI satelitné snímky
                 TileLayer(
                   key: ValueKey('sat_$_tileKey'),
@@ -617,13 +615,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ikona ukazuje, na čo sa prepne.
               _layerFab(
                 heroTag: 'baseMap',
-                tooltip: _baseMap == BaseMap.osm ? 'Satelit' : 'Mapa',
-                icon: _baseMap == BaseMap.osm
+                tooltip: baseMap == BaseMap.osm ? 'Satelit' : 'Mapa',
+                icon: baseMap == BaseMap.osm
                     ? Icons.satellite_alt
                     : Icons.map,
-                active: _baseMap == BaseMap.satellite,
-                onPressed: () => setState(() => _baseMap =
-                    _baseMap == BaseMap.osm ? BaseMap.satellite : BaseMap.osm),
+                active: baseMap == BaseMap.satellite,
+                onPressed: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleBaseMap(),
               ),
               const SizedBox(height: 8),
 
@@ -931,7 +929,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
 
           // ── Attribution ──────────────────────────────────────
-          if (_baseMap == BaseMap.satellite)
+          if (baseMap == BaseMap.satellite)
             Positioned(
               bottom: 4,
               left: 4,
