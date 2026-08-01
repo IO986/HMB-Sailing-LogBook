@@ -25,7 +25,14 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
   @override
   Future<SkipperProfile> build() => _load();
 
-  Future<SkipperProfile> _load() async => SkipperProfile(
+  Future<SkipperProfile> _load() async {
+    // FlutterSecureStorage can throw on some devices (Honor/Huawei keystore
+    // quirks, or a keystore reset after reinstall). A saved skipper profile is
+    // a convenience, never critical — degrade to an empty profile instead of
+    // leaving every consumer (handover, PDF export, profile screen) stuck on
+    // an error/spinner.
+    try {
+      return SkipperProfile(
         fullName:         await _storage.read(key: _kFullName)   ?? '',
         licenseType:      await _storage.read(key: _kLicType)    ?? '',
         licenseNumber:    await _storage.read(key: _kLicNum)     ?? '',
@@ -35,6 +42,10 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
         vhfExpiry:        await _storage.read(key: _kVhfExpiry)  ?? '',
         otherCerts:       await _storage.read(key: _kOtherCerts) ?? '',
       );
+    } catch (_) {
+      return const SkipperProfile();
+    }
+  }
 
   Future<void> save(SkipperProfile profile) async {
     await _storage.write(key: _kFullName,   value: profile.fullName);

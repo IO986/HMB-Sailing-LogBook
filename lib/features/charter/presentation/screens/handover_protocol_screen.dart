@@ -72,6 +72,19 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
   }
 
   Future<void> _load() async {
+    try {
+      await _loadInner();
+    } catch (e) {
+      // Never leave the screen stuck on the spinner. A failure here (e.g.
+      // secure storage throwing on some devices) must still let the user
+      // fill in the protocol from scratch.
+      debugPrint('[HANDOVER] load error: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadInner() async {
     final db = ref.read(databaseProvider);
     final charters = await db.getAllCharters();
     _charter = charters.where((c) => c.id == widget.charterId).firstOrNull;
@@ -97,8 +110,15 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     }
 
     if (_skipperNameCtrl.text.isEmpty) {
-      final profile = await ref.read(skipperProfileProvider.future);
-      if (profile.fullName.isNotEmpty) _skipperNameCtrl.text = profile.fullName;
+      // FlutterSecureStorage can throw on some devices (Honor/Huawei keystore
+      // quirks). Prefilling the skipper name from the saved profile is only a
+      // convenience — swallow failures so the rest of the prefill still runs.
+      try {
+        final profile = await ref.read(skipperProfileProvider.future);
+        if (profile.fullName.isNotEmpty) _skipperNameCtrl.text = profile.fullName;
+      } catch (e) {
+        debugPrint('[HANDOVER] skipper profile prefill skipped: $e');
+      }
     }
 
     if (existing == null && _isCheckOut) {
@@ -127,8 +147,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         (_charter?.charterCompany?.isNotEmpty ?? false)) {
       _companyNameCtrl.text = _charter!.charterCompany!;
     }
-
-    if (mounted) setState(() => _loading = false);
   }
 
   Future<void> _pickDate() async {
