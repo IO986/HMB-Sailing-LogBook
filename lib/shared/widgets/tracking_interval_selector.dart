@@ -28,22 +28,22 @@ class TrackingIntervalSelector extends StatelessWidget {
               style: TextStyle(fontSize: 13, color: Colors.grey.shade700)),
         ]),
         const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: _options.map((opt) {
-              final sel = opt.seconds == value;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ChoiceChip(
-                  label: Text(opt.label),
-                  selected: sel,
-                  onSelected: (_) => onChanged(opt.seconds),
-                  selectedColor: Theme.of(context).colorScheme.primaryContainer,
-                ),
-              );
-            }).toList(),
-          ),
+        // Časy pod seba (nie v horizontálnom scrolle vedľa seba) — všetky
+        // možnosti sú tak viditeľné naraz, netreba rolovať.
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _options.map((opt) {
+            final sel = opt.seconds == value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: ChoiceChip(
+                label: Text(opt.label),
+                selected: sel,
+                onSelected: (_) => onChanged(opt.seconds),
+                selectedColor: Theme.of(context).colorScheme.primaryContainer,
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
