@@ -444,7 +444,9 @@ class _NoCamera extends StatelessWidget {
   const _NoCamera({required this.label, this.canRetry = false, this.onRetry});
 
   @override
-  Widget build(BuildContext context) => DecoratedBox(
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return DecoratedBox(
         decoration: const BoxDecoration(color: Colors.black),
         child: Center(
           child: Padding(
@@ -460,16 +462,17 @@ class _NoCamera extends StatelessWidget {
                 OutlinedButton(
                   onPressed: onRetry,
                   style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
-                  child: const Text('Skúsiť znova'),
+                  child: Text(l.retry),
                 )
               else
                 OutlinedButton(
                   onPressed: openAppSettings,
                   style: OutlinedButton.styleFrom(foregroundColor: Colors.white70),
-                  child: const Text('Otvoriť nastavenia'),
+                  child: Text(l.openSettingsAction),
                 ),
             ]),
           ),
         ),
       );
+  }
 }

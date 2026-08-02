@@ -320,8 +320,9 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     } catch (e, st) {
       debugPrint('[BRIEFING SAVE] ERROR: $e\n$st');
       if (context.mounted) {
+        final l = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Chyba pri ukladaní: $e'),
+          content: Text(l.saveError('$e')),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 6),
         ));

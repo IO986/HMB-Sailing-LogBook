@@ -12,6 +12,147 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Anchorage';
+
+  @override
+  String get poiTypeMarina => 'Marina';
+
+  @override
+  String get poiTypeFuel => 'Fuel station';
+
+  @override
+  String get poiTypeHarbour => 'Harbour';
+
+  @override
+  String get poiVhfChannel => 'VHF channel';
+
+  @override
+  String get poiPhone => 'Phone';
+
+  @override
+  String get poiWebsite => 'Website';
+
+  @override
+  String get poiEmail => 'Email';
+
+  @override
+  String get poiCapacity => 'Capacity';
+
+  @override
+  String get poiServices => 'Services';
+
+  @override
+  String get poiSaveAsWaypoint => 'Save as waypoint';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Waypoint \"$name\" saved';
+  }
+
+  @override
+  String get poiSource => 'Source: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satellite';
+
+  @override
+  String get mapLayerMap => 'Map';
+
+  @override
+  String get mapLayers => 'Layers';
+
+  @override
+  String get mapSeamarks => 'Seamarks';
+
+  @override
+  String get mapHarbours => 'Harbours & anchorages';
+
+  @override
+  String get mapZoomInForPois => 'Zoom in to load harbours and anchorages';
+
+  @override
+  String get mapRainRadar => 'Rain radar';
+
+  @override
+  String get mapOceanCurrentsTooltip => 'Ocean currents (hold for list)';
+
+  @override
+  String get mapCurrentForecast => 'Sea current — forecast (kt)';
+
+  @override
+  String get mapTools => 'Tools';
+
+  @override
+  String get mapVoyageOverview => 'Voyage overview';
+
+  @override
+  String get mapRuler => 'Ruler / route';
+
+  @override
+  String get mapDownloadOffline => 'Download area offline';
+
+  @override
+  String get mapGpsDisabled => 'GPS is off';
+
+  @override
+  String get mapLocationDenied => 'Location not allowed';
+
+  @override
+  String get mapFollowGps => 'Follow GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Area is too large ($count tiles). Zoom in and try again.';
+  }
+
+  @override
+  String get mapLivePreview => 'Live (current tracking)';
+
+  @override
+  String get mapWholeVoyage => 'Whole voyage';
+
+  @override
+  String get offlineSheetTitle => 'Offline map of the visible area';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Map + seamarks, zoom $minZ–$maxZ, $tiles tiles (~$mb MB). Downloaded areas work at sea without signal.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Done — $n tiles saved';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Done with errors: $n tiles failed to download';
+  }
+
+  @override
+  String get downloadAction => 'Download';
+
+  @override
+  String get rulerTapHint => 'Tap points on the map';
+
+  @override
+  String get mapEntryPhoto => 'Photo record';
+
+  @override
+  String get mapEntryNote => 'Logbook record';
+
+  @override
+  String get openSettingsAction => 'Open settings';
+
+  @override
+  String get morseConverter => 'Text → Morse converter';
+
+  @override
+  String saveError(String error) {
+    return 'Error saving: $error';
+  }
+
+  @override
   String get languageName => 'English';
 
   @override

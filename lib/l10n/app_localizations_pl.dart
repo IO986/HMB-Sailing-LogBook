@@ -12,6 +12,149 @@ class AppLocalizationsPl extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Kotwicowisko';
+
+  @override
+  String get poiTypeMarina => 'Marina';
+
+  @override
+  String get poiTypeFuel => 'Stacja paliw';
+
+  @override
+  String get poiTypeHarbour => 'Port';
+
+  @override
+  String get poiVhfChannel => 'Kanał VHF';
+
+  @override
+  String get poiPhone => 'Telefon';
+
+  @override
+  String get poiWebsite => 'Strona';
+
+  @override
+  String get poiEmail => 'Email';
+
+  @override
+  String get poiCapacity => 'Pojemność';
+
+  @override
+  String get poiServices => 'Usługi';
+
+  @override
+  String get poiSaveAsWaypoint => 'Zapisz jako punkt trasy';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Punkt trasy \"$name\" zapisany';
+  }
+
+  @override
+  String get poiSource => 'Źródło: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satelita';
+
+  @override
+  String get mapLayerMap => 'Mapa';
+
+  @override
+  String get mapLayers => 'Warstwy';
+
+  @override
+  String get mapSeamarks => 'Znaki morskie';
+
+  @override
+  String get mapHarbours => 'Porty i kotwicowiska';
+
+  @override
+  String get mapZoomInForPois =>
+      'Przybliż mapę, aby wczytać porty i kotwicowiska';
+
+  @override
+  String get mapRainRadar => 'Radar opadów';
+
+  @override
+  String get mapOceanCurrentsTooltip =>
+      'Prądy oceaniczne (przytrzymaj, aby zobaczyć listę)';
+
+  @override
+  String get mapCurrentForecast => 'Prąd morski — prognoza (kt)';
+
+  @override
+  String get mapTools => 'Narzędzia';
+
+  @override
+  String get mapVoyageOverview => 'Przegląd rejsu';
+
+  @override
+  String get mapRuler => 'Linijka / trasa';
+
+  @override
+  String get mapDownloadOffline => 'Pobierz obszar offline';
+
+  @override
+  String get mapGpsDisabled => 'GPS jest wyłączony';
+
+  @override
+  String get mapLocationDenied => 'Lokalizacja niedozwolona';
+
+  @override
+  String get mapFollowGps => 'Śledź GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Obszar jest zbyt duży ($count kafelków). Przybliż mapę i spróbuj ponownie.';
+  }
+
+  @override
+  String get mapLivePreview => 'Na żywo (bieżący tracking)';
+
+  @override
+  String get mapWholeVoyage => 'Cały rejs';
+
+  @override
+  String get offlineSheetTitle => 'Mapa offline widocznego obszaru';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Mapa + znaki morskie, zoom $minZ–$maxZ, $tiles kafelków (~$mb MB). Pobrane obszary działają na morzu bez zasięgu.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Gotowe — zapisano $n kafelków';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Gotowe z błędami: nie udało się pobrać $n kafelków';
+  }
+
+  @override
+  String get downloadAction => 'Pobierz';
+
+  @override
+  String get rulerTapHint => 'Dotknij punktów na mapie';
+
+  @override
+  String get mapEntryPhoto => 'Wpis foto';
+
+  @override
+  String get mapEntryNote => 'Wpis dziennika';
+
+  @override
+  String get openSettingsAction => 'Otwórz ustawienia';
+
+  @override
+  String get morseConverter => 'Konwerter tekst → Morse';
+
+  @override
+  String saveError(String error) {
+    return 'Błąd zapisu: $error';
+  }
+
+  @override
   String get languageName => 'Polski';
 
   @override

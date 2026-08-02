@@ -12,6 +12,148 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Ankerplatz';
+
+  @override
+  String get poiTypeMarina => 'Marina';
+
+  @override
+  String get poiTypeFuel => 'Tankstelle';
+
+  @override
+  String get poiTypeHarbour => 'Hafen';
+
+  @override
+  String get poiVhfChannel => 'UKW-Kanal';
+
+  @override
+  String get poiPhone => 'Telefon';
+
+  @override
+  String get poiWebsite => 'Web';
+
+  @override
+  String get poiEmail => 'E-Mail';
+
+  @override
+  String get poiCapacity => 'Kapazität';
+
+  @override
+  String get poiServices => 'Leistungen';
+
+  @override
+  String get poiSaveAsWaypoint => 'Als Wegpunkt speichern';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Wegpunkt \"$name\" gespeichert';
+  }
+
+  @override
+  String get poiSource => 'Quelle: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satellit';
+
+  @override
+  String get mapLayerMap => 'Karte';
+
+  @override
+  String get mapLayers => 'Ebenen';
+
+  @override
+  String get mapSeamarks => 'Seezeichen';
+
+  @override
+  String get mapHarbours => 'Häfen & Ankerplätze';
+
+  @override
+  String get mapZoomInForPois =>
+      'Karte heranzoomen, um Häfen und Ankerplätze zu laden';
+
+  @override
+  String get mapRainRadar => 'Regenradar';
+
+  @override
+  String get mapOceanCurrentsTooltip => 'Meeresströmungen (halten für Liste)';
+
+  @override
+  String get mapCurrentForecast => 'Meeresströmung — Vorhersage (kt)';
+
+  @override
+  String get mapTools => 'Werkzeuge';
+
+  @override
+  String get mapVoyageOverview => 'Törnübersicht';
+
+  @override
+  String get mapRuler => 'Lineal / Route';
+
+  @override
+  String get mapDownloadOffline => 'Bereich offline herunterladen';
+
+  @override
+  String get mapGpsDisabled => 'GPS ist aus';
+
+  @override
+  String get mapLocationDenied => 'Standort nicht erlaubt';
+
+  @override
+  String get mapFollowGps => 'GPS folgen';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Bereich ist zu groß ($count Kacheln). Zoomen Sie hinein und versuchen Sie es erneut.';
+  }
+
+  @override
+  String get mapLivePreview => 'Live (aktuelles Tracking)';
+
+  @override
+  String get mapWholeVoyage => 'Ganzer Törn';
+
+  @override
+  String get offlineSheetTitle => 'Offline-Karte des sichtbaren Bereichs';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Karte + Seezeichen, Zoom $minZ–$maxZ, $tiles Kacheln (~$mb MB). Heruntergeladene Bereiche funktionieren auf See ohne Signal.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Fertig — $n Kacheln gespeichert';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Fertig mit Fehlern: $n Kacheln konnten nicht heruntergeladen werden';
+  }
+
+  @override
+  String get downloadAction => 'Herunterladen';
+
+  @override
+  String get rulerTapHint => 'Punkte auf der Karte antippen';
+
+  @override
+  String get mapEntryPhoto => 'Foto-Eintrag';
+
+  @override
+  String get mapEntryNote => 'Logbucheintrag';
+
+  @override
+  String get openSettingsAction => 'Einstellungen öffnen';
+
+  @override
+  String get morseConverter => 'Umwandler Text → Morse';
+
+  @override
+  String saveError(String error) {
+    return 'Fehler beim Speichern: $error';
+  }
+
+  @override
   String get languageName => 'Deutsch';
 
   @override

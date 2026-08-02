@@ -12,6 +12,149 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Якірна стоянка';
+
+  @override
+  String get poiTypeMarina => 'Марина';
+
+  @override
+  String get poiTypeFuel => 'Заправна станція';
+
+  @override
+  String get poiTypeHarbour => 'Гавань';
+
+  @override
+  String get poiVhfChannel => 'Канал VHF';
+
+  @override
+  String get poiPhone => 'Телефон';
+
+  @override
+  String get poiWebsite => 'Веб';
+
+  @override
+  String get poiEmail => 'Email';
+
+  @override
+  String get poiCapacity => 'Місткість';
+
+  @override
+  String get poiServices => 'Послуги';
+
+  @override
+  String get poiSaveAsWaypoint => 'Зберегти як точку маршруту';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Точку маршруту \"$name\" збережено';
+  }
+
+  @override
+  String get poiSource => 'Джерело: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Супутник';
+
+  @override
+  String get mapLayerMap => 'Карта';
+
+  @override
+  String get mapLayers => 'Шари';
+
+  @override
+  String get mapSeamarks => 'Морські знаки';
+
+  @override
+  String get mapHarbours => 'Порти та якірні стоянки';
+
+  @override
+  String get mapZoomInForPois =>
+      'Наблизьте карту, щоб завантажити порти та якірні стоянки';
+
+  @override
+  String get mapRainRadar => 'Радар опадів';
+
+  @override
+  String get mapOceanCurrentsTooltip =>
+      'Океанські течії (утримуйте для списку)';
+
+  @override
+  String get mapCurrentForecast => 'Морська течія — прогноз (кт)';
+
+  @override
+  String get mapTools => 'Інструменти';
+
+  @override
+  String get mapVoyageOverview => 'Огляд плавання';
+
+  @override
+  String get mapRuler => 'Лінійка / маршрут';
+
+  @override
+  String get mapDownloadOffline => 'Завантажити область офлайн';
+
+  @override
+  String get mapGpsDisabled => 'GPS вимкнено';
+
+  @override
+  String get mapLocationDenied => 'Місцезнаходження не дозволено';
+
+  @override
+  String get mapFollowGps => 'Стежити за GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Область завелика ($count плиток). Наблизьте карту та спробуйте знову.';
+  }
+
+  @override
+  String get mapLivePreview => 'Наживо (поточний трекінг)';
+
+  @override
+  String get mapWholeVoyage => 'Усе плавання';
+
+  @override
+  String get offlineSheetTitle => 'Офлайн-карта видимої області';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Карта + морські знаки, зум $minZ–$maxZ, $tiles плиток (~$mb МБ). Завантажені області працюють у морі без сигналу.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Готово — збережено $n плиток';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Готово з помилками: не вдалося завантажити $n плиток';
+  }
+
+  @override
+  String get downloadAction => 'Завантажити';
+
+  @override
+  String get rulerTapHint => 'Торкайтеся точок на карті';
+
+  @override
+  String get mapEntryPhoto => 'Фотозапис';
+
+  @override
+  String get mapEntryNote => 'Запис журналу';
+
+  @override
+  String get openSettingsAction => 'Відкрити налаштування';
+
+  @override
+  String get morseConverter => 'Конвертер текст → Морзе';
+
+  @override
+  String saveError(String error) {
+    return 'Помилка збереження: $error';
+  }
+
+  @override
   String get languageName => 'Українська';
 
   @override

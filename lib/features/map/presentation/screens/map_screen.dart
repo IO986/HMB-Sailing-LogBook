@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 
@@ -141,6 +142,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final mapState = ref.watch(mapNotifierProvider);
     final followGps = mapState.followGps;
     final baseMap = mapState.baseMap;
@@ -519,7 +521,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           onTap: () => ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.skipperNote ??
-                                  (e.photoPath != null ? 'Foto záznam' : 'Záznam denníka')),
+                                  (e.photoPath != null ? l.mapEntryPhoto : l.mapEntryNote)),
                               duration: const Duration(seconds: 2),
                             ),
                           ),
@@ -615,7 +617,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ikona ukazuje, na čo sa prepne.
               _layerFab(
                 heroTag: 'baseMap',
-                tooltip: baseMap == BaseMap.osm ? 'Satelit' : 'Mapa',
+                tooltip: baseMap == BaseMap.osm ? l.mapLayerSatellite : l.mapLayerMap,
                 icon: baseMap == BaseMap.osm
                     ? Icons.satellite_alt
                     : Icons.map,
@@ -628,7 +630,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Vrstvy ───────────────────────────────────────
               _layerFab(
                 heroTag: 'layersGroup',
-                tooltip: 'Vrstvy',
+                tooltip: l.mapLayers,
                 icon: _openPanel == _MapPanel.layers
                     ? Icons.close
                     : Icons.layers,
@@ -650,7 +652,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'seamarks',
-                tooltip: 'Seamarky',
+                tooltip: l.mapSeamarks,
                 icon: Icons.anchor,
                 active: showSeamarks,
                 onPressed: () =>
@@ -659,7 +661,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'pois',
-                tooltip: 'Prístavy a kotviská',
+                tooltip: l.mapHarbours,
                 icon: Icons.directions_boat,
                 active: showMarinePois,
                 onPressed: () {
@@ -668,9 +670,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       ref.read(mapNotifierProvider).showMarinePois;
                   if (nowOn && _mapReady) {
                     if (_mapController.camera.zoom < _poiMinZoom) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Priblíž mapu pre načítanie prístavov a kotvísk'),
-                        duration: Duration(seconds: 3),
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(l.mapZoomInForPois),
+                        duration: const Duration(seconds: 3),
                       ));
                     } else {
                       ref.read(mapViewBoundsProvider.notifier).state =
@@ -682,7 +684,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'radar',
-                tooltip: 'Zrážkový radar',
+                tooltip: l.mapRainRadar,
                 icon: Icons.water_drop,
                 active: mapState.showRainRadar,
                 onPressed: () =>
@@ -691,7 +693,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'wind',
-                tooltip: 'Vietor',
+                tooltip: l.wind,
                 icon: Icons.air,
                 active: mapState.showWindGrid,
                 onPressed: () {
@@ -706,7 +708,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'oceanCurrents',
-                tooltip: 'Oceánske prúdy (podrž pre zoznam)',
+                tooltip: l.mapOceanCurrentsTooltip,
                 icon: Icons.moving,
                 active: mapState.showOceanCurrents,
                 onPressed: () =>
@@ -716,7 +718,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'currentGrid',
-                tooltip: 'Morský prúd — predpoveď (kt)',
+                tooltip: l.mapCurrentForecast,
                 icon: Icons.double_arrow,
                 active: mapState.showCurrentGrid,
                 onPressed: () {
@@ -734,7 +736,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'toolsGroup',
-                tooltip: 'Nástroje',
+                tooltip: l.mapTools,
                 icon: _openPanel == _MapPanel.tools
                     ? Icons.close
                     : Icons.handyman_outlined,
@@ -750,7 +752,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'voyagePreview',
-                tooltip: 'Prehľad plavby',
+                tooltip: l.mapVoyageOverview,
                 onPressed: () => _openVoyagePicker(context),
                 backgroundColor: isPreviewing ? Colors.orange.shade700 : null,
                 child: Icon(Icons.route,
@@ -759,14 +761,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'gpxImport',
-                tooltip: 'Import GPX',
+                tooltip: l.gpxImportTitle,
                 onPressed: () => context.push('/gpx-import'),
                 child: const Icon(Icons.file_upload_outlined),
               ),
               const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'ruler',
-                tooltip: 'Pravítko / trasa',
+                tooltip: l.mapRuler,
                 onPressed: () => setState(() {
                   _rulerActive = !_rulerActive;
                   if (!_rulerActive) _rulerPoints.clear();
@@ -778,7 +780,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               FloatingActionButton.small(
                 heroTag: 'offlineDl',
-                tooltip: 'Stiahnuť oblasť offline',
+                tooltip: l.mapDownloadOffline,
                 onPressed: () => _openOfflineDownload(context),
                 child: const Icon(Icons.download_for_offline_outlined),
               ),
@@ -825,8 +827,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       Expanded(
                         child: Text(
                           serviceOff
-                              ? 'GPS je vypnuté'
-                              : 'Poloha nie je povolená',
+                              ? l.mapGpsDisabled
+                              : l.mapLocationDenied,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.white, fontSize: 12),
                         ),
@@ -840,7 +842,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                 : AppSettings.openAppSettings(
                                     type: AppSettingsType.location)),
                         child: Text(
-                          serviceOff || !avail.canRequest ? 'Nastavenia' : 'Povoliť',
+                          serviceOff || !avail.canRequest ? l.navSettings : l.notifPromptAllow,
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -891,7 +893,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             child: Column(children: [
               _layerFab(
                 heroTag: 'cp',
-                tooltip: 'Sleduj GPS',
+                tooltip: l.mapFollowGps,
                 icon: Icons.my_location,
                 active: followGps,
                 onPressed: () {
@@ -1010,6 +1012,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// offline použitie: od aktuálneho zoomu po +3 úrovne hlbšie.
   void _openOfflineDownload(BuildContext context) {
     if (!_mapReady) return;
+    final l = AppLocalizations.of(context);
     final bounds = _mapController.camera.visibleBounds;
     final minZ = _mapController.camera.zoom.floor();
     final maxZ = (minZ + 3).clamp(minZ, 17);
@@ -1018,8 +1021,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     if (total > TileRegionDownloader.maxTiles) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            'Oblasť je príliš veľká ($total dlaždíc). Priblíž mapu a skús znova.'),
+        content: Text(l.mapAreaTooLarge(total)),
         duration: const Duration(seconds: 4),
       ));
       return;
@@ -1087,6 +1089,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   void _openVoyagePicker(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final localeCode = Localizations.localeOf(context).languageCode;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1103,13 +1107,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 Row(children: [
                   const Icon(Icons.route),
                   const SizedBox(width: 8),
-                  const Text('Prehľad plavby',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(l.mapVoyageOverview,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ]),
                 const SizedBox(height: 12),
                 ListTile(
                   leading: const Icon(Icons.gps_fixed, color: Colors.blue),
-                  title: const Text('Naživo (aktuálny tracking)'),
+                  title: Text(l.mapLivePreview),
                   onTap: () {
                     ref.read(mapNotifierProvider.notifier).clearPreview();
                     Navigator.pop(sheetCtx);
@@ -1127,13 +1131,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                               : ExpansionTile(
                                   title: Text(charter.title),
                                   subtitle: Text(
-                                      '${days.fold<double>(0, (s, d) => s + d.distanceNm).toStringAsFixed(1)} NM · ${days.length} dní'),
+                                      '${days.fold<double>(0, (s, d) => s + d.distanceNm).toStringAsFixed(1)} NM · ${l.daysCount(days.length)}'),
                                   children: [
                                     ListTile(
                                       dense: true,
                                       leading: const Icon(Icons.route, size: 20),
-                                      title: const Text('Celá plavba',
-                                          style: TextStyle(fontWeight: FontWeight.bold)),
+                                      title: Text(l.mapWholeVoyage,
+                                          style: const TextStyle(fontWeight: FontWeight.bold)),
                                       onTap: () => _selectCharter(
                                           charter.id, charter.title, sheetCtx),
                                     ),
@@ -1141,7 +1145,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     for (final day in days)
                                       ListTile(
                                         dense: true,
-                                        title: Text(DateFormat('EEEE d. MMM yyyy', 'sk').format(day.date)),
+                                        title: Text(DateFormat('EEEE d. MMM yyyy', localeCode).format(day.date)),
                                         subtitle: Text('${day.distanceNm.toStringAsFixed(1)} NM'),
                                         onTap: () => _selectDay(
                                             day.id,
@@ -1208,6 +1212,7 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -1215,16 +1220,15 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
           Row(children: [
             const Icon(Icons.download_for_offline_outlined),
             const SizedBox(width: 8),
-            const Expanded(
-              child: Text('Offline mapa viditeľnej oblasti',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            Expanded(
+              child: Text(l.offlineSheetTitle,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             ),
           ]),
           const SizedBox(height: 8),
           Text(
-            'Mapa + seamarky, zoom ${widget.minZ}–${widget.maxZ}, '
-            '${widget.total} dlaždíc (~${(widget.total * 15 / 1024).toStringAsFixed(0)} MB). '
-            'Stiahnuté oblasti fungujú na mori bez signálu.',
+            l.offlineSheetDesc(widget.minZ, widget.maxZ, widget.total,
+                (widget.total * 15 / 1024).toStringAsFixed(0)),
             style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
           ),
           const SizedBox(height: 16),
@@ -1234,8 +1238,8 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
             const SizedBox(height: 8),
             Text(_finished
                 ? (_errors == 0
-                    ? 'Hotovo — $_done dlaždíc uložených'
-                    : 'Hotovo s chybami: $_errors dlaždíc sa nepodarilo stiahnuť')
+                    ? l.offlineDone(_done)
+                    : l.offlineDoneErrors(_errors))
                 : '$_done / ${widget.total}'),
             const SizedBox(height: 12),
           ],
@@ -1245,14 +1249,14 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
                 widget.downloader.cancel();
                 Navigator.pop(context);
               },
-              child: Text(_finished ? 'Zavrieť' : 'Zrušiť'),
+              child: Text(_finished ? l.close : l.cancel),
             ),
             const SizedBox(width: 8),
             if (!_running && !_finished)
               FilledButton.icon(
                 onPressed: _start,
                 icon: const Icon(Icons.download),
-                label: const Text('Stiahnuť'),
+                label: Text(l.downloadAction),
               ),
           ]),
         ]),
@@ -1351,6 +1355,7 @@ class _RulerPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     var totalNm = 0.0;
     for (var i = 1; i < points.length; i++) {
       totalNm += DistanceCalculator.distanceNm(
@@ -1388,7 +1393,7 @@ class _RulerPanel extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 points.isEmpty
-                    ? 'Ťukni body na mape'
+                    ? l.rulerTapHint
                     : '${totalNm.toStringAsFixed(1)} NM'
                         '${brg != null ? '  ·  ${brg.toStringAsFixed(0)}°' : ''}',
                 style: const TextStyle(

@@ -12,6 +12,149 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Fondeadero';
+
+  @override
+  String get poiTypeMarina => 'Puerto deportivo';
+
+  @override
+  String get poiTypeFuel => 'Estación de combustible';
+
+  @override
+  String get poiTypeHarbour => 'Puerto';
+
+  @override
+  String get poiVhfChannel => 'Canal VHF';
+
+  @override
+  String get poiPhone => 'Teléfono';
+
+  @override
+  String get poiWebsite => 'Web';
+
+  @override
+  String get poiEmail => 'Correo electrónico';
+
+  @override
+  String get poiCapacity => 'Capacidad';
+
+  @override
+  String get poiServices => 'Servicios';
+
+  @override
+  String get poiSaveAsWaypoint => 'Guardar como waypoint';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Waypoint \"$name\" guardado';
+  }
+
+  @override
+  String get poiSource => 'Fuente: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satélite';
+
+  @override
+  String get mapLayerMap => 'Mapa';
+
+  @override
+  String get mapLayers => 'Capas';
+
+  @override
+  String get mapSeamarks => 'Marcas náuticas';
+
+  @override
+  String get mapHarbours => 'Puertos y fondeaderos';
+
+  @override
+  String get mapZoomInForPois =>
+      'Acerca el mapa para cargar puertos y fondeaderos';
+
+  @override
+  String get mapRainRadar => 'Radar de lluvia';
+
+  @override
+  String get mapOceanCurrentsTooltip =>
+      'Corrientes oceánicas (mantén pulsado para la lista)';
+
+  @override
+  String get mapCurrentForecast => 'Corriente marina — pronóstico (kt)';
+
+  @override
+  String get mapTools => 'Herramientas';
+
+  @override
+  String get mapVoyageOverview => 'Resumen de la travesía';
+
+  @override
+  String get mapRuler => 'Regla / ruta';
+
+  @override
+  String get mapDownloadOffline => 'Descargar zona sin conexión';
+
+  @override
+  String get mapGpsDisabled => 'El GPS está apagado';
+
+  @override
+  String get mapLocationDenied => 'Ubicación no permitida';
+
+  @override
+  String get mapFollowGps => 'Seguir GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'La zona es demasiado grande ($count teselas). Acerca el mapa e inténtalo de nuevo.';
+  }
+
+  @override
+  String get mapLivePreview => 'En vivo (seguimiento actual)';
+
+  @override
+  String get mapWholeVoyage => 'Travesía completa';
+
+  @override
+  String get offlineSheetTitle => 'Mapa sin conexión de la zona visible';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Mapa + marcas náuticas, zoom $minZ–$maxZ, $tiles teselas (~$mb MB). Las zonas descargadas funcionan en el mar sin cobertura.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Listo — $n teselas guardadas';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Listo con errores: no se pudieron descargar $n teselas';
+  }
+
+  @override
+  String get downloadAction => 'Descargar';
+
+  @override
+  String get rulerTapHint => 'Toca puntos en el mapa';
+
+  @override
+  String get mapEntryPhoto => 'Registro de foto';
+
+  @override
+  String get mapEntryNote => 'Registro del diario';
+
+  @override
+  String get openSettingsAction => 'Abrir ajustes';
+
+  @override
+  String get morseConverter => 'Conversor texto → Morse';
+
+  @override
+  String saveError(String error) {
+    return 'Error al guardar: $error';
+  }
+
+  @override
   String get languageName => 'Español';
 
   @override

@@ -12,6 +12,148 @@ class AppLocalizationsEl extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Αγκυροβόλιο';
+
+  @override
+  String get poiTypeMarina => 'Μαρίνα';
+
+  @override
+  String get poiTypeFuel => 'Πρατήριο καυσίμων';
+
+  @override
+  String get poiTypeHarbour => 'Λιμάνι';
+
+  @override
+  String get poiVhfChannel => 'Κανάλι VHF';
+
+  @override
+  String get poiPhone => 'Τηλέφωνο';
+
+  @override
+  String get poiWebsite => 'Ιστότοπος';
+
+  @override
+  String get poiEmail => 'Email';
+
+  @override
+  String get poiCapacity => 'Χωρητικότητα';
+
+  @override
+  String get poiServices => 'Υπηρεσίες';
+
+  @override
+  String get poiSaveAsWaypoint => 'Αποθήκευση ως σημείο πορείας';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Το σημείο πορείας \"$name\" αποθηκεύτηκε';
+  }
+
+  @override
+  String get poiSource => 'Πηγή: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Δορυφόρος';
+
+  @override
+  String get mapLayerMap => 'Χάρτης';
+
+  @override
+  String get mapLayers => 'Επίπεδα';
+
+  @override
+  String get mapSeamarks => 'Ναυτικά σημάδια';
+
+  @override
+  String get mapHarbours => 'Λιμάνια & αγκυροβόλια';
+
+  @override
+  String get mapZoomInForPois =>
+      'Μεγεθύνετε τον χάρτη για φόρτωση λιμανιών και αγκυροβολίων';
+
+  @override
+  String get mapRainRadar => 'Ραντάρ βροχής';
+
+  @override
+  String get mapOceanCurrentsTooltip => 'Ωκεάνια ρεύματα (κρατήστε για λίστα)';
+
+  @override
+  String get mapCurrentForecast => 'Θαλάσσιο ρεύμα — πρόγνωση (kt)';
+
+  @override
+  String get mapTools => 'Εργαλεία';
+
+  @override
+  String get mapVoyageOverview => 'Επισκόπηση πλου';
+
+  @override
+  String get mapRuler => 'Χάρακας / διαδρομή';
+
+  @override
+  String get mapDownloadOffline => 'Λήψη περιοχής εκτός σύνδεσης';
+
+  @override
+  String get mapGpsDisabled => 'Το GPS είναι απενεργοποιημένο';
+
+  @override
+  String get mapLocationDenied => 'Η τοποθεσία δεν επιτρέπεται';
+
+  @override
+  String get mapFollowGps => 'Παρακολούθηση GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Η περιοχή είναι πολύ μεγάλη ($count πλακίδια). Μεγεθύνετε και δοκιμάστε ξανά.';
+  }
+
+  @override
+  String get mapLivePreview => 'Ζωντανά (τρέχουσα καταγραφή)';
+
+  @override
+  String get mapWholeVoyage => 'Ολόκληρος ο πλους';
+
+  @override
+  String get offlineSheetTitle => 'Χάρτης εκτός σύνδεσης της ορατής περιοχής';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Χάρτης + ναυτικά σημάδια, ζουμ $minZ–$maxZ, $tiles πλακίδια (~$mb MB). Οι ληφθείσες περιοχές λειτουργούν στη θάλασσα χωρίς σήμα.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Ολοκληρώθηκε — αποθηκεύτηκαν $n πλακίδια';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Ολοκληρώθηκε με σφάλματα: απέτυχε η λήψη $n πλακιδίων';
+  }
+
+  @override
+  String get downloadAction => 'Λήψη';
+
+  @override
+  String get rulerTapHint => 'Πατήστε σημεία στον χάρτη';
+
+  @override
+  String get mapEntryPhoto => 'Εγγραφή φωτογραφίας';
+
+  @override
+  String get mapEntryNote => 'Εγγραφή ημερολογίου';
+
+  @override
+  String get openSettingsAction => 'Άνοιγμα ρυθμίσεων';
+
+  @override
+  String get morseConverter => 'Μετατροπέας κειμένου → Μορς';
+
+  @override
+  String saveError(String error) {
+    return 'Σφάλμα αποθήκευσης: $error';
+  }
+
+  @override
   String get languageName => 'Ελληνικά';
 
   @override

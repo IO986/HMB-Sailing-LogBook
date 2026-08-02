@@ -475,6 +475,7 @@ class _MorseTabState extends State<_MorseTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -485,7 +486,7 @@ class _MorseTabState extends State<_MorseTab> {
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Prevodník text → Morse',
+                Text(l.morseConverter,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13,
                         color: Theme.of(context).colorScheme.primary)),
                 const SizedBox(height: 10),

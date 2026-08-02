@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 import '../../../../core/services/marine_poi_service.dart';
 import '../../providers/map_provider.dart';
@@ -22,30 +23,31 @@ class MarinePoiSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
     final (icon, color, typeLabel) = switch (poi.type) {
-      'anchorage' => (Icons.anchor, Colors.teal.shade700, 'Kotvisko'),
-      'marina' => (Icons.sailing, Colors.indigo.shade600, 'Marína'),
+      'anchorage' => (Icons.anchor, Colors.teal.shade700, l.poiTypeAnchorage),
+      'marina' => (Icons.sailing, Colors.indigo.shade600, l.poiTypeMarina),
       'fuel' => (Icons.local_gas_station, Colors.orange.shade800,
-          'Tankovacia stanica'),
-      _ => (Icons.directions_boat, Colors.blueGrey.shade700, 'Prístav'),
+          l.poiTypeFuel),
+      _ => (Icons.directions_boat, Colors.blueGrey.shade700, l.poiTypeHarbour),
     };
 
     final rows = <(IconData, String, String)>[
       if (_tag(['seamark:harbour:communication:vhf_channel',
                 'communication:vhf', 'vhf_channel', 'vhf']) case final v?)
-        (Icons.radio, 'VHF kanál', v),
+        (Icons.radio, l.poiVhfChannel, v),
       if (_tag(['phone', 'contact:phone']) case final v?)
-        (Icons.phone, 'Telefón', v),
+        (Icons.phone, l.poiPhone, v),
       if (_tag(['website', 'contact:website']) case final v?)
-        (Icons.language, 'Web', v),
+        (Icons.language, l.poiWebsite, v),
       if (_tag(['email', 'contact:email']) case final v?)
-        (Icons.email, 'Email', v),
+        (Icons.email, l.poiEmail, v),
       if (_tag(['seamark:anchorage:depth', 'depth']) case final v?)
-        (Icons.waves, 'Hĺbka', '$v m'),
+        (Icons.waves, l.depthLabel, '$v m'),
       if (_tag(['seamark:harbour:capacity', 'capacity']) case final v?)
-        (Icons.dock, 'Kapacita', v),
+        (Icons.dock, l.poiCapacity, v),
       if (_tag(['seamark:small_craft_facility:category']) case final v?)
-        (Icons.build, 'Služby', v.replaceAll(';', ', ')),
+        (Icons.build, l.poiServices, v.replaceAll(';', ', ')),
     ];
 
     return SafeArea(
@@ -104,17 +106,18 @@ class MarinePoiSheet extends ConsumerWidget {
               width: double.infinity,
               child: FilledButton.icon(
                 icon: const Icon(Icons.add_location_alt),
-                label: const Text('Uložiť ako waypoint'),
+                label: Text(l.poiSaveAsWaypoint),
                 onPressed: () async {
+                  final name = poi.name ?? typeLabel;
                   await ref.read(mapNotifierProvider.notifier).addWaypoint(
-                        poi.name ?? typeLabel,
+                        name,
                         poi.lat,
                         poi.lon,
                       );
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Waypoint "${poi.name ?? typeLabel}" uložený'),
+                      content: Text(l.poiWaypointSaved(name)),
                       duration: const Duration(seconds: 2),
                     ));
                   }
@@ -122,7 +125,7 @@ class MarinePoiSheet extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text('Zdroj: OpenStreetMap',
+            Text(l.poiSource,
                 style: TextStyle(color: Colors.grey.shade400, fontSize: 10)),
           ],
         ),

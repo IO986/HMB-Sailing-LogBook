@@ -116,6 +116,264 @@ abstract class AppLocalizations {
   /// **'HMB Sailing Log'**
   String get appTitle;
 
+  /// No description provided for @poiTypeAnchorage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotvisko'**
+  String get poiTypeAnchorage;
+
+  /// No description provided for @poiTypeMarina.
+  ///
+  /// In sk, this message translates to:
+  /// **'Marína'**
+  String get poiTypeMarina;
+
+  /// No description provided for @poiTypeFuel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Tankovacia stanica'**
+  String get poiTypeFuel;
+
+  /// No description provided for @poiTypeHarbour.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prístav'**
+  String get poiTypeHarbour;
+
+  /// No description provided for @poiVhfChannel.
+  ///
+  /// In sk, this message translates to:
+  /// **'VHF kanál'**
+  String get poiVhfChannel;
+
+  /// No description provided for @poiPhone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Telefón'**
+  String get poiPhone;
+
+  /// No description provided for @poiWebsite.
+  ///
+  /// In sk, this message translates to:
+  /// **'Web'**
+  String get poiWebsite;
+
+  /// No description provided for @poiEmail.
+  ///
+  /// In sk, this message translates to:
+  /// **'Email'**
+  String get poiEmail;
+
+  /// No description provided for @poiCapacity.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kapacita'**
+  String get poiCapacity;
+
+  /// No description provided for @poiServices.
+  ///
+  /// In sk, this message translates to:
+  /// **'Služby'**
+  String get poiServices;
+
+  /// No description provided for @poiSaveAsWaypoint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uložiť ako waypoint'**
+  String get poiSaveAsWaypoint;
+
+  /// No description provided for @poiWaypointSaved.
+  ///
+  /// In sk, this message translates to:
+  /// **'Waypoint \"{name}\" uložený'**
+  String poiWaypointSaved(String name);
+
+  /// No description provided for @poiSource.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zdroj: OpenStreetMap'**
+  String get poiSource;
+
+  /// No description provided for @mapLayerSatellite.
+  ///
+  /// In sk, this message translates to:
+  /// **'Satelit'**
+  String get mapLayerSatellite;
+
+  /// No description provided for @mapLayerMap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapa'**
+  String get mapLayerMap;
+
+  /// No description provided for @mapLayers.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vrstvy'**
+  String get mapLayers;
+
+  /// No description provided for @mapSeamarks.
+  ///
+  /// In sk, this message translates to:
+  /// **'Seamarky'**
+  String get mapSeamarks;
+
+  /// No description provided for @mapHarbours.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prístavy a kotviská'**
+  String get mapHarbours;
+
+  /// No description provided for @mapZoomInForPois.
+  ///
+  /// In sk, this message translates to:
+  /// **'Priblíž mapu pre načítanie prístavov a kotvísk'**
+  String get mapZoomInForPois;
+
+  /// No description provided for @mapRainRadar.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zrážkový radar'**
+  String get mapRainRadar;
+
+  /// No description provided for @mapOceanCurrentsTooltip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oceánske prúdy (podrž pre zoznam)'**
+  String get mapOceanCurrentsTooltip;
+
+  /// No description provided for @mapCurrentForecast.
+  ///
+  /// In sk, this message translates to:
+  /// **'Morský prúd — predpoveď (kt)'**
+  String get mapCurrentForecast;
+
+  /// No description provided for @mapTools.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nástroje'**
+  String get mapTools;
+
+  /// No description provided for @mapVoyageOverview.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prehľad plavby'**
+  String get mapVoyageOverview;
+
+  /// No description provided for @mapRuler.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pravítko / trasa'**
+  String get mapRuler;
+
+  /// No description provided for @mapDownloadOffline.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuť oblasť offline'**
+  String get mapDownloadOffline;
+
+  /// No description provided for @mapGpsDisabled.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS je vypnuté'**
+  String get mapGpsDisabled;
+
+  /// No description provided for @mapLocationDenied.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poloha nie je povolená'**
+  String get mapLocationDenied;
+
+  /// No description provided for @mapFollowGps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Sleduj GPS'**
+  String get mapFollowGps;
+
+  /// No description provided for @mapAreaTooLarge.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oblasť je príliš veľká ({count} dlaždíc). Priblíž mapu a skús znova.'**
+  String mapAreaTooLarge(int count);
+
+  /// No description provided for @mapLivePreview.
+  ///
+  /// In sk, this message translates to:
+  /// **'Naživo (aktuálny tracking)'**
+  String get mapLivePreview;
+
+  /// No description provided for @mapWholeVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celá plavba'**
+  String get mapWholeVoyage;
+
+  /// No description provided for @offlineSheetTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Offline mapa viditeľnej oblasti'**
+  String get offlineSheetTitle;
+
+  /// No description provided for @offlineSheetDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapa + seamarky, zoom {minZ}–{maxZ}, {tiles} dlaždíc (~{mb} MB). Stiahnuté oblasti fungujú na mori bez signálu.'**
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb);
+
+  /// No description provided for @offlineDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hotovo — {n} dlaždíc uložených'**
+  String offlineDone(int n);
+
+  /// No description provided for @offlineDoneErrors.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hotovo s chybami: {n} dlaždíc sa nepodarilo stiahnuť'**
+  String offlineDoneErrors(int n);
+
+  /// No description provided for @downloadAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuť'**
+  String get downloadAction;
+
+  /// No description provided for @rulerTapHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ťukni body na mape'**
+  String get rulerTapHint;
+
+  /// No description provided for @mapEntryPhoto.
+  ///
+  /// In sk, this message translates to:
+  /// **'Foto záznam'**
+  String get mapEntryPhoto;
+
+  /// No description provided for @mapEntryNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznam denníka'**
+  String get mapEntryNote;
+
+  /// No description provided for @openSettingsAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otvoriť nastavenia'**
+  String get openSettingsAction;
+
+  /// No description provided for @morseConverter.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prevodník text → Morse'**
+  String get morseConverter;
+
+  /// No description provided for @saveError.
+  ///
+  /// In sk, this message translates to:
+  /// **'Chyba pri ukladaní: {error}'**
+  String saveError(String error);
+
   /// No description provided for @languageName.
   ///
   /// In sk, this message translates to:

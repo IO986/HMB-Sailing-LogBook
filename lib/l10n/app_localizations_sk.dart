@@ -12,6 +12,148 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appTitle => 'HMB Sailing Log';
 
   @override
+  String get poiTypeAnchorage => 'Kotvisko';
+
+  @override
+  String get poiTypeMarina => 'Marína';
+
+  @override
+  String get poiTypeFuel => 'Tankovacia stanica';
+
+  @override
+  String get poiTypeHarbour => 'Prístav';
+
+  @override
+  String get poiVhfChannel => 'VHF kanál';
+
+  @override
+  String get poiPhone => 'Telefón';
+
+  @override
+  String get poiWebsite => 'Web';
+
+  @override
+  String get poiEmail => 'Email';
+
+  @override
+  String get poiCapacity => 'Kapacita';
+
+  @override
+  String get poiServices => 'Služby';
+
+  @override
+  String get poiSaveAsWaypoint => 'Uložiť ako waypoint';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Waypoint \"$name\" uložený';
+  }
+
+  @override
+  String get poiSource => 'Zdroj: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satelit';
+
+  @override
+  String get mapLayerMap => 'Mapa';
+
+  @override
+  String get mapLayers => 'Vrstvy';
+
+  @override
+  String get mapSeamarks => 'Seamarky';
+
+  @override
+  String get mapHarbours => 'Prístavy a kotviská';
+
+  @override
+  String get mapZoomInForPois =>
+      'Priblíž mapu pre načítanie prístavov a kotvísk';
+
+  @override
+  String get mapRainRadar => 'Zrážkový radar';
+
+  @override
+  String get mapOceanCurrentsTooltip => 'Oceánske prúdy (podrž pre zoznam)';
+
+  @override
+  String get mapCurrentForecast => 'Morský prúd — predpoveď (kt)';
+
+  @override
+  String get mapTools => 'Nástroje';
+
+  @override
+  String get mapVoyageOverview => 'Prehľad plavby';
+
+  @override
+  String get mapRuler => 'Pravítko / trasa';
+
+  @override
+  String get mapDownloadOffline => 'Stiahnuť oblasť offline';
+
+  @override
+  String get mapGpsDisabled => 'GPS je vypnuté';
+
+  @override
+  String get mapLocationDenied => 'Poloha nie je povolená';
+
+  @override
+  String get mapFollowGps => 'Sleduj GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Oblasť je príliš veľká ($count dlaždíc). Priblíž mapu a skús znova.';
+  }
+
+  @override
+  String get mapLivePreview => 'Naživo (aktuálny tracking)';
+
+  @override
+  String get mapWholeVoyage => 'Celá plavba';
+
+  @override
+  String get offlineSheetTitle => 'Offline mapa viditeľnej oblasti';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Mapa + seamarky, zoom $minZ–$maxZ, $tiles dlaždíc (~$mb MB). Stiahnuté oblasti fungujú na mori bez signálu.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Hotovo — $n dlaždíc uložených';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Hotovo s chybami: $n dlaždíc sa nepodarilo stiahnuť';
+  }
+
+  @override
+  String get downloadAction => 'Stiahnuť';
+
+  @override
+  String get rulerTapHint => 'Ťukni body na mape';
+
+  @override
+  String get mapEntryPhoto => 'Foto záznam';
+
+  @override
+  String get mapEntryNote => 'Záznam denníka';
+
+  @override
+  String get openSettingsAction => 'Otvoriť nastavenia';
+
+  @override
+  String get morseConverter => 'Prevodník text → Morse';
+
+  @override
+  String saveError(String error) {
+    return 'Chyba pri ukladaní: $error';
+  }
+
+  @override
   String get languageName => 'Slovenčina';
 
   @override
