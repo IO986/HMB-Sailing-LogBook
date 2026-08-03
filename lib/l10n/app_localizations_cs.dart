@@ -526,7 +526,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get gpsPositionNotAvailable => 'GPS pozice není dostupná!';
 
   @override
-  String get anchorAlarm => 'Anchor Alarm';
+  String get anchorAlarm => 'Kotevní alarm';
 
   @override
   String get drifting => 'UJÍŽDÍ';
@@ -2082,7 +2082,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sailingTime => 'Čas plavby';
 
   @override
-  String get gpsData => 'GPS Data';
+  String get gpsData => 'Data GPS';
 
   @override
   String get gpsPosition => 'Poloha';

@@ -15,6 +15,9 @@ class SafetyBriefingContent {
         'de' => _de,
         'es' => _es,
         'uk' => _uk,
+        'cs' => _cs,
+        'pl' => _pl,
+        'el' => _el,
         _ => _sk,
       };
 
@@ -327,6 +330,192 @@ class SafetyBriefingContent {
       'Питання вітаються до відплиття.',
     ]),
   ];
+
+  static const List<BriefingSection> _cs = [
+    BriefingSection('1. Účel instruktáže', [
+      'Tato instruktáž slouží k zajištění bezpečnosti posádky a lodi.',
+      'Každý člen posádky jí musí věnovat plnou pozornost.',
+    ]),
+    BriefingSection('2. Základní pravidla', [
+      'Kapitán má vždy poslední slovo.',
+      'Každý je zodpovědný za sebe i za ostatní; kapitán za všechno.',
+      'Po palubě se pohybujeme opatrně a s rozvahou.',
+      'Alkohol během plavby je zakázán.',
+      'Voda a elektřina jsou omezené zdroje – šetřete jimi.',
+    ]),
+    BriefingSection('3. Záchranné vesty a bezpečnostní vybavení', [
+      'Každý má přidělenou záchrannou vestu a umí si ji správně obléknout.',
+      'Kapitán určuje, kdy je nošení vesty povinné.',
+      'Posádka zná umístění MOB vybavení a záchranného raftu.',
+    ]),
+    BriefingSection('4. Pohyb na palubě', [
+      'Platí pravidlo „jedna ruka pro sebe, druhá pro loď".',
+      'Pozor na ráhno, lana a navijáky.',
+      'Po palubě se pohybujte po návětrné straně.',
+      'Při zhoršených podmínkách používejte jištění.',
+    ]),
+    BriefingSection('5. Požár a plyn', [
+      'Každý ví, kde jsou hasicí přístroje a hasicí deka.',
+      'Únik plynu: nic nezapínat ani nevypínat, nekouřit, okamžitě informovat kapitána.',
+      'Velký požár = cílem je únik, ne hašení.',
+      'Opuštění lodi nařizuje výhradně kapitán.',
+    ]),
+    BriefingSection('6. Motor, elektřina a voda', [
+      'Posádka ví, jak se motor startuje a vypíná.',
+      'Zná umístění bilžních čerpadel.',
+      'Při zatékání vody okamžitě informujte kapitána.',
+    ]),
+    BriefingSection('7. Zdraví a první pomoc', [
+      'Lékárnička je na známém místě.',
+      'Hlaste úrazy, popáleniny, vyčerpání nebo podchlazení.',
+      'Alergie a zdravotní omezení nahlaste kapitánovi.',
+    ]),
+    BriefingSection('8. Muž přes palubu (MOB)', [
+      'Nejlepší prevence je nespadnout do vody.',
+      'Pokud se to stane: 1. Ukazovat  2. Křičet  3. Neustále sledovat osobu',
+      'Stiskněte tlačítko MOB.',
+      'Záchranu řídí kapitán.',
+    ]),
+    BriefingSection('9. Lodní toaleta (Heads)', [
+      'Lodní toaleta není domácí WC.',
+      'Do toalety patří jen lidský odpad a lodní/rychle rozložitelný toaletní papír.',
+      'ZAKÁZÁNO: vlhčené ubrousky, hygienické vložky, tampony, papírové utěrky.',
+      'Po použití systém důkladně propláchněte.',
+      'Jakýkoli problém okamžitě hlaste kapitánovi.',
+    ]),
+    BriefingSection('10. Komunikace', [
+      'Nouzový kanál VHF je 16.',
+      'Mayday a DSC provádí kapitán nebo určená osoba, ale postup zná každý.',
+    ]),
+    BriefingSection('11. Závěr', [
+      'Každý člen posádky potvrdí, že instruktáži porozuměl.',
+      'Dotazy jsou před odplutím vítány.',
+    ]),
+  ];
+
+  static const List<BriefingSection> _pl = [
+    BriefingSection('1. Cel odprawy', [
+      'Ta odprawa służy zapewnieniu bezpieczeństwa załogi i jachtu.',
+      'Każdy członek załogi musi poświęcić jej pełną uwagę.',
+    ]),
+    BriefingSection('2. Podstawowe zasady', [
+      'Kapitan zawsze ma ostatnie słowo.',
+      'Każdy odpowiada za siebie i za innych; kapitan za wszystko.',
+      'Po pokładzie poruszamy się ostrożnie i z rozwagą.',
+      'Alkohol podczas rejsu jest zabroniony.',
+      'Woda i prąd to ograniczone zasoby – oszczędzaj je.',
+    ]),
+    BriefingSection('3. Kamizelki ratunkowe i sprzęt bezpieczeństwa', [
+      'Każdy ma przydzieloną kamizelkę i potrafi ją poprawnie założyć.',
+      'Kapitan decyduje, kiedy noszenie kamizelki jest obowiązkowe.',
+      'Załoga zna umiejscowienie sprzętu MOB i tratwy ratunkowej.',
+    ]),
+    BriefingSection('4. Poruszanie się po pokładzie', [
+      'Obowiązuje zasada „jedna ręka dla siebie, druga dla jachtu".',
+      'Uważaj na bom, liny i winsze.',
+      'Poruszaj się po nawietrznej stronie pokładu.',
+      'W pogarszających się warunkach używaj asekuracji.',
+    ]),
+    BriefingSection('5. Pożar i gaz', [
+      'Każdy wie, gdzie są gaśnice i koc gaśniczy.',
+      'Wyciek gazu: niczego nie włączać ani wyłączać, nie palić, natychmiast poinformować kapitana.',
+      'Duży pożar = celem jest ucieczka, nie gaszenie.',
+      'Opuszczenie jachtu zarządza wyłącznie kapitan.',
+    ]),
+    BriefingSection('6. Silnik, prąd i woda', [
+      'Załoga wie, jak uruchomić i wyłączyć silnik.',
+      'Zna umiejscowienie pomp zęzowych.',
+      'Przy przecieku wody natychmiast poinformuj kapitana.',
+    ]),
+    BriefingSection('7. Zdrowie i pierwsza pomoc', [
+      'Apteczka jest w znanym miejscu.',
+      'Zgłaszaj urazy, oparzenia, wyczerpanie lub wychłodzenie.',
+      'Alergie i ograniczenia zdrowotne zgłoś kapitanowi.',
+    ]),
+    BriefingSection('8. Człowiek za burtą (MOB)', [
+      'Najlepszą prewencją jest nie wpaść do wody.',
+      'Jeśli się to stanie: 1. Wskazuj  2. Krzycz  3. Nieustannie obserwuj osobę',
+      'Naciśnij przycisk MOB.',
+      'Akcją ratunkową kieruje kapitan.',
+    ]),
+    BriefingSection('9. Toaleta jachtowa (Heads)', [
+      'Toaleta jachtowa to nie domowe WC.',
+      'Do toalety trafia tylko ludzki odpad i jachtowy/szybko rozkładalny papier toaletowy.',
+      'ZABRONIONE: nawilżane chusteczki, podpaski, tampony, ręczniki papierowe.',
+      'Po użyciu dokładnie przepłucz system.',
+      'Każdy problem natychmiast zgłoś kapitanowi.',
+    ]),
+    BriefingSection('10. Łączność', [
+      'Awaryjny kanał VHF to 16.',
+      'Mayday i DSC obsługuje kapitan lub wyznaczona osoba, ale procedurę zna każdy.',
+    ]),
+    BriefingSection('11. Zakończenie', [
+      'Każdy członek załogi potwierdza, że zrozumiał odprawę.',
+      'Pytania przed wypłynięciem są mile widziane.',
+    ]),
+  ];
+
+  static const List<BriefingSection> _el = [
+    BriefingSection('1. Σκοπός της ενημέρωσης', [
+      'Αυτή η ενημέρωση υπάρχει για την ασφάλεια του πληρώματος και του σκάφους.',
+      'Κάθε μέλος του πληρώματος πρέπει να της δώσει πλήρη προσοχή.',
+    ]),
+    BriefingSection('2. Βασικοί κανόνες', [
+      'Ο κυβερνήτης έχει πάντα τον τελευταίο λόγο.',
+      'Ο καθένας είναι υπεύθυνος για τον εαυτό του και τους άλλους· ο κυβερνήτης για τα πάντα.',
+      'Κινούμαστε στο κατάστρωμα προσεκτικά και με σύνεση.',
+      'Το αλκοόλ κατά τον πλου απαγορεύεται.',
+      'Το νερό και το ρεύμα είναι περιορισμένοι πόροι – εξοικονομήστε τα.',
+    ]),
+    BriefingSection('3. Σωσίβια και εξοπλισμός ασφαλείας', [
+      'Ο καθένας έχει ένα σωσίβιο και ξέρει να το φορά σωστά.',
+      'Ο κυβερνήτης αποφασίζει πότε είναι υποχρεωτικό το σωσίβιο.',
+      'Το πλήρωμα γνωρίζει τη θέση του εξοπλισμού MOB και της σωσίβιας σχεδίας.',
+    ]),
+    BriefingSection('4. Μετακίνηση στο κατάστρωμα', [
+      'Ισχύει ο κανόνας «ένα χέρι για εσένα, ένα για το σκάφος».',
+      'Προσοχή στη ματσούκα, τα σχοινιά και τα βίντσια.',
+      'Κινηθείτε στην προσήνεμη πλευρά του καταστρώματος.',
+      'Σε δυσμενείς συνθήκες χρησιμοποιήστε ζώνη ασφαλείας.',
+    ]),
+    BriefingSection('5. Φωτιά και αέριο', [
+      'Ο καθένας ξέρει πού είναι οι πυροσβεστήρες και η πυρίμαχη κουβέρτα.',
+      'Διαρροή αερίου: μην ανοίγετε/κλείνετε τίποτε, μην καπνίζετε, ενημερώστε αμέσως τον κυβερνήτη.',
+      'Μεγάλη φωτιά = στόχος είναι η διαφυγή, όχι η κατάσβεση.',
+      'Την εγκατάλειψη του σκάφους τη διατάζει αποκλειστικά ο κυβερνήτης.',
+    ]),
+    BriefingSection('6. Μηχανή, ρεύμα και νερό', [
+      'Το πλήρωμα ξέρει πώς ξεκινά και σταματά η μηχανή.',
+      'Γνωρίζει τη θέση των αντλιών σεντίνας.',
+      'Σε εισροή νερού ενημερώστε αμέσως τον κυβερνήτη.',
+    ]),
+    BriefingSection('7. Υγεία και πρώτες βοήθειες', [
+      'Το κιτ πρώτων βοηθειών βρίσκεται σε γνωστό σημείο.',
+      'Αναφέρετε τραυματισμούς, εγκαύματα, εξάντληση ή υποθερμία.',
+      'Αναφέρετε αλλεργίες και ιατρικά προβλήματα στον κυβερνήτη.',
+    ]),
+    BriefingSection('8. Άνθρωπος στη θάλασσα (MOB)', [
+      'Η καλύτερη πρόληψη είναι να μην πέσετε στο νερό.',
+      'Αν συμβεί: 1. Δείχνετε  2. Φωνάζετε  3. Παρακολουθείτε συνεχώς το άτομο',
+      'Πατήστε το κουμπί MOB.',
+      'Τη διάσωση τη διευθύνει ο κυβερνήτης.',
+    ]),
+    BriefingSection('9. Τουαλέτα σκάφους (Heads)', [
+      'Η τουαλέτα του σκάφους δεν είναι οικιακό WC.',
+      'Μέσα πάει μόνο ανθρώπινο απόβλητο και ναυτικό/γρήγορα διαλυόμενο χαρτί υγείας.',
+      'ΑΠΑΓΟΡΕΥΟΝΤΑΙ: υγρά μαντηλάκια, σερβιέτες, ταμπόν, χαρτί κουζίνας.',
+      'Μετά τη χρήση ξεπλύνετε καλά το σύστημα.',
+      'Κάθε πρόβλημα αναφέρετέ το αμέσως στον κυβερνήτη.',
+    ]),
+    BriefingSection('10. Επικοινωνία', [
+      'Το κανάλι έκτακτης ανάγκης VHF είναι το 16.',
+      'Το Mayday και το DSC τα χειρίζεται ο κυβερνήτης ή ορισμένο άτομο, αλλά όλοι γνωρίζουν τη διαδικασία.',
+    ]),
+    BriefingSection('11. Κλείσιμο', [
+      'Κάθε μέλος του πληρώματος επιβεβαιώνει ότι κατάλαβε την ενημέρωση.',
+      'Ερωτήσεις είναι ευπρόσδεκτες πριν τον απόπλου.',
+    ]),
+  ];
 }
 
 // ── Výbava jednotlivca (editovateľná) ────────────────────────────
@@ -338,6 +527,9 @@ class IndividualGearContent {
         'de' => _de,
         'es' => _es,
         'uk' => _uk,
+        'cs' => _cs,
+        'pl' => _pl,
+        'el' => _el,
         _ => _sk,
       };
 
@@ -533,6 +725,123 @@ class IndividualGearContent {
       'Європейська картка медичного страхування',
       'Туристичне страхування',
       '⚠️ Пакуй у рюкзаки/сумки (найкраще водонепроникні), НЕ в тверді валізи!',
+    ],
+  };
+
+  static const Map<String, List<String>> _cs = {
+    'Obuv': [
+      'Pevná obuv (tenisky s protiskluzovou podrážkou, nejlépe světlou)',
+      'Sandály nebo žabky (crocs)',
+    ],
+    'Oblečení': [
+      'Čepice (teplejší + kšiltovka)',
+      'Spodní prádlo',
+      'Funkční prádlo',
+      'Termoprádlo',
+      'Teplá vrstva (fleece)',
+      'Nepromokavé a větruodolné oblečení',
+      'Tepláky',
+      'Kraťasy',
+      'Plavky',
+      'Rukavice (nejlépe bezprsté – jachtařské/cyklistické)',
+    ],
+    'Hygiena': [
+      'Ručník (ideálně 2×)',
+      'Osobní hygiena (zubní kartáček, pasta, sprchový gel)',
+      'Vlhčené ubrousky',
+      'Opalovací krém (UV50) + panthenol',
+      'Balzám na rty',
+    ],
+    'Ostatní': [
+      'Sluneční brýle + šňůrka',
+      'Čelovka (s červeným světlem)',
+      'Power banka + nabíječka',
+      'Osobní lékárnička (osobní léky, alergie, kinetóza...)',
+      'Vodotěsný obal na telefon',
+    ],
+    'Doklady': [
+      'Pas nebo občanský průkaz',
+      'Evropský průkaz zdravotního pojištění',
+      'Cestovní pojištění',
+      '⚠️ Balení do batohů/tašek (nejlépe nepromokavých), NE pevných kufrů!',
+    ],
+  };
+
+  static const Map<String, List<String>> _pl = {
+    'Obuwie': [
+      'Solidne obuwie (trampki z antypoślizgową podeszwą, najlepiej jasną)',
+      'Sandały lub klapki (crocsy)',
+    ],
+    'Odzież': [
+      'Czapka (cieplejsza + z daszkiem)',
+      'Bielizna',
+      'Bielizna funkcyjna',
+      'Bielizna termiczna',
+      'Ciepła warstwa (polar)',
+      'Odzież nieprzemakalna i wiatroszczelna',
+      'Spodnie dresowe',
+      'Krótkie spodenki',
+      'Strój kąpielowy',
+      'Rękawice (najlepiej bez palców – żeglarskie/rowerowe)',
+    ],
+    'Higiena': [
+      'Ręcznik (idealnie 2×)',
+      'Higiena osobista (szczoteczka, pasta, żel pod prysznic)',
+      'Nawilżane chusteczki',
+      'Krem z filtrem (UV50) + pantenol',
+      'Balsam do ust',
+    ],
+    'Inne': [
+      'Okulary przeciwsłoneczne + sznurek',
+      'Latarka czołowa (z czerwonym światłem)',
+      'Power bank + ładowarka',
+      'Osobista apteczka (własne leki, alergie, choroba lokomocyjna...)',
+      'Wodoodporne etui na telefon',
+    ],
+    'Dokumenty': [
+      'Paszport lub dowód osobisty',
+      'Europejska karta ubezpieczenia zdrowotnego',
+      'Ubezpieczenie podróżne',
+      '⚠️ Pakuj w plecaki/miękkie torby (najlepiej wodoodporne), NIE w twarde walizki!',
+    ],
+  };
+
+  static const Map<String, List<String>> _el = {
+    'Υποδήματα': [
+      'Στιβαρά παπούτσια (αθλητικά με αντιολισθητική σόλα, κατά προτίμηση ανοιχτόχρωμη)',
+      'Σανδάλια ή σαγιονάρες (crocs)',
+    ],
+    'Ρουχισμός': [
+      'Σκούφος (ζεστός + καπέλο)',
+      'Εσώρουχα',
+      'Ισοθερμικά εσώρουχα (base layer)',
+      'Θερμικά εσώρουχα',
+      'Ζεστή στρώση (fleece)',
+      'Αδιάβροχα και αντιανεμικά ρούχα',
+      'Φόρμα',
+      'Σορτς',
+      'Μαγιό',
+      'Γάντια (κατά προτίμηση χωρίς δάχτυλα – ιστιοπλοΐας/ποδηλασίας)',
+    ],
+    'Υγιεινή': [
+      'Πετσέτα (ιδανικά 2×)',
+      'Ατομική υγιεινή (οδοντόβουρτσα, οδοντόκρεμα, αφρόλουτρο)',
+      'Υγρά μαντηλάκια',
+      'Αντηλιακό (UV50) + πανθενόλη',
+      'Βάλσαμο χειλιών',
+    ],
+    'Άλλα': [
+      'Γυαλιά ηλίου + κορδόνι',
+      'Φακός κεφαλής (με κόκκινο φως)',
+      'Power bank + φορτιστής',
+      'Ατομικό κιτ πρώτων βοηθειών (φάρμακα, αλλεργίες, ναυτία...)',
+      'Αδιάβροχη θήκη κινητού',
+    ],
+    'Έγγραφα': [
+      'Διαβατήριο ή ταυτότητα',
+      'Ευρωπαϊκή κάρτα ασφάλισης υγείας',
+      'Ταξιδιωτική ασφάλιση',
+      '⚠️ Πακετάρετε σε σακίδια/μαλακές τσάντες (κατά προτίμηση αδιάβροχες), ΟΧΙ σκληρές βαλίτσες!',
     ],
   };
 }
