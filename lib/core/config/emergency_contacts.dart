@@ -30,57 +30,88 @@ class EmergencyRegion {
 
 /// Prekladateľný text v 5 jazykoch appky.
 class _T {
-  final String sk, en, de, es, uk;
-  const _T(this.sk, this.en, this.de, this.es, this.uk);
+  final String sk, en, de, es, uk, cs, pl, el;
+  const _T(this.sk, this.en, this.de, this.es, this.uk, this.cs, this.pl,
+      this.el);
   String of(String l) => switch (l) {
         'sk' => sk,
         'de' => de,
         'es' => es,
         'uk' => uk,
+        'cs' => cs,
+        'pl' => pl,
+        'el' => el,
         _ => en,
       };
 }
 
 const _tVhf16 = _T('VHF kanál 16', 'VHF channel 16', 'UKW-Kanal 16',
-    'Canal VHF 16', 'Канал VHF 16');
+    'Canal VHF 16', 'Канал VHF 16', 'VHF kanál 16', 'Kanał VHF 16',
+    'Κανάλι VHF 16');
 const _tVhfIntl = _T(
     'Medzinárodný tiesňový kanál',
     'International distress channel',
     'Internationaler Notrufkanal',
     'Canal internacional de socorro',
-    'Міжнародний аварійний канал');
+    'Міжнародний аварійний канал',
+    'Mezinárodní tísňový kanál',
+    'Międzynarodowy kanał alarmowy',
+    'Διεθνές κανάλι κινδύνου');
 const _tEmergencyEu = _T('Tiesňové volanie (EU)', 'Emergency call (EU)',
-    'Notruf (EU)', 'Llamada de emergencia (UE)', 'Екстрений виклик (ЄС)');
+    'Notruf (EU)', 'Llamada de emergencia (UE)', 'Екстрений виклик (ЄС)',
+    'Tísňové volání (EU)', 'Telefon alarmowy (UE)',
+    'Κλήση έκτακτης ανάγκης (ΕΕ)');
 const _tAmbulance = _T('Záchranná služba', 'Emergency medical service',
-    'Rettungsdienst', 'Servicio de emergencias', 'Швидка допомога');
-const _tPolice = _T('Polícia', 'Police', 'Polizei', 'Policía', 'Поліція');
+    'Rettungsdienst', 'Servicio de emergencias', 'Швидка допомога',
+    'Záchranná služba', 'Pogotowie ratunkowe', 'Επείγουσα ιατρική βοήθεια');
+const _tPolice = _T('Polícia', 'Police', 'Polizei', 'Policía', 'Поліція',
+    'Policie', 'Policja', 'Αστυνομία');
 const _tEmergencyLine = _T('Tiesňová linka', 'Emergency line', 'Notrufnummer',
-    'Línea de emergencia', 'Лінія екстреної допомоги');
+    'Línea de emergencia', 'Лінія екстреної допомоги', 'Tísňová linka',
+    'Linia alarmowa', 'Γραμμή έκτακτης ανάγκης');
 const _tCross = _T(
     'CROSS (záchrana na mori)',
     'CROSS (sea rescue)',
     'CROSS (Seenotrettung)',
     'CROSS (salvamento marítimo)',
-    'CROSS (морський порятунок)');
+    'CROSS (морський порятунок)',
+    'CROSS (záchrana na moři)',
+    'CROSS (ratownictwo morskie)',
+    'CROSS (θαλάσσια διάσωση)');
 
 const Map<String, _T> _countryNames = {
-  'HR': _T('Chorvátsko', 'Croatia', 'Kroatien', 'Croacia', 'Хорватія'),
-  'ME': _T('Čierna Hora', 'Montenegro', 'Montenegro', 'Montenegro', 'Чорногорія'),
-  'SI': _T('Slovinsko', 'Slovenia', 'Slowenien', 'Eslovenia', 'Словенія'),
-  'IT': _T('Taliansko', 'Italy', 'Italien', 'Italia', 'Італія'),
-  'GR': _T('Grécko', 'Greece', 'Griechenland', 'Grecia', 'Греція'),
-  'TR': _T('Turecko', 'Türkiye', 'Türkei', 'Turquía', 'Туреччина'),
-  'ES': _T('Španielsko', 'Spain', 'Spanien', 'España', 'Іспанія'),
-  'PT': _T('Portugalsko', 'Portugal', 'Portugal', 'Portugal', 'Португалія'),
-  'FR': _T('Francúzsko', 'France', 'Frankreich', 'Francia', 'Франція'),
-  'MT': _T('Malta', 'Malta', 'Malta', 'Malta', 'Мальта'),
-  'AL': _T('Albánsko', 'Albania', 'Albanien', 'Albania', 'Албанія'),
-  'NO': _T('Nórsko', 'Norway', 'Norwegen', 'Noruega', 'Норвегія'),
+  'HR': _T('Chorvátsko', 'Croatia', 'Kroatien', 'Croacia', 'Хорватія',
+      'Chorvatsko', 'Chorwacja', 'Κροατία'),
+  'ME': _T('Čierna Hora', 'Montenegro', 'Montenegro', 'Montenegro', 'Чорногорія',
+      'Černá Hora', 'Czarnogóra', 'Μαυροβούνιο'),
+  'SI': _T('Slovinsko', 'Slovenia', 'Slowenien', 'Eslovenia', 'Словенія',
+      'Slovinsko', 'Słowenia', 'Σλοβενία'),
+  'IT': _T('Taliansko', 'Italy', 'Italien', 'Italia', 'Італія',
+      'Itálie', 'Włochy', 'Ιταλία'),
+  'GR': _T('Grécko', 'Greece', 'Griechenland', 'Grecia', 'Греція',
+      'Řecko', 'Grecja', 'Ελλάδα'),
+  'TR': _T('Turecko', 'Türkiye', 'Türkei', 'Turquía', 'Туреччина',
+      'Turecko', 'Turcja', 'Τουρκία'),
+  'ES': _T('Španielsko', 'Spain', 'Spanien', 'España', 'Іспанія',
+      'Španělsko', 'Hiszpania', 'Ισπανία'),
+  'PT': _T('Portugalsko', 'Portugal', 'Portugal', 'Portugal', 'Португалія',
+      'Portugalsko', 'Portugalia', 'Πορτογαλία'),
+  'FR': _T('Francúzsko', 'France', 'Frankreich', 'Francia', 'Франція',
+      'Francie', 'Francja', 'Γαλλία'),
+  'MT': _T('Malta', 'Malta', 'Malta', 'Malta', 'Мальта',
+      'Malta', 'Malta', 'Μάλτα'),
+  'AL': _T('Albánsko', 'Albania', 'Albanien', 'Albania', 'Албанія',
+      'Albánie', 'Albania', 'Αλβανία'),
+  'NO': _T('Nórsko', 'Norway', 'Norwegen', 'Noruega', 'Норвегія',
+      'Norsko', 'Norwegia', 'Νορβηγία'),
   'GB': _T('Veľká Británia', 'United Kingdom', 'Großbritannien',
-      'Reino Unido', 'Велика Британія'),
-  'SK': _T('Slovensko', 'Slovakia', 'Slowakei', 'Eslovaquia', 'Словаччина'),
+      'Reino Unido', 'Велика Британія', 'Velká Británie', 'Wielka Brytania',
+      'Ηνωμένο Βασίλειο'),
+  'SK': _T('Slovensko', 'Slovakia', 'Slowakei', 'Eslovaquia', 'Словаччина',
+      'Slovensko', 'Słowacja', 'Σλοβακία'),
   'OFFSHORE': _T('Offshore / oceán', 'Offshore / ocean', 'Offshore / Ozean',
-      'Alta mar / océano', 'Відкрите море / океан'),
+      'Alta mar / océano', 'Відкрите море / океан', 'Offshore / oceán',
+      'Pełne morze / ocean', 'Ανοιχτή θάλασσα / ωκεανός'),
 };
 
 /// Interná definícia kontaktu: buď pevné meno (proper noun), alebo
