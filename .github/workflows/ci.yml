@@ -37,9 +37,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Pin intl (flutter pub get can bump it)
-        run: flutter pub add intl:^0.20.2
-
       - name: Generate code (drift/build_runner)
         run: dart run build_runner build --delete-conflicting-outputs
 
