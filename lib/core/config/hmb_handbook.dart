@@ -18,6 +18,7 @@ class SafetyBriefingContent {
         'cs' => _cs,
         'pl' => _pl,
         'el' => _el,
+        'hr' => _hr,
         _ => _sk,
       };
 
@@ -516,6 +517,68 @@ class SafetyBriefingContent {
       'Ερωτήσεις είναι ευπρόσδεκτες πριν τον απόπλου.',
     ]),
   ];
+
+  static const List<BriefingSection> _hr = [
+    BriefingSection('1. Svrha instruktaže', [
+      'Ova instruktaža postoji radi sigurnosti posade i broda.',
+      'Svaki član posade dužan joj je posvetiti punu pozornost.',
+    ]),
+    BriefingSection('2. Osnovna pravila', [
+      'Zapovjednik uvijek ima zadnju riječ.',
+      'Svatko je odgovoran za sebe i za ostale, a zapovjednik za sve.',
+      'Po palubi se krećemo oprezno i promišljeno.',
+      'Alkohol je tijekom plovidbe zabranjen.',
+      'Voda i struja ograničeni su resursi – štedite ih.',
+    ]),
+    BriefingSection('3. Prsluci za spašavanje i sigurnosna oprema', [
+      'Svatko ima dodijeljen prsluk za spašavanje i zna ga pravilno obući.',
+      'Zapovjednik određuje kada je nošenje prsluka obvezno.',
+      'Posada zna gdje se nalazi MOB oprema i splav za spašavanje.',
+    ]),
+    BriefingSection('4. Kretanje po palubi', [
+      'Vrijedi pravilo "jedna ruka za sebe, jedna za brod".',
+      'Pazite na bum, konope i vinčeve.',
+      'Krećite se privjetrinskom stranom palube.',
+      'U pogoršanim uvjetima koristite sigurnosni pojas.',
+    ]),
+    BriefingSection('5. Požar i plin', [
+      'Svatko zna gdje su vatrogasni aparati i protupožarna deka.',
+      'Curenje plina: ništa ne uključujte ni isključujte, ne pušite, odmah obavijestite zapovjednika.',
+      'Veliki požar = cilj je bijeg, a ne gašenje.',
+      'Napuštanje broda naređuje isključivo zapovjednik.',
+    ]),
+    BriefingSection('6. Motor, struja i voda', [
+      'Posada zna kako pokrenuti i zaustaviti motor.',
+      'Zna gdje se nalaze kaljužne pumpe.',
+      'Prodor vode odmah prijavite zapovjedniku.',
+    ]),
+    BriefingSection('7. Zdravlje i prva pomoć', [
+      'Kutija prve pomoći nalazi se na poznatom mjestu.',
+      'Prijavite ozljede, opekline, iscrpljenost ili pothlađenost.',
+      'Alergije i zdravstvene tegobe prijavite zapovjedniku.',
+    ]),
+    BriefingSection('8. Čovjek u moru (MOB)', [
+      'Najbolja prevencija je ne pasti u more.',
+      'Ako se dogodi: 1. Pokazujte  2. Vičite  3. Neprekidno promatrajte osobu',
+      'Pritisnite MOB tipku.',
+      'Spašavanjem upravlja zapovjednik.',
+    ]),
+    BriefingSection('9. Brodski toalet (heads)', [
+      'Brodski toalet nije kućni WC.',
+      'Unutra ide samo ljudski otpad i brodski/brzo razgradivi toaletni papir.',
+      'ZABRANJENO: vlažne maramice, higijenski ulošci, tamponi, papirnati ručnici.',
+      'Nakon uporabe temeljito isperite sustav.',
+      'Svaki problem odmah prijavite zapovjedniku.',
+    ]),
+    BriefingSection('10. Komunikacija', [
+      'Kanal za pogibelj na VHF-u je 16.',
+      'Mayday i DSC obavlja zapovjednik ili određena osoba, ali svi znaju postupak.',
+    ]),
+    BriefingSection('11. Zaključak', [
+      'Svaki član posade potvrđuje da je razumio instruktažu.',
+      'Pitanja prije isplovljenja su dobrodošla.',
+    ]),
+  ];
 }
 
 // ── Výbava jednotlivca (editovateľná) ────────────────────────────
@@ -530,6 +593,7 @@ class IndividualGearContent {
         'cs' => _cs,
         'pl' => _pl,
         'el' => _el,
+        'hr' => _hr,
         _ => _sk,
       };
 
@@ -842,6 +906,45 @@ class IndividualGearContent {
       'Ευρωπαϊκή κάρτα ασφάλισης υγείας',
       'Ταξιδιωτική ασφάλιση',
       '⚠️ Πακετάρετε σε σακίδια/μαλακές τσάντες (κατά προτίμηση αδιάβροχες), ΟΧΙ σκληρές βαλίτσες!',
+    ],
+  };
+
+  static const Map<String, List<String>> _hr = {
+    'Obuća': [
+      'Čvrsta obuća (tenisice s protukliznim potplatom, najbolje svijetlim)',
+      'Sandale ili japanke (crocsice)',
+    ],
+    'Odjeća': [
+      'Kapa (topla + s šiltom)',
+      'Donje rublje',
+      'Funkcionalno rublje',
+      'Termo rublje',
+      'Topli sloj (flis)',
+      'Nepromočiva i vjetrootporna odjeća',
+      'Trenirka',
+      'Kratke hlače',
+      'Kupaći kostim',
+      'Rukavice (najbolje bez prstiju – jedriličarske/biciklističke)',
+    ],
+    'Higijena': [
+      'Ručnik (idealno 2×)',
+      'Osobna higijena (četkica, pasta, gel za tuširanje)',
+      'Vlažne maramice',
+      'Krema za sunčanje (UV50) + pantenol',
+      'Balzam za usne',
+    ],
+    'Ostalo': [
+      'Sunčane naočale + vezica',
+      'Čeona svjetiljka (s crvenim svjetlom)',
+      'Power bank + punjač',
+      'Osobna kutija prve pomoći (osobni lijekovi, alergije, morska bolest...)',
+      'Vodootporna navlaka za mobitel',
+    ],
+    'Dokumenti': [
+      'Putovnica ili osobna iskaznica',
+      'Europska kartica zdravstvenog osiguranja',
+      'Putno osiguranje',
+      '⚠️ Pakirajte u ruksake/meke torbe (najbolje nepromočive), NE u tvrde kofere!',
     ],
   };
 }

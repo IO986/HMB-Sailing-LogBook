@@ -3,14 +3,23 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Guards the five .arb files against drifting apart.
+/// Guards the .arb files against drifting apart.
 ///
 /// gen-l10n only warns about a missing translation, and a warning in a long
 /// build log is a warning nobody reads. A key added to the Slovak template and
 /// forgotten elsewhere shows up in the app as English text — or, for a key with
 /// placeholders, as a build failure much later.
+///
+/// The locale list is read off disk, not hand-maintained: the hand-maintained
+/// version was never extended past the original five, so cs, pl and el sat
+/// unguarded for as long as they existed.
 void main() {
-  const locales = ['sk', 'en', 'de', 'es', 'uk'];
+  final locales = Directory('lib/l10n')
+      .listSync()
+      .map((e) => RegExp(r'app_(\w+)\.arb$').firstMatch(e.path)?.group(1))
+      .whereType<String>()
+      .toList()
+    ..sort();
 
   Map<String, dynamic> load(String locale) => jsonDecode(
         File('lib/l10n/app_$locale.arb').readAsStringSync(),

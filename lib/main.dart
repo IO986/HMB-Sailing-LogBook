@@ -68,8 +68,11 @@ Future<void> main() async {
   // Sticky = swipe od okraja ich dočasne zobrazí, potom sa samy schovajú.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  for (final locale in ['sk', 'en', 'de', 'es', 'uk']) {
-    await initializeDateFormatting(locale, null);
+  // Derived from AppLocalizations rather than hand-listed: the hand-listed
+  // version silently stopped covering cs, pl and el as they were added, so
+  // DateFormat fell back to the default locale for them.
+  for (final locale in AppLocalizations.supportedLocales) {
+    await initializeDateFormatting(locale.languageCode, null);
   }
 
   final packageInfo = await PackageInfo.fromPlatform();

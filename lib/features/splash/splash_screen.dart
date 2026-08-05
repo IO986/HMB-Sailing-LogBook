@@ -32,6 +32,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     ('🇺🇦', 'Українська', 'uk'),
     ('🇵🇱', 'Polski', 'pl'),
     ('🇬🇷', 'Ελληνικά', 'el'),
+    ('🇭🇷', 'Hrvatski', 'hr'),
   ];
 
   @override
