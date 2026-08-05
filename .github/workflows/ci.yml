@@ -9,7 +9,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # hmb_core is a separate private repo, consumed as a sibling path
       # dependency (pubspec.yaml: `hmb_core: { path: ../hmb_core }`) — same
