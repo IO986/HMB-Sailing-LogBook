@@ -1,0 +1,19 @@
+HMB Sailing Log — build 54 (1.25.0+54)
+
+=== Slovensky (sk-SK) ===
+• 3 nové jazyky: čeština, poľština, gréčtina (COLREG: čeština po slovensky, poľština/gréčtina po anglicky)
+• Prispôsobiteľné spodné menu: presúvanie ikon (drag & drop), skrytie kariet, veľkosť ikon S/M/L
+• Nastavenia mapy sa pamätajú po reštarte (vrstvy, podklad, zámok severu)
+• Otázka na povolenie notifikácií pri prvom spustení
+• Oprava: vrstva prístavov a kotvísk opäť funguje
+• Oprava: uloženie karty lode/protokolu sa už nezasekne
+• Oprava mapy v automaticky nahranom PDF
+
+=== English (en-US) ===
+• 3 new languages: Czech, Polish, Greek (COLREG: Czech in Slovak, Polish/Greek in English)
+• Customizable bottom menu: drag & drop reorder, hide tabs, icon size S/M/L
+• Map settings now persist across restarts (layers, base map, north lock)
+• First-run notification permission prompt
+• Fix: harbours & anchorages layer works again
+• Fix: saving the vessel card / handover no longer hangs
+• Fix: map in the auto-uploaded PDF
