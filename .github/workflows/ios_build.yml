@@ -14,6 +14,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # hmb_core is a separate private repo, consumed as a sibling path
+      # dependency (pubspec.yaml: `hmb_core: { path: ../hmb_core }`) — same
+      # layout as local dev and as ci.yml. Pinned to a tag, not a branch, so
+      # release builds use a known-stable hmb_core rather than whatever main
+      # happens to contain at build time.
+      #
+      # actions/checkout's `path` input refuses to place a repo outside the
+      # primary checkout directory (path-traversal guard on `../hmb_core`),
+      # so this is a plain `git clone` straight into the sibling location
+      # instead. The PAT in the URL is never printed — Actions masks any
+      # string matching a registered secret in logs.
+      - name: Checkout hmb_core
+        env:
+          HMB_CORE_PAT: ${{ secrets.HMB_CORE_PAT }}
+        run: |
+          git clone --branch v1.0.0 --depth 1 \
+            https://x-access-token:${HMB_CORE_PAT}@github.com/IO986/hmb_core.git \
+            ../hmb_core
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
