@@ -2923,4 +2923,79 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Niste prijavljeni';
+
+  @override
+  String get waypointNameHint => 'npr. Sidrište, Luka...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Točka $time';
+  }
+
+  @override
+  String get mobFullName => 'Čovjek u moru';
+
+  @override
+  String get maydayCardShort => 'Mayday\nkartica';
+
+  @override
+  String get morseInputHint => 'Unesite tekst...';
+
+  @override
+  String get morseSosTitle => 'SOS – SIGNAL POGIBLI';
+
+  @override
+  String get morseSosCopied => 'SOS kopiran';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n sek';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n h';
+  }
+
+  @override
+  String get aboutFeatureGps => 'GPS praćenje s automatskim zapisima';
+
+  @override
+  String get aboutFeatureLogbook => 'Dnevnik višednevnih plovidbi';
+
+  @override
+  String get aboutFeatureMaps => 'Izvanmrežne pomorske karte (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Pomorska prognoza (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Izvoz PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Sigurnosna instruktaža i Mayday kartica';
+
+  @override
+  String get aboutAuthorLabel => 'Autor';
+
+  @override
+  String get aboutVersionLabel => 'Verzija';
+
+  @override
+  String get aboutPlatformLabel => 'Platforma';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Prijava nije uspjela: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Odjava nije uspjela: $error';
+  }
 }

@@ -2917,4 +2917,79 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Neprihlásený';
+
+  @override
+  String get waypointNameHint => 'napr. Kotvisko, Prístav...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Bod $time';
+  }
+
+  @override
+  String get mobFullName => 'Muž cez palubu';
+
+  @override
+  String get maydayCardShort => 'Mayday\nkarta';
+
+  @override
+  String get morseInputHint => 'Zadajte text...';
+
+  @override
+  String get morseSosTitle => 'SOS – TIESŇOVÝ SIGNÁL';
+
+  @override
+  String get morseSosCopied => 'SOS skopírované';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n sek';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n hod';
+  }
+
+  @override
+  String get aboutFeatureGps => 'GPS sledovanie s automatickými zápismi';
+
+  @override
+  String get aboutFeatureLogbook => 'Denník viacdňových plavieb';
+
+  @override
+  String get aboutFeatureMaps => 'Offline námorné mapy (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Námorná predpoveď počasia (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Export PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Bezpečnostná inštruktáž a Mayday karta';
+
+  @override
+  String get aboutAuthorLabel => 'Autor';
+
+  @override
+  String get aboutVersionLabel => 'Verzia';
+
+  @override
+  String get aboutPlatformLabel => 'Platforma';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Prihlásenie zlyhalo: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Odhlásenie zlyhalo: $error';
+  }
 }

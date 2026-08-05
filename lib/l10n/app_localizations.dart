@@ -5577,6 +5577,132 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Neprihlásený'**
   String get syncCloudNotSignedIn;
+
+  /// No description provided for @waypointNameHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. Kotvisko, Prístav...'**
+  String get waypointNameHint;
+
+  /// No description provided for @waypointDefaultName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bod {time}'**
+  String waypointDefaultName(String time);
+
+  /// No description provided for @mobFullName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Muž cez palubu'**
+  String get mobFullName;
+
+  /// No description provided for @maydayCardShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mayday\nkarta'**
+  String get maydayCardShort;
+
+  /// No description provided for @morseInputHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zadajte text...'**
+  String get morseInputHint;
+
+  /// No description provided for @morseSosTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'SOS – TIESŇOVÝ SIGNÁL'**
+  String get morseSosTitle;
+
+  /// No description provided for @morseSosCopied.
+  ///
+  /// In sk, this message translates to:
+  /// **'SOS skopírované'**
+  String get morseSosCopied;
+
+  /// No description provided for @intervalSeconds.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} sek'**
+  String intervalSeconds(int n);
+
+  /// No description provided for @intervalMinutes.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} min'**
+  String intervalMinutes(int n);
+
+  /// No description provided for @intervalHours.
+  ///
+  /// In sk, this message translates to:
+  /// **'{n} hod'**
+  String intervalHours(int n);
+
+  /// No description provided for @aboutFeatureGps.
+  ///
+  /// In sk, this message translates to:
+  /// **'GPS sledovanie s automatickými zápismi'**
+  String get aboutFeatureGps;
+
+  /// No description provided for @aboutFeatureLogbook.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník viacdňových plavieb'**
+  String get aboutFeatureLogbook;
+
+  /// No description provided for @aboutFeatureMaps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Offline námorné mapy (OpenSeaMap)'**
+  String get aboutFeatureMaps;
+
+  /// No description provided for @aboutFeatureWeather.
+  ///
+  /// In sk, this message translates to:
+  /// **'Námorná predpoveď počasia (Open-Meteo)'**
+  String get aboutFeatureWeather;
+
+  /// No description provided for @aboutFeatureExport.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export PDF + GPX'**
+  String get aboutFeatureExport;
+
+  /// No description provided for @aboutFeatureSafety.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bezpečnostná inštruktáž a Mayday karta'**
+  String get aboutFeatureSafety;
+
+  /// No description provided for @aboutAuthorLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Autor'**
+  String get aboutAuthorLabel;
+
+  /// No description provided for @aboutVersionLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Verzia'**
+  String get aboutVersionLabel;
+
+  /// No description provided for @aboutPlatformLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Platforma'**
+  String get aboutPlatformLabel;
+
+  /// No description provided for @cloudSignInFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prihlásenie zlyhalo: {error}'**
+  String cloudSignInFailed(String error);
+
+  /// No description provided for @cloudSignOutFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odhlásenie zlyhalo: {error}'**
+  String cloudSignOutFailed(String error);
 }
 
 class _AppLocalizationsDelegate

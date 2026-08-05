@@ -2937,4 +2937,79 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Δεν είστε συνδεδεμένος';
+
+  @override
+  String get waypointNameHint => 'π.χ. Αγκυροβόλιο, Λιμάνι...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Σημείο $time';
+  }
+
+  @override
+  String get mobFullName => 'Άνθρωπος στη θάλασσα';
+
+  @override
+  String get maydayCardShort => 'Κάρτα\nMayday';
+
+  @override
+  String get morseInputHint => 'Εισαγάγετε κείμενο...';
+
+  @override
+  String get morseSosTitle => 'SOS – ΣΗΜΑ ΚΙΝΔΥΝΟΥ';
+
+  @override
+  String get morseSosCopied => 'Το SOS αντιγράφηκε';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n δευτ';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n λεπ';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n ώρ';
+  }
+
+  @override
+  String get aboutFeatureGps => 'Παρακολούθηση GPS με αυτόματες καταχωρήσεις';
+
+  @override
+  String get aboutFeatureLogbook => 'Ημερολόγιο πολυήμερων ναυλώσεων';
+
+  @override
+  String get aboutFeatureMaps => 'Ναυτικοί χάρτες εκτός σύνδεσης (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Θαλάσσιος καιρός (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Εξαγωγή PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Ενημέρωση ασφαλείας και κάρτα Mayday';
+
+  @override
+  String get aboutAuthorLabel => 'Συγγραφέας';
+
+  @override
+  String get aboutVersionLabel => 'Έκδοση';
+
+  @override
+  String get aboutPlatformLabel => 'Πλατφόρμα';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Η σύνδεση απέτυχε: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Η αποσύνδεση απέτυχε: $error';
+  }
 }

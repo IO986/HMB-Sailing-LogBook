@@ -6,14 +6,16 @@ class TrackingIntervalSelector extends StatelessWidget {
   final Function(int) onChanged;
   const TrackingIntervalSelector({super.key, required this.value, required this.onChanged});
 
-  static const _options = [
-    (label: '30 sek', seconds: 30),
-    (label: '1 min',  seconds: 60),
-    (label: '15 min', seconds: 900),
-    (label: '30 min', seconds: 1800),
-    (label: '1 hod',  seconds: 3600),
-    (label: '2 hod',  seconds: 7200),
-  ];
+  static const _options = [30, 60, 900, 1800, 3600, 7200];
+
+  /// Labels used to be hard-coded Slovak ('30 sek', '1 hod'), which every
+  /// other language got to see as well. Derived from the value instead, so a
+  /// new interval needs no new string.
+  static String _label(AppLocalizations l, int seconds) => switch (seconds) {
+        < 60 => l.intervalSeconds(seconds),
+        < 3600 => l.intervalMinutes(seconds ~/ 60),
+        _ => l.intervalHours(seconds ~/ 3600),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +34,14 @@ class TrackingIntervalSelector extends StatelessWidget {
         // možnosti sú tak viditeľné naraz, netreba rolovať.
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: _options.map((opt) {
-            final sel = opt.seconds == value;
+          children: _options.map((seconds) {
+            final sel = seconds == value;
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: ChoiceChip(
-                label: Text(opt.label),
+                label: Text(_label(l, seconds)),
                 selected: sel,
-                onSelected: (_) => onChanged(opt.seconds),
+                onSelected: (_) => onChanged(seconds),
                 selectedColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             );

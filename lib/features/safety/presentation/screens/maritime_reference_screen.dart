@@ -617,11 +617,11 @@ class _MorseTabState extends State<_MorseTab> {
                   controller: _ctrl,
                   onChanged: _convert,
                   textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    hintText: 'Zadajte text...',
-                    prefixIcon: Icon(Icons.keyboard),
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context).morseInputHint,
+                    prefixIcon: const Icon(Icons.keyboard),
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -658,14 +658,14 @@ class _MorseTabState extends State<_MorseTab> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(children: [
-              const Text('SOS – DISTRESS SIGNAL',
-                  style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1)),
+              Text(AppLocalizations.of(context).morseSosTitle,
+                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1)),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
                   Clipboard.setData(const ClipboardData(text: '... --- ...'));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('SOS copied')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(AppLocalizations.of(context).morseSosCopied)));
                 },
                 child: const Text('· · ·   − − −   · · ·',
                     style: TextStyle(color: Colors.yellow, fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 4)),

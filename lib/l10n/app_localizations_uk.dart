@@ -2923,4 +2923,79 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Не увійшли';
+
+  @override
+  String get waypointNameHint => 'напр. Якірна стоянка, Порт...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Точка $time';
+  }
+
+  @override
+  String get mobFullName => 'Людина за бортом';
+
+  @override
+  String get maydayCardShort => 'Картка\nMayday';
+
+  @override
+  String get morseInputHint => 'Введіть текст...';
+
+  @override
+  String get morseSosTitle => 'SOS – СИГНАЛ ЛИХА';
+
+  @override
+  String get morseSosCopied => 'SOS скопійовано';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n с';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n хв';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n год';
+  }
+
+  @override
+  String get aboutFeatureGps => 'GPS-відстеження з автоматичними записами';
+
+  @override
+  String get aboutFeatureLogbook => 'Журнал багатоденних чартерів';
+
+  @override
+  String get aboutFeatureMaps => 'Офлайн морські карти (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Морський прогноз погоди (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Експорт PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Інструктаж з безпеки та картка Mayday';
+
+  @override
+  String get aboutAuthorLabel => 'Автор';
+
+  @override
+  String get aboutVersionLabel => 'Версія';
+
+  @override
+  String get aboutPlatformLabel => 'Платформа';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Не вдалося увійти: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Не вдалося вийти: $error';
+  }
 }

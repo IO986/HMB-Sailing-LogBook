@@ -334,7 +334,8 @@ class _MobButton extends ConsumerWidget {
           const SizedBox(height: 8),
           const Text('MOB', style: TextStyle(color: Colors.white, fontSize: 32,
               fontWeight: FontWeight.bold, letterSpacing: 4)),
-          const Text('Man Overboard', style: TextStyle(color: Colors.white70, fontSize: 14)),
+          Text(AppLocalizations.of(context).mobFullName,
+              style: const TextStyle(color: Colors.white70, fontSize: 14)),
           const SizedBox(height: 8),
           Text(AppLocalizations.of(context).mobHoldToActivate,
               style: const TextStyle(color: Colors.white54, fontSize: 12)),
@@ -841,7 +842,7 @@ class _HmbHandbookCard extends StatelessWidget {
             Row(children: [
               Expanded(child: _HandbookButton(
                 icon: Icons.radio,
-                label: 'Mayday\nCard',
+                label: AppLocalizations.of(context).maydayCardShort,
                 color: Colors.red,
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                     builder: (_) => const MaydayCardScreen())),

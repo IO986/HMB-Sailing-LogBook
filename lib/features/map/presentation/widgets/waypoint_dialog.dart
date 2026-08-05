@@ -48,7 +48,7 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
             controller: _nameCtrl,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).waypointNameLabel,
-              hintText: 'e.g. Anchorage, Port...',
+              hintText: AppLocalizations.of(context).waypointNameHint,
             ),
             autofocus: true,
           ),
@@ -83,8 +83,12 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
   }
 
   void _save() {
+    final now = DateTime.now();
+    // Padded, or an unnamed waypoint saved at 12:05 came out as "12:5".
+    final stamp = '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}';
     final name = _nameCtrl.text.trim().isEmpty
-        ? 'Waypoint ${DateTime.now().hour}:${DateTime.now().minute}'
+        ? AppLocalizations.of(context).waypointDefaultName(stamp)
         : _nameCtrl.text.trim();
     final existing = widget.existing;
     if (existing != null) {

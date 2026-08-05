@@ -218,21 +218,29 @@ class SettingsScreen extends ConsumerWidget {
           Text(AppLocalizations.of(context).appDescription,
               style: const TextStyle(fontSize: 14)),
           const SizedBox(height: 8),
-          const _AboutRow(Icons.gps_fixed, 'GPS tracking with auto-entries'),
-          const _AboutRow(Icons.book, 'Multi-day charter logbook'),
-          const _AboutRow(Icons.map, 'Offline nautical maps (OpenSeaMap)'),
-          const _AboutRow(Icons.cloud, 'Marine weather (Open-Meteo)'),
-          const _AboutRow(Icons.picture_as_pdf, 'Export PDF + GPX'),
-          const _AboutRow(Icons.shield, 'Safety briefing & Mayday Card'),
+          _AboutRow(Icons.gps_fixed,
+              AppLocalizations.of(context).aboutFeatureGps),
+          _AboutRow(Icons.book,
+              AppLocalizations.of(context).aboutFeatureLogbook),
+          _AboutRow(Icons.map,
+              AppLocalizations.of(context).aboutFeatureMaps),
+          _AboutRow(Icons.cloud,
+              AppLocalizations.of(context).aboutFeatureWeather),
+          _AboutRow(Icons.picture_as_pdf,
+              AppLocalizations.of(context).aboutFeatureExport),
+          _AboutRow(Icons.shield,
+              AppLocalizations.of(context).aboutFeatureSafety),
           const SizedBox(height: 16),
-          const Text('Author: LacoSte©',
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('${AppLocalizations.of(context).aboutAuthorLabel}: LacoSte©',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text('Version: ${info.version} (${info.buildNumber})',
+          Text('${AppLocalizations.of(context).aboutVersionLabel}: '
+              '${info.version} (${info.buildNumber})',
               style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 4),
-          const Text('Platform: Flutter / Android',
-              style: TextStyle(color: Colors.grey, fontSize: 12)),
+          Text('${AppLocalizations.of(context).aboutPlatformLabel}: '
+              'Flutter / Android',
+              style: const TextStyle(color: Colors.grey, fontSize: 12)),
         ],
       ),
     );
@@ -1008,7 +1016,9 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       if (!mounted) return;
       setState(() => _cloudBusy = false);
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Sign-in failed: $e')));
+          .showSnackBar(SnackBar(
+              content: Text(
+                  AppLocalizations.of(context).cloudSignInFailed('$e'))));
     }
   }
 
@@ -1025,7 +1035,9 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
       if (!mounted) return;
       setState(() => _cloudBusy = false);
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Sign-out failed: $e')));
+          .showSnackBar(SnackBar(
+              content: Text(
+                  AppLocalizations.of(context).cloudSignOutFailed('$e'))));
     }
   }
 

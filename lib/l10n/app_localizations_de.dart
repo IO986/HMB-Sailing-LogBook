@@ -2934,4 +2934,79 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get syncCloudNotSignedIn => 'Nicht angemeldet';
+
+  @override
+  String get waypointNameHint => 'z. B. Ankerplatz, Hafen...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Wegpunkt $time';
+  }
+
+  @override
+  String get mobFullName => 'Mann über Bord';
+
+  @override
+  String get maydayCardShort => 'Mayday-\nKarte';
+
+  @override
+  String get morseInputHint => 'Text eingeben...';
+
+  @override
+  String get morseSosTitle => 'SOS – NOTSIGNAL';
+
+  @override
+  String get morseSosCopied => 'SOS kopiert';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n Sek';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n Min';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n Std';
+  }
+
+  @override
+  String get aboutFeatureGps => 'GPS-Tracking mit automatischen Einträgen';
+
+  @override
+  String get aboutFeatureLogbook => 'Logbuch für mehrtägige Törns';
+
+  @override
+  String get aboutFeatureMaps => 'Offline-Seekarten (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Seewetter (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Export PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Sicherheitseinweisung & Mayday-Karte';
+
+  @override
+  String get aboutAuthorLabel => 'Autor';
+
+  @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
+  String get aboutPlatformLabel => 'Plattform';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Anmeldung fehlgeschlagen: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Abmeldung fehlgeschlagen: $error';
+  }
 }
