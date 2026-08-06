@@ -1,0 +1,39 @@
+HMB Sailing Log — build 55 (1.26.0+55)
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• 3 nové jazyky: chorvátčina, slovinčina, taliančina (COLREG v angličtine)
+• Lodné inštrumenty: poznámka, že spojenie ide len cez WiFi sieť lode s NMEA gateway
+• Otázka na pripojenie inštrumentov sa pýta už len raz, nie pri každom spustení
+• Doplnené preklady: mapa (nový bod trasy), MOB, Mayday karta, Morse, výber intervalu, O aplikácii
+• Oprava názvu nepomenovaného bodu trasy („Waypoint 12:5“)
+
+=== English (en-US) ===
+• 3 new languages: Croatian, Slovenian, Italian (COLREG in English)
+• Marine instruments: a note that the connection needs the boat's WiFi with an NMEA gateway
+• The prompt to connect instruments now appears once, not on every launch
+• Added translations: map (new waypoint), MOB, Mayday card, Morse, log interval, About
+• Fixed the name of an unnamed waypoint ("Waypoint 12:5")
+
+=== Hrvatski (hr-HR) ===
+• 3 nova jezika: hrvatski, slovenski, talijanski (COLREG na engleskom)
+• Brodski instrumenti: napomena da veza radi samo preko WiFi mreže broda s NMEA pristupnikom
+• Pitanje o povezivanju pojavljuje se samo jednom, ne pri svakom pokretanju
+• Dodani prijevodi: karta (nova točka rute), MOB, Mayday kartica, Morse, odabir učestalosti, O aplikaciji
+• Ispravljen naziv neimenovane točke rute
+
+=== Slovenščina (sl-SI) ===
+• 3 novi jeziki: hrvaščina, slovenščina, italijanščina (COLREG v angleščini)
+• Ladijski instrumenti: opomba, da povezava deluje le prek WiFi omrežja plovila s prehodom NMEA
+• Vprašanje o povezavi se pojavi samo enkrat, ne ob vsakem zagonu
+• Dodani prevodi: zemljevid (nova točka poti), MOB, kartica Mayday, Morse, izbira pogostosti, O aplikaciji
+• Popravljeno ime neimenovane točke poti
+
+=== Italiano (it-IT) ===
+• 3 nuove lingue: croato, sloveno, italiano (COLREG in inglese)
+• Strumenti di bordo: nota che il collegamento richiede il WiFi della barca con gateway NMEA
+• La richiesta di collegamento compare una sola volta, non a ogni avvio
+• Nuove traduzioni: mappa (nuovo waypoint), MOB, scheda Mayday, Morse, frequenza annotazioni, Informazioni
+• Corretto il nome di un waypoint senza nome
