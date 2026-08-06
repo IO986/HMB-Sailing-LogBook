@@ -1,5 +1,5 @@
 /// Núdzové kontakty pre plavebné oblasti — generické popisky a názvy
-/// krajín lokalizované do všetkých 5 jazykov appky; vlastné mená
+/// krajín lokalizované do všetkých jazykov appky; vlastné mená
 /// inštitúcií (MRCC Rijeka, Guardia Costiera...) ostávajú v origináli.
 
 class EmergencyContact {
@@ -30,15 +30,16 @@ class EmergencyRegion {
 
 /// Prekladateľný text vo všetkých jazykoch appky.
 ///
-/// Jazyky pridané po pôvodnej pätici sú pomenované, nie pozičné: pri deviatich
+/// Jazyky pridané po pôvodnej pätici sú pomenované, nie pozičné: pri desiatich
 /// reťazcoch za sebou by zle zoradený argument prešiel typovou kontrolou a
 /// prejavil by sa až chorvátskym textom v gréckom rozhraní.
 class _T {
   final String sk, en, de, es, uk, cs, pl, el;
   final String? hr;
+  final String? sl;
   const _T(this.sk, this.en, this.de, this.es, this.uk, this.cs, this.pl,
       this.el,
-      {this.hr});
+      {this.hr, this.sl});
   String of(String l) => switch (l) {
         'sk' => sk,
         'de' => de,
@@ -48,6 +49,7 @@ class _T {
         'pl' => pl,
         'el' => el,
         'hr' => hr ?? en,
+        'sl' => sl ?? en,
         _ => en,
       };
 }
@@ -55,7 +57,7 @@ class _T {
 const _tVhf16 = _T('VHF kanál 16', 'VHF channel 16', 'UKW-Kanal 16',
     'Canal VHF 16', 'Канал VHF 16', 'VHF kanál 16', 'Kanał VHF 16',
     'Κανάλι VHF 16',
-    hr: 'VHF kanal 16');
+    hr: 'VHF kanal 16', sl: 'VHF kanal 16');
 const _tVhfIntl = _T(
     'Medzinárodný tiesňový kanál',
     'International distress channel',
@@ -65,23 +67,23 @@ const _tVhfIntl = _T(
     'Mezinárodní tísňový kanál',
     'Międzynarodowy kanał alarmowy',
     'Διεθνές κανάλι κινδύνου',
-    hr: 'Međunarodni kanal za pogibelj');
+    hr: 'Međunarodni kanal za pogibelj', sl: 'Mednarodni kanal za klic v sili');
 const _tEmergencyEu = _T('Tiesňové volanie (EU)', 'Emergency call (EU)',
     'Notruf (EU)', 'Llamada de emergencia (UE)', 'Екстрений виклик (ЄС)',
     'Tísňové volání (EU)', 'Telefon alarmowy (UE)',
     'Κλήση έκτακτης ανάγκης (ΕΕ)',
-    hr: 'Hitni poziv (EU)');
+    hr: 'Hitni poziv (EU)', sl: 'Klic v sili (EU)');
 const _tAmbulance = _T('Záchranná služba', 'Emergency medical service',
     'Rettungsdienst', 'Servicio de emergencias', 'Швидка допомога',
     'Záchranná služba', 'Pogotowie ratunkowe', 'Επείγουσα ιατρική βοήθεια',
-    hr: 'Hitna medicinska pomoć');
+    hr: 'Hitna medicinska pomoć', sl: 'Nujna medicinska pomoč');
 const _tPolice = _T('Polícia', 'Police', 'Polizei', 'Policía', 'Поліція',
     'Policie', 'Policja', 'Αστυνομία',
-    hr: 'Policija');
+    hr: 'Policija', sl: 'Policija');
 const _tEmergencyLine = _T('Tiesňová linka', 'Emergency line', 'Notrufnummer',
     'Línea de emergencia', 'Лінія екстреної допомоги', 'Tísňová linka',
     'Linia alarmowa', 'Γραμμή έκτακτης ανάγκης',
-    hr: 'Linija za hitne slučajeve');
+    hr: 'Linija za hitne slučajeve', sl: 'Klicna linija v sili');
 const _tCross = _T(
     'CROSS (záchrana na mori)',
     'CROSS (sea rescue)',
@@ -91,56 +93,56 @@ const _tCross = _T(
     'CROSS (záchrana na moři)',
     'CROSS (ratownictwo morskie)',
     'CROSS (θαλάσσια διάσωση)',
-    hr: 'CROSS (spašavanje na moru)');
+    hr: 'CROSS (spašavanje na moru)', sl: 'CROSS (reševanje na morju)');
 
 const Map<String, _T> _countryNames = {
   'HR': _T('Chorvátsko', 'Croatia', 'Kroatien', 'Croacia', 'Хорватія',
       'Chorvatsko', 'Chorwacja', 'Κροατία',
-      hr: 'Hrvatska'),
+      hr: 'Hrvatska', sl: 'Hrvaška'),
   'ME': _T('Čierna Hora', 'Montenegro', 'Montenegro', 'Montenegro', 'Чорногорія',
       'Černá Hora', 'Czarnogóra', 'Μαυροβούνιο',
-      hr: 'Crna Gora'),
+      hr: 'Crna Gora', sl: 'Črna gora'),
   'SI': _T('Slovinsko', 'Slovenia', 'Slowenien', 'Eslovenia', 'Словенія',
       'Slovinsko', 'Słowenia', 'Σλοβενία',
-      hr: 'Slovenija'),
+      hr: 'Slovenija', sl: 'Slovenija'),
   'IT': _T('Taliansko', 'Italy', 'Italien', 'Italia', 'Італія',
       'Itálie', 'Włochy', 'Ιταλία',
-      hr: 'Italija'),
+      hr: 'Italija', sl: 'Italija'),
   'GR': _T('Grécko', 'Greece', 'Griechenland', 'Grecia', 'Греція',
       'Řecko', 'Grecja', 'Ελλάδα',
-      hr: 'Grčka'),
+      hr: 'Grčka', sl: 'Grčija'),
   'TR': _T('Turecko', 'Türkiye', 'Türkei', 'Turquía', 'Туреччина',
       'Turecko', 'Turcja', 'Τουρκία',
-      hr: 'Turska'),
+      hr: 'Turska', sl: 'Turčija'),
   'ES': _T('Španielsko', 'Spain', 'Spanien', 'España', 'Іспанія',
       'Španělsko', 'Hiszpania', 'Ισπανία',
-      hr: 'Španjolska'),
+      hr: 'Španjolska', sl: 'Španija'),
   'PT': _T('Portugalsko', 'Portugal', 'Portugal', 'Portugal', 'Португалія',
       'Portugalsko', 'Portugalia', 'Πορτογαλία',
-      hr: 'Portugal'),
+      hr: 'Portugal', sl: 'Portugalska'),
   'FR': _T('Francúzsko', 'France', 'Frankreich', 'Francia', 'Франція',
       'Francie', 'Francja', 'Γαλλία',
-      hr: 'Francuska'),
+      hr: 'Francuska', sl: 'Francija'),
   'MT': _T('Malta', 'Malta', 'Malta', 'Malta', 'Мальта',
       'Malta', 'Malta', 'Μάλτα',
-      hr: 'Malta'),
+      hr: 'Malta', sl: 'Malta'),
   'AL': _T('Albánsko', 'Albania', 'Albanien', 'Albania', 'Албанія',
       'Albánie', 'Albania', 'Αλβανία',
-      hr: 'Albanija'),
+      hr: 'Albanija', sl: 'Albanija'),
   'NO': _T('Nórsko', 'Norway', 'Norwegen', 'Noruega', 'Норвегія',
       'Norsko', 'Norwegia', 'Νορβηγία',
-      hr: 'Norveška'),
+      hr: 'Norveška', sl: 'Norveška'),
   'GB': _T('Veľká Británia', 'United Kingdom', 'Großbritannien',
       'Reino Unido', 'Велика Британія', 'Velká Británie', 'Wielka Brytania',
       'Ηνωμένο Βασίλειο',
-      hr: 'Ujedinjeno Kraljevstvo'),
+      hr: 'Ujedinjeno Kraljevstvo', sl: 'Združeno kraljestvo'),
   'SK': _T('Slovensko', 'Slovakia', 'Slowakei', 'Eslovaquia', 'Словаччина',
       'Slovensko', 'Słowacja', 'Σλοβακία',
-      hr: 'Slovačka'),
+      hr: 'Slovačka', sl: 'Slovaška'),
   'OFFSHORE': _T('Offshore / oceán', 'Offshore / ocean', 'Offshore / Ozean',
       'Alta mar / océano', 'Відкрите море / океан', 'Offshore / oceán',
       'Pełne morze / ocean', 'Ανοιχτή θάλασσα / ωκεανός',
-      hr: 'Otvoreno more / ocean'),
+      hr: 'Otvoreno more / ocean', sl: 'Odprto morje / ocean'),
 };
 
 /// Interná definícia kontaktu: buď pevné meno (proper noun), alebo

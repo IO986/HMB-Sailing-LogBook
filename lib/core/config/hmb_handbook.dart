@@ -1,5 +1,5 @@
 /// Obsah z HMB príručky — safety briefing a zoznam výbavy jednotlivca,
-/// lokalizované do všetkých 5 jazykov appky. Referenčný odovzdávací
+/// lokalizované do všetkých jazykov appky. Referenčný odovzdávací
 /// checklist žije v `features/charter/services/handover_checklist.dart`
 /// (SK/EN definície zdieľané s interaktívnym protokolom).
 
@@ -19,6 +19,7 @@ class SafetyBriefingContent {
         'pl' => _pl,
         'el' => _el,
         'hr' => _hr,
+        'sl' => _sl,
         _ => _sk,
       };
 
@@ -579,6 +580,68 @@ class SafetyBriefingContent {
       'Pitanja prije isplovljenja su dobrodošla.',
     ]),
   ];
+
+  static const List<BriefingSection> _sl = [
+    BriefingSection('1. Namen brifinga', [
+      'Ta brifing je namenjen varnosti posadke in plovila.',
+      'Vsak član posadke mu mora nameniti polno pozornost.',
+    ]),
+    BriefingSection('2. Osnovna pravila', [
+      'Poveljnik ima vedno zadnjo besedo.',
+      'Vsak je odgovoren zase in za druge, poveljnik pa za vse.',
+      'Po krovu se gibljemo previdno in premišljeno.',
+      'Alkohol med plovbo je prepovedan.',
+      'Voda in elektrika sta omejena vira – varčujte z njima.',
+    ]),
+    BriefingSection('3. Rešilni jopiči in varnostna oprema', [
+      'Vsak ima dodeljen rešilni jopič in ga zna pravilno obleči.',
+      'Poveljnik določi, kdaj je nošenje jopiča obvezno.',
+      'Posadka ve, kje sta oprema MOB in rešilni splav.',
+    ]),
+    BriefingSection('4. Gibanje po krovu', [
+      'Velja pravilo "ena roka zase, ena za plovilo".',
+      'Pazite na bum, vrvi in vinče.',
+      'Gibljite se po privetrni strani krova.',
+      'V slabšajočih se razmerah uporabite varnostni pas.',
+    ]),
+    BriefingSection('5. Požar in plin', [
+      'Vsak ve, kje so gasilni aparati in protipožarna odeja.',
+      'Uhajanje plina: ničesar ne vklapljajte ali izklapljajte, ne kadite, takoj obvestite poveljnika.',
+      'Velik požar = cilj je pobeg, ne gašenje.',
+      'Zapustitev plovila odredi izključno poveljnik.',
+    ]),
+    BriefingSection('6. Motor, elektrika in voda', [
+      'Posadka zna zagnati in ustaviti motor.',
+      'Ve, kje so kalužne črpalke.',
+      'Vdor vode takoj javite poveljniku.',
+    ]),
+    BriefingSection('7. Zdravje in prva pomoč', [
+      'Komplet prve pomoči je na znanem mestu.',
+      'Prijavite poškodbe, opekline, izčrpanost ali podhladitev.',
+      'Alergije in zdravstvene težave sporočite poveljniku.',
+    ]),
+    BriefingSection('8. Človek v morju (MOB)', [
+      'Najboljše preprečevanje je, da ne padete v morje.',
+      'Če se zgodi: 1. Kažite  2. Kričite  3. Neprekinjeno opazujte osebo',
+      'Pritisnite gumb MOB.',
+      'Reševanje vodi poveljnik.',
+    ]),
+    BriefingSection('9. Ladijsko stranišče (heads)', [
+      'Ladijsko stranišče ni domači WC.',
+      'Notri sodijo samo človeški iztrebki in ladijski/hitro razgradljivi toaletni papir.',
+      'PREPOVEDANO: vlažni robčki, higienski vložki, tamponi, papirnate brisače.',
+      'Po uporabi sistem temeljito izperite.',
+      'Vsako težavo takoj javite poveljniku.',
+    ]),
+    BriefingSection('10. Komunikacija', [
+      'Kanal za klic v sili na VHF je 16.',
+      'Mayday in DSC opravi poveljnik ali določena oseba, vendar postopek poznajo vsi.',
+    ]),
+    BriefingSection('11. Zaključek', [
+      'Vsak član posadke potrdi, da je brifing razumel.',
+      'Vprašanja pred izplutjem so dobrodošla.',
+    ]),
+  ];
 }
 
 // ── Výbava jednotlivca (editovateľná) ────────────────────────────
@@ -594,6 +657,7 @@ class IndividualGearContent {
         'pl' => _pl,
         'el' => _el,
         'hr' => _hr,
+        'sl' => _sl,
         _ => _sk,
       };
 
@@ -945,6 +1009,45 @@ class IndividualGearContent {
       'Europska kartica zdravstvenog osiguranja',
       'Putno osiguranje',
       '⚠️ Pakirajte u ruksake/meke torbe (najbolje nepromočive), NE u tvrde kofere!',
+    ],
+  };
+
+  static const Map<String, List<String>> _sl = {
+    'Obutev': [
+      'Trdna obutev (superge z nedrsečim podplatom, najbolje svetlim)',
+      'Sandali ali natikači (crocsi)',
+    ],
+    'Oblačila': [
+      'Kapa (toplejša + s ščitkom)',
+      'Spodnje perilo',
+      'Funkcionalno perilo',
+      'Termo perilo',
+      'Topla plast (flis)',
+      'Nepremočljiva in vetrovna oblačila',
+      'Trenirka',
+      'Kratke hlače',
+      'Kopalke',
+      'Rokavice (najbolje brez prstov – jadralne/kolesarske)',
+    ],
+    'Higiena': [
+      'Brisača (idealno 2×)',
+      'Osebna higiena (zobna ščetka, pasta, gel za prhanje)',
+      'Vlažni robčki',
+      'Krema za sončenje (UV50) + pantenol',
+      'Balzam za ustnice',
+    ],
+    'Drugo': [
+      'Sončna očala + vrvica',
+      'Čelna svetilka (z rdečo lučjo)',
+      'Power bank + polnilnik',
+      'Osebna lekarna (osebna zdravila, alergije, morska bolezen...)',
+      'Vodoodporen ovitek za telefon',
+    ],
+    'Dokumenti': [
+      'Potni list ali osebna izkaznica',
+      'Evropska kartica zdravstvenega zavarovanja',
+      'Potovalno zavarovanje',
+      '⚠️ Pakirajte v nahrbtnike/mehke torbe (najbolje nepremočljive), NE v trde kovčke!',
     ],
   };
 }

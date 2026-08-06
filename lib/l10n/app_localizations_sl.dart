@@ -1,0 +1,2999 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Slovenian (`sl`).
+class AppLocalizationsSl extends AppLocalizations {
+  AppLocalizationsSl([String locale = 'sl']) : super(locale);
+
+  @override
+  String get appTitle => 'HMB Sailing Log';
+
+  @override
+  String get poiTypeAnchorage => 'Sidrišče';
+
+  @override
+  String get poiTypeMarina => 'Marina';
+
+  @override
+  String get poiTypeFuel => 'Bencinska postaja';
+
+  @override
+  String get poiTypeHarbour => 'Pristanišče';
+
+  @override
+  String get poiVhfChannel => 'Kanal VHF';
+
+  @override
+  String get poiPhone => 'Telefon';
+
+  @override
+  String get poiWebsite => 'Spletna stran';
+
+  @override
+  String get poiEmail => 'E-pošta';
+
+  @override
+  String get poiCapacity => 'Zmogljivost';
+
+  @override
+  String get poiServices => 'Storitve';
+
+  @override
+  String get poiSaveAsWaypoint => 'Shrani kot točko poti';
+
+  @override
+  String poiWaypointSaved(String name) {
+    return 'Točka poti \"$name\" shranjena';
+  }
+
+  @override
+  String get poiSource => 'Vir: OpenStreetMap';
+
+  @override
+  String get mapLayerSatellite => 'Satelit';
+
+  @override
+  String get mapLayerMap => 'Zemljevid';
+
+  @override
+  String get mapLayers => 'Sloji';
+
+  @override
+  String get mapSeamarks => 'Pomorske oznake';
+
+  @override
+  String get mapHarbours => 'Pristanišča in sidrišča';
+
+  @override
+  String get mapZoomInForPois =>
+      'Približajte za nalaganje pristanišč in sidrišč';
+
+  @override
+  String get mapRainRadar => 'Radar padavin';
+
+  @override
+  String get mapOceanCurrentsTooltip => 'Oceanski tokovi (držite za seznam)';
+
+  @override
+  String get mapCurrentForecast => 'Morski tok — napoved (vozli)';
+
+  @override
+  String get mapTools => 'Orodja';
+
+  @override
+  String get mapVoyageOverview => 'Pregled plovbe';
+
+  @override
+  String get mapRuler => 'Ravnilo / pot';
+
+  @override
+  String get mapDownloadOffline => 'Prenesi območje brez povezave';
+
+  @override
+  String get mapGpsDisabled => 'GPS je izklopljen';
+
+  @override
+  String get mapLocationDenied => 'Lokacija ni dovoljena';
+
+  @override
+  String get mapFollowGps => 'Sledi GPS';
+
+  @override
+  String mapAreaTooLarge(int count) {
+    return 'Območje je preveliko ($count ploščic). Približajte in poskusite znova.';
+  }
+
+  @override
+  String get mapLivePreview => 'V živo (trenutno sledenje)';
+
+  @override
+  String get mapWholeVoyage => 'Celotna plovba';
+
+  @override
+  String get offlineSheetTitle => 'Zemljevid vidnega območja brez povezave';
+
+  @override
+  String offlineSheetDesc(int minZ, int maxZ, int tiles, String mb) {
+    return 'Zemljevid + pomorske oznake, povečava $minZ–$maxZ, $tiles ploščic (~$mb MB). Prenesena območja delujejo na morju brez signala.';
+  }
+
+  @override
+  String offlineDone(int n) {
+    return 'Končano — shranjenih $n ploščic';
+  }
+
+  @override
+  String offlineDoneErrors(int n) {
+    return 'Končano z napakami: $n ploščic ni bilo preneseno';
+  }
+
+  @override
+  String get downloadAction => 'Prenesi';
+
+  @override
+  String get rulerTapHint => 'Tapnite točke na zemljevidu';
+
+  @override
+  String get mapEntryPhoto => 'Fotografski zapis';
+
+  @override
+  String get mapEntryNote => 'Zapis v dnevniku';
+
+  @override
+  String get openSettingsAction => 'Odpri nastavitve';
+
+  @override
+  String get morseConverter => 'Pretvornik besedila v Morsejevo abecedo';
+
+  @override
+  String saveError(String error) {
+    return 'Napaka pri shranjevanju: $error';
+  }
+
+  @override
+  String get languageName => 'Slovenščina';
+
+  @override
+  String get navMap => 'Zemljevid';
+
+  @override
+  String get navTracking => 'Sledenje';
+
+  @override
+  String get navLogbook => 'Dnevnik';
+
+  @override
+  String get navWeather => 'Vreme';
+
+  @override
+  String get navSafety => 'Varnost';
+
+  @override
+  String get navCompass => 'Kompas';
+
+  @override
+  String get navSettings => 'Nastavitve';
+
+  @override
+  String get navCustomizeTitle => 'Spodnji meni';
+
+  @override
+  String get navCustomizeHint =>
+      'Pritisnite in povlecite za spreminjanje vrstnega reda ikon. S stikalom skrijete zavihek iz spodnjega menija — Nastavitve so vedno prikazane.';
+
+  @override
+  String get navAlwaysShown => 'Vedno prikazano';
+
+  @override
+  String get navIconSizeLabel => 'Velikost ikon';
+
+  @override
+  String get navOpenHiddenTitle => 'Odpri skrite zavihke';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Dostop do kamere je bil zavrnjen. Omogočite ga v nastavitvah naprave.';
+
+  @override
+  String get cameraUnavailable => 'Kamera ni na voljo';
+
+  @override
+  String get compassCalibrationNote =>
+      'Magnetni kompas. Na natančnost lahko vplivajo kovina ali elektronika v bližini. Če ni umerjen, premikajte napravo v obliki osmice.';
+
+  @override
+  String get cancel => 'Prekliči';
+
+  @override
+  String get delete => 'Izbriši';
+
+  @override
+  String get edit => 'Uredi';
+
+  @override
+  String get save => 'Shrani';
+
+  @override
+  String get yes => 'Da';
+
+  @override
+  String get no => 'Ne';
+
+  @override
+  String get ok => 'V redu';
+
+  @override
+  String get close => 'Zapri';
+
+  @override
+  String get retry => 'Poskusi znova';
+
+  @override
+  String get share => 'Deli';
+
+  @override
+  String get selectAll => 'Izberi vse';
+
+  @override
+  String get error => 'Napaka';
+
+  @override
+  String errorMsg(String msg) {
+    return 'Napaka: $msg';
+  }
+
+  @override
+  String get pressBackToExit => 'Za izhod znova pritisnite Nazaj';
+
+  @override
+  String get trackingRunningTitle => 'Sledenje poteka';
+
+  @override
+  String get trackingRunningContent =>
+      'Sledenje je aktivno. Kaj želite storiti?';
+
+  @override
+  String get stopAndExit => 'Ustavi in zapri';
+
+  @override
+  String get keepRunning => 'Nadaljuj sledenje';
+
+  @override
+  String get marineInstrumentsTitle => 'Ladijski instrumenti';
+
+  @override
+  String get marineInstrumentsPrompt =>
+      'Želite povezati aplikacijo z ladijskimi instrumenti (npr. Raymarine prek prehoda WiFi)? Aplikacija bo nato brala GPS, veter, globino in druge podatke neposredno z ladje.\n\nBrez povezave bosta uporabljena GPS telefona in spletna vremenska napoved – to lahko kadar koli spremenite v Nastavitvah.';
+
+  @override
+  String get notNow => 'Ne zdaj';
+
+  @override
+  String get setupConnection => 'Nastavi povezavo';
+
+  @override
+  String get autoDetectAction => 'Samodejno zaznavanje';
+
+  @override
+  String get autoDetectWifiHintTitle => 'Najprej se povežite z WiFi ladje';
+
+  @override
+  String get autoDetectWifiHintBody =>
+      'V Nastavitvah telefona → WiFi preverite, da ste povezani z omrežjem ladijskih instrumentov (npr. RayNet, WiFi-1). Aplikacija bo nato poskusila samodejno najti prehod v tem omrežju.';
+
+  @override
+  String get openWifiSettings => 'Nastavitve WiFi';
+
+  @override
+  String get continueAction => 'Nadaljuj';
+
+  @override
+  String get autoDetecting => 'Iščem instrumente v omrežju WiFi…';
+
+  @override
+  String get autoDetectFailed =>
+      'V bližini ni bilo najdenega prehoda. Preverite, ali ste v omrežju WiFi ladje, ali ročno vnesite IP v Nastavitvah.';
+
+  @override
+  String autoDetectSuccess(String host) {
+    return 'Povezano z $host';
+  }
+
+  @override
+  String get guidePromptTitle => 'Prvič tukaj? Hitri vodnik';
+
+  @override
+  String get guidePromptBody =>
+      'Aplikacija vsebuje kratek uporabniški vodnik – zemljevid, dnevnik, vreme, varnostni kontrolni seznam in več. Si ga želite na hitro ogledati? Vedno ga najdete pozneje pod Nastavitve → Uporabniški vodnik.';
+
+  @override
+  String get guidePromptAction => 'Prikaži vodnik';
+
+  @override
+  String get notifPromptTitle => 'Dovolim obvestila?';
+
+  @override
+  String get notifPromptBody =>
+      'Med sledenjem plovbi obvestilo ostane v vrstici stanja in na zaklenjenem zaslonu — tako vidite, da je sledenje aktivno, in ga hitro dosežete. Brez dovoljenja lahko sistem omeji sledenje v ozadju.';
+
+  @override
+  String get notifPromptAllow => 'Dovoli';
+
+  @override
+  String get trackingActiveTitle => 'Sledenje aktivno';
+
+  @override
+  String get trackingTitle => 'Sledenje';
+
+  @override
+  String get waitingForGps => 'Čakam na GPS...';
+
+  @override
+  String get gpsUnavailable => 'GPS ni na voljo';
+
+  @override
+  String get lastKnownPosition => 'Zadnji znani položaj';
+
+  @override
+  String get accuracy => 'Natančnost';
+
+  @override
+  String get logbookBtn => 'Dnevnik';
+
+  @override
+  String get stop => 'Ustavi';
+
+  @override
+  String get stopTrackingDay => 'Ustavim sledenje?';
+
+  @override
+  String get startVoyage => 'Začni plovbo';
+
+  @override
+  String get starting => 'Zaganjam...';
+
+  @override
+  String get newVoyage => 'Nova plovba';
+
+  @override
+  String get multiday => 'Večdnevna';
+
+  @override
+  String get standalone => 'Samostojna';
+
+  @override
+  String get voyageName => 'Ime plovbe';
+
+  @override
+  String get voyageNameOptional => 'Ime (neobvezno)';
+
+  @override
+  String get voyageNameHint => 'npr. Izlet po zalivu';
+
+  @override
+  String get existingVoyage => 'Nadaljuj obstoječo plovbo';
+
+  @override
+  String get newVoyageDropdown => '— Nova plovba —';
+
+  @override
+  String get firstVoyageHint => 'Prva plovba – izpolnite osnovne podatke:';
+
+  @override
+  String get briefingRequiredHint =>
+      'Sledenje je mogoče začeti šele, ko je Varnostni brifing za to plovbo končan.';
+
+  @override
+  String get briefingPending => 'VB potreben';
+
+  @override
+  String get briefingPendingListWarning =>
+      'Varnostni brifing ni končan – sledenja še ni mogoče začeti';
+
+  @override
+  String get estimatedDays => 'Predvideno število dni:';
+
+  @override
+  String get logFrequency => 'Pogostost zapisov v dnevnik';
+
+  @override
+  String get startTracking => 'Začni sledenje';
+
+  @override
+  String get trackingInProgress => 'Sledite svoji plovbi';
+
+  @override
+  String dayNofTotal(int n, int total) {
+    return 'Dan $n od $total';
+  }
+
+  @override
+  String get newDay => '(nov dan)';
+
+  @override
+  String get endVoyageTitle => 'Končam plovbo?';
+
+  @override
+  String get endVoyageContent =>
+      'Dosegli ste zadnji načrtovani dan plovbe.\n\nAli se bo plovba jutri nadaljevala?';
+
+  @override
+  String get decideLayer => 'Odloči se pozneje';
+
+  @override
+  String get continuesTomorrow => 'Nadaljuje se jutri';
+
+  @override
+  String get endVoyage => 'Končaj plovbo';
+
+  @override
+  String get newMultidayVoyage => 'Nova večdnevna plovba';
+
+  @override
+  String get deleteCharterTitle => 'Izbrišem čarter?';
+
+  @override
+  String get deleteCharterContent => 'Vsi dnevi in zapisi bodo izbrisani.';
+
+  @override
+  String get cannotDeleteWhileTracking =>
+      'Plovbe ni mogoče izbrisati, dokler je sledenje aktivno.';
+
+  @override
+  String get noVoyages => 'Ni plovb';
+
+  @override
+  String get createFirstCharter => 'Ustvarite svoj prvi čarter';
+
+  @override
+  String get briefingDone => 'Brifing ✓';
+
+  @override
+  String get checkInDone => 'Check-in ✓';
+
+  @override
+  String get checkOutDone => 'Check-out ✓';
+
+  @override
+  String get voyageNotFound => 'Plovba ni bila najdena';
+
+  @override
+  String get unknownVessel => 'Neznano plovilo';
+
+  @override
+  String get captain => 'Skiper';
+
+  @override
+  String get crew => 'Posadka';
+
+  @override
+  String get total => 'Skupaj';
+
+  @override
+  String voyageDaysCount(int n) {
+    return 'Dnevi plovbe ($n)';
+  }
+
+  @override
+  String get bulkDelete => 'Množično brisanje';
+
+  @override
+  String get noDays =>
+      'Ni dni.\nZačnite sledenje in prvi dan bo ustvarjen samodejno.';
+
+  @override
+  String get deleteDayTitle => 'Izbrišem dan?';
+
+  @override
+  String deleteDayContent(String day) {
+    return 'Vsi zapisi za $day bodo izbrisani.';
+  }
+
+  @override
+  String get exportPdf => 'Izvozi PDF';
+
+  @override
+  String get selectDaysTitle => 'Izberite dneve za brisanje';
+
+  @override
+  String deleteCount(int n) {
+    return 'Izbriši ($n)';
+  }
+
+  @override
+  String get safety => 'Varnost';
+
+  @override
+  String get mobHoldToActivate => 'Držite za aktivacijo';
+
+  @override
+  String get mobActive => '⚠️ MOB AKTIVEN';
+
+  @override
+  String get mobTime => 'Čas';
+
+  @override
+  String get mobDistance => 'Razdalja';
+
+  @override
+  String get mobDirection => 'Smer';
+
+  @override
+  String get navigateToMob => 'Navigiraj do MOB';
+
+  @override
+  String get gpsPositionNotAvailable => 'Položaj GPS ni na voljo!';
+
+  @override
+  String get anchorAlarm => 'Alarm sidra';
+
+  @override
+  String get drifting => 'SIDRO ORJE';
+
+  @override
+  String get anchorRadiusLabel => 'Polmer sidranja';
+
+  @override
+  String get activate => 'Aktiviraj';
+
+  @override
+  String get deactivate => 'Deaktiviraj';
+
+  @override
+  String get safetyBriefingCard => 'Varnostni brifing';
+
+  @override
+  String get maydayCard => 'Kartica Mayday';
+
+  @override
+  String get yachtHandover => 'Primopredaja jahte';
+
+  @override
+  String get gearList => 'Seznam opreme';
+
+  @override
+  String get pdfEntriesSection => 'Zapisi v dnevniku';
+
+  @override
+  String get pdfSkipperMessage => 'Poročilo skiperja';
+
+  @override
+  String get pdfWeatherSection => 'Vreme';
+
+  @override
+  String get pdfDaySummary => 'Dnevni povzetek';
+
+  @override
+  String get pdfDaysOverview => 'Pregled dni';
+
+  @override
+  String get pdfVoyageSummary => 'Povzetek plovbe';
+
+  @override
+  String get pdfCrewSection => 'Posadka';
+
+  @override
+  String get pdfSignatures => 'Podpisi';
+
+  @override
+  String get pdfCrewSignatures => 'Podpisi posadke';
+
+  @override
+  String get pdfSkipperSignature => 'Podpis skiperja';
+
+  @override
+  String get pdfSkipperLicences => 'Skiper – dovoljenja';
+
+  @override
+  String get pdfSafetyBriefing => 'Varnostni brifing';
+
+  @override
+  String get pdfChecklistSection => 'Kontrolni seznam';
+
+  @override
+  String get pdfMoreNotes => 'Dodatne opombe';
+
+  @override
+  String get pdfIntegrityCheck => 'Preverjanje celovitosti dokumenta';
+
+  @override
+  String get pdfHandoverTitle => 'Zapisnik o primopredaji';
+
+  @override
+  String get pdfMilesTitle => 'Potrdilo o preplutih miljah';
+
+  @override
+  String get pdfDeparture => 'Izplutje';
+
+  @override
+  String get pdfArrival => 'Priplutje';
+
+  @override
+  String get pdfTotalLabel => 'Skupaj';
+
+  @override
+  String get pdfDayCount => 'Dni';
+
+  @override
+  String get pdfEngineHours => 'Ure motorja';
+
+  @override
+  String get pdfFuelLabel => 'Gorivo';
+
+  @override
+  String get pdfWaterLabel => 'Voda';
+
+  @override
+  String get pdfVesselLabel => 'Plovilo';
+
+  @override
+  String get pdfSkipperLabel => 'Skiper';
+
+  @override
+  String get pdfDateLabel => 'Datum';
+
+  @override
+  String get pdfColFrom => 'Od';
+
+  @override
+  String get pdfColTo => 'Do';
+
+  @override
+  String get pdfColEntriesShort => 'Zapisi';
+
+  @override
+  String get pdfColTimeUtc => 'Čas UTC';
+
+  @override
+  String get pdfColWind => 'Veter';
+
+  @override
+  String get pdfColPropulsion => 'Pogon';
+
+  @override
+  String get pdfColWeatherShort => 'Vrem.';
+
+  @override
+  String get pdfColNote => 'Opomba';
+
+  @override
+  String get pdfColDay => 'Dan';
+
+  @override
+  String get pdfColItem => 'Postavka';
+
+  @override
+  String get pdfColStatus => 'Stanje';
+
+  @override
+  String get pdfColNotePosition => 'Opomba / položaj';
+
+  @override
+  String get pdfColPhoto => 'Foto';
+
+  @override
+  String get pdfColDateRange => 'Datum od-do';
+
+  @override
+  String get pdfColArea => 'Območje';
+
+  @override
+  String get pdfColRole => 'Vloga';
+
+  @override
+  String get pdfNoData => 'Ni podatkov';
+
+  @override
+  String get pdfMapUnavailable => 'Zemljevid GPS ni na voljo';
+
+  @override
+  String get pdfUnsigned => 'Nepodpisano';
+
+  @override
+  String get pdfNoSignatures => 'Ni podpisov';
+
+  @override
+  String get pdfSha256Label => 'Izvleček SHA-256 podatkov dnevnika:';
+
+  @override
+  String get pdfVerifyQr => 'QR za preverjanje';
+
+  @override
+  String get pdfSbLifejackets => 'Rešilni jopiči – lokacija in uporaba';
+
+  @override
+  String get pdfSbLifebuoy => 'Rešilni obroč in postopek MOB';
+
+  @override
+  String get pdfSbFlares => 'Signalne rakete – vrste in uporaba';
+
+  @override
+  String get pdfSbEpirb => 'EPIRB / PLB – aktivacija';
+
+  @override
+  String get pdfSbVhf => 'Radio VHF – kanal 16, postopek Mayday';
+
+  @override
+  String get pdfSbExtinguisher => 'Gasilni aparat – lokacija in uporaba';
+
+  @override
+  String get pdfSbFirstAid => 'Komplet prve pomoči – lokacija';
+
+  @override
+  String get pdfSbEngineStop => 'Zasilna zaustavitev motorja';
+
+  @override
+  String get pdfSbLeaks => 'Puščanje – voda, plin';
+
+  @override
+  String get pdfSbAnchor => 'Sidro in veriga – postopek sidranja';
+
+  @override
+  String get pdfSbRules => 'Pravila na krovu';
+
+  @override
+  String get pdfSbEmergencyContacts => 'Klici v sili in VHF 16';
+
+  @override
+  String get pdfBriefingDeclaration =>
+      'Vsi člani posadke so bili seznanjeni z varnostnimi pravili, so jih razumeli in to potrjujejo s podpisom.';
+
+  @override
+  String get pdfHashCoverage =>
+      'Izvleček zajema ime plovbe, plovilo, posadko in vsak zapis (čas UTC, GPS, hitrost, kurz). Vsaka sprememba podatkov spremeni izvleček.';
+
+  @override
+  String get pdfForCharterCompany => 'Za čarter podjetje';
+
+  @override
+  String get dutyRoster => 'Posadka na straži';
+
+  @override
+  String get dutyStartAction => 'Prevzemi stražo';
+
+  @override
+  String get dutyEndAction => 'Končaj';
+
+  @override
+  String get dutyStartTitle => 'Kdo prevzema stražo?';
+
+  @override
+  String get dutyRunningChip => 'NA STRAŽI';
+
+  @override
+  String dutySince(String time) {
+    return 'od $time';
+  }
+
+  @override
+  String dutyElapsed(int h, int m) {
+    return '$h h $m min';
+  }
+
+  @override
+  String get dutyNobodyOnDuty => 'Nihče ni na straži';
+
+  @override
+  String get dutyInspectionView => 'Prikaži za inšpekcijo';
+
+  @override
+  String get dutyRosterHistory => 'Razpored straž';
+
+  @override
+  String get dutyAddRetrospective => 'Dodaj pretekso stražo';
+
+  @override
+  String get dutyEditTitle => 'Uredi stražo';
+
+  @override
+  String get dutyDeleteTitle => 'Izbrišem stražo?';
+
+  @override
+  String dutyDeleteConfirm(String name) {
+    return 'Zapis o straži za $name bo izbrisan.';
+  }
+
+  @override
+  String get dutyNoCrewDefined => 'Za to plovbo ni določena posadka';
+
+  @override
+  String get dutyDefineCrew => 'Dodaj posadko';
+
+  @override
+  String get dutyErrorEndBeforeStart => 'Konec mora biti za začetkom.';
+
+  @override
+  String dutyErrorOverlap(String name) {
+    return '$name je v tem času že na straži.';
+  }
+
+  @override
+  String get dutyErrorFutureStart => 'Začetek ne more biti v prihodnosti.';
+
+  @override
+  String get dutyNoteLabel => 'Opomba';
+
+  @override
+  String dutyLongRunningWarning(int hours) {
+    return 'Na straži že $hours h — je bila morda pozabljena?';
+  }
+
+  @override
+  String get dutyFrom => 'Od';
+
+  @override
+  String get dutyTo => 'Do';
+
+  @override
+  String get dutyToOngoing => '— še na straži';
+
+  @override
+  String get dutySelectPerson => 'Izberite člana posadke';
+
+  @override
+  String get dutyNoRecords => 'Zaenkrat ni zabeleženih straž';
+
+  @override
+  String get logDutySection => 'Posadka na straži';
+
+  @override
+  String get logDutyStillRunning => 'poteka';
+
+  @override
+  String get logEventAnchorDropped => 'Sidro spuščeno';
+
+  @override
+  String get logEventAnchorRaised => 'Sidro dvignjeno';
+
+  @override
+  String get logEventDriftOut => 'Orjenje – presežen obseg';
+
+  @override
+  String get logEventDriftIn => 'Orjenje – plovilo se je vrnilo';
+
+  @override
+  String logEventDutyStart(String name) {
+    return 'Prevzel stražo: $name';
+  }
+
+  @override
+  String logEventDutyEnd(String name) {
+    return 'Predal stražo: $name';
+  }
+
+  @override
+  String get colreg => 'COLREG';
+
+  @override
+  String get emergencyContacts => 'Klici v sili';
+
+  @override
+  String get backToToc => 'Nazaj na kazalo';
+
+  @override
+  String get briefingComplete => 'Brifing končan';
+
+  @override
+  String get updateByPosition => 'Posodobi glede na lokacijo';
+
+  @override
+  String get detectedByGps => 'zaznano prek GPS';
+
+  @override
+  String get locationUnavailable =>
+      '📍 Lokacija ni na voljo – prikazani so globalni stiki';
+
+  @override
+  String get detectingLocation => 'Zaznavanje lokacije...';
+
+  @override
+  String get tapToCall => 'Tapnite za klic';
+
+  @override
+  String cannotCall(String name) {
+    return 'Ni mogoče poklicati: $name';
+  }
+
+  @override
+  String get vhfChannel16 =>
+      'Kanal VHF 16 – uporabite ladijsko radijsko postajo';
+
+  @override
+  String get hmbHandbook => 'Priročnik HMB';
+
+  @override
+  String get checkInLabel => 'Check-in (prevzem plovila)';
+
+  @override
+  String get checkOutLabel => 'Check-out (predaja plovila)';
+
+  @override
+  String get charterCheckCard => 'Čarter';
+
+  @override
+  String get weatherTitle => 'Vreme in morje';
+
+  @override
+  String get updateForecast => 'Posodobi napoved';
+
+  @override
+  String get gpsNotAvailableTracking => 'GPS ni na voljo – vklopite sledenje';
+
+  @override
+  String get downloadingForecast => 'Prenašanje napovedi...';
+
+  @override
+  String get loadingForecast => 'Nalaganje napovedi...';
+
+  @override
+  String get noConnection => 'Povezava ni na voljo';
+
+  @override
+  String get pressRefreshWhenOnline => 'Pritisnite osveži, ko ste povezani';
+
+  @override
+  String get noWeatherData => 'Ni vremenskih podatkov';
+
+  @override
+  String get forecastAutoDownload =>
+      'Napoved se bo prenesla samodejno ob začetku sledenja ali pritisnite Osveži.';
+
+  @override
+  String get enableGpsFirst => 'Najprej vklopite GPS / sledenje';
+
+  @override
+  String get downloadForecast => 'Prenesi napoved';
+
+  @override
+  String downloadError(String error) {
+    return 'Napaka pri prenosu: $error';
+  }
+
+  @override
+  String get liveInstrumentData => 'Podatki ladijskih instrumentov v živo';
+
+  @override
+  String get windRelative => 'Veter (rel.)';
+
+  @override
+  String get windTrue => 'Veter (pravi)';
+
+  @override
+  String get depthLabel => 'Globina';
+
+  @override
+  String get waterTempLabel => 'Temp. morja';
+
+  @override
+  String get courseTrue => 'Kurz (pravi)';
+
+  @override
+  String get courseMag => 'Kurz (magn.)';
+
+  @override
+  String get engineLabel => 'Motor';
+
+  @override
+  String get wavesLabel => 'Valovi';
+
+  @override
+  String get pressureLabel => 'Zračni tlak';
+
+  @override
+  String get airTempLabel => 'Zrak';
+
+  @override
+  String get waterLabel => 'Morje';
+
+  @override
+  String get wind24h => 'Veter – 3 dni';
+
+  @override
+  String get waves24h => 'Valovi – 3 dni';
+
+  @override
+  String get hourlyForecast => 'Tridnevna napoved';
+
+  @override
+  String get dailyForecast => 'Dnevna temperatura';
+
+  @override
+  String get timeCol => 'Čas';
+
+  @override
+  String get windCol => 'Veter';
+
+  @override
+  String get wavesCol => 'Valovi';
+
+  @override
+  String get rainCol => 'Dež';
+
+  @override
+  String get beaufort0 => 'Zatišje';
+
+  @override
+  String get beaufort1 => 'Lahen vetrič';
+
+  @override
+  String get beaufort2 => 'Vetrič';
+
+  @override
+  String get beaufort3 => 'Šibek veter';
+
+  @override
+  String get beaufort4 => 'Zmeren veter';
+
+  @override
+  String get beaufort5 => 'Zmerno močan veter';
+
+  @override
+  String get beaufort6 => 'Močan veter';
+
+  @override
+  String get beaufort7 => 'Zelo močan veter';
+
+  @override
+  String get beaufort8 => 'Viharni veter';
+
+  @override
+  String get beaufort9 => 'Močan viharni veter';
+
+  @override
+  String get beaufort10 => 'Orkanski veter';
+
+  @override
+  String get beaufort11 => 'Silovit orkanski veter';
+
+  @override
+  String get beaufort12 => 'Orkan';
+
+  @override
+  String get sunAndMoonCard => 'Sonce in Luna';
+
+  @override
+  String get sunriseLabel => 'Sončni vzhod';
+
+  @override
+  String get sunsetLabel => 'Sončni zahod';
+
+  @override
+  String get moonPhaseLabel => 'Lunina mena';
+
+  @override
+  String get moonIlluminationLabel => 'Osvetljeno';
+
+  @override
+  String get moonPhaseNew => 'Mlaj';
+
+  @override
+  String get moonPhaseWaxingCrescent => 'Mlad srp';
+
+  @override
+  String get moonPhaseFirstQuarter => 'Prvi krajec';
+
+  @override
+  String get moonPhaseWaxingGibbous => 'Rastoča Luna';
+
+  @override
+  String get moonPhaseFull => 'Ščip';
+
+  @override
+  String get moonPhaseWaningGibbous => 'Pojemajoča Luna';
+
+  @override
+  String get moonPhaseLastQuarter => 'Zadnji krajec';
+
+  @override
+  String get moonPhaseWaningCrescent => 'Star srp';
+
+  @override
+  String get noSunMoonGps => 'Za sončni vzhod/zahod je potreben položaj GPS';
+
+  @override
+  String get oceanCurrentsTitle => 'Oceanski tokovi';
+
+  @override
+  String get oceanCurrentsTooltip => 'Oceanski tokovi';
+
+  @override
+  String get oceanCurrentsDisclaimer =>
+      'Zgolj referenčni podatki (značilna smer/hitrost iz pilotskih kart) — niso za natančno navigacijo; tokovi se sezonsko spreminjajo.';
+
+  @override
+  String get tideCardTitle => 'Plima in oseka';
+
+  @override
+  String get nextHighTideLabel => 'Naslednja plima';
+
+  @override
+  String get nextLowTideLabel => 'Naslednja oseka';
+
+  @override
+  String get noTideData => 'Še ni podatkov o plimi';
+
+  @override
+  String get downloadTides => 'Prenesi napoved plime';
+
+  @override
+  String get downloadingTides => 'Prenašanje napovedi plime...';
+
+  @override
+  String get tideMslWarning =>
+      'Višine so nad srednjo gladino morja, ne nad hidrografsko ničlo — nikoli jih ne uporabljajte za globino pod gredljem.';
+
+  @override
+  String get tideNoCoverage =>
+      'Za ta položaj ni podatkov o plimi — je zunaj območja pomorske napovedi.';
+
+  @override
+  String get tideDownloadFailed =>
+      'Napovedi plime ni bilo mogoče prenesti. Preverite povezavo in poskusite znova.';
+
+  @override
+  String get tideForecastExpired => 'Shranjena napoved plime je potekla.';
+
+  @override
+  String tideForecastFarAway(int km) {
+    return 'Napoved je bila prenesena $km km od tu — prenesite jo znova za ta položaj.';
+  }
+
+  @override
+  String tideForecastStale(String when) {
+    return 'Preneseno $when — prenesite znova za najnovejšo napoved.';
+  }
+
+  @override
+  String get oceanCurrentCardTitle => 'Morski tok';
+
+  @override
+  String get oceanCurrentSetsToward => 'Teče proti (hitrost v vozlih)';
+
+  @override
+  String get oceanCurrentNoCoverage => 'Za ta položaj ni podatkov o toku.';
+
+  @override
+  String get oceanCurrentUnavailable =>
+      'Napoved toka ni na voljo — preverite povezavo.';
+
+  @override
+  String get tideOtherArea => 'Napoved za drugo območje';
+
+  @override
+  String get tideAreaSearchLabel => 'Pristanišče, mesto ali zaliv';
+
+  @override
+  String get tideAreaSearchHint => 'npr. Koper';
+
+  @override
+  String get tideAreaNoResults =>
+      'Nič ni bilo najdeno — poskusite z drugim imenom.';
+
+  @override
+  String tideForecastForArea(String place) {
+    return 'Napoved za $place';
+  }
+
+  @override
+  String get settingsTitle => 'Nastavitve';
+
+  @override
+  String get measurementUnits => 'Merske enote';
+
+  @override
+  String get temperature => 'Temperatura';
+
+  @override
+  String get depthWaves => 'Globina / valovi';
+
+  @override
+  String get wind => 'Veter';
+
+  @override
+  String get language => 'Jezik';
+
+  @override
+  String get appLanguage => 'Jezik aplikacije';
+
+  @override
+  String get languageDialogTitle => 'Jazyk / Language';
+
+  @override
+  String get displaySettings => 'Prikaz';
+
+  @override
+  String get nightMode => 'Nočni način';
+
+  @override
+  String get nightModeDesc => 'Rdeči filter za ohranjanje nočnega vida';
+
+  @override
+  String get aboutApp => 'O aplikaciji';
+
+  @override
+  String get backupSection => 'Varnostna kopija podatkov';
+
+  @override
+  String get exportBackup => 'Izvozi varnostno kopijo';
+
+  @override
+  String get exportBackupDesc =>
+      'Shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko';
+
+  @override
+  String get restoreBackup => 'Obnovi iz varnostne kopije';
+
+  @override
+  String get restoreBackupDesc =>
+      'Zamenja trenutne podatke z vsebino izbrane datoteke varnostne kopije';
+
+  @override
+  String get restoreBlockedTrackingTitle => 'Sledenje GPS poteka';
+
+  @override
+  String get restoreBlockedTrackingBody =>
+      'Pred obnovitvijo varnostne kopije ustavite aktivno sledenje plovbi.';
+
+  @override
+  String get restoreSchemaTooNewTitle =>
+      'Varnostna kopija je iz novejše različice';
+
+  @override
+  String get restoreSchemaTooNewBody =>
+      'Ta varnostna kopija je bila ustvarjena z novejšo različico aplikacije od trenutno nameščene. Najprej posodobite aplikacijo.';
+
+  @override
+  String get restoreConfirmTitle => 'Obnovim iz varnostne kopije?';
+
+  @override
+  String get restoreConfirmBody =>
+      'Trenutni podatki bodo zamenjani z vsebino varnostne kopije. Pred tem bo samodejno ustvarjena varnostna kopija trenutnega stanja.';
+
+  @override
+  String get restoreSuccess =>
+      'Podatki so bili uspešno obnovljeni iz varnostne kopije.';
+
+  @override
+  String get restoreInvalidFile =>
+      'Izbrana datoteka ni veljavna varnostna kopija HMB Sailing Log.';
+
+  @override
+  String get milesBookTitle => 'Knjiga milj';
+
+  @override
+  String get totalNm => 'Skupaj NM';
+
+  @override
+  String get daysAtSea => 'Dni na morju';
+
+  @override
+  String get voyageCount => 'Število plovb';
+
+  @override
+  String get nightHoursLabel => 'Nočne ure';
+
+  @override
+  String get byYear => 'Po letu';
+
+  @override
+  String get byVessel => 'Po plovilu';
+
+  @override
+  String get addHistoricalVoyage => 'Dodaj preteklo plovbo';
+
+  @override
+  String get editHistoricalVoyage => 'Uredi preteklo plovbo';
+
+  @override
+  String get deleteHistoricalVoyageConfirm => 'Izbrišem to preteklo plovbo?';
+
+  @override
+  String get manualEntryExplanation => '* ročni vnos (vnesen ročno)';
+
+  @override
+  String get roleLabel => 'Vloga na krovu';
+
+  @override
+  String get roleSkipper => 'Skiper';
+
+  @override
+  String get roleCoSkipper => 'Soskiper';
+
+  @override
+  String get roleCrew => 'Posadka';
+
+  @override
+  String get areaLabel => 'Območje / pot';
+
+  @override
+  String get distanceNmLabel => 'Razdalja (NM)';
+
+  @override
+  String get daysCountLabel => 'Število dni';
+
+  @override
+  String get milesCertificateTitle => 'Potrdilo o preplutih miljah';
+
+  @override
+  String get logbookRecordTitle => 'Zapis v dnevniku';
+
+  @override
+  String get logbookTrackedHint =>
+      'Datumi, milje, območje in vloga se izračunajo iz sledenja/uvoza.';
+
+  @override
+  String get vesselFlag => 'Zastava vpisa';
+
+  @override
+  String get captainFirstName => 'Ime skiperja';
+
+  @override
+  String get captainLastName => 'Priimek skiperja';
+
+  @override
+  String get captainQualification => 'Najvišja pridobljena usposobljenost';
+
+  @override
+  String get logbookSignatureSection => 'Podpis, ki potrjuje milje';
+
+  @override
+  String get addSignature => 'Dodaj podpis';
+
+  @override
+  String get filterAllYears => 'Vsa leta';
+
+  @override
+  String get filterCustomRange => 'Poljubno obdobje';
+
+  @override
+  String get handoverMenuTitle => 'Zapisnik o primopredaji';
+
+  @override
+  String get checkInProtocol => 'Zapisnik o prevzemu';
+
+  @override
+  String get checkOutProtocol => 'Zapisnik o predaji';
+
+  @override
+  String get nextStepLabel => 'Naslednji korak';
+
+  @override
+  String get readyToTrackHint => 'Pripravljeno za začetek sledenja';
+
+  @override
+  String wizardStepHeader(int step, int total, String label) {
+    return 'Korak $step/$total · $label';
+  }
+
+  @override
+  String get safetyBriefingShort => 'Varnostni\nbrifing';
+
+  @override
+  String get handoverChecklistShort => 'Seznam\nprimopredaje';
+
+  @override
+  String get safetyBriefingRefTitle => 'Varnostni brifing';
+
+  @override
+  String get handoverChecklistRefTitle => 'Seznam primopredaje';
+
+  @override
+  String get handoverDateTime => 'Datum in čas';
+
+  @override
+  String get handoverLocation => 'Kraj (marina)';
+
+  @override
+  String get checklistItemOk => 'V redu';
+
+  @override
+  String get checklistItemDamaged => 'Poškodovano';
+
+  @override
+  String get checklistItemMissing => 'Manjka';
+
+  @override
+  String get damagePosition => 'Položaj na plovilu';
+
+  @override
+  String get newDamageBadge => 'NOVA POŠKODBA';
+
+  @override
+  String get companySignatureSection => 'Podpis predstavnika čarter podjetja';
+
+  @override
+  String get companyRepName => 'Ime predstavnika';
+
+  @override
+  String get companyNameLabel => 'Naziv podjetja';
+
+  @override
+  String get protocolClosedNotice =>
+      'Zapisnik je zaključen (obe strani sta podpisali) – samo za branje.';
+
+  @override
+  String get handoverCertTitle => 'Zapisnik o primopredaji plovila';
+
+  @override
+  String get itemSails => 'Jadra';
+
+  @override
+  String get itemRigging => 'Oprema jadrovja';
+
+  @override
+  String get itemAnchorChain => 'Sidro in veriga';
+
+  @override
+  String get itemNavInstruments => 'Navigacijski instrumenti';
+
+  @override
+  String get itemLifeJackets => 'Rešilni jopiči';
+
+  @override
+  String get itemRaft => 'Rešilni splav';
+
+  @override
+  String get itemFirstAidKit => 'Komplet prve pomoči';
+
+  @override
+  String get itemDinghyMotor => 'Gumenjak in izvenkrmni motor';
+
+  @override
+  String get itemLights => 'Luči';
+
+  @override
+  String get itemBimini => 'Bimini';
+
+  @override
+  String get extraNotesLabel => 'Dodatne opombe';
+
+  @override
+  String get gpxImportTitle => 'Uvoz GPX';
+
+  @override
+  String get gpxImportPickFile => 'Izberi datoteko GPX';
+
+  @override
+  String get gpxTracksFound => 'Najdenih sledi';
+
+  @override
+  String get gpxWaypointsFound => 'Najdenih točk poti';
+
+  @override
+  String get gpxAssignTarget => 'Dodeli plovbi';
+
+  @override
+  String get gpxNewVoyage => 'Nova plovba';
+
+  @override
+  String get gpxImportButton => 'Uvozi';
+
+  @override
+  String get gpxImportSuccess => 'GPX je bil uspešno uvožen.';
+
+  @override
+  String get connectionConnected => 'Povezano';
+
+  @override
+  String get connectionConnecting => 'Povezovanje...';
+
+  @override
+  String get connectionError => 'Napaka povezave';
+
+  @override
+  String get connectionDisconnected =>
+      'Prekinjeno (uporablja se GPS telefona / napoved)';
+
+  @override
+  String get ipAddressLabel => 'Naslov IP prehoda';
+
+  @override
+  String get portLabel => 'Vrata';
+
+  @override
+  String get autoConnectLabel => 'Samodejno povezovanje ob zagonu';
+
+  @override
+  String get disconnect => 'Prekini';
+
+  @override
+  String get connect => 'Poveži';
+
+  @override
+  String get gatewayHint =>
+      'Povežite telefon z omrežjem Raymarine WiFi (npr. WiFi-1, RayNet). IP, ki ga je treba vnesti, NI IP, prikazan v nastavitvah Raymarine — to je IP prehoda tega omrežja WiFi. Najdete ga na telefonu: Nastavitve → WiFi → podrobnosti omrežja → Prehod. Vrata 2000 (TCP) so standardna. Brez povezave aplikacija samodejno uporablja GPS telefona.';
+
+  @override
+  String connectedToHost(String host, int port) {
+    return 'Povezano z $host:$port';
+  }
+
+  @override
+  String get enterIpAddress => 'Vnesite naslov IP prehoda';
+
+  @override
+  String connectionFailed(String error) {
+    return 'Povezava ni uspela: $error';
+  }
+
+  @override
+  String get liveWind => 'Veter';
+
+  @override
+  String get liveDepth => 'Globina';
+
+  @override
+  String get liveWaterTemp => 'Temp. morja';
+
+  @override
+  String get liveCompass => 'Kompas';
+
+  @override
+  String get liveEngine => 'Motor';
+
+  @override
+  String get nmeaTcp => 'TCP';
+
+  @override
+  String get nmeaUdp => 'UDP';
+
+  @override
+  String get udpListenPort => 'Vrata za poslušanje';
+
+  @override
+  String get startListening => 'Zaženi';
+
+  @override
+  String get stopListening => 'Ustavi';
+
+  @override
+  String connectionListening(String port) {
+    return 'Poslušam UDP na vratih $port';
+  }
+
+  @override
+  String udpHint(String port) {
+    return 'Nastavite simulator/prehod, da pošilja UDP na IP tega telefona, vrata $port.';
+  }
+
+  @override
+  String udpListeningOnPort(int port) {
+    return 'Poslušam na vratih UDP $port';
+  }
+
+  @override
+  String get dayNotFound => 'Dan ni bil najden';
+
+  @override
+  String get saved => 'Shranjeno';
+
+  @override
+  String get trackingThisDay => 'Sledenje poteka za ta dan';
+
+  @override
+  String get trackingOtherDay => 'Sledenje poteka za drug dan';
+
+  @override
+  String recordCount(int n) {
+    return '$n zapisov';
+  }
+
+  @override
+  String get addManual => 'Dodaj ročno';
+
+  @override
+  String get noEntries => 'Ni zapisov';
+
+  @override
+  String get entriesAutoAdded => 'Zapisi se med sledenjem dodajajo samodejno';
+
+  @override
+  String get deleteEntryTitle => 'Izbrišem zapis?';
+
+  @override
+  String get autoRecord => 'Samodejni zapis';
+
+  @override
+  String get routeSection => 'Pot';
+
+  @override
+  String get fromPort => 'Od';
+
+  @override
+  String get toPort => 'Do';
+
+  @override
+  String get distance => 'Razdalja';
+
+  @override
+  String get vessel => 'Plovilo';
+
+  @override
+  String get weatherSection => 'Vreme';
+
+  @override
+  String get morning => 'Jutro';
+
+  @override
+  String get noon => 'Poldne';
+
+  @override
+  String get evening => 'Večer';
+
+  @override
+  String get windDir => 'Smer vetra';
+
+  @override
+  String get seaState => 'Stanje morja';
+
+  @override
+  String get waveHeight => 'Višina valov';
+
+  @override
+  String get dailyNote => 'Dnevni zapis';
+
+  @override
+  String get dailyNoteHint => 'Opis plovbe, poudarki, dogodki dneva...';
+
+  @override
+  String get seaCalm => 'Mirno';
+
+  @override
+  String get seaLight => 'Rahlo valovito';
+
+  @override
+  String get seaModerate => 'Zmerno valovito';
+
+  @override
+  String get seaRough => 'Razburkano';
+
+  @override
+  String get seaStormy => 'Viharno';
+
+  @override
+  String get editEntry => 'Uredi zapis';
+
+  @override
+  String get newEntry => 'Nov zapis';
+
+  @override
+  String get sailMode => 'Način plovbe';
+
+  @override
+  String get sailMain => 'Glavno jadro';
+
+  @override
+  String get navigationSection => 'Navigacija';
+
+  @override
+  String get latitude => 'Zemljepisna širina';
+
+  @override
+  String get longitude => 'Zemljepisna dolžina';
+
+  @override
+  String get weatherSeaSection => 'Vreme in morje';
+
+  @override
+  String get windSpeed => 'Veter';
+
+  @override
+  String get windDirection => 'Smer';
+
+  @override
+  String get waveHeight2 => 'Višina valov';
+
+  @override
+  String get engineSection => 'Motor in rezervoarji';
+
+  @override
+  String get engineHours => 'Ure motorja';
+
+  @override
+  String get fuel => 'Gorivo';
+
+  @override
+  String get fuelLevel => 'Raven goriva';
+
+  @override
+  String get waterLevel => 'Raven vode';
+
+  @override
+  String get noteSection => 'Opomba';
+
+  @override
+  String get noteHint => 'Razmere na plovbi, dogodki, menjava posadke...';
+
+  @override
+  String get quickPhotoLogTitle => 'Hitri zapis v dnevnik';
+
+  @override
+  String get quickPhotoNoteHint => 'Kaj je to? (neobvezno)';
+
+  @override
+  String get exportDayTitle => 'Izvoz dneva';
+
+  @override
+  String get exportCharterTitle => 'Izvoz čarterja';
+
+  @override
+  String get loadingData => 'Nalaganje podatkov...';
+
+  @override
+  String get mapsReady => 'Zemljevidi so pripravljeni – lahko izvozite';
+
+  @override
+  String generatingMaps(int current, int total) {
+    return 'Ustvarjanje predogledov zemljevidov ($current/$total)...';
+  }
+
+  @override
+  String get exportDayBtn => 'Izvozi dan';
+
+  @override
+  String get exportCharterBtn => 'Izvozi čarter';
+
+  @override
+  String get entriesLabel => 'Zapisi';
+
+  @override
+  String get routePoints => 'Točke poti';
+
+  @override
+  String get anchorDriftTitle => '⚓ SIDRO ORJE!';
+
+  @override
+  String get anchorDriftContent =>
+      'Plovilo je preseglo obseg sidranja.\nTakoj preverite položaj!';
+
+  @override
+  String get cancelAnchor => 'Prekliči sidro';
+
+  @override
+  String get stopAlarm => 'Ustavi alarm';
+
+  @override
+  String get briefingItem1 => 'Rešilni jopiči – lokacija in uporaba';
+
+  @override
+  String get briefingItem2 => 'Rešilni obroč in postopek MOB';
+
+  @override
+  String get briefingItem3 => 'Signalne rakete – vrste in uporaba';
+
+  @override
+  String get briefingItem4 => 'EPIRB / PLB – aktivacija';
+
+  @override
+  String get briefingItem5 => 'Radio VHF – kanal 16, postopek Mayday';
+
+  @override
+  String get briefingItem6 => 'Gasilni aparat – lokacija in uporaba';
+
+  @override
+  String get briefingItem7 => 'Komplet prve pomoči – lokacija';
+
+  @override
+  String get briefingItem8 => 'Zasilna zaustavitev motorja';
+
+  @override
+  String get briefingItem9 => 'Puščanje – voda, plin';
+
+  @override
+  String get briefingItem10 => 'Sidro in veriga – postopek sidranja';
+
+  @override
+  String get briefingItem11 => 'Pravila na krovu';
+
+  @override
+  String get briefingItem12 => 'Klici v sili in VHF 16';
+
+  @override
+  String get checkInItem1 => 'Dokumenti plovila (vpis, zavarovanje)';
+
+  @override
+  String get checkInItem2 => 'Varnostna oprema – popolna';
+
+  @override
+  String get checkInItem3 => 'Zaloge goriva';
+
+  @override
+  String get checkInItem4 => 'Zaloge vode';
+
+  @override
+  String get checkInItem5 => 'Sidro in veriga – pregled';
+
+  @override
+  String get checkInItem6 => 'Motor – preizkusni zagon';
+
+  @override
+  String get checkInItem7 => 'Navigacijski instrumenti';
+
+  @override
+  String get checkInItem8 => 'Oprema jadrovja – vrvi in jadra';
+
+  @override
+  String get checkInItem9 => 'Kuhinja – plin, štedilnik';
+
+  @override
+  String get checkInItem10 => 'Stranišče – delovanje';
+
+  @override
+  String get checkInItem11 => 'Obstoječe poškodbe – fotodokumentacija';
+
+  @override
+  String get checkOutItem1 => 'Plovilo očiščeno – zunanjost';
+
+  @override
+  String get checkOutItem2 => 'Plovilo očiščeno – notranjost';
+
+  @override
+  String get checkOutItem3 => 'Gorivo dopolnjeno';
+
+  @override
+  String get checkOutItem4 => 'Voda dopolnjena';
+
+  @override
+  String get checkOutItem5 => 'Smeti odstranjene';
+
+  @override
+  String get checkOutItem6 => 'Poškodbe prijavljene';
+
+  @override
+  String get checkOutItem7 => 'Ključi predani';
+
+  @override
+  String get gearListShort => 'Osebna\noprema';
+
+  @override
+  String get colregRules => 'Pravila\nCOLREG';
+
+  @override
+  String get checkInShort => 'Check-in\nPrevzem';
+
+  @override
+  String get checkOutShort => 'Check-out\nPredaja';
+
+  @override
+  String get appTagline => 'Vaš zanesljiv ladijski dnevnik';
+
+  @override
+  String exportSavedMsg(String path) {
+    return 'Shranjeno: $path';
+  }
+
+  @override
+  String exportSavedPdfGpx(String pdf, String gpx) {
+    return 'Shranjeno: $pdf + $gpx';
+  }
+
+  @override
+  String exportErrorMsg(String error) {
+    return 'Napaka pri izvozu: $error';
+  }
+
+  @override
+  String get generatingPdf => 'Ustvarjanje PDF...';
+
+  @override
+  String get colregTitle => 'COLREG – Pravila za izogibanje trčenju na morju';
+
+  @override
+  String get tableOfContents => 'KAZALO';
+
+  @override
+  String get inThisChapter => 'V tem poglavju:';
+
+  @override
+  String ruleNumberLabel(Object n) {
+    return 'Pravilo $n';
+  }
+
+  @override
+  String get resetChecklistTitle => 'Ponastavim kontrolni seznam?';
+
+  @override
+  String get resetChecklistContent => 'Vse kljukice bodo izbrisane.';
+
+  @override
+  String get reset => 'Ponastavi';
+
+  @override
+  String get checkInReceivingTitle => 'Check-in – Prevzem plovila';
+
+  @override
+  String get checkOutHandoverTitle => 'Check-out – Predaja plovila';
+
+  @override
+  String get checkInCompletedMsg => 'Plovilo prevzeto – vse preverjeno ✓';
+
+  @override
+  String get checkOutCompletedMsg => 'Plovilo vrnjeno – vse v redu ✓';
+
+  @override
+  String get briefingDoneMsg => 'Brifing končan – posadka obveščena';
+
+  @override
+  String get sectionBriefed => 'Razdelek opravljen ✓';
+
+  @override
+  String get confirmSection => 'Potrdi razdelek';
+
+  @override
+  String get gearListTitle => 'Osebna oprema';
+
+  @override
+  String get newCategory => 'Nova kategorija';
+
+  @override
+  String get add => 'Dodaj';
+
+  @override
+  String get deleteItemTitle => 'Izbrišem postavko?';
+
+  @override
+  String get allPackedMsg => 'Vse spakirano, pripravljeni na izplutje! 🎉';
+
+  @override
+  String get addItemLabel => 'Dodaj postavko';
+
+  @override
+  String addToCategoryTitle(String category) {
+    return 'Dodaj v: $category';
+  }
+
+  @override
+  String get newItemHint => 'Nova postavka...';
+
+  @override
+  String get addWaypoint => 'Dodaj točko poti';
+
+  @override
+  String get editWaypoint => 'Uredi točko poti';
+
+  @override
+  String get waypointNameLabel => 'Ime';
+
+  @override
+  String get skipperSignature => 'Podpis skiperja';
+
+  @override
+  String get skipperNameLabel => 'Ime skiperja';
+
+  @override
+  String get signWithFinger => 'Podpišite se s prstom';
+
+  @override
+  String get clear => 'Počisti';
+
+  @override
+  String get signAndExport => 'Podpiši in izvozi';
+
+  @override
+  String get pleaseSign => 'Pred izvozom se podpišite';
+
+  @override
+  String get generatingPdfPreview => 'Ustvarjanje predogleda PDF...';
+
+  @override
+  String generationError(String error) {
+    return 'Napaka pri ustvarjanju: $error';
+  }
+
+  @override
+  String get savingAndGeneratingGpx => 'Shranjevanje in ustvarjanje GPX...';
+
+  @override
+  String get editCharter => 'Uredi čarter';
+
+  @override
+  String get basicInfo => 'Osnovni podatki';
+
+  @override
+  String get voyageNameRequired => 'Ime plovbe *';
+
+  @override
+  String get dateFrom => 'Datum od';
+
+  @override
+  String get dateTo => 'Datum do';
+
+  @override
+  String get vesselName => 'Ime plovila';
+
+  @override
+  String get vesselType => 'Vrsta plovila';
+
+  @override
+  String get homePort => 'Matično pristanišče';
+
+  @override
+  String get mmsi => 'MMSI';
+
+  @override
+  String get callsign => 'Klicni znak';
+
+  @override
+  String get vesselLengthM => 'Dolžina (m)';
+
+  @override
+  String get vesselBeamM => 'Širina (m)';
+
+  @override
+  String get vesselDraftM => 'Ugrez (m)';
+
+  @override
+  String get selectExistingVoyage => 'Izberi obstoječo plovbo';
+
+  @override
+  String get newVoyageForm => 'Nova plovba';
+
+  @override
+  String get fillFormAndBriefing =>
+      'Izpolnite obrazec in podpišite varnostni brifing';
+
+  @override
+  String get notesLabel => 'Zapiski';
+
+  @override
+  String get statusLabel => 'Stanje';
+
+  @override
+  String get safetyBriefingDoneLabel => 'Varnostni brifing končan';
+
+  @override
+  String get checkInDoneLabel => 'Check-in končan';
+
+  @override
+  String get checkOutDoneLabel => 'Check-out končan';
+
+  @override
+  String get enterVoyageName => 'Vnesite ime plovbe';
+
+  @override
+  String daysCount(int n) {
+    return '$n dni';
+  }
+
+  @override
+  String get selectTargetWaypoint => 'Izberite ciljno točko poti';
+
+  @override
+  String get noWaypoints => 'Ni točk poti.';
+
+  @override
+  String get goToMap => 'Pojdi na zemljevid';
+
+  @override
+  String get noTarget => 'Ni cilja';
+
+  @override
+  String get selectWaypointHint => 'Navigiraj do točke poti';
+
+  @override
+  String get sessionStats => 'Statistika plovbe';
+
+  @override
+  String get maxSpeed => 'Najv. hitrost';
+
+  @override
+  String get avgSpeed => 'Povpr. hitrost';
+
+  @override
+  String get sailingTime => 'Čas plovbe';
+
+  @override
+  String get gpsData => 'Podatki GPS';
+
+  @override
+  String get gpsPosition => 'Položaj';
+
+  @override
+  String get courseCog => 'Kurz (COG)';
+
+  @override
+  String get altitudeLabel => 'Nadmorska višina';
+
+  @override
+  String get dscProcedure => 'POSTOPEK DSC';
+
+  @override
+  String get voiceScript => 'GLASOVNA PREDLOGA';
+
+  @override
+  String get dscWarningUseOnly => '⚠️ UPORABITE SAMO V PRIMERU';
+
+  @override
+  String get dscWarningDanger => 'RESNE IN NEPOSREDNE NEVARNOSTI';
+
+  @override
+  String get dscWarningTypes => 'Požar · Potapljanje · Človek v morju';
+
+  @override
+  String get dscProcedureSubtitle =>
+      'Ta postopek hranite ob radijski postaji VHF DSC';
+
+  @override
+  String get fillBeforeSailing => 'Izpolnite pred izplutjem:';
+
+  @override
+  String get copyTooltip => 'Kopiraj';
+
+  @override
+  String get scriptCopied => 'Predloga kopirana';
+
+  @override
+  String get sendOnCh16 =>
+      '📻 Oddajajte na kanalu 16 · Polna moč · Ponavljajte vsaki 2 minuti, če ni odziva';
+
+  @override
+  String get enterAbove => '[vnesite v polje zgoraj]';
+
+  @override
+  String get distressNature => 'Vrsta nevarnosti';
+
+  @override
+  String get vesselNameLabel => 'Ime plovila';
+
+  @override
+  String get numberOfPersons => 'Število oseb';
+
+  @override
+  String get additionalInfo => 'Dodatne informacije';
+
+  @override
+  String get voiceScriptTitle => 'GLASOVNA PREDLOGA MAYDAY';
+
+  @override
+  String get dscStep1 => 'Prepričajte se, da je radijska postaja vklopljena.';
+
+  @override
+  String get dscStep2 => 'Odprite pokrov nad RDEČIM gumbom za klic v sili.';
+
+  @override
+  String get dscStep3 => 'Pritisnite RDEČI gumb ENKRAT in spustite.';
+
+  @override
+  String get dscStep4 =>
+      'Izberite vrsto nevarnosti.\n(Požar, potapljanje, MOB itd.)\nČe preskočite, bo poslan nedoločen klic v sili.';
+
+  @override
+  String get dscStep5 =>
+      'Pritisnite in DRŽITE RDEČI gumb 5 sekund, da pošljete klic.';
+
+  @override
+  String get dscStep6 =>
+      'Počakajte do 15 sekund na potrditev (prikazana na zaslonu), nato pošljite glasovno sporočilo na kanalu 16 s polno močjo.';
+
+  @override
+  String get appDescription => 'Profesionalni ladijski dnevnik za jadralce.';
+
+  @override
+  String get vesselIdTitle => 'Identifikacija plovila';
+
+  @override
+  String get vesselIdHint =>
+      'Klicni znak in MMSI se samodejno izpolnita v kartici Mayday.';
+
+  @override
+  String get maritimeReference => 'Pomorski priročnik';
+
+  @override
+  String get phonetic => 'Fonetična abeceda';
+
+  @override
+  String get flagAlphabet => 'Signalne zastave';
+
+  @override
+  String get dayShapes => 'Dnevni znaki';
+
+  @override
+  String get marineReferenceTile => 'Signali in abeceda';
+
+  @override
+  String get navInstruments => 'Ladijski instrumenti';
+
+  @override
+  String get enterPort => 'Vnesite pristanišče...';
+
+  @override
+  String get closeWithoutSaving => 'Zapri brez shranjevanja';
+
+  @override
+  String get saveToDevice => 'Shrani v napravo';
+
+  @override
+  String get saveAndShare => 'Shrani in deli';
+
+  @override
+  String get timestampCannotBeChanged => 'Časa zapisa ni mogoče spremeniti';
+
+  @override
+  String entriesShort(int n) {
+    return '$n zapisov';
+  }
+
+  @override
+  String get mainsail => 'Glavno jadro';
+
+  @override
+  String get weatherConditionTitle => 'Vremenske razmere';
+
+  @override
+  String get weatherConditionLabel => 'Stanje';
+
+  @override
+  String get wcSunny => 'Sončno';
+
+  @override
+  String get wcPartlyCloudy => 'Delno oblačno';
+
+  @override
+  String get wcOvercast => 'Oblačno';
+
+  @override
+  String get wcLightRain => 'Rahel dež';
+
+  @override
+  String get wcRain => 'Dež';
+
+  @override
+  String get wcHeavyRain => 'Močan dež';
+
+  @override
+  String get wcDrizzle => 'Rosenje';
+
+  @override
+  String get wcThunderstorm => 'Nevihte';
+
+  @override
+  String get wcIsoThunderstorm => 'Posamezne nevihte';
+
+  @override
+  String get wcHail => 'Toča';
+
+  @override
+  String get wcDust => 'Prah';
+
+  @override
+  String get wcFoggy => 'Megleno';
+
+  @override
+  String get wcWindy => 'Vetrovno';
+
+  @override
+  String get wcCold => 'Hladno';
+
+  @override
+  String get photoSection => 'Fotografija';
+
+  @override
+  String get camera => 'Kamera';
+
+  @override
+  String get gallery => 'Galerija';
+
+  @override
+  String get addPhoto => 'Dodaj fotografijo';
+
+  @override
+  String get photoAddedToEntry => 'Fotografija priložena';
+
+  @override
+  String get voyageStart => 'Začetek plovbe';
+
+  @override
+  String get voyageEnd => 'Konec plovbe';
+
+  @override
+  String get onlineAccount => 'Spletni račun';
+
+  @override
+  String get onlineAccountDesc => 'Spletna sinhronizacija dnevnika — kmalu';
+
+  @override
+  String get register => 'Registracija';
+
+  @override
+  String get login => 'Prijava';
+
+  @override
+  String get logout => 'Odjava';
+
+  @override
+  String get logoutConfirm =>
+      'Odjavljeni boste. Podatki, shranjeni v napravi, ostanejo.';
+
+  @override
+  String get notLoggedIn => 'Niste prijavljeni';
+
+  @override
+  String get fullName => 'Ime in priimek';
+
+  @override
+  String get password => 'Geslo';
+
+  @override
+  String get userGuide => 'Uporabniški vodnik';
+
+  @override
+  String get guideQuickStart => 'Hitri začetek – 5 korakov';
+
+  @override
+  String get guideQuickStartBody =>
+      '1. Tapnite velik gumb \"Začni plovbo\" na vrhu (na Zemljevidu, v Dnevniku ali na Instrumentih) – izberite pogostost zapisov in sledenje steče, ničesar drugega ni treba izpolniti vnaprej\n2. Če imate odprto plovbo, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n3. Manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) izpolnite kadar koli – aplikacija vas opozarja z oznakami v Dnevniku\n4. Med dnevom dodajajte zapise: čas, položaj, opomba\n5. Ob koncu plovbe odprite Nastavitve → Izvozi PDF\n\nAplikacija deluje čez cel zaslon – povlecite z zgornjega ali spodnjega roba, da začasno prikažete sistemski vrstici telefona.';
+
+  @override
+  String get guideMapTitle => 'Zemljevid';
+
+  @override
+  String get guideMapBody =>
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Radar – sloj radarja padavin (RainViewer), sličica se osveži približno vsakih 10 minut\n• Veter – puščice smeri/hitrosti vetra (vozli) v mreži čez vidno območje\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) – prenese vidno območje (zemljevid + pomorske oznake, trenutna povečava +3 stopnje) za uporabo brez signala; vsaka pregledana ploščica se tudi samodejno shrani\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, radar, veter…), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+
+  @override
+  String get guideInstrTitle => 'Ladijski instrumenti';
+
+  @override
+  String get guideInstrBody =>
+      'Zavihek Instrumenti prikazuje navigacijske podatke v realnem času.\n\n• SOG – hitrost nad dnom (vozli)\n• TWS – hitrost pravega vetra\n• TWA – kot pravega vetra glede na plovilo (zeleno = desni bok, rdeče = levi bok)\n• DEPTH – globina morja (rdeče = manj kot 5 m)\n• VMG WP – hitrost proti izbrani točki poti; izberite jo na ploščici za prikaz razdalje/azimuta in puščice neposredno na vetrovnici\n\nVir podatkov: GPS telefona ali Raymarine (prehod WiFi TCP ali UDP).\nNastavitve povezave (vključno z izbiro TCP/UDP) so v Nastavitve → Instrumenti.\n\nKako se plovilo poveže: aplikacija bere podatke NMEA prek WiFi (TCP ali UDP). Lastna dostopna točka WiFi na Raymarine MFD običajno ne zadostuje — namenjena je Raymarinovim aplikacijam in praviloma ne izpostavlja surovih podatkov NMEA tretjim osebam. Potrebujete prehod NMEA-na-WiFi (npr. Digital Yacht, Yacht Devices, Actisense, Quark-elec), priključen na ladijsko vodilo, ki bodisi ustvari lastno dostopno točko bodisi oddaja NMEA v omrežje WiFi. Povežite se z WiFi tega prehoda in v Nastavitvah vnesite njegov IP in vrata (ali poskusite Samodejno zaznavanje).';
+
+  @override
+  String get guideLogbookTitle => 'Dnevnik plovbe';
+
+  @override
+  String get guideLogbookBody =>
+      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane';
+
+  @override
+  String get guideMilesTitle => 'Knjiga milj';
+
+  @override
+  String get guideMilesBody =>
+      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis';
+
+  @override
+  String get guideHandoverTitle =>
+      'Zapisnik o primopredaji (check-in/check-out)';
+
+  @override
+  String get guideHandoverBody =>
+      'Uradni zapis o prevzemu in vrnitvi plovila na čarterju – ikona rokovanja v podrobnostih plovbe.\n\n• Kontrolni seznam opreme (jadra, oprema jadrovja, sidro, navigacija, rešilni jopiči, splav, komplet prve pomoči, gumenjak, luči, bimini...) – v redu / poškodovano / manjka, z opombo, položajem na krovu in fotografijo\n• Stanje goriva, vode in ur motorja\n• Podpis skiperja in predstavnika čarter podjetja\n• Zapisnik postane samo za branje, ko podpišeta obe strani\n• Check-out vnaprej izpolni podatke iz zapisnika check-in in izpostavi nove poškodbe\n• Izvoz PDF z obema podpisoma drug ob drugem';
+
+  @override
+  String get guideGpxImportTitle => 'Uvoz GPX';
+
+  @override
+  String get guideGpxImportBody =>
+      'Uvozite sledi in točke poti iz drugih navigacijskih aplikacij ali naprav GPS (ikona na Zemljevidu).\n\n• Izberite datoteko .gpx iz naprave\n• Večdnevni izvoz (več sledi v eni datoteki, npr. iz Garmin Explore) se samodejno združi v eno plovbo z enim dnem na koledarski dan\n• Najdene sledi lahko tudi ročno dodelite obstoječi plovbi\n• Točke poti (vključno s tistimi iz poti) se dodajo neposredno na zemljevid\n• Za poškodovano datoteko se prikaže jasno sporočilo o napaki';
+
+  @override
+  String get guideWeatherTitle => 'Vreme';
+
+  @override
+  String get guideWeatherBody =>
+      'Zavihek Vreme prikazuje napoved glede na vaš trenutni položaj.\n\n• Posodobi se samodejno, ko se položaj spremeni\n• Prikazuje veter, valove, temperaturo in razmere za prihajajoče ure\n• Brez povezave se prikaže zadnja shranjena napoved\n\nSonce, Luna in plima:\n• Sončni vzhod, zahod in Lunina mena se izračunajo v napravi — povezava ni potrebna\n• Tapnite osveži na kartici Plima in oseka za prenos sedemdnevne napovedi plime (brezplačno, brez ključa API)\n• Plima se shrani v predpomnilnik, zato ostane berljiva brez povezave; kartica vas opozori, ko je napoved stara ali prenesena daleč od tu\n• ⚠ Višine plime so nad srednjo gladino morja, ne nad hidrografsko ničlo — nikoli jih ne uporabljajte za izračun globine pod gredljem\n\nMorski tok:\n• Kartica Morski tok prikazuje dejansko napoved za vaš položaj v vozlih in smer, proti kateri tok teče\n• Na zemljevidu gumb z dvojno puščico nariše mrežo tokov za vidno območje; puščice kažejo, kam se voda giblje\n• Ne zamenjujte ga s slojem Oceanski tokovi — to je referenčna karta velikih globalnih tokov';
+
+  @override
+  String get guideSafetyMobTitle => 'MOB in sidro';
+
+  @override
+  String get guideSafetyMobBody =>
+      'Zavihek Varnost vsebuje funkcije za primer sile.\n\nMOB (človek v morju):\n• Držite rdeči gumb MOB za aktivacijo\n• Aplikacija zabeleži položaj GPS ter spremlja čas in razdaljo\n• Navigirajte nazaj do mesta padca\n\nAlarm sidra:\n• Nastavite polmer sidranja (priporočilo: 2× dolžina verige/vrvi)\n• Alarm zavibrira, če plovilo zaide izven dovoljenega polmera';
+
+  @override
+  String get guideSafetyBriefingTitle => 'Varnostni brifing in MAYDAY';
+
+  @override
+  String get guideSafetyBriefingBody =>
+      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF čarterja\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.';
+
+  @override
+  String get guideDutyTitle => 'Posadka na straži';
+
+  @override
+  String get guideDutyBody =>
+      'Zapis o tem, kdo in kdaj je bil na straži — v Varnosti, nad alarmom sidra.\n\n• Prevzemi stražo — izberite eno ali več oseb hkrati; vsaka nato posebej preda stražo\n• Imena prihajajo iz posadke plovbe. Če posadka ni določena, vas gumb popelje na kartico plovbe\n• Čas začetka je mogoče popraviti, če ste gumb pritisnili z zamudo\n• Prikaži za inšpekcijo — kartica čez cel zaslon za predložitev na krovu: kdo je na straži, od kdaj, lokalni in čas UTC. Iz nje ni mogoče ničesar spremeniti\n• Razpored straž — vnesite preteklo stražo ali jo uredite. Pustite čas \"do\" prazen in straža ostane v teku\n• Nočna straža čez polnoč je en zapis, ne dva. V PDF se pojavi na obeh dneh, označena s puščico\n• Prevzem in predaja straže se zapišeta v dnevnik in v izvoz PDF\n\nOpomba: aplikacija nikoli sama ne konča straže. Po 12 urah vas le opozori — čas konca, ki ga niste videli, bi bil izmišljen podatek.';
+
+  @override
+  String get guideCompassTitle => 'Kompas za merjenje azimuta';
+
+  @override
+  String get guideCompassBody =>
+      'Zavihek Kompas prikazuje magnetni azimut s pomočjo senzorjev telefona, z zadnjo kamero kot ozadjem za merjenje azimuta na predmete.\n\n• Rumeni nitni križ – smer, v katero merite\n• Trak kompasa na vrhu – S / SV / V / JV / J / JZ / Z / SZ\n• Številčni prikaz – stopinje in stran neba\n• Zelena pika = stabilen odčitek  ·  Oranžna pika = umerjanje\n\nČe je odčitek nestabilen, počasi premikajte telefon v obliki osmice, da umerite magnetometer.\n\nNatančnost je lahko manjša v bližini kovinskih konstrukcij, zvočnikov ali elektronske opreme.';
+
+  @override
+  String get guideSettingsTitle => 'Nastavitve';
+
+  @override
+  String get guideSettingsBody =>
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – vozli/km/h, metri/čevlji\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik';
+
+  @override
+  String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';
+
+  @override
+  String get guideBackupBody =>
+      'V Nastavitve → Varnostna kopija podatkov.\n\n• Izvozi varnostno kopijo – shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko (.hmbbackup), ki jo lahko delite po e-pošti, v oblak ali shranite lokalno\n• Obnovi iz varnostne kopije – zamenja trenutne podatke z vsebino izbrane kopije; varnostna kopija trenutnega stanja se pred tem ustvari samodejno\n• Obnovitev je onemogočena, dokler je aktivno sledenje plovbi prek GPS\n• Kopija z novejšo shemo, kot jo aplikacija podpira, je zavrnjena z razlago';
+
+  @override
+  String get guideExportTitle => 'Izvoz dnevnika';
+
+  @override
+  String get guideExportBody =>
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.';
+
+  @override
+  String get safetyBriefingScreenTitle => 'Varnostni brifing';
+
+  @override
+  String get briefingCrewSignaturesSection => 'Podpisi posadke';
+
+  @override
+  String get briefingSignHere => 'Podpišite se tukaj';
+
+  @override
+  String get briefingClear => 'Počisti';
+
+  @override
+  String get briefingSigned => 'Podpisano';
+
+  @override
+  String get briefingSave => 'Shrani podpise';
+
+  @override
+  String get briefingSavedOk => 'Podpisi shranjeni';
+
+  @override
+  String get briefingOpenBriefing => 'Varnostni brifing';
+
+  @override
+  String get briefingSkipper => 'Skiper';
+
+  @override
+  String get briefingCrew => 'Posadka';
+
+  @override
+  String get briefingNoCrew =>
+      'Posadka ni določena. Dodajte člane posadke v nastavitvah plovbe.';
+
+  @override
+  String get briefingDate => 'Datum';
+
+  @override
+  String get briefingLocation => 'Kraj';
+
+  @override
+  String get briefingDoneLabel => 'Varnostni brifing končan';
+
+  @override
+  String get briefingDoneSubtitle =>
+      'Vsi podpisi posadke so shranjeni. Ponavljanje ni potrebno.';
+
+  @override
+  String get briefingEditSignature => 'Spremeni podpis';
+
+  @override
+  String get briefingRequiredTitle => 'Potreben je varnostni brifing';
+
+  @override
+  String get briefingRequiredBody =>
+      'Pred začetkom prvega sledenja končajte varnostni brifing in zberite podpise posadke.';
+
+  @override
+  String get goToBriefing => 'Pojdi na brifing';
+
+  @override
+  String get skipperProfile => 'Profil skiperja';
+
+  @override
+  String get skipperProfileHint =>
+      'Ti podatki se pojavijo v izvozu plovbe v PDF.';
+
+  @override
+  String get skipperFullName => 'Ime skiperja';
+
+  @override
+  String get skipperLicenseSection => 'Dovoljenje skiperja';
+
+  @override
+  String get skipperLicenseType => 'Vrsta dovoljenja';
+
+  @override
+  String get skipperLicenseNumber => 'Številka dovoljenja';
+
+  @override
+  String get skipperLicenseAuthority => 'Organ izdaje';
+
+  @override
+  String get skipperLicenseExpiry => 'Velja do';
+
+  @override
+  String get skipperVhfSection => 'Dovoljenje VHF / SRC';
+
+  @override
+  String get skipperVhfNumber => 'Številka VHF/SRC';
+
+  @override
+  String get skipperVhfExpiry => 'VHF velja do';
+
+  @override
+  String get skipperOtherCerts => 'Druga potrdila / dovoljenja';
+
+  @override
+  String get skipperOtherCertsHint =>
+      'npr. Yachtmaster, RYA, STCW, tečaji reševanja...';
+
+  @override
+  String get continueLastVoyageTitle => 'Nadaljujem zadnjo plovbo?';
+
+  @override
+  String get continueVoyageAction => 'Nadaljuj';
+
+  @override
+  String get newRecordAction => 'Nov zapis';
+
+  @override
+  String get missingCheckInChip => 'Manjka check-in';
+
+  @override
+  String get missingBriefingChip => 'Manjka varnostni brifing';
+
+  @override
+  String get missingDetailsChip => 'Manjkajo podatki o plovilu/posadki';
+
+  @override
+  String get missingCheckOutChip => 'Manjka check-out';
+
+  @override
+  String get vesselModel => 'Model';
+
+  @override
+  String get vesselTypeMonohull => 'Enotrupnik';
+
+  @override
+  String get vesselTypeCatamaran => 'Katamaran';
+
+  @override
+  String get vesselTypeTrimaran => 'Trimaran';
+
+  @override
+  String get vesselTypeMotorYacht => 'Motorna jahta';
+
+  @override
+  String get vesselTypeGulet => 'Gulet';
+
+  @override
+  String get vesselTypeDinghy => 'Mala jadrnica';
+
+  @override
+  String get vesselTypeRib => 'RIB';
+
+  @override
+  String get vesselTypeOther => 'Drugo';
+
+  @override
+  String get charterCompanyLabel => 'Čarter podjetje';
+
+  @override
+  String get yachtParamsSection => 'Parametri jahte';
+
+  @override
+  String get berthsLabel => 'Ležišča';
+
+  @override
+  String get yearBuiltLabel => 'Leto izdelave';
+
+  @override
+  String get waterTankLabel => 'Rezervoar za vodo';
+
+  @override
+  String get fuelTankLabel => 'Rezervoar za gorivo';
+
+  @override
+  String get engineHoursStartLabel => 'Ure motorja · začetek';
+
+  @override
+  String get engineHoursEndLabel => 'Ure motorja · konec';
+
+  @override
+  String get whereWhenSection => 'Kje in kdaj';
+
+  @override
+  String get countryLabel => 'Država';
+
+  @override
+  String get cruisingAreaLabel => 'Območje plovbe';
+
+  @override
+  String get charterContactsSection => 'Čarter stiki';
+
+  @override
+  String get charterContactsHint =>
+      'Do 3 številke za klic / WhatsApp / SMS. Vedno z mednarodno predpono (npr. +386...).';
+
+  @override
+  String get addPhoneNumber => 'Dodaj telefonsko številko';
+
+  @override
+  String get costsSection => 'Stroški';
+
+  @override
+  String get charterPriceLabel => 'Cena čarterja';
+
+  @override
+  String get currencyLabel => 'Valuta';
+
+  @override
+  String get addCostItem => 'Dodaj strošek';
+
+  @override
+  String get costName => 'Naziv stroška';
+
+  @override
+  String get crewSectionHint =>
+      'Tapnite oznako, da določite poveljnika — ostali so posadka.';
+
+  @override
+  String get addCrewMember => 'Dodaj člana posadke';
+
+  @override
+  String get crewNameLabel => 'Ime';
+
+  @override
+  String get skipperBadge => 'SKIPER';
+
+  @override
+  String get crewBadge => 'POSADKA';
+
+  @override
+  String get vesselTypeSailboat => 'Jadrnica';
+
+  @override
+  String get vesselTypeMotorBoat => 'Motorno plovilo';
+
+  @override
+  String get sbNeedsVesselCard =>
+      'Najprej izpolnite kartico plovila in posadke — Varnostni brifing potrebuje seznam posadke za podpise.';
+
+  @override
+  String get prefillSkipperTitle => 'Izpolnim shranjene podatke skiperja?';
+
+  @override
+  String get prefillSkipperFill => 'Izpolni';
+
+  @override
+  String get prefillSkipperNew => 'Nov skiper';
+
+  @override
+  String get boatLicenceLabel => 'Št. dovoljenja za vodenje';
+
+  @override
+  String get radioLicenceLabel => 'Št. radijskega dovoljenja';
+
+  @override
+  String get vesselPhotosSection => 'Fotografije plovila (največ 3)';
+
+  @override
+  String get addPhotoLabel => 'Dodaj';
+
+  @override
+  String get createVoyageButton => 'Ustvari plovbo';
+
+  @override
+  String get saveVoyageButton => 'Shrani plovbo';
+
+  @override
+  String get costBaseCharter => 'Osnovna cena čarterja';
+
+  @override
+  String get costDeposit => 'Varščina';
+
+  @override
+  String get costDinghyOutboard => 'Gumenjak / izvenkrmni motor';
+
+  @override
+  String get costOutboardFuel => 'Gorivo za izvenkrmni motor';
+
+  @override
+  String get costTransitLog => 'Transit log';
+
+  @override
+  String get costTouristTax => 'Turistična taksa';
+
+  @override
+  String get costFinalCleaning => 'Končno čiščenje';
+
+  @override
+  String get costLinenTowels => 'Posteljnina in brisače';
+
+  @override
+  String get costWifi => 'WiFi';
+
+  @override
+  String get costSupKayak => 'SUP / kajak';
+
+  @override
+  String get costSkipperFee => 'Nadomestilo za skiperja';
+
+  @override
+  String get costHostessFee => 'Nadomestilo za hosteso';
+
+  @override
+  String locationQualityPrecise(int m) {
+    return 'GPS ±$m m';
+  }
+
+  @override
+  String locationQualityApproximate(int m) {
+    return '⚠️ Približna lokacija · ±$m m · omrežno določanje položaja';
+  }
+
+  @override
+  String locationQualityCached(int mins) {
+    return '⚠️ Zadnja znana lokacija · pred $mins min';
+  }
+
+  @override
+  String get locationQualityUnknown => 'Natančnost neznana';
+
+  @override
+  String get locationQualityMocked => '⚠️ Zaznana lažna lokacija';
+
+  @override
+  String get syncQueueTitle => 'Čakalna vrsta sinhronizacije';
+
+  @override
+  String get syncQueueEmpty => 'Vrsta je prazna';
+
+  @override
+  String get syncNowAction => 'Sinhroniziraj zdaj';
+
+  @override
+  String get syncRetryFailedAction => 'Ponovi neuspele';
+
+  @override
+  String get syncStatusPending => 'Na čakanju';
+
+  @override
+  String get syncStatusSending => 'Pošiljanje';
+
+  @override
+  String get syncStatusSent => 'Poslano';
+
+  @override
+  String get syncStatusFailed => 'Neuspelo';
+
+  @override
+  String get syncStatusConflict => 'Spor';
+
+  @override
+  String get syncStatusDeferred => 'Odloženo';
+
+  @override
+  String syncRetryCount(int n) {
+    return 'Poskus $n';
+  }
+
+  @override
+  String get syncOffline => 'brez povezave';
+
+  @override
+  String syncPendingCount(int n) {
+    return '$n na čakanju';
+  }
+
+  @override
+  String syncDeferredCount(int n) {
+    return '$n odloženih';
+  }
+
+  @override
+  String syncFailedCount(int n) {
+    return '$n neuspelih';
+  }
+
+  @override
+  String get syncWifiOverrideBanner =>
+      'Priloga čaka na Wi-Fi (na morju običajno ni na voljo).';
+
+  @override
+  String get syncWifiOverrideAction => 'Uporabi mobilne podatke';
+
+  @override
+  String get syncWifiOverrideActive => 'Mobilni podatki dovoljeni za priloge';
+
+  @override
+  String get syncClearQueueAction => 'Izprazni vrsto';
+
+  @override
+  String get syncClearQueueConfirmTitle => 'Izpraznim celotno vrsto?';
+
+  @override
+  String get syncClearQueueConfirmContent =>
+      'Odstrani vsako postavko iz čakalne vrste, vključno z že poslanimi. Tega ni mogoče razveljaviti.';
+
+  @override
+  String get syncClearQueueDone => 'Vrsta izpraznjena';
+
+  @override
+  String get syncEnableToggle => 'Sinhroniziraj dnevnik';
+
+  @override
+  String get syncEnableToggleDesc =>
+      'Pošilja zapise na strežnik, dokler je aplikacija odprta in povezana';
+
+  @override
+  String get syncTargetLabel => 'Cilj sinhronizacije';
+
+  @override
+  String get syncTargetHmbAcademy => 'HMB Sailing Academy (hmba.boats)';
+
+  @override
+  String get syncTargetCustom => 'Lasten strežnik';
+
+  @override
+  String get syncCustomUrlLabel => 'URL strežnika';
+
+  @override
+  String get syncCustomTokenLabel => 'Žeton';
+
+  @override
+  String get syncTestConnectionAction => 'Preizkusi povezavo';
+
+  @override
+  String get syncTestSuccess => 'Povezava deluje';
+
+  @override
+  String syncTestFailure(String detail) {
+    return 'Neuspelo: $detail';
+  }
+
+  @override
+  String get syncUrlErrorEmpty => 'Vnesite URL strežnika';
+
+  @override
+  String get syncUrlErrorInvalid => 'Neveljaven URL';
+
+  @override
+  String get syncUrlErrorHttps => 'URL se mora začeti s https://';
+
+  @override
+  String get syncIntervalLabel => 'Interval sinhronizacije';
+
+  @override
+  String syncIntervalMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get syncIntervalNote =>
+      'Sinhronizacija deluje samo, dokler je aplikacija odprta';
+
+  @override
+  String get syncAttachmentPolicyLabel => 'Priloge (fotografije)';
+
+  @override
+  String get syncAttachmentNever => 'Nikoli';
+
+  @override
+  String get syncAttachmentWifiOnly => 'Samo Wi-Fi';
+
+  @override
+  String get syncAttachmentAlways => 'Vedno';
+
+  @override
+  String get syncBackfillAction => 'Uvrsti starejše zapise v vrsto';
+
+  @override
+  String get syncBackfillDesc =>
+      'Doda zapise, ustvarjene med izklopljeno sinhronizacijo, v čakalno vrsto za pošiljanje';
+
+  @override
+  String syncBackfillResult(int n) {
+    return '$n uvrščenih';
+  }
+
+  @override
+  String get syncBackfillNone =>
+      'Nič za uvrstitev — vse je že v vrsti ali poslano';
+
+  @override
+  String get syncCloudEnableToggle => 'Izvoz v oblak (Google Drive)';
+
+  @override
+  String get syncCloudEnableToggleDesc =>
+      'Po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na Google Drive. Brez prijave vse ostane v napravi.';
+
+  @override
+  String get syncCloudSignInAction => 'Prijavi se z Googlom';
+
+  @override
+  String get syncCloudSignOutAction => 'Odjavi se';
+
+  @override
+  String syncCloudSignedInAs(String email) {
+    return 'Prijavljeni kot $email';
+  }
+
+  @override
+  String get syncCloudNotSignedIn => 'Niste prijavljeni';
+
+  @override
+  String get waypointNameHint => 'npr. Sidrišče, Pristanišče...';
+
+  @override
+  String waypointDefaultName(String time) {
+    return 'Točka $time';
+  }
+
+  @override
+  String get mobFullName => 'Človek v morju';
+
+  @override
+  String get maydayCardShort => 'Kartica\nMayday';
+
+  @override
+  String get morseInputHint => 'Vnesite besedilo...';
+
+  @override
+  String get morseSosTitle => 'SOS – SIGNAL V SILI';
+
+  @override
+  String get morseSosCopied => 'SOS kopiran';
+
+  @override
+  String intervalSeconds(int n) {
+    return '$n sek';
+  }
+
+  @override
+  String intervalMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String intervalHours(int n) {
+    return '$n h';
+  }
+
+  @override
+  String get aboutFeatureGps => 'Sledenje GPS s samodejnimi zapisi';
+
+  @override
+  String get aboutFeatureLogbook => 'Dnevnik večdnevnih plovb';
+
+  @override
+  String get aboutFeatureMaps =>
+      'Pomorski zemljevidi brez povezave (OpenSeaMap)';
+
+  @override
+  String get aboutFeatureWeather => 'Pomorska vremenska napoved (Open-Meteo)';
+
+  @override
+  String get aboutFeatureExport => 'Izvoz PDF + GPX';
+
+  @override
+  String get aboutFeatureSafety => 'Varnostni brifing in kartica Mayday';
+
+  @override
+  String get aboutAuthorLabel => 'Avtor';
+
+  @override
+  String get aboutVersionLabel => 'Različica';
+
+  @override
+  String get aboutPlatformLabel => 'Platforma';
+
+  @override
+  String cloudSignInFailed(String error) {
+    return 'Prijava ni uspela: $error';
+  }
+
+  @override
+  String cloudSignOutFailed(String error) {
+    return 'Odjava ni uspela: $error';
+  }
+}
