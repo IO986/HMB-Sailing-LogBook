@@ -11,37 +11,37 @@ typedef CurrentPoint = ({double lat, double lon});
 class OceanCurrent {
   final String id;
   final String nameEn, nameSk, nameDe, nameEs, nameUk;
-  final String nameCs, namePl, nameEl, nameHr, nameSl;
+  final String nameCs, namePl, nameEl, nameHr, nameSl, nameIt;
   final List<CurrentPoint> path;
   final double speedKtMin, speedKtMax;
   final String noteEn, noteSk, noteDe, noteEs, noteUk;
-  final String noteCs, notePl, noteEl, noteHr, noteSl;
+  final String noteCs, notePl, noteEl, noteHr, noteSl, noteIt;
 
   const OceanCurrent({
     required this.id,
     required this.nameEn, required this.nameSk, required this.nameDe,
     required this.nameEs, required this.nameUk,
     required this.nameCs, required this.namePl, required this.nameEl,
-    required this.nameHr, required this.nameSl,
+    required this.nameHr, required this.nameSl, required this.nameIt,
     required this.path,
     required this.speedKtMin, required this.speedKtMax,
     required this.noteEn, required this.noteSk, required this.noteDe,
     required this.noteEs, required this.noteUk,
     required this.noteCs, required this.notePl, required this.noteEl,
-    required this.noteHr, required this.noteSl,
+    required this.noteHr, required this.noteSl, required this.noteIt,
   });
 
   String name(String languageCode) => switch (languageCode) {
         'sk' => nameSk, 'de' => nameDe, 'es' => nameEs, 'uk' => nameUk,
         'cs' => nameCs, 'pl' => namePl, 'el' => nameEl, 'hr' => nameHr,
-        'sl' => nameSl,
+        'sl' => nameSl, 'it' => nameIt,
         _ => nameEn,
       };
 
   String note(String languageCode) => switch (languageCode) {
         'sk' => noteSk, 'de' => noteDe, 'es' => noteEs, 'uk' => noteUk,
         'cs' => noteCs, 'pl' => notePl, 'el' => noteEl, 'hr' => noteHr,
-        'sl' => noteSl,
+        'sl' => noteSl, 'it' => noteIt,
         _ => noteEn,
       };
 }
@@ -54,6 +54,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Golfský proud', namePl: 'Prąd Zatokowy', nameEl: 'Ρεύμα του Κόλπου',
     nameHr: 'Golfska struja',
     nameSl: 'Zalivski tok',
+    nameIt: 'Corrente del Golfo',
     path: [
       (lat: 25.5, lon: -80.1), (lat: 30.0, lon: -79.0),
       (lat: 35.0, lon: -74.0), (lat: 40.0, lon: -65.0),
@@ -70,6 +71,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Θερμό ρεύμα, από τα Στενά της Φλόριντα βόρεια κατά μήκος της ανατολικής ακτής των ΗΠΑ, μετά ανατολικά στον Βόρειο Ατλαντικό. Όλο τον χρόνο.',
     noteHr: 'Topla struja, od Floridskog tjesnaca sjeverno uz istočnu obalu SAD-a, zatim istočno preko sjevernog Atlantika. Tijekom cijele godine.',
     noteSl: 'Topel tok, od Floridske ožine severno ob vzhodni obali ZDA, nato vzhodno čez severni Atlantik. Vse leto.',
+    noteIt: 'Corrente calda, dallo Stretto di Florida verso nord lungo la costa orientale degli USA, poi verso est attraverso il Nord Atlantico. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'north_atlantic_drift',
@@ -78,6 +80,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Severoatlantický proud', namePl: 'Prąd Północnoatlantycki', nameEl: 'Βορειοατλαντικό Ρεύμα',
     nameHr: 'Sjevernoatlantska struja',
     nameSl: 'Severnoatlantski tok',
+    nameIt: 'Deriva nordatlantica',
     path: [(lat: 45.0, lon: -35.0), (lat: 50.0, lon: -20.0), (lat: 55.0, lon: -10.0), (lat: 58.0, lon: 0.0)],
     speedKtMin: 0.5, speedKtMax: 1.5,
     noteEn: 'Continuation of the Gulf Stream toward NW Europe; keeps European coasts mild. Year-round.',
@@ -90,6 +93,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Συνέχεια του Ρεύματος του Κόλπου προς τη ΒΔ Ευρώπη· διατηρεί ήπιες τις ευρωπαϊκές ακτές. Όλο τον χρόνο.',
     noteHr: 'Nastavak Golfske struje prema sjeverozapadnoj Europi; održava europske obale blagima. Tijekom cijele godine.',
     noteSl: 'Nadaljevanje Zalivskega toka proti severozahodni Evropi; ohranja evropske obale mile. Vse leto.',
+    noteIt: 'Prosecuzione della Corrente del Golfo verso l\'Europa nord-occidentale; mantiene miti le coste europee. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'canary_current',
@@ -98,6 +102,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Kanárský proud', namePl: 'Prąd Kanaryjski', nameEl: 'Ρεύμα των Καναρίων',
     nameHr: 'Kanarska struja',
     nameSl: 'Kanarski tok',
+    nameIt: 'Corrente delle Canarie',
     path: [(lat: 40.0, lon: -10.0), (lat: 30.0, lon: -12.0), (lat: 20.0, lon: -17.0), (lat: 12.0, lon: -18.0)],
     speedKtMin: 0.3, speedKtMax: 0.8,
     noteEn: 'Cool current down the NW African coast, feeding the North Equatorial Current. Year-round.',
@@ -110,6 +115,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό ρεύμα κατά μήκος της ΒΔ ακτής της Αφρικής, τροφοδοτεί το Βόρειο Ισημερινό Ρεύμα. Όλο τον χρόνο.',
     noteHr: 'Hladna struja niz sjeverozapadnu obalu Afrike, napaja Sjevernu ekvatorijalnu struju. Tijekom cijele godine.',
     noteSl: 'Hladen tok ob severozahodni obali Afrike, napaja Severni ekvatorialni tok. Vse leto.',
+    noteIt: 'Corrente fredda lungo la costa nord-occidentale africana, alimenta la Corrente Nord Equatoriale. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'north_equatorial_atlantic',
@@ -119,6 +125,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Severní rovníkový proud (Atlantik)', namePl: 'Prąd Północnorównikowy (Atlantyk)', nameEl: 'Βόρειο Ισημερινό Ρεύμα (Ατλαντικός)',
     nameHr: 'Sjeverna ekvatorijalna struja (Atlantik)',
     nameSl: 'Severni ekvatorialni tok (Atlantik)',
+    nameIt: 'Corrente Nord Equatoriale (Atlantico)',
     path: [(lat: 15.0, lon: -20.0), (lat: 13.0, lon: -40.0), (lat: 11.0, lon: -60.0)],
     speedKtMin: 0.5, speedKtMax: 1.0,
     noteEn: 'Westward flow across the tropical Atlantic toward the Caribbean. Year-round.',
@@ -131,6 +138,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ροή προς δυσμάς στον τροπικό Ατλαντικό προς την Καραϊβική. Όλο τον χρόνο.',
     noteHr: 'Tok prema zapadu preko tropskog Atlantika prema Karibima. Tijekom cijele godine.',
     noteSl: 'Tok proti zahodu čez tropski Atlantik proti Karibom. Vse leto.',
+    noteIt: 'Flusso verso ovest attraverso l\'Atlantico tropicale in direzione dei Caraibi. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'loop_current',
@@ -140,6 +148,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Loop Current (Mexický záliv)', namePl: 'Prąd Pętlowy (Zatoka Meksykańska)', nameEl: 'Ρεύμα Βρόχου (Κόλπος του Μεξικού)',
     nameHr: 'Loop Current (Meksički zaljev)',
     nameSl: 'Loop Current (Mehiški zaliv)',
+    nameIt: 'Loop Current (Golfo del Messico)',
     path: [(lat: 21.5, lon: -85.0), (lat: 25.0, lon: -87.0), (lat: 27.0, lon: -84.0), (lat: 24.5, lon: -81.5)],
     speedKtMin: 1.5, speedKtMax: 3.5,
     noteEn: 'Enters via Yucatan Channel, loops in the Gulf, exits through the Florida Straits into the Gulf Stream. Year-round, position varies.',
@@ -152,6 +161,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Εισέρχεται από το Στενό του Γιουκατάν, σχηματίζει βρόχο στον κόλπο, εξέρχεται από τα Στενά της Φλόριντα στο Ρεύμα του Κόλπου. Όλο τον χρόνο, η θέση ποικίλλει.',
     noteHr: 'Ulazi kroz Yucatánski prolaz, tvori petlju u zaljevu, izlazi kroz Floridski tjesnac u Golfsku struju. Tijekom cijele godine, položaj varira.',
     noteSl: 'Vstopa skozi Jukatanski preliv, se v zalivu zavije v zanko in izstopa skozi Floridsko ožino v Zalivski tok. Vse leto, položaj se spreminja.',
+    noteIt: 'Entra dal Canale dello Yucatán, forma un\'ansa nel golfo ed esce dallo Stretto di Florida nella Corrente del Golfo. Tutto l\'anno, con posizione variabile.',
   ),
   OceanCurrent(
     id: 'labrador_current',
@@ -160,6 +170,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Labradorský proud', namePl: 'Prąd Labradorski', nameEl: 'Ρεύμα του Λαμπραντόρ',
     nameHr: 'Labradorska struja',
     nameSl: 'Labradorski tok',
+    nameIt: 'Corrente del Labrador',
     path: [(lat: 60.0, lon: -62.0), (lat: 52.0, lon: -55.0), (lat: 45.0, lon: -50.0)],
     speedKtMin: 0.4, speedKtMax: 1.0,
     noteEn: 'Cold current from Baffin Bay south past Newfoundland/Grand Banks; brings icebergs. Year-round, strongest spring.',
@@ -172,6 +183,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό ρεύμα από τον Κόλπο του Μπάφιν νότια περνώντας από τη Νέα Γη/Grand Banks· φέρνει παγόβουνα. Όλο τον χρόνο, ισχυρότερο την άνοιξη.',
     noteHr: 'Hladna struja iz Baffinovog zaljeva južno pokraj Newfoundlanda/Grand Banksa; donosi sante leda. Tijekom cijele godine, najjača u proljeće.',
     noteSl: 'Hladen tok iz Baffinovega zaliva proti jugu mimo Nove Fundlandije/Grand Banks; prinaša ledene gore. Vse leto, najmočnejši spomladi.',
+    noteIt: 'Corrente fredda dalla Baia di Baffin verso sud oltre Terranova/Grand Banks; porta iceberg. Tutto l\'anno, più intensa in primavera.',
   ),
   OceanCurrent(
     id: 'brazil_current',
@@ -180,6 +192,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Brazilský proud', namePl: 'Prąd Brazylijski', nameEl: 'Ρεύμα της Βραζιλίας',
     nameHr: 'Brazilska struja',
     nameSl: 'Brazilski tok',
+    nameIt: 'Corrente del Brasile',
     path: [(lat: -5.0, lon: -35.0), (lat: -20.0, lon: -40.0), (lat: -35.0, lon: -50.0)],
     speedKtMin: 0.5, speedKtMax: 1.5,
     noteEn: 'Warm current flowing south along the Brazilian coast. Year-round.',
@@ -192,6 +205,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Θερμό ρεύμα που ρέει νότια κατά μήκος της βραζιλιάνικης ακτής. Όλο τον χρόνο.',
     noteHr: 'Topla struja koja teče južno uz brazilsku obalu. Tijekom cijele godine.',
     noteSl: 'Topel tok, ki teče proti jugu ob brazilski obali. Vse leto.',
+    noteIt: 'Corrente calda che scorre verso sud lungo la costa brasiliana. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'benguela_current',
@@ -200,6 +214,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Benguelský proud', namePl: 'Prąd Benguelski', nameEl: 'Ρεύμα Μπενγκουέλα',
     nameHr: 'Benguelska struja',
     nameSl: 'Bengvelski tok',
+    nameIt: 'Corrente di Benguela',
     path: [(lat: -34.0, lon: 17.5), (lat: -25.0, lon: 13.5), (lat: -15.0, lon: 10.0)],
     speedKtMin: 0.3, speedKtMax: 0.8,
     noteEn: 'Cold current north along the SW African coast (Namibia/Angola). Year-round.',
@@ -212,6 +227,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό ρεύμα βόρεια κατά μήκος της ΝΔ ακτής της Αφρικής (Ναμίμπια/Ανγκόλα). Όλο τον χρόνο.',
     noteHr: 'Hladna struja sjeverno uz jugozapadnu obalu Afrike (Namibija/Angola). Tijekom cijele godine.',
     noteSl: 'Hladen tok proti severu ob jugozahodni obali Afrike (Namibija/Angola). Vse leto.',
+    noteIt: 'Corrente fredda verso nord lungo la costa sud-occidentale africana (Namibia/Angola). Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'gibraltar_inflow',
@@ -221,6 +237,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Přítok Gibraltarským průlivem', namePl: 'Napływ przez Cieśninę Gibraltarską', nameEl: 'Εισροή Στενού του Γιβραλτάρ',
     nameHr: 'Dotok kroz Gibraltarski tjesnac',
     nameSl: 'Dotok skozi Gibraltarsko ožino',
+    nameIt: 'Afflusso dallo Stretto di Gibilterra',
     path: [(lat: 36.0, lon: -5.6), (lat: 36.1, lon: -4.5), (lat: 36.5, lon: -3.0)],
     speedKtMin: 1.0, speedKtMax: 3.0,
     noteEn: 'Surface Atlantic water flows east into the Mediterranean (Alboran Sea gyre); a deep return current flows out below. Year-round.',
@@ -233,6 +250,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Επιφανειακό ατλαντικό νερό ρέει ανατολικά στη Μεσόγειο (δίνη της Θάλασσας Αλμποράν)· ένα βαθύ ρεύμα επιστροφής ρέει προς τα έξω από κάτω. Όλο τον χρόνο.',
     noteHr: 'Površinska atlantska voda teče istočno u Sredozemlje (vrtlog Alboranskog mora); duboka povratna struja teče van ispod nje. Tijekom cijele godine.',
     noteSl: 'Površinska atlantska voda teče vzhodno v Sredozemlje (vrtinec Alboranskega morja); globok povratni tok teče ven pod njo. Vse leto.',
+    noteIt: 'L\'acqua atlantica superficiale scorre verso est nel Mediterraneo (vortice del Mare di Alborán); una corrente profonda di ritorno defluisce al di sotto. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'kuroshio',
@@ -241,6 +259,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Proud Kuroshio', namePl: 'Prąd Kuroshio', nameEl: 'Ρεύμα Κουρόσιο',
     nameHr: 'Struja Kuroshio',
     nameSl: 'Tok Kuroshio',
+    nameIt: 'Corrente di Kuroshio',
     path: [(lat: 20.0, lon: 122.0), (lat: 28.0, lon: 129.0), (lat: 35.0, lon: 140.0), (lat: 40.0, lon: 148.0)],
     speedKtMin: 2.0, speedKtMax: 3.5,
     noteEn: 'Warm current from Taiwan/Philippines north along Japan, then turning east. Year-round, Pacific counterpart of the Gulf Stream.',
@@ -253,6 +272,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Θερμό ρεύμα από την Ταϊβάν/Φιλιππίνες βόρεια κατά μήκος της Ιαπωνίας, μετά στρέφεται ανατολικά. Όλο τον χρόνο, το ειρηνικό αντίστοιχο του Ρεύματος του Κόλπου.',
     noteHr: 'Topla struja od Tajvana/Filipina sjeverno uz Japan, zatim skreće istočno. Tijekom cijele godine, pacifički pandan Golfskoj struji.',
     noteSl: 'Topel tok od Tajvana/Filipinov proti severu ob Japonski, nato zavije proti vzhodu. Vse leto, pacifiški dvojnik Zalivskega toka.',
+    noteIt: 'Corrente calda da Taiwan/Filippine verso nord lungo il Giappone, poi in direzione est. Tutto l\'anno, corrispettivo pacifico della Corrente del Golfo.',
   ),
   OceanCurrent(
     id: 'oyashio',
@@ -261,6 +281,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Proud Oyashio', namePl: 'Prąd Oyashio', nameEl: 'Ρεύμα Ογιάσιο',
     nameHr: 'Struja Oyashio',
     nameSl: 'Tok Oyashio',
+    nameIt: 'Corrente di Oyashio',
     path: [(lat: 55.0, lon: 160.0), (lat: 45.0, lon: 155.0), (lat: 38.0, lon: 145.0)],
     speedKtMin: 0.3, speedKtMax: 0.7,
     noteEn: 'Cold current from the Bering Sea south along Kamchatka/Kuril Islands to NE Japan. Year-round.',
@@ -273,6 +294,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό ρεύμα από τη Θάλασσα Μπέρινγκ νότια κατά μήκος της Καμτσάτκα/Κουρίλων νήσων προς τη ΒΑ Ιαπωνία. Όλο τον χρόνο.',
     noteHr: 'Hladna struja iz Beringovog mora južno uz Kamčatku/Kurilske otoke do sjeveroistočnog Japana. Tijekom cijele godine.',
     noteSl: 'Hladen tok iz Beringovega morja proti jugu ob Kamčatki/Kurilskih otokih do severovzhodne Japonske. Vse leto.',
+    noteIt: 'Corrente fredda dal Mare di Bering verso sud lungo la Kamčatka/Isole Curili fino al Giappone nord-orientale. Tutto l\'anno.',
   ),
   OceanCurrent(
     id: 'california_current',
@@ -281,6 +303,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Kalifornský proud', namePl: 'Prąd Kalifornijski', nameEl: 'Ρεύμα Καλιφόρνιας',
     nameHr: 'Kalifornijska struja',
     nameSl: 'Kalifornijski tok',
+    nameIt: 'Corrente della California',
     path: [(lat: 48.0, lon: -126.0), (lat: 38.0, lon: -124.0), (lat: 28.0, lon: -117.0), (lat: 20.0, lon: -110.0)],
     speedKtMin: 0.3, speedKtMax: 0.7,
     noteEn: 'Cool current south along the US West Coast toward Baja California. Year-round, strongest in summer.',
@@ -293,6 +316,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό ρεύμα νότια κατά μήκος της δυτικής ακτής των ΗΠΑ προς την Μπάχα Καλιφόρνια. Όλο τον χρόνο, ισχυρότερο το καλοκαίρι.',
     noteHr: 'Hladna struja južno uz zapadnu obalu SAD-a prema Donjoj Kaliforniji. Tijekom cijele godine, najjača ljeti.',
     noteSl: 'Hladen tok proti jugu ob zahodni obali ZDA proti Spodnji Kaliforniji. Vse leto, najmočnejši poleti.',
+    noteIt: 'Corrente fredda verso sud lungo la costa occidentale degli USA in direzione della Bassa California. Tutto l\'anno, più intensa in estate.',
   ),
   OceanCurrent(
     id: 'humboldt_current',
@@ -302,6 +326,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Humboldtův (Peruánský) proud', namePl: 'Prąd Humboldta (Peruwiański)', nameEl: 'Ρεύμα Χούμπολτ (Περού)',
     nameHr: 'Humboldtova (Peruanska) struja',
     nameSl: 'Humboldtov (Perujski) tok',
+    nameIt: 'Corrente di Humboldt (del Perù)',
     path: [(lat: -5.0, lon: -81.5), (lat: -20.0, lon: -75.0), (lat: -35.0, lon: -73.0)],
     speedKtMin: 0.4, speedKtMax: 0.9,
     noteEn: 'Cold, nutrient-rich current north along the Chile/Peru coast. Year-round; disrupted during El Niño.',
@@ -314,6 +339,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ψυχρό, πλούσιο σε θρεπτικά ρεύμα βόρεια κατά μήκος της ακτής Χιλής/Περού. Όλο τον χρόνο· διαταράσσεται κατά το Ελ Νίνιο.',
     noteHr: 'Hladna struja bogata hranjivim tvarima, sjeverno uz obalu Čilea/Perua. Tijekom cijele godine; poremećena tijekom El Niña.',
     noteSl: 'Hladen tok, bogat s hranili, proti severu ob obali Čila/Peruja. Vse leto; med El Niñom moten.',
+    noteIt: 'Corrente fredda e ricca di nutrienti verso nord lungo la costa di Cile/Perù. Tutto l\'anno; alterata durante El Niño.',
   ),
   OceanCurrent(
     id: 'east_australian_current',
@@ -322,6 +348,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Východoaustralský proud', namePl: 'Prąd Wschodnioaustralijski', nameEl: 'Ανατολικοαυστραλιανό Ρεύμα',
     nameHr: 'Istočnoaustralska struja',
     nameSl: 'Vzhodnoavstralski tok',
+    nameIt: 'Corrente dell\'Australia Orientale',
     path: [(lat: -18.0, lon: 147.0), (lat: -28.0, lon: 154.0), (lat: -38.0, lon: 150.0)],
     speedKtMin: 1.0, speedKtMax: 4.5,
     noteEn: 'Warm current south along Australia\'s east coast (Great Barrier Reef to Tasman Sea). Year-round, strongest in summer (Dec–Mar).',
@@ -334,6 +361,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Θερμό ρεύμα νότια κατά μήκος της ανατολικής ακτής της Αυστραλίας (Μεγάλος Κοραλλιογενής Ύφαλος έως Θάλασσα Τασμάν). Όλο τον χρόνο, ισχυρότερο το καλοκαίρι (Δεκ–Μάρ).',
     noteHr: 'Topla struja južno uz istočnu obalu Australije (Veliki koraljni greben do Tasmanovog mora). Tijekom cijele godine, najjača ljeti (pro–ožu).',
     noteSl: 'Topel tok proti jugu ob vzhodni obali Avstralije (Veliki koralni greben do Tasmanovega morja). Vse leto, najmočnejši poleti (dec–mar).',
+    noteIt: 'Corrente calda verso sud lungo la costa orientale australiana (dalla Grande Barriera Corallina al Mar di Tasman). Tutto l\'anno, più intensa in estate (dic–mar).',
   ),
   OceanCurrent(
     id: 'agulhas_current',
@@ -342,6 +370,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Agulhaský proud', namePl: 'Prąd Igielny', nameEl: 'Ρεύμα Αγκούλχας',
     nameHr: 'Struja Agulhas',
     nameSl: 'Tok Agulhas',
+    nameIt: 'Corrente delle Agulhas',
     path: [(lat: -25.0, lon: 35.5), (lat: -30.0, lon: 31.0), (lat: -35.5, lon: 22.0)],
     speedKtMin: 2.0, speedKtMax: 5.0,
     noteEn: 'Fast, warm current south along South Africa\'s east coast, retroflecting at the Agulhas Bank. Year-round; can create dangerous seas against SW swell.',
@@ -354,6 +383,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Γρήγορο, θερμό ρεύμα νότια κατά μήκος της ανατολικής ακτής της Ν. Αφρικής, με ανάστροφη ροή στην Τράπεζα Αγκούλχας. Όλο τον χρόνο· μπορεί να δημιουργήσει επικίνδυνη θάλασσα ενάντια σε ΝΔ αποθαλασσία.',
     noteHr: 'Brza, topla struja južno uz istočnu obalu Južne Afrike, s povratnim tokom na Agulhaskom pragu. Tijekom cijele godine; može stvoriti opasno more protiv jugozapadnog mrtvog mora.',
     noteSl: 'Hiter, topel tok proti jugu ob vzhodni obali Južne Afrike, s povratnim tokom na Agulhaški plitvini. Vse leto; ob jugozahodnem mrtvem valovanju lahko ustvari nevarno morje.',
+    noteIt: 'Corrente calda e veloce verso sud lungo la costa orientale del Sudafrica, con retroflessione sul Banco delle Agulhas. Tutto l\'anno; può generare un mare pericoloso contro l\'onda lunga da SO.',
   ),
   OceanCurrent(
     id: 'somali_current',
@@ -362,6 +392,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Somálský proud', namePl: 'Prąd Somalijski', nameEl: 'Σομαλικό Ρεύμα',
     nameHr: 'Somalska struja',
     nameSl: 'Somalski tok',
+    nameIt: 'Corrente della Somalia',
     path: [(lat: 2.0, lon: 48.0), (lat: 8.0, lon: 50.0), (lat: 12.0, lon: 52.0)],
     speedKtMin: 1.0, speedKtMax: 7.0,
     noteEn: 'Monsoon-driven, reverses seasonally: strong NE flow (up to 7 kt) during SW monsoon (Jun–Sep), weaker/reversed during NE monsoon (Dec–Feb).',
@@ -374,6 +405,7 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Καθοδηγούμενο από μουσώνες, αντιστρέφεται εποχιακά: ισχυρή ΒΑ ροή (έως 7 κόμβοι) κατά τον ΝΔ μουσώνα (Ιούν–Σεπ), ασθενέστερη/αντίστροφη κατά τον ΒΑ μουσώνα (Δεκ–Φεβ).',
     noteHr: 'Pokretana monsunima, sezonski se obrće: jak sjeveroistočni tok (do 7 čv) tijekom jugozapadnog monsuna (lip–ruj), slabiji/obrnut tijekom sjeveroistočnog monsuna (pro–velj).',
     noteSl: 'Poganjajo ga monsuni, sezonsko se obrne: močan severovzhodni tok (do 7 vozlov) med jugozahodnim monsunom (jun–sep), šibkejši/obrnjen med severovzhodnim monsunom (dec–feb).',
+    noteIt: 'Governata dai monsoni, si inverte stagionalmente: flusso intenso verso NE (fino a 7 nodi) durante il monsone di SO (giu–set), più debole o invertito durante il monsone di NE (dic–feb).',
   ),
   OceanCurrent(
     id: 'north_equatorial_pacific',
@@ -383,6 +415,7 @@ const oceanCurrents = <OceanCurrent>[
     nameCs: 'Severní rovníkový proud (Tichomoří)', namePl: 'Prąd Północnorównikowy (Pacyfik)', nameEl: 'Βόρειο Ισημερινό Ρεύμα (Ειρηνικός)',
     nameHr: 'Sjeverna ekvatorijalna struja (Pacifik)',
     nameSl: 'Severni ekvatorialni tok (Pacifik)',
+    nameIt: 'Corrente Nord Equatoriale (Pacifico)',
     path: [(lat: 15.0, lon: -140.0), (lat: 13.0, lon: -170.0), (lat: 12.0, lon: 150.0)],
     speedKtMin: 0.4, speedKtMax: 0.9,
     noteEn: 'Westward flow across the tropical North Pacific, feeding the Kuroshio. Year-round.',
@@ -395,5 +428,6 @@ const oceanCurrents = <OceanCurrent>[
     noteEl: 'Ροή προς δυσμάς στον τροπικό Βόρειο Ειρηνικό, τροφοδοτεί το Κουρόσιο. Όλο τον χρόνο.',
     noteHr: 'Tok prema zapadu preko tropskog sjevernog Pacifika, napaja Kuroshio. Tijekom cijele godine.',
     noteSl: 'Tok proti zahodu čez tropski severni Pacifik, napaja Kuroshio. Vse leto.',
+    noteIt: 'Flusso verso ovest attraverso il Pacifico settentrionale tropicale, alimenta il Kuroshio. Tutto l\'anno.',
   ),
 ];

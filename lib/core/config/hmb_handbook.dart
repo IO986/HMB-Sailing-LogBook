@@ -20,6 +20,7 @@ class SafetyBriefingContent {
         'el' => _el,
         'hr' => _hr,
         'sl' => _sl,
+        'it' => _it,
         _ => _sk,
       };
 
@@ -642,6 +643,68 @@ class SafetyBriefingContent {
       'Vprašanja pred izplutjem so dobrodošla.',
     ]),
   ];
+
+  static const List<BriefingSection> _it = [
+    BriefingSection('1. Scopo del briefing', [
+      "Questo briefing serve a garantire la sicurezza dell'equipaggio e della barca.",
+      "Ogni membro dell'equipaggio è tenuto a prestarvi piena attenzione.",
+    ]),
+    BriefingSection('2. Regole di base', [
+      "Il comandante ha sempre l'ultima parola.",
+      'Ognuno è responsabile di sé e degli altri, il comandante di tutto.',
+      'Sulla coperta ci si muove con prudenza e ponderatezza.',
+      "L'alcol durante la navigazione è vietato.",
+      "L'acqua e l'elettricità sono risorse limitate – risparmiatele.",
+    ]),
+    BriefingSection('3. Giubbotti di salvataggio e dotazioni di sicurezza', [
+      'A ciascuno è assegnato un giubbotto di salvataggio e sa indossarlo correttamente.',
+      'Il comandante decide quando indossare il giubbotto è obbligatorio.',
+      "L'equipaggio sa dove si trovano le dotazioni MOB e la zattera di salvataggio.",
+    ]),
+    BriefingSection('4. Spostarsi in coperta', [
+      'Vale la regola "una mano per sé, una per la barca".',
+      'Attenzione al boma, alle cime e ai winch.',
+      'Muoversi lungo il lato sopravvento della coperta.',
+      'Con condizioni in peggioramento usare la cintura di sicurezza.',
+    ]),
+    BriefingSection('5. Incendio e gas', [
+      'Tutti sanno dove sono gli estintori e la coperta antincendio.',
+      'Fuga di gas: non accendere né spegnere nulla, non fumare, avvisare subito il comandante.',
+      'Incendio esteso = l\'obiettivo è la fuga, non lo spegnimento.',
+      "L'abbandono della barca è ordinato esclusivamente dal comandante.",
+    ]),
+    BriefingSection('6. Motore, elettricità e acqua', [
+      "L'equipaggio sa avviare e fermare il motore.",
+      'Sa dove si trovano le pompe di sentina.',
+      "Segnalare subito al comandante l'ingresso di acqua.",
+    ]),
+    BriefingSection('7. Salute e primo soccorso', [
+      'La cassetta di pronto soccorso si trova in un punto noto.',
+      'Segnalare ferite, ustioni, spossatezza o ipotermia.',
+      'Comunicare al comandante allergie e problemi di salute.',
+    ]),
+    BriefingSection('8. Uomo in mare (MOB)', [
+      'La prevenzione migliore è non cadere in acqua.',
+      'Se accade: 1. Indicare  2. Gridare  3. Non perdere di vista la persona',
+      'Premere il pulsante MOB.',
+      'Il comandante dirige il recupero.',
+    ]),
+    BriefingSection('9. Bagno di bordo (heads)', [
+      'Il bagno di bordo non è un WC domestico.',
+      'Vi vanno solo rifiuti organici umani e carta igienica nautica o a rapida dissoluzione.',
+      'VIETATI: salviette umidificate, assorbenti, tamponi, carta da cucina.',
+      "Dopo l'uso sciacquare a fondo l'impianto.",
+      'Segnalare subito al comandante qualsiasi problema.',
+    ]),
+    BriefingSection('10. Comunicazioni', [
+      'Il canale VHF di soccorso è il 16.',
+      'Mayday e DSC sono gestiti dal comandante o da una persona designata, ma tutti conoscono la procedura.',
+    ]),
+    BriefingSection('11. Conclusione', [
+      "Ogni membro dell'equipaggio conferma di aver compreso il briefing.",
+      'Le domande prima della partenza sono benvenute.',
+    ]),
+  ];
 }
 
 // ── Výbava jednotlivca (editovateľná) ────────────────────────────
@@ -658,6 +721,7 @@ class IndividualGearContent {
         'el' => _el,
         'hr' => _hr,
         'sl' => _sl,
+        'it' => _it,
         _ => _sk,
       };
 
@@ -1048,6 +1112,45 @@ class IndividualGearContent {
       'Evropska kartica zdravstvenega zavarovanja',
       'Potovalno zavarovanje',
       '⚠️ Pakirajte v nahrbtnike/mehke torbe (najbolje nepremočljive), NE v trde kovčke!',
+    ],
+  };
+
+  static const Map<String, List<String>> _it = {
+    'Calzature': [
+      'Scarpe robuste (sneaker con suola antiscivolo, meglio se chiara)',
+      'Sandali o infradito (crocs)',
+    ],
+    'Abbigliamento': [
+      'Berretto (uno caldo + uno con visiera)',
+      'Biancheria intima',
+      'Biancheria tecnica',
+      'Biancheria termica',
+      'Strato caldo (pile)',
+      'Abbigliamento impermeabile e antivento',
+      'Pantaloni della tuta',
+      'Pantaloncini',
+      'Costume da bagno',
+      'Guanti (meglio se senza dita – da vela/da ciclismo)',
+    ],
+    'Igiene': [
+      'Asciugamano (idealmente 2×)',
+      'Igiene personale (spazzolino, dentifricio, bagnoschiuma)',
+      'Salviette umidificate',
+      'Crema solare (UV50) + pantenolo',
+      'Burrocacao',
+    ],
+    'Altro': [
+      'Occhiali da sole + laccetto',
+      'Lampada frontale (con luce rossa)',
+      'Power bank + caricabatterie',
+      'Kit medico personale (farmaci propri, allergie, mal di mare...)',
+      'Custodia impermeabile per il telefono',
+    ],
+    'Documenti': [
+      "Passaporto o carta d'identità",
+      'Tessera sanitaria europea',
+      'Assicurazione di viaggio',
+      '⚠️ Metti tutto in zaini/borse morbide (meglio se impermeabili), NON in valigie rigide!',
     ],
   };
 }

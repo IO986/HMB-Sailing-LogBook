@@ -165,6 +165,7 @@ class SettingsScreen extends ConsumerWidget {
     ('🇬🇷', 'Ελληνικά', 'el'),
     ('🇭🇷', 'Hrvatski', 'hr'),
     ('🇸🇮', 'Slovenščina', 'sl'),
+    ('🇮🇹', 'Italiano', 'it'),
   ];
 
   String _currentLangName(String code) {

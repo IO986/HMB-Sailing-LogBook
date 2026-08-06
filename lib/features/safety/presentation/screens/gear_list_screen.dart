@@ -38,7 +38,7 @@ class _GearListScreenState extends State<GearListScreen> {
     final catMap = <String, String>{};
     final itemMap = <String, String>{};
     for (final loc in [
-      'sk', 'en', 'de', 'es', 'uk', 'cs', 'pl', 'el', 'hr', 'sl'
+      'sk', 'en', 'de', 'es', 'uk', 'cs', 'pl', 'el', 'hr', 'sl', 'it'
     ]) {
       final cats = IndividualGearContent.categoriesFor(loc).entries.toList();
       for (var c = 0; c < cats.length && c < current.length; c++) {
