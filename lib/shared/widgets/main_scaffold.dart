@@ -146,10 +146,10 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     final alreadyHandled = tcpState == RaymarineConnectionState.connected ||
         tcpState == RaymarineConnectionState.connecting ||
         UdpReceiverService().isListening;
-    // Flag sa nastavuje až tu: keď je spojenie už nadviazané, otázka nepadla
-    // a nemá sa čím „minúť“ — pri budúcom štarte bez spojenia dáva zmysel.
-    if (alreadyHandled) return;
+    // Flag padá aj keď spojenie beží: nadviazané spojenie je odpoveď na otázku,
+    // takže sa nemá čo pýtať ani neskôr, keď loď zrovna nie je v dosahu.
     await prefs.setBool('raymarine_prompted', true);
+    if (alreadyHandled) return;
 
     final l = AppLocalizations.of(context);
     final action = await showDialog<String>(
