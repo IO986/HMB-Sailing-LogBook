@@ -5707,6 +5707,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Odhlásenie zlyhalo: {error}'**
   String cloudSignOutFailed(String error);
+
+  /// No description provided for @marineInstrumentsWifiNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Funguje len cez WiFi sieť lode – telefón musí byť pripojený k NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi appka používa GPS telefónu a predpoveď počasia z internetu.'**
+  String get marineInstrumentsWifiNote;
 }
 
 class _AppLocalizationsDelegate

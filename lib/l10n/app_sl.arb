@@ -1025,5 +1025,6 @@
   "cloudSignInFailed": "Prijava ni uspela: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Odjava ni uspela: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Deluje samo prek WiFi omrežja plovila – telefon mora biti povezan s prehodom NMEA (Raymarine, Digital Yacht, Yacht Devices…). Brez WiFi aplikacija uporablja GPS telefona in vremensko napoved z interneta."
 }

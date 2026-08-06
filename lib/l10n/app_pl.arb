@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Logowanie nie powiodło się: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Wylogowanie nie powiodło się: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Działa tylko przez sieć WiFi jachtu – telefon musi być połączony z bramką NMEA (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi aplikacja korzysta z GPS telefonu i prognozy pogody z internetu."
 }

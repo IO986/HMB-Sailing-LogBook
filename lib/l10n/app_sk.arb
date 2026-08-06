@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Prihlásenie zlyhalo: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Odhlásenie zlyhalo: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Funguje len cez WiFi sieť lode – telefón musí byť pripojený k NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi appka používa GPS telefónu a predpoveď počasia z internetu."
 }

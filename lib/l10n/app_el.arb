@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Η σύνδεση απέτυχε: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Η αποσύνδεση απέτυχε: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Λειτουργεί μόνο μέσω του δικτύου WiFi του σκάφους – το τηλέφωνο πρέπει να είναι συνδεδεμένο σε πύλη NMEA (Raymarine, Digital Yacht, Yacht Devices…). Χωρίς WiFi η εφαρμογή χρησιμοποιεί το GPS του τηλεφώνου και την πρόγνωση καιρού από το διαδίκτυο."
 }

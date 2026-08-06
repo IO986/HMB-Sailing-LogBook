@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Не вдалося увійти: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Не вдалося вийти: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Працює лише через WiFi-мережу судна – телефон має бути підключений до NMEA-шлюзу (Raymarine, Digital Yacht, Yacht Devices…). Без WiFi застосунок використовує GPS телефона та прогноз погоди з інтернету."
 }

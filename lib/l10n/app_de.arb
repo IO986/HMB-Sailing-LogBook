@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Anmeldung fehlgeschlagen: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Abmeldung fehlgeschlagen: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Funktioniert nur über das WiFi-Netz des Bootes – das Telefon muss mit einem NMEA-Gateway verbunden sein (Raymarine, Digital Yacht, Yacht Devices…). Ohne WiFi nutzt die App das Telefon-GPS und die Internet-Wettervorhersage."
 }

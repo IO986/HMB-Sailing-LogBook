@@ -2996,4 +2996,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Wylogowanie nie powiodło się: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Działa tylko przez sieć WiFi jachtu – telefon musi być połączony z bramką NMEA (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi aplikacja korzysta z GPS telefonu i prognozy pogody z internetu.';
 }

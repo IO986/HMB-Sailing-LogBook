@@ -3012,4 +3012,8 @@ class AppLocalizationsEl extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Η αποσύνδεση απέτυχε: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Λειτουργεί μόνο μέσω του δικτύου WiFi του σκάφους – το τηλέφωνο πρέπει να είναι συνδεδεμένο σε πύλη NMEA (Raymarine, Digital Yacht, Yacht Devices…). Χωρίς WiFi η εφαρμογή χρησιμοποιεί το GPS του τηλεφώνου και την πρόγνωση καιρού από το διαδίκτυο.';
 }

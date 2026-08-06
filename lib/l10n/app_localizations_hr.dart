@@ -2998,4 +2998,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Odjava nije uspjela: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Radi samo preko WiFi mreže broda – telefon mora biti povezan s NMEA pristupnikom (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi-ja aplikacija koristi GPS telefona i vremensku prognozu s interneta.';
 }

@@ -420,6 +420,23 @@ class _RaymarineSectionState extends ConsumerState<_RaymarineSection> {
             ],
             const Divider(height: 24),
 
+            // Platí pre TCP aj UDP, preto je nad prepínačom — `gatewayHint`
+            // nižšie sa ukazuje len pri TCP a rieši už konkrétnu IP adresu.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.wifi, size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l.marineInstrumentsWifiNote,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
             // ── TCP / UDP prepínač ──
             SegmentedButton<NmeaConnectionType>(
               segments: [

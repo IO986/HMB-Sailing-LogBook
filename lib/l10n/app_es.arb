@@ -1025,6 +1025,6 @@
   "cloudSignInFailed": "Error al iniciar sesión: {error}",
   "@cloudSignInFailed": {"placeholders":{"error":{"type":"String"}}},
   "cloudSignOutFailed": "Error al cerrar sesión: {error}",
-  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}}
-
+  "@cloudSignOutFailed": {"placeholders":{"error":{"type":"String"}}},
+  "marineInstrumentsWifiNote": "Solo funciona a través de la red WiFi del barco: el teléfono debe estar conectado a un gateway NMEA (Raymarine, Digital Yacht, Yacht Devices…). Sin WiFi la app usa el GPS del teléfono y la previsión meteorológica de internet."
 }

@@ -2989,4 +2989,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Odhlášení selhalo: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Funguje jen přes WiFi síť lodi – telefon musí být připojen k NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi aplikace používá GPS telefonu a předpověď počasí z internetu.';
 }

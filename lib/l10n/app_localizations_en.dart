@@ -2989,4 +2989,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Sign-out failed: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Works only over the boat\'s WiFi network – the phone must be connected to an NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Without WiFi the app uses the phone\'s GPS and the internet weather forecast.';
 }

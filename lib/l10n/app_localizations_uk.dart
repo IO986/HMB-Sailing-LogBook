@@ -2998,4 +2998,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String cloudSignOutFailed(String error) {
     return 'Не вдалося вийти: $error';
   }
+
+  @override
+  String get marineInstrumentsWifiNote =>
+      'Працює лише через WiFi-мережу судна – телефон має бути підключений до NMEA-шлюзу (Raymarine, Digital Yacht, Yacht Devices…). Без WiFi застосунок використовує GPS телефона та прогноз погоди з інтернету.';
 }

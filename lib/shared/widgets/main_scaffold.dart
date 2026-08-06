@@ -124,13 +124,18 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     }
   }
 
-  /// Pýta sa na pripojenie lodných inštrumentov pri každom štarte appky,
-  /// pokiaľ ešte nie je nadviazané NMEA spojenie (TCP ani UDP). Netrvalý
-  /// flag ako pri sprievodcovi — toto sa má opakovať každé spustenie, kým
-  /// používateľ niečo nepripojí.
+  /// Ponúkne pripojenie lodných inštrumentov — jediný raz za inštaláciu.
+  ///
+  /// Pôvodne sa pýtala pri každom štarte, kým používateľ niečo nepripojil.
+  /// Väčšina plavieb ale beží na GPS telefónu zámerne, takže to bola otázka,
+  /// ktorú tí istí ľudia odklikávali stále dokola. Nastavenia → Lodné
+  /// inštrumenty ostávajú dostupné kedykoľvek.
   Future<void> _maybePromptRaymarineSetup() async {
     if (_checkedRaymarinePrompt) return;
     _checkedRaymarinePrompt = true;
+
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('raymarine_prompted') ?? false) return;
 
     // Daj existujúcemu auto-connect pokusu (spustenému v main.dart) chvíľu
     // na dokončenie, nech neprerušujeme prebiehajúce pripojenie zbytočnou otázkou.
@@ -141,14 +146,41 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     final alreadyHandled = tcpState == RaymarineConnectionState.connected ||
         tcpState == RaymarineConnectionState.connecting ||
         UdpReceiverService().isListening;
+    // Flag sa nastavuje až tu: keď je spojenie už nadviazané, otázka nepadla
+    // a nemá sa čím „minúť“ — pri budúcom štarte bez spojenia dáva zmysel.
     if (alreadyHandled) return;
+    await prefs.setBool('raymarine_prompted', true);
 
     final l = AppLocalizations.of(context);
     final action = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l.marineInstrumentsTitle),
-        content: Text(l.marineInstrumentsPrompt),
+        // Scrollovateľné: prompt je niekoľko odstavcov a s pridanou
+        // poznámkou sa na nižších displejoch nezmestí.
+        content: SingleChildScrollView(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.marineInstrumentsPrompt),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.wifi, size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l.marineInstrumentsWifiNote,
+                    style:
+                        TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        )),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, 'later'),
