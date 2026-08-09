@@ -770,15 +770,15 @@ final _chapter6 = ColregSection(
       title: 'Kto vystavuje aké svetlá a znaky',
       blocks: [
         ColregHeading('Loď so strojným pohonom za plavby (Pravidlo 23)'),
-        ColregDiagram('power_vessel_lights', 'Motorová loď – bočné, záďové a stožárové svetlo'),
+        ColregDiagram('power_vessel_lights', 'Motorová loď – bočné, záďové a sťažňové svetlo'),
         ColregText(
           'Plavidlá < 50m: 4 svetlá (zelené, červené, biele záďové, biele '
-          'stožárové). Plavidlá > 50m: + druhé stožárové svetlo (vyššie '
+          'sťažňové). Plavidlá > 50m: + druhé sťažňové svetlo (vyššie '
           'a vzadu). Plavidlá < 20m môžu mať kombinované bočné svetlo. '
           'Plavidlá < 12m môžu mať len všesmerné biele + bočné svetlá.',
         ),
         ColregHeading('Plachetnica za plavby (Pravidlo 25)'),
-        ColregDiagram('sailboat_lights', 'Plachetnica – bočné a záďové svetlo, žiadne stožárové'),
+        ColregDiagram('sailboat_lights', 'Plachetnica – bočné a záďové svetlo, žiadne sťažňové'),
         ColregText(
           'Plachetnice < 20m môžu mať kombinované bočné svetlo na vrchole '
           'stožiara (trikolóra), alebo voliteľne dve všesmerné svetlá '
@@ -788,7 +788,7 @@ final _chapter6 = ColregSection(
         ColregNote(
           'Plachetnica plávajúca SÚČASNE pod plachtami a na motore '
           '(motorsailing) sa POVAŽUJE za loď so strojným pohonom! Musí '
-          'vystavovať stožárové svetlo a vo dne čierny kužel vrcholom dole.',
+          'vystavovať sťažňové svetlo a vo dne čierny kužeľ vrcholom dole.',
           type: ColregNoteType.warning,
         ),
         ColregText(
@@ -807,10 +807,10 @@ final _chapter6 = ColregSection(
         ColregDiagram('not_under_command', 'Neovládateľné – dve červené svetlá'),
         ColregDiagram('restricted_maneuverability', 'Obmedzená manévrovateľnosť – červená-biela-červená'),
         ColregText(
-          'Neovládateľné: 2× červené všesmerné svetlo vertikálne, 2 koule '
+          'Neovládateľné: 2× červené všesmerné svetlo vertikálne, 2 gule '
           'vo dne. Obmedzená manévrovateľnosť (bagrovanie, kábelovanie, '
-          'doplňovanie zásob): červené-biele-červené, vo dne koule-'
-          'kosočtverec-koule.',
+          'doplňovanie zásob): červené-biele-červené, vo dne guľa-'
+          'kosoštvorec-guľa.',
         ),
         ColregHeading('Plavidlo obmedzené ponorom (Pravidlo 28)'),
         ColregDiagram('draft_constrained', '3× červené svetlo vertikálne, alebo valec vo dne'),
@@ -818,15 +818,15 @@ final _chapter6 = ColregSection(
         ColregDiagram('anchored_vessel', 'Kotva – biele svetlo vpredu (vyššie) a vzadu (nižšie)'),
         ColregText(
           'Plavidlá < 50m môžu mať len jedno všesmerné biele svetlo. Vo '
-          'dne: čierna koule vpredu (plavidlá > 7m). Nasedlé plavidlo: '
-          'kotevné svetlá + 2× červené svetlo vertikálne + 3 koule vo dne.',
+          'dne: čierna guľa vpredu (plavidlá > 7m). Nasedlé plavidlo: '
+          'kotevné svetlá + 2× červené svetlo vertikálne + 3 gule vo dne.',
         ),
         ColregHeading('Vlečenie a tlačenie (Pravidlo 24)'),
-        ColregDiagram('towing_lights', 'Vlečná súprava – dve/tri stožárové svetlá + žlté remorkérové'),
+        ColregDiagram('towing_lights', 'Vlečná súprava – dve/tri sťažňové svetlá + žlté remorkérové'),
         ColregText(
-          'Vlečná loď: 2 stožárové svetlá vertikálne (3 ak vlek > 200m) + '
+          'Vlečná loď: 2 sťažňové svetlá vertikálne (3 ak vlek > 200m) + '
           'žlté remorkérové svetlo nad záďovým. Vlečený objekt: bočné a '
-          'záďové svetlo, žiadne stožárové. Vo dne (vlek > 200m): kosočtverec '
+          'záďové svetlo, žiadne sťažňové. Vo dne (vlek > 200m): kosoštvorec '
           'na vlečnej i poslednej vlečenej lodi.',
         ),
       ],
@@ -838,9 +838,9 @@ final _chapter6 = ColregSection(
       blocks: [
         ColregText('Minimálna viditeľnosť svetiel podľa veľkosti lode:'),
         ColregList([
-          'Lode ≥ 50m: stožárové 6 míľ, bočné/záďové 3 míle',
-          'Lode 12–50m: stožárové 5 míľ (3 míle ak < 20m), bočné/záďové 2 míle',
-          'Lode < 12m: stožárové 2 míle, bočné 1 míla, záďové 2 míle',
+          'Lode ≥ 50m: sťažňové 6 míľ, bočné/záďové 3 míle',
+          'Lode 12–50m: sťažňové 5 míľ (3 míle ak < 20m), bočné/záďové 2 míle',
+          'Lode < 12m: sťažňové 2 míle, bočné 1 míla, záďové 2 míle',
         ]),
         ColregNote(
           'Pre malé plachetnice je kriticky dôležité udržiavať svetlá '
@@ -965,8 +965,8 @@ final _chapter7 = ColregSection(
         ColregHeading('V noci:'),
         ColregList([
           'Plachetnica: bočné + záďové svetlo',
-          'Motorová loď < 50m: bočné + záďové + 1 stožárové svetlo',
-          'Motorsailing = motorová loď (vypnite trikolóru, zapnite stožárové '
+          'Motorová loď < 50m: bočné + záďové + 1 sťažňové svetlo',
+          'Motorsailing = motorová loď (vypnite trikolóru, zapnite sťažňové '
               'svetlo)',
         ]),
         ColregHeading('Pri uvoľňovaní cesty:'),
