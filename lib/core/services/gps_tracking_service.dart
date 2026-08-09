@@ -43,6 +43,9 @@ class GpsTrackingService {
   // GPS track cache + NM accumulation
   final List<LatLng> _trackCache = [];
   double _totalDistanceNm = 0.0;
+  // Posledná hodnota zapísaná do DB — priebežný zápis beží až po tomto prahu,
+  // aby sa neupdatovalo pri každom fixe.
+  double _lastPersistedNm = 0.0;
   LatLng? _lastTrackPoint;
 
   // Course over ground počítaný z bearing medzi poslednými dvoma fixmi —
@@ -89,6 +92,10 @@ class GpsTrackingService {
   Future<void> startTracking({
     String? sessionName,
     int? dayLogId,
+    /// Vzdialenosť prejdená, kým appka nebežala — po neúmyselnom vypnutí ju
+    /// užívateľ môže dať dopočítať (odhad po priamke medzi posledným
+    /// zaznamenaným bodom a polohou pri obnovení).
+    double bridgedDistanceNm = 0,
     String? skipperName,
     int logIntervalSeconds = 3600,
   }) async {
@@ -114,14 +121,17 @@ class GpsTrackingService {
 
     _currentSession = await _db!.getActiveSession();
     _trackCache.clear();
-    // Základ pre NM je to, čo už bolo pre tento deň uložené — plavba sa
-    // môže cez deň viackrát zastaviť/spustiť (reštart appky, prestávka),
-    // a bez tohto sa pri každom ďalšom stopTracking() prepočítaná vzdialenosť
-    // predošlých úsekov strácala (potvrdené: export ukázal "0.0 NM celkom"
-    // napriek správnej trase na mape).
+    // Základ pre NM sa prepočíta z uložených bodov predošlých úsekov dňa,
+    // nie z DayLog.distanceNm: keď appku vypne systém alebo užívateľ
+    // uprostred plavby, stopTracking() nikdy nedobehne a uložená hodnota
+    // ostane pozadu. Body v DB sú vždy kompletné (nahlásené z terénu:
+    // po nechcenom vypnutí appky sa počítala len druhá časť plavby).
     _totalDistanceNm = dayLogId != null
-        ? (await _db!.getDayLogById(dayLogId))?.distanceNm ?? 0.0
-        : 0.0;
+        ? await _db!.recordedDistanceNmForDay(dayLogId,
+                excludeSessionId: sessionId) +
+            bridgedDistanceNm
+        : bridgedDistanceNm;
+    _lastPersistedNm = _totalDistanceNm;
     _lastTrackPoint = null;
     _lastComputedCourseDeg = null;
     debugPrint('[GPS] Session created: ${_currentSession?.sessionId}, '
@@ -307,6 +317,7 @@ class GpsTrackingService {
     }
     _trackCache.clear();
     _totalDistanceNm = 0.0;
+    _lastPersistedNm = 0.0;
     _lastTrackPoint = null;
     _activeDayLogId = null;
   }
@@ -355,6 +366,8 @@ class GpsTrackingService {
       accuracy: drift.Value(pos.accuracy),
     ));
 
+    await _persistDistanceIfGrown();
+
     final kts = _kts(pos.speed);
     if (kts > _currentSession!.maxSpeedKnots) {
       await _db!.upsertSession(SailingSessionsCompanion(
@@ -364,6 +377,26 @@ class GpsTrackingService {
         maxSpeedKnots: drift.Value(kts),
       ));
       _currentSession = await _db!.getActiveSession();
+    }
+  }
+
+  /// Zapíše prejdené NM do session a DayLogu, keď narástli aspoň o ~90 m.
+  ///
+  /// Bez priebežného zápisu by hodnotu videl len stopTracking(), takže po
+  /// vypnutí appky uprostred plavby by v denníku ostalo staré číslo.
+  Future<void> _persistDistanceIfGrown() async {
+    final session = _currentSession;
+    if (_db == null || session == null) return;
+    if (_totalDistanceNm - _lastPersistedNm < 0.05) return;
+    _lastPersistedNm = _totalDistanceNm;
+
+    await _db!.updateSessionDistance(session.id, _totalDistanceNm);
+    final dayLogId = _activeDayLogId;
+    if (dayLogId != null) {
+      await _db!.updateDayLog(DayLogsCompanion(
+        id: drift.Value(dayLogId),
+        distanceNm: drift.Value(_totalDistanceNm),
+      ));
     }
   }
 
@@ -417,10 +450,17 @@ class GpsTrackingService {
     // Vždy použi aktuálny čas — pos.timestamp je čas GPS fixu (môže byť starý z cache).
     final entryTimestamp = DateTime.now().toUtc();
 
+    // Prevezmi posledný spôsob plavby dňa: skiper prepne motor/plachty raz
+    // a automatické zápisy majú pokračovať v tom, čo zadal.
+    final sailMode = _activeDayLogId != null
+        ? await _db!.lastSailModeForDay(_activeDayLogId!)
+        : null;
+
     final companion = LogbookEntriesCompanion.insert(
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
       timestamp: entryTimestamp,
+      sailMode: drift.Value(sailMode),
       latitude: drift.Value(pos.latitude),
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(sog),

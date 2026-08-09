@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import 'tracking_control_bar.dart';
+import '../../features/tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../core/models/skipper_profile.dart';
 import '../../core/providers/locale_provider.dart';
 import '../../core/providers/nav_prefs_provider.dart';
@@ -47,6 +48,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       await _maybePromptUserGuide();
       await _maybePromptNotifications();
       await _maybePromptRaymarineSetup();
+      if (mounted) await maybePromptInterruptedVoyage(context, ref);
     });
   }
 

@@ -2360,7 +2360,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -2423,7 +2423,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Knoten/km/h, Meter/Fuß\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt';
+      '• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';
@@ -3013,4 +3013,36 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Funktioniert nur über das WiFi-Netz des Bootes – das Telefon muss mit einem NMEA-Gateway verbunden sein (Raymarine, Digital Yacht, Yacht Devices…). Ohne WiFi nutzt die App das Telefon-GPS und die Internet-Wettervorhersage.';
+
+  @override
+  String get interruptedVoyageTitle => 'Aufzeichnung wurde unterbrochen';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'Die App wurde um $time beendet, ohne die Fahrt abzuschließen. Dieselbe Fahrt fortsetzen?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'Deine Position ist $distance sm vom letzten aufgezeichneten Punkt entfernt.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap => 'Diese Distanz zur Fahrt hinzurechnen';
+
+  @override
+  String get interruptedVoyageResume => 'Fortsetzen';
+
+  @override
+  String get batteryPromptTitle => 'App während der ganzen Fahrt laufen lassen';
+
+  @override
+  String get batteryPromptBody =>
+      'Android — besonders Honor, Huawei und Xiaomi — beendet Apps im Hintergrund, wodurch die Aufzeichnung mitten in der Fahrt abbricht.\n\nErlaube dieser App in den Akkueinstellungen uneingeschränkten Betrieb. Bei Honor/Huawei zusätzlich zu den geschützten Apps hinzufügen und Autostart erlauben.';
+
+  @override
+  String get batteryPromptAction => 'Einstellungen öffnen';
+
+  @override
+  String get speed => 'Geschwindigkeit';
 }

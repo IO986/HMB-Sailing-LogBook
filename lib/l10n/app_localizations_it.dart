@@ -2362,7 +2362,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate';
+      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa';
 
   @override
   String get guideMilesTitle => 'Libretto delle miglia';
@@ -2425,7 +2425,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – nodi/km/h, metri/piedi\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti';
+      '• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';
@@ -3017,4 +3017,38 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Funziona solo tramite la rete WiFi della barca: il telefono deve essere collegato a un gateway NMEA (Raymarine, Digital Yacht, Yacht Devices…). Senza WiFi l\'app usa il GPS del telefono e le previsioni meteo da internet.';
+
+  @override
+  String get interruptedVoyageTitle => 'Il tracciamento è stato interrotto';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'L\'app si è chiusa alle $time senza terminare la navigazione. Continuare la stessa navigazione?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'La tua posizione è a $distance NM dall’ultimo punto registrato.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap =>
+      'Aggiungere questa distanza alla navigazione';
+
+  @override
+  String get interruptedVoyageResume => 'Continua';
+
+  @override
+  String get batteryPromptTitle =>
+      'Lascia l\'app attiva per tutta la navigazione';
+
+  @override
+  String get batteryPromptBody =>
+      'Android — in particolare Honor, Huawei e Xiaomi — chiude le app in background, interrompendo il tracciamento a metà navigazione.\n\nNelle impostazioni della batteria consenti a quest\'app di funzionare senza restrizioni. Su Honor/Huawei aggiungila anche alle app protette e consenti l\'avvio automatico.';
+
+  @override
+  String get batteryPromptAction => 'Apri impostazioni';
+
+  @override
+  String get speed => 'Velocità';
 }

@@ -39,13 +39,20 @@ class TrackingNotifier extends Notifier<TrackingState> {
   @override
   TrackingState build() => const TrackingState();
 
-  Future<void> startTracking(String? name, {int? dayLogId, String? skipperName, int logIntervalSeconds = 3600}) async {
+  Future<void> startTracking(String? name,
+      {int? dayLogId,
+      String? skipperName,
+      int logIntervalSeconds = 3600,
+      double bridgedDistanceNm = 0}) async {
     debugPrint('[TRACKING] startTracking name=$name dayLogId=$dayLogId');
     state = state.copyWith(isLoading: true, error: null);
     try {
       await GpsTrackingService().startTracking(
-          sessionName: name, dayLogId: dayLogId, skipperName: skipperName,
-          logIntervalSeconds: logIntervalSeconds);
+          sessionName: name,
+          dayLogId: dayLogId,
+          skipperName: skipperName,
+          logIntervalSeconds: logIntervalSeconds,
+          bridgedDistanceNm: bridgedDistanceNm);
       await BackgroundService.start();
       ref.read(isTrackingProvider.notifier).state = true;
       state = state.copyWith(isLoading: false, isTracking: true);

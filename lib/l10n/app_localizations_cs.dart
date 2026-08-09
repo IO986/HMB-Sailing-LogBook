@@ -2340,7 +2340,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš';
+      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě';
 
   @override
   String get guideMilesTitle => 'Kniha mil';
@@ -2403,7 +2403,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – uzly/km/h, metry/stopy\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt';
+      '• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)';
 
   @override
   String get guideBackupTitle => 'Záloha a obnova dat';
@@ -2993,4 +2993,36 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Funguje jen přes WiFi síť lodi – telefon musí být připojen k NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi aplikace používá GPS telefonu a předpověď počasí z internetu.';
+
+  @override
+  String get interruptedVoyageTitle => 'Trasování bylo přerušeno';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'Aplikace se vypnula v $time bez ukončení plavby. Pokračovat ve stejné plavbě?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'Aktuální poloha je $distance NM od posledního zaznamenaného bodu.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap => 'Dopočítat tuto vzdálenost do plavby';
+
+  @override
+  String get interruptedVoyageResume => 'Pokračovat';
+
+  @override
+  String get batteryPromptTitle => 'Ať aplikace běží celou plavbu';
+
+  @override
+  String get batteryPromptBody =>
+      'Android — a hlavně Honor, Huawei či Xiaomi — vypíná aplikace běžící na pozadí, čímž se trasování uprostřed plavby přeruší.\n\nV nastavení baterie povolte této aplikaci běh bez omezení. Na Honor/Huawei ji navíc přidejte mezi chráněné aplikace a povolte automatické spouštění.';
+
+  @override
+  String get batteryPromptAction => 'Otevřít nastavení';
+
+  @override
+  String get speed => 'Rychlost';
 }

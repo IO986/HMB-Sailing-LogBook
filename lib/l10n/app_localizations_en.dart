@@ -2341,7 +2341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -2404,7 +2404,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – knots/km/h, metres/feet\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact';
+      '• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';
@@ -2993,4 +2993,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Works only over the boat\'s WiFi network – the phone must be connected to an NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Without WiFi the app uses the phone\'s GPS and the internet weather forecast.';
+
+  @override
+  String get interruptedVoyageTitle => 'Tracking was interrupted';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'The app closed at $time without ending the voyage. Continue the same voyage?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'Your position is $distance NM from the last recorded point.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap => 'Add this distance to the voyage';
+
+  @override
+  String get interruptedVoyageResume => 'Continue';
+
+  @override
+  String get batteryPromptTitle => 'Keep the app running for the whole voyage';
+
+  @override
+  String get batteryPromptBody =>
+      'Android — Honor, Huawei and Xiaomi in particular — shuts down apps running in the background, which interrupts tracking mid-voyage.\n\nIn the battery settings, allow this app to run unrestricted. On Honor/Huawei also add it to protected apps and allow auto-launch.';
+
+  @override
+  String get batteryPromptAction => 'Open settings';
+
+  @override
+  String get speed => 'Speed';
 }

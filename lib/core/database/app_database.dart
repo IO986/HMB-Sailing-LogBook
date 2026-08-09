@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../utils/distance_calculator.dart';
+
 part 'app_database.g.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -134,6 +136,15 @@ class LogbookEntries extends Table {
   /// the database — and why the note could never be translated. Rows written
   /// before v21 have NULL here and are resolved from the note as a fallback.
   TextColumn get eventType => text().nullable()();
+
+  /// Spôsob plavby v čase záznamu: 'motor', 'main', 'genoa', 'reef1', 'reef2',
+  /// viac naraz oddelených čiarkou.
+  ///
+  /// Do v21 sa to ukladalo ako prefix `[motor,main]` v `skipperNote`, takže
+  /// automatické záznamy (tie poznámku nepíšu v tomto tvare) spôsob plavby
+  /// nemali vôbec a detail im ho dopĺňal na 'motor' — z terénu: "v detaile je
+  /// vždy motor, aj keď som ho vypol". v22 prefix vyťahuje do stĺpca.
+  TextColumn get sailMode => text().nullable()();
   TextColumn get weatherCondition => text().nullable()();
   TextColumn get photoPath => text().nullable()();
   // Kvalita GPS fixu z LocationFix (hmb_core) – staré riadky (pred v16)
@@ -374,7 +385,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -504,6 +515,16 @@ class AppDatabase extends _$AppDatabase {
         // logbookEntries sa v onUpgrade nikdy nevytvára cez createTable,
         // takže tu pasca vyššie neplatí a addColumn stačí bez gardy.
         await m.addColumn(logbookEntries, logbookEntries.eventType);
+      }
+      if (from < 22) {
+        await m.addColumn(logbookEntries, logbookEntries.sailMode);
+        // Prefix z poznámky presuň do stĺpca a poznámku nechaj čistú.
+        await customStatement(
+          "UPDATE logbook_entries "
+          "SET sail_mode = substr(skipper_note, 2, instr(skipper_note, ']') - 2), "
+          "    skipper_note = ltrim(substr(skipper_note, instr(skipper_note, ']') + 1)) "
+          "WHERE skipper_note LIKE '[%]%'",
+        );
       }
     },
     beforeOpen: (details) async {
@@ -678,6 +699,83 @@ class AppDatabase extends _$AppDatabase {
   Future<List<SailingSession>> getSessionsForDay(int dayLogId) =>
       (select(sailingSessions)..where((s) => s.dayLogId.equals(dayLogId))).get();
 
+  /// Posledný známy spôsob plavby v danom dni.
+  ///
+  /// Automatické záznamy ho preberajú od posledného záznamu — skiper prepne
+  /// motor/plachty raz a ďalšie automatické zápisy majú pokračovať v tom, čo
+  /// zadal, nie mlčky hlásiť motor.
+  Future<String?> lastSailModeForDay(int dayLogId) async {
+    final rows = await (select(logbookEntries)
+          ..where((e) => e.dayLogId.equals(dayLogId) & e.sailMode.isNotNull())
+          ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+          ..limit(1))
+        .get();
+    return rows.isEmpty ? null : rows.first.sailMode;
+  }
+
+  Future<void> updateSessionDistance(int id, double distanceNm) =>
+      (update(sailingSessions)..where((s) => s.id.equals(id)))
+          .write(SailingSessionsCompanion(totalDistanceNm: Value(distanceNm)));
+
+  /// Vzdialenosť už zaznamenaná pre daný deň, prepočítaná z uložených bodov.
+  ///
+  /// DayLog.distanceNm ani SailingSession.totalDistanceNm sa nedajú brať ako
+  /// základ pre pokračujúcu plavbu: zapisujú sa priebežne, ale posledný úsek
+  /// pred vypnutím appky sa do nich dostať nemusí. Body v DB sú jediné, čo
+  /// vypnutie appky uprostred plavby spoľahlivo prežije (nahlásené z terénu:
+  /// po nechcenom vypnutí appky mal denník iba druhú časť plavby).
+  Future<double> recordedDistanceNmForDay(int dayLogId,
+      {String? excludeSessionId}) async {
+    var total = 0.0;
+    for (final session in await getSessionsForDay(dayLogId)) {
+      if (session.sessionId == excludeSessionId) continue;
+      final points = await getTrackPointsForSession(session.sessionId);
+      for (var i = 1; i < points.length; i++) {
+        final nm = DistanceCalculator.distanceM(
+              points[i - 1].latitude, points[i - 1].longitude,
+              points[i].latitude, points[i].longitude,
+            ) /
+            1852;
+        // Rovnaký filter ako pri živom počítaní — ignoruj GPS skoky.
+        if (nm < 10) total += nm;
+      }
+    }
+    return total;
+  }
+
+  /// Session, ktorá sa nikdy neukončila — appku vypol systém alebo užívateľ
+  /// uprostred trasovania.
+  ///
+  /// Rozlišovacím znakom je endTime: ten zapisuje jedine stopTracking(), takže
+  /// jeho absencia znamená, že plavba nebola ukončená v appke. Netreba na to
+  /// žiadny časový limit.
+  Future<SailingSession?> getInterruptedSession() =>
+      (select(sailingSessions)
+            ..where((s) => s.endTime.isNull() & s.isActive.equals(true))
+            ..orderBy([(s) => OrderingTerm.desc(s.startTime)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  Future<TrackPoint?> getLastTrackPoint(String sessionId) =>
+      (select(trackPoints)
+            ..where((t) => t.sessionId.equals(sessionId))
+            ..orderBy([(t) => OrderingTerm.desc(t.timestamp)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  /// Uzavrie prerušenú session časom posledného zaznamenaného bodu.
+  ///
+  /// Predtým dostala endTime = štart + 1 minúta, takže trojhodinový úsek
+  /// vyzeral v exporte ako minútový a kazil trvanie aj priemernú rýchlosť.
+  Future<void> closeInterruptedSession(SailingSession session) async {
+    final last = await getLastTrackPoint(session.sessionId);
+    await (update(sailingSessions)..where((r) => r.id.equals(session.id)))
+        .write(SailingSessionsCompanion(
+      isActive: const Value(false),
+      endTime: Value(last?.timestamp ?? session.startTime),
+    ));
+  }
+
   Future<void> fixOrphanedSessions() async {
     final active = await (select(sailingSessions)
           ..where((s) => s.isActive.equals(true))
@@ -685,11 +783,7 @@ class AppDatabase extends _$AppDatabase {
         .get();
     if (active.length > 1) {
       for (final s in active.skip(1)) {
-        await (update(sailingSessions)..where((r) => r.id.equals(s.id)))
-            .write(SailingSessionsCompanion(
-          isActive: const Value(false),
-          endTime: Value(s.startTime.add(const Duration(minutes: 1))),
-        ));
+        await closeInterruptedSession(s);
       }
       debugPrint('[DB] Fixed ${active.length - 1} orphaned sessions');
     }

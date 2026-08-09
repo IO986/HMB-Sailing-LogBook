@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../core/services/location_service.dart';
+import '../../../../core/utils/distance_calculator.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -56,6 +60,104 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
     // "missing check-out" reminder chip surfaces on its own in the Denník.
     await _startNew(context, ref, interval);
   }
+}
+
+/// Ponuka po neúmyselnom vypnutí appky počas trasovania.
+///
+/// Prerušenú session pozná podľa chýbajúceho endTime — ten zapisuje jedine
+/// stopTracking(), takže jeho absencia znamená, že plavbu nikto neukončil.
+/// Žiadny časový limit na to netreba: vypnutie appky po riadnom ukončení
+/// plavby sa takto nikdy neoznačí ako prerušenie.
+///
+/// Ak je poloha pri obnovení inde než posledný zaznamenaný bod, ponúkne aj
+/// dopočítanie tejto medzery — po priamke, lebo o trase medzitým nič nevieme.
+Future<void> maybePromptInterruptedVoyage(
+    BuildContext context, WidgetRef ref) async {
+  if (GpsTrackingService().isTracking) return;
+
+  final db = ref.read(databaseProvider);
+  final interrupted = await db.getInterruptedSession();
+  if (interrupted == null) return;
+
+  final lastPoint = await db.getLastTrackPoint(interrupted.sessionId);
+  final dayLogId = interrupted.dayLogId;
+  if (lastPoint == null || dayLogId == null) {
+    // Bez bodov nie je čo obnovovať — session len uprac.
+    await db.closeInterruptedSession(interrupted);
+    return;
+  }
+
+  final dayLog = await db.getDayLogById(dayLogId);
+  final charter =
+      dayLog == null ? null : await db.getCharterById(dayLog.charterId);
+  if (dayLog == null || charter == null) {
+    await db.closeInterruptedSession(interrupted);
+    return;
+  }
+
+  // Medzera medzi posledným bodom a polohou pri obnovení.
+  final position = await LocationService().currentFix();
+  var gapNm = 0.0;
+  if (position != null) {
+    gapNm = DistanceCalculator.distanceM(
+          lastPoint.latitude, lastPoint.longitude,
+          position.latitude, position.longitude,
+        ) /
+        1852;
+  }
+  // Pod 0,1 NM je to GPS šum, nie prejdená vzdialenosť.
+  final offersGap = gapNm >= 0.1;
+
+  if (!context.mounted) return;
+  final l = AppLocalizations.of(context);
+  var addGap = offersGap;
+
+  final resume = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) => AlertDialog(
+        icon: const Icon(Icons.play_circle_outline, size: 32),
+        title: Text(l.interruptedVoyageTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.interruptedVoyageBody(
+                DateFormat.Hm().format(lastPoint.timestamp.toLocal()))),
+            if (offersGap) ...[
+              const SizedBox(height: 12),
+              Text(l.interruptedVoyageGap(gapNm.toStringAsFixed(1))),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: addGap,
+                onChanged: (v) => setState(() => addGap = v ?? false),
+                title: Text(l.interruptedVoyageAddGap),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.interruptedVoyageResume),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  // Session sa uzatvára tak či tak — plavba pokračuje novou session.
+  await db.closeInterruptedSession(interrupted);
+  if (resume != true) return;
+
+  final interval = await _defaultLogInterval();
+  if (!context.mounted) return;
+  await _beginTracking(context, ref, charter, dayLog, interval,
+      bridgedDistanceNm: offersGap && addGap ? gapNm : 0);
 }
 
 /// Popup hneď po ťuknutí na Start: výber frekvencie zápisov do denníka.
@@ -113,13 +215,54 @@ Future<void> _startNew(BuildContext context, WidgetRef ref, int intervalSeconds)
   await _beginTracking(context, ref, charter, dayLog, intervalSeconds);
 }
 
+/// Jednorazová pripomienka nastavenia batérie pri prvom spustení plavby.
+///
+/// Foreground service samotný nestačí: Honor, Huawei a Xiaomi zabíjajú appky
+/// na pozadí vlastnou správou napájania a trasovanie sa preruší uprostred
+/// plavby. Zámerne sa nežiada REQUEST_IGNORE_BATTERY_OPTIMIZATIONS — tá je na
+/// Play citlivá; stačí otvoriť systémové nastavenia batérie.
+Future<void> _maybePromptBatterySettings(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool('battery_prompted') ?? false) return;
+  await prefs.setBool('battery_prompted', true);
+  if (!context.mounted) return;
+
+  final l = AppLocalizations.of(context);
+  final open = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      icon: const Icon(Icons.battery_saver_outlined, size: 32),
+      title: Text(l.batteryPromptTitle),
+      content: SingleChildScrollView(child: Text(l.batteryPromptBody)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, false),
+          child: Text(l.notNow),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(ctx, true),
+          child: Text(l.batteryPromptAction),
+        ),
+      ],
+    ),
+  );
+  if (open == true) {
+    await AppSettings.openAppSettings(type: AppSettingsType.batteryOptimization);
+  }
+}
+
 Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter,
-    DayLog dayLog, int intervalSeconds) async {
+    DayLog dayLog, int intervalSeconds,
+    {double bridgedDistanceNm = 0}) async {
+  await _maybePromptBatterySettings(context);
+  if (!context.mounted) return;
+
   final dayFmt = DateFormat('EEE d.M.', 'sk');
   await ref.read(trackingNotifierProvider.notifier).startTracking(
         '${dayFmt.format(DateTime.now())}: ${dayLog.portFrom ?? charter.title}',
         dayLogId: dayLog.id,
         logIntervalSeconds: intervalSeconds,
+        bridgedDistanceNm: bridgedDistanceNm,
       );
   if (context.mounted) context.go('/map');
 }

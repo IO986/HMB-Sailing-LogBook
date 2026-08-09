@@ -169,14 +169,17 @@ class ExportService {
           charterTitle: charter.title, dayDate: day.date);
 
       final shareFiles = <XFile>[XFile(savedPdf.path)];
-      for (final s in sessions) {
-        final pts = pointsBySession[s.sessionId] ?? [];
-        if (pts.isNotEmpty) {
-          final gpx = await GpxExporter.exportSession(s, pts);
-          final savedGpx = await _saveLocally(gpx, '${charter.title} $dateStr',
-              charterTitle: charter.title, dayDate: day.date);
-          shareFiles.add(XFile(savedGpx.path));
-        }
+      final tracked =
+          sessions.where((s) => (pointsBySession[s.sessionId] ?? []).isNotEmpty)
+              .toList();
+      for (var i = 0; i < tracked.length; i++) {
+        final s = tracked[i];
+        final gpx =
+            await GpxExporter.exportSession(s, pointsBySession[s.sessionId]!);
+        final savedGpx = await _saveLocally(
+            gpx, gpxDocName('${charter.title} $dateStr', i + 1, tracked.length),
+            charterTitle: charter.title, dayDate: day.date);
+        shareFiles.add(XFile(savedGpx.path));
       }
 
       _closeDialog(dialogCtx);
@@ -235,14 +238,18 @@ class ExportService {
       final shareFiles = <XFile>[XFile(pdfFile.path)];
 
       final sessions = await db.getSessionsForDay(day.id);
+      final tracked = <(SailingSession, List<TrackPoint>)>[];
       for (final s in sessions) {
         final pts = await db.getTrackPointsForSession(s.sessionId);
-        if (pts.isNotEmpty) {
-          final gpx = await GpxExporter.exportSession(s, pts);
-          final gpxFile = await _saveLocally(gpx, docName,
-              charterTitle: charter.title, dayDate: day.date);
-          shareFiles.add(XFile(gpxFile.path));
-        }
+        if (pts.isNotEmpty) tracked.add((s, pts));
+      }
+      for (var i = 0; i < tracked.length; i++) {
+        final (session, pts) = tracked[i];
+        final gpx = await GpxExporter.exportSession(session, pts);
+        final gpxFile = await _saveLocally(
+            gpx, gpxDocName(docName, i + 1, tracked.length),
+            charterTitle: charter.title, dayDate: day.date);
+        shareFiles.add(XFile(gpxFile.path));
       }
 
       _closeDialog(dialogCtx);
@@ -372,6 +379,17 @@ class ExportService {
   }
 
   /// Uloží súbor do štruktúrovaného priečinka.
+  /// Meno súboru pre GPX úsek dňa.
+  ///
+  /// Deň má viac sessions vždy, keď sa tracking cez deň zastavil a znova
+  /// spustil — vrátane prípadu, keď appku uprostred plavby vypne systém.
+  /// Predtým dostali všetky úseky rovnaké meno, takže sa navzájom prepísali
+  /// a do zdieľania išiel ten istý súbor viackrát (nahlásené z terénu: dva
+  /// GPX s rovnakým menom, v oboch len druhá časť plavby).
+  @visibleForTesting
+  static String gpxDocName(String base, int part, int totalParts) =>
+      totalParts > 1 ? '$base cast $part' : base;
+
   Future<File> _saveLocally(File src, String docName,
       {String? charterTitle, DateTime? dayDate}) async {
     final dir = await _buildExportDir(charterTitle ?? docName, dayDate);

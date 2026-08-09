@@ -4529,7 +4529,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.
@@ -4637,7 +4637,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – uzly/km/h, metre/stopy\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt'**
+  /// **'• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
@@ -5713,6 +5713,60 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Funguje len cez WiFi sieť lode – telefón musí byť pripojený k NMEA gateway (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi appka používa GPS telefónu a predpoveď počasia z internetu.'**
   String get marineInstrumentsWifiNote;
+
+  /// No description provided for @interruptedVoyageTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Trasovanie bolo prerušené'**
+  String get interruptedVoyageTitle;
+
+  /// No description provided for @interruptedVoyageBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Appka sa vypla o {time} bez ukončenia plavby. Chcete pokračovať v tej istej plavbe?'**
+  String interruptedVoyageBody(String time);
+
+  /// No description provided for @interruptedVoyageGap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aktuálna poloha je {distance} NM od posledného zaznamenaného bodu.'**
+  String interruptedVoyageGap(String distance);
+
+  /// No description provided for @interruptedVoyageAddGap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dopočítať túto vzdialenosť do plavby'**
+  String get interruptedVoyageAddGap;
+
+  /// No description provided for @interruptedVoyageResume.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračovať'**
+  String get interruptedVoyageResume;
+
+  /// No description provided for @batteryPromptTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nech appka beží celú plavbu'**
+  String get batteryPromptTitle;
+
+  /// No description provided for @batteryPromptBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Android — a najmä Honor, Huawei či Xiaomi — vypína aplikácie bežiace na pozadí. Trasovanie sa tým preruší uprostred plavby.\n\nV nastaveniach batérie povoľte tejto appke beh bez obmedzení. Na Honor/Huawei ju navyše pridajte medzi chránené aplikácie a povoľte automatické spúšťanie.'**
+  String get batteryPromptBody;
+
+  /// No description provided for @batteryPromptAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otvoriť nastavenia'**
+  String get batteryPromptAction;
+
+  /// No description provided for @speed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Rýchlosť'**
+  String get speed;
 }
 
 class _AppLocalizationsDelegate

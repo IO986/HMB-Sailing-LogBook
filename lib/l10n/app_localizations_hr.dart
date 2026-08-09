@@ -2349,7 +2349,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše';
+      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti';
 
   @override
   String get guideMilesTitle => 'Knjiga milja';
@@ -2413,7 +2413,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – promjena jezika aplikacije\n• Instrumenti – postavite IP adresu Raymarine WiFi pristupnika (TCP ili UDP)\n• Izvor GPS-a – telefon ili Raymarine\n• Jedinice – čvorovi/km/h, metri/stope\n• Učestalost zapisa u dnevnik\n• Donji izbornik – prilagodite ga: pritisnite i povucite ikonu za promjenu redoslijeda, prekidačem sakrijte kartice koje ne koristite i postavite veličinu ikona (S/M/L). Skrivene kartice mogu se otvoriti upravo ovdje u Postavkama; Postavke su uvijek prikazane. Redoslijed i veličina se pamte.\n• Prikaz – Noćni način (crveni filtar za očuvanje noćnog vida)\n• Izvoz u oblak (Google Drive) – nakon prijave PDF i GPX svakog dovršenog dana automatski se prenose na vaš Google Drive. Bez prijave sve ostaje na uređaju.\n• Sigurnosna kopija podataka – vidi \"Sigurnosna kopija i vraćanje podataka\"\n• O aplikaciji – verzija i kontakt';
+      '• Jedinice – udaljenost NM/km, brzina čvorovi/km/h, posebno temperatura, dubina i vjetar (na rijeci odgovaraju km + km/h)';
 
   @override
   String get guideBackupTitle => 'Sigurnosna kopija i vraćanje podataka';
@@ -3002,4 +3002,36 @@ class AppLocalizationsHr extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Radi samo preko WiFi mreže broda – telefon mora biti povezan s NMEA pristupnikom (Raymarine, Digital Yacht, Yacht Devices…). Bez WiFi-ja aplikacija koristi GPS telefona i vremensku prognozu s interneta.';
+
+  @override
+  String get interruptedVoyageTitle => 'Praćenje je prekinuto';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'Aplikacija se zatvorila u $time bez završetka plovidbe. Nastaviti istu plovidbu?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'Trenutna pozicija je $distance NM od zadnje zabilježene točke.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap => 'Pribroji ovu udaljenost plovidbi';
+
+  @override
+  String get interruptedVoyageResume => 'Nastavi';
+
+  @override
+  String get batteryPromptTitle => 'Neka aplikacija radi cijelu plovidbu';
+
+  @override
+  String get batteryPromptBody =>
+      'Android — osobito Honor, Huawei i Xiaomi — gasi aplikacije koje rade u pozadini, čime se praćenje prekida usred plovidbe.\n\nU postavkama baterije dopustite ovoj aplikaciji rad bez ograničenja. Na Honor/Huawei dodajte je i među zaštićene aplikacije te dopustite automatsko pokretanje.';
+
+  @override
+  String get batteryPromptAction => 'Otvori postavke';
+
+  @override
+  String get speed => 'Brzina';
 }

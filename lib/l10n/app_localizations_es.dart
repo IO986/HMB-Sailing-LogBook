@@ -2354,7 +2354,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -2417,7 +2417,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – nudos/km/h, metros/pies\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto';
+      '• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';
@@ -3008,4 +3008,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get marineInstrumentsWifiNote =>
       'Solo funciona a través de la red WiFi del barco: el teléfono debe estar conectado a un gateway NMEA (Raymarine, Digital Yacht, Yacht Devices…). Sin WiFi la app usa el GPS del teléfono y la previsión meteorológica de internet.';
+
+  @override
+  String get interruptedVoyageTitle => 'El seguimiento se interrumpió';
+
+  @override
+  String interruptedVoyageBody(String time) {
+    return 'La aplicación se cerró a las $time sin finalizar la travesía. ¿Continuar la misma travesía?';
+  }
+
+  @override
+  String interruptedVoyageGap(String distance) {
+    return 'Tu posición está a $distance NM del último punto registrado.';
+  }
+
+  @override
+  String get interruptedVoyageAddGap => 'Sumar esta distancia a la travesía';
+
+  @override
+  String get interruptedVoyageResume => 'Continuar';
+
+  @override
+  String get batteryPromptTitle =>
+      'Mantén la aplicación activa toda la travesía';
+
+  @override
+  String get batteryPromptBody =>
+      'Android —sobre todo Honor, Huawei y Xiaomi— cierra las aplicaciones en segundo plano, lo que interrumpe el seguimiento a mitad de travesía.\n\nEn los ajustes de batería, permite que esta aplicación funcione sin restricciones. En Honor/Huawei añádela además a las aplicaciones protegidas y permite el inicio automático.';
+
+  @override
+  String get batteryPromptAction => 'Abrir ajustes';
+
+  @override
+  String get speed => 'Velocidad';
 }
