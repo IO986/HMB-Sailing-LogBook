@@ -9,6 +9,8 @@ import '../../providers/charter_provider.dart';
 import '../../services/voyage_progress.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
+import '../../../map/providers/map_provider.dart';
 
 class CharterDetailScreen extends ConsumerWidget {
   final int charterId;
@@ -56,6 +58,18 @@ class CharterDetailScreen extends ConsumerWidget {
                 blinkIcon: Icons.directions_boat,
                 tooltip: l.editCharter,
                 onPressed: () => context.go('/logbook/$charterId/edit'),
+              ),
+              // Náhľad trasy celej plavby na mape — rovnaká vec, akú robí
+              // ikona trasy na mape, len bez hľadania plavby v zozname.
+              IconButton(
+                icon: const Icon(Icons.route),
+                tooltip: l.mapVoyageOverview,
+                onPressed: () {
+                  ref
+                      .read(mapNotifierProvider.notifier)
+                      .previewCharter(charterId, charter!.title);
+                  context.go('/map');
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.picture_as_pdf),
@@ -225,7 +239,7 @@ class _Body extends ConsumerWidget {
             if (crew.isNotEmpty)
               _InfoRow(Icons.group, AppLocalizations.of(context).crew, crew.join(', ')),
             if (totalNm > 0)
-              _InfoRow(Icons.straighten, AppLocalizations.of(context).total, '${totalNm.toStringAsFixed(1)} NM'),
+              _InfoRow(Icons.straighten, AppLocalizations.of(context).total, ref.watch(unitsSyncProvider).formatDistance(totalNm, decimals: 1)),
             VoyageReminderChips(charterId: charter.id),
           ]),
         )),
@@ -375,7 +389,7 @@ class _DayCard extends ConsumerWidget {
                   Text('${day.portTo ?? "?"}',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                   if (day.distanceNm > 0)
-                    Text('  ·  ${day.distanceNm.toStringAsFixed(1)} NM',
+                    Text('  ·  ${ref.watch(unitsSyncProvider).formatDistance(day.distanceNm, decimals: 1)}',
                         style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 ]),
               ),
