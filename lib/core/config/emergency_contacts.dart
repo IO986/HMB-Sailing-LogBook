@@ -269,37 +269,110 @@ class EmergencyContacts {
     ]),
   };
 
-  /// Vráti kód krajiny podľa GPS súradníc (aproximácia podľa bounding boxov)
+  /// Stred Jadranu na danej zemepisnej šírke — západne od neho je Taliansko,
+  /// východne Chorvátsko.
+  ///
+  /// More sa smerom na juh rozširuje a os sa stáča na východ, takže jedna
+  /// hranica po zemepisnej dĺžke nestačí: pri Poreči je stred na 12,9°E,
+  /// pri Dubrovníku už na 16,3°E.
+  static double _adriaticMidline(double lat) => 13.0 + (45.0 - lat) * 1.37;
+
+  /// Kotviace body pobrežia pre Egejské more a juhozápadné Turecko.
+  ///
+  /// Grécke ostrovy ležia tesne pri tureckom pobreží — Kos a Bodrum delí 15 km,
+  /// Rodos a Marmaris 25 km — takže bounding boxy tu nedokážu obe krajiny
+  /// oddeliť. Namiesto nich sa hľadá najbližší kotviaci bod.
+  static const List<(double, double, String)> _aegeanAnchors = [
+    (35.34, 25.14, 'GR'), // Kréta
+    (35.50, 27.20, 'GR'), // Karpatos
+    (36.44, 28.22, 'GR'), // Rodos
+    (36.61, 27.84, 'GR'), // Symi
+    (36.89, 27.29, 'GR'), // Kos
+    (36.95, 26.98, 'GR'), // Kalymnos
+    (37.75, 26.98, 'GR'), // Samos
+    (37.94, 23.64, 'GR'), // Pireus
+    (38.37, 26.14, 'GR'), // Chios
+    (39.15, 26.35, 'GR'), // Lesbos
+    (39.90, 25.25, 'GR'), // Limnos
+    (40.63, 22.94, 'GR'), // Solún
+    (36.20, 29.64, 'TR'), // Kaš
+    (36.62, 29.10, 'TR'), // Fethiye
+    (36.80, 34.63, 'TR'), // Mersin
+    (36.85, 28.27, 'TR'), // Marmaris
+    (36.88, 30.70, 'TR'), // Antalya
+    (37.03, 27.43, 'TR'), // Bodrum
+    (38.32, 26.30, 'TR'), // Česme
+    (38.42, 27.14, 'TR'), // Izmir
+    (39.31, 26.69, 'TR'), // Ayvalík
+    (40.15, 26.41, 'TR'), // Canakkale
+    (41.00, 28.98, 'TR'), // Istanbul
+  ];
+
+  static String _nearestAegeanCoast(double lat, double lon) {
+    var best = 'GR';
+    var bestDistance = double.infinity;
+    for (final (aLat, aLon, code) in _aegeanAnchors) {
+      final dLat = lat - aLat;
+      // Pri 38° šírke je stupeň dĺžky asi 0,79 stupňa šírky.
+      final dLon = (lon - aLon) * 0.79;
+      final distance = dLat * dLat + dLon * dLon;
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = code;
+      }
+    }
+    return best;
+  }
+
+  /// Vráti kód krajiny podľa GPS súradníc (aproximácia podľa bounding boxov).
   static String detectCountry(double lat, double lon) {
-    // Jadranské more – detailnejšia detekcia
-    if (lat >= 40.0 && lat <= 46.5 && lon >= 13.0 && lon <= 20.0) {
-      if (lon <= 14.0) return 'IT';           // Taliansko (Friuli)
-      if (lat >= 45.0 && lon <= 15.0) return 'SI';  // Slovinsko
-      if (lat >= 42.0 && lat <= 46.5 && lon >= 13.5 && lon <= 19.5) return 'HR'; // Chorvátsko
-      if (lat >= 40.0 && lat < 42.5 && lon >= 18.5) return 'ME'; // Čierna Hora
-      if (lat >= 39.5 && lat < 42.0 && lon >= 19.0) return 'AL'; // Albánsko
-      return 'HR'; // default Jadran = Chorvátsko
+    // ── Jadran ──────────────────────────────────────────────────────
+    if (lat >= 40.0 && lat <= 46.6 && lon >= 12.0 && lon <= 20.0) {
+      // Terstský záliv: Taliansko siaha na východ až po 13,8°E, teda ďalej
+      // než slovinské aj chorvátske pobrežie pod ním.
+      if (lat >= 45.6 && lon <= 13.9) return 'IT';
+      // Slovinsko má len úzky pás od Debelého rtiča po Piranský záliv.
+      if (lat >= 45.45 && lat <= 45.6 && lon >= 13.35 && lon <= 13.95) {
+        return 'SI';
+      }
+      // Boka Kotorská a čiernohorské pobrežie.
+      if (lat >= 41.8 && lat < 42.65 && lon >= 18.4) return 'ME';
+      if (lat >= 39.5 && lat < 41.9 && lon >= 19.0) return 'AL';
+      return lon <= _adriaticMidline(lat) ? 'IT' : 'HR';
     }
 
-    // Stredozemné more - bounding boxy
-    if (lat >= 35.0 && lat <= 42.0 && lon >= 2.0 && lon <= 18.0) return 'IT';
-    if (lat >= 36.0 && lat <= 42.0 && lon >= -9.5 && lon <= 3.5) return 'ES';
-    if (lat >= 36.5 && lat <= 47.5 && lon >= -9.5 && lon <= -6.0) return 'PT';
-    if (lat >= 43.0 && lat <= 51.5 && lon >= -5.0 && lon <= 8.5) return 'FR';
-    if (lat >= 35.0 && lat <= 42.5 && lon >= 19.0 && lon <= 28.5) return 'GR';
-    if (lat >= 35.5 && lat <= 42.5 && lon >= 25.5 && lon <= 36.5) return 'TR';
+    // ── Stredozemné more ────────────────────────────────────────────
+    // Baleáry a Korzika ležia vnútri talianskeho boxu, takže musia ísť prvé.
+    if (lat >= 38.5 && lat <= 40.2 && lon >= 1.0 && lon <= 4.5) return 'ES';
+    if (lat >= 41.3 && lat <= 43.1 && lon >= 8.4 && lon <= 9.7) return 'FR';
     if (lat >= 35.5 && lat <= 36.5 && lon >= 14.0 && lon <= 14.8) return 'MT';
+    // Španielske východné pobrežie od Gibraltáru po Cap de Creus leží vnútri
+    // talianskeho boxu, takže ide pred ním.
+    if (lat >= 36.0 && lat <= 42.4 && lon >= -1.0 && lon <= 3.35) return 'ES';
+    if (lat >= 35.0 && lat <= 42.0 && lon >= 2.0 && lon <= 18.0) return 'IT';
+    // Ligúrske a toskánske pobrežie je nad 42. rovnobežkou.
+    if (lat >= 42.0 && lat <= 44.6 && lon >= 8.5 && lon <= 12.6) return 'IT';
+    // Atlantické pobrežie: Portugalsko leží vnútri španielskeho boxu a
+    // francúzske Baskicko tiež, takže oba idú pred ním.
+    if (lat >= 36.9 && lat <= 42.2 && lon >= -9.7 && lon <= -7.4) return 'PT';
+    if (lat >= 43.35 && lat <= 46.5 && lon >= -2.3 && lon <= 0.0) return 'FR';
+    if (lat >= 36.0 && lat <= 43.9 && lon >= -9.5 && lon <= 3.5) return 'ES';
+    if (lat >= 42.4 && lat <= 51.5 && lon >= -5.0 && lon <= 8.5) return 'FR';
+    // Iónske more a pevninské Grécko.
+    if (lat >= 34.0 && lat <= 42.5 && lon >= 19.0 && lon < 22.5) return 'GR';
+    // Egejské more a juhozápadné Turecko — pozri _nearestAegeanCoast.
+    if (lat >= 34.0 && lat <= 41.5 && lon >= 22.5 && lon <= 37.0) {
+      return _nearestAegeanCoast(lat, lon);
+    }
 
-    // Atlantik / severná Európa
+    // ── Atlantik / severná Európa ───────────────────────────────────
     if (lat >= 50.0 && lat <= 61.5 && lon >= -8.5 && lon <= 2.0) return 'GB';
     if (lat >= 57.5 && lat <= 71.5 && lon >= 4.0 && lon <= 32.0) return 'NO';
 
-    // Slovensko (vnútrozemie)
+    // ── Slovensko (vnútrozemie) ─────────────────────────────────────
     if (lat >= 47.7 && lat <= 49.6 && lon >= 16.8 && lon <= 22.6) return 'SK';
 
-    // Otvorený oceán
-    if ((lon < -10.0) || (lat < 30.0 && lon > 0)) return 'OFFSHORE';
-
+    // ── Otvorený oceán ──────────────────────────────────────────────
     return 'OFFSHORE';
   }
 

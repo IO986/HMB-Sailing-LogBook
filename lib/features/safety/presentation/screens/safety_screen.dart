@@ -28,22 +28,33 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
 // ── Emergency region provider ─────────────────────────────────
 
+/// Núdzové kontakty pre oblasť, v ktorej sa loď práve nachádza.
+///
+/// Predtým to bol jednorazový FutureProvider nad `lastPosition`: keď užívateľ
+/// otvoril Bezpečnosť skôr, než dobehol prvý fix (typicky bez zapnutého
+/// trackingu), karta ostala natrvalo na "poloha nedostupná". Preto sa poloha
+/// aktívne vyžiada a ďalej sa počúva stream — prechod cez hranicu mení, komu
+/// sa volá.
 final emergencyRegionProvider =
-    FutureProvider.family<EmergencyRegion?, String>((ref, locale) async {
-  final pos = GpsTrackingService().lastPosition;
-  if (pos != null) {
-    return EmergencyContacts.getRegionForLocation(
-        pos.latitude, pos.longitude, locale);
-  }
-  // Skús získať polohu priamo
-  try {
-    final p = await Geolocator.getLastKnownPosition();
-    if (p != null) {
-      return EmergencyContacts.getRegionForLocation(
+    StreamProvider.family<EmergencyRegion?, String>((ref, locale) async* {
+  EmergencyRegion? regionOf(Position? p) => p == null
+      ? null
+      : EmergencyContacts.getRegionForLocation(
           p.latitude, p.longitude, locale);
-    }
-  } catch (_) {}
-  return null;
+
+  final known =
+      LocationService().lastPosition ?? GpsTrackingService().lastPosition;
+  if (known != null) yield regionOf(known);
+
+  if (known == null) {
+    yield regionOf(await LocationService().currentFix());
+  }
+
+  // Rovnaká krajina = rovnaké čísla, prekresľovať netreba.
+  yield* LocationService()
+      .stream
+      .map(regionOf)
+      .distinct((a, b) => a?.country == b?.country);
 });
 
 // ── MOB ───────────────────────────────────────────────────────

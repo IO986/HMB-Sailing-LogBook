@@ -111,6 +111,38 @@ class LocationService {
     return avail.usable;
   }
 
+  /// Najlepší fix, ktorý je práve teraz dostupný — pre jednorazových
+  /// konzumentov, ktorí nemôžu čakať na zapnutý tracking (núdzové kontakty).
+  ///
+  /// Ak už polohu poznáme, vráti ju hneď. Inak si aktívne vyžiada fix; keď
+  /// ani ten nepríde (napr. bez povolenia), skúsi poslednú známu polohu
+  /// z platformy. Nikdy nevyhadzuje výnimku — volajúci dostane null.
+  Future<Position?> currentFix({
+    LocationConfig config = const LocationConfig(),
+  }) async {
+    final known = _lastPosition;
+    if (known != null) return known;
+
+    try {
+      final fix = await _gps.getBest(config: config);
+      if (fix != null) {
+        _lastAndroidPosition = _fixToPosition(fix);
+        _lastAndroidSource = fix.source;
+        _lastAndroidIsMocked = fix.isMocked;
+        _reEvaluateSource();
+        return _lastPosition ?? _lastAndroidPosition;
+      }
+    } catch (e) {
+      debugPrint('[LOC] currentFix failed: $e');
+    }
+
+    try {
+      return await Geolocator.getLastKnownPosition();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> _startAndroidStream() async {
     if (_androidSub != null) return;
 
