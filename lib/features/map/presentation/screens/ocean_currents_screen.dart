@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/ocean_currents_content.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
 
 /// Referenčný zoznam hlavných oceánskych prúdov (orientačné dáta, pozri
 /// [oceanCurrents]) – rovnaký vzor ako `MaritimeReferenceScreen`.
-class OceanCurrentsScreen extends StatelessWidget {
+class OceanCurrentsScreen extends ConsumerWidget {
   const OceanCurrentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final units = ref.watch(unitsSyncProvider);
     final l = AppLocalizations.of(context);
     final lang = Localizations.localeOf(context).languageCode;
     return Scaffold(
@@ -40,8 +43,9 @@ class OceanCurrentsScreen extends StatelessWidget {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 14)),
                     ),
-                    Text('${c.speedKtMin.toStringAsFixed(1)}–'
-                        '${c.speedKtMax.toStringAsFixed(1)} kt',
+                    Text(
+                        '${units.speedValue(c.speedKtMin).toStringAsFixed(1)}–'
+                        '${units.formatSpeed(c.speedKtMax)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.w600, color: Colors.blue)),
                   ]),

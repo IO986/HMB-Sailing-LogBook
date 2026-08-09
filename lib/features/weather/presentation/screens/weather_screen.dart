@@ -16,6 +16,7 @@ import '../widgets/ocean_current_card.dart';
 import '../widgets/sun_moon_card.dart';
 import '../widgets/tide_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
 
 // Reverse geocoding + fallback na súradnice
 final _locationNameProvider = FutureProvider<String?>((ref) async {
@@ -328,12 +329,12 @@ class _LiveInstrumentsCard extends StatelessWidget {
   }
 }
 
-class _CurrentWeatherCard extends StatelessWidget {
+class _CurrentWeatherCard extends ConsumerWidget {
   final WeatherData weather;
   const _CurrentWeatherCard({required this.weather});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -341,7 +342,7 @@ class _CurrentWeatherCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Text('${weather.windSpeed.toStringAsFixed(0)} kn',
+              Text(ref.watch(unitsSyncProvider).formatWind(weather.windSpeed),
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary)),

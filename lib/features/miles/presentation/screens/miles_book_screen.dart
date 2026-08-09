@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../providers/miles_provider.dart';
 import '../../services/miles_calculator.dart';
+import '../../../../core/services/units_service.dart';
 
 class MilesBookScreen extends ConsumerWidget {
   const MilesBookScreen({super.key});
@@ -155,7 +156,7 @@ class _MilesBody extends ConsumerWidget {
               child: ListTile(
                 leading: Icon(v.isManualEntry ? Icons.edit_note : Icons.sailing),
                 title: Text(
-                    '${v.isManualEntry ? "* " : ""}${v.vesselName}  ·  ${v.distanceNm.toStringAsFixed(1)} NM'),
+                    '${v.isManualEntry ? "* " : ""}${v.vesselName}  ·  ${ref.watch(unitsSyncProvider).formatDistance(v.distanceNm, decimals: 1)}'),
                 subtitle: Text(
                     '${fmt.format(v.dateFrom)} – ${fmt.format(v.dateTo)}'
                     '${v.area != null ? " · ${v.area}" : ""}'),
@@ -188,17 +189,18 @@ class _SectionTitle extends StatelessWidget {
       );
 }
 
-class _BreakdownRow extends StatelessWidget {
+class _BreakdownRow extends ConsumerWidget {
   final String label;
   final double nm;
   const _BreakdownRow({required this.label, required this.nm});
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(children: [
           Text(label),
           const Spacer(),
-          Text('${nm.toStringAsFixed(1)} NM', style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(ref.watch(unitsSyncProvider).formatDistance(nm, decimals: 1),
+              style: const TextStyle(fontWeight: FontWeight.w600)),
         ]),
       );
 }

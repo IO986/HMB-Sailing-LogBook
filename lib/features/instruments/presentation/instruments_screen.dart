@@ -13,6 +13,7 @@ import '../../../core/services/location_service.dart';
 import '../../../core/services/weather_service.dart';
 import '../../map/providers/map_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/services/units_service.dart';
 
 // ── Providers ─────────────────────────────────────────────────
 
@@ -34,6 +35,7 @@ class InstrumentsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final units = ref.watch(unitsSyncProvider);
     final pos = ref.watch(_gpsProvider).valueOrNull
         ?? LocationService().lastPosition;
     final settings = ref.watch(raymarineSettingsProvider);
@@ -128,16 +130,18 @@ class InstrumentsScreen extends ConsumerWidget {
           child: Row(children: [
             Expanded(child: _DigitBox(
               label: 'SOG',
-              value: sogKn.toStringAsFixed(1),
-              unit: 'kn',
+              value: units.speedValue(sogKn).toStringAsFixed(1),
+              unit: units.speedLabel,
               color: const Color(0xFF27AE60),
               source: (rayOk && marine.sogKnots != null) ? 'NMEA' : 'GPS',
             )),
             const SizedBox(width: 10),
             Expanded(child: _DigitBox(
               label: 'TWS',
-              value: twsKn != null ? twsKn.toStringAsFixed(1) : '--.-',
-              unit: 'kn',
+              value: twsKn != null
+                  ? units.windValue(twsKn).toStringAsFixed(1)
+                  : '--.-',
+              unit: units.windLabel,
               color: const Color(0xFF3498DB),
               source: (windOk && marine.windSpeedKnots != null) ? 'NMEA' : (twsKn != null ? 'METEO' : null),
             )),
@@ -371,7 +375,7 @@ class _DigitBox extends StatelessWidget {
 // VMG WP tile
 // ─────────────────────────────────────────────────────────────
 
-class _VmgWpTile extends StatelessWidget {
+class _VmgWpTile extends ConsumerWidget {
   final double? vmg, distNm, brg;
   final Waypoint? wp;
   final List<Waypoint> waypoints;
@@ -387,7 +391,7 @@ class _VmgWpTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasData = wp != null;
     return GestureDetector(
       onTap: () => _showWpPicker(context),
@@ -420,7 +424,9 @@ class _VmgWpTile extends StatelessWidget {
               const SizedBox(height: 4),
               Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Text(
-                  vmg != null ? vmg!.toStringAsFixed(1) : '--.-',
+                  vmg != null
+                      ? ref.watch(unitsSyncProvider).speedValue(vmg!).toStringAsFixed(1)
+                      : '--.-',
                   style: TextStyle(
                     color: vmg != null
                         ? (vmg! >= 0 ? Colors.white : Colors.red.shade300)
@@ -432,10 +438,10 @@ class _VmgWpTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 4),
-                  child: Text('kn',
-                      style: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(ref.watch(unitsSyncProvider).speedLabel,
+                      style: const TextStyle(
                           color: Color(0xFFFFAA00), fontSize: 12)),
                 ),
               ]),
@@ -491,8 +497,13 @@ class _VmgWpTile extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Row(children: [
-                _WpStat('DIST',
-                    distNm != null ? '${distNm!.toStringAsFixed(1)} NM' : '--'),
+                _WpStat(
+                    'DIST',
+                    distNm != null
+                        ? ref
+                            .watch(unitsSyncProvider)
+                            .formatDistance(distNm, decimals: 1)
+                        : '--'),
                 const SizedBox(width: 16),
                 _WpStat('BRG',
                     brg != null ? '${brg!.toStringAsFixed(0)}°' : '--'),

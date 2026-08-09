@@ -31,6 +31,7 @@ import '../widgets/waypoint_dialog.dart';
 
 // Explicit imports needed for CircleLayer
 import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
+import '../../../../core/services/units_service.dart';
 
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
 /// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
@@ -487,8 +488,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          '${c.speedKtMin.toStringAsFixed(0)}-'
-                          '${c.speedKtMax.toStringAsFixed(0)} kt',
+                          '${ref.watch(unitsSyncProvider).speedValue(c.speedKtMin).toStringAsFixed(0)}-'
+                          '${ref.watch(unitsSyncProvider).formatSpeed(c.speedKtMax, decimals: 0)}',
                           style: const TextStyle(
                               fontSize: 10, color: Colors.black87),
                           textAlign: TextAlign.center,
@@ -1146,7 +1147,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                       ListTile(
                                         dense: true,
                                         title: Text(DateFormat('EEEE d. MMM yyyy', localeCode).format(day.date)),
-                                        subtitle: Text('${day.distanceNm.toStringAsFixed(1)} NM'),
+                                        subtitle: Text(ref
+                                            .watch(unitsSyncProvider)
+                                            .formatDistance(day.distanceNm,
+                                                decimals: 1)),
                                         onTap: () => _selectDay(
                                             day.id,
                                             '${charter.title} · ${DateFormat('d.M.yyyy').format(day.date)}',
@@ -1337,7 +1341,7 @@ class _CurrentArrowMarker extends StatelessWidget {
 
 // ── Ruler / route panel ───────────────────────────────────────
 
-class _RulerPanel extends StatelessWidget {
+class _RulerPanel extends ConsumerWidget {
   final List<LatLng> points;
   final VoidCallback? onUndo;
   final VoidCallback? onClear;
@@ -1354,8 +1358,9 @@ class _RulerPanel extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
+    final units = ref.watch(unitsSyncProvider);
     var totalNm = 0.0;
     for (var i = 1; i < points.length; i++) {
       totalNm += DistanceCalculator.distanceNm(
@@ -1375,7 +1380,7 @@ class _RulerPanel extends StatelessWidget {
       final hours = totalNm / sogKn;
       final h = hours.floor();
       final m = ((hours - h) * 60).round();
-      eta = '${h}h ${m}min @ ${sogKn.toStringAsFixed(1)}kn';
+      eta = '${h}h ${m}min @ ${units.formatSpeed(sogKn)}';
     }
 
     return Material(
@@ -1394,7 +1399,7 @@ class _RulerPanel extends StatelessWidget {
               Text(
                 points.isEmpty
                     ? l.rulerTapHint
-                    : '${totalNm.toStringAsFixed(1)} NM'
+                    : '${units.formatDistance(totalNm, decimals: 1)}'
                         '${brg != null ? '  ·  ${brg.toStringAsFixed(0)}°' : ''}',
                 style: const TextStyle(
                     color: Colors.white,

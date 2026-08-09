@@ -78,6 +78,36 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const Divider(height: 1),
               ListTile(
+                leading: const Icon(Icons.straighten),
+                title: Text(l.distance),
+                trailing: SegmentedButton<DistanceUnit>(
+                  segments: const [
+                    ButtonSegment(
+                        value: DistanceUnit.nauticalMiles, label: Text('NM')),
+                    ButtonSegment(
+                        value: DistanceUnit.kilometers, label: Text('km')),
+                  ],
+                  selected: {units.distance},
+                  onSelectionChanged: (s) =>
+                      ref.read(unitsProvider.notifier).setDistance(s.first),
+                ),
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.speed),
+                title: Text(l.speed),
+                trailing: SegmentedButton<SpeedUnit>(
+                  segments: const [
+                    ButtonSegment(value: SpeedUnit.knots, label: Text('kn')),
+                    ButtonSegment(value: SpeedUnit.kmh, label: Text('km/h')),
+                  ],
+                  selected: {units.speed},
+                  onSelectionChanged: (s) =>
+                      ref.read(unitsProvider.notifier).setSpeed(s.first),
+                ),
+              ),
+              const Divider(height: 1),
+              ListTile(
                 leading: const Icon(Icons.air),
                 title: Text(l.wind),
                 trailing: SegmentedButton<WindUnit>(

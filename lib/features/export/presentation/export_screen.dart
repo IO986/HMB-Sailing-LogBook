@@ -21,6 +21,7 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import 'signature_pad_dialog.dart';
 import 'pdf_preview_screen.dart';
 import 'widgets/day_map_view.dart';
+import '../../../core/services/units_service.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -413,7 +414,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
 // ── Náhľad mapy pre deň ──────────────────────────────────────
 
-class _DayMapPreview extends StatelessWidget {
+class _DayMapPreview extends ConsumerWidget {
   final DayLog day;
   final List<LogbookEntry> entries;
   final List<TrackPoint> trackPoints;
@@ -426,7 +427,7 @@ class _DayMapPreview extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -440,7 +441,7 @@ class _DayMapPreview extends StatelessWidget {
                   style: const TextStyle(color: Colors.grey, fontSize: 13)),
             ])),
             if (day.distanceNm > 0)
-              Text('${day.distanceNm.toStringAsFixed(1)} NM',
+              Text(ref.watch(unitsSyncProvider).formatDistance(day.distanceNm, decimals: 1),
                   style: const TextStyle(fontWeight: FontWeight.bold)),
           ]),
           const SizedBox(height: 10),

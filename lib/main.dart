@@ -26,6 +26,8 @@ import 'core/services/sync_service.dart';
 import 'features/export/services/export_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/theme/app_theme.dart';
+import 'core/services/units_service.dart';
+import 'features/export/services/pdf_export_service.dart';
 
 AppDatabase _currentDb = AppDatabase();
 
@@ -197,6 +199,10 @@ class HmbSailingLogApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // PDF sa generuje mimo widget stromu (aj z automatického cloud exportu),
+    // takže si jednotky drží staticky — tu sa udržiavajú v aktuálnom stave.
+    PdfExportService.units = ref.watch(unitsSyncProvider);
+
     final router = ref.watch(appRouterProvider);
     final locale = ref.watch(localeProvider);
     final nightMode = ref.watch(nightModeProvider);

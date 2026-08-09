@@ -13,6 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../providers/miles_provider.dart';
+import '../../../../core/services/units_service.dart';
 
 /// Záznam do Knihy míľ pre plavbu z trackingu/GPX importu (na rozdiel od
 /// ručne zadanej [HistoricalVoyageFormScreen]). Dátumy/míle/oblasť sa berú
@@ -174,7 +175,7 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
               Text(charter.title, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}'
-                  '  ·  ${totalNm.toStringAsFixed(1)} NM'
+                  '  ·  ${ref.watch(unitsSyncProvider).formatDistance(totalNm, decimals: 1)}'
                   '${charter.homePort != null ? "  ·  ${charter.homePort}" : ""}'),
               const SizedBox(height: 6),
               Text(l.logbookTrackedHint,

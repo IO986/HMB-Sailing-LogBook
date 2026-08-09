@@ -5,22 +5,44 @@ enum TempUnit { celsius, fahrenheit }
 enum DepthUnit { meters, feet }
 enum WindUnit { knots, ms, beaufort }
 
+/// Jednotka vzdialenosti. Vnútri appky aj v DB je vždy NM — prepína sa len
+/// zobrazenie, aby staré záznamy a exporty ostali porovnateľné.
+enum DistanceUnit { nauticalMiles, kilometers }
+
+/// Jednotka rýchlosti lode. Nesúvisí s [WindUnit]: na rieke sa jazdí v km/h,
+/// ale vietor sa aj tam hlási v uzloch alebo Bft.
+enum SpeedUnit { knots, kmh }
+
+const _kmPerNm = 1.852;
+
 class UnitsSettings {
   final TempUnit temp;
   final DepthUnit depth;
   final WindUnit wind;
+  final DistanceUnit distance;
+  final SpeedUnit speed;
 
   const UnitsSettings({
     this.temp = TempUnit.celsius,
     this.depth = DepthUnit.meters,
     this.wind = WindUnit.knots,
+    this.distance = DistanceUnit.nauticalMiles,
+    this.speed = SpeedUnit.knots,
   });
 
-  UnitsSettings copyWith({TempUnit? temp, DepthUnit? depth, WindUnit? wind}) =>
+  UnitsSettings copyWith({
+    TempUnit? temp,
+    DepthUnit? depth,
+    WindUnit? wind,
+    DistanceUnit? distance,
+    SpeedUnit? speed,
+  }) =>
       UnitsSettings(
         temp: temp ?? this.temp,
         depth: depth ?? this.depth,
         wind: wind ?? this.wind,
+        distance: distance ?? this.distance,
+        speed: speed ?? this.speed,
       );
 
   // Formátovanie hodnôt
@@ -45,6 +67,20 @@ class UnitsSettings {
     }
   }
 
+  /// Označenie jednotky vetra — pre displeje, kde hodnota a jednotka
+  /// nestoja vedľa seba (prístrojová doska).
+  String get windLabel => switch (wind) {
+        WindUnit.knots => 'kn',
+        WindUnit.ms => 'm/s',
+        WindUnit.beaufort => 'Bft',
+      };
+
+  double windValue(double kn) => switch (wind) {
+        WindUnit.knots => kn,
+        WindUnit.ms => kn * 0.514444,
+        WindUnit.beaufort => _beaufort(kn).toDouble(),
+      };
+
   String formatWindFull(double? kn) {
     if (kn == null) return '-';
     final bft = _beaufort(kn);
@@ -55,9 +91,29 @@ class UnitsSettings {
     }
   }
 
+  // ── Vzdialenosť a rýchlosť ──────────────────────────────────────
+  // Hodnoty prichádzajú vždy v NM a uzloch — konvertuje sa až pri zobrazení.
+
+  String get distanceLabel =>
+      distance == DistanceUnit.kilometers ? 'km' : 'NM';
+
+  String get speedLabel => speed == SpeedUnit.kmh ? 'km/h' : 'kn';
+
+  double distanceValue(double nm) =>
+      distance == DistanceUnit.kilometers ? nm * _kmPerNm : nm;
+
+  double speedValue(double kn) => speed == SpeedUnit.kmh ? kn * _kmPerNm : kn;
+
+  /// Vzdialenosť aj s jednotkou, [decimals] desatinných miest.
+  String formatDistance(double? nm, {int decimals = 2}) => nm == null
+      ? '-'
+      : '${distanceValue(nm).toStringAsFixed(decimals)} $distanceLabel';
+
+  String formatSpeed(double? kn, {int decimals = 1}) => kn == null
+      ? '-'
+      : '${speedValue(kn).toStringAsFixed(decimals)} $speedLabel';
+
   // Fixné jednotky – vždy rovnaké
-  String formatSpeed(double? kn) => kn == null ? '-' : '${kn.toStringAsFixed(1)} kn';
-  String formatDistance(double? nm) => nm == null ? '-' : '${nm.toStringAsFixed(2)} NM';
   String formatCourse(double? deg) => deg == null ? '-' : '${deg.toStringAsFixed(0)}°';
   String formatPressure(double? hpa) => hpa == null ? '-' : '${hpa.toStringAsFixed(0)} hPa';
 
@@ -74,6 +130,8 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
   static const _kTemp = 'units_temp';
   static const _kDepth = 'units_depth';
   static const _kWind = 'units_wind';
+  static const _kDistance = 'units_distance';
+  static const _kSpeed = 'units_speed';
 
   @override
   Future<UnitsSettings> build() async {
@@ -82,6 +140,8 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
       temp: TempUnit.values[prefs.getInt(_kTemp) ?? 0],
       depth: DepthUnit.values[prefs.getInt(_kDepth) ?? 0],
       wind: WindUnit.values[prefs.getInt(_kWind) ?? 0],
+      distance: DistanceUnit.values[prefs.getInt(_kDistance) ?? 0],
+      speed: SpeedUnit.values[prefs.getInt(_kSpeed) ?? 0],
     );
   }
 
@@ -101,6 +161,18 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kWind, v.index);
     state = AsyncData(state.value!.copyWith(wind: v));
+  }
+
+  Future<void> setDistance(DistanceUnit v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kDistance, v.index);
+    state = AsyncData(state.value!.copyWith(distance: v));
+  }
+
+  Future<void> setSpeed(SpeedUnit v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kSpeed, v.index);
+    state = AsyncData(state.value!.copyWith(speed: v));
   }
 }
 

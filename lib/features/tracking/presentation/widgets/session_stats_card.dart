@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
 
 String _elapsed(DateTime start) {
   final d = DateTime.now().difference(start);
@@ -16,6 +17,7 @@ class SessionStatsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final units = ref.watch(unitsSyncProvider);
     final session = GpsTrackingService().currentSession;
     if (session == null) return const SizedBox();
 
@@ -32,13 +34,13 @@ class SessionStatsCard extends ConsumerWidget {
               Expanded(
                   child: _StatTile(
                 label: AppLocalizations.of(context).maxSpeed,
-                value: '${session.maxSpeedKnots.toStringAsFixed(1)} kn',
+                value: units.formatSpeed(session.maxSpeedKnots),
                 icon: Icons.speed,
               )),
               Expanded(
                   child: _StatTile(
                 label: AppLocalizations.of(context).distance,
-                value: '${session.totalDistanceNm.toStringAsFixed(2)} NM',
+                value: units.formatDistance(session.totalDistanceNm),
                 icon: Icons.straighten,
               )),
             ]),
@@ -46,7 +48,7 @@ class SessionStatsCard extends ConsumerWidget {
               Expanded(
                   child: _StatTile(
                 label: AppLocalizations.of(context).avgSpeed,
-                value: '${session.avgSpeedKnots.toStringAsFixed(1)} kn',
+                value: units.formatSpeed(session.avgSpeedKnots),
                 icon: Icons.analytics,
               )),
               Expanded(
