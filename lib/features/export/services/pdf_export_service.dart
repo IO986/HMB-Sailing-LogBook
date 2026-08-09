@@ -10,6 +10,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
 import '../../../core/models/logbook_event_type.dart';
+import '../../../core/models/sail_mode.dart';
+import '../../../core/services/units_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
 import '../../../core/services/moon_calculator.dart';
@@ -186,6 +188,14 @@ class PdfExportService {
     }
     return pdf.save();
   }
+
+  /// Jednotky pre celý dokument.
+  ///
+  /// Nastavuje ho volajúci pred generovaním. Zámerne statické: jednotky
+  /// potrebuje asi dvadsať vnorených builderov strán a pretiahnuť parameter
+  /// cez všetky by bola väčšia zmena než samotná funkcia. Export beží vždy
+  /// jeden naraz a nastavenie je globálne pre appku.
+  static UnitsSettings units = const UnitsSettings();
 
   static Future<File> saveBytesToFile(Uint8List bytes, String name) async {
     final dir = await getApplicationDocumentsDirectory();
@@ -392,7 +402,7 @@ class PdfExportService {
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox('PREHLAD', [
             '${days.length} dni plavby',
-            '${totalNm.toStringAsFixed(1)} NM celkom',
+            '${units.formatDistance(totalNm, decimals: 1)} celkom',
             if (charter.notes != null) _pdfText(charter.notes!),
           ])),
         ]),
@@ -458,7 +468,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              [l.pdfDateLabel, l.pdfColFrom, l.pdfColTo, 'NM', 'Bft', l.pdfColEntriesShort].map((h) =>
+              [l.pdfDateLabel, l.pdfColFrom, l.pdfColTo, units.distanceLabel, 'Bft', l.pdfColEntriesShort].map((h) =>
                 _hcell(h)).toList()),
             ...days.asMap().entries.map((e) {
               final d = e.value;
@@ -531,7 +541,7 @@ class PdfExportService {
             ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
               if (day.distanceNm > 0)
-                pw.Text('${day.distanceNm.toStringAsFixed(1)} NM', style: pw.TextStyle(
+                pw.Text(units.formatDistance(day.distanceNm, decimals: 1), style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
               if (voyageStart.isNotEmpty)
                 pw.Text('${l.pdfDeparture.toUpperCase()} ${DateFormat('HH:mm').format(voyageStart.first.timestamp.toUtc())} UTC',
@@ -681,13 +691,11 @@ class PdfExportService {
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
           final time = DateFormat('HH:mm').format(entry.timestamp.toUtc());
-          String sailMode = '-';
-          String noteText = entry.skipperNote ?? '';
-          final modeMatch = RegExp(r'^\[([^\]]+)\]\s*').firstMatch(noteText);
-          if (modeMatch != null) {
-            sailMode = _sailModeLabel(modeMatch.group(1)!);
-            noteText = noteText.substring(modeMatch.end);
-          }
+          final parsedMode = parseSailMode(entry.sailMode, entry.skipperNote);
+          final sailMode = parsedMode.modes.isEmpty
+              ? '-'
+              : _sailModeLabel(parsedMode.modes.join(','));
+          String noteText = parsedMode.note;
           // An automatic entry is printed from its event type, so the reader
           // gets it in their own language instead of the stored English.
           final eventLabel = _eventLabel(
@@ -725,7 +733,7 @@ class PdfExportService {
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                   if (entry.windSpeed != null)
-                    pw.Text('${entry.windSpeed!.toStringAsFixed(0)}kn',
+                    pw.Text(units.formatWind(entry.windSpeed),
                         style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
                   if (entry.windDirection != null)
                     pw.Text(_degToCompass(entry.windDirection!),
@@ -837,7 +845,8 @@ class PdfExportService {
         pw.SizedBox(height: 14),
 
         pw.Row(children: [
-          _statBox('CELKOVA\nVZDIALENOST', '${totalNm.toStringAsFixed(1)} NM', _blue),
+          _statBox('CELKOVA\nVZDIALENOST',
+              units.formatDistance(totalNm, decimals: 1), _blue),
           pw.SizedBox(width: 6),
           _statBox(l.pdfDayCount.toUpperCase(), '${days.length}', _green),
           pw.SizedBox(width: 6),
@@ -862,7 +871,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              [l.pdfColDay, l.pdfColFrom, l.pdfColTo, 'NM (GPS)', 'Bft', l.pdfColEntriesShort].map((h) => _hcell(h)).toList()),
+              [l.pdfColDay, l.pdfColFrom, l.pdfColTo, '${units.distanceLabel} (GPS)', 'Bft', l.pdfColEntriesShort].map((h) => _hcell(h)).toList()),
             ...days.asMap().entries.map((e) {
               final d = e.value;
               final cnt = entriesByDay[d.id]?.length ?? 0;
@@ -872,7 +881,7 @@ class PdfExportService {
                   _cell(DateFormat('EEE d.M.').format(d.date)),
                   _cell(_pdfText(d.portFrom ?? '-')),
                   _cell(_pdfText(d.portTo ?? '-')),
-                  _cell('${d.distanceNm.toStringAsFixed(1)} NM'),
+                  _cell(units.formatDistance(d.distanceNm, decimals: 1)),
                   _cell(() {
                     final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
                     return bft != null ? 'Bft $bft' : '-';
@@ -883,7 +892,7 @@ class PdfExportService {
             }),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
               _cell(l.pdfTotalLabel.toUpperCase(), bold: true), _cell(''), _cell(''),
-              _cell('${totalNm.toStringAsFixed(1)} NM', bold: true),
+              _cell(units.formatDistance(totalNm, decimals: 1), bold: true),
               _cell(''), _cell('$totalEntries', bold: true),
             ]),
           ],
@@ -1613,7 +1622,8 @@ class PdfExportService {
       ),
       build: (ctx) => [
         pw.Row(children: [
-          _statBox('CELKOVE\nNM', aggregate.totalNm.toStringAsFixed(1), _blue),
+          _statBox('CELKOVO\n${units.distanceLabel.toUpperCase()}',
+              units.distanceValue(aggregate.totalNm).toStringAsFixed(1), _blue),
           pw.SizedBox(width: 6),
           _statBox('DNI NA\nMORI', '${aggregate.daysAtSea}', _green),
           pw.SizedBox(width: 6),
@@ -1634,7 +1644,7 @@ class PdfExportService {
           },
           children: [
             pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, 'NM', l.pdfColRole].map((h) => _hcell(h)).toList()),
+              [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, units.distanceLabel, l.pdfColRole].map((h) => _hcell(h)).toList()),
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
                 _cell('${v.isManualEntry ? "* " : ""}${fmt.format(v.dateFrom)}-${fmt.format(v.dateTo)}'),

@@ -17,6 +17,7 @@ import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
+import '../../../../core/models/sail_mode.dart';
 import '../../../../shared/widgets/location_quality_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -93,16 +94,14 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _waterTempCtrl.text = e.waterTemp?.toStringAsFixed(1) ?? '';
         _pressureCtrl.text = e.airPressure?.toStringAsFixed(0) ?? '';
 
-        // Načítaj poznámku a sail modes (uložené ako prefix [mode1,mode2])
-        final note = e.skipperNote ?? '';
-        final modeMatch = RegExp(r'^\[([^\]]+)\]\s*').firstMatch(note);
-        if (modeMatch != null) {
-          _sailModes.clear();
-          _sailModes.addAll(modeMatch.group(1)!.split(','));
-          _noteCtrl.text = note.substring(modeMatch.end);
-        } else {
-          _noteCtrl.text = note;
-        }
+        // Spôsob plavby má vlastný stĺpec; prefix [mode1,mode2] v poznámke
+        // je starý formát (do v21) a číta sa už len ako záloha, napr. pri
+        // zázname stiahnutom zo servera.
+        final parsed = parseSailMode(e.sailMode, e.skipperNote);
+        _sailModes
+          ..clear()
+          ..addAll(parsed.modes);
+        _noteCtrl.text = parsed.note;
         _weatherCondition = e.weatherCondition;
         _photoPath = e.photoPath;
         _fuelLevel = e.fuelLevel;
@@ -211,7 +210,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _Sec(l.navigationSection),
         _NavRow(l.latitude, _lat?.toStringAsFixed(6) ?? '-'),
         _NavRow(l.longitude, _lon?.toStringAsFixed(6) ?? '-'),
-        _NavRow('SOG', _sog != null ? '${_sog!.toStringAsFixed(1)} kn' : '-'),
+        _NavRow('SOG', ref.watch(unitsSyncProvider).formatSpeed(_sog)),
         _NavRow('COG', _cog != null ? '${_cog!.toStringAsFixed(0)}°' : '-'),
         if (_lat != null && _lon != null) ...[
           const SizedBox(height: 4),
@@ -292,11 +291,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     final engine = ref.read(syncEngineProvider);
     final syncEnabled = ref.read(syncSettingsProvider).valueOrNull?.enabled ?? false;
 
-    // Ulož sail modes ako prefix do poznámky
-    final modesStr = _sailModes.isNotEmpty ? _sailModes.join(',') : 'motor';
+    final modesStr = _sailModes.isNotEmpty ? _sailModes.join(',') : null;
     final note = _noteCtrl.text.trim();
-    final fullNote = '[${modesStr}]${note.isNotEmpty ? " $note" : ""}';
-    final payload = _buildPayload(fullNote);
+    final payload = _buildPayload(note, modesStr);
     final attachments = await _buildAttachments();
 
     if (_existingId != null) {
@@ -309,7 +306,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airTemp: Value(double.tryParse(_airTempCtrl.text)),
         waterTemp: Value(double.tryParse(_waterTempCtrl.text)),
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
-        skipperNote: Value(fullNote),
+        skipperNote: Value(note),
+        sailMode: Value(modesStr),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
@@ -345,7 +343,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airTemp: Value(double.tryParse(_airTempCtrl.text)),
         waterTemp: Value(double.tryParse(_waterTempCtrl.text)),
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
-        skipperNote: Value(fullNote),
+        skipperNote: Value(note),
+        sailMode: Value(modesStr),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
@@ -387,7 +386,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
 
   /// Čo pôjde na server — mapovanie doménového modelu na opaque payload,
   /// ktorý `hmb_core` nikdy neinterpretuje.
-  Map<String, dynamic> _buildPayload(String note) => {
+  Map<String, dynamic> _buildPayload(String note, String? sailMode) => {
+        'sailMode': sailMode,
         'dayLogId': widget.dayLogId,
         'timestamp': _ts.toUtc().toIso8601String(),
         'latitude': _lat,

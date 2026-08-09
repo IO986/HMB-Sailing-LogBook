@@ -13,6 +13,8 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
+import '../../../../core/models/sail_mode.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -213,16 +215,8 @@ class _TrackingStatusCard extends ConsumerWidget {
 
 // ── helpers ───────────────────────────────────────────────────
 
-/// Parse [mode1,mode2] prefix from skipperNote, return (modes, cleanNote)
-({Set<String> modes, String note}) _parseNote(String? raw) {
-  if (raw == null) return (modes: {}, note: '');
-  final m = RegExp(r'^\[([^\]]*)\]\s*').firstMatch(raw);
-  if (m == null) return (modes: {}, note: raw);
-  return (
-    modes: m.group(1)!.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toSet(),
-    note: raw.substring(m.end),
-  );
-}
+({Set<String> modes, String note}) _parseEntry(LogbookEntry e) =>
+    parseSailMode(e.sailMode, e.skipperNote);
 
 enum _AnchorKind { none, dropped, raised, driftOut, driftIn }
 
@@ -246,7 +240,7 @@ class _BigIcon extends StatelessWidget {
 
 // ── Entry tile ────────────────────────────────────────────────
 
-class _EntryTile extends StatelessWidget {
+class _EntryTile extends ConsumerWidget {
   final LogbookEntry entry;
   final Future<void> Function() onDelete;
   final VoidCallback onTap;
@@ -328,7 +322,7 @@ class _EntryTile extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final fmt = DateFormat('HH:mm');
     final event   = LogbookEventType.resolve(entry.eventType, entry.skipperNote);
@@ -337,7 +331,7 @@ class _EntryTile extends StatelessWidget {
     final isAuto  = entry.isAutoEntry;
     final anchor  = _anchorKind(event);
     final eventLabel = _eventLabel(event, entry.skipperNote, l);
-    final parsed  = _parseNote(entry.skipperNote);
+    final parsed  = _parseEntry(entry);
     final note    = isFirst ? '' : (isLast ? '' : (anchor != _AnchorKind.none ? '' : parsed.note));
 
     Color? bgColor;
@@ -403,6 +397,10 @@ class _EntryTile extends StatelessWidget {
                   const _BigIcon(Icons.warning_amber, Colors.red)
                 else if (anchor == _AnchorKind.driftIn)
                   const _BigIcon(Icons.check_circle_outline, Colors.orange)
+                // Spôsob plavby má prednosť pred ikonou "automatický
+                // záznam" — práve tú informáciu skiper v prehľade hľadá.
+                else if (parsed.modes.isNotEmpty)
+                  _modeIcon(parsed.modes)
                 else if (isAuto)
                   const Icon(Icons.autorenew, size: 26, color: Colors.grey)
                 else
@@ -422,7 +420,7 @@ class _EntryTile extends StatelessWidget {
                     if (entry.sog != null) ...[
                       const Icon(Icons.speed, size: 13, color: Colors.grey),
                       const SizedBox(width: 2),
-                      Text('${entry.sog!.toStringAsFixed(1)} kn',
+                      Text(ref.watch(unitsSyncProvider).formatSpeed(entry.sog),
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                       const SizedBox(width: 8),
                     ],
@@ -447,7 +445,7 @@ class _EntryTile extends StatelessWidget {
                       if (entry.windSpeed != null) ...[
                         const Icon(Icons.air, size: 13, color: Colors.blueGrey),
                         const SizedBox(width: 2),
-                        Text('${entry.windSpeed!.toStringAsFixed(0)} kn',
+                        Text(ref.watch(unitsSyncProvider).formatWind(entry.windSpeed),
                             style: const TextStyle(fontSize: 12)),
                         const SizedBox(width: 6),
                       ],
