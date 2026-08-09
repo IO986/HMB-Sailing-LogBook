@@ -1,0 +1,44 @@
+HMB Sailing Log — build 56 (1.27.0+56)
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• Vlajkové signály prekreslené podľa ICS — každé písmeno má vlastný vzor
+• Denné znaky: opravené pravidlá COLREG (guľa-kosoštvorec-guľa, valec, kužele)
+• Núdzové kontakty podľa GPS fungujú aj bez trasovania; opravená detekcia krajiny (Istria, Slovinsko, Baleáry, Egej)
+• Prerušená plavba: vzdialenosť sa už nestráca, appka ponúkne pokračovanie
+• Nové prepínače jednotiek: vzdialenosť NM/km, rýchlosť uzly/km/h
+• Spôsob plavby (motor/plachty) sa preberá aj do automatických záznamov
+
+=== English (en-US) ===
+• Signal flags redrawn to the ICS designs — every letter now has its own pattern
+• Day shapes: COLREG rules corrected (ball-diamond-ball, cylinder, cones)
+• Emergency contacts by GPS finally work without tracking running; country detection fixed (Istria, Slovenia, Balearics, Aegean)
+• Interrupted voyage: the distance is no longer lost, the app offers to continue
+• New unit switches: distance NM/km, speed knots/km/h
+• Propulsion (engine/sails) now carries into automatic log entries
+
+=== Hrvatski (hr-HR) ===
+• Zastavni signali nacrtani prema ICS-u — svako slovo ima vlastiti uzorak
+• Dnevni znakovi: ispravljena pravila COLREG-a (kugla-romb-kugla, valjak, stošci)
+• Kontakti za nuždu prema GPS-u rade i bez pokrenutog praćenja; ispravljeno prepoznavanje države (Istra, Slovenija, Baleari, Egej)
+• Prekinuta plovidba: udaljenost se više ne gubi, aplikacija nudi nastavak
+• Nove jedinice: udaljenost NM/km, brzina čvorovi/km/h
+• Način plovidbe (motor/jedra) prenosi se i u automatske zapise
+
+=== Slovenščina (sl-SI) ===
+• Zastavni signali prerisani po ICS — vsaka črka ima svoj vzorec
+• Dnevni znaki: popravljena pravila COLREG (krogla-romb-krogla, valj, stožca)
+• Klici v sili po GPS delujejo tudi brez vklopljenega sledenja; popravljeno zaznavanje države (Istra, Slovenija, Baleari, Egejsko morje)
+• Prekinjena plovba: razdalja se ne izgubi več, aplikacija ponudi nadaljevanje
+• Novi enoti: razdalja NM/km, hitrost vozli/km/h
+• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise
+
+=== Italiano (it-IT) ===
+• Bandiere del codice ridisegnate secondo l'ICS — ogni lettera ha il suo disegno
+• Segnali diurni: regole COLREG corrette (pallone-bicono-pallone, cilindro, coni)
+• Contatti di emergenza via GPS anche senza tracciamento; rilevamento del paese corretto (Istria, Slovenia, Baleari, Egeo)
+• Navigazione interrotta: la distanza non va più persa, l'app propone di continuare
+• Nuove unità: distanza NM/km, velocità nodi/km/h
+• La propulsione (motore/vele) passa anche nelle annotazioni automatiche
