@@ -2531,7 +2531,7 @@ abstract class AppLocalizations {
   /// No description provided for @roleSkipper.
   ///
   /// In sk, this message translates to:
-  /// **'Skipper'**
+  /// **'Skiper'**
   String get roleSkipper;
 
   /// No description provided for @roleCoSkipper.
@@ -4529,7 +4529,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape\n• Po plavbe vieš pre každého člena posádky vyexportovať potvrdenie o naplávaných míľach – dni na mori, denné a nočné míle, oblasť plavby, hodnotenie zručností od skipera a QR na overenie pravosti\n• Spôsob plavby (motor/plachty) sa preberá aj do automatických zápisov – prepneš ho raz a ďalšie zápisy v ňom pokračujú, kým ho nezmeníš'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.
@@ -4601,7 +4601,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyBriefingBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.'**
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.\n• Núdzové kontakty sa vyberajú podľa aktuálnej polohy aj bez zapnutého trasovania – appka si polohu vypýta sama a pri prechode do inej krajiny čísla vymení'**
   String get guideSafetyBriefingBody;
 
   /// No description provided for @guideDutyTitle.
@@ -4637,7 +4637,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
@@ -4661,7 +4661,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.
@@ -5767,6 +5767,126 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Rýchlosť'**
   String get speed;
+
+  /// No description provided for @crewCertTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Potvrdenie o naplávaných míľach'**
+  String get crewCertTitle;
+
+  /// No description provided for @crewCertVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba'**
+  String get crewCertVoyage;
+
+  /// No description provided for @crewCertArea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Oblasť plavby'**
+  String get crewCertArea;
+
+  /// No description provided for @crewCertDayMiles.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denné míle'**
+  String get crewCertDayMiles;
+
+  /// No description provided for @crewCertNightMiles.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočné míle'**
+  String get crewCertNightMiles;
+
+  /// No description provided for @crewCertNightHours.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočné hodiny'**
+  String get crewCertNightHours;
+
+  /// No description provided for @crewCertQualifications.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kvalifikácie'**
+  String get crewCertQualifications;
+
+  /// No description provided for @crewCertAssessment.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hodnotenie skipera'**
+  String get crewCertAssessment;
+
+  /// No description provided for @crewCertStamp.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pečiatka'**
+  String get crewCertStamp;
+
+  /// No description provided for @crewCertHashCoverage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odtlačok pokrýva súhrn plavby aj hodnotenie posádky.'**
+  String get crewCertHashCoverage;
+
+  /// No description provided for @crewSkillHelming.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kormidlovanie'**
+  String get crewSkillHelming;
+
+  /// No description provided for @crewSkillNavigation.
+  ///
+  /// In sk, this message translates to:
+  /// **'Navigácia'**
+  String get crewSkillNavigation;
+
+  /// No description provided for @crewSkillHarbour.
+  ///
+  /// In sk, this message translates to:
+  /// **'Manévre v prístave'**
+  String get crewSkillHarbour;
+
+  /// No description provided for @crewSkillTeamwork.
+  ///
+  /// In sk, this message translates to:
+  /// **'Práca v tíme'**
+  String get crewSkillTeamwork;
+
+  /// No description provided for @crewSkillNightSailing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočná plavba'**
+  String get crewSkillNightSailing;
+
+  /// No description provided for @crewCertExport.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exportovať potvrdenia'**
+  String get crewCertExport;
+
+  /// No description provided for @crewCertNoteHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slovné hodnotenie (nepovinné)'**
+  String get crewCertNoteHint;
+
+  /// No description provided for @crewCertNoCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba nemá zadanú posádku. Doplň ju v karte plavby.'**
+  String get crewCertNoCrew;
+
+  /// No description provided for @crewCertNotRated.
+  ///
+  /// In sk, this message translates to:
+  /// **'nehodnotené'**
+  String get crewCertNotRated;
+
+  /// No description provided for @crewCertShared.
+  ///
+  /// In sk, this message translates to:
+  /// **'Potvrdenia vytvorené'**
+  String get crewCertShared;
 }
 
 class _AppLocalizationsDelegate

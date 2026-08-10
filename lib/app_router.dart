@@ -23,6 +23,7 @@ import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
 import 'features/sync/presentation/screens/sync_queue_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
+import 'features/miles/presentation/screens/crew_certificates_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -65,6 +66,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           charterId: int.parse(s.pathParameters['id']!))),
                   GoRoute(path: 'export',
                       builder: (c, s) => ExportScreen(
+                          charterId: int.parse(s.pathParameters['id']!))),
+                  GoRoute(path: 'crew-certificates',
+                      builder: (c, s) => CrewCertificatesScreen(
                           charterId: int.parse(s.pathParameters['id']!))),
                   GoRoute(path: 'handover/checkIn',
                       builder: (c, s) => HandoverProtocolScreen(

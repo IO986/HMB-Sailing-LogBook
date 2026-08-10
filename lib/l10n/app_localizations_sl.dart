@@ -2345,7 +2345,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu';
+      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu\n• Po plovbi lahko za vsakega člana posadke izvoziš potrdilo o preplutih miljah – dnevi na morju, dnevne in nočne milje, območje, ocena skiperja in QR za preverjanje\n• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise – nastaviš ga enkrat, naslednji ga ohranijo';
 
   @override
   String get guideMilesTitle => 'Knjiga milj';
@@ -2388,7 +2388,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF čarterja\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.';
+      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF čarterja\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.\n• Klici v sili sledijo položaju tudi brez vklopljenega sledenja – aplikacija sama zahteva položaj in ob prehodu v drugo državo zamenja številke';
 
   @override
   String get guideDutyTitle => 'Posadka na straži';
@@ -2409,7 +2409,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';
@@ -2423,7 +2423,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';
@@ -3032,4 +3032,66 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get speed => 'Hitrost';
+
+  @override
+  String get crewCertTitle => 'Potrdilo o preplutih miljah';
+
+  @override
+  String get crewCertVoyage => 'Plovba';
+
+  @override
+  String get crewCertArea => 'Območje plovbe';
+
+  @override
+  String get crewCertDayMiles => 'Dnevne milje';
+
+  @override
+  String get crewCertNightMiles => 'Nočne milje';
+
+  @override
+  String get crewCertNightHours => 'Nočne ure';
+
+  @override
+  String get crewCertQualifications => 'Kvalifikacije';
+
+  @override
+  String get crewCertAssessment => 'Ocena skiperja';
+
+  @override
+  String get crewCertStamp => 'Žig';
+
+  @override
+  String get crewCertHashCoverage =>
+      'Odtis pokriva povzetek plovbe in oceno posadke.';
+
+  @override
+  String get crewSkillHelming => 'Krmarjenje';
+
+  @override
+  String get crewSkillNavigation => 'Navigacija';
+
+  @override
+  String get crewSkillHarbour => 'Manevri v pristanišču';
+
+  @override
+  String get crewSkillTeamwork => 'Timsko delo';
+
+  @override
+  String get crewSkillNightSailing => 'Nočna plovba';
+
+  @override
+  String get crewCertExport => 'Izvozi potrdila';
+
+  @override
+  String get crewCertNoteHint => 'Opisna ocena (neobvezno)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Ta plovba nima posadke. Dodaj jo v kartici plovbe.';
+
+  @override
+  String get crewCertNotRated => 'ni ocenjeno';
+
+  @override
+  String get crewCertShared => 'Potrdila so ustvarjena';
 }

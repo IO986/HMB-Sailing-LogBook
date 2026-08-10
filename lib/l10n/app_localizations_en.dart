@@ -2341,7 +2341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -2383,7 +2383,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.\n• The emergency contacts follow your position even with tracking off – the app asks for a fix itself and swaps the numbers when you cross into another country';
 
   @override
   String get guideDutyTitle => 'Crew on duty';
@@ -2404,7 +2404,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';
@@ -2418,7 +2418,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.';
+      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3025,4 +3025,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get speed => 'Speed';
+
+  @override
+  String get crewCertTitle => 'Certificate of miles sailed';
+
+  @override
+  String get crewCertVoyage => 'Voyage';
+
+  @override
+  String get crewCertArea => 'Cruising area';
+
+  @override
+  String get crewCertDayMiles => 'Day miles';
+
+  @override
+  String get crewCertNightMiles => 'Night miles';
+
+  @override
+  String get crewCertNightHours => 'Night hours';
+
+  @override
+  String get crewCertQualifications => 'Qualifications';
+
+  @override
+  String get crewCertAssessment => 'Skipper’s assessment';
+
+  @override
+  String get crewCertStamp => 'Stamp';
+
+  @override
+  String get crewCertHashCoverage =>
+      'The fingerprint covers the voyage summary and the crew assessment.';
+
+  @override
+  String get crewSkillHelming => 'Helming';
+
+  @override
+  String get crewSkillNavigation => 'Navigation';
+
+  @override
+  String get crewSkillHarbour => 'Harbour manoeuvres';
+
+  @override
+  String get crewSkillTeamwork => 'Teamwork';
+
+  @override
+  String get crewSkillNightSailing => 'Night sailing';
+
+  @override
+  String get crewCertExport => 'Export certificates';
+
+  @override
+  String get crewCertNoteHint => 'Written assessment (optional)';
+
+  @override
+  String get crewCertNoCrew =>
+      'This voyage has no crew. Add it in the voyage card.';
+
+  @override
+  String get crewCertNotRated => 'not rated';
+
+  @override
+  String get crewCertShared => 'Certificates created';
 }

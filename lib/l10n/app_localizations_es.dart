@@ -2354,7 +2354,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa\n• Tras la travesía puedes exportar un certificado de millas para cada tripulante: días en el mar, millas de día y de noche, zona de navegación, valoración del patrón y un QR de verificación\n• La propulsión (motor/velas) pasa también a las anotaciones automáticas: la marcas una vez y las siguientes la mantienen';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -2396,7 +2396,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.\n• Los contactos de emergencia siguen tu posición aunque el seguimiento esté apagado: la aplicación pide la posición y cambia los números al pasar a otro país';
 
   @override
   String get guideDutyTitle => 'Guardia de la tripulación';
@@ -2417,7 +2417,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';
@@ -2431,7 +2431,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';
@@ -3041,4 +3041,66 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get speed => 'Velocidad';
+
+  @override
+  String get crewCertTitle => 'Certificado de millas navegadas';
+
+  @override
+  String get crewCertVoyage => 'Travesía';
+
+  @override
+  String get crewCertArea => 'Zona de navegación';
+
+  @override
+  String get crewCertDayMiles => 'Millas de día';
+
+  @override
+  String get crewCertNightMiles => 'Millas de noche';
+
+  @override
+  String get crewCertNightHours => 'Horas nocturnas';
+
+  @override
+  String get crewCertQualifications => 'Titulaciones';
+
+  @override
+  String get crewCertAssessment => 'Valoración del patrón';
+
+  @override
+  String get crewCertStamp => 'Sello';
+
+  @override
+  String get crewCertHashCoverage =>
+      'La huella cubre el resumen de la travesía y la valoración de la tripulación.';
+
+  @override
+  String get crewSkillHelming => 'Timonear';
+
+  @override
+  String get crewSkillNavigation => 'Navegación';
+
+  @override
+  String get crewSkillHarbour => 'Maniobras en puerto';
+
+  @override
+  String get crewSkillTeamwork => 'Trabajo en equipo';
+
+  @override
+  String get crewSkillNightSailing => 'Navegación nocturna';
+
+  @override
+  String get crewCertExport => 'Exportar certificados';
+
+  @override
+  String get crewCertNoteHint => 'Valoración escrita (opcional)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Esta travesía no tiene tripulación. Añádela en la ficha de la travesía.';
+
+  @override
+  String get crewCertNotRated => 'sin valorar';
+
+  @override
+  String get crewCertShared => 'Certificados creados';
 }

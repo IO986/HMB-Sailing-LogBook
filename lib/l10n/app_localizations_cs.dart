@@ -2340,7 +2340,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě';
+      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě\n• Po plavbě můžeš pro každého člena posádky vyexportovat potvrzení o naplavaných mílích – dny na moři, denní a noční míle, oblast plavby, hodnocení od skippera a QR pro ověření\n• Způsob plavby (motor/plachty) se přebírá i do automatických zápisů – přepneš ho jednou a další zápisy v něm pokračují';
 
   @override
   String get guideMilesTitle => 'Kniha mil';
@@ -2382,7 +2382,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu charteru\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.';
+      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu charteru\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.\n• Nouzové kontakty se vybírají podle aktuální polohy i bez zapnutého trasování – aplikace si polohu vyžádá sama a při přechodu do jiné země čísla vymění';
 
   @override
   String get guideDutyTitle => 'Služba posádky';
@@ -2403,7 +2403,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)';
+      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt';
 
   @override
   String get guideBackupTitle => 'Záloha a obnova dat';
@@ -2417,7 +2417,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber charter\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber charter\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3025,4 +3025,66 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get speed => 'Rychlost';
+
+  @override
+  String get crewCertTitle => 'Potvrzení o naplavaných mílích';
+
+  @override
+  String get crewCertVoyage => 'Plavba';
+
+  @override
+  String get crewCertArea => 'Oblast plavby';
+
+  @override
+  String get crewCertDayMiles => 'Denní míle';
+
+  @override
+  String get crewCertNightMiles => 'Noční míle';
+
+  @override
+  String get crewCertNightHours => 'Noční hodiny';
+
+  @override
+  String get crewCertQualifications => 'Kvalifikace';
+
+  @override
+  String get crewCertAssessment => 'Hodnocení skippera';
+
+  @override
+  String get crewCertStamp => 'Razítko';
+
+  @override
+  String get crewCertHashCoverage =>
+      'Otisk pokrývá souhrn plavby i hodnocení posádky.';
+
+  @override
+  String get crewSkillHelming => 'Kormidlování';
+
+  @override
+  String get crewSkillNavigation => 'Navigace';
+
+  @override
+  String get crewSkillHarbour => 'Manévry v přístavu';
+
+  @override
+  String get crewSkillTeamwork => 'Práce v týmu';
+
+  @override
+  String get crewSkillNightSailing => 'Noční plavba';
+
+  @override
+  String get crewCertExport => 'Exportovat potvrzení';
+
+  @override
+  String get crewCertNoteHint => 'Slovní hodnocení (nepovinné)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Plavba nemá zadanou posádku. Doplň ji v kartě plavby.';
+
+  @override
+  String get crewCertNotRated => 'nehodnoceno';
+
+  @override
+  String get crewCertShared => 'Potvrzení vytvořena';
 }

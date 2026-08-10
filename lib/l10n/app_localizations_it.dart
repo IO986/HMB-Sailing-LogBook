@@ -2362,7 +2362,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa';
+      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono';
 
   @override
   String get guideMilesTitle => 'Libretto delle miglia';
@@ -2404,7 +2404,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La scheda Sicurezza contiene anche delle schede di consultazione.\n\n• Briefing di sicurezza – lista di controllo per l\'equipaggio prima della partenza\n• Ogni membro dell\'equipaggio firma con la propria firma sullo schermo\n• Le firme vengono salvate e incluse automaticamente nell\'esportazione PDF del charter\n• Lista di riconsegna – panoramica delle voci di check-in/check-out, disponibile anche senza una navigazione aperta\n• Scheda MAYDAY – procedura per la chiamata di soccorso sul canale VHF 16\n• COLREG – regole per prevenire gli abbordi in mare (disponibili in slovacco e inglese; le altre lingue mostrano il testo inglese)\n• Contatti – numeri e contatti di emergenza\n\nNota: il tracciamento si può avviare in qualsiasi momento, anche senza aver completato il briefing – l\'app si limita a ricordartelo con l\'etichetta \"Manca il briefing di sicurezza\" nel Giornale finché non è fatto. Il briefing richiede che la scheda imbarcazione ed equipaggio sia già compilata e può essere salvato solo quando ogni membro dell\'equipaggio ha firmato.';
+      'La scheda Sicurezza contiene anche delle schede di consultazione.\n\n• Briefing di sicurezza – lista di controllo per l\'equipaggio prima della partenza\n• Ogni membro dell\'equipaggio firma con la propria firma sullo schermo\n• Le firme vengono salvate e incluse automaticamente nell\'esportazione PDF del charter\n• Lista di riconsegna – panoramica delle voci di check-in/check-out, disponibile anche senza una navigazione aperta\n• Scheda MAYDAY – procedura per la chiamata di soccorso sul canale VHF 16\n• COLREG – regole per prevenire gli abbordi in mare (disponibili in slovacco e inglese; le altre lingue mostrano il testo inglese)\n• Contatti – numeri e contatti di emergenza\n\nNota: il tracciamento si può avviare in qualsiasi momento, anche senza aver completato il briefing – l\'app si limita a ricordartelo con l\'etichetta \"Manca il briefing di sicurezza\" nel Giornale finché non è fatto. Il briefing richiede che la scheda imbarcazione ed equipaggio sia già compilata e può essere salvato solo quando ogni membro dell\'equipaggio ha firmato.\n• I contatti di emergenza seguono la posizione anche senza tracciamento: l’app richiede da sola il punto nave e cambia i numeri quando passi in un altro paese';
 
   @override
   String get guideDutyTitle => 'Equipaggio di guardia';
@@ -2425,7 +2425,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)';
+      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';
@@ -2439,7 +2439,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona un charter\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona un charter\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';
@@ -3051,4 +3051,66 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get speed => 'Velocità';
+
+  @override
+  String get crewCertTitle => 'Attestato delle miglia navigate';
+
+  @override
+  String get crewCertVoyage => 'Navigazione';
+
+  @override
+  String get crewCertArea => 'Zona di navigazione';
+
+  @override
+  String get crewCertDayMiles => 'Miglia diurne';
+
+  @override
+  String get crewCertNightMiles => 'Miglia notturne';
+
+  @override
+  String get crewCertNightHours => 'Ore notturne';
+
+  @override
+  String get crewCertQualifications => 'Qualifiche';
+
+  @override
+  String get crewCertAssessment => 'Valutazione dello skipper';
+
+  @override
+  String get crewCertStamp => 'Timbro';
+
+  @override
+  String get crewCertHashCoverage =>
+      'L’impronta copre il riepilogo della navigazione e la valutazione dell’equipaggio.';
+
+  @override
+  String get crewSkillHelming => 'Timoneria';
+
+  @override
+  String get crewSkillNavigation => 'Navigazione';
+
+  @override
+  String get crewSkillHarbour => 'Manovre in porto';
+
+  @override
+  String get crewSkillTeamwork => 'Lavoro di squadra';
+
+  @override
+  String get crewSkillNightSailing => 'Navigazione notturna';
+
+  @override
+  String get crewCertExport => 'Esporta attestati';
+
+  @override
+  String get crewCertNoteHint => 'Valutazione descrittiva (facoltativa)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Questa navigazione non ha equipaggio. Aggiungilo nella scheda.';
+
+  @override
+  String get crewCertNotRated => 'non valutato';
+
+  @override
+  String get crewCertShared => 'Attestati creati';
 }

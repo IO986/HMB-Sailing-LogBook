@@ -11,6 +11,8 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
 import '../../../core/models/logbook_event_type.dart';
 import '../../../core/models/sail_mode.dart';
+import '../../miles/services/voyage_miles_summary.dart';
+import '../../../core/models/crew_member_ref.dart';
 import '../../../core/services/units_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
@@ -1587,6 +1589,238 @@ class PdfExportService {
   }
 
   // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
+
+  /// Potvrdenie o naplávaných míľach pre jedného člena posádky.
+  ///
+  /// Jeden súbor na človeka: potvrdenie sa posiela jemu, nie celej posádke.
+  /// Nesie rovnaký integritný blok ako ostatné exporty (sha256 + QR), aby sa
+  /// dalo overiť, že s ním nikto nehýbal — to je celý zmysel dokumentu, ktorý
+  /// niekto predloží škole alebo charterovej firme.
+  static Future<Uint8List> buildCrewMilesCertificate({
+    required AppLocalizations l,
+    required Charter charter,
+    required CrewMemberRef crew,
+    required VoyageMilesSummary summary,
+    CrewAssessment? assessment,
+    Uint8List? skipperSignature,
+  }) async {
+    final docId = 'HMBSL-CREW-${charter.id}-${_pdfText(crew.name).replaceAll(' ', '')}';
+    const rev = 0;
+    final fmt = DateFormat('d.M.yyyy');
+    final period = summary.dateFrom == null
+        ? fmt.format(charter.dateFrom)
+        : '${fmt.format(summary.dateFrom!)} – ${fmt.format(summary.dateTo ?? summary.dateFrom!)}';
+
+    final canonical = StringBuffer()
+      ..writeln('docId:$docId')
+      ..writeln('rev:$rev')
+      ..writeln('charter:${charter.id}')
+      ..writeln('crew:${crew.name}')
+      ..writeln('role:${crew.role}')
+      ..writeln('days:${summary.daysAtSea}')
+      ..writeln('dayNm:${summary.dayNm.toStringAsFixed(2)}')
+      ..writeln('nightNm:${summary.nightNm.toStringAsFixed(2)}')
+      ..writeln('nightHours:${summary.nightHours.toStringAsFixed(2)}')
+      ..writeln('area:${summary.area ?? ''}')
+      ..writeln('skills:${assessment == null ? '' : [
+            assessment.helming,
+            assessment.navigation,
+            assessment.harbourManoeuvres,
+            assessment.teamwork,
+            assessment.nightSailing,
+          ].join(',')}')
+      ..writeln('note:${assessment?.note ?? ''}');
+    final hash = sha256.convert(utf8.encode(canonical.toString())).toString();
+    final qrData = 'HMB-LOG:v2'
+        '|id:$docId'
+        '|rev:$rev'
+        '|crew:${_pdfText(crew.name)}'
+        '|nm:${summary.totalNm.toStringAsFixed(1)}'
+        '|sha256:${hash.substring(0, 12)}';
+
+    final pdf = pw.Document(
+      theme: await _theme(),
+      title: l.crewCertTitle,
+      creator: 'HMB Sailing Log',
+    );
+
+    final skills = <(String, int?)>[
+      (l.crewSkillHelming, assessment?.helming),
+      (l.crewSkillNavigation, assessment?.navigation),
+      (l.crewSkillHarbour, assessment?.harbourManoeuvres),
+      (l.crewSkillTeamwork, assessment?.teamwork),
+      (l.crewSkillNightSailing, assessment?.nightSailing),
+    ];
+
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      footer: (ctx) => _footer(
+        'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        docId: docId,
+        revision: rev,
+      ),
+      build: (ctx) => [
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(16),
+          decoration: pw.BoxDecoration(
+              color: _navy,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
+          child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+            pw.Text(_pdfText(l.crewCertTitle).toUpperCase(),
+                style: pw.TextStyle(
+                    color: PdfColors.white,
+                    fontSize: 14,
+                    fontWeight: pw.FontWeight.bold,
+                    letterSpacing: 1)),
+            pw.SizedBox(height: 4),
+            pw.Text(_pdfText(crew.name),
+                style: pw.TextStyle(color: PdfColors.white, fontSize: 18)),
+            pw.Text(
+                '${_pdfText(crew.roleLabel(l))}  ·  ${_pdfText(charter.title)}  ·  $period',
+                style: pw.TextStyle(color: PdfColors.grey300, fontSize: 10)),
+          ]),
+        ),
+        pw.SizedBox(height: 14),
+
+        // ── Súhrn plavby ──
+        pw.Row(children: [
+          _statBox('DNI NA\nMORI', '${summary.daysAtSea}', _green),
+          pw.SizedBox(width: 6),
+          _statBox('${_pdfText(l.crewCertDayMiles).toUpperCase()}\n${units.distanceLabel.toUpperCase()}',
+              units.distanceValue(summary.dayNm).toStringAsFixed(1), _blue),
+          pw.SizedBox(width: 6),
+          _statBox('${_pdfText(l.crewCertNightMiles).toUpperCase()}\n${units.distanceLabel.toUpperCase()}',
+              units.distanceValue(summary.nightNm).toStringAsFixed(1), _navy),
+          pw.SizedBox(width: 6),
+          _statBox('SPOLU\n${units.distanceLabel.toUpperCase()}',
+              units.distanceValue(summary.totalNm).toStringAsFixed(1), _dgrey),
+        ]),
+        pw.SizedBox(height: 12),
+
+        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+          pw.Expanded(child: _infoBox(_pdfText(l.crewCertVoyage).toUpperCase(), [
+            '${_pdfText(l.pdfVesselLabel)}: ${_pdfText(charter.vesselName ?? '-')}',
+            '${_pdfText(l.crewCertArea)}: ${_pdfText(summary.area ?? '-')}',
+            '${_pdfText(l.crewCertNightHours)}: ${summary.nightHours.toStringAsFixed(1)} h',
+            if (charter.route != null) _pdfText(charter.route!),
+          ])),
+          pw.SizedBox(width: 8),
+          pw.Expanded(child: _infoBox(_pdfText(l.crewCertQualifications).toUpperCase(), [
+            if (crew.boatLicence != null) _pdfText(crew.boatLicence!),
+            if (crew.radioLicence != null) _pdfText(crew.radioLicence!),
+            if (crew.otherCerts != null) _pdfText(crew.otherCerts!),
+            if (crew.boatLicence == null &&
+                crew.radioLicence == null &&
+                crew.otherCerts == null)
+              '-',
+          ])),
+        ]),
+        pw.SizedBox(height: 14),
+
+        // ── Hodnotenie skipera ──
+        pw.Text(_pdfText(l.crewCertAssessment).toUpperCase(),
+            style: pw.TextStyle(
+                color: _navy, fontSize: 9, fontWeight: pw.FontWeight.bold, letterSpacing: 1)),
+        pw.SizedBox(height: 6),
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          columnWidths: const {0: pw.FlexColumnWidth(3), 1: pw.FlexColumnWidth(2)},
+          children: [
+            for (final (label, value) in skills)
+              pw.TableRow(children: [
+                _cell(_pdfText(label)),
+                _cell(value == null ? '-' : '$value / 5'),
+              ]),
+          ],
+        ),
+        if (assessment?.note != null && assessment!.note!.trim().isNotEmpty) ...[
+          pw.SizedBox(height: 10),
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.all(10),
+            decoration: pw.BoxDecoration(
+                color: PdfColor.fromHex('#F7F9FC'),
+                borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4))),
+            child: pw.Text(_pdfText(assessment.note!),
+                style: const pw.TextStyle(fontSize: 10)),
+          ),
+        ],
+        pw.SizedBox(height: 18),
+
+        // ── Podpis skipera ──
+        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
+          pw.Expanded(
+            child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+              if (skipperSignature != null)
+                pw.Container(
+                  height: 70,
+                  alignment: pw.Alignment.centerLeft,
+                  child: pw.Image(pw.MemoryImage(skipperSignature),
+                      fit: pw.BoxFit.contain),
+                )
+              else
+                pw.SizedBox(height: 70),
+              pw.Container(width: 200, height: 0.7, color: PdfColors.grey600),
+              pw.SizedBox(height: 3),
+              pw.Text(_pdfText(charter.skipperName ?? l.pdfSkipperSignature),
+                  style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+              if (charter.captainQualification != null)
+                pw.Text(_pdfText(charter.captainQualification!),
+                    style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+            ]),
+          ),
+          pw.SizedBox(width: 16),
+          pw.Container(
+            width: 130,
+            height: 90,
+            decoration: pw.BoxDecoration(
+                border: pw.Border.all(color: PdfColors.grey400, width: 0.7)),
+            alignment: pw.Alignment.center,
+            child: pw.Text(_pdfText(l.crewCertStamp),
+                style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+          ),
+        ]),
+        pw.SizedBox(height: 16),
+        pw.Divider(color: PdfColors.grey300),
+
+        // ── Integrita ──
+        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+          pw.Expanded(
+            child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+              pw.Text(l.pdfIntegrityCheck.toUpperCase(),
+                  style: pw.TextStyle(
+                      color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
+              pw.SizedBox(height: 5),
+              pw.Text(l.pdfSha256Label, style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
+              pw.SizedBox(height: 3),
+              pw.Text(hash.substring(0, 32),
+                  style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
+              pw.Text(hash.substring(32),
+                  style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 6),
+              pw.Text(l.crewCertHashCoverage,
+                  style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+            ]),
+          ),
+          pw.SizedBox(width: 16),
+          pw.Column(children: [
+            pw.BarcodeWidget(
+              barcode: Barcode.qrCode(errorCorrectLevel: BarcodeQRCorrectionLevel.medium),
+              data: qrData,
+              width: 80,
+              height: 80,
+            ),
+            pw.SizedBox(height: 3),
+            pw.Text(l.pdfVerifyQr, style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+          ]),
+        ]),
+      ],
+    ));
+
+    return pdf.save();
+  }
 
   static Future<Uint8List> exportMilesCertificate({
     required AppLocalizations l,

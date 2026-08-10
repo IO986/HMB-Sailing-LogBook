@@ -2347,7 +2347,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie';
+      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują';
 
   @override
   String get guideMilesTitle => 'Książka mil';
@@ -2389,7 +2389,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF czarteru\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.';
+      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF czarteru\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.\n• Kontakty alarmowe dobierają się według pozycji nawet przy wyłączonym śledzeniu – aplikacja sama pobiera pozycję i zmienia numery po przekroczeniu granicy';
 
   @override
   String get guideDutyTitle => 'Wachta załogi';
@@ -2410,7 +2410,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';
@@ -2424,7 +2424,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz czarter\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz czarter\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3032,4 +3032,66 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get speed => 'Prędkość';
+
+  @override
+  String get crewCertTitle => 'Potwierdzenie przepłyniętych mil';
+
+  @override
+  String get crewCertVoyage => 'Rejs';
+
+  @override
+  String get crewCertArea => 'Akwen';
+
+  @override
+  String get crewCertDayMiles => 'Mile dzienne';
+
+  @override
+  String get crewCertNightMiles => 'Mile nocne';
+
+  @override
+  String get crewCertNightHours => 'Godziny nocne';
+
+  @override
+  String get crewCertQualifications => 'Kwalifikacje';
+
+  @override
+  String get crewCertAssessment => 'Ocena skipera';
+
+  @override
+  String get crewCertStamp => 'Pieczątka';
+
+  @override
+  String get crewCertHashCoverage =>
+      'Odcisk obejmuje podsumowanie rejsu i ocenę załogi.';
+
+  @override
+  String get crewSkillHelming => 'Sterowanie';
+
+  @override
+  String get crewSkillNavigation => 'Nawigacja';
+
+  @override
+  String get crewSkillHarbour => 'Manewry portowe';
+
+  @override
+  String get crewSkillTeamwork => 'Praca w zespole';
+
+  @override
+  String get crewSkillNightSailing => 'Żegluga nocna';
+
+  @override
+  String get crewCertExport => 'Eksportuj potwierdzenia';
+
+  @override
+  String get crewCertNoteHint => 'Ocena opisowa (opcjonalnie)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Ten rejs nie ma załogi. Dodaj ją w karcie rejsu.';
+
+  @override
+  String get crewCertNotRated => 'nie oceniono';
+
+  @override
+  String get crewCertShared => 'Potwierdzenia utworzone';
 }

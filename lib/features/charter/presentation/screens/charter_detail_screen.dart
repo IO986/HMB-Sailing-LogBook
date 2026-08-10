@@ -71,6 +71,14 @@ class CharterDetailScreen extends ConsumerWidget {
                   context.go('/map');
                 },
               ),
+              // Potvrdenia o naplávaných míľach pre posádku — vlastný export,
+              // lebo ide inému adresátovi než denník plavby.
+              IconButton(
+                icon: const Icon(Icons.workspace_premium_outlined),
+                tooltip: l.crewCertTitle,
+                onPressed: () =>
+                    context.go('/logbook/$charterId/crew-certificates'),
+              ),
               IconButton(
                 icon: const Icon(Icons.picture_as_pdf),
                 onPressed: () => context.go('/logbook/$charterId/export'),

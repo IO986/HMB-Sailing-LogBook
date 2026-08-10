@@ -199,6 +199,25 @@ class Waypoints extends Table {
 }
 
 /// Podpisy posádky na safety briefingu
+/// Hodnotenie člena posádky od skipera po plavbe (RYA štýl).
+///
+/// Zručnosti sú 1–5, NULL znamená "neriešené" — skiper nemusí hodnotiť to,
+/// čo počas plavby nevidel. Jeden riadok na dvojicu (plavba, člen posádky);
+/// posádka nemá vlastnú tabuľku, drží sa v Charters.crewJson, preto je
+/// kľúčom meno.
+class CrewAssessments extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get charterId => integer().references(Charters, #id)();
+  TextColumn get crewName => text()();
+  IntColumn get helming => integer().nullable()();
+  IntColumn get navigation => integer().nullable()();
+  IntColumn get harbourManoeuvres => integer().nullable()();
+  IntColumn get teamwork => integer().nullable()();
+  IntColumn get nightSailing => integer().nullable()();
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
 class CrewSignatures extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get charterId => integer().references(Charters, #id)();
@@ -375,6 +394,7 @@ class OutboxRows extends Table {
 @DriftDatabase(tables: [
   Charters, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
+  CrewAssessments,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
   DutyPeriods,
 ])
@@ -385,7 +405,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -526,6 +546,9 @@ class AppDatabase extends _$AppDatabase {
           "WHERE skipper_note LIKE '[%]%'",
         );
       }
+      if (from < 23) {
+        await m.createTable(crewAssessments);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -575,6 +598,8 @@ class AppDatabase extends _$AppDatabase {
     await deleteSignaturesForCharter(id);
     await deleteHandoverProtocolsForCharter(id);
     await deleteDutyPeriodsForCharter(id);
+    // Bez tohto by FK zhodilo mazanie plavby, ktorej posádku skiper hodnotil.
+    await (delete(crewAssessments)..where((a) => a.charterId.equals(id))).go();
     await (delete(charters)..where((c) => c.id.equals(id))).go();
   }
 
@@ -788,6 +813,35 @@ class AppDatabase extends _$AppDatabase {
       debugPrint('[DB] Fixed ${active.length - 1} orphaned sessions');
     }
   }
+
+  // ── Crew assessments ─────────────────────────────────────────
+
+  Future<List<CrewAssessment>> getCrewAssessments(int charterId) =>
+      (select(crewAssessments)..where((a) => a.charterId.equals(charterId)))
+          .get();
+
+  Future<CrewAssessment?> getCrewAssessment(int charterId, String crewName) =>
+      (select(crewAssessments)
+            ..where((a) => a.charterId.equals(charterId) & a.crewName.equals(crewName))
+            ..limit(1))
+          .getSingleOrNull();
+
+  /// Uloží hodnotenie; kľúčom je dvojica (plavba, meno). Meno sa dá v karte
+  /// plavby prepísať, takže staré hodnotenie sa nespáruje — to je vedomé,
+  /// hodnotenie patrí konkrétnemu človeku, nie riadku v zozname.
+  Future<void> upsertCrewAssessment(CrewAssessmentsCompanion entry) async {
+    final existing =
+        await getCrewAssessment(entry.charterId.value, entry.crewName.value);
+    if (existing == null) {
+      await into(crewAssessments).insert(entry);
+      return;
+    }
+    await (update(crewAssessments)..where((a) => a.id.equals(existing.id)))
+        .write(entry);
+  }
+
+  Future<void> deleteCrewAssessment(int id) =>
+      (delete(crewAssessments)..where((a) => a.id.equals(id))).go();
 
   // ── Waypoints ─────────────────────────────────────────────────
 

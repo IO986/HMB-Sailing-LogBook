@@ -2360,7 +2360,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -2402,7 +2402,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.\n• Die Notfallkontakte richten sich nach der Position, auch ohne laufende Aufzeichnung – die App holt sich die Position selbst und wechselt die Nummern beim Grenzübertritt';
 
   @override
   String get guideDutyTitle => 'Wachdienst';
@@ -2423,7 +2423,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';
@@ -2437,7 +2437,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';
@@ -3045,4 +3045,66 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get speed => 'Geschwindigkeit';
+
+  @override
+  String get crewCertTitle => 'Bescheinigung über gesegelte Seemeilen';
+
+  @override
+  String get crewCertVoyage => 'Fahrt';
+
+  @override
+  String get crewCertArea => 'Fahrtgebiet';
+
+  @override
+  String get crewCertDayMiles => 'Tagesmeilen';
+
+  @override
+  String get crewCertNightMiles => 'Nachtmeilen';
+
+  @override
+  String get crewCertNightHours => 'Nachtstunden';
+
+  @override
+  String get crewCertQualifications => 'Qualifikationen';
+
+  @override
+  String get crewCertAssessment => 'Bewertung des Skippers';
+
+  @override
+  String get crewCertStamp => 'Stempel';
+
+  @override
+  String get crewCertHashCoverage =>
+      'Der Fingerabdruck deckt die Fahrtübersicht und die Crewbewertung ab.';
+
+  @override
+  String get crewSkillHelming => 'Rudergehen';
+
+  @override
+  String get crewSkillNavigation => 'Navigation';
+
+  @override
+  String get crewSkillHarbour => 'Hafenmanöver';
+
+  @override
+  String get crewSkillTeamwork => 'Teamarbeit';
+
+  @override
+  String get crewSkillNightSailing => 'Nachtfahrt';
+
+  @override
+  String get crewCertExport => 'Bescheinigungen exportieren';
+
+  @override
+  String get crewCertNoteHint => 'Schriftliche Bewertung (optional)';
+
+  @override
+  String get crewCertNoCrew =>
+      'Diese Fahrt hat keine Crew. Trage sie in der Fahrtkarte ein.';
+
+  @override
+  String get crewCertNotRated => 'nicht bewertet';
+
+  @override
+  String get crewCertShared => 'Bescheinigungen erstellt';
 }
