@@ -22,6 +22,13 @@ void main() {
         vesselName: 'Bavaria 46',
         skipperName: 'Ján Novák',
         cruisingArea: 'Stredná Dalmácia',
+        vesselLengthM: 14.2,
+        vesselBeamM: 4.35,
+        vesselDraftM: 1.95,
+        callsign: 'OM1ABC',
+        mmsi: '256123456',
+        vesselFlag: 'SVK',
+        tidalWaters: false,
         captainQualification: 'RYA Yachtmaster',
         safetyBriefingDone: true,
         checkInDone: true,
@@ -113,6 +120,30 @@ void main() {
       crew: const CrewMemberRef(name: 'Ján Novák', role: 'skipper'),
       summary: summary,
       assessment: assessment(),
+    );
+
+    expect(bytes.length, greaterThan(1000));
+  });
+
+  test('a vessel without dimensions or registration still renders', () async {
+    // Those lines are dropped rather than printed empty.
+    final bare = Charter(
+      id: 8,
+      title: 'Plavba',
+      dateFrom: start,
+      dateTo: start,
+      safetyBriefingDone: false,
+      checkInDone: false,
+      checkOutDone: false,
+      createdAt: start,
+      pdfRevision: 0,
+      source: 'live',
+    );
+    final bytes = await PdfExportService.buildCrewMilesCertificate(
+      l: await l10n('sk'),
+      charter: bare,
+      crew: crew,
+      summary: summary,
     );
 
     expect(bytes.length, greaterThan(1000));

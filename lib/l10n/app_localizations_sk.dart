@@ -2343,7 +2343,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape\n• Po plavbe vieš pre každého člena posádky vyexportovať potvrdenie o naplávaných míľach – dni na mori, denné a nočné míle, oblasť plavby, hodnotenie zručností od skipera a QR na overenie pravosti\n• Spôsob plavby (motor/plachty) sa preberá aj do automatických zápisov – prepneš ho raz a ďalšie zápisy v ňom pokračujú, kým ho nezmeníš';
+      'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape\n• Po plavbe vieš pre každého člena posádky vyexportovať potvrdenie o naplávaných míľach – dni na mori, denné a nočné míle, oblasť plavby, hodnotenie zručností od skipera a QR na overenie pravosti\n• Spôsob plavby (motor/plachty) sa preberá aj do automatických zápisov – prepneš ho raz a ďalšie zápisy v ňom pokračujú, kým ho nezmeníš\n• Potvrdenie je dvojjazyčné (tvoj jazyk + angličtina), obsahuje rozmery a registráciu lode, typ vôd (prílivové/neprílivové) a kolonku na číslo pasu alebo OP; dá sa zdieľať aj uložiť priamo do telefónu';
 
   @override
   String get guideMilesTitle => 'Kniha míľ';
@@ -3097,4 +3097,31 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Skiper hodnotí posádku — sám sa nehodnotí. Potvrdenie o míľach dostane tiež.';
+
+  @override
+  String get crewCertVesselSize => 'Rozmery lode';
+
+  @override
+  String get crewCertVesselRegistration => 'Registrácia';
+
+  @override
+  String get crewCertWaters => 'Vody';
+
+  @override
+  String get crewCertWatersTidal => 'prílivové';
+
+  @override
+  String get crewCertWatersNonTidal => 'neprílivové';
+
+  @override
+  String get crewCertIdDocument => 'Číslo pasu / OP';
+
+  @override
+  String get crewCertDaysAtSea => 'Dni na mori';
+
+  @override
+  String get crewCertTotal => 'Spolu';
+
+  @override
+  String get crewCertWatersLabel => 'Typ vôd';
 }

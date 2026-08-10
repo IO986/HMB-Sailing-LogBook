@@ -2360,7 +2360,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei\n• Die Bescheinigung ist zweisprachig (deine Sprache + Englisch) und enthält Schiffsmaße und Registrierung, die Gewässerart (Tidengewässer/tidenfrei) und eine Zeile für die Pass- oder Ausweisnummer; teilen oder direkt aufs Telefon speichern';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -3114,4 +3114,31 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Der Skipper bewertet die Crew und wird nicht bewertet. Eine Meilenbescheinigung bekommt er trotzdem.';
+
+  @override
+  String get crewCertVesselSize => 'Schiffsmaße';
+
+  @override
+  String get crewCertVesselRegistration => 'Registrierung';
+
+  @override
+  String get crewCertWaters => 'Gewässer';
+
+  @override
+  String get crewCertWatersTidal => 'Tidengewässer';
+
+  @override
+  String get crewCertWatersNonTidal => 'tidenfrei';
+
+  @override
+  String get crewCertIdDocument => 'Pass- / Ausweisnummer';
+
+  @override
+  String get crewCertDaysAtSea => 'Seetage';
+
+  @override
+  String get crewCertTotal => 'Gesamt';
+
+  @override
+  String get crewCertWatersLabel => 'Gewässerart';
 }

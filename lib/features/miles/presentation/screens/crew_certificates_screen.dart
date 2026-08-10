@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -71,7 +72,8 @@ class _CrewCertificatesScreenState
     }
   }
 
-  Future<void> _export(Charter charter, List<CrewMemberRef> crew) async {
+  Future<void> _export(Charter charter, List<CrewMemberRef> crew,
+      {required bool saveToDevice}) async {
     setState(() => _busy = true);
     final l = AppLocalizations.of(context);
     final db = ref.read(databaseProvider);
@@ -109,6 +111,8 @@ class _CrewCertificatesScreenState
               : await db.getCrewAssessment(charter.id, member.name),
           skipperSignature: signature,
         );
+        // Kópia v priečinku appky ostáva vždy — potvrdenie sa dá znova
+        // nájsť aj keď užívateľ zdieľanie zruší.
         final file = await ExportService().saveBytesLocally(
           bytes,
           '${charter.title} ${member.name}',
@@ -116,10 +120,20 @@ class _CrewCertificatesScreenState
           charterTitle: charter.title,
         );
         files.add(XFile(file.path));
+
+        if (saveToDevice) {
+          await FilePicker.platform.saveFile(
+            dialogTitle: l.saveToDevice,
+            fileName: _fileName(charter, member),
+            bytes: bytes,
+          );
+        }
       }
 
       if (!mounted) return;
-      await Share.shareXFiles(files, subject: l.crewCertTitle);
+      if (!saveToDevice) {
+        await Share.shareXFiles(files, subject: l.crewCertTitle);
+      }
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l.crewCertShared)));
@@ -132,6 +146,23 @@ class _CrewCertificatesScreenState
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  /// Meno súboru pri ukladaní do zariadenia — človek si ho hľadá medzi
+  /// stiahnutými, tak nesie plavbu aj meno člena posádky.
+  String _fileName(Charter charter, CrewMemberRef member) {
+    String slug(String s) => s
+        .replaceAll(RegExp(r'[^\w\s-]'), '')
+        .replaceAll(RegExp(r'\s+'), '_');
+    return 'HMB_Mile_${slug(charter.title)}_${slug(member.name)}.pdf';
+  }
+
+  Future<void> _setTidal(Charter charter, bool? value) async {
+    await ref.read(databaseProvider).updateCharter(ChartersCompanion(
+          id: Value(charter.id),
+          tidalWaters: Value(value),
+        ));
+    ref.invalidate(chartersProvider);
   }
 
   @override
@@ -174,6 +205,37 @@ class _CrewCertificatesScreenState
           return ListView(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 96),
             children: [
+              Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l.crewCertWatersLabel,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 13)),
+                        const SizedBox(height: 8),
+                        // Školy a RYA rozlišujú prílivové a neprílivové míle,
+                        // preto to ide na potvrdenie.
+                        SegmentedButton<int>(
+                          segments: [
+                            ButtonSegment(
+                                value: 1, label: Text(l.crewCertWatersTidal)),
+                            ButtonSegment(
+                                value: 0,
+                                label: Text(l.crewCertWatersNonTidal)),
+                          ],
+                          emptySelectionAllowed: true,
+                          selected: charter.tidalWaters == null
+                              ? const <int>{}
+                              : {charter.tidalWaters! ? 1 : 0},
+                          onSelectionChanged: (sel) => _setTidal(
+                              charter, sel.isEmpty ? null : sel.first == 1),
+                        ),
+                      ]),
+                ),
+              ),
               for (final member in crew)
                 _CrewCard(
                   member: member,
@@ -195,16 +257,30 @@ class _CrewCertificatesScreenState
                   skipperName: charter.skipperName,
                   crewNames: charter.crewNames);
               if (crew.isEmpty) return const SizedBox();
-              return FloatingActionButton.extended(
-                onPressed: _busy ? null : () => _export(charter, crew),
-                icon: _busy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.picture_as_pdf),
-                label: Text(l.crewCertExport),
-              );
+              return Row(mainAxisSize: MainAxisSize.min, children: [
+                FloatingActionButton(
+                  heroTag: 'crewCertSave',
+                  tooltip: l.saveToDevice,
+                  onPressed: _busy
+                      ? null
+                      : () => _export(charter, crew, saveToDevice: true),
+                  child: const Icon(Icons.save_alt),
+                ),
+                const SizedBox(width: 12),
+                FloatingActionButton.extended(
+                  heroTag: 'crewCertShare',
+                  onPressed: _busy
+                      ? null
+                      : () => _export(charter, crew, saveToDevice: false),
+                  icon: _busy
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.picture_as_pdf),
+                  label: Text(l.crewCertExport),
+                ),
+              ]);
             }),
       ),
     );

@@ -2362,7 +2362,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono';
+      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono\n• L’attestato è bilingue (la tua lingua + inglese), riporta dimensioni e registrazione dell’imbarcazione, il tipo di acque (con o senza marea) e una riga per il numero di passaporto o carta d’identità; puoi condividerlo o salvarlo sul telefono';
 
   @override
   String get guideMilesTitle => 'Libretto delle miglia';
@@ -3120,4 +3120,31 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Lo skipper valuta l’equipaggio e non viene valutato. L’attestato delle miglia lo riceve comunque.';
+
+  @override
+  String get crewCertVesselSize => 'Dimensioni imbarcazione';
+
+  @override
+  String get crewCertVesselRegistration => 'Registrazione';
+
+  @override
+  String get crewCertWaters => 'Acque';
+
+  @override
+  String get crewCertWatersTidal => 'con marea';
+
+  @override
+  String get crewCertWatersNonTidal => 'senza marea';
+
+  @override
+  String get crewCertIdDocument => 'Numero passaporto / carta d’identità';
+
+  @override
+  String get crewCertDaysAtSea => 'Giorni in mare';
+
+  @override
+  String get crewCertTotal => 'Totale';
+
+  @override
+  String get crewCertWatersLabel => 'Tipo di acque';
 }

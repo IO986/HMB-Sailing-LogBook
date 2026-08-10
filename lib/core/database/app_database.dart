@@ -71,6 +71,9 @@ class Charters extends Table {
   TextColumn get captainLastName => text().nullable()();
   TextColumn get captainQualification => text().nullable()(); // najvyššia dosiahnutá kvalifikácia
   TextColumn get logbookSignaturePath => text().nullable()(); // podpis kapitána potvrdzujúci míle
+  // Prílivové vs. neprílivové vody — RYA a školy to na potvrdení o míľach
+  // rozlišujú. NULL = skiper to pri plavbe neurčil.
+  BoolColumn get tidalWaters => boolean().nullable()();
 }
 
 /// Jeden deň plavby
@@ -405,7 +408,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -548,6 +551,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 23) {
         await m.createTable(crewAssessments);
+      }
+      if (from < 24) {
+        await m.addColumn(charters, charters.tidalWaters);
       }
     },
     beforeOpen: (details) async {

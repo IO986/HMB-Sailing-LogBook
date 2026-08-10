@@ -2341,7 +2341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it\n• The certificate is bilingual (your language + English) and carries the vessel dimensions and registration, the type of waters (tidal/non-tidal) and a line for the passport or ID number; you can share it or save it straight to the phone';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -3094,4 +3094,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'The skipper rates the crew and is not rated. They still get a miles certificate.';
+
+  @override
+  String get crewCertVesselSize => 'Vessel dimensions';
+
+  @override
+  String get crewCertVesselRegistration => 'Registration';
+
+  @override
+  String get crewCertWaters => 'Waters';
+
+  @override
+  String get crewCertWatersTidal => 'tidal';
+
+  @override
+  String get crewCertWatersNonTidal => 'non-tidal';
+
+  @override
+  String get crewCertIdDocument => 'Passport / ID number';
+
+  @override
+  String get crewCertDaysAtSea => 'Days at sea';
+
+  @override
+  String get crewCertTotal => 'Total';
+
+  @override
+  String get crewCertWatersLabel => 'Type of waters';
 }

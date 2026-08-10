@@ -2354,7 +2354,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa\n• Tras la travesía puedes exportar un certificado de millas para cada tripulante: días en el mar, millas de día y de noche, zona de navegación, valoración del patrón y un QR de verificación\n• La propulsión (motor/velas) pasa también a las anotaciones automáticas: la marcas una vez y las siguientes la mantienen';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa\n• Tras la travesía puedes exportar un certificado de millas para cada tripulante: días en el mar, millas de día y de noche, zona de navegación, valoración del patrón y un QR de verificación\n• La propulsión (motor/velas) pasa también a las anotaciones automáticas: la marcas una vez y las siguientes la mantienen\n• El certificado es bilingüe (tu idioma + inglés) e incluye las dimensiones y la matrícula del barco, el tipo de aguas (con o sin marea) y una línea para el número de pasaporte o DNI; se puede compartir o guardar en el teléfono';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -3110,4 +3110,31 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'El patrón valora a la tripulación y no es valorado. Aun así recibe su certificado de millas.';
+
+  @override
+  String get crewCertVesselSize => 'Dimensiones del barco';
+
+  @override
+  String get crewCertVesselRegistration => 'Matrícula';
+
+  @override
+  String get crewCertWaters => 'Aguas';
+
+  @override
+  String get crewCertWatersTidal => 'con marea';
+
+  @override
+  String get crewCertWatersNonTidal => 'sin marea';
+
+  @override
+  String get crewCertIdDocument => 'Número de pasaporte / DNI';
+
+  @override
+  String get crewCertDaysAtSea => 'Días en el mar';
+
+  @override
+  String get crewCertTotal => 'Total';
+
+  @override
+  String get crewCertWatersLabel => 'Tipo de aguas';
 }

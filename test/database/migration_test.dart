@@ -20,133 +20,133 @@ void main() {
     verifier = SchemaVerifier(GeneratedHelper());
   });
 
-  test('onCreate builds a schema matching the current (v23) snapshot', () async {
-    final connection = await verifier.startAt(23);
+  test('onCreate builds a schema matching the current (v24) snapshot', () async {
+    final connection = await verifier.startAt(24);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v7 to current (v23)', () async {
+  test('migrate v7 to current (v24)', () async {
     final connection = await verifier.startAt(7);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v8 to current (v23)', () async {
+  test('migrate v8 to current (v24)', () async {
     final connection = await verifier.startAt(8);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v9 to current (v23)', () async {
+  test('migrate v9 to current (v24)', () async {
     final connection = await verifier.startAt(9);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v10 to current (v23): handoverProtocols.extraNotes', () async {
+  test('migrate v10 to current (v24): handoverProtocols.extraNotes', () async {
     final connection = await verifier.startAt(10);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v11 to current (v23): logbook record fields', () async {
+  test('migrate v11 to current (v24): logbook record fields', () async {
     final connection = await verifier.startAt(11);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v12 to current (v23): Charters.source', () async {
+  test('migrate v12 to current (v24): Charters.source', () async {
     final connection = await verifier.startAt(12);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v13 to current (v23): extended charter form fields', () async {
+  test('migrate v13 to current (v24): extended charter form fields', () async {
     final connection = await verifier.startAt(13);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v14 to current (v23): trackPoints location metadata', () async {
+  test('migrate v14 to current (v24): trackPoints location metadata', () async {
     final connection = await verifier.startAt(14);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v15 to current (v23): logbookEntries location metadata', () async {
+  test('migrate v15 to current (v24): logbookEntries location metadata', () async {
     final connection = await verifier.startAt(15);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v16 to current (v23): outbox table', () async {
+  test('migrate v16 to current (v24): outbox table', () async {
     final connection = await verifier.startAt(16);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v17 to current (v23): tideSnapshots table', () async {
+  test('migrate v17 to current (v24): tideSnapshots table', () async {
     final connection = await verifier.startAt(17);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v18 to current (v23): tide location label + manual flag',
+  test('migrate v18 to current (v24): tide location label + manual flag',
       () async {
     final connection = await verifier.startAt(18);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v19 to current (v23): dutyPeriods table', () async {
+  test('migrate v19 to current (v24): dutyPeriods table', () async {
     final connection = await verifier.startAt(19);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v20 to current (v23): logbookEntries.eventType', () async {
+  test('migrate v20 to current (v24): logbookEntries.eventType', () async {
     final connection = await verifier.startAt(20);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
-  test('migrate v21 to current (v23): logbookEntries.sailMode', () async {
+  test('migrate v21 to current (v24): logbookEntries.sailMode', () async {
     final connection = await verifier.startAt(21);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
   });
 
   test('v22 moves the old [motor,main] note prefix into sailMode', () async {
@@ -164,7 +164,7 @@ void main() {
 
     final db = AppDatabase.forTesting(schema.newConnection());
     addTearDown(db.close);
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
 
     final rows = await db.select(db.logbookEntries).get();
     final withPrefix =
@@ -177,12 +177,20 @@ void main() {
     expect(plain.sailMode, null, reason: 'a note without a prefix is left alone');
   });
 
-  test('migrate v22 to current (v23): crewAssessments table', () async {
+  test('migrate v22 to current (v24): crewAssessments table', () async {
     final connection = await verifier.startAt(22);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 23);
+    await verifier.migrateAndValidate(db, 24);
+  });
+
+  test('migrate v23 to current (v24): charters.tidalWaters', () async {
+    final connection = await verifier.startAt(23);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 24);
   });
 
   // PRAVIDLO: pri každom zvýšení schemaVersion pridaj nový

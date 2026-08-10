@@ -2349,7 +2349,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju';
+      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju\n• Potvrda je dvojezična (tvoj jezik + engleski), sadrži dimenzije i registraciju plovila, vrstu voda (plimne/neplimne) i rubriku za broj putovnice ili osobne; može se podijeliti ili spremiti izravno u telefon';
 
   @override
   String get guideMilesTitle => 'Knjiga milja';
@@ -3103,4 +3103,31 @@ class AppLocalizationsHr extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Skiper ocjenjuje posadu i sam se ne ocjenjuje. Potvrdu o miljama ipak dobiva.';
+
+  @override
+  String get crewCertVesselSize => 'Dimenzije plovila';
+
+  @override
+  String get crewCertVesselRegistration => 'Registracija';
+
+  @override
+  String get crewCertWaters => 'Vode';
+
+  @override
+  String get crewCertWatersTidal => 'plimne';
+
+  @override
+  String get crewCertWatersNonTidal => 'neplimne';
+
+  @override
+  String get crewCertIdDocument => 'Broj putovnice / osobne';
+
+  @override
+  String get crewCertDaysAtSea => 'Dani na moru';
+
+  @override
+  String get crewCertTotal => 'Ukupno';
+
+  @override
+  String get crewCertWatersLabel => 'Vrsta voda';
 }

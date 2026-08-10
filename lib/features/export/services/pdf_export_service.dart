@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:barcode/barcode.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:ui' show Locale;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -1590,6 +1591,32 @@ class PdfExportService {
 
   // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
 
+  /// "12,4 x 4,0 m, ponor 1,9 m" — vynechá, čo nie je vyplnené.
+  static String? _vesselDimensions(Charter charter) {
+    final parts = <String>[];
+    if (charter.vesselLengthM != null && charter.vesselBeamM != null) {
+      parts.add('${charter.vesselLengthM!.toStringAsFixed(1)} x '
+          '${charter.vesselBeamM!.toStringAsFixed(1)} m');
+    } else if (charter.vesselLengthM != null) {
+      parts.add('${charter.vesselLengthM!.toStringAsFixed(1)} m');
+    }
+    if (charter.vesselDraftM != null) {
+      parts.add('${charter.vesselDraftM!.toStringAsFixed(1)} m');
+    }
+    return parts.isEmpty ? null : parts.join(', ');
+  }
+
+  /// Registrácia lode tak, ako ju karta plavby pozná: vlajka, volací znak,
+  /// MMSI. Ak nie je nič, riadok sa netlačí.
+  static String? _vesselRegistration(Charter charter) {
+    final parts = [
+      if (charter.vesselFlag != null) charter.vesselFlag!,
+      if (charter.callsign != null) charter.callsign!,
+      if (charter.mmsi != null) 'MMSI ${charter.mmsi}',
+    ];
+    return parts.isEmpty ? null : parts.join('  ·  ');
+  }
+
   /// Potvrdenie o naplávaných míľach pre jedného člena posádky.
   ///
   /// Jeden súbor na človeka: potvrdenie sa posiela jemu, nie celej posádke.
@@ -1604,6 +1631,23 @@ class PdfExportService {
     CrewAssessment? assessment,
     Uint8List? skipperSignature,
   }) async {
+    // Potvrdenie často putuje do zahraničia (škola, charterová firma, úrad),
+     // preto je dvojjazyčné. V anglickom rozhraní by bol druhý riadok ten
+     // istý text, tak sa vynechá.
+    final lEn = await AppLocalizations.delegate.load(const Locale('en'));
+    String bi(String Function(AppLocalizations) pick) {
+      final local = _pdfText(pick(l));
+      final english = _pdfText(pick(lEn));
+      return local == english ? local : '$local / $english';
+    }
+
+    /// Dvojriadková podoba pre úzke štatistické boxy.
+    String biLines(String Function(AppLocalizations) pick) {
+      final local = _pdfText(pick(l)).toUpperCase();
+      final english = _pdfText(pick(lEn)).toUpperCase();
+      return local == english ? local : '$local\n$english';
+    }
+
     final docId = 'HMBSL-CREW-${charter.id}-${_pdfText(crew.name).replaceAll(' ', '')}';
     const rev = 0;
     final fmt = DateFormat('d.M.yyyy');
@@ -1622,6 +1666,9 @@ class PdfExportService {
       ..writeln('nightNm:${summary.nightNm.toStringAsFixed(2)}')
       ..writeln('nightHours:${summary.nightHours.toStringAsFixed(2)}')
       ..writeln('area:${summary.area ?? ''}')
+      ..writeln('tidal:${charter.tidalWaters ?? ''}')
+      ..writeln('vessel:${charter.vesselName ?? ''}')
+      ..writeln('vesselSize:${_vesselDimensions(charter) ?? ''}')
       ..writeln('skills:${assessment == null ? '' : [
             assessment.helming,
             assessment.navigation,
@@ -1645,11 +1692,11 @@ class PdfExportService {
     );
 
     final skills = <(String, int?)>[
-      (l.crewSkillHelming, assessment?.helming),
-      (l.crewSkillNavigation, assessment?.navigation),
-      (l.crewSkillHarbour, assessment?.harbourManoeuvres),
-      (l.crewSkillTeamwork, assessment?.teamwork),
-      (l.crewSkillNightSailing, assessment?.nightSailing),
+      (bi((x) => x.crewSkillHelming), assessment?.helming),
+      (bi((x) => x.crewSkillNavigation), assessment?.navigation),
+      (bi((x) => x.crewSkillHarbour), assessment?.harbourManoeuvres),
+      (bi((x) => x.crewSkillTeamwork), assessment?.teamwork),
+      (bi((x) => x.crewSkillNightSailing), assessment?.nightSailing),
     ];
 
     pdf.addPage(pw.MultiPage(
@@ -1668,7 +1715,7 @@ class PdfExportService {
               color: _navy,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6))),
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text(_pdfText(l.crewCertTitle).toUpperCase(),
+            pw.Text(bi((x) => x.crewCertTitle).toUpperCase(),
                 style: pw.TextStyle(
                     color: PdfColors.white,
                     fontSize: 14,
@@ -1678,7 +1725,7 @@ class PdfExportService {
             pw.Text(_pdfText(crew.name),
                 style: pw.TextStyle(color: PdfColors.white, fontSize: 18)),
             pw.Text(
-                '${_pdfText(crew.roleLabel(l))}  ·  ${_pdfText(charter.title)}  ·  $period',
+                '${bi(crew.roleLabel)}  ·  ${_pdfText(charter.title)}  ·  $period',
                 style: pw.TextStyle(color: PdfColors.grey300, fontSize: 10)),
           ]),
         ),
@@ -1686,28 +1733,48 @@ class PdfExportService {
 
         // ── Súhrn plavby ──
         pw.Row(children: [
-          _statBox('DNI NA\nMORI', '${summary.daysAtSea}', _green),
+          _statBox(biLines((x) => x.crewCertDaysAtSea),
+              '${summary.daysAtSea}', _green),
           pw.SizedBox(width: 6),
-          _statBox('${_pdfText(l.crewCertDayMiles).toUpperCase()}\n${units.distanceLabel.toUpperCase()}',
-              units.distanceValue(summary.dayNm).toStringAsFixed(1), _blue),
+          _statBox(
+              biLines((x) => x.crewCertDayMiles),
+              '${units.distanceValue(summary.dayNm).toStringAsFixed(1)} '
+                  '${units.distanceLabel}',
+              _blue),
           pw.SizedBox(width: 6),
-          _statBox('${_pdfText(l.crewCertNightMiles).toUpperCase()}\n${units.distanceLabel.toUpperCase()}',
-              units.distanceValue(summary.nightNm).toStringAsFixed(1), _navy),
+          _statBox(
+              biLines((x) => x.crewCertNightMiles),
+              '${units.distanceValue(summary.nightNm).toStringAsFixed(1)} '
+                  '${units.distanceLabel}',
+              _navy),
           pw.SizedBox(width: 6),
-          _statBox('SPOLU\n${units.distanceLabel.toUpperCase()}',
-              units.distanceValue(summary.totalNm).toStringAsFixed(1), _dgrey),
+          _statBox(
+              biLines((x) => x.crewCertTotal),
+              '${units.distanceValue(summary.totalNm).toStringAsFixed(1)} '
+                  '${units.distanceLabel}',
+              _dgrey),
         ]),
         pw.SizedBox(height: 12),
 
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-          pw.Expanded(child: _infoBox(_pdfText(l.crewCertVoyage).toUpperCase(), [
-            '${_pdfText(l.pdfVesselLabel)}: ${_pdfText(charter.vesselName ?? '-')}',
-            '${_pdfText(l.crewCertArea)}: ${_pdfText(summary.area ?? '-')}',
-            '${_pdfText(l.crewCertNightHours)}: ${summary.nightHours.toStringAsFixed(1)} h',
+          pw.Expanded(child: _infoBox(bi((x) => x.crewCertVoyage).toUpperCase(), [
+            '${bi((x) => x.pdfVesselLabel)}: ${_pdfText(charter.vesselName ?? '-')}',
+            if (_vesselDimensions(charter) != null)
+              '${bi((x) => x.crewCertVesselSize)}: ${_vesselDimensions(charter)}',
+            if (_vesselRegistration(charter) != null)
+              '${bi((x) => x.crewCertVesselRegistration)}: '
+                  '${_pdfText(_vesselRegistration(charter)!)}',
+            '${bi((x) => x.crewCertArea)}: ${_pdfText(summary.area ?? '-')}',
+            '${bi((x) => x.crewCertWatersLabel)}: ${switch (charter.tidalWaters) {
+              true => bi((x) => x.crewCertWatersTidal),
+              false => bi((x) => x.crewCertWatersNonTidal),
+              null => '-',
+            }}',
+            '${bi((x) => x.crewCertNightHours)}: ${summary.nightHours.toStringAsFixed(1)} h',
             if (charter.route != null) _pdfText(charter.route!),
           ])),
           pw.SizedBox(width: 8),
-          pw.Expanded(child: _infoBox(_pdfText(l.crewCertQualifications).toUpperCase(), [
+          pw.Expanded(child: _infoBox(bi((x) => x.crewCertQualifications).toUpperCase(), [
             if (crew.boatLicence != null) _pdfText(crew.boatLicence!),
             if (crew.radioLicence != null) _pdfText(crew.radioLicence!),
             if (crew.otherCerts != null) _pdfText(crew.otherCerts!),
@@ -1717,13 +1784,30 @@ class PdfExportService {
               '-',
           ])),
         ]),
+        pw.SizedBox(height: 10),
+
+        // Doklad totožnosti sa v appke neuchováva — číslo dopíše držiteľ
+        // potvrdenia rukou, keď ho niekam predkladá.
+        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
+          pw.Text('${bi((x) => x.crewCertIdDocument)}: ',
+              style: const pw.TextStyle(fontSize: 9)),
+          pw.Expanded(
+            child: pw.Container(
+              height: 14,
+              decoration: const pw.BoxDecoration(
+                border: pw.Border(
+                    bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.7)),
+              ),
+            ),
+          ),
+        ]),
         pw.SizedBox(height: 14),
 
         // ── Hodnotenie skipera ──
         // Skiper hodnotí posádku, sám sa nehodnotí — na jeho potvrdení táto
         // sekcia nemá čo robiť.
         if (!crew.isSkipper)
-          pw.Text(_pdfText(l.crewCertAssessment).toUpperCase(),
+          pw.Text(bi((x) => x.crewCertAssessment).toUpperCase(),
             style: pw.TextStyle(
                 color: _navy, fontSize: 9, fontWeight: pw.FontWeight.bold, letterSpacing: 1)),
         if (!crew.isSkipper) pw.SizedBox(height: 6),
@@ -1768,22 +1852,12 @@ class PdfExportService {
                 pw.SizedBox(height: 70),
               pw.Container(width: 200, height: 0.7, color: PdfColors.grey600),
               pw.SizedBox(height: 3),
-              pw.Text(_pdfText(charter.skipperName ?? l.pdfSkipperSignature),
+              pw.Text(_pdfText(charter.skipperName ?? bi((x) => x.pdfSkipperSignature)),
                   style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
               if (charter.captainQualification != null)
                 pw.Text(_pdfText(charter.captainQualification!),
                     style: pw.TextStyle(color: _dgrey, fontSize: 8)),
             ]),
-          ),
-          pw.SizedBox(width: 16),
-          pw.Container(
-            width: 130,
-            height: 90,
-            decoration: pw.BoxDecoration(
-                border: pw.Border.all(color: PdfColors.grey400, width: 0.7)),
-            alignment: pw.Alignment.center,
-            child: pw.Text(_pdfText(l.crewCertStamp),
-                style: pw.TextStyle(color: _dgrey, fontSize: 8)),
           ),
         ]),
         pw.SizedBox(height: 16),
@@ -1793,18 +1867,19 @@ class PdfExportService {
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           pw.Expanded(
             child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Text(l.pdfIntegrityCheck.toUpperCase(),
+              pw.Text(bi((x) => x.pdfIntegrityCheck).toUpperCase(),
                   style: pw.TextStyle(
                       color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
               pw.SizedBox(height: 5),
-              pw.Text(l.pdfSha256Label, style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
+              pw.Text(bi((x) => x.pdfSha256Label),
+                  style: pw.TextStyle(color: _dgrey, fontSize: 7.5)),
               pw.SizedBox(height: 3),
               pw.Text(hash.substring(0, 32),
                   style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
               pw.Text(hash.substring(32),
                   style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 6),
-              pw.Text(l.crewCertHashCoverage,
+              pw.Text(bi((x) => x.crewCertHashCoverage),
                   style: pw.TextStyle(color: _dgrey, fontSize: 7)),
             ]),
           ),
@@ -1817,7 +1892,8 @@ class PdfExportService {
               height: 80,
             ),
             pw.SizedBox(height: 3),
-            pw.Text(l.pdfVerifyQr, style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+            pw.Text(bi((x) => x.pdfVerifyQr),
+                style: pw.TextStyle(color: _dgrey, fontSize: 7)),
           ]),
         ]),
       ],

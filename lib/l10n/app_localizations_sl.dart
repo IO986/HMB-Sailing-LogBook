@@ -2345,7 +2345,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu\n• Po plovbi lahko za vsakega člana posadke izvoziš potrdilo o preplutih miljah – dnevi na morju, dnevne in nočne milje, območje, ocena skiperja in QR za preverjanje\n• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise – nastaviš ga enkrat, naslednji ga ohranijo';
+      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu\n• Po plovbi lahko za vsakega člana posadke izvoziš potrdilo o preplutih miljah – dnevi na morju, dnevne in nočne milje, območje, ocena skiperja in QR za preverjanje\n• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise – nastaviš ga enkrat, naslednji ga ohranijo\n• Potrdilo je dvojezično (tvoj jezik + angleščina), vsebuje dimenzije in registracijo plovila, vrsto voda (plimne/neplimne) in polje za številko potnega lista ali osebne; lahko ga deliš ali shraniš v telefon';
 
   @override
   String get guideMilesTitle => 'Knjiga milj';
@@ -3101,4 +3101,31 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Skiper ocenjuje posadko in sam ni ocenjen. Potrdilo o miljah vseeno dobi.';
+
+  @override
+  String get crewCertVesselSize => 'Dimenzije plovila';
+
+  @override
+  String get crewCertVesselRegistration => 'Registracija';
+
+  @override
+  String get crewCertWaters => 'Vode';
+
+  @override
+  String get crewCertWatersTidal => 'plimne';
+
+  @override
+  String get crewCertWatersNonTidal => 'neplimne';
+
+  @override
+  String get crewCertIdDocument => 'Številka potnega lista / osebne';
+
+  @override
+  String get crewCertDaysAtSea => 'Dnevi na morju';
+
+  @override
+  String get crewCertTotal => 'Skupaj';
+
+  @override
+  String get crewCertWatersLabel => 'Vrsta voda';
 }

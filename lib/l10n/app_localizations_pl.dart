@@ -2347,7 +2347,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują';
+      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują\n• Potwierdzenie jest dwujęzyczne (twój język + angielski), zawiera wymiary i rejestrację jachtu, rodzaj wód (pływowe/bezpływowe) oraz rubrykę na numer paszportu lub dowodu; można je udostępnić albo zapisać w telefonie';
 
   @override
   String get guideMilesTitle => 'Książka mil';
@@ -3101,4 +3101,31 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get crewCertSkipperRates =>
       'Skipper ocenia załogę i sam nie jest oceniany. Potwierdzenie mil również dostaje.';
+
+  @override
+  String get crewCertVesselSize => 'Wymiary jachtu';
+
+  @override
+  String get crewCertVesselRegistration => 'Rejestracja';
+
+  @override
+  String get crewCertWaters => 'Wody';
+
+  @override
+  String get crewCertWatersTidal => 'pływowe';
+
+  @override
+  String get crewCertWatersNonTidal => 'bezpływowe';
+
+  @override
+  String get crewCertIdDocument => 'Numer paszportu / dowodu';
+
+  @override
+  String get crewCertDaysAtSea => 'Dni na morzu';
+
+  @override
+  String get crewCertTotal => 'Razem';
+
+  @override
+  String get crewCertWatersLabel => 'Rodzaj wód';
 }
