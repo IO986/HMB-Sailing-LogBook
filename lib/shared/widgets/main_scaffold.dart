@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
+import 'main_nav_bar.dart';
 import 'tracking_control_bar.dart';
 import '../../features/tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../core/models/skipper_profile.dart';
@@ -283,17 +284,6 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     }
   }
 
-  static String _labelForPath(AppLocalizations l, String path) => switch (path) {
-        '/map' => l.navMap,
-        '/logbook' => l.navLogbook,
-        '/weather' => l.navWeather,
-        '/instruments' => l.navInstruments,
-        '/safety' => l.navSafety,
-        '/compass' => l.navCompass,
-        kSettingsPath => l.navSettings,
-        _ => '',
-      };
-
   String _currentPath(BuildContext ctx) {
     try {
       return GoRouterState.of(ctx).uri.path;
@@ -468,25 +458,11 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
                 child: const Icon(Icons.add_a_photo),
               )
             : null,
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            labelTextStyle: WidgetStateProperty.resolveWith((states) =>
-              TextStyle(fontSize: navPrefs.iconSize.labelFont, height: 1.1)),
-          ),
-          child: NavigationBar(
-            selectedIndex: currentIndex,
-            onDestinationSelected: (i) => context.go(visiblePaths[i]),
-            destinations: [
-              for (final path in visiblePaths)
-                NavigationDestination(
-                  icon: Icon(navTabForPath(path).icon,
-                      size: navPrefs.iconSize.iconDim),
-                  selectedIcon: Icon(navTabForPath(path).activeIcon,
-                      size: navPrefs.iconSize.iconDim),
-                  label: _labelForPath(l, path),
-                ),
-            ],
-          ),
+        bottomNavigationBar: MainNavBar(
+          paths: visiblePaths,
+          currentIndex: currentIndex,
+          onSelected: (i) => context.go(visiblePaths[i]),
+          iconSize: navPrefs.iconSize,
         ),
       ),
     );

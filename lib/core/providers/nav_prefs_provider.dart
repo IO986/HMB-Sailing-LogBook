@@ -34,18 +34,20 @@ NavTab navTabForPath(String path) =>
     kNavTabs.firstWhere((t) => t.path == path,
         orElse: () => kNavTabs.first);
 
-/// Veľkosť ikon + popiskov spodného menu (user setting). `medium` je
-/// pôvodný default.
+/// Veľkosť ikon spodného menu (user setting). `medium` je pôvodný default.
+///
+/// Odkedy sú popisky skryté (pozri `MainNavBar`), ušetrený riadok textu ide
+/// do ikon a lišta je nižšia — na mapu tak ostane viac miesta.
 enum NavIconSize {
-  small(24, 9),
-  medium(28, 10),
-  // L: veľká ikona, ale popisok ostáva 10 px — pri 12 px sa jednoslovné
-  // popisky ("Bezpečnosť", "Nastavenia") lámali/orezávali na dva riadky.
-  large(34, 10);
+  small(28, 58),
+  medium(32, 62),
+  large(40, 70);
 
-  const NavIconSize(this.iconDim, this.labelFont);
+  const NavIconSize(this.iconDim, this.barHeight);
   final double iconDim;
-  final double labelFont;
+
+  /// Výška celej lišty. Bez popiskov je predvolených 80 px zbytočne veľa.
+  final double barHeight;
 }
 
 /// Presúvateľné karty (všetky okrem fixných Nastavení), v default poradí.
