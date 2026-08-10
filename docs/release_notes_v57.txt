@@ -1,0 +1,34 @@
+HMB Sailing Log — build 57 (1.28.0+57)
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• Nové: potvrdenie o naplávaných míľach pre každého člena posádky — dni na mori, míle deň/noc, oblasť plavby, hodnotenie zručností od skipera, QR na overenie
+• Spodná lišta bez popiskov: ikony sú väčšie a v každom jazyku na rovnakom mieste
+• Ikona trasy v hlavičke plavby zobrazí celú trasu na mape
+• Príručka doplnená o všetky novinky
+
+=== English (en-US) ===
+• New: a certificate of miles sailed for every crew member — days at sea, day and night miles, cruising area, the skipper's skill assessment and a QR code for verification
+• Bottom bar without labels: larger icons that sit in the same place in every language
+• The route icon in the voyage header shows the whole track on the map
+• User guide updated with everything new
+
+=== Hrvatski (hr-HR) ===
+• Novo: potvrda o preplovljenim miljama za svakog člana posade — dani na moru, dnevne i noćne milje, područje plovidbe, ocjena skipera i QR za provjeru
+• Donja traka bez natpisa: veće ikone koje u svakom jeziku stoje na istom mjestu
+• Ikona rute u zaglavlju plovidbe prikazuje cijeli trag na karti
+• Priručnik dopunjen svim novostima
+
+=== Slovenščina (sl-SI) ===
+• Novo: potrdilo o preplutih miljah za vsakega člana posadke — dnevi na morju, dnevne in nočne milje, območje plovbe, ocena skiperja in QR za preverjanje
+• Spodnja vrstica brez napisov: večje ikone, ki v vsakem jeziku stojijo na istem mestu
+• Ikona poti v glavi plovbe pokaže celotno sled na zemljevidu
+• Priročnik dopolnjen z vsemi novostmi
+
+=== Italiano (it-IT) ===
+• Novità: attestato delle miglia navigate per ogni membro dell'equipaggio — giorni in mare, miglia diurne e notturne, zona di navigazione, valutazione dello skipper e QR di verifica
+• Barra inferiore senza etichette: icone più grandi, nella stessa posizione in ogni lingua
+• L'icona rotta nell'intestazione mostra l'intera traccia sulla mappa
+• Manuale aggiornato con tutte le novità
