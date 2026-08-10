@@ -18,6 +18,7 @@ import '../../core/providers/nav_prefs_provider.dart';
 import '../../core/providers/skipper_profile_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/providers/sync_settings_provider.dart';
+import '../../core/services/background_service.dart';
 import '../../core/services/gps_tracking_service.dart';
 import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
@@ -49,6 +50,8 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       await _maybePromptUserGuide();
       await _maybePromptNotifications();
       await _maybePromptRaymarineSetup();
+      await BackgroundService.stopIfOrphaned(
+          trackingActive: GpsTrackingService().isTracking);
       if (mounted) await maybePromptInterruptedVoyage(context, ref);
     });
   }

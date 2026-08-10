@@ -105,8 +105,34 @@ class BackgroundService {
     await service.startService();
   }
 
+  /// Zastaví službu a počká, kým naozaj zhasne.
+  ///
+  /// `invoke('stopService')` je fire-and-forget: keď izolát služby práve
+  /// štartuje alebo prežil pád appky, správa sa stratí a systémová
+  /// notifikácia "tracking aktívny" ostane visieť aj dávno po zastavení
+  /// plavby (hlásené z terénu na OUKITELi). Preto sa výsledok overuje a
+  /// pokus sa raz zopakuje.
   static Future<void> stop() async {
     final service = FlutterBackgroundService();
-    service.invoke('stopService');
+    for (var attempt = 0; attempt < 2; attempt++) {
+      if (!await service.isRunning()) return;
+      service.invoke('stopService');
+      for (var i = 0; i < 20; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+        if (!await service.isRunning()) return;
+      }
+    }
+  }
+
+  /// Upratovanie po štarte appky: služba beží, ale nič sa netrasuje.
+  ///
+  /// Stane sa to, keď appku zabije systém — foreground service ju prežije aj
+  /// s notifikáciou, no tracking už nikto neriadi. [trackingActive] sa podáva
+  /// zvonka, aby táto trieda nemusela poznať GPS službu.
+  static Future<void> stopIfOrphaned({required bool trackingActive}) async {
+    if (trackingActive) return;
+    final service = FlutterBackgroundService();
+    if (!await service.isRunning()) return;
+    await stop();
   }
 }
