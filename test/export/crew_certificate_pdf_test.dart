@@ -104,6 +104,20 @@ void main() {
     }
   });
 
+  test('the skipper gets a certificate without the assessment section',
+      () async {
+    // The skipper rates the crew and is not rated; the miles are still theirs.
+    final bytes = await PdfExportService.buildCrewMilesCertificate(
+      l: await l10n('sk'),
+      charter: charter(),
+      crew: const CrewMemberRef(name: 'Ján Novák', role: 'skipper'),
+      summary: summary,
+      assessment: assessment(),
+    );
+
+    expect(bytes.length, greaterThan(1000));
+  });
+
   test('a voyage with no miles at all does not break the layout', () async {
     final bytes = await PdfExportService.buildCrewMilesCertificate(
       l: await l10n('en'),

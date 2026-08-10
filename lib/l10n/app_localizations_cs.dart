@@ -3087,4 +3087,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Potvrzení vytvořena';
+
+  @override
+  String get more => 'Více';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Skipper hodnotí posádku — sám se nehodnotí. Potvrzení o mílích dostane také.';
 }

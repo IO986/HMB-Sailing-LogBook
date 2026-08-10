@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "nije ocijenjeno",
   "crewCertShared": "Potvrde su izrađene",
   "roleSkipper": "Skiper",
-  "roleCrew": "Posada"
+  "roleCrew": "Posada",
+  "more": "Više",
+  "crewCertSkipperRates": "Skiper ocjenjuje posadu i sam se ne ocjenjuje. Potvrdu o miljama ipak dobiva."
 }

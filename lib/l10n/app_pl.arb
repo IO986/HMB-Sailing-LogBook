@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "nie oceniono",
   "crewCertShared": "Potwierdzenia utworzone",
   "roleSkipper": "Skipper",
-  "roleCrew": "Załoga"
+  "roleCrew": "Załoga",
+  "more": "Więcej",
+  "crewCertSkipperRates": "Skipper ocenia załogę i sam nie jest oceniany. Potwierdzenie mil również dostaje."
 }

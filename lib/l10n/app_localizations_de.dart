@@ -3107,4 +3107,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Bescheinigungen erstellt';
+
+  @override
+  String get more => 'Mehr';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Der Skipper bewertet die Crew und wird nicht bewertet. Eine Meilenbescheinigung bekommt er trotzdem.';
 }

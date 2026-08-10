@@ -3112,4 +3112,11 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Οι βεβαιώσεις δημιουργήθηκαν';
+
+  @override
+  String get more => 'Περισσότερα';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Ο κυβερνήτης αξιολογεί το πλήρωμα και δεν αξιολογείται. Βεβαίωση μιλίων παίρνει κι αυτός.';
 }

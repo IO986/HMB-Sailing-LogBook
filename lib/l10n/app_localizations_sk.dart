@@ -3090,4 +3090,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Potvrdenia vytvorené';
+
+  @override
+  String get more => 'Viac';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Skiper hodnotí posádku — sám sa nehodnotí. Potvrdenie o míľach dostane tiež.';
 }

@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "nicht bewertet",
   "crewCertShared": "Bescheinigungen erstellt",
   "roleSkipper": "Skipper",
-  "roleCrew": "Crew"
+  "roleCrew": "Crew",
+  "more": "Mehr",
+  "crewCertSkipperRates": "Der Skipper bewertet die Crew und wird nicht bewertet. Eine Meilenbescheinigung bekommt er trotzdem."
 }

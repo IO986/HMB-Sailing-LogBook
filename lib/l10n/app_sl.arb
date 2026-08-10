@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "ni ocenjeno",
   "crewCertShared": "Potrdila so ustvarjena",
   "roleSkipper": "Skiper",
-  "roleCrew": "Posadka"
+  "roleCrew": "Posadka",
+  "more": "Več",
+  "crewCertSkipperRates": "Skiper ocenjuje posadko in sam ni ocenjen. Potrdilo o miljah vseeno dobi."
 }

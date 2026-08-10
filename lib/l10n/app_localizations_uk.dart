@@ -3096,4 +3096,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Підтвердження створено';
+
+  @override
+  String get more => 'Більше';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Шкіпер оцінює екіпаж і сам не оцінюється. Підтвердження миль отримає теж.';
 }

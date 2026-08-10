@@ -5887,6 +5887,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Potvrdenia vytvorené'**
   String get crewCertShared;
+
+  /// No description provided for @more.
+  ///
+  /// In sk, this message translates to:
+  /// **'Viac'**
+  String get more;
+
+  /// No description provided for @crewCertSkipperRates.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skiper hodnotí posádku — sám sa nehodnotí. Potvrdenie o míľach dostane tiež.'**
+  String get crewCertSkipperRates;
 }
 
 class _AppLocalizationsDelegate

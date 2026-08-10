@@ -3094,4 +3094,11 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Potrdila so ustvarjena';
+
+  @override
+  String get more => 'Več';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Skiper ocenjuje posadko in sam ni ocenjen. Potrdilo o miljah vseeno dobi.';
 }

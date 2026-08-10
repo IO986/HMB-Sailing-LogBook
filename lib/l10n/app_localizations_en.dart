@@ -3087,4 +3087,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Certificates created';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get crewCertSkipperRates =>
+      'The skipper rates the crew and is not rated. They still get a miles certificate.';
 }

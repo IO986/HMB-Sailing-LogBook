@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "nehodnotené",
   "crewCertShared": "Potvrdenia vytvorené",
   "roleSkipper": "Skiper",
-  "roleCrew": "Posádka"
+  "roleCrew": "Posádka",
+  "more": "Viac",
+  "crewCertSkipperRates": "Skiper hodnotí posádku — sám sa nehodnotí. Potvrdenie o míľach dostane tiež."
 }

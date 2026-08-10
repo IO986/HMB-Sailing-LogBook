@@ -34,6 +34,9 @@ class _CrewCertificatesScreenState
   /// Rozpracované hodnotenie podľa mena — ukladá sa až pri exporte alebo
   /// odchode z obrazovky, aby ťukanie do hviezdičiek nešlo do DB po jednej.
   final _drafts = <String, _Draft>{};
+
+  /// Mená skiperov — ich hodnotenie sa nezbiera ani neukladá.
+  final _skippers = <String>{};
   bool _loaded = false;
   bool _busy = false;
 
@@ -44,6 +47,7 @@ class _CrewCertificatesScreenState
     setState(() {
       for (final member in crew) {
         _drafts[member.name] = _Draft.from(byName[member.name]);
+        if (member.isSkipper) _skippers.add(member.name);
       }
       _loaded = true;
     });
@@ -52,7 +56,7 @@ class _CrewCertificatesScreenState
   Future<void> _save() async {
     final db = ref.read(databaseProvider);
     for (final entry in _drafts.entries) {
-      if (entry.value.isEmpty) continue;
+      if (entry.value.isEmpty || _skippers.contains(entry.key)) continue;
       await db.upsertCrewAssessment(CrewAssessmentsCompanion.insert(
         charterId: widget.charterId,
         crewName: entry.key,
@@ -100,7 +104,9 @@ class _CrewCertificatesScreenState
           charter: charter,
           crew: member,
           summary: summary,
-          assessment: await db.getCrewAssessment(charter.id, member.name),
+          assessment: member.isSkipper
+              ? null
+              : await db.getCrewAssessment(charter.id, member.name),
           skipperSignature: signature,
         );
         final file = await ExportService().saveBytesLocally(
@@ -277,6 +283,13 @@ class _CrewCard extends StatelessWidget {
               ]),
             ),
           ]),
+          if (member.isSkipper) ...[
+            const SizedBox(height: 6),
+            // Skiper posádku hodnotí — sám sa nehodnotí. Potvrdenie o
+            // míľach však dostane tiež, plavbu odplával s nimi.
+            Text(l.crewCertSkipperRates,
+                style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          ] else ...[
           const SizedBox(height: 8),
           _SkillRow(
               label: l.crewSkillHelming,
@@ -309,6 +322,7 @@ class _CrewCard extends StatelessWidget {
               isDense: true,
             ),
           ),
+          ],
         ]),
       ),
     );

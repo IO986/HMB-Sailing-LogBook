@@ -3103,4 +3103,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Certificados creados';
+
+  @override
+  String get more => 'Más';
+
+  @override
+  String get crewCertSkipperRates =>
+      'El patrón valora a la tripulación y no es valorado. Aun así recibe su certificado de millas.';
 }

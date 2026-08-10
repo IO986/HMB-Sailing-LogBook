@@ -1059,5 +1059,7 @@
   "crewCertNotRated": "sin valorar",
   "crewCertShared": "Certificados creados",
   "roleSkipper": "Patrón",
-  "roleCrew": "Tripulación"
+  "roleCrew": "Tripulación",
+  "more": "Más",
+  "crewCertSkipperRates": "El patrón valora a la tripulación y no es valorado. Aun así recibe su certificado de millas."
 }

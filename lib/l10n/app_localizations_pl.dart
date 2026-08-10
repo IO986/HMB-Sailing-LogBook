@@ -3094,4 +3094,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Potwierdzenia utworzone';
+
+  @override
+  String get more => 'Więcej';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Skipper ocenia załogę i sam nie jest oceniany. Potwierdzenie mil również dostaje.';
 }

@@ -1720,21 +1720,25 @@ class PdfExportService {
         pw.SizedBox(height: 14),
 
         // ── Hodnotenie skipera ──
-        pw.Text(_pdfText(l.crewCertAssessment).toUpperCase(),
+        // Skiper hodnotí posádku, sám sa nehodnotí — na jeho potvrdení táto
+        // sekcia nemá čo robiť.
+        if (!crew.isSkipper)
+          pw.Text(_pdfText(l.crewCertAssessment).toUpperCase(),
             style: pw.TextStyle(
                 color: _navy, fontSize: 9, fontWeight: pw.FontWeight.bold, letterSpacing: 1)),
-        pw.SizedBox(height: 6),
-        pw.Table(
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          columnWidths: const {0: pw.FlexColumnWidth(3), 1: pw.FlexColumnWidth(2)},
-          children: [
-            for (final (label, value) in skills)
-              pw.TableRow(children: [
-                _cell(_pdfText(label)),
-                _cell(value == null ? '-' : '$value / 5'),
-              ]),
-          ],
-        ),
+        if (!crew.isSkipper) pw.SizedBox(height: 6),
+        if (!crew.isSkipper)
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            columnWidths: const {0: pw.FlexColumnWidth(3), 1: pw.FlexColumnWidth(2)},
+            children: [
+              for (final (label, value) in skills)
+                pw.TableRow(children: [
+                  _cell(_pdfText(label)),
+                  _cell(value == null ? '-' : '$value / 5'),
+                ]),
+            ],
+          ),
         if (assessment?.note != null && assessment!.note!.trim().isNotEmpty) ...[
           pw.SizedBox(height: 10),
           pw.Container(

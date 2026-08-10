@@ -3113,4 +3113,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get crewCertShared => 'Attestati creati';
+
+  @override
+  String get more => 'Altro';
+
+  @override
+  String get crewCertSkipperRates =>
+      'Lo skipper valuta l’equipaggio e non viene valutato. L’attestato delle miglia lo riceve comunque.';
 }

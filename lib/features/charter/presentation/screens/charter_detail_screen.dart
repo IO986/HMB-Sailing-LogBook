@@ -35,7 +35,14 @@ class CharterDetailScreen extends ConsumerWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(charter.title, overflow: TextOverflow.ellipsis),
+            // Dva riadky a menšie písmo: názov plavby končí dátumom a na
+            // úzkom telefóne z neho pri jednom riadku ostali tri bodky.
+            title: Text(
+              charter.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 17, height: 1.15),
+            ),
             actions: [
               _MaybeBlinkingIconButton(
                 blink: !charter.safetyBriefingDone,
@@ -59,29 +66,53 @@ class CharterDetailScreen extends ConsumerWidget {
                 tooltip: l.editCharter,
                 onPressed: () => context.go('/logbook/$charterId/edit'),
               ),
-              // Náhľad trasy celej plavby na mape — rovnaká vec, akú robí
-              // ikona trasy na mape, len bez hľadania plavby v zozname.
-              IconButton(
-                icon: const Icon(Icons.route),
-                tooltip: l.mapVoyageOverview,
-                onPressed: () {
-                  ref
-                      .read(mapNotifierProvider.notifier)
-                      .previewCharter(charterId, charter!.title);
-                  context.go('/map');
+              // Zvyšok pod tri bodky: v hlavičke ostávajú len tri stavové
+              // ikony, ktoré blikajú, kým niečo chýba. Šesť ikon zožralo
+              // titulok natoľko, že z dátumu plavby ostali tri bodky.
+              PopupMenuButton<String>(
+                tooltip: l.more,
+                onSelected: (value) {
+                  switch (value) {
+                    case 'route':
+                      ref
+                          .read(mapNotifierProvider.notifier)
+                          .previewCharter(charterId, charter!.title);
+                      context.go('/map');
+                    case 'crew':
+                      context.go('/logbook/$charterId/crew-certificates');
+                    case 'pdf':
+                      context.go('/logbook/$charterId/export');
+                  }
                 },
-              ),
-              // Potvrdenia o naplávaných míľach pre posádku — vlastný export,
-              // lebo ide inému adresátovi než denník plavby.
-              IconButton(
-                icon: const Icon(Icons.workspace_premium_outlined),
-                tooltip: l.crewCertTitle,
-                onPressed: () =>
-                    context.go('/logbook/$charterId/crew-certificates'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.picture_as_pdf),
-                onPressed: () => context.go('/logbook/$charterId/export'),
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'route',
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.route),
+                      title: Text(l.mapVoyageOverview),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'crew',
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.workspace_premium_outlined),
+                      title: Text(l.crewCertTitle),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'pdf',
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.picture_as_pdf),
+                      title: Text(l.exportPdf),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
