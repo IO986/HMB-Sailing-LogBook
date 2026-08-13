@@ -33,7 +33,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   fl_chart: ^0.69.0
   google_fonts: ^6.2.1
-  intl: 0.20.2
+  # Caret, not an exact pin: flutter_localizations pins intl to whatever the
+  # installed Flutter ships, and CI runs the stable channel unpinned. An exact
+  # 0.20.2 broke the moment stable moved to 3.47, which wants ^0.20.3.
+  intl: ^0.20.2
   share_plus: ^10.1.4
   pdf: ^3.11.1
   printing: ^5.13.1
