@@ -522,8 +522,11 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
             const SizedBox(height: 8),
             Text('${AppLocalizations.of(context).anchorRadiusLabel}: '
                 '${_radius.toStringAsFixed(0)} m'),
+            // Up to 70 m: 30 m covered only a short scope in shallow water.
+            // A 5:1 scope in 8 m plus the boat's length already swings wider
+            // than that, and the alarm fired on a boat lying perfectly well.
             Slider(
-                value: _radius, min: 5, max: 30, divisions: 25,
+                value: _radius, min: 5, max: 70, divisions: 65,
                 label: '${_radius.toStringAsFixed(0)} m',
                 onChanged: (v) => setState(() => _radius = v)),
           ],

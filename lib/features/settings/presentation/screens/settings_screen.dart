@@ -209,21 +209,32 @@ class SettingsScreen extends ConsumerWidget {
     final current = ref.read(localeProvider).languageCode;
     showDialog(
       context: context,
+      // Same overflow the splash picker had: eleven languages do not fit an
+      // AlertDialog in landscape, and the Column could not scroll.
       builder: (ctx) => AlertDialog(
         title: Text(AppLocalizations.of(ctx).languageDialogTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _langs.map((l) => ListTile(
-            leading: Text(l.$1, style: const TextStyle(fontSize: 24)),
-            title: Text(l.$2),
-            trailing: l.$3 == current
-                ? Icon(Icons.check, color: Theme.of(ctx).colorScheme.primary)
-                : null,
-            onTap: () {
-              ref.read(localeProvider.notifier).setLocale(l.$3);
-              Navigator.pop(ctx);
-            },
-          )).toList(),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            children: [
+              for (final l in _langs)
+                ListTile(
+                  leading: Text(l.$1, style: const TextStyle(fontSize: 24)),
+                  title: Text(l.$2),
+                  trailing: l.$3 == current
+                      ? Icon(Icons.check,
+                          color: Theme.of(ctx).colorScheme.primary)
+                      : null,
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(l.$3);
+                    Navigator.pop(ctx);
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );

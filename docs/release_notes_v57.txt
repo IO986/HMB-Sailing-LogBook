@@ -4,41 +4,46 @@ Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
 overené skriptom — pri úprave to prosím prekontroluj.
 
 === Slovensky (sk-SK) ===
-• Nové: potvrdenie o naplávaných míľach pre každého člena posádky — dni na mori, míle deň/noc, oblasť plavby, hodnotenie skipera, QR na overenie
-• PDF je celé v jazyku appky a v jednotkách z Nastavení — vzdialenosť, rýchlosť aj teplota
-• Oprava: Beaufort vychádzal o 2 – 3 stupne nižšie, než mal
-• Spodná lišta bez popiskov, väčšie ikony
-• Ikona trasy v hlavičke plavby zobrazí celú trasu na mape
-• Zmazanie waypointu s aktívnou navigáciou sa najprv opýta
+• Nové: potvrdenie o naplávaných míľach pre posádku — dni na mori, míle deň/noc, oblasť, hodnotenie skipera, QR
+• Oprava: na úvodnej obrazovke sa nedalo potvrdiť Continue pri voľbe jazyka
+• Polomer kotevného alarmu až 70 m
+• PDF v jazyku appky a v jednotkách z Nastavení
+• Oprava: Beaufort vychádzal o 2 – 3 stupne nižšie
+• Zmazanie waypointu s aktívnou navigáciou sa opýta
+• Väčšie ikony v spodnej lište, ikona trasy v hlavičke plavby
 
 === English (en-US) ===
-• New: a certificate of miles sailed for every crew member — days at sea, day and night miles, cruising area, the skipper's assessment and a QR code
-• The PDF now follows the app language and the unit settings — distance, speed and temperature
+• New: a certificate of miles sailed for the crew — days at sea, day and night miles, area, skipper's assessment, QR
+• Fixed: Continue could not be tapped when picking a language on the first screen
+• Anchor alarm radius up to 70 m
+• The PDF follows the app language and the unit settings
 • Fixed: Beaufort came out 2 – 3 forces too low
-• Bottom bar without labels, larger icons
-• The route icon in the voyage header shows the whole track on the map
 • Deleting a waypoint you are navigating to now asks first
+• Larger icons in the bottom bar, route icon in the voyage header
 
 === Hrvatski (hr-HR) ===
-• Novo: potvrda o preplovljenim miljama za svakog člana posade — dani na moru, dnevne i noćne milje, područje plovidbe, ocjena skipera i QR za provjeru
-• PDF je u jeziku aplikacije i u jedinicama iz Postavki — udaljenost, brzina i temperatura
+• Novo: potvrda o preplovljenim miljama za posadu — dani na moru, dnevne i noćne milje, područje, ocjena skipera, QR
+• Ispravak: Continue se nije mogao potvrditi pri odabiru jezika na prvom zaslonu
+• Polumjer alarma sidra do 70 m
+• PDF u jeziku aplikacije i u jedinicama iz Postavki
 • Ispravak: Beaufort je izlazio 2 – 3 stupnja preniski
-• Donja traka bez natpisa, veće ikone
-• Ikona rute u zaglavlju plovidbe prikazuje cijeli trag na karti
-• Brisanje točke rute s aktivnom navigacijom sada prvo pita
+• Brisanje točke rute s aktivnom navigacijom sada pita
+• Veće ikone u donjoj traci, ikona rute u zaglavlju plovidbe
 
 === Slovenščina (sl-SI) ===
-• Novo: potrdilo o preplutih miljah za vsakega člana posadke — dnevi na morju, dnevne in nočne milje, območje plovbe, ocena skiperja in QR za preverjanje
-• PDF je v jeziku aplikacije in v enotah iz Nastavitev — razdalja, hitrost in temperatura
+• Novo: potrdilo o preplutih miljah za posadko — dnevi na morju, dnevne in nočne milje, območje, ocena skiperja, QR
+• Popravek: Continue ni bilo mogoče potrditi pri izbiri jezika na prvem zaslonu
+• Polmer alarma sidra do 70 m
+• PDF v jeziku aplikacije in v enotah iz Nastavitev
 • Popravek: Beaufort je izpadel 2 – 3 stopnje prenizko
-• Spodnja vrstica brez napisov, večje ikone
-• Ikona poti v glavi plovbe pokaže celotno sled na zemljevidu
-• Izbris točke poti z aktivno navigacijo zdaj najprej vpraša
+• Izbris točke poti z aktivno navigacijo zdaj vpraša
+• Večje ikone v spodnji vrstici, ikona poti v glavi plovbe
 
 === Italiano (it-IT) ===
-• Novità: attestato delle miglia navigate per ogni membro dell'equipaggio — giorni in mare, miglia diurne e notturne, zona di navigazione e QR
-• Il PDF segue la lingua dell'app e le unità impostate — distanza, velocità e temperatura
+• Novità: attestato delle miglia navigate per l'equipaggio — giorni in mare, miglia diurne e notturne, zona, QR
+• Correzione: Continue non si poteva toccare nella scelta della lingua all'avvio
+• Raggio dell'allarme di ancoraggio fino a 70 m
+• Il PDF segue la lingua dell'app e le unità impostate
 • Correzione: il Beaufort risultava 2 – 3 gradi troppo basso
-• Barra inferiore senza etichette, icone più grandi
-• L'icona rotta nell'intestazione mostra l'intera traccia sulla mappa
 • Eliminare un waypoint con navigazione attiva ora chiede conferma
+• Icone più grandi nella barra inferiore, icona rotta nell'intestazione

@@ -76,45 +76,65 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
+      // Eleven languages do not fit a dialog in landscape, and they stop
+      // fitting in portrait too as soon as the phone uses a larger display
+      // size. The Column had no scrolling, so it overflowed and the Continue
+      // button was clipped outside the dialog - visible but not hittable,
+      // which left the app stuck on the splash with no way forward.
+      // Header and button stay put, only the list scrolls.
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('🌐',
-                    style: TextStyle(fontSize: 36)),
-                const SizedBox(height: 8),
-                const Text(
-                  'Select Language / Vyberte jazyk',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                const SizedBox(height: 16),
-                ..._langs.map((l) => ListTile(
-                      leading: Text(l.$1,
-                          style: const TextStyle(fontSize: 22)),
-                      title: Text(l.$2),
-                      trailing: selected == l.$3
-                          ? const Icon(Icons.check_circle,
-                              color: Colors.blue)
-                          : null,
-                      dense: true,
-                      onTap: () => setDialogState(() => selected = l.$3),
-                    )),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Continue'),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(ctx).size.height * 0.8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🌐',
+                      style: TextStyle(fontSize: 36)),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Select Language / Vyberte jazyk',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      children: [
+                        for (final l in _langs)
+                          ListTile(
+                            leading: Text(l.$1,
+                                style: const TextStyle(fontSize: 22)),
+                            title: Text(l.$2),
+                            trailing: selected == l.$3
+                                ? const Icon(Icons.check_circle,
+                                    color: Colors.blue)
+                                : null,
+                            dense: true,
+                            onTap: () => setDialogState(() => selected = l.$3),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Continue'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
