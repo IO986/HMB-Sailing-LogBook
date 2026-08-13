@@ -4,31 +4,41 @@ Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
 overené skriptom — pri úprave to prosím prekontroluj.
 
 === Slovensky (sk-SK) ===
-• Nové: potvrdenie o naplávaných míľach pre každého člena posádky — dni na mori, míle deň/noc, oblasť plavby, hodnotenie zručností od skipera, QR na overenie
-• Spodná lišta bez popiskov: ikony sú väčšie a v každom jazyku na rovnakom mieste
+• Nové: potvrdenie o naplávaných míľach pre každého člena posádky — dni na mori, míle deň/noc, oblasť plavby, hodnotenie skipera, QR na overenie
+• PDF je celé v jazyku appky a v jednotkách z Nastavení — vzdialenosť, rýchlosť aj teplota
+• Oprava: Beaufort vychádzal o 2 – 3 stupne nižšie, než mal
+• Spodná lišta bez popiskov, väčšie ikony
 • Ikona trasy v hlavičke plavby zobrazí celú trasu na mape
-• Príručka doplnená o všetky novinky
+• Zmazanie waypointu s aktívnou navigáciou sa najprv opýta
 
 === English (en-US) ===
-• New: a certificate of miles sailed for every crew member — days at sea, day and night miles, cruising area, the skipper's skill assessment and a QR code for verification
-• Bottom bar without labels: larger icons that sit in the same place in every language
+• New: a certificate of miles sailed for every crew member — days at sea, day and night miles, cruising area, the skipper's assessment and a QR code
+• The PDF now follows the app language and the unit settings — distance, speed and temperature
+• Fixed: Beaufort came out 2 – 3 forces too low
+• Bottom bar without labels, larger icons
 • The route icon in the voyage header shows the whole track on the map
-• User guide updated with everything new
+• Deleting a waypoint you are navigating to now asks first
 
 === Hrvatski (hr-HR) ===
 • Novo: potvrda o preplovljenim miljama za svakog člana posade — dani na moru, dnevne i noćne milje, područje plovidbe, ocjena skipera i QR za provjeru
-• Donja traka bez natpisa: veće ikone koje u svakom jeziku stoje na istom mjestu
+• PDF je u jeziku aplikacije i u jedinicama iz Postavki — udaljenost, brzina i temperatura
+• Ispravak: Beaufort je izlazio 2 – 3 stupnja preniski
+• Donja traka bez natpisa, veće ikone
 • Ikona rute u zaglavlju plovidbe prikazuje cijeli trag na karti
-• Priručnik dopunjen svim novostima
+• Brisanje točke rute s aktivnom navigacijom sada prvo pita
 
 === Slovenščina (sl-SI) ===
 • Novo: potrdilo o preplutih miljah za vsakega člana posadke — dnevi na morju, dnevne in nočne milje, območje plovbe, ocena skiperja in QR za preverjanje
-• Spodnja vrstica brez napisov: večje ikone, ki v vsakem jeziku stojijo na istem mestu
+• PDF je v jeziku aplikacije in v enotah iz Nastavitev — razdalja, hitrost in temperatura
+• Popravek: Beaufort je izpadel 2 – 3 stopnje prenizko
+• Spodnja vrstica brez napisov, večje ikone
 • Ikona poti v glavi plovbe pokaže celotno sled na zemljevidu
-• Priročnik dopolnjen z vsemi novostmi
+• Izbris točke poti z aktivno navigacijo zdaj najprej vpraša
 
 === Italiano (it-IT) ===
-• Novità: attestato delle miglia navigate per ogni membro dell'equipaggio — giorni in mare, miglia diurne e notturne, zona di navigazione, valutazione dello skipper e QR di verifica
-• Barra inferiore senza etichette: icone più grandi, nella stessa posizione in ogni lingua
+• Novità: attestato delle miglia navigate per ogni membro dell'equipaggio — giorni in mare, miglia diurne e notturne, zona di navigazione e QR
+• Il PDF segue la lingua dell'app e le unità impostate — distanza, velocità e temperatura
+• Correzione: il Beaufort risultava 2 – 3 gradi troppo basso
+• Barra inferiore senza etichette, icone più grandi
 • L'icona rotta nell'intestazione mostra l'intera traccia sulla mappa
-• Manuale aggiornato con tutte le novità
+• Eliminare un waypoint con navigazione attiva ora chiede conferma
