@@ -1,0 +1,44 @@
+HMB Sailing Log — build 58 (1.28.0+58)
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• Oprava: na úvodnej obrazovke sa nedalo potvrdiť Continue pri voľbe jazyka
+• Polomer kotevného alarmu až 70 m
+• PDF je celé v jazyku appky a v jednotkách z Nastavení — vzdialenosť, rýchlosť aj teplota
+• Oprava: Beaufort vychádzal o 2 – 3 stupne nižšie, než mal
+• Zmazanie waypointu s aktívnou navigáciou sa najprv opýta
+• Ikona trasy späť v hlavičke plavby
+
+=== English (en-US) ===
+• Fixed: Continue could not be tapped when picking a language on the first screen
+• Anchor alarm radius up to 70 m
+• The PDF now follows the app language and the unit settings — distance, speed and temperature
+• Fixed: Beaufort came out 2 – 3 forces too low
+• Deleting a waypoint you are navigating to now asks first
+• The route icon is back in the voyage header
+
+=== Hrvatski (hr-HR) ===
+• Ispravak: Continue se nije mogao potvrditi pri odabiru jezika na prvom zaslonu
+• Polumjer alarma sidra do 70 m
+• PDF je u jeziku aplikacije i u jedinicama iz Postavki — udaljenost, brzina i temperatura
+• Ispravak: Beaufort je izlazio 2 – 3 stupnja preniski
+• Brisanje točke rute s aktivnom navigacijom sada prvo pita
+• Ikona rute vratila se u zaglavlje plovidbe
+
+=== Slovenščina (sl-SI) ===
+• Popravek: Continue ni bilo mogoče potrditi pri izbiri jezika na prvem zaslonu
+• Polmer alarma sidra do 70 m
+• PDF je v jeziku aplikacije in v enotah iz Nastavitev — razdalja, hitrost in temperatura
+• Popravek: Beaufort je izpadel 2 – 3 stopnje prenizko
+• Izbris točke poti z aktivno navigacijo zdaj najprej vpraša
+• Ikona poti je spet v glavi plovbe
+
+=== Italiano (it-IT) ===
+• Correzione: Continue non si poteva toccare nella scelta della lingua all'avvio
+• Raggio dell'allarme di ancoraggio fino a 70 m
+• Il PDF segue la lingua dell'app e le unità impostate — distanza, velocità e temperatura
+• Correzione: il Beaufort risultava 2 – 3 gradi troppo basso
+• Eliminare un waypoint con navigazione attiva ora chiede conferma
+• L'icona rotta è tornata nell'intestazione della navigazione
