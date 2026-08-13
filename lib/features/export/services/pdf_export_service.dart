@@ -386,15 +386,16 @@ class PdfExportService {
           pw.Expanded(child: _infoBox(l.pdfVesselLabel.toUpperCase(), [
             _pdfText(charter.vesselName ?? '-'),
             if (charter.vesselType != null) _pdfText(charter.vesselType!),
-            if (charter.homePort != null) 'Domovsky pristav: ${_pdfText(charter.homePort!)}',
+            if (charter.homePort != null) '${l.homePort}: ${_pdfText(charter.homePort!)}',
             if (charter.mmsi != null) 'MMSI: ${charter.mmsi!}',
-            if (charter.callsign != null) 'Volaci znak: ${charter.callsign!}',
+            if (charter.callsign != null) '${l.callsign}: ${charter.callsign!}',
+            // Rozmery lode nesú jednotku už v popiske ("Dĺžka (m)").
             if (charter.vesselLengthM != null)
-              'Dlzka: ${charter.vesselLengthM!.toStringAsFixed(1)} m',
+              '${l.vesselLengthM}: ${charter.vesselLengthM!.toStringAsFixed(1)}',
             if (charter.vesselBeamM != null)
-              'Sirka: ${charter.vesselBeamM!.toStringAsFixed(1)} m',
+              '${l.vesselBeamM}: ${charter.vesselBeamM!.toStringAsFixed(1)}',
             if (charter.vesselDraftM != null)
-              'Ponor: ${charter.vesselDraftM!.toStringAsFixed(1)} m',
+              '${l.vesselDraftM}: ${charter.vesselDraftM!.toStringAsFixed(1)}',
           ])),
           pw.SizedBox(width: 8),
           pw.Expanded(child: _infoBox(l.pdfCrewSection.toUpperCase(), [
@@ -403,9 +404,9 @@ class PdfExportService {
             if (crew.isEmpty && charter.skipperName == null) '-',
           ])),
           pw.SizedBox(width: 8),
-          pw.Expanded(child: _infoBox('PREHLAD', [
-            '${days.length} dni plavby',
-            '${units.formatDistance(totalNm, decimals: 1)} celkom',
+          pw.Expanded(child: _infoBox(l.pdfVoyageSummary.toUpperCase(), [
+            '${l.pdfDayCount}: ${days.length}',
+            '${l.pdfTotalLabel}: ${units.formatDistance(totalNm, decimals: 1)}',
             if (charter.notes != null) _pdfText(charter.notes!),
           ])),
         ]),
@@ -426,17 +427,17 @@ class PdfExportService {
               pw.SizedBox(height: 4),
               pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                 if (skipper.fullName.isNotEmpty) ...[
-                  pw.Expanded(child: _wRow('Meno', _pdfText(skipper.fullName))),
+                  pw.Expanded(child: _wRow(l.pdfNameLabel, _pdfText(skipper.fullName))),
                 ],
                 if (skipper.licenseType.isNotEmpty || skipper.licenseNumber.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
-                    'Licencia',
+                    l.pdfLicenceLabel,
                     _pdfText('${skipper.licenseType} ${skipper.licenseNumber}'.trim()),
                   )),
                 ],
                 if (skipper.licenseAuthority.isNotEmpty || skipper.licenseExpiry.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
-                    'Vydal / Plat.',
+                    l.pdfIssuedValidLabel,
                     _pdfText('${skipper.licenseAuthority}  ${skipper.licenseExpiry}'.trim()),
                   )),
                 ],
@@ -449,7 +450,7 @@ class PdfExportService {
               ]),
               if (skipper.otherCerts.isNotEmpty) ...[
                 pw.SizedBox(height: 3),
-                _wRow('Ine cert.', _pdfText(skipper.otherCerts)),
+                _wRow(l.pdfOtherCertsLabel, _pdfText(skipper.otherCerts)),
               ],
             ]),
           ),
@@ -656,7 +657,7 @@ class PdfExportService {
           pageFormat: PdfPageFormat.a4,
           margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
           build: (ctx) => pw.Column(children: [
-            pw.Text('${_pdfText(dayName)} – pokracovanie',
+            pw.Text('${_pdfText(dayName)} – ${l.pdfContinued}',
                 style: pw.TextStyle(color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
             pw.SizedBox(height: 8),
             _entriesTable(chunk, photos, l),
@@ -678,18 +679,22 @@ class PdfExportService {
       columnWidths: {
         0: const pw.FixedColumnWidth(30),   // Čas UTC
         1: const pw.FixedColumnWidth(50),   // GPS lat+lon (2 riadky)
-        2: const pw.FixedColumnWidth(24),   // SOG kn
+        2: const pw.FixedColumnWidth(28),   // SOG + jednotka v hlavičke
         3: const pw.FixedColumnWidth(22),   // COG °
         4: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
         5: const pw.FixedColumnWidth(26),   // hPa
         6: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
         7: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
-        8: const pw.FixedColumnWidth(22),   // Poč.
+        8: const pw.FixedColumnWidth(40),   // Počasie – plný názov, 2 riadky
         9: const pw.FlexColumnWidth(1),     // Poznámka
       },
       children: [
         pw.TableRow(decoration: pw.BoxDecoration(color: _blue), children:
-          [l.pdfColTimeUtc, 'GPS', 'SOG', 'COG', l.pdfColWind, 'hPa', 'T/°C', l.pdfColPropulsion, l.pdfColWeatherShort, l.pdfColNote]
+          // Rýchlosť a teplota nesú jednotku v hlavičke, nie pri každej
+          // hodnote — v stĺpci širokom 28 px sa jednotka k číslu nezmestí.
+          [l.pdfColTimeUtc, 'GPS', 'SOG ${units.speedLabel}', 'COG',
+              l.pdfColWind, 'hPa', 'T ${units.tempLabel}',
+              l.pdfColPropulsion, l.pdfColWeatherShort, l.pdfColNote]
               .map((h) => _hcell(h)).toList()),
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
@@ -697,7 +702,7 @@ class PdfExportService {
           final parsedMode = parseSailMode(entry.sailMode, entry.skipperNote);
           final sailMode = parsedMode.modes.isEmpty
               ? '-'
-              : _sailModeLabel(parsedMode.modes.join(','));
+              : _sailModeLabel(parsedMode.modes.join(','), l);
           String noteText = parsedMode.note;
           // An automatic entry is printed from its event type, so the reader
           // gets it in their own language instead of the stored English.
@@ -729,7 +734,9 @@ class PdfExportService {
                       style: pw.TextStyle(fontSize: 7, color: _dgrey)),
                 ])),
               // SOG
-              _dcell(entry.sog != null ? '${entry.sog!.toStringAsFixed(1)}' : '-'),
+              _dcell(entry.sog != null
+                  ? units.speedValue(entry.sog!).toStringAsFixed(1)
+                  : '-'),
               // COG
               _dcell(entry.cog != null ? '${entry.cog!.toStringAsFixed(0)}°' : '-'),
               // Vietor + smer + vlny
@@ -754,10 +761,10 @@ class PdfExportService {
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                   if (entry.airTemp != null)
-                    pw.Text('${entry.airTemp!.toStringAsFixed(0)}°',
+                    pw.Text('${units.tempValue(entry.airTemp!).toStringAsFixed(0)}°',
                         style: const pw.TextStyle(fontSize: 7)),
                   if (entry.waterTemp != null)
-                    pw.Text('~${entry.waterTemp!.toStringAsFixed(0)}°',
+                    pw.Text('~${units.tempValue(entry.waterTemp!).toStringAsFixed(0)}°',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.airTemp == null && entry.waterTemp == null)
                     pw.Text('-', style: const pw.TextStyle(fontSize: 7)),
@@ -770,15 +777,18 @@ class PdfExportService {
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
+                  // P:/V: boli palivo/voda po slovensky - jednopísmenová
+                  // skratka ide z prekladu, aby sedela aj inde.
                   if (entry.fuelLevel != null)
-                    pw.Text('P:${entry.fuelLevel}%',
+                    pw.Text('${l.pdfFuelShort}:${entry.fuelLevel}%',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.waterLevel != null)
-                    pw.Text('V:${entry.waterLevel}%',
+                    pw.Text('${l.pdfWaterShort}:${entry.waterLevel}%',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                 ])),
               // Počasie
-              _dcell(_wcShort(entry.weatherCondition)),
+              _dcell(_wcLabel(entry.weatherCondition, l),
+                  fontSize: 6.5, maxLines: 2),
               // Poznámka + foto priamo v riadku
               pw.Padding(
                 padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
@@ -848,14 +858,15 @@ class PdfExportService {
         pw.SizedBox(height: 14),
 
         pw.Row(children: [
-          _statBox('CELKOVA\nVZDIALENOST',
+          _statBox(l.pdfStatTotalDistance.toUpperCase(),
               units.formatDistance(totalNm, decimals: 1), _blue),
           pw.SizedBox(width: 6),
           _statBox(l.pdfDayCount.toUpperCase(), '${days.length}', _green),
           pw.SizedBox(width: 6),
-          _statBox('ZAZNAMY\nDENNIKA', '$totalEntries', _dgrey),
+          _statBox(l.pdfStatLogEntries.toUpperCase(), '$totalEntries', _dgrey),
           pw.SizedBox(width: 6),
-          _statBox('MAX\nBEAUFORT', maxBft > 0 ? 'Bft $maxBft' : '-', _navy),
+          _statBox(l.pdfStatMaxBeaufort.toUpperCase(),
+              maxBft > 0 ? 'Bft $maxBft' : '-', _navy),
         ]),
         pw.SizedBox(height: 14),
 
@@ -902,7 +913,7 @@ class PdfExportService {
         ),
         pw.Spacer(),
         _footer(
-          'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+          '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
           docId: docId, revision: revision,
         ),
       ]),
@@ -1062,7 +1073,7 @@ class PdfExportService {
           ]),
 
         pw.Spacer(),
-        _footer('${_pdfText(charter.title)}  |  Bezpecnostny briefing', docId: docId, revision: revision),
+        _footer('${_pdfText(charter.title)}  |  ${l.pdfSafetyBriefing}', docId: docId, revision: revision),
       ]),
     );
   }
@@ -1131,7 +1142,7 @@ class PdfExportService {
         pw.SizedBox(height: 6),
         if (signerName != null)
           pw.Text(_pdfText(signerName), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-        pw.Text('Podpisane: $timeStr UTC', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+        pw.Text('${l.pdfSignedAt}: $timeStr UTC', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
         pw.SizedBox(height: 20),
         pw.Divider(color: PdfColors.grey300),
         pw.SizedBox(height: 12),
@@ -1162,7 +1173,7 @@ class PdfExportService {
           ]),
         ]),
         pw.Spacer(),
-        _footer('${_pdfText(docTitle)}  |  Podpisany $timeStr UTC', docId: docId, revision: revision),
+        _footer('${_pdfText(docTitle)}  |  ${l.pdfSignedAt} $timeStr UTC', docId: docId, revision: revision),
       ]),
     );
   }
@@ -1172,24 +1183,25 @@ class PdfExportService {
   static pw.Widget _weatherBox(
       DayLog day, List<LogbookEntry> entries, AppLocalizations l) {
     final rows = <pw.Widget>[];
-    if (day.beaufortMorning != null) rows.add(_wRow('Rano', 'Bft ${day.beaufortMorning}'));
-    if (day.beaufortNoon != null) rows.add(_wRow('Poludnie', 'Bft ${day.beaufortNoon}'));
-    if (day.beaufortEvening != null) rows.add(_wRow('Vecer', 'Bft ${day.beaufortEvening}'));
+    if (day.beaufortMorning != null) rows.add(_wRow(l.morning, 'Bft ${day.beaufortMorning}'));
+    if (day.beaufortNoon != null) rows.add(_wRow(l.noon, 'Bft ${day.beaufortNoon}'));
+    if (day.beaufortEvening != null) rows.add(_wRow(l.evening, 'Bft ${day.beaufortEvening}'));
 
     if (day.beaufortMorning == null && day.beaufortNoon == null && day.beaufortEvening == null) {
       final withWind = entries.where((e) => e.windSpeed != null).toList();
       if (withWind.isNotEmpty) {
         final avg = withWind.map((e) => e.windSpeed!).reduce((a, b) => a + b) / withWind.length;
-        rows.add(_wRow('Vietor', '${avg.toStringAsFixed(1)} kn  Bft ${_windToBeaufort(avg)}'));
+        // formatWindFull už Bft dopĺňa samo, aj keď je vietor v uzloch či m/s.
+        rows.add(_wRow(l.wind, units.formatWindFull(avg)));
       }
     }
     if (day.windDirection != null) {
-      rows.add(_wRow('Smer', _pdfText(day.windDirection!)));
+      rows.add(_wRow(l.windDir, _pdfText(day.windDirection!)));
     } else {
       final withDir = entries.where((e) => e.windDirection != null).toList();
       if (withDir.isNotEmpty) {
         final avg = withDir.map((e) => e.windDirection!).reduce((a, b) => a + b) / withDir.length;
-        rows.add(_wRow('Smer vetra', _degToCompass(avg)));
+        rows.add(_wRow(l.windDir, _degToCompass(avg)));
       }
     }
 
@@ -1197,37 +1209,37 @@ class PdfExportService {
     final withPressure = entries.where((e) => e.airPressure != null).toList();
     if (withPressure.isNotEmpty) {
       final avg = withPressure.map((e) => e.airPressure!).reduce((a, b) => a + b) / withPressure.length;
-      rows.add(_wRow('Tlak', '${avg.toStringAsFixed(0)} hPa'));
+      rows.add(_wRow(l.pressureLabel, units.formatPressure(avg)));
     }
 
-    if (day.seaState != null) rows.add(_wRow('More', _pdfText(day.seaState!)));
+    if (day.seaState != null) rows.add(_wRow(l.seaState, _pdfText(day.seaState!)));
     if (day.waveHeightM != null) {
-      rows.add(_wRow('Vlny', '${day.waveHeightM!.toStringAsFixed(1)} m'));
+      rows.add(_wRow(l.waveHeight, '${day.waveHeightM!.toStringAsFixed(1)} m'));
     } else {
       final withWave = entries.where((e) => e.waveHeight != null).toList();
       if (withWave.isNotEmpty) {
         final avg = withWave.map((e) => e.waveHeight!).reduce((a, b) => a + b) / withWave.length;
-        rows.add(_wRow('Vlny', '${avg.toStringAsFixed(1)} m'));
+        rows.add(_wRow(l.waveHeight, '${avg.toStringAsFixed(1)} m'));
       }
     }
 
     if (day.airTempC != null) {
-      rows.add(_wRow('Vzduch', '${day.airTempC!.toStringAsFixed(0)} C'));
+      rows.add(_wRow(l.airTempLabel, units.formatTemp(day.airTempC, decimals: 0)));
     } else {
       final withTemp = entries.where((e) => e.airTemp != null).toList();
       if (withTemp.isNotEmpty) {
         final avg = withTemp.map((e) => e.airTemp!).reduce((a, b) => a + b) / withTemp.length;
-        rows.add(_wRow('Vzduch', '${avg.toStringAsFixed(0)} C'));
+        rows.add(_wRow(l.airTempLabel, units.formatTemp(avg, decimals: 0)));
       }
     }
 
     if (day.waterTempC != null) {
-      rows.add(_wRow('Voda', '${day.waterTempC!.toStringAsFixed(0)} C'));
+      rows.add(_wRow(l.waterLabel, units.formatTemp(day.waterTempC, decimals: 0)));
     } else {
       final withWater = entries.where((e) => e.waterTemp != null).toList();
       if (withWater.isNotEmpty) {
         final avg = withWater.map((e) => e.waterTemp!).reduce((a, b) => a + b) / withWater.length;
-        rows.add(_wRow('Voda', '${avg.toStringAsFixed(0)} C'));
+        rows.add(_wRow(l.waterLabel, units.formatTemp(avg, decimals: 0)));
       }
     }
 
@@ -1268,32 +1280,38 @@ class PdfExportService {
     return "${deg.toString().padLeft(3, '0')}°${min.toStringAsFixed(2)}'$dir";
   }
 
-  static String _wcShort(String? key) {
-    if (key == null) return '';
-    const map = {
-      'sunny': 'Slnk', 'partly_cloudy': 'P-Ob', 'overcast': 'Zamr',
-      'light_rain': 'L-Dz', 'rain': 'Dazd', 'heavy_rain': 'H-Dz',
-      'drizzle': 'Mrh', 'thunderstorm': 'Burk', 'iso_thunder': 'Bur',
-      'hail': 'Krup', 'dust': 'Prac', 'foggy': 'Hmla',
-      'windy': 'Vet', 'cold': 'Mraz',
-    };
-    return map[key] ?? key.substring(0, key.length.clamp(0, 5));
-  }
+  /// Počasie v tabuľke záznamov.
+  ///
+  /// Boli tu slovenské skratky (Slnk, Zamr, Mrh...), ktoré v nemeckom PDF
+  /// nedávali zmysel. Teraz sa berie plný lokalizovaný názov a stĺpec je
+  /// širší — vymýšľať skratky pre jedenásť jazykov nemá zmysel.
+  static String _wcLabel(String? key, AppLocalizations l) => switch (key) {
+        null => '',
+        'sunny' => l.wcSunny,
+        'partly_cloudy' => l.wcPartlyCloudy,
+        'overcast' => l.wcOvercast,
+        'light_rain' => l.wcLightRain,
+        'rain' => l.wcRain,
+        'heavy_rain' => l.wcHeavyRain,
+        'drizzle' => l.wcDrizzle,
+        'thunderstorm' => l.wcThunderstorm,
+        'iso_thunder' => l.wcIsoThunderstorm,
+        'hail' => l.wcHail,
+        'dust' => l.wcDust,
+        'foggy' => l.wcFoggy,
+        'windy' => l.wcWindy,
+        'cold' => l.wcCold,
+        _ => key,
+      };
 
-  static String _sailModeLabel(String modes) {
-    const map = {
-      'motor': 'Motor', 'main': 'Hlavna', 'genoa': 'Genoa',
+  /// Plachty. Motor/Genoa/Reef sú medzinárodné a appka ich neprekladá ani
+  /// v editore záznamu — preklad má len hlavná plachta.
+  static String _sailModeLabel(String modes, AppLocalizations l) {
+    final map = {
+      'motor': 'Motor', 'main': l.sailMain, 'genoa': 'Genoa',
       'reef1': 'Reef1', 'reef2': 'Reef2',
     };
     return modes.split(',').map((m) => map[m.trim()] ?? m).join('+');
-  }
-
-  static int _windToBeaufort(double kn) {
-    if (kn < 1) return 0; if (kn < 4) return 1; if (kn < 7) return 2;
-    if (kn < 11) return 3; if (kn < 17) return 4; if (kn < 22) return 5;
-    if (kn < 28) return 6; if (kn < 34) return 7; if (kn < 41) return 8;
-    if (kn < 48) return 9; if (kn < 56) return 10; if (kn < 64) return 11;
-    return 12;
   }
 
   static String _degToCompass(double deg) {
@@ -1366,7 +1384,7 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        'Datum/miesto: ${fmt.format(protocol.dateTimeUtc.toLocal())}'
+        '${l.pdfDatePlaceLabel}: ${fmt.format(protocol.dateTimeUtc.toLocal())}'
         '${protocol.location != null ? "  |  ${_pdfText(protocol.location!)}" : ""}',
         docId: docId, revision: 0,
       ),
@@ -1421,8 +1439,9 @@ class PdfExportService {
       pw.SizedBox(height: 8),
       pw.Row(children: [
         pw.Expanded(child: _handoverSignatureBlock(
-          title: 'Skipper', name: protocol.skipperName, signature: skipperSig,
-          signedAt: protocol.skipperSignedAt, fmt: fmt,
+          title: l.pdfSkipperLabel, name: protocol.skipperName,
+          signature: skipperSig,
+          signedAt: protocol.skipperSignedAt, fmt: fmt, l: l,
         )),
         pw.SizedBox(width: 16),
         pw.Expanded(child: _handoverSignatureBlock(
@@ -1431,6 +1450,7 @@ class PdfExportService {
               ? '${protocol.companyRepName}${protocol.companyName != null ? " (${protocol.companyName})" : ""}'
               : null,
           signature: companySig, signedAt: protocol.companySignedAt, fmt: fmt,
+          l: l,
         )),
       ]),
     ];
@@ -1495,10 +1515,11 @@ class PdfExportService {
     return null;
   }
 
-  static String _handoverStatusLabel(ChecklistStatus s) => switch (s) {
-        ChecklistStatus.ok => 'OK',
-        ChecklistStatus.damaged => 'Poskodene',
-        ChecklistStatus.missing => 'Chyba',
+  static String _handoverStatusLabel(ChecklistStatus s, AppLocalizations l) =>
+      switch (s) {
+        ChecklistStatus.ok => l.checklistItemOk,
+        ChecklistStatus.damaged => l.checklistItemDamaged,
+        ChecklistStatus.missing => l.checklistItemMissing,
       };
 
   /// Tabuľka checklistu zoskupená podľa kategórií (rovnaké kategórie ako v
@@ -1539,7 +1560,7 @@ class PdfExportService {
               color: item.status == ChecklistStatus.ok ? PdfColors.white : PdfColor.fromHex('#FDEBD0')),
           children: [
             _cell(_pdfText(label)),
-            _cell(_handoverStatusLabel(item.status), bold: item.status != ChecklistStatus.ok),
+            _cell(_handoverStatusLabel(item.status, l), bold: item.status != ChecklistStatus.ok),
             _cell(_pdfText(noteParts.join(' '))),
             thumbnails.containsKey(item.itemKey)
                 ? pw.Container(
@@ -1570,6 +1591,7 @@ class PdfExportService {
     required Uint8List? signature,
     required DateTime? signedAt,
     required DateFormat fmt,
+    required AppLocalizations l,
   }) {
     return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
       pw.Text(_pdfText(title), style: pw.TextStyle(fontSize: 8, color: _dgrey, fontWeight: pw.FontWeight.bold)),
@@ -1584,7 +1606,7 @@ class PdfExportService {
       pw.SizedBox(height: 4),
       pw.Text(_pdfText(name ?? '-'), style: const pw.TextStyle(fontSize: 8.5)),
       if (signedAt != null)
-        pw.Text('Podpisane: ${fmt.format(signedAt.toLocal())}',
+        pw.Text('${l.pdfSignedAt}: ${fmt.format(signedAt.toLocal())}',
             style: pw.TextStyle(fontSize: 7, color: _dgrey)),
     ]);
   }
@@ -1703,7 +1725,7 @@ class PdfExportService {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
       footer: (ctx) => _footer(
-        'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
         docId: docId,
         revision: rev,
       ),
@@ -1931,19 +1953,23 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        'Exportovane: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
         docId: docId, revision: 0,
       ),
       build: (ctx) => [
         pw.Row(children: [
-          _statBox('CELKOVO\n${units.distanceLabel.toUpperCase()}',
+          _statBox(
+              '${l.pdfTotalLabel.toUpperCase()} ${units.distanceLabel.toUpperCase()}',
               units.distanceValue(aggregate.totalNm).toStringAsFixed(1), _blue),
           pw.SizedBox(width: 6),
-          _statBox('DNI NA\nMORI', '${aggregate.daysAtSea}', _green),
+          _statBox(l.pdfStatDaysAtSea.toUpperCase(),
+              '${aggregate.daysAtSea}', _green),
           pw.SizedBox(width: 6),
-          _statBox('POCET\nPLAVIEB', '${aggregate.voyageCount}', _dgrey),
+          _statBox(l.pdfStatVoyages.toUpperCase(),
+              '${aggregate.voyageCount}', _dgrey),
           pw.SizedBox(width: 6),
-          _statBox('NOCNE\nHODINY', aggregate.nightHours.toStringAsFixed(1), _navy),
+          _statBox(l.pdfStatNightHours.toUpperCase(),
+              aggregate.nightHours.toStringAsFixed(1), _navy),
         ]),
         pw.SizedBox(height: 16),
 
@@ -1977,7 +2003,7 @@ class PdfExportService {
 
         if (aggregate.voyages.any((v) => v.isManualEntry)) ...[
           pw.SizedBox(height: 8),
-          pw.Text('* manualny zaznam (zadane rucne)',
+          pw.Text(l.pdfManualEntryNote,
               style: pw.TextStyle(fontSize: 7.5, color: _dgrey)),
         ],
 
@@ -1987,13 +2013,13 @@ class PdfExportService {
             pw.Container(width: 200, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text(_pdfText('Podpis: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text(_pdfText('${l.pdfSignatureLabel}: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
           ])),
           pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Container(width: 150, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text('Datum: ${fmt.format(DateTime.now())}', style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text('${l.pdfDateLabel}: ${fmt.format(DateTime.now())}', style: const pw.TextStyle(fontSize: 8.5)),
           ])),
         ]),
       ],

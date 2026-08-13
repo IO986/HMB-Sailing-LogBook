@@ -46,11 +46,17 @@ class UnitsSettings {
       );
 
   // Formátovanie hodnôt
-  String formatTemp(double? c) {
-    if (c == null) return '-';
-    if (temp == TempUnit.fahrenheit) return '${(c * 9 / 5 + 32).toStringAsFixed(1)} °F';
-    return '${c.toStringAsFixed(1)} °C';
-  }
+
+  /// Označenie jednotky teploty — pre tabuľky, kde jednotka stojí v hlavičke
+  /// stĺpca a nie pri každej hodnote (PDF denník).
+  String get tempLabel => temp == TempUnit.fahrenheit ? '°F' : '°C';
+
+  double tempValue(double c) =>
+      temp == TempUnit.fahrenheit ? c * 9 / 5 + 32 : c;
+
+  String formatTemp(double? c, {int decimals = 1}) => c == null
+      ? '-'
+      : '${tempValue(c).toStringAsFixed(decimals)} $tempLabel';
 
   String formatDepth(double? m) {
     if (m == null) return '-';
@@ -117,11 +123,16 @@ class UnitsSettings {
   String formatCourse(double? deg) => deg == null ? '-' : '${deg.toStringAsFixed(0)}°';
   String formatPressure(double? hpa) => hpa == null ? '-' : '${hpa.toStringAsFixed(0)} hPa';
 
+  /// Beaufort z rýchlosti vetra **v uzloch** (WMO tabuľka).
+  ///
+  /// Predtým tu boli prahy km/h (1-5-11-19-28...) aplikované na uzly, takže
+  /// každý stupeň vyšiel o dva-tri nižšie — 30 kn (Bft 7, blízko víchrice)
+  /// sa hlásilo ako Bft 4. Prístrojová doska, denník aj PDF ťahajú Bft odtiaľ.
   int _beaufort(double kn) {
-    if (kn < 1) return 0; if (kn < 6) return 1; if (kn < 12) return 2;
-    if (kn < 20) return 3; if (kn < 29) return 4; if (kn < 39) return 5;
-    if (kn < 50) return 6; if (kn < 62) return 7; if (kn < 75) return 8;
-    if (kn < 89) return 9; if (kn < 103) return 10; if (kn < 118) return 11;
+    if (kn < 1) return 0; if (kn < 4) return 1; if (kn < 7) return 2;
+    if (kn < 11) return 3; if (kn < 17) return 4; if (kn < 22) return 5;
+    if (kn < 28) return 6; if (kn < 34) return 7; if (kn < 41) return 8;
+    if (kn < 48) return 9; if (kn < 56) return 10; if (kn < 64) return 11;
     return 12;
   }
 }

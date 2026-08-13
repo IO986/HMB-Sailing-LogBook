@@ -21,6 +21,29 @@ final waypointsProvider = FutureProvider<List<Waypoint>>((ref) async {
   return db.getAllWaypoints();
 });
 
+/// Cieľ navigácie k waypointu (VMG WP na prístrojovej doske).
+///
+/// Drží sa len id, nie odfotená kópia waypointu. Predtým tu sedel celý
+/// [Waypoint] a po zmazaní bodu z mapy navigácia ďalej ukazovala kurz a
+/// vzdialenosť k bodu, ktorý už neexistoval — a vypnúť sa dala len ručne
+/// cez "žiadny cieľ". Odvodený [navTargetProvider] vracia null, len čo
+/// bod zmizne zo zoznamu, takže navigácia padne sama.
+final navTargetIdProvider = StateProvider<int?>((ref) => null);
+
+/// Waypoint, ku ktorému sa práve naviguje, alebo null.
+final navTargetProvider = Provider<Waypoint?>((ref) {
+  final id = ref.watch(navTargetIdProvider);
+  if (id == null) return null;
+  // Počas obnovy zoznamu drží valueOrNull predchádzajúce dáta, takže
+  // navigácia neprebleskne pri každom invalidate.
+  final waypoints = ref.watch(waypointsProvider).valueOrNull;
+  if (waypoints == null) return null;
+  for (final w in waypoints) {
+    if (w.id == id) return w;
+  }
+  return null;
+});
+
 /// GPS trasa aktuálnej session – obnoví sa pri každom novom GPS bode.
 final currentTrackProvider = Provider<List<LatLng>>((ref) {
   ref.watch(positionStreamProvider); // Rebuild on every new GPS position
@@ -268,6 +291,11 @@ class MapNotifier extends Notifier<MapState> {
   Future<void> deleteWaypoint(int id) async {
     final db = ref.read(databaseProvider);
     await db.deleteWaypoint(id);
+    // Navigácia na zmazaný bod sa vypína tu, nie až v UI — zmazať waypoint
+    // sa dá aj inokade než z dialógu, ktorý sa pýta.
+    if (ref.read(navTargetIdProvider) == id) {
+      ref.read(navTargetIdProvider.notifier).state = null;
+    }
     ref.invalidate(waypointsProvider);
   }
 

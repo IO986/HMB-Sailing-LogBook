@@ -103,11 +103,41 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
     Navigator.pop(context);
   }
 
-  void _delete() {
+  /// Zmazanie bodu, ku ktorému beží navigácia, sa najprv opýta.
+  ///
+  /// Bez toho sa navigácia po zmazaní ticho vypla a tester ju hľadal ako
+  /// zaseknutú — mazanie bodu je jediné miesto, kde ju vypne niečo iné než
+  /// on sám, tak nech to vidí.
+  Future<void> _delete() async {
     final existing = widget.existing;
-    if (existing != null) {
-      ref.read(mapNotifierProvider.notifier).deleteWaypoint(existing.id);
+    if (existing == null) {
+      Navigator.pop(context);
+      return;
     }
-    Navigator.pop(context);
+
+    if (ref.read(navTargetIdProvider) == existing.id) {
+      final l = AppLocalizations.of(context);
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l.deleteWaypointTitle),
+          content: Text(l.deleteWaypointNavActive(existing.name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.delete, style: const TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
+
+    await ref.read(mapNotifierProvider.notifier).deleteWaypoint(existing.id);
+    if (mounted) Navigator.pop(context);
   }
 }

@@ -1388,6 +1388,114 @@ abstract class AppLocalizations {
   /// **'Rola'**
   String get pdfColRole;
 
+  /// No description provided for @pdfNameLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno'**
+  String get pdfNameLabel;
+
+  /// No description provided for @pdfLicenceLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Licencia'**
+  String get pdfLicenceLabel;
+
+  /// No description provided for @pdfIssuedValidLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vydal / platnosť'**
+  String get pdfIssuedValidLabel;
+
+  /// No description provided for @pdfOtherCertsLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Iné cert.'**
+  String get pdfOtherCertsLabel;
+
+  /// No description provided for @pdfContinued.
+  ///
+  /// In sk, this message translates to:
+  /// **'pokračovanie'**
+  String get pdfContinued;
+
+  /// No description provided for @pdfExportedAt.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exportované'**
+  String get pdfExportedAt;
+
+  /// No description provided for @pdfSignedAt.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpísané'**
+  String get pdfSignedAt;
+
+  /// No description provided for @pdfSignatureLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpis'**
+  String get pdfSignatureLabel;
+
+  /// No description provided for @pdfDatePlaceLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátum / miesto'**
+  String get pdfDatePlaceLabel;
+
+  /// No description provided for @pdfManualEntryNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'* manuálny záznam (zadané ručne)'**
+  String get pdfManualEntryNote;
+
+  /// No description provided for @pdfStatTotalDistance.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celková vzdialenosť'**
+  String get pdfStatTotalDistance;
+
+  /// No description provided for @pdfStatLogEntries.
+  ///
+  /// In sk, this message translates to:
+  /// **'Záznamy denníka'**
+  String get pdfStatLogEntries;
+
+  /// No description provided for @pdfStatMaxBeaufort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Max Beaufort'**
+  String get pdfStatMaxBeaufort;
+
+  /// No description provided for @pdfStatDaysAtSea.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dni na mori'**
+  String get pdfStatDaysAtSea;
+
+  /// No description provided for @pdfStatVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Počet plavieb'**
+  String get pdfStatVoyages;
+
+  /// No description provided for @pdfStatNightHours.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nočné hodiny'**
+  String get pdfStatNightHours;
+
+  /// No description provided for @pdfFuelShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'P'**
+  String get pdfFuelShort;
+
+  /// No description provided for @pdfWaterShort.
+  ///
+  /// In sk, this message translates to:
+  /// **'V'**
+  String get pdfWaterShort;
+
   /// No description provided for @pdfNoData.
   ///
   /// In sk, this message translates to:
@@ -3782,6 +3890,18 @@ abstract class AppLocalizations {
   /// **'Upraviť waypoint'**
   String get editWaypoint;
 
+  /// No description provided for @deleteWaypointTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať waypoint?'**
+  String get deleteWaypointTitle;
+
+  /// No description provided for @deleteWaypointNavActive.
+  ///
+  /// In sk, this message translates to:
+  /// **'Navigácia na {name} je aktívna. Zmazaním bodu sa vypne.'**
+  String deleteWaypointNavActive(String name);
+
   /// No description provided for @waypointNameLabel.
   ///
   /// In sk, this message translates to:
@@ -4517,7 +4637,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideInstrBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k vybranému waypointu; po výbere z dlaždice uvidíš vzdialenosť/smer aj šípku priamo na smerovej ružici\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.\n\nAko sa loď pripája: appka číta NMEA dáta cez WiFi (TCP alebo UDP). Samotný WiFi hotspot Raymarine MFD zvyčajne nestačí — slúži pre appky Raymarine a surové NMEA tretím stranám väčšinou nepúšťa. Potrebuješ NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) pripojený na lodnú zbernicu, ktorý buď vytvorí vlastný hotspot, alebo broadcastuje NMEA do WiFi. Telefón pripoj na WiFi tohto gateway a v Nastaveniach zadaj jeho IP a port (alebo skús Automaticky nájsť).'**
+  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k vybranému waypointu; po výbere z dlaždice uvidíš vzdialenosť/smer aj šípku priamo na smerovej ružici. Navigáciu vypneš voľbou \"Žiadny cieľ\" v tej istej dlaždici — vypne ju aj zmazanie waypointu na mape\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.\n\nAko sa loď pripája: appka číta NMEA dáta cez WiFi (TCP alebo UDP). Samotný WiFi hotspot Raymarine MFD zvyčajne nestačí — slúži pre appky Raymarine a surové NMEA tretím stranám väčšinou nepúšťa. Potrebuješ NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) pripojený na lodnú zbernicu, ktorý buď vytvorí vlastný hotspot, alebo broadcastuje NMEA do WiFi. Telefón pripoj na WiFi tohto gateway a v Nastaveniach zadaj jeho IP a port (alebo skús Automaticky nájsť).'**
   String get guideInstrBody;
 
   /// No description provided for @guideLogbookTitle.
@@ -4661,7 +4781,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.

@@ -22,7 +22,8 @@ final _gpsProvider = StreamProvider<Position>((ref) => LocationService().stream)
 final _weatherProvider = FutureProvider<WeatherData?>(
     (ref) => WeatherService().getCurrentWeather());
 
-final _activeWpProvider = StateProvider<Waypoint?>((ref) => null);
+// Cieľ navigácie žije v map_provider (navTargetIdProvider/navTargetProvider),
+// aby ho vedelo zhodiť aj zmazanie waypointu na mape.
 
 // ─────────────────────────────────────────────────────────────
 // Screen
@@ -48,7 +49,7 @@ class InstrumentsScreen extends ConsumerWidget {
     final rayState = isUdp ? udpState : tcpState;
     final weather = ref.watch(_weatherProvider).valueOrNull;
     final waypoints = ref.watch(waypointsProvider).valueOrNull ?? [];
-    final activeWp = ref.watch(_activeWpProvider);
+    final activeWp = ref.watch(navTargetProvider);
 
     const _fieldStale = Duration(seconds: 10);
     bool _freshField(DateTime? t) =>
@@ -185,7 +186,8 @@ class InstrumentsScreen extends ConsumerWidget {
             brg: brgWp,
             wp: activeWp,
             waypoints: waypoints,
-            onSelect: (wp) => ref.read(_activeWpProvider.notifier).state = wp,
+            onSelect: (wp) =>
+                ref.read(navTargetIdProvider.notifier).state = wp?.id,
           ),
         ),
 
@@ -547,13 +549,30 @@ class _VmgWpTile extends ConsumerWidget {
             ]),
           )
         else ...[
-          if (wp != null)
-            ListTile(
-              leading: const Icon(Icons.close, color: Colors.white38, size: 18),
-              title: Text(AppLocalizations.of(context).noTarget,
-                  style: const TextStyle(color: Colors.white54, fontSize: 13)),
-              onTap: () { onSelect(null); Navigator.pop(context); },
+          // Vypnutie navigácie je tlačidlo, nie ďalší riadok v zozname.
+          // Ako sivá položka nad waypointmi ho tester prehliadol a namiesto
+          // toho zmazal waypoint, aby sa navigácie zbavil.
+          if (wp != null) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton.tonalIcon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0x33FF5252),
+                    foregroundColor: const Color(0xFFFF8A80),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: () { onSelect(null); Navigator.pop(context); },
+                  icon: const Icon(Icons.close, size: 18),
+                  label: Text(AppLocalizations.of(context).noTarget,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w600)),
+                ),
+              ),
             ),
+            const Divider(color: Colors.white12, height: 1),
+          ],
           ...waypoints.map((w) => ListTile(
             leading: Icon(Icons.place,
                 color: w.id == wp?.id

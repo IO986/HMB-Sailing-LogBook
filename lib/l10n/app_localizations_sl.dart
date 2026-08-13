@@ -684,6 +684,60 @@ class AppLocalizationsSl extends AppLocalizations {
   String get pdfColRole => 'Vloga';
 
   @override
+  String get pdfNameLabel => 'Ime';
+
+  @override
+  String get pdfLicenceLabel => 'Licenca';
+
+  @override
+  String get pdfIssuedValidLabel => 'Izdal / velja';
+
+  @override
+  String get pdfOtherCertsLabel => 'Drugi cert.';
+
+  @override
+  String get pdfContinued => 'nadaljevanje';
+
+  @override
+  String get pdfExportedAt => 'Izvoženo';
+
+  @override
+  String get pdfSignedAt => 'Podpisano';
+
+  @override
+  String get pdfSignatureLabel => 'Podpis';
+
+  @override
+  String get pdfDatePlaceLabel => 'Datum / kraj';
+
+  @override
+  String get pdfManualEntryNote => '* ročni vnos (vnesen ročno)';
+
+  @override
+  String get pdfStatTotalDistance => 'Skupna razdalja';
+
+  @override
+  String get pdfStatLogEntries => 'Zapisi dnevnika';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Maks. Beaufort';
+
+  @override
+  String get pdfStatDaysAtSea => 'Dni na morju';
+
+  @override
+  String get pdfStatVoyages => 'Število plovb';
+
+  @override
+  String get pdfStatNightHours => 'Nočne ure';
+
+  @override
+  String get pdfFuelShort => 'G';
+
+  @override
+  String get pdfWaterShort => 'V';
+
+  @override
   String get pdfNoData => 'Ni podatkov';
 
   @override
@@ -1955,6 +2009,14 @@ class AppLocalizationsSl extends AppLocalizations {
   String get editWaypoint => 'Uredi točko poti';
 
   @override
+  String get deleteWaypointTitle => 'Izbrisati točko poti?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'Navigacija do $name je aktivna. Z izbrisom točke se bo izklopila.';
+  }
+
+  @override
   String get waypointNameLabel => 'Ime';
 
   @override
@@ -2338,7 +2400,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Zavihek Instrumenti prikazuje navigacijske podatke v realnem času.\n\n• SOG – hitrost nad dnom (vozli)\n• TWS – hitrost pravega vetra\n• TWA – kot pravega vetra glede na plovilo (zeleno = desni bok, rdeče = levi bok)\n• DEPTH – globina morja (rdeče = manj kot 5 m)\n• VMG WP – hitrost proti izbrani točki poti; izberite jo na ploščici za prikaz razdalje/azimuta in puščice neposredno na vetrovnici\n\nVir podatkov: GPS telefona ali Raymarine (prehod WiFi TCP ali UDP).\nNastavitve povezave (vključno z izbiro TCP/UDP) so v Nastavitve → Instrumenti.\n\nKako se plovilo poveže: aplikacija bere podatke NMEA prek WiFi (TCP ali UDP). Lastna dostopna točka WiFi na Raymarine MFD običajno ne zadostuje — namenjena je Raymarinovim aplikacijam in praviloma ne izpostavlja surovih podatkov NMEA tretjim osebam. Potrebujete prehod NMEA-na-WiFi (npr. Digital Yacht, Yacht Devices, Actisense, Quark-elec), priključen na ladijsko vodilo, ki bodisi ustvari lastno dostopno točko bodisi oddaja NMEA v omrežje WiFi. Povežite se z WiFi tega prehoda in v Nastavitvah vnesite njegov IP in vrata (ali poskusite Samodejno zaznavanje).';
+      'Zavihek Instrumenti prikazuje navigacijske podatke v realnem času.\n\n• SOG – hitrost nad dnom (vozli)\n• TWS – hitrost pravega vetra\n• TWA – kot pravega vetra glede na plovilo (zeleno = desni bok, rdeče = levi bok)\n• DEPTH – globina morja (rdeče = manj kot 5 m)\n• VMG WP – hitrost proti izbrani točki poti; izberite jo na ploščici za prikaz razdalje/azimuta in puščice neposredno na vetrovnici. Navigacijo izklopite z izbiro \"Ni cilja\" na isti ploščici — izklopi jo tudi izbris točke poti na zemljevidu\n\nVir podatkov: GPS telefona ali Raymarine (prehod WiFi TCP ali UDP).\nNastavitve povezave (vključno z izbiro TCP/UDP) so v Nastavitve → Instrumenti.\n\nKako se plovilo poveže: aplikacija bere podatke NMEA prek WiFi (TCP ali UDP). Lastna dostopna točka WiFi na Raymarine MFD običajno ne zadostuje — namenjena je Raymarinovim aplikacijam in praviloma ne izpostavlja surovih podatkov NMEA tretjim osebam. Potrebujete prehod NMEA-na-WiFi (npr. Digital Yacht, Yacht Devices, Actisense, Quark-elec), priključen na ladijsko vodilo, ki bodisi ustvari lastno dostopno točko bodisi oddaja NMEA v omrežje WiFi. Povežite se z WiFi tega prehoda in v Nastavitvah vnesite njegov IP in vrata (ali poskusite Samodejno zaznavanje).';
 
   @override
   String get guideLogbookTitle => 'Dnevnik plovbe';
@@ -2423,7 +2485,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';

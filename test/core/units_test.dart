@@ -70,7 +70,37 @@ void main() {
       speed: SpeedUnit.kmh,
       wind: WindUnit.beaufort,
     );
-    expect(beaufort.formatWind(20), 'Bft 4');
+    // 20 kn is a fresh breeze - Bft 5 on the WMO knots scale.
+    expect(beaufort.formatWind(20), 'Bft 5');
+  });
+
+  test('Beaufort reads the knots scale, not the km/h one', () {
+    const bft = UnitsSettings(wind: WindUnit.beaufort);
+    // Upper bound of each force in knots, then the first value above it.
+    expect(bft.formatWind(0.5), 'Bft 0');
+    expect(bft.formatWind(3), 'Bft 1');
+    expect(bft.formatWind(6), 'Bft 2');
+    expect(bft.formatWind(10), 'Bft 3');
+    expect(bft.formatWind(16), 'Bft 4');
+    expect(bft.formatWind(21), 'Bft 5');
+    expect(bft.formatWind(27), 'Bft 6');
+    // A gale must not be reported as a breeze - this is what was broken.
+    expect(bft.formatWind(33), 'Bft 7');
+    expect(bft.formatWind(40), 'Bft 8');
+    expect(bft.formatWind(47), 'Bft 9');
+    expect(bft.formatWind(55), 'Bft 10');
+    expect(bft.formatWind(63), 'Bft 11');
+    expect(bft.formatWind(64), 'Bft 12');
+  });
+
+  test('temperature label and value follow the unit', () {
+    const f = UnitsSettings(temp: TempUnit.fahrenheit);
+    expect(metric.tempLabel, '°C');
+    expect(f.tempLabel, '°F');
+    expect(metric.tempValue(20), 20);
+    expect(f.tempValue(20), closeTo(68, 0.001));
+    expect(f.formatTemp(20, decimals: 0), '68 °F');
+    expect(metric.formatTemp(null), '-');
   });
 
   test('copyWith carries the other units through', () {

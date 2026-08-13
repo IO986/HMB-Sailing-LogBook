@@ -685,6 +685,60 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pdfColRole => 'Rol';
 
   @override
+  String get pdfNameLabel => 'Nombre';
+
+  @override
+  String get pdfLicenceLabel => 'Licencia';
+
+  @override
+  String get pdfIssuedValidLabel => 'Expedida / validez';
+
+  @override
+  String get pdfOtherCertsLabel => 'Otros cert.';
+
+  @override
+  String get pdfContinued => 'continuación';
+
+  @override
+  String get pdfExportedAt => 'Exportado';
+
+  @override
+  String get pdfSignedAt => 'Firmado';
+
+  @override
+  String get pdfSignatureLabel => 'Firma';
+
+  @override
+  String get pdfDatePlaceLabel => 'Fecha / lugar';
+
+  @override
+  String get pdfManualEntryNote => '* registro manual (introducido a mano)';
+
+  @override
+  String get pdfStatTotalDistance => 'Distancia total';
+
+  @override
+  String get pdfStatLogEntries => 'Entradas del diario';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Beaufort máx.';
+
+  @override
+  String get pdfStatDaysAtSea => 'Días en el mar';
+
+  @override
+  String get pdfStatVoyages => 'Número de travesías';
+
+  @override
+  String get pdfStatNightHours => 'Horas nocturnas';
+
+  @override
+  String get pdfFuelShort => 'C';
+
+  @override
+  String get pdfWaterShort => 'A';
+
+  @override
   String get pdfNoData => 'Sin datos';
 
   @override
@@ -1962,6 +2016,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editWaypoint => 'Editar waypoint';
 
   @override
+  String get deleteWaypointTitle => '¿Eliminar waypoint?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'La navegación hacia $name está activa. Al eliminar el waypoint se desactivará.';
+  }
+
+  @override
   String get waypointNameLabel => 'Nombre';
 
   @override
@@ -2347,7 +2409,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia un waypoint seleccionado; al elegirlo verás distancia/rumbo y una flecha directamente en la rosa de los vientos\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi TCP o UDP).\nConfiguración de conexión (incluida la elección TCP/UDP) en Ajustes → Instrumentos.\n\nCómo se conecta el barco: la app lee datos NMEA por WiFi (TCP o UDP). El propio hotspot WiFi de un MFD Raymarine normalmente no basta — está pensado para las apps de Raymarine y no suele exponer NMEA en bruto a terceros. Necesitas una pasarela NMEA-a-WiFi (p. ej. Digital Yacht, Yacht Devices, Actisense, Quark-elec) conectada al bus del barco, que crea su propio hotspot o difunde NMEA en la WiFi. Conéctate a la WiFi de esa pasarela e introduce su IP y puerto en Ajustes (o prueba Detección automática).';
+      'La pestaña Instrumentos muestra datos de navegación en tiempo real.\n\n• SOG – velocidad sobre el fondo (nudos)\n• TWS – velocidad del viento verdadero\n• TWA – ángulo del viento verdadero (verde = estribor, rojo = babor)\n• DEPTH – profundidad del agua (rojo = menos de 5 m)\n• VMG WP – velocidad hacia un waypoint seleccionado; al elegirlo verás distancia/rumbo y una flecha directamente en la rosa de los vientos. Para desactivar la navegación elige \"Sin destino\" en el mismo mosaico — también la desactiva eliminar el waypoint en el mapa\n\nFuente de datos: GPS del teléfono o Raymarine (pasarela WiFi TCP o UDP).\nConfiguración de conexión (incluida la elección TCP/UDP) en Ajustes → Instrumentos.\n\nCómo se conecta el barco: la app lee datos NMEA por WiFi (TCP o UDP). El propio hotspot WiFi de un MFD Raymarine normalmente no basta — está pensado para las apps de Raymarine y no suele exponer NMEA en bruto a terceros. Necesitas una pasarela NMEA-a-WiFi (p. ej. Digital Yacht, Yacht Devices, Actisense, Quark-elec) conectada al bus del barco, que crea su propio hotspot o difunde NMEA en la WiFi. Conéctate a la WiFi de esa pasarela e introduce su IP y puerto en Ajustes (o prueba Detección automática).';
 
   @override
   String get guideLogbookTitle => 'Diario de navegación';
@@ -2431,7 +2493,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';

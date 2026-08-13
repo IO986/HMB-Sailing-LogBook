@@ -682,6 +682,60 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pdfColRole => 'Role';
 
   @override
+  String get pdfNameLabel => 'Jméno';
+
+  @override
+  String get pdfLicenceLabel => 'Licence';
+
+  @override
+  String get pdfIssuedValidLabel => 'Vydal / platnost';
+
+  @override
+  String get pdfOtherCertsLabel => 'Jiné cert.';
+
+  @override
+  String get pdfContinued => 'pokračování';
+
+  @override
+  String get pdfExportedAt => 'Exportováno';
+
+  @override
+  String get pdfSignedAt => 'Podepsáno';
+
+  @override
+  String get pdfSignatureLabel => 'Podpis';
+
+  @override
+  String get pdfDatePlaceLabel => 'Datum / místo';
+
+  @override
+  String get pdfManualEntryNote => '* manuální záznam (zadáno ručně)';
+
+  @override
+  String get pdfStatTotalDistance => 'Celková vzdálenost';
+
+  @override
+  String get pdfStatLogEntries => 'Záznamy deníku';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Max Beaufort';
+
+  @override
+  String get pdfStatDaysAtSea => 'Dny na moři';
+
+  @override
+  String get pdfStatVoyages => 'Počet plaveb';
+
+  @override
+  String get pdfStatNightHours => 'Noční hodiny';
+
+  @override
+  String get pdfFuelShort => 'P';
+
+  @override
+  String get pdfWaterShort => 'V';
+
+  @override
   String get pdfNoData => 'Bez údajů';
 
   @override
@@ -1952,6 +2006,14 @@ class AppLocalizationsCs extends AppLocalizations {
   String get editWaypoint => 'Upravit waypoint';
 
   @override
+  String get deleteWaypointTitle => 'Smazat waypoint?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'Navigace na $name je aktivní. Smazáním bodu se vypne.';
+  }
+
+  @override
   String get waypointNameLabel => 'Název';
 
   @override
@@ -2333,7 +2395,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Záložka Přístroje zobrazuje navigační data v reálném čase.\n\n• SOG – rychlost nad dnem (uzly)\n• TWS – skutečná rychlost větru\n• TWA – směr větru vůči lodi (zelená = pravobok, červená = levobok)\n• DEPTH – hloubka vody (červené = méně než 5 m)\n• VMG WP – rychlost k vybranému waypointu; po výběru z dlaždice uvidíš vzdálenost/směr i šipku přímo na směrové růžici\n\nZdroj dat: telefonní GPS nebo Raymarine (TCP i UDP WiFi gateway).\nNastavení připojení (včetně volby TCP/UDP) najdeš v Nastavení → Přístroje.\n\nJak se loď připojuje: aplikace čte NMEA data přes WiFi (TCP nebo UDP). Samotný WiFi hotspot Raymarine MFD obvykle nestačí — slouží pro aplikace Raymarine a surové NMEA třetím stranám většinou nepouští. Potřebuješ NMEA→WiFi gateway (např. Digital Yacht, Yacht Devices, Actisense, Quark-elec) připojený na lodní sběrnici, který buď vytvoří vlastní hotspot, nebo broadcastuje NMEA do WiFi. Telefon připoj k WiFi tohoto gateway a v Nastavení zadej jeho IP a port (nebo zkus Automaticky najít).';
+      'Záložka Přístroje zobrazuje navigační data v reálném čase.\n\n• SOG – rychlost nad dnem (uzly)\n• TWS – skutečná rychlost větru\n• TWA – směr větru vůči lodi (zelená = pravobok, červená = levobok)\n• DEPTH – hloubka vody (červené = méně než 5 m)\n• VMG WP – rychlost k vybranému waypointu; po výběru z dlaždice uvidíš vzdálenost/směr i šipku přímo na směrové růžici. Navigaci vypneš volbou \"Žádný cíl\" ve stejné dlaždici — vypne ji i smazání waypointu na mapě\n\nZdroj dat: telefonní GPS nebo Raymarine (TCP i UDP WiFi gateway).\nNastavení připojení (včetně volby TCP/UDP) najdeš v Nastavení → Přístroje.\n\nJak se loď připojuje: aplikace čte NMEA data přes WiFi (TCP nebo UDP). Samotný WiFi hotspot Raymarine MFD obvykle nestačí — slouží pro aplikace Raymarine a surové NMEA třetím stranám většinou nepouští. Potřebuješ NMEA→WiFi gateway (např. Digital Yacht, Yacht Devices, Actisense, Quark-elec) připojený na lodní sběrnici, který buď vytvoří vlastní hotspot, nebo broadcastuje NMEA do WiFi. Telefon připoj k WiFi tohoto gateway a v Nastavení zadej jeho IP a port (nebo zkus Automaticky najít).';
 
   @override
   String get guideLogbookTitle => 'Deník plavby';
@@ -2417,7 +2479,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber charter\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber charter\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

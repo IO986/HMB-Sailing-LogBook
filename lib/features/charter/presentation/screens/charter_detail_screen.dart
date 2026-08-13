@@ -66,18 +66,25 @@ class CharterDetailScreen extends ConsumerWidget {
                 tooltip: l.editCharter,
                 onPressed: () => context.go('/logbook/$charterId/edit'),
               ),
-              // Zvyšok pod tri bodky: v hlavičke ostávajú len tri stavové
-              // ikony, ktoré blikajú, kým niečo chýba. Šesť ikon zožralo
+              // Náhľad trasy celej plavby na mape — rovnaká vec, akú robí
+              // ikona trasy na mape, len bez hľadania plavby v zozname.
+              IconButton(
+                icon: const Icon(Icons.route),
+                tooltip: l.mapVoyageOverview,
+                onPressed: () {
+                  ref
+                      .read(mapNotifierProvider.notifier)
+                      .previewCharter(charterId, charter!.title);
+                  context.go('/map');
+                },
+              ),
+              // Zvyšok pod tri bodky: v hlavičke ostávajú tri stavové ikony,
+              // ktoré blikajú, kým niečo chýba, plus trasa. Šesť ikon zožralo
               // titulok natoľko, že z dátumu plavby ostali tri bodky.
               PopupMenuButton<String>(
                 tooltip: l.more,
                 onSelected: (value) {
                   switch (value) {
-                    case 'route':
-                      ref
-                          .read(mapNotifierProvider.notifier)
-                          .previewCharter(charterId, charter!.title);
-                      context.go('/map');
                     case 'crew':
                       context.go('/logbook/$charterId/crew-certificates');
                     case 'pdf':
@@ -85,15 +92,6 @@ class CharterDetailScreen extends ConsumerWidget {
                   }
                 },
                 itemBuilder: (ctx) => [
-                  PopupMenuItem(
-                    value: 'route',
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.route),
-                      title: Text(l.mapVoyageOverview),
-                    ),
-                  ),
                   PopupMenuItem(
                     value: 'crew',
                     child: ListTile(

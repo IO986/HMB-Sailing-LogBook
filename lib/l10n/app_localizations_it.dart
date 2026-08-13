@@ -685,6 +685,60 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColRole => 'Ruolo';
 
   @override
+  String get pdfNameLabel => 'Nome';
+
+  @override
+  String get pdfLicenceLabel => 'Licenza';
+
+  @override
+  String get pdfIssuedValidLabel => 'Rilasciata / valida';
+
+  @override
+  String get pdfOtherCertsLabel => 'Altri cert.';
+
+  @override
+  String get pdfContinued => 'segue';
+
+  @override
+  String get pdfExportedAt => 'Esportato';
+
+  @override
+  String get pdfSignedAt => 'Firmato';
+
+  @override
+  String get pdfSignatureLabel => 'Firma';
+
+  @override
+  String get pdfDatePlaceLabel => 'Data / luogo';
+
+  @override
+  String get pdfManualEntryNote => '* inserimento manuale (immesso a mano)';
+
+  @override
+  String get pdfStatTotalDistance => 'Distanza totale';
+
+  @override
+  String get pdfStatLogEntries => 'Annotazioni';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Beaufort max';
+
+  @override
+  String get pdfStatDaysAtSea => 'Giorni in mare';
+
+  @override
+  String get pdfStatVoyages => 'Numero di navigazioni';
+
+  @override
+  String get pdfStatNightHours => 'Ore notturne';
+
+  @override
+  String get pdfFuelShort => 'C';
+
+  @override
+  String get pdfWaterShort => 'A';
+
+  @override
   String get pdfNoData => 'Nessun dato';
 
   @override
@@ -1969,6 +2023,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get editWaypoint => 'Modifica il waypoint';
 
   @override
+  String get deleteWaypointTitle => 'Eliminare il waypoint?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'La navigazione verso $name è attiva. Eliminando il waypoint verrà disattivata.';
+  }
+
+  @override
   String get waypointNameLabel => 'Nome';
 
   @override
@@ -2355,7 +2417,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'La scheda Strumenti mostra i dati di navigazione in tempo reale.\n\n• SOG – velocità sul fondo (nodi)\n• TWS – velocità del vento reale\n• TWA – angolo del vento reale rispetto alla barca (verde = dritta, rosso = sinistra)\n• DEPTH – profondità dell\'acqua (rosso = meno di 5 m)\n• VMG WP – velocità verso un waypoint selezionato; scegline uno dal riquadro per vedere distanza/rilevamento e una freccia direttamente sulla rosa dei venti\n\nOrigine dei dati: GPS del telefono o Raymarine (gateway WiFi TCP o UDP).\nLe impostazioni della connessione (compresa la scelta TCP/UDP) sono in Impostazioni → Strumenti.\n\nCome si collega la barca: l\'app legge i dati NMEA via WiFi (TCP o UDP). L\'hotspot WiFi di un MFD Raymarine di solito non basta — è pensato per le app Raymarine e in genere non espone i dati NMEA grezzi a terze parti. Serve un gateway NMEA-WiFi (ad es. Digital Yacht, Yacht Devices, Actisense, Quark-elec) collegato al bus di bordo, che crei una propria rete o trasmetta NMEA sul WiFi. Collegati al WiFi di quel gateway e inserisci il suo IP e la porta nelle Impostazioni (oppure prova il Rilevamento automatico).';
+      'La scheda Strumenti mostra i dati di navigazione in tempo reale.\n\n• SOG – velocità sul fondo (nodi)\n• TWS – velocità del vento reale\n• TWA – angolo del vento reale rispetto alla barca (verde = dritta, rosso = sinistra)\n• DEPTH – profondità dell\'acqua (rosso = meno di 5 m)\n• VMG WP – velocità verso un waypoint selezionato; scegline uno dal riquadro per vedere distanza/rilevamento e una freccia direttamente sulla rosa dei venti. Per disattivare la navigazione scegli \"Nessuna destinazione\" nello stesso riquadro — la disattiva anche l\'eliminazione del waypoint sulla mappa\n\nOrigine dei dati: GPS del telefono o Raymarine (gateway WiFi TCP o UDP).\nLe impostazioni della connessione (compresa la scelta TCP/UDP) sono in Impostazioni → Strumenti.\n\nCome si collega la barca: l\'app legge i dati NMEA via WiFi (TCP o UDP). L\'hotspot WiFi di un MFD Raymarine di solito non basta — è pensato per le app Raymarine e in genere non espone i dati NMEA grezzi a terze parti. Serve un gateway NMEA-WiFi (ad es. Digital Yacht, Yacht Devices, Actisense, Quark-elec) collegato al bus di bordo, che crei una propria rete o trasmetta NMEA sul WiFi. Collegati al WiFi di quel gateway e inserisci il suo IP e la porta nelle Impostazioni (oppure prova il Rilevamento automatico).';
 
   @override
   String get guideLogbookTitle => 'Giornale di bordo';
@@ -2439,7 +2501,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona un charter\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona un charter\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';

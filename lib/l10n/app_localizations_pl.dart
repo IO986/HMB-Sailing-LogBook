@@ -685,6 +685,60 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pdfColRole => 'Rola';
 
   @override
+  String get pdfNameLabel => 'Imię';
+
+  @override
+  String get pdfLicenceLabel => 'Licencja';
+
+  @override
+  String get pdfIssuedValidLabel => 'Wydał / ważność';
+
+  @override
+  String get pdfOtherCertsLabel => 'Inne cert.';
+
+  @override
+  String get pdfContinued => 'ciąg dalszy';
+
+  @override
+  String get pdfExportedAt => 'Wyeksportowano';
+
+  @override
+  String get pdfSignedAt => 'Podpisano';
+
+  @override
+  String get pdfSignatureLabel => 'Podpis';
+
+  @override
+  String get pdfDatePlaceLabel => 'Data / miejsce';
+
+  @override
+  String get pdfManualEntryNote => '* wpis ręczny (wprowadzony ręcznie)';
+
+  @override
+  String get pdfStatTotalDistance => 'Łączny dystans';
+
+  @override
+  String get pdfStatLogEntries => 'Wpisy dziennika';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Maks. Beaufort';
+
+  @override
+  String get pdfStatDaysAtSea => 'Dni na morzu';
+
+  @override
+  String get pdfStatVoyages => 'Liczba rejsów';
+
+  @override
+  String get pdfStatNightHours => 'Godziny nocne';
+
+  @override
+  String get pdfFuelShort => 'P';
+
+  @override
+  String get pdfWaterShort => 'W';
+
+  @override
   String get pdfNoData => 'Brak danych';
 
   @override
@@ -1958,6 +2012,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get editWaypoint => 'Edytuj waypoint';
 
   @override
+  String get deleteWaypointTitle => 'Usunąć waypoint?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'Nawigacja do $name jest aktywna. Usunięcie punktu ją wyłączy.';
+  }
+
+  @override
   String get waypointNameLabel => 'Nazwa';
 
   @override
@@ -2340,7 +2402,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Zakładka Przyrządy pokazuje dane nawigacyjne w czasie rzeczywistym.\n\n• SOG – prędkość nad dnem (węzły)\n• TWS – rzeczywista prędkość wiatru\n• TWA – kąt wiatru względem jednostki (zielony = prawa burta, czerwony = lewa burta)\n• DEPTH – głębokość wody (czerwone = mniej niż 5 m)\n• VMG WP – prędkość do wybranego waypointu; po wyborze z kafelka zobaczysz odległość/kierunek oraz strzałkę wprost na róży kursowej\n\nŹródło danych: GPS telefonu lub Raymarine (TCP i UDP WiFi gateway).\nUstawienia połączenia (w tym wybór TCP/UDP) znajdziesz w Ustawienia → Przyrządy.\n\nJak łączy się jednostka: aplikacja czyta dane NMEA przez WiFi (TCP lub UDP). Sam hotspot WiFi Raymarine MFD zwykle nie wystarcza — służy aplikacjom Raymarine i surowego NMEA zwykle nie udostępnia stronom trzecim. Potrzebujesz gateway NMEA→WiFi (np. Digital Yacht, Yacht Devices, Actisense, Quark-elec) podłączonego do magistrali jachtu, który albo tworzy własny hotspot, albo rozgłasza NMEA do WiFi. Połącz telefon z WiFi tego gateway i w Ustawieniach podaj jego IP i port (lub spróbuj Autowykrywania).';
+      'Zakładka Przyrządy pokazuje dane nawigacyjne w czasie rzeczywistym.\n\n• SOG – prędkość nad dnem (węzły)\n• TWS – rzeczywista prędkość wiatru\n• TWA – kąt wiatru względem jednostki (zielony = prawa burta, czerwony = lewa burta)\n• DEPTH – głębokość wody (czerwone = mniej niż 5 m)\n• VMG WP – prędkość do wybranego waypointu; po wyborze z kafelka zobaczysz odległość/kierunek oraz strzałkę wprost na róży kursowej. Nawigację wyłączysz opcją \"Brak celu\" w tym samym kafelku — wyłącza ją także usunięcie waypointu na mapie\n\nŹródło danych: GPS telefonu lub Raymarine (TCP i UDP WiFi gateway).\nUstawienia połączenia (w tym wybór TCP/UDP) znajdziesz w Ustawienia → Przyrządy.\n\nJak łączy się jednostka: aplikacja czyta dane NMEA przez WiFi (TCP lub UDP). Sam hotspot WiFi Raymarine MFD zwykle nie wystarcza — służy aplikacjom Raymarine i surowego NMEA zwykle nie udostępnia stronom trzecim. Potrzebujesz gateway NMEA→WiFi (np. Digital Yacht, Yacht Devices, Actisense, Quark-elec) podłączonego do magistrali jachtu, który albo tworzy własny hotspot, albo rozgłasza NMEA do WiFi. Połącz telefon z WiFi tego gateway i w Ustawieniach podaj jego IP i port (lub spróbuj Autowykrywania).';
 
   @override
   String get guideLogbookTitle => 'Dziennik pokładowy';
@@ -2424,7 +2486,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz czarter\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz czarter\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

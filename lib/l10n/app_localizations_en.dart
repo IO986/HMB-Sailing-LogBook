@@ -683,6 +683,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfColRole => 'Role';
 
   @override
+  String get pdfNameLabel => 'Name';
+
+  @override
+  String get pdfLicenceLabel => 'Licence';
+
+  @override
+  String get pdfIssuedValidLabel => 'Issued / valid';
+
+  @override
+  String get pdfOtherCertsLabel => 'Other cert.';
+
+  @override
+  String get pdfContinued => 'continued';
+
+  @override
+  String get pdfExportedAt => 'Exported';
+
+  @override
+  String get pdfSignedAt => 'Signed';
+
+  @override
+  String get pdfSignatureLabel => 'Signature';
+
+  @override
+  String get pdfDatePlaceLabel => 'Date / place';
+
+  @override
+  String get pdfManualEntryNote => '* manual entry (entered by hand)';
+
+  @override
+  String get pdfStatTotalDistance => 'Total distance';
+
+  @override
+  String get pdfStatLogEntries => 'Log entries';
+
+  @override
+  String get pdfStatMaxBeaufort => 'Max Beaufort';
+
+  @override
+  String get pdfStatDaysAtSea => 'Days at sea';
+
+  @override
+  String get pdfStatVoyages => 'Voyages';
+
+  @override
+  String get pdfStatNightHours => 'Night hours';
+
+  @override
+  String get pdfFuelShort => 'F';
+
+  @override
+  String get pdfWaterShort => 'W';
+
+  @override
   String get pdfNoData => 'No data';
 
   @override
@@ -1953,6 +2007,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editWaypoint => 'Edit waypoint';
 
   @override
+  String get deleteWaypointTitle => 'Delete waypoint?';
+
+  @override
+  String deleteWaypointNavActive(String name) {
+    return 'Navigation to $name is active. Deleting the waypoint switches it off.';
+  }
+
+  @override
   String get waypointNameLabel => 'Name';
 
   @override
@@ -2334,7 +2396,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.\n\nHow the boat connects: the app reads NMEA data over WiFi (TCP or UDP). A Raymarine MFD\'s own WiFi hotspot usually isn\'t enough — it\'s meant for Raymarine\'s apps and typically won\'t expose raw NMEA to third parties. You need an NMEA-to-WiFi gateway (e.g. Digital Yacht, Yacht Devices, Actisense, Quark-elec) wired to the boat\'s bus, which either creates its own hotspot or broadcasts NMEA onto the WiFi. Join that gateway\'s WiFi and enter its IP and port in Settings (or try Auto-detect).';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose. To switch the navigation off, pick \"No target\" in the same tile — deleting the waypoint on the map switches it off too\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.\n\nHow the boat connects: the app reads NMEA data over WiFi (TCP or UDP). A Raymarine MFD\'s own WiFi hotspot usually isn\'t enough — it\'s meant for Raymarine\'s apps and typically won\'t expose raw NMEA to third parties. You need an NMEA-to-WiFi gateway (e.g. Digital Yacht, Yacht Devices, Actisense, Quark-elec) wired to the boat\'s bus, which either creates its own hotspot or broadcasts NMEA onto the WiFi. Join that gateway\'s WiFi and enter its IP and port in Settings (or try Auto-detect).';
 
   @override
   String get guideLogbookTitle => 'Voyage Logbook';
@@ -2418,7 +2480,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file';
+      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
