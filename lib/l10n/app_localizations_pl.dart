@@ -2465,7 +2465,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Zakładka Kompas pokazuje azymut magnetyczny za pomocą czujników telefonu, z podglądem tylnej kamery jako tłem do namierzania obiektów.\n\n• Żółty krzyż – kierunek, na który celujesz\n• Pasek kompasu u góry – N / NE / E / SE / S / SW / W / NW\n• Odczyt liczbowy – stopnie i strona świata\n• Zielona kropka = stabilny odczyt  ·  Pomarańczowa kropka = kalibruje\n\nJeśli odczyt jest niestabilny, powoli poruszaj telefonem w kształcie ósemki, aby skalibrować magnetometr.\n\nUwaga: dokładność może być obniżona w pobliżu konstrukcji metalowych, głośników lub elektroniki.';
+      'Zakładka Kompas pokazuje azymut magnetyczny za pomocą czujników telefonu, z podglądem tylnej kamery jako tłem do namierzania obiektów.\n\n• Żółty krzyż – kierunek, na który celujesz\n• Pasek kompasu u góry – N / NE / E / SE / S / SW / W / NW\n• Odczyt liczbowy – stopnie i strona świata\n• Zielona kropka = stabilny odczyt  ·  Pomarańczowa kropka = kalibruje\n\nJeśli odczyt jest niestabilny, powoli poruszaj telefonem w kształcie ósemki, aby skalibrować magnetometr.\n\nUwaga: dokładność może być obniżona w pobliżu konstrukcji metalowych, głośników lub elektroniki.\n\nZmierz namiar — dwa tryby, przełączane nad przyciskiem.\n\nMOJA POZYCJA (z namiarów) — GPS nie jest potrzebny. Wybierz znany punkt z mapy, wyceluj w niego celownik i naciśnij Zmierz namiar. Powtórz to na drugim, najlepiej trzecim punkcie, dopóki jacht stoi (okno to 5 minut). Tam, gdzie przecinają się namiary odwrotne od tych punktów, jesteś ty. Dokładność daje kompas w telefonie: przy ±8° i punktach 4 Mm daleko to setki metrów, nie metry. To rezerwa na wypadek awarii GPS, nie jego zamiennik.\n\nNIEZNANY PUNKT — GPS jest potrzebny. Nazwij obiekt, który chcesz mieć na mapie, zmierz go, potem przemieść się o co najmniej kilkaset metrów i zmierz ten sam obiekt ponownie. Z dwóch–trzech namiarów z różnych miejsc wyjdzie jego pozycja, którą możesz zapisać jako waypoint. Bez przemieszczenia jachtu nie ma bazy do obliczeń. Obiekt musi być nieruchomy — innego jachtu tak wyznaczyć nie można.\n\n• Linia rysowana jest ze stożkiem ±8°: kreskowana przy pozycji z namiarów (od punktu do jachtu), ciągła przy szukaniu obiektu (od jachtu do niego)\n• Etykieta zawsze pokazuje ZMIERZONY namiar, nawet gdy linia biegnie odwrotnie\n• Dotknij grotu linii, aby zobaczyć szczegóły i usunąć namiar\n• Zielony krzyżyk = dobre przecięcie, pomarańczowy = ostry kąt i niepewna pozycja\n• Dopóki GPS działa, pozycja z namiarów pokazuje też odchyłkę od niego — tak dowiesz się, na ile ufać kompasowi\n• Warstwę włączasz ikoną celownika; długie przytrzymanie usuwa wszystkie namiary\n• Namiary z dnia są w zapisie dnia i w eksporcie PDF\n\nNajlepsze przecięcie dają punkty oddalone o około 90° (dwa) lub 60° (trzy).';
 
   @override
   String get guideSettingsTitle => 'Ustawienia';
@@ -3190,4 +3190,170 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Rodzaj wód';
+
+  @override
+  String get bearingTakeSight => 'Zmierz namiar';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Namiar $bearing zapisany';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Bez GPS nie da się wyznaczyć nieznanego punktu. Przełącz na „Moja pozycja“ — pozycja z namiarów na znane punkty nie wymaga GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Nie udało się zapisać namiaru';
+
+  @override
+  String get bearingLabelHint => 'Co namierzasz? (opcjonalnie)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Deklinacja $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Model magnetyczny wygasł — deklinacja jest tylko szacunkiem';
+
+  @override
+  String get bearingsLayer => 'Namiary';
+
+  @override
+  String get bearingsTitle => 'Namiary';
+
+  @override
+  String get bearingsClearAll => 'Usuń wszystkie namiary';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Usunąć wszystkie namiary? Linie i pozycja z namiarów znikną z mapy.';
+
+  @override
+  String get bearingsEmpty =>
+      'Brak namiarów. Wyceluj telefon w obiekt i naciśnij Zmierz namiar.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Pozycja z $count namiarów';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Słaba pozycja — linie przecinają się tylko pod $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Odchyłka od GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'rzeczywisty';
+
+  @override
+  String get bearingMagneticLabel => 'magnetyczny';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Stożek pokazuje niepewność ±$deg kompasu w telefonie.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Namiary';
+
+  @override
+  String get bearingPdfObject => 'Obiekt';
+
+  @override
+  String get bearingPdfBearing => 'Namiar rzeczywisty';
+
+  @override
+  String get bearingModeResection => 'Moja pozycja';
+
+  @override
+  String get bearingModeObject => 'Nieznany punkt';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Zmierz namiar na 2–3 znane punkty z mapy. GPS nie jest potrzebny.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Zmierz ten sam punkt z 2–3 różnych miejsc. Potrzebny jest GPS.';
+
+  @override
+  String get bearingPickTarget => 'Wybierz namierzany punkt';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Najpierw wybierz znany punkt z mapy, potem zmierz namiar';
+
+  @override
+  String get bearingNeedsObject => 'Najpierw nazwij namierzany punkt';
+
+  @override
+  String get bearingNewObject => 'Nowy punkt…';
+
+  @override
+  String get bearingObjectName => 'Nazwa punktu (np. nieznana skała)';
+
+  @override
+  String get bearingOpenObjects => 'Wyznaczane punkty';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count namiarów';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Ten sam punkt co poprzednio — do pozycji potrzebny jest inny.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Krótka baza — przemieść się i zmierz ponownie.';
+
+  @override
+  String get bearingMovedHint =>
+      'Jacht przemieścił się między namiarami — pozycja z namiarów zakłada, że stoi.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Jeszcze jeden namiar na inny punkt i pozycja wyjdzie.';
+
+  @override
+  String get bearingMyPositionFix => 'Moja pozycja';
+
+  @override
+  String get bearingObjectFix => 'Wyznaczony punkt';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Zapisz jako waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name zapisany jako waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Deklinacja obliczona w pozycji namierzanego punktu';
+
+  @override
+  String get bearingResectionSection => 'Pozycja z namiarów na znane punkty';
+
+  @override
+  String get bearingObjectSection => 'Wyznaczanie nieznanych punktów';
+
+  @override
+  String get bearingPdfMark => 'Namierzany punkt';
+
+  @override
+  String get bearingPdfResult => 'Wynik';
+
+  @override
+  String get bearingStartNew => 'Zacznij nowy namiar';
 }

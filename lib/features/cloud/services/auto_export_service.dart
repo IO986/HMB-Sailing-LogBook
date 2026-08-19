@@ -56,6 +56,7 @@ class AutoExportService {
       dayStart.toUtc(),
       dayStart.add(const Duration(days: 1)).toUtc(),
     );
+    final bearings = await db.getBearingsForDay(dayLogId);
 
     final l10n = await AppLocalizations.delegate.load(locale);
 
@@ -65,6 +66,7 @@ class AutoExportService {
       entries: entries,
       l10n: l10n,
       duties: duties,
+      bearings: bearings,
       mapScreenshot: mapScreenshot,
       skipperProfile: skipperProfile,
     );

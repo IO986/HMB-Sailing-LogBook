@@ -4745,7 +4745,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideCompassBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.'**
+  /// **'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.\n\nZameraj — dva režimy, prepínajú sa nad tlačidlom.\n\nMOJA POLOHA (resekcia) — GPS netreba. Vyber známy bod z mapy, namier naň kríž a stlač Zameraj. Zopakuj to na druhý, ideálne tretí bod, kým loď stojí (okno je 5 minút). Priesečník spätných priamok od tých bodov je tvoja poloha. Presnosť dáva kompas v telefóne: pri ±8° a bodoch 4 NM ďaleko sú to stovky metrov, nie metre. Je to záloha pre výpadok GPS, nie jej náhrada.\n\nNEZNÁMY BOD — GPS treba. Pomenuj objekt, ktorý chceš dostať na mapu, zameraj ho, potom sa presuň aspoň o niekoľko stoviek metrov a zameraj ten istý objekt znova. Z dvoch–troch zameraní z rôznych miest vyjde jeho poloha a dá sa uložiť ako waypoint. Bez posunu lode nemá výpočet základnicu. Objekt musí byť nehybný — inú loď takto zamerať nemožno.\n\n• Čiara sa kreslí s kužeľom ±8°: čiarkovane pri resekcii (od bodu k lodi), plne pri hľadaní objektu (od lode k bodu)\n• Popisok vždy ukazuje NAMERANÝ kurz, aj keď priamka vedie opačne\n• Ťuknutím na hrot čiary uvidíš detail a môžeš zameranie zmazať\n• Zelený krížik = dobrý rez, oranžový = ostrý uhol a neistá poloha\n• Kým GPS beží, resekcia zobrazí aj odchýlku od nej — tak zistíš, nakoľko sa dá kompasu veriť\n• Vrstvu zapneš ikonou zameriavača, dlhým podržaním zmažeš všetky zamerania\n• Zamerania dňa sú v dennom zázname a idú do PDF exportu\n\nNajlepší rez dostaneš pri bodoch asi 90° od seba (dva) alebo 60° (tri).'**
   String get guideCompassBody;
 
   /// No description provided for @guideSettingsTitle.
@@ -6073,6 +6073,282 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Typ vôd'**
   String get crewCertWatersLabel;
+
+  /// No description provided for @bearingTakeSight.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameraj'**
+  String get bearingTakeSight;
+
+  /// No description provided for @bearingSaved.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameranie {bearing} uložené'**
+  String bearingSaved(String bearing);
+
+  /// No description provided for @bearingNoPosition.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez GPS sa neznámy bod určiť nedá. Prepni na „Moja poloha“ — resekcia zo známych bodov GPS nepotrebuje.'**
+  String get bearingNoPosition;
+
+  /// No description provided for @bearingSaveFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameranie sa nepodarilo uložiť'**
+  String get bearingSaveFailed;
+
+  /// No description provided for @bearingLabelHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čo zameriavaš? (nepovinné)'**
+  String get bearingLabelHint;
+
+  /// No description provided for @bearingDeclinationApplied.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deklinácia {value}'**
+  String bearingDeclinationApplied(String value);
+
+  /// No description provided for @bearingDeclinationExpired.
+  ///
+  /// In sk, this message translates to:
+  /// **'Magnetický model vypršal – deklinácia je len odhad'**
+  String get bearingDeclinationExpired;
+
+  /// No description provided for @bearingsLayer.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zamerania'**
+  String get bearingsLayer;
+
+  /// No description provided for @bearingsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zamerania'**
+  String get bearingsTitle;
+
+  /// No description provided for @bearingsClearAll.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať všetky zamerania'**
+  String get bearingsClearAll;
+
+  /// No description provided for @bearingsClearConfirm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmazať všetky zamerania? Čiary aj krížový fix zmiznú z mapy.'**
+  String get bearingsClearConfirm;
+
+  /// No description provided for @bearingsEmpty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zatiaľ žiadne zamerania. Namier telefón na objekt a stlač Zameraj.'**
+  String get bearingsEmpty;
+
+  /// No description provided for @bearingFixFrom.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poloha z {count} zameraní'**
+  String bearingFixFrom(int count);
+
+  /// No description provided for @bearingFixWeak.
+  ///
+  /// In sk, this message translates to:
+  /// **'Slabý fix – čiary sa pretínajú pod {angle}'**
+  String bearingFixWeak(String angle);
+
+  /// No description provided for @bearingFixOffGps.
+  ///
+  /// In sk, this message translates to:
+  /// **'Odchýlka od GPS: {distance}'**
+  String bearingFixOffGps(String distance);
+
+  /// No description provided for @bearingTrueLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'pravý'**
+  String get bearingTrueLabel;
+
+  /// No description provided for @bearingMagneticLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'magnetický'**
+  String get bearingMagneticLabel;
+
+  /// No description provided for @bearingUncertaintyNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kužeľ ukazuje ±{deg} neistotu telefónového kompasu.'**
+  String bearingUncertaintyNote(String deg);
+
+  /// No description provided for @bearingPdfSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zamerania'**
+  String get bearingPdfSection;
+
+  /// No description provided for @bearingPdfObject.
+  ///
+  /// In sk, this message translates to:
+  /// **'Objekt'**
+  String get bearingPdfObject;
+
+  /// No description provided for @bearingPdfBearing.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pravý kurz'**
+  String get bearingPdfBearing;
+
+  /// No description provided for @bearingModeResection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Moja poloha'**
+  String get bearingModeResection;
+
+  /// No description provided for @bearingModeObject.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neznámy bod'**
+  String get bearingModeObject;
+
+  /// No description provided for @bearingModeResectionHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameraj 2–3 známe body z mapy. GPS netreba.'**
+  String get bearingModeResectionHint;
+
+  /// No description provided for @bearingModeObjectHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameraj ten istý bod z 2–3 rôznych miest. Treba GPS.'**
+  String get bearingModeObjectHint;
+
+  /// No description provided for @bearingPickTarget.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyber zameriavaný bod'**
+  String get bearingPickTarget;
+
+  /// No description provided for @bearingNeedsTarget.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najprv vyber známy bod z mapy, potom zameraj'**
+  String get bearingNeedsTarget;
+
+  /// No description provided for @bearingNeedsObject.
+  ///
+  /// In sk, this message translates to:
+  /// **'Najprv pomenuj zameriavaný bod'**
+  String get bearingNeedsObject;
+
+  /// No description provided for @bearingNewObject.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nový bod…'**
+  String get bearingNewObject;
+
+  /// No description provided for @bearingObjectName.
+  ///
+  /// In sk, this message translates to:
+  /// **'Názov bodu (napr. neznáma skala)'**
+  String get bearingObjectName;
+
+  /// No description provided for @bearingOpenObjects.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameriavané body'**
+  String get bearingOpenObjects;
+
+  /// No description provided for @bearingSightCount.
+  ///
+  /// In sk, this message translates to:
+  /// **'{count} zameraní'**
+  String bearingSightCount(int count);
+
+  /// No description provided for @bearingSameTargetHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ten istý bod ako predtým — na resekciu treba iný.'**
+  String get bearingSameTargetHint;
+
+  /// No description provided for @bearingShortBaselineHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Krátka základnica — presuň sa a zameraj znova.'**
+  String get bearingShortBaselineHint;
+
+  /// No description provided for @bearingMovedHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Loď sa medzi zameraniami posunula — resekcia predpokladá, že stojí.'**
+  String get bearingMovedHint;
+
+  /// No description provided for @bearingNeedsSecondSight.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ešte jeden námer na iný bod a poloha vyjde.'**
+  String get bearingNeedsSecondSight;
+
+  /// No description provided for @bearingMyPositionFix.
+  ///
+  /// In sk, this message translates to:
+  /// **'Moja poloha'**
+  String get bearingMyPositionFix;
+
+  /// No description provided for @bearingObjectFix.
+  ///
+  /// In sk, this message translates to:
+  /// **'Určený bod'**
+  String get bearingObjectFix;
+
+  /// No description provided for @bearingSaveObjectAsWaypoint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ulož ako waypoint'**
+  String get bearingSaveObjectAsWaypoint;
+
+  /// No description provided for @bearingObjectSaved.
+  ///
+  /// In sk, this message translates to:
+  /// **'{name} uložený ako waypoint'**
+  String bearingObjectSaved(String name);
+
+  /// No description provided for @bearingDeclinationFromTarget.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deklinácia počítaná v polohe zameraného bodu'**
+  String get bearingDeclinationFromTarget;
+
+  /// No description provided for @bearingResectionSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Resekcia — poloha zo známych bodov'**
+  String get bearingResectionSection;
+
+  /// No description provided for @bearingObjectSection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameranie neznámych bodov'**
+  String get bearingObjectSection;
+
+  /// No description provided for @bearingPdfMark.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zameraný bod'**
+  String get bearingPdfMark;
+
+  /// No description provided for @bearingPdfResult.
+  ///
+  /// In sk, this message translates to:
+  /// **'Výsledok'**
+  String get bearingPdfResult;
+
+  /// No description provided for @bearingStartNew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Začať nové zameranie'**
+  String get bearingStartNew;
 }
 
 class _AppLocalizationsDelegate

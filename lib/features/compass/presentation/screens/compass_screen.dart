@@ -4,19 +4,26 @@ import 'dart:math' as math;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../../../core/models/bearing_kind.dart';
+import '../../../../core/services/location_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/waypoint_picker.dart';
+import '../../../bearing/providers/bearing_provider.dart';
 
-class CompassScreen extends StatefulWidget {
+class CompassScreen extends ConsumerStatefulWidget {
   const CompassScreen({super.key});
 
   @override
-  State<CompassScreen> createState() => _CompassScreenState();
+  ConsumerState<CompassScreen> createState() => _CompassScreenState();
 }
 
-class _CompassScreenState extends State<CompassScreen>
+class _CompassScreenState extends ConsumerState<CompassScreen>
     with WidgetsBindingObserver {
   CameraController? _camCtrl;
   bool _cameraReady = false;
@@ -35,6 +42,9 @@ class _CompassScreenState extends State<CompassScreen>
   // Rolling variance for stability indicator
   final List<double> _recentHeadings = [];
   bool _isStable = false;
+
+  /// Beží ukladanie zamerania — bráni dvojkliku, kým sa robí fotka.
+  bool _capturing = false;
 
   @override
   void initState() {
@@ -158,6 +168,392 @@ class _CompassScreenState extends State<CompassScreen>
     return math.sqrt(variance);
   }
 
+  /// Uloží zameranie na to, kam kríž práve mieri.
+  ///
+  /// Kurz sa odčíta hneď v prvom riadku, ešte pred fotkou a zápisom: kým sa
+  /// obrázok uloží, telefón sa v ruke stihne pootočiť o niekoľko stupňov a
+  /// zameranie by sedelo na iný objekt, než na aký skiper mieril.
+  Future<void> _capture() async {
+    if (_capturing) return;
+    // Kurz aj celý kontext sa odčítajú naraz v prvých riadkoch. Kým sa urobí
+    // fotka a zápis, telefón sa v ruke stihne pootočiť.
+    final magnetic = _heading;
+    final wasStable = _isStable;
+    final mode = ref.read(bearingModeProvider);
+    final target = ref.read(resectionTargetProvider);
+    final group = ref.read(activeSightGroupProvider);
+
+    // Chýbajúci vstup rieš PRED fotkou: inak sa uloží súbor a zápis aj tak
+    // spadne. A kým skiper vyberá bod, telefón sa pootočí, takže už odčítaný
+    // kurz sa musí zahodiť, nie použiť.
+    //
+    // Po výbere sa ZÁMERNE nič nehlási a nezameriava: kým skiper vyberal,
+    // telefón sa pootočil, takže odčítaný kurz už neplatí a nový námer si
+    // vyžaduje druhé ťuknutie. Že je vybrané, povie samotný štítok — zmení
+    // text a stratí jantárový rám. Hlásiť pri tom "vyber bod" by bolo
+    // klamstvo, veď práve vybral.
+    if (mode == BearingKind.resection && target == null) {
+      await _pickResectionTarget();
+      if (mounted && ref.read(resectionTargetIdProvider) == null) {
+        _toast(AppLocalizations.of(context).bearingNeedsTarget);
+      }
+      return;
+    }
+    if (mode == BearingKind.intersection && group == null) {
+      await _chooseSightObject();
+      if (mounted &&
+          ref.read(activeSightGroupIdProvider) == null &&
+          _pendingObjectName == null) {
+        _toast(AppLocalizations.of(context).bearingNeedsObject);
+      }
+      return;
+    }
+
+    setState(() => _capturing = true);
+    unawaited(HapticFeedback.mediumImpact());
+
+    String? photoPath;
+    try {
+      final camera = _camCtrl;
+      if (_cameraReady && camera != null && !camera.value.isTakingPicture) {
+        photoPath = (await camera.takePicture()).path;
+      }
+    } catch (_) {
+      // Fotka je doplnok. Bez nej je zameranie stále platný navigačný údaj,
+      // tak sa kvôli nej celý zápis nezahadzuje.
+    }
+
+    final repository = ref.read(bearingRepositoryProvider);
+    final prepared = mode == BearingKind.resection
+        ? await repository.prepareResection(
+            magneticBearing: magnetic, target: target, photoPath: photoPath)
+        : await repository.prepareIntersection(
+            magneticBearing: magnetic,
+            sightGroupId: group?.id,
+            objectName: group?.name ?? _pendingObjectName,
+            photoPath: photoPath);
+
+    if (!mounted) return;
+    setState(() => _capturing = false);
+
+    if (prepared is! BearingPrepared) {
+      // Chýbajúci vstup alebo chyba — nič sa nespočítalo, netreba potvrdiť.
+      _reportCapture(prepared, wasStable);
+      return;
+    }
+
+    // Kurz je v návrhu už zmrazený z okamihu ťuknutia, takže potvrdenie
+    // meranie nijako nepokazí — čas na rozhodnutie sa do čísla nepremieta.
+    final confirmed = await _confirmDraft(prepared.draft);
+    if (!mounted) return;
+    if (!confirmed) {
+      await repository.discardDraft(prepared.draft);
+      return;
+    }
+
+    final result = await repository.commit(prepared.draft);
+    if (!mounted) return;
+
+    if (result is BearingCaptured) {
+      _pendingObjectName = null;
+      if (result.kind == BearingKind.resection) {
+        // Ďalší námer musí ísť na INÝ bod, inak sa poloha nedopočíta —
+        // vyprázdnenie voľby je najrýchlejšia cesta, ako to naznačiť.
+        ref.read(resectionTargetIdProvider.notifier).state = null;
+      } else {
+        // Ten istý objekt sa bude zameriavať znova z ďalšej polohy, aj o
+        // hodinu — voľba preto zostáva.
+        ref.read(activeSightGroupIdProvider.notifier).state =
+            result.sightGroupId;
+      }
+    }
+    _reportCapture(result, wasStable);
+  }
+
+  /// Ukáže spočítaný, ešte neuložený námer a spýta sa, či ho zapísať.
+  ///
+  /// Vracia true na Uložiť, false na Zahodiť aj na zavretie ťuknutím mimo.
+  Future<bool> _confirmDraft(BearingDraft draft) async {
+    final l = AppLocalizations.of(context);
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0D1B2A),
+        title: Text(
+          draft.kind == BearingKind.resection
+              ? (draft.targetName ?? l.bearingModeResection)
+              : (draft.label?.isNotEmpty == true
+                  ? draft.label!
+                  : l.bearingModeObject),
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${_degrees(draft.trueBearing)} ${l.bearingTrueLabel}  '
+              '(${_degrees(draft.magneticBearing)} ${l.bearingMagneticLabel})',
+              style: const TextStyle(
+                  color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              draft.declinationTrustworthy
+                  ? l.bearingDeclinationApplied(
+                      _signedDegrees(draft.declination))
+                  : l.bearingDeclinationExpired,
+              style: const TextStyle(color: Colors.white60, fontSize: 12),
+            ),
+            for (final hint in draft.hints)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  switch (hint) {
+                    BearingCaptureHint.sameTargetAsPrevious =>
+                      l.bearingSameTargetHint,
+                    BearingCaptureHint.shortBaseline =>
+                      l.bearingShortBaselineHint,
+                    BearingCaptureHint.movedDuringResection =>
+                      l.bearingMovedHint,
+                    BearingCaptureHint.declinationEstimated =>
+                      l.bearingDeclinationFromTarget,
+                    BearingCaptureHint.needsSecondSight =>
+                      l.bearingNeedsSecondSight,
+                  },
+                  style: const TextStyle(color: Colors.amber, fontSize: 12),
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l.cancel,
+                style: const TextStyle(color: Colors.white60)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.save),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
+  /// Názov novo zakladaného pátrania, kým naň nepadne prvý námer.
+  String? _pendingObjectName;
+
+  void _toast(String message) {
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _pickResectionTarget() async {
+    final picked = await pickWaypoint(
+      context,
+      dark: true,
+      highlightId: ref.read(resectionTargetIdProvider),
+      sortFrom: _lastKnownLatLng(),
+    );
+    if (picked == null || !mounted) return;
+    ref.read(resectionTargetIdProvider.notifier).state = picked.id;
+  }
+
+  LatLng? _lastKnownLatLng() {
+    final pos = LocationService().lastPosition;
+    return pos == null ? null : LatLng(pos.latitude, pos.longitude);
+  }
+
+  /// Výber pátrania, do ktorého padne ďalší námer, alebo založenie nového.
+  Future<void> _chooseSightObject() async {
+    final l = AppLocalizations.of(context);
+    final groups = ref.read(sightGroupsProvider);
+
+    final chosen = await showModalBottomSheet<Object>(
+      context: context,
+      backgroundColor: const Color(0xFF0D1B2A),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(height: 12),
+          Text(l.bearingOpenObjects,
+              style: const TextStyle(color: Colors.white, fontSize: 16)),
+          const Divider(color: Colors.white24, height: 20),
+          for (final g in groups)
+            ListTile(
+              leading: const Icon(Icons.push_pin_outlined,
+                  color: Colors.white54),
+              title: Text(g.name.isEmpty ? l.bearingObjectFix : g.name,
+                  style: const TextStyle(color: Colors.white)),
+              subtitle: Text(l.bearingSightCount(g.bearings.length),
+                  style: const TextStyle(
+                      color: Colors.white38, fontSize: 11)),
+              onTap: () => Navigator.pop(sheetContext, g.id),
+            ),
+          ListTile(
+            leading: const Icon(Icons.add, color: Colors.amber),
+            title: Text(l.bearingNewObject,
+                style: const TextStyle(color: Colors.amber)),
+            onTap: () => Navigator.pop(sheetContext, _newObjectSentinel),
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+
+    if (chosen == null || !mounted) return;
+    if (chosen is String && chosen != _newObjectSentinel) {
+      ref.read(activeSightGroupIdProvider.notifier).state = chosen;
+      return;
+    }
+
+    final name = await _promptObjectName();
+    if (name == null || !mounted) return;
+    // Skupina vznikne až s prvým námerom — dovtedy sa drží len názov, aby
+    // zrušené pátranie nezostalo v databáze ako prázdna skupina.
+    _pendingObjectName = name;
+    ref.read(activeSightGroupIdProvider.notifier).state = null;
+  }
+
+  static const _newObjectSentinel = '__new__';
+
+  Future<String?> _promptObjectName() async {
+    final l = AppLocalizations.of(context);
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(labelText: l.bearingObjectName),
+          onSubmitted: (v) => Navigator.pop(ctx, v),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, controller.text),
+              child: Text(l.save)),
+        ],
+      ),
+    );
+    final trimmed = name?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
+
+  void _reportCapture(BearingCaptureResult result, bool wasStable) {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+
+    switch (result) {
+      case BearingCaptured(
+          :final trueBearing,
+          :final declination,
+          :final declinationTrustworthy
+        ):
+        final notes = <String>[
+          if (declinationTrustworthy)
+            l.bearingDeclinationApplied(_signedDegrees(declination))
+          else
+            l.bearingDeclinationExpired,
+          for (final hint in result.hints)
+            switch (hint) {
+              BearingCaptureHint.sameTargetAsPrevious =>
+                l.bearingSameTargetHint,
+              BearingCaptureHint.shortBaseline => l.bearingShortBaselineHint,
+              BearingCaptureHint.movedDuringResection => l.bearingMovedHint,
+              BearingCaptureHint.declinationEstimated =>
+                l.bearingDeclinationFromTarget,
+              BearingCaptureHint.needsSecondSight => l.bearingNeedsSecondSight,
+            },
+          if (!wasStable) l.compassCalibrationNote,
+        ];
+        messenger.showSnackBar(SnackBar(
+          duration: const Duration(seconds: 6),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l.bearingSaved(
+                  '${_degrees(trueBearing)} ${l.bearingTrueLabel}')),
+              for (final note in notes)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(note,
+                      style: const TextStyle(fontSize: 11, height: 1.3)),
+                ),
+            ],
+          ),
+        ));
+
+      case BearingNeedsObserverPosition():
+        messenger.showSnackBar(SnackBar(
+          duration: const Duration(seconds: 6),
+          content: Text(l.bearingNoPosition),
+          backgroundColor: Colors.orange.shade800,
+        ));
+
+      case BearingNeedsTarget():
+        messenger.showSnackBar(SnackBar(
+          content: Text(l.bearingNeedsTarget),
+          backgroundColor: Colors.orange.shade800,
+        ));
+
+      case BearingNeedsObject():
+        messenger.showSnackBar(SnackBar(
+          content: Text(l.bearingNeedsObject),
+          backgroundColor: Colors.orange.shade800,
+        ));
+
+      case BearingCaptureFailed(:final error):
+        messenger.showSnackBar(SnackBar(
+          content: Text('${l.bearingSaveFailed}\n$error'),
+          backgroundColor: Colors.red.shade800,
+        ));
+
+      case BearingPrepared():
+        // Sem sa nedostane: _capture() návrh vždy potvrdí alebo zahodí
+        // pred volaním _reportCapture. Vetva je tu len kvôli vyčerpaniu
+        // switchu nad sealed typom.
+        break;
+    }
+  }
+
+  /// Jednoveta o tom, ako blízko je výsledok — aby sa nemusela otvárať mapa.
+  String? _fixStatusLabel(AppLocalizations l) {
+    if (ref.watch(bearingModeProvider) == BearingKind.resection) {
+      final fix = ref.watch(resectionFixProvider);
+      if (fix != null) {
+        return '${l.bearingMyPositionFix} '
+            '±${fix.errorRadiusMeters.round()} m';
+      }
+      final count = ref.watch(resectionTargetCountProvider);
+      return count == 0 ? null : l.bearingSightCount(count);
+    }
+
+    final group = ref.watch(activeSightGroupProvider);
+    if (group == null) return null;
+    final fix = group.fix;
+    return fix == null
+        ? l.bearingSightCount(group.bearings.length)
+        : '${group.name.isEmpty ? l.bearingObjectFix : group.name} '
+            '±${fix.errorRadiusMeters.round()} m';
+  }
+
+  static String _degrees(double value) =>
+      '${(value.round() % 360).toString().padLeft(3, '0')}°';
+
+  static String _signedDegrees(double value) =>
+      '${value >= 0 ? '+' : '-'}${value.abs().toStringAsFixed(1)}°';
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -239,7 +635,7 @@ class _CompassScreenState extends State<CompassScreen>
 
           // ── Stability indicator + calibration note ────────────
           Positioned(
-            bottom: 88,
+            bottom: 156,
             left: 24, right: 24,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -267,7 +663,235 @@ class _CompassScreenState extends State<CompassScreen>
                   style: const TextStyle(color: Colors.white24, fontSize: 10)),
             ]),
           ),
+
+          // ── Režim a cieľ ─────────────────────────────────────
+          // Nad indikátorom stability, nikdy pod tlačidlom: Zameraj musí
+          // zostať presne tam, kde ho má palec zvyknutý, aj keď nad ním
+          // pribudne prepínač.
+          Positioned(
+            bottom: 210,
+            left: 16, right: 16,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              _ModeToggle(
+                mode: ref.watch(bearingModeProvider),
+                onChanged: (m) =>
+                    ref.read(bearingModeProvider.notifier).state = m,
+              ),
+              const SizedBox(height: 8),
+              _SightTargetChip(
+                mode: ref.watch(bearingModeProvider),
+                targetName: ref.watch(resectionTargetProvider)?.name,
+                objectName: ref.watch(activeSightGroupProvider)?.name ??
+                    _pendingObjectName,
+                onTap: () => ref.read(bearingModeProvider) ==
+                        BearingKind.resection
+                    ? _pickResectionTarget()
+                    : _chooseSightObject(),
+              ),
+            ]),
+          ),
+
+          // ── Zameranie ────────────────────────────────────────
+          Positioned(
+            bottom: 36,
+            left: 0, right: 0,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              _CaptureButton(busy: _capturing, onPressed: _capture),
+              const SizedBox(height: 10),
+              _FixStatusChip(
+                label: _fixStatusLabel(l),
+                onTap: () => context.go('/map'),
+              ),
+            ]),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Capture control ───────────────────────────────────────────
+
+class _CaptureButton extends StatelessWidget {
+  final bool busy;
+  final VoidCallback onPressed;
+  const _CaptureButton({required this.busy, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Center(
+      child: FilledButton.icon(
+        onPressed: busy ? null : onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.yellowAccent,
+          foregroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          textStyle:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        icon: busy
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: Colors.black54))
+            : const Icon(Icons.architecture),
+        label: Text(l.bearingTakeSight),
+      ),
+    );
+  }
+}
+
+/// Ako blízko je výsledok, bez prepínania obrazoviek.
+class _FixStatusChip extends StatelessWidget {
+  final String? label;
+  final VoidCallback onTap;
+  const _FixStatusChip({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final text = label;
+    if (text == null) return const SizedBox.shrink();
+    return Center(
+      child: TextButton.icon(
+        onPressed: onTap,
+        style: TextButton.styleFrom(foregroundColor: Colors.white70),
+        icon: const Icon(Icons.map_outlined, size: 16),
+        label: Text(text),
+      ),
+    );
+  }
+}
+
+/// Prepínač: hľadám seba, alebo hľadám bod?
+///
+/// Pod prepínačom je jednoveta o tom, čo daný režim potrebuje — vrátane GPS.
+/// Radšej to povedať vopred než odmietnutým ťuknutím.
+class _ModeToggle extends StatelessWidget {
+  final BearingKind mode;
+  final ValueChanged<BearingKind> onChanged;
+  const _ModeToggle({required this.mode, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: Colors.white24),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          _segment(
+            selected: mode == BearingKind.resection,
+            icon: Icons.person_pin_circle,
+            label: l.bearingModeResection,
+            onTap: () => onChanged(BearingKind.resection),
+          ),
+          _segment(
+            selected: mode == BearingKind.intersection,
+            icon: Icons.push_pin_outlined,
+            label: l.bearingModeObject,
+            onTap: () => onChanged(BearingKind.intersection),
+          ),
+        ]),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        mode == BearingKind.resection
+            ? l.bearingModeResectionHint
+            : l.bearingModeObjectHint,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white38, fontSize: 10),
+      ),
+    ]);
+  }
+
+  Widget _segment({
+    required bool selected,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) =>
+      GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? Colors.yellowAccent : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(icon,
+                size: 15,
+                color: selected ? Colors.black : Colors.white60),
+            const SizedBox(width: 5),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight:
+                        selected ? FontWeight.bold : FontWeight.normal,
+                    color: selected ? Colors.black : Colors.white60)),
+          ]),
+        ),
+      );
+}
+
+/// Na čo sa práve mieri — zameraný známy bod, alebo hľadaný neznámy objekt.
+class _SightTargetChip extends StatelessWidget {
+  final BearingKind mode;
+  final String? targetName;
+  final String? objectName;
+  final VoidCallback onTap;
+
+  const _SightTargetChip({
+    required this.mode,
+    required this.targetName,
+    required this.objectName,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final resection = mode == BearingKind.resection;
+    final name = resection ? targetName : objectName;
+    final empty = name == null || name.isEmpty;
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: empty ? Colors.amber.withValues(alpha: 0.6)
+                  : Colors.white24),
+        ),
+        child: Row(children: [
+          Icon(resection ? Icons.edit_location_alt : Icons.push_pin_outlined,
+              size: 16, color: empty ? Colors.amber : Colors.white70),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              empty
+                  ? (resection ? l.bearingPickTarget : l.bearingNewObject)
+                  : name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 13,
+                  color: empty ? Colors.amber : Colors.white),
+            ),
+          ),
+          const Icon(Icons.unfold_more, size: 16, color: Colors.white38),
+        ]),
       ),
     );
   }

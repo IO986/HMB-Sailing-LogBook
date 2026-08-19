@@ -8,6 +8,8 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../main.dart';
+import '../../../../core/models/bearing_kind.dart';
+import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/charter_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
@@ -80,6 +82,102 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
 
 }
 
+// ── Zamerania dňa ─────────────────────────────────────────────
+
+class _BearingsSection extends ConsumerWidget {
+  final int dayLogId;
+  const _BearingsSection({required this.dayLogId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final bearings =
+        ref.watch(bearingsForDayProvider(dayLogId)).valueOrNull ??
+            const <Bearing>[];
+    if (bearings.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(Icons.architecture,
+                size: 18, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 6),
+            Text('${l.bearingsTitle} (${bearings.length})',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary)),
+          ]),
+          const SizedBox(height: 6),
+          for (final b in bearings)
+            _BearingRow(
+              bearing: b,
+              onDelete: () async {
+                await ref.read(bearingRepositoryProvider).delete(b.id);
+                ref.invalidate(bearingsForDayProvider(dayLogId));
+              },
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BearingRow extends StatelessWidget {
+  final Bearing bearing;
+  final Future<void> Function() onDelete;
+  const _BearingRow({required this.bearing, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final label = bearing.targetName ?? bearing.label;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(children: [
+        // Ikona odlíši, či sa hľadala vlastná poloha, alebo neznámy bod.
+        Icon(
+          BearingKind.fromCode(bearing.kind) == BearingKind.resection
+              ? Icons.person_pin_circle
+              : Icons.push_pin_outlined,
+          size: 15,
+          color: Colors.grey,
+        ),
+        const SizedBox(width: 4),
+        SizedBox(
+          width: 44,
+          child: Text(DateFormat('HH:mm').format(bearing.takenAt),
+              style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        ),
+        SizedBox(
+          width: 52,
+          child: Text(
+            '${(bearing.trueBearing.round() % 360).toString().padLeft(3, '0')}°',
+            style: const TextStyle(
+                fontSize: 13, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            label == null || label.isEmpty ? '—' : label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13),
+          ),
+        ),
+        IconButton(
+          onPressed: onDelete,
+          icon: const Icon(Icons.close, size: 16),
+          visualDensity: VisualDensity.compact,
+          tooltip: l.delete,
+        ),
+      ]),
+    );
+  }
+}
+
 // ── Tab 1: Záznamy ────────────────────────────────────────────
 
 class _EntriesTab extends ConsumerWidget {
@@ -114,6 +212,10 @@ class _EntriesTab extends ConsumerWidget {
 
           // Slnko/mesiac tu zámerne nie je — patrí do PDF exportu dňa, kde je
           // súčasťou záznamu. Na obrazovke ho nájdeš v Počasí.
+
+          // Zamerania z námerového kompasu. Nie sú to hodinové záznamy, preto
+          // majú vlastnú sekciu a nemiešajú sa medzi riadky denníka.
+          SliverToBoxAdapter(child: _BearingsSection(dayLogId: dayLogId)),
 
           // Header záznamy
           SliverToBoxAdapter(child: Padding(

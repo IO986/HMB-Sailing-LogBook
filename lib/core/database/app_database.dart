@@ -201,6 +201,120 @@ class Waypoints extends Table {
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 }
 
+/// Vizuálne zameranie námerovým kompasom.
+///
+/// Jeden riadok = jedno namierenie telefónu, ale úloha je dvojaká a rozhoduje
+/// o nej [kind] (kód z `BearingKind`):
+///
+/// * `resection` — zameriaval sa ZNÁMY bod (waypoint) a hľadá sa poloha
+///   pozorovateľa. Vtedy je [observerLat]/[observerLon] NULL, pretože práve
+///   to je neznáme, a naopak `target*` je vyplnené. GPS netreba.
+/// * `intersection` — zameriaval sa NEZNÁMY objekt zo známej polohy a hľadá sa
+///   ten objekt. Vtedy je vyplnený pozorovateľ a `target*` je NULL. GPS treba.
+///
+/// Preto sú obe skupiny súradníc nullable: presne jedna z nich je pri každom
+/// riadku známa. Invariant drží `BearingKind.needsObserverPosition` /
+/// `needsKnownTarget` a kontroluje ho `BearingRepository.capture`.
+///
+/// Zámerne sa ukladá aj surový magnetický kurz, aj použitá deklinácia, aj
+/// výsledný pravý kurz. Samotný `trueBearing` by stačil na kreslenie, ale
+/// zameranie je navigačný záznam: keď sa neskôr vymenia WMM koeficienty,
+/// musí sa dať pozrieť, s akou opravou bol riadok zapísaný — a magnetický
+/// kurz je to jediné, čo prístroj naozaj nameral.
+class Bearings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Druh zamerania — stabilný kód z `BearingKind`, nikdy preložený text.
+  TextColumn get kind => text()();
+
+  /// Poloha pozorovateľa v okamihu zamerania.
+  ///
+  /// NULL pri resekcii: tam sa poloha pozorovateľa počíta z priesečníka, nie
+  /// zapisuje. To je celý dôvod, prečo resekcia funguje aj bez GPS.
+  RealColumn get observerLat => real().nullable()();
+  RealColumn get observerLon => real().nullable()();
+
+  /// Presnosť GPS fixu (m) v okamihu zamerania, ak bola známa.
+  RealColumn get accuracyMeters => real().nullable()();
+
+  /// Zameraný známy bod — waypoint, na ktorý skiper mieril (len resekcia).
+  ///
+  /// Ukladá sa odkaz AJ odfotená kópia názvu a súradníc. Je to zámerne opačné
+  /// rozhodnutie než pri `navTargetIdProvider`, ktorý drží len id, aby
+  /// navigácia zomrela so zmazaným bodom: zameranie je archívny záznam
+  /// merania, ktoré sa naozaj stalo, a zmazanie waypointu ho nesmie
+  /// prepísať ani zneplatniť.
+  ///
+  /// `onDelete: setNull` zámerne: zmazanie waypointu z mapy nesmie ani zhodiť
+  /// mazanie (FK by ho odmietlo), ani zmazať zameranie. Odkaz zmizne, odpis
+  /// polohy a názvu zostane, takže riadok je v denníku aj v PDF ďalej čitateľný.
+  IntColumn get targetWaypointId => integer()
+      .nullable()
+      .references(Waypoints, #id, onDelete: KeyAction.setNull)();
+  RealColumn get targetLat => real().nullable()();
+  RealColumn get targetLon => real().nullable()();
+  TextColumn get targetName => text().nullable()();
+
+  /// Nameraný magnetický kurz (°), tak ako prišiel z magnetometra.
+  RealColumn get magneticBearing => real()();
+
+  /// Magnetická deklinácia použitá na prevod (°, východ kladný).
+  RealColumn get declination => real()();
+
+  /// Odkiaľ sa vzala poloha, na ktorej sa deklinácia vyhodnotila:
+  /// `gps`, `target` alebo `lastKnown`.
+  ///
+  /// Pri resekcii bez GPS sa WMM počíta v mieste zameraného waypointu —
+  /// deklinácia sa na niekoľkých míľach nezmení natoľko, aby to bolo merateľné.
+  /// Len na doloženie, ako riadok vznikol; nikdy sa podľa toho nerozhoduje.
+  TextColumn get declinationSource => text().nullable()();
+
+  /// Pravý kurz (°) = magnetický + deklinácia, znormalizovaný do 0–360.
+  RealColumn get trueBearing => real()();
+
+  /// Polovičná šírka kužeľa neistoty (°).
+  ///
+  /// Telefónový kompas na lodi má reálne ±5–10° kvôli železu a elektronike.
+  /// Čiara sa preto kreslí ako kužeľ — tenká čiara by tvrdila presnosť,
+  /// ktorú meranie nemá.
+  RealColumn get uncertaintyDeg =>
+      real().withDefault(const Constant(8.0))();
+
+  /// Skupina zameraní na ten istý neznámy objekt (len `intersection`).
+  ///
+  /// Reverzná triangulácia zbiera námery na jeden objekt z rôznych polôh, aj
+  /// s hodinovým odstupom. Spájať ich podľa času či uhla by pri dvoch skalách
+  /// vedľa seba tichom vyrobilo nezmyselný priesečník, preto skupinu určuje
+  /// skiper a drží ju toto id. Názov objektu je v [label], rovnaký pre celú
+  /// skupinu.
+  TextColumn get sightGroupId => text().nullable()();
+
+  /// Pri `intersection` názov hľadaného objektu (rovnaký pre celú skupinu),
+  /// pri `resection` voliteľná poznámka k meraniu.
+  TextColumn get label => text().nullable()();
+
+  /// Fotka scény v okamihu zamerania.
+  TextColumn get photoPath => text().nullable()();
+
+  DateTimeColumn get takenAt => dateTime()();
+
+  /// Deň a plavba, do ktorých zameranie patrí. NULL, ak sa zameriavalo
+  /// mimo aktívneho trackingu.
+  IntColumn get dayLogId => integer().nullable().references(DayLogs, #id)();
+  IntColumn get charterId => integer().nullable().references(Charters, #id)();
+
+  @override
+  List<String> get customConstraints => [
+        // Resekcia bez zameraného bodu je len uhol bez zmyslu; hľadanie
+        // objektu bez polohy pozorovateľa nemá odkiaľ vychádzať. Radšej
+        // výnimka pri zápise než riadok, ktorý sa nedá nakresliť ani vysvetliť.
+        "CHECK ((kind = 'resection' AND target_lat IS NOT NULL "
+            "AND target_lon IS NOT NULL AND sight_group_id IS NULL) OR "
+            "(kind = 'intersection' AND observer_lat IS NOT NULL "
+            "AND observer_lon IS NOT NULL AND sight_group_id IS NOT NULL))",
+      ];
+}
+
 /// Podpisy posádky na safety briefingu
 /// Hodnotenie člena posádky od skipera po plavbe (RYA štýl).
 ///
@@ -399,7 +513,7 @@ class OutboxRows extends Table {
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
   CrewAssessments,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
-  DutyPeriods,
+  DutyPeriods, Bearings,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -408,7 +522,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -555,6 +669,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 24) {
         await m.addColumn(charters, charters.tidalWaters);
       }
+      if (from < 25) {
+        await m.createTable(bearings);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -604,6 +721,9 @@ class AppDatabase extends _$AppDatabase {
     await deleteSignaturesForCharter(id);
     await deleteHandoverProtocolsForCharter(id);
     await deleteDutyPeriodsForCharter(id);
+    // Zamerania mimo dní (zapísané bez aktívneho trackingu) by inak zostali
+    // s odkazom na zmazanú plavbu a FK by mazanie odmietlo.
+    await (delete(bearings)..where((b) => b.charterId.equals(id))).go();
     // Bez tohto by FK zhodilo mazanie plavby, ktorej posádku skiper hodnotil.
     await (delete(crewAssessments)..where((a) => a.charterId.equals(id))).go();
     await (delete(charters)..where((c) => c.id.equals(id))).go();
@@ -632,6 +752,9 @@ class AppDatabase extends _$AppDatabase {
         .write(const DutyPeriodsCompanion(dayLogId: Value(null)));
     await (delete(logbookEntries)..where((e) => e.dayLogId.equals(id))).go();
     await (delete(sailingSessions)..where((s) => s.dayLogId.equals(id))).go();
+    // Zamerania patria dňu rovnako ako denníkové záznamy, takže idú s ním —
+    // a bez tohto by ich FK odkaz mazanie dňa zhodil.
+    await (delete(bearings)..where((b) => b.dayLogId.equals(id))).go();
     await (delete(dayLogs)..where((d) => d.id.equals(id))).go();
   }
 
@@ -863,6 +986,62 @@ class AppDatabase extends _$AppDatabase {
   Future<void> updateWaypointName(int id, String name) =>
       (update(waypoints)..where((w) => w.id.equals(id)))
           .write(WaypointsCompanion(name: Value(name)));
+
+  // ── Zamerania (námerový kompas) ────────────────────────────────
+
+  /// Zamerania od najnovšieho po najstaršie.
+  Future<List<Bearing>> getAllBearings() => (select(bearings)
+        ..orderBy([
+          (b) => OrderingTerm(
+              expression: b.takenAt, mode: OrderingMode.desc)
+        ]))
+      .get();
+
+  /// Živý zoznam zameraní pre mapu — po zapísaní nového sa čiara objaví
+  /// bez toho, aby si obrazovka musela pýtať obnovu.
+  Stream<List<Bearing>> watchAllBearings() => (select(bearings)
+        ..orderBy([
+          (b) => OrderingTerm(
+              expression: b.takenAt, mode: OrderingMode.desc)
+        ]))
+      .watch();
+
+  Future<List<Bearing>> getBearingsForDay(int dayLogId) => (select(bearings)
+        ..where((b) => b.dayLogId.equals(dayLogId))
+        ..orderBy([(b) => OrderingTerm(expression: b.takenAt)]))
+      .get();
+
+  Future<List<Bearing>> getBearingsForCharter(int charterId) =>
+      (select(bearings)
+            ..where((b) => b.charterId.equals(charterId))
+            ..orderBy([(b) => OrderingTerm(expression: b.takenAt)]))
+          .get();
+
+  /// Zamerania jednej skupiny (jeden hľadaný neznámy objekt), od najstaršieho.
+  Future<List<Bearing>> getBearingsInGroup(String sightGroupId) =>
+      (select(bearings)
+            ..where((b) => b.sightGroupId.equals(sightGroupId))
+            ..orderBy([(b) => OrderingTerm(expression: b.takenAt)]))
+          .get();
+
+  Future<int> insertBearing(BearingsCompanion e) => into(bearings).insert(e);
+
+  /// Zmaže celú skupinu námerov na jeden objekt — buď sa hľadaný bod uloží
+  /// ako waypoint, alebo sa pátranie vzdá; polovica námerov nie je na nič.
+  Future<void> deleteBearingGroup(String sightGroupId) =>
+      (delete(bearings)..where((b) => b.sightGroupId.equals(sightGroupId)))
+          .go();
+
+  Future<void> updateBearingLabel(int id, String? label) =>
+      (update(bearings)..where((b) => b.id.equals(id)))
+          .write(BearingsCompanion(label: Value(label)));
+
+  Future<void> deleteBearing(int id) =>
+      (delete(bearings)..where((b) => b.id.equals(id))).go();
+
+  /// Zmaže všetky zamerania. Používa sa pri "vyčistiť mapu" — čiary sú
+  /// pracovná pomôcka na jednu situáciu, nie trvalý záznam ako waypoint.
+  Future<void> deleteAllBearings() => delete(bearings).go();
 
   // ── Weather ───────────────────────────────────────────────────
 

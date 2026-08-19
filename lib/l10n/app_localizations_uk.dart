@@ -2467,7 +2467,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Вкладка Компас показує магнітний пеленг за допомогою сенсорів телефону, з виглядом задньої камери як тло для пеленгування об\'єктів.\n\n• Жовтий приціл – напрям, на який ви вказуєте\n• Компасна смуга вгорі – N / NE / E / SE / S / SW / W / NW\n• Числовий показник – градуси та сторона світу\n• Зелена точка = стабільне показання  ·  Помаранчева точка = калібрується\n\nЯкщо показник нестабільний, повільно рухай телефоном у формі вісімки для калібрування магнетометра.\n\nУвага: точність може знижуватись поблизу металевих конструкцій, динаміків або електроніки.';
+      'Вкладка Компас показує магнітний пеленг за допомогою сенсорів телефону, з виглядом задньої камери як тло для пеленгування об\'єктів.\n\n• Жовтий приціл – напрям, на який ви вказуєте\n• Компасна смуга вгорі – N / NE / E / SE / S / SW / W / NW\n• Числовий показник – градуси та сторона світу\n• Зелена точка = стабільне показання  ·  Помаранчева точка = калібрується\n\nЯкщо показник нестабільний, повільно рухай телефоном у формі вісімки для калібрування магнетометра.\n\nУвага: точність може знижуватись поблизу металевих конструкцій, динаміків або електроніки.\n\nВзяти пеленг — два режими, перемикаються над кнопкою.\n\nМОЯ ПОЗИЦІЯ (з пеленгів) — GPS не потрібен. Вибери відому точку з карти, наведи на неї приціл і натисни Взяти пеленг. Повтори це на другій, найкраще третій точці, поки судно стоїть (вікно — 5 хвилин). Там, де перетинаються зворотні лінії від тих точок, ти і є. Точність дає компас у телефоні: при ±8° і точках 4 мор. милі далеко це сотні метрів, а не метри. Це резерв на випадок відмови GPS, а не його заміна.\n\nНЕВІДОМА ТОЧКА — потрібен GPS. Назви об\'єкт, який хочеш мати на карті, візьми на нього пеленг, потім перемістись хоча б на кілька сотень метрів і візьми пеленг на той самий об\'єкт знову. З двох–трьох пеленгів з різних місць вийде його позиція, яку можна зберегти як waypoint. Без переміщення судна немає бази для обчислення. Об\'єкт має бути нерухомий — інше судно так визначити не вийде.\n\n• Лінія малюється з конусом ±8°: штрихова при визначенні позиції (від точки до судна), суцільна при пошуку об\'єкта (від судна до нього)\n• Підпис завжди показує ЗМІРЯНИЙ пеленг, навіть коли лінія йде навпаки\n• Торкнись вістря лінії, щоб побачити деталі та видалити пеленг\n• Зелений хрестик = добрий перетин, помаранчевий = гострий кут і непевна позиція\n• Поки GPS працює, визначення показує й відхилення від нього — так дізнаєшся, наскільки довіряти компасу\n• Шар вмикається іконкою прицілу, довге утримання видаляє всі пеленги\n• Пеленги дня є в денному записі й в експорті PDF\n\nНайкращий перетин дають точки, розведені приблизно на 90° (дві) або 60° (три).';
 
   @override
   String get guideSettingsTitle => 'Налаштування';
@@ -3192,4 +3192,170 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Тип вод';
+
+  @override
+  String get bearingTakeSight => 'Взяти пеленг';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Пеленг $bearing збережено';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Без GPS невідому точку визначити неможливо. Перемкни на «Моя позиція» — визначення з пеленгів на відомі точки GPS не потребує.';
+
+  @override
+  String get bearingSaveFailed => 'Не вдалося зберегти пеленг';
+
+  @override
+  String get bearingLabelHint => 'Що пеленгуєш? (необов\'язково)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Схилення $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Магнітна модель застаріла — схилення є лише оцінкою';
+
+  @override
+  String get bearingsLayer => 'Пеленги';
+
+  @override
+  String get bearingsTitle => 'Пеленги';
+
+  @override
+  String get bearingsClearAll => 'Видалити всі пеленги';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Видалити всі пеленги? Лінії та перетин зникнуть з карти.';
+
+  @override
+  String get bearingsEmpty =>
+      'Пеленгів ще немає. Наведи телефон на об\'єкт і натисни Взяти пеленг.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Позиція з $count пеленгів';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Слабкий перетин — лінії перетинаються лише під $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Відхилення від GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'істинний';
+
+  @override
+  String get bearingMagneticLabel => 'магнітний';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Конус показує похибку ±$deg компаса телефона.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Пеленги';
+
+  @override
+  String get bearingPdfObject => 'Об\'єкт';
+
+  @override
+  String get bearingPdfBearing => 'Істинний пеленг';
+
+  @override
+  String get bearingModeResection => 'Моя позиція';
+
+  @override
+  String get bearingModeObject => 'Невідома точка';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Візьми пеленг на 2–3 відомі точки з карти. GPS не потрібен.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Візьми пеленг на ту саму точку з 2–3 різних місць. Потрібен GPS.';
+
+  @override
+  String get bearingPickTarget => 'Вибери точку для пеленгування';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Спочатку вибери відому точку з карти, потім бери пеленг';
+
+  @override
+  String get bearingNeedsObject => 'Спочатку назви точку, яку пеленгуєш';
+
+  @override
+  String get bearingNewObject => 'Нова точка…';
+
+  @override
+  String get bearingObjectName => 'Назва точки (напр. невідома скеля)';
+
+  @override
+  String get bearingOpenObjects => 'Точки у визначенні';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count пеленгів';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Та сама точка, що й раніше — для позиції потрібна інша.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Коротка база — перемістись і візьми пеленг знову.';
+
+  @override
+  String get bearingMovedHint =>
+      'Судно зрушило між пеленгами — визначення позиції припускає, що воно стоїть.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Ще один пеленг на іншу точку і позиція вийде.';
+
+  @override
+  String get bearingMyPositionFix => 'Моя позиція';
+
+  @override
+  String get bearingObjectFix => 'Визначена точка';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Зберегти як waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name збережено як waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Схилення обчислене в позиції пеленгованої точки';
+
+  @override
+  String get bearingResectionSection => 'Позиція з пеленгів на відомі точки';
+
+  @override
+  String get bearingObjectSection => 'Визначення невідомих точок';
+
+  @override
+  String get bearingPdfMark => 'Пеленгована точка';
+
+  @override
+  String get bearingPdfResult => 'Результат';
+
+  @override
+  String get bearingStartNew => 'Почати новий пеленг';
 }

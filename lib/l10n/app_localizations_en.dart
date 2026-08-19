@@ -2459,7 +2459,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'The Compass tab shows your magnetic bearing using the phone sensors, with the rear camera as background for taking bearings on objects.\n\n• Yellow crosshair – direction you are pointing\n• Compass strip at top – N / NE / E / SE / S / SW / W / NW\n• Numeric readout – degrees and cardinal point\n• Green dot = stable reading  ·  Orange dot = calibrating\n\nIf the reading is unstable, slowly move the phone in a figure-eight pattern to calibrate the magnetometer.\n\nAccuracy may be reduced near metal structures, speakers or electronic equipment.';
+      'The Compass tab shows your magnetic bearing using the phone sensors, with the rear camera as background for taking bearings on objects.\n\n• Yellow crosshair – direction you are pointing\n• Compass strip at top – N / NE / E / SE / S / SW / W / NW\n• Numeric readout – degrees and cardinal point\n• Green dot = stable reading  ·  Orange dot = calibrating\n\nIf the reading is unstable, slowly move the phone in a figure-eight pattern to calibrate the magnetometer.\n\nAccuracy may be reduced near metal structures, speakers or electronic equipment.\n\nTake bearing — two modes, switched above the button.\n\nMY POSITION (resection) — no GPS needed. Pick a charted mark from the map, line the crosshair up on it and tap Take bearing. Repeat on a second, ideally a third mark while the boat is still (the window is 5 minutes). Where the back-bearings from those marks cross is your position. The accuracy comes from the phone compass: at ±8° with marks 4 NM off, that is hundreds of metres, not metres. It is a fallback for when GPS fails, not a replacement for it.\n\nUNKNOWN POINT — GPS needed. Name the object you want on the chart, sight it, then move at least a few hundred metres and sight the same object again. Two or three sights from different places give its position, which you can save as a waypoint. Without the boat moving there is no baseline to work from. The object must be stationary — another vessel cannot be fixed this way.\n\n• The line is drawn with a ±8° cone: dashed for resection (from the mark toward the boat), solid when hunting an object (from the boat toward it)\n• The label always shows the MEASURED bearing, even where the line runs the other way\n• Tap the tip of a line for the detail, and to delete the bearing\n• Green cross = good cut, orange = shallow angle and an uncertain position\n• While GPS is up, resection also shows how far it differs from it — that is how you learn how much to trust the compass\n• Toggle the layer with the sighting icon; long-press it to clear every bearing\n• The day\'s bearings appear in the day log and in the PDF export\n\nThe best cut comes from marks roughly 90° apart (two) or 60° apart (three).';
 
   @override
   String get guideSettingsTitle => 'Settings';
@@ -3183,4 +3183,171 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Type of waters';
+
+  @override
+  String get bearingTakeSight => 'Take bearing';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Bearing $bearing saved';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'An unknown point cannot be fixed without GPS. Switch to “My position” — resection from charted marks needs no GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Could not save the bearing';
+
+  @override
+  String get bearingLabelHint => 'What are you sighting? (optional)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Variation $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Magnetic model has expired — variation is an estimate';
+
+  @override
+  String get bearingsLayer => 'Bearings';
+
+  @override
+  String get bearingsTitle => 'Bearings';
+
+  @override
+  String get bearingsClearAll => 'Clear all bearings';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Clear all bearings? The lines and the cross fix disappear from the map.';
+
+  @override
+  String get bearingsEmpty =>
+      'No bearings yet. Point the phone at a landmark and tap Take bearing.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Position from $count bearings';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Weak fix — the lines cross at only $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Off GPS by: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'true';
+
+  @override
+  String get bearingMagneticLabel => 'magnetic';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'The cone shows the ±$deg uncertainty of a phone compass.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Bearings';
+
+  @override
+  String get bearingPdfObject => 'Object';
+
+  @override
+  String get bearingPdfBearing => 'True bearing';
+
+  @override
+  String get bearingModeResection => 'My position';
+
+  @override
+  String get bearingModeObject => 'Unknown point';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Sight 2–3 charted marks from the map. No GPS needed.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Sight the same point from 2–3 different places. GPS needed.';
+
+  @override
+  String get bearingPickTarget => 'Pick the mark to sight';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Pick a charted mark first, then take the bearing';
+
+  @override
+  String get bearingNeedsObject => 'Name the point you are sighting first';
+
+  @override
+  String get bearingNewObject => 'New point…';
+
+  @override
+  String get bearingObjectName => 'Point name (e.g. unknown rock)';
+
+  @override
+  String get bearingOpenObjects => 'Points being fixed';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count bearings';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Same mark as before — resection needs a different one.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Short baseline — move on and sight it again.';
+
+  @override
+  String get bearingMovedHint =>
+      'The boat moved between sights — resection assumes it is still.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'One more bearing on a different mark and the position appears.';
+
+  @override
+  String get bearingMyPositionFix => 'My position';
+
+  @override
+  String get bearingObjectFix => 'Fixed point';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Save as waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name saved as a waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Variation evaluated at the sighted mark\'s position';
+
+  @override
+  String get bearingResectionSection =>
+      'Resection — position from charted marks';
+
+  @override
+  String get bearingObjectSection => 'Fixing unknown points';
+
+  @override
+  String get bearingPdfMark => 'Mark sighted';
+
+  @override
+  String get bearingPdfResult => 'Result';
+
+  @override
+  String get bearingStartNew => 'Start a new sighting';
 }

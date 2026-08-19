@@ -2479,7 +2479,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Η καρτέλα Πυξίδα δείχνει τη μαγνητική διόπτευσή σας μέσω των αισθητήρων του τηλεφώνου, με την πίσω κάμερα ως φόντο για τη λήψη διοπτεύσεων σε αντικείμενα.\n\n• Κίτρινο σταυρόνημα – κατεύθυνση που στοχεύετε\n• Ταινία πυξίδας πάνω – N / NE / E / SE / S / SW / W / NW\n• Αριθμητική ένδειξη – μοίρες και σημείο ορίζοντα\n• Πράσινη κουκκίδα = σταθερή ένδειξη  ·  Πορτοκαλί κουκκίδα = βαθμονόμηση\n\nΑν η ένδειξη είναι ασταθής, κινήστε αργά το τηλέφωνο σχηματίζοντας ένα οκτάρι για να βαθμονομήσετε το μαγνητόμετρο.\n\nΗ ακρίβεια μπορεί να μειωθεί κοντά σε μεταλλικές κατασκευές, ηχεία ή ηλεκτρονικό εξοπλισμό.';
+      'Η καρτέλα Πυξίδα δείχνει τη μαγνητική διόπτευσή σας μέσω των αισθητήρων του τηλεφώνου, με την πίσω κάμερα ως φόντο για τη λήψη διοπτεύσεων σε αντικείμενα.\n\n• Κίτρινο σταυρόνημα – κατεύθυνση που στοχεύετε\n• Ταινία πυξίδας πάνω – N / NE / E / SE / S / SW / W / NW\n• Αριθμητική ένδειξη – μοίρες και σημείο ορίζοντα\n• Πράσινη κουκκίδα = σταθερή ένδειξη  ·  Πορτοκαλί κουκκίδα = βαθμονόμηση\n\nΑν η ένδειξη είναι ασταθής, κινήστε αργά το τηλέφωνο σχηματίζοντας ένα οκτάρι για να βαθμονομήσετε το μαγνητόμετρο.\n\nΗ ακρίβεια μπορεί να μειωθεί κοντά σε μεταλλικές κατασκευές, ηχεία ή ηλεκτρονικό εξοπλισμό.\n\nΛήψη διόπτευσης — δύο τρόποι, αλλάζουν πάνω από το κουμπί.\n\nΗ ΘΕΣΗ ΜΟΥ (στίγμα από διοπτεύσεις) — δεν χρειάζεται GPS. Διάλεξε γνωστό σημείο από τον χάρτη, στόχευσε το σταυρόνημα σε αυτό και πάτησε Λήψη διόπτευσης. Επανάλαβέ το σε δεύτερο, καλύτερα τρίτο σημείο, όσο το σκάφος στέκεται (το παράθυρο είναι 5 λεπτά). Όπου τέμνονται οι αντίστροφες διοπτεύσεις από αυτά τα σημεία, εκεί είσαι. Την ακρίβεια τη δίνει η πυξίδα του τηλεφώνου: στις ±8° και σημεία 4 ν.μ. μακριά είναι εκατοντάδες μέτρα, όχι μέτρα. Είναι εφεδρεία για βλάβη του GPS, όχι αντικατάστασή του.\n\nΑΓΝΩΣΤΟ ΣΗΜΕΙΟ — χρειάζεται GPS. Δώσε όνομα στο αντικείμενο που θέλεις στον χάρτη, διόπτευσέ το, μετά μετακινήσου τουλάχιστον μερικές εκατοντάδες μέτρα και διόπτευσε το ίδιο αντικείμενο ξανά. Από δύο–τρεις διοπτεύσεις από διαφορετικά μέρη βγαίνει η θέση του, που μπορείς να αποθηκεύσεις ως waypoint. Χωρίς μετακίνηση του σκάφους δεν υπάρχει βάση υπολογισμού. Το αντικείμενο πρέπει να είναι ακίνητο — άλλο σκάφος δεν προσδιορίζεται έτσι.\n\n• Η γραμμή σχεδιάζεται με κώνο ±8°: διακεκομμένη στο στίγμα (από το σημείο προς το σκάφος), συνεχής στην αναζήτηση αντικειμένου (από το σκάφος προς αυτό)\n• Η ετικέτα δείχνει πάντα τη ΜΕΤΡΗΜΕΝΗ διόπτευση, ακόμη κι όταν η γραμμή πάει αντίστροφα\n• Άγγιξε την αιχμή της γραμμής για λεπτομέρειες και για διαγραφή\n• Πράσινος σταυρός = καλή τομή, πορτοκαλί = οξεία γωνία και αβέβαιη θέση\n• Όσο δουλεύει το GPS, το στίγμα δείχνει και την απόκλιση από αυτό — έτσι μαθαίνεις πόσο να εμπιστεύεσαι την πυξίδα\n• Το επίπεδο ανοίγεις με το εικονίδιο σκόπευσης, παρατεταμένο πάτημα σβήνει όλες τις διοπτεύσεις\n• Οι διοπτεύσεις της ημέρας είναι στο ημερήσιο ημερολόγιο και στην εξαγωγή PDF\n\nΗ καλύτερη τομή προκύπτει από σημεία περίπου 90° μεταξύ τους (δύο) ή 60° (τρία).';
 
   @override
   String get guideSettingsTitle => 'Ρυθμίσεις';
@@ -3209,4 +3209,170 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Τύπος υδάτων';
+
+  @override
+  String get bearingTakeSight => 'Λήψη διόπτευσης';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Η διόπτευση $bearing αποθηκεύτηκε';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Χωρίς GPS δεν προσδιορίζεται άγνωστο σημείο. Άλλαξε σε «Η θέση μου» — το στίγμα από γνωστά σημεία δεν χρειάζεται GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Δεν ήταν δυνατή η αποθήκευση της διόπτευσης';
+
+  @override
+  String get bearingLabelHint => 'Τι διοπτεύεις; (προαιρετικό)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Απόκλιση $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Το μαγνητικό μοντέλο έληξε — η απόκλιση είναι εκτίμηση';
+
+  @override
+  String get bearingsLayer => 'Διοπτεύσεις';
+
+  @override
+  String get bearingsTitle => 'Διοπτεύσεις';
+
+  @override
+  String get bearingsClearAll => 'Διαγραφή όλων των διοπτεύσεων';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Διαγραφή όλων των διοπτεύσεων; Οι γραμμές και το στίγμα θα εξαφανιστούν από τον χάρτη.';
+
+  @override
+  String get bearingsEmpty =>
+      'Καμία διόπτευση ακόμη. Στόχευσε το τηλέφωνο σε ένα αντικείμενο και πάτησε Λήψη διόπτευσης.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Θέση από $count διοπτεύσεις';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Αδύναμο στίγμα — οι γραμμές τέμνονται μόλις υπό $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Απόκλιση από το GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'αληθής';
+
+  @override
+  String get bearingMagneticLabel => 'μαγνητική';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Ο κώνος δείχνει την αβεβαιότητα ±$deg της πυξίδας του τηλεφώνου.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Διοπτεύσεις';
+
+  @override
+  String get bearingPdfObject => 'Αντικείμενο';
+
+  @override
+  String get bearingPdfBearing => 'Αληθής διόπτευση';
+
+  @override
+  String get bearingModeResection => 'Η θέση μου';
+
+  @override
+  String get bearingModeObject => 'Άγνωστο σημείο';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Διόπτευσε 2–3 γνωστά σημεία του χάρτη. Δεν χρειάζεται GPS.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Διόπτευσε το ίδιο σημείο από 2–3 διαφορετικά μέρη. Χρειάζεται GPS.';
+
+  @override
+  String get bearingPickTarget => 'Διάλεξε το σημείο για διόπτευση';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Διάλεξε πρώτα γνωστό σημείο του χάρτη, μετά διόπτευσε';
+
+  @override
+  String get bearingNeedsObject => 'Δώσε πρώτα όνομα στο σημείο που διοπτεύεις';
+
+  @override
+  String get bearingNewObject => 'Νέο σημείο…';
+
+  @override
+  String get bearingObjectName => 'Όνομα σημείου (π.χ. άγνωστη ξέρα)';
+
+  @override
+  String get bearingOpenObjects => 'Σημεία σε προσδιορισμό';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count διοπτεύσεις';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Το ίδιο σημείο όπως πριν — το στίγμα χρειάζεται άλλο.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Κοντή βάση — μετακινήσου και διόπτευσε ξανά.';
+
+  @override
+  String get bearingMovedHint =>
+      'Το σκάφος μετακινήθηκε μεταξύ των διοπτεύσεων — το στίγμα προϋποθέτει ότι στέκεται.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Μία διόπτευση ακόμη σε άλλο σημείο και η θέση θα βγει.';
+
+  @override
+  String get bearingMyPositionFix => 'Η θέση μου';
+
+  @override
+  String get bearingObjectFix => 'Προσδιορισμένο σημείο';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Αποθήκευση ως waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return 'Το $name αποθηκεύτηκε ως waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Η απόκλιση υπολογίστηκε στη θέση του διοπτευμένου σημείου';
+
+  @override
+  String get bearingResectionSection => 'Στίγμα από γνωστά σημεία';
+
+  @override
+  String get bearingObjectSection => 'Προσδιορισμός άγνωστων σημείων';
+
+  @override
+  String get bearingPdfMark => 'Διοπτευμένο σημείο';
+
+  @override
+  String get bearingPdfResult => 'Αποτέλεσμα';
+
+  @override
+  String get bearingStartNew => 'Έναρξη νέας διόπτευσης';
 }

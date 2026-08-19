@@ -2472,7 +2472,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.';
+      'La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.\n\nTomar demora — dos modos, se cambian encima del botón.\n\nMI SITUACIÓN (por demoras) — no hace falta GPS. Elige un punto conocido de la carta, alinea la retícula con él y pulsa Tomar demora. Repítelo en un segundo, mejor un tercer punto, mientras el barco está parado (la ventana es de 5 minutos). Donde se cortan las demoras inversas de esos puntos está tu situación. La precisión la da el compás del teléfono: con ±8° y puntos a 4 M, son cientos de metros, no metros. Es un respaldo para cuando falla el GPS, no un sustituto.\n\nPUNTO DESCONOCIDO — hace falta GPS. Nombra el objeto que quieres en la carta, tómale demora, luego desplázate al menos unos cientos de metros y vuelve a demorar el mismo objeto. Dos o tres demoras desde lugares distintos dan su posición, que puedes guardar como waypoint. Sin que el barco se mueva no hay base de cálculo. El objeto debe estar inmóvil: otro barco no se puede determinar así.\n\n• La línea se dibuja con un cono de ±8°: discontinua en la situación por demoras (del punto hacia el barco), continua al buscar un objeto (del barco hacia él)\n• La etiqueta muestra siempre la demora MEDIDA, aunque la línea vaya al revés\n• Toca la punta de la línea para ver el detalle y borrar la demora\n• Cruz verde = buen corte, naranja = ángulo agudo y situación incierta\n• Mientras el GPS funcione, la situación por demoras muestra también su diferencia con él: así aprendes cuánto fiarte del compás\n• Activa la capa con el icono de puntería; mantén pulsado para borrarlas todas\n• Las demoras del día están en el registro diario y en la exportación a PDF\n\nEl mejor corte se obtiene con puntos separados unos 90° (dos) o 60° (tres).';
 
   @override
   String get guideSettingsTitle => 'Ajustes';
@@ -3199,4 +3199,172 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Tipo de aguas';
+
+  @override
+  String get bearingTakeSight => 'Tomar demora';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Demora $bearing guardada';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Sin GPS no se puede determinar un punto desconocido. Cambia a «Mi situación»: la situación por demoras a puntos conocidos no necesita GPS.';
+
+  @override
+  String get bearingSaveFailed => 'No se pudo guardar la demora';
+
+  @override
+  String get bearingLabelHint => '¿Qué estás demorando? (opcional)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Declinación $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'El modelo magnético ha caducado: la declinación es una estimación';
+
+  @override
+  String get bearingsLayer => 'Demoras';
+
+  @override
+  String get bearingsTitle => 'Demoras';
+
+  @override
+  String get bearingsClearAll => 'Borrar todas las demoras';
+
+  @override
+  String get bearingsClearConfirm =>
+      '¿Borrar todas las demoras? Las líneas y la situación por demoras desaparecerán del mapa.';
+
+  @override
+  String get bearingsEmpty =>
+      'Aún no hay demoras. Apunta el teléfono a un objeto y pulsa Tomar demora.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Situación a partir de $count demoras';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Situación débil: las líneas se cortan solo a $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Diferencia con el GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'verdadera';
+
+  @override
+  String get bearingMagneticLabel => 'magnética';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'El cono muestra la incertidumbre de ±$deg de un compás de teléfono.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Demoras';
+
+  @override
+  String get bearingPdfObject => 'Objeto';
+
+  @override
+  String get bearingPdfBearing => 'Demora verdadera';
+
+  @override
+  String get bearingModeResection => 'Mi situación';
+
+  @override
+  String get bearingModeObject => 'Punto desconocido';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Toma demora a 2–3 puntos conocidos de la carta. No hace falta GPS.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Toma demora al mismo punto desde 2–3 lugares distintos. Hace falta GPS.';
+
+  @override
+  String get bearingPickTarget => 'Elige el punto a demorar';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Elige primero un punto conocido, luego toma la demora';
+
+  @override
+  String get bearingNeedsObject =>
+      'Primero nombra el punto que estás demorando';
+
+  @override
+  String get bearingNewObject => 'Nuevo punto…';
+
+  @override
+  String get bearingObjectName => 'Nombre del punto (p. ej. roca desconocida)';
+
+  @override
+  String get bearingOpenObjects => 'Puntos en determinación';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count demoras';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'El mismo punto que antes: la situación por demoras necesita otro.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Base corta: desplázate y vuelve a demorar.';
+
+  @override
+  String get bearingMovedHint =>
+      'El barco se movió entre demoras: la situación por demoras supone que está parado.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Una demora más a otro punto y saldrá la situación.';
+
+  @override
+  String get bearingMyPositionFix => 'Mi situación';
+
+  @override
+  String get bearingObjectFix => 'Punto determinado';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Guardar como waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name guardado como waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Declinación calculada en la posición del punto demorado';
+
+  @override
+  String get bearingResectionSection =>
+      'Situación por demoras a puntos conocidos';
+
+  @override
+  String get bearingObjectSection => 'Determinación de puntos desconocidos';
+
+  @override
+  String get bearingPdfMark => 'Punto demorado';
+
+  @override
+  String get bearingPdfResult => 'Resultado';
+
+  @override
+  String get bearingStartNew => 'Empezar una demora nueva';
 }

@@ -2461,7 +2461,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.';
+      'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.\n\nZameraj — dva režimy, prepínajú sa nad tlačidlom.\n\nMOJA POLOHA (resekcia) — GPS netreba. Vyber známy bod z mapy, namier naň kríž a stlač Zameraj. Zopakuj to na druhý, ideálne tretí bod, kým loď stojí (okno je 5 minút). Priesečník spätných priamok od tých bodov je tvoja poloha. Presnosť dáva kompas v telefóne: pri ±8° a bodoch 4 NM ďaleko sú to stovky metrov, nie metre. Je to záloha pre výpadok GPS, nie jej náhrada.\n\nNEZNÁMY BOD — GPS treba. Pomenuj objekt, ktorý chceš dostať na mapu, zameraj ho, potom sa presuň aspoň o niekoľko stoviek metrov a zameraj ten istý objekt znova. Z dvoch–troch zameraní z rôznych miest vyjde jeho poloha a dá sa uložiť ako waypoint. Bez posunu lode nemá výpočet základnicu. Objekt musí byť nehybný — inú loď takto zamerať nemožno.\n\n• Čiara sa kreslí s kužeľom ±8°: čiarkovane pri resekcii (od bodu k lodi), plne pri hľadaní objektu (od lode k bodu)\n• Popisok vždy ukazuje NAMERANÝ kurz, aj keď priamka vedie opačne\n• Ťuknutím na hrot čiary uvidíš detail a môžeš zameranie zmazať\n• Zelený krížik = dobrý rez, oranžový = ostrý uhol a neistá poloha\n• Kým GPS beží, resekcia zobrazí aj odchýlku od nej — tak zistíš, nakoľko sa dá kompasu veriť\n• Vrstvu zapneš ikonou zameriavača, dlhým podržaním zmažeš všetky zamerania\n• Zamerania dňa sú v dennom zázname a idú do PDF exportu\n\nNajlepší rez dostaneš pri bodoch asi 90° od seba (dva) alebo 60° (tri).';
 
   @override
   String get guideSettingsTitle => 'Nastavenia';
@@ -3186,4 +3186,170 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Typ vôd';
+
+  @override
+  String get bearingTakeSight => 'Zameraj';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Zameranie $bearing uložené';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Bez GPS sa neznámy bod určiť nedá. Prepni na „Moja poloha“ — resekcia zo známych bodov GPS nepotrebuje.';
+
+  @override
+  String get bearingSaveFailed => 'Zameranie sa nepodarilo uložiť';
+
+  @override
+  String get bearingLabelHint => 'Čo zameriavaš? (nepovinné)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Deklinácia $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Magnetický model vypršal – deklinácia je len odhad';
+
+  @override
+  String get bearingsLayer => 'Zamerania';
+
+  @override
+  String get bearingsTitle => 'Zamerania';
+
+  @override
+  String get bearingsClearAll => 'Zmazať všetky zamerania';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Zmazať všetky zamerania? Čiary aj krížový fix zmiznú z mapy.';
+
+  @override
+  String get bearingsEmpty =>
+      'Zatiaľ žiadne zamerania. Namier telefón na objekt a stlač Zameraj.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Poloha z $count zameraní';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Slabý fix – čiary sa pretínajú pod $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Odchýlka od GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'pravý';
+
+  @override
+  String get bearingMagneticLabel => 'magnetický';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Kužeľ ukazuje ±$deg neistotu telefónového kompasu.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Zamerania';
+
+  @override
+  String get bearingPdfObject => 'Objekt';
+
+  @override
+  String get bearingPdfBearing => 'Pravý kurz';
+
+  @override
+  String get bearingModeResection => 'Moja poloha';
+
+  @override
+  String get bearingModeObject => 'Neznámy bod';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Zameraj 2–3 známe body z mapy. GPS netreba.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Zameraj ten istý bod z 2–3 rôznych miest. Treba GPS.';
+
+  @override
+  String get bearingPickTarget => 'Vyber zameriavaný bod';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Najprv vyber známy bod z mapy, potom zameraj';
+
+  @override
+  String get bearingNeedsObject => 'Najprv pomenuj zameriavaný bod';
+
+  @override
+  String get bearingNewObject => 'Nový bod…';
+
+  @override
+  String get bearingObjectName => 'Názov bodu (napr. neznáma skala)';
+
+  @override
+  String get bearingOpenObjects => 'Zameriavané body';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count zameraní';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Ten istý bod ako predtým — na resekciu treba iný.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Krátka základnica — presuň sa a zameraj znova.';
+
+  @override
+  String get bearingMovedHint =>
+      'Loď sa medzi zameraniami posunula — resekcia predpokladá, že stojí.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Ešte jeden námer na iný bod a poloha vyjde.';
+
+  @override
+  String get bearingMyPositionFix => 'Moja poloha';
+
+  @override
+  String get bearingObjectFix => 'Určený bod';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Ulož ako waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name uložený ako waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Deklinácia počítaná v polohe zameraného bodu';
+
+  @override
+  String get bearingResectionSection => 'Resekcia — poloha zo známych bodov';
+
+  @override
+  String get bearingObjectSection => 'Zameranie neznámych bodov';
+
+  @override
+  String get bearingPdfMark => 'Zameraný bod';
+
+  @override
+  String get bearingPdfResult => 'Výsledok';
+
+  @override
+  String get bearingStartNew => 'Začať nové zameranie';
 }

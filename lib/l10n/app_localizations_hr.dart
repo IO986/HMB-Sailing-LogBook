@@ -2468,7 +2468,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Kartica Kompas prikazuje magnetski azimut pomoću senzora telefona, sa stražnjom kamerom kao pozadinom za uzimanje azimuta na objekte.\n\n• Žuti nišan – smjer u koji ciljate\n• Traka kompasa na vrhu – S / SI / I / JI / J / JZ / Z / SZ\n• Brojčani prikaz – stupnjevi i strana svijeta\n• Zelena točka = stabilno očitanje  ·  Narančasta točka = kalibracija\n\nAko je očitanje nestabilno, polako pomičite telefon u obliku osmice da kalibrirate magnetometar.\n\nTočnost može biti smanjena u blizini metalnih konstrukcija, zvučnika ili elektroničke opreme.';
+      'Kartica Kompas prikazuje magnetski azimut pomoću senzora telefona, sa stražnjom kamerom kao pozadinom za uzimanje azimuta na objekte.\n\n• Žuti nišan – smjer u koji ciljate\n• Traka kompasa na vrhu – S / SI / I / JI / J / JZ / Z / SZ\n• Brojčani prikaz – stupnjevi i strana svijeta\n• Zelena točka = stabilno očitanje  ·  Narančasta točka = kalibracija\n\nAko je očitanje nestabilno, polako pomičite telefon u obliku osmice da kalibrirate magnetometar.\n\nTočnost može biti smanjena u blizini metalnih konstrukcija, zvučnika ili elektroničke opreme.\n\nIzmjeri azimut — dva načina, prebacuju se nad tipkom.\n\nMOJA POZICIJA (presjek) — GPS nije potreban. Odaberi poznatu točku s karte, usmjeri nišan na nju i pritisni Izmjeri azimut. Ponovi to na drugoj, najbolje trećoj točki, dok brod stoji (okvir je 5 minuta). Gdje se sijeku povratne linije od tih točaka, tamo si ti. Točnost daje kompas u telefonu: pri ±8° i točkama 4 NM daleko to su stotine metara, ne metri. To je rezerva za ispad GPS-a, ne njegova zamjena.\n\nNEPOZNATA TOČKA — GPS je potreban. Nazovi objekt koji želiš na karti, izmjeri ga, zatim se pomakni barem nekoliko stotina metara i izmjeri isti objekt ponovno. Iz dva–tri mjerenja s različitih mjesta izađe njegova pozicija, koju možeš spremiti kao waypoint. Bez pomaka broda nema osnovice za izračun. Objekt mora biti nepomičan — drugi brod se tako ne može odrediti.\n\n• Linija se crta sa stošcem ±8°: crtkano pri presjeku (od točke prema brodu), puno pri traženju objekta (od broda prema njemu)\n• Oznaka uvijek pokazuje IZMJERENI azimut, i kad linija ide obrnuto\n• Dodirni vrh linije za detalje i za brisanje azimuta\n• Zeleni križić = dobar rez, narančasti = oštar kut i nesigurna pozicija\n• Dok GPS radi, presjek pokazuje i odstupanje od njega — tako naučiš koliko vjerovati kompasu\n• Sloj uključuješ ikonom nišana; dugim pritiskom brišeš sve azimute\n• Azimuti dana su u dnevnom zapisu i u PDF izvozu\n\nNajbolji rez daju točke oko 90° jedna od druge (dvije) ili 60° (tri).';
 
   @override
   String get guideSettingsTitle => 'Postavke';
@@ -3192,4 +3192,170 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Vrsta voda';
+
+  @override
+  String get bearingTakeSight => 'Izmjeri azimut';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Azimut $bearing spremljen';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Bez GPS-a nepoznatu točku nije moguće određivati. Prebaci na „Moja pozicija“ — presjek poznatih točaka ne traži GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Azimut nije spremljen';
+
+  @override
+  String get bearingLabelHint => 'Što mjeriš? (nije obavezno)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Deklinacija $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Magnetski model je istekao — deklinacija je samo procjena';
+
+  @override
+  String get bearingsLayer => 'Azimuti';
+
+  @override
+  String get bearingsTitle => 'Azimuti';
+
+  @override
+  String get bearingsClearAll => 'Obriši sve azimute';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Obrisati sve azimute? Linije i presjek nestat će s karte.';
+
+  @override
+  String get bearingsEmpty =>
+      'Još nema azimuta. Usmjeri telefon na objekt i pritisni Izmjeri azimut.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Pozicija iz $count azimuta';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Slab presjek — linije se sijeku pod samo $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Odstupanje od GPS-a: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'pravi';
+
+  @override
+  String get bearingMagneticLabel => 'magnetski';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Stožac prikazuje ±$deg nesigurnost kompasa u telefonu.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Azimuti';
+
+  @override
+  String get bearingPdfObject => 'Objekt';
+
+  @override
+  String get bearingPdfBearing => 'Pravi azimut';
+
+  @override
+  String get bearingModeResection => 'Moja pozicija';
+
+  @override
+  String get bearingModeObject => 'Nepoznata točka';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Izmjeri azimut na 2–3 poznate točke s karte. GPS nije potreban.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Izmjeri istu točku s 2–3 različita mjesta. Potreban je GPS.';
+
+  @override
+  String get bearingPickTarget => 'Odaberi točku za mjerenje';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Najprije odaberi poznatu točku s karte, zatim izmjeri';
+
+  @override
+  String get bearingNeedsObject => 'Najprije nazovi točku koju mjeriš';
+
+  @override
+  String get bearingNewObject => 'Nova točka…';
+
+  @override
+  String get bearingObjectName => 'Naziv točke (npr. nepoznata hrid)';
+
+  @override
+  String get bearingOpenObjects => 'Točke u određivanju';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count azimuta';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Ista točka kao prije — za presjek treba druga.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Kratka baza — pomakni se i izmjeri ponovno.';
+
+  @override
+  String get bearingMovedHint =>
+      'Brod se pomaknuo između mjerenja — presjek pretpostavlja da stoji.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Još jedan azimut na drugu točku i pozicija će izaći.';
+
+  @override
+  String get bearingMyPositionFix => 'Moja pozicija';
+
+  @override
+  String get bearingObjectFix => 'Određena točka';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Spremi kao waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name spremljen kao waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Deklinacija računana u poziciji izmjerene točke';
+
+  @override
+  String get bearingResectionSection => 'Presjek — pozicija iz poznatih točaka';
+
+  @override
+  String get bearingObjectSection => 'Određivanje nepoznatih točaka';
+
+  @override
+  String get bearingPdfMark => 'Izmjerena točka';
+
+  @override
+  String get bearingPdfResult => 'Rezultat';
+
+  @override
+  String get bearingStartNew => 'Započni novo mjerenje';
 }

@@ -267,6 +267,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         final duties = await ref.read(databaseProvider).getDutiesOverlapping(
             _charter!.id, dayStart.toUtc(),
             dayStart.add(const Duration(days: 1)).toUtc());
+        final bearings =
+            await ref.read(databaseProvider).getBearingsForDay(freshDay.id);
 
         pdfBytes = await PdfExportService.buildDayPdfBytes(
           charter: _charter!,
@@ -274,6 +276,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           entries: entries,
           l10n: l10n,
           duties: duties,
+          bearings: bearings,
           mapScreenshot: _mapScreenshots[freshDay.id],
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
@@ -300,10 +303,12 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         final db = ref.read(databaseProvider);
         final newRevision = await db.incrementPdfRevision(_charter!.id);
         final dutiesByDay = <int, List<DutyPeriod>>{};
+        final bearingsByDay = <int, List<Bearing>>{};
         for (final d in freshDays) {
           final s = DateTime(d.date.year, d.date.month, d.date.day);
           dutiesByDay[d.id] = await db.getDutiesOverlapping(
               _charter!.id, s.toUtc(), s.add(const Duration(days: 1)).toUtc());
+          bearingsByDay[d.id] = await db.getBearingsForDay(d.id);
         }
 
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
@@ -313,6 +318,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           mapScreenshots: _mapScreenshots,
           l10n: l10n,
           dutiesByDay: dutiesByDay,
+          bearingsByDay: bearingsByDay,
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
           crewSignatures: _crewSignatures,

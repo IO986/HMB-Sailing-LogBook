@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -25,6 +26,9 @@ import '../../../../core/services/wind_grid_service.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/config/ocean_currents_content.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/bearing_kind.dart';
+import '../../../bearing/presentation/widgets/bearing_layers.dart';
+import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/map_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
@@ -140,6 +144,261 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _mapController.move(LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
     } catch (_) {}
   }
+
+  /// Detail zamerania po ťuknutí na jeho hrot.
+  void _showBearingSheet(Bearing bearing) {
+    final l = AppLocalizations.of(context);
+    showModalBottomSheet(
+      context: context,
+      builder: (sheetContext) {
+        final photo = bearing.photoPath;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  bearing.targetName?.isNotEmpty == true
+                      ? bearing.targetName!
+                      : (bearing.label?.isNotEmpty == true
+                          ? bearing.label!
+                          : l.bearingsTitle),
+                  style: Theme.of(sheetContext).textTheme.titleMedium,
+                ),
+                Text(
+                  BearingKind.fromCode(bearing.kind) == BearingKind.resection
+                      ? l.bearingResectionSection
+                      : l.bearingObjectSection,
+                  style: Theme.of(sheetContext).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 12),
+                if (photo != null && File(photo).existsSync()) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.file(File(photo),
+                        height: 160,
+                        width: double.infinity,
+                        fit: BoxFit.cover),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                _bearingDetailRow(
+                    l.bearingPdfBearing,
+                    '${_formatDegrees(bearing.trueBearing)} '
+                        '(${l.bearingTrueLabel})'),
+                _bearingDetailRow(
+                    l.bearingMagneticLabel,
+                    _formatDegrees(bearing.magneticBearing)),
+                _bearingDetailRow(
+                    l.bearingDeclinationApplied(
+                        _formatSignedDegrees(bearing.declination)),
+                    ''),
+                _bearingDetailRow(l.timeCol,
+                    DateFormat('dd.MM.yyyy HH:mm').format(bearing.takenAt)),
+                // Pri resekcii bez GPS poloha pozorovateľa neexistuje —
+                // je to práve to hľadané, nie chýbajúci údaj.
+                if (bearing.observerLat != null && bearing.observerLon != null)
+                  _bearingDetailRow(
+                      l.gpsPosition,
+                      '${bearing.observerLat!.toStringAsFixed(5)}, '
+                          '${bearing.observerLon!.toStringAsFixed(5)}'),
+                if (bearing.targetLat != null && bearing.targetLon != null)
+                  _bearingDetailRow(
+                      l.bearingPdfMark,
+                      '${bearing.targetLat!.toStringAsFixed(5)}, '
+                          '${bearing.targetLon!.toStringAsFixed(5)}'),
+                const SizedBox(height: 4),
+                Text(
+                  l.bearingUncertaintyNote(
+                      '${bearing.uncertaintyDeg.round()}°'),
+                  style: Theme.of(sheetContext).textTheme.bodySmall,
+                ),
+                if (bearing.declinationSource == 'target')
+                  Text(
+                    l.bearingDeclinationFromTarget,
+                    style: Theme.of(sheetContext).textTheme.bodySmall,
+                  ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(sheetContext);
+                      await ref
+                          .read(bearingRepositoryProvider)
+                          .delete(bearing.id);
+                    },
+                    icon: const Icon(Icons.delete_outline),
+                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    label: Text(l.delete),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _bearingDetailRow(String label, String value) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+                child: Text(label,
+                    style: const TextStyle(fontWeight: FontWeight.w500))),
+            if (value.isNotEmpty) Text(value),
+          ],
+        ),
+      );
+
+  /// Detail vytriangulovaného neznámeho bodu — a hlavne cesta, ako z neho
+  /// urobiť waypoint. Bez toho by celé pátranie skončilo čiarou na mape.
+  void _showSightGroupSheet(SightGroup group) {
+    final l = AppLocalizations.of(context);
+    final fix = group.fix;
+    if (fix == null) return;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(group.name.isEmpty ? l.bearingObjectFix : group.name,
+                  style: Theme.of(sheetContext).textTheme.titleMedium),
+              Text(l.bearingObjectSection,
+                  style: Theme.of(sheetContext).textTheme.bodySmall),
+              const SizedBox(height: 12),
+              _bearingDetailRow(
+                  l.gpsPosition,
+                  '${fix.position.latitude.toStringAsFixed(5)}, '
+                      '${fix.position.longitude.toStringAsFixed(5)}'),
+              _bearingDetailRow(l.bearingSightCount(group.bearings.length),
+                  '±${fix.errorRadiusMeters.round()} m'),
+              if (fix.isWeak)
+                _bearingDetailRow(
+                    l.bearingFixWeak('${fix.cutAngleDeg.round()}°'), ''),
+              if (group.baselineTooShort)
+                Text(l.bearingShortBaselineHint,
+                    style: Theme.of(sheetContext).textTheme.bodySmall),
+              const SizedBox(height: 8),
+              Row(children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(sheetContext);
+                      final name = group.name.isEmpty
+                          ? l.bearingObjectFix
+                          : group.name;
+                      await ref
+                          .read(bearingRepositoryProvider)
+                          .saveFixAsWaypoint(
+                            name: name,
+                            position: fix.position,
+                            description: l.bearingObjectSection,
+                          );
+                      ref.invalidate(waypointsProvider);
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(l.bearingObjectSaved(name))));
+                    },
+                    icon: const Icon(Icons.add_location_alt),
+                    label: Text(l.bearingSaveObjectAsWaypoint),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: () async {
+                    Navigator.pop(sheetContext);
+                    await ref
+                        .read(bearingRepositoryProvider)
+                        .deleteGroup(group.id);
+                  },
+                  icon: const Icon(Icons.delete_outline),
+                  color: Colors.red,
+                  tooltip: l.delete,
+                ),
+              ]),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _confirmClearBearings() async {
+    final l = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(l.bearingsClearConfirm),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(l.bearingsClearAll),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(bearingRepositoryProvider).clearAll();
+  }
+
+  /// Ponuka nad ikonou vrstvy zameraní: začni nanovo, alebo zmaž všetko.
+  ///
+  /// Jednotlivé zamerania sa mažú priamo na mape ťuknutím na ich hrot --
+  /// táto ponuka je len pre dve akcie, ktoré nemajú vlastný bod na mape.
+  Future<void> _showBearingLayerActions() async {
+    final l = AppLocalizations.of(context);
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SizedBox(height: 8),
+          ListTile(
+            leading: const Icon(Icons.refresh),
+            title: Text(l.bearingStartNew),
+            onTap: () => Navigator.pop(sheetContext, 'new'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_sweep, color: Colors.red),
+            title: Text(l.bearingsClearAll,
+                style: const TextStyle(color: Colors.red)),
+            onTap: () => Navigator.pop(sheetContext, 'clear'),
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+    if (!mounted) return;
+    switch (action) {
+      case 'clear':
+        await _confirmClearBearings();
+      case 'new':
+        // Vyprázdni obe voľby na kompase, aby ďalšie ťuknutie na Zameraj
+        // znova pýtalo bod alebo názov objektu, nie pokračovalo v starom.
+        ref.read(resectionTargetIdProvider.notifier).state = null;
+        ref.read(activeSightGroupIdProvider.notifier).state = null;
+    }
+  }
+
+  static String _formatDegrees(double value) =>
+      '${(value.round() % 360).toString().padLeft(3, '0')}°';
+
+  static String _formatSignedDegrees(double value) =>
+      '${value >= 0 ? '+' : '-'}${value.abs().toStringAsFixed(1)}°';
 
   @override
   Widget build(BuildContext context) {
@@ -411,6 +670,29 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 error: (_, __) => const MarkerLayer(markers: []),
               ),
 
+              // ── Zamerania: kužele, osi a krížový fix ─────────────────
+              // Pod kotvou a značkou lode zámerne — čiary sú pracovná
+              // pomôcka, nesmú prekryť to, kde loď práve je.
+              if (mapState.showBearings)
+                ...buildBearingLayers(
+                  bearings: ref.watch(bearingsProvider).valueOrNull ??
+                      const <Bearing>[],
+                  resectionFix: ref.watch(resectionFixProvider),
+                  sightGroups: ref.watch(sightGroupsProvider),
+                  l: l,
+                  onTapBearing: _showBearingSheet,
+                  onTapSightGroup: _showSightGroupSheet,
+                  // Kým GPS beží, kreslí sa odchýlka resekcie od nej —
+                  // jediná príležitosť zistiť, nakoľko sa dá kompasu veriť,
+                  // kým naň bude skiper raz odkázaný.
+                  gpsPosition: () {
+                    final gps = LocationService().lastPosition;
+                    return gps == null
+                        ? null
+                        : LatLng(gps.latitude, gps.longitude);
+                  }(),
+                ),
+
               // ── Kotva: polomer + ikona ───────────────────────────────
               if (anchor.isActive && anchor.anchorLat != null && anchor.anchorLon != null) ...[
                 CircleLayer(circles: [
@@ -643,7 +925,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     mapState.showRainRadar ||
                     mapState.showWindGrid ||
                     mapState.showOceanCurrents ||
-                    mapState.showCurrentGrid,
+                    mapState.showCurrentGrid ||
+                    !mapState.showBearings,
                 onPressed: () => setState(() => _openPanel =
                     _openPanel == _MapPanel.layers
                         ? _MapPanel.none
@@ -730,6 +1013,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         _mapController.camera.visibleBounds;
                   }
                 },
+              ),
+              const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'bearings',
+                tooltip: l.bearingsLayer,
+                // Nie my_location: tú má na tej istej mape tlačidlo
+                // "Sleduj GPS" a obe sa pletú. Kružidlo sa s GPS nezamieňa.
+                icon: Icons.architecture,
+                active: mapState.showBearings,
+                onPressed: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleBearings(),
+                onLongPress: _showBearingLayerActions,
               ),
               ],
 
@@ -963,7 +1258,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }) {
     final fab = FloatingActionButton.small(
       heroTag: heroTag,
-      tooltip: tooltip,
+      // FloatingActionButton balí seba do Tooltip, kedykoľvek je `tooltip`
+      // zadaný, a Tooltip má na mobile predvolený spúšťač PRÁVE dlhé
+      // podržanie -- zožerie ho skôr, než sa dostane k GestureDetectoru
+      // nižšie. Tlačidlo s dlhým podržaním preto tooltip nesmie mať, inak
+      // sa dlhé podržanie prejaví len ako bublina s názvom a nič viac.
+      tooltip: onLongPress == null ? tooltip : null,
       onPressed: onPressed,
       backgroundColor:
           active ? Theme.of(context).colorScheme.primary : null,

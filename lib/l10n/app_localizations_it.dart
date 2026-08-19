@@ -2480,7 +2480,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'La scheda Bussola mostra il rilevamento magnetico usando i sensori del telefono, con la fotocamera posteriore come sfondo per prendere rilevamenti su oggetti.\n\n• Mirino giallo – direzione verso cui punti\n• Striscia della bussola in alto – N / NE / E / SE / S / SO / O / NO\n• Lettura numerica – gradi e punto cardinale\n• Punto verde = lettura stabile  ·  Punto arancione = calibrazione in corso\n\nSe la lettura è instabile, muovi lentamente il telefono a forma di otto per calibrare il magnetometro.\n\nLa precisione può ridursi vicino a strutture metalliche, altoparlanti o apparecchiature elettroniche.';
+      'La scheda Bussola mostra il rilevamento magnetico usando i sensori del telefono, con la fotocamera posteriore come sfondo per prendere rilevamenti su oggetti.\n\n• Mirino giallo – direzione verso cui punti\n• Striscia della bussola in alto – N / NE / E / SE / S / SO / O / NO\n• Lettura numerica – gradi e punto cardinale\n• Punto verde = lettura stabile  ·  Punto arancione = calibrazione in corso\n\nSe la lettura è instabile, muovi lentamente il telefono a forma di otto per calibrare il magnetometro.\n\nLa precisione può ridursi vicino a strutture metalliche, altoparlanti o apparecchiature elettroniche.\n\nRileva — due modi, si cambiano sopra il pulsante.\n\nLA MIA POSIZIONE (punto nave per rilevamenti) — il GPS non serve. Scegli un punto noto dalla carta, allinea il reticolo su di esso e tocca Rileva. Ripeti su un secondo, meglio un terzo punto, mentre la barca è fermа (la finestra è di 5 minuti). Dove si incrociano i rilevamenti inversi da quei punti è la tua posizione. La precisione la dà la bussola del telefono: con ±8° e punti a 4 NM sono centinaia di metri, non metri. È una riserva per quando il GPS manca, non un sostituto.\n\nPUNTO SCONOSCIUTO — serve il GPS. Dai un nome all\'oggetto che vuoi sulla carta, rilevalo, poi spostati di almeno qualche centinaio di metri e rileva lo stesso oggetto di nuovo. Due o tre rilevamenti da luoghi diversi danno la sua posizione, che puoi salvare come waypoint. Senza che la barca si muova non c\'è base di calcolo. L\'oggetto deve essere immobile: un\'altra barca non si può determinare così.\n\n• La linea è disegnata con un cono di ±8°: tratteggiata per il punto nave (dal punto verso la barca), continua per la ricerca di un oggetto (dalla barca verso di esso)\n• L\'etichetta mostra sempre il rilevamento MISURATO, anche dove la linea va al contrario\n• Tocca la punta della linea per il dettaglio e per cancellare il rilevamento\n• Croce verde = buon taglio, arancione = angolo stretto e posizione incerta\n• Finché il GPS funziona, il punto nave mostra anche lo scarto da esso: così impari quanto fidarti della bussola\n• Attiva il livello con l\'icona di mira; tienila premuta per cancellare tutto\n• I rilevamenti del giorno sono nel registro giornaliero e nell\'esportazione PDF\n\nIl taglio migliore si ottiene con punti distanti circa 90° (due) o 60° (tre).';
 
   @override
   String get guideSettingsTitle => 'Impostazioni';
@@ -3209,4 +3209,170 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Tipo di acque';
+
+  @override
+  String get bearingTakeSight => 'Rileva';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Rilevamento $bearing salvato';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Senza GPS un punto sconosciuto non si può determinare. Passa a «La mia posizione»: il punto nave da punti noti non richiede GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Impossibile salvare il rilevamento';
+
+  @override
+  String get bearingLabelHint => 'Cosa stai rilevando? (facoltativo)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Declinazione $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Il modello magnetico è scaduto: la declinazione è una stima';
+
+  @override
+  String get bearingsLayer => 'Rilevamenti';
+
+  @override
+  String get bearingsTitle => 'Rilevamenti';
+
+  @override
+  String get bearingsClearAll => 'Cancella tutti i rilevamenti';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Cancellare tutti i rilevamenti? Le linee e il punto nave spariranno dalla mappa.';
+
+  @override
+  String get bearingsEmpty =>
+      'Ancora nessun rilevamento. Punta il telefono su un oggetto e tocca Rileva.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Posizione da $count rilevamenti';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Punto debole: le linee si incrociano solo a $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Scarto dal GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'vero';
+
+  @override
+  String get bearingMagneticLabel => 'magnetico';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Il cono mostra l\'incertezza di ±$deg di una bussola da telefono.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Rilevamenti';
+
+  @override
+  String get bearingPdfObject => 'Oggetto';
+
+  @override
+  String get bearingPdfBearing => 'Rilevamento vero';
+
+  @override
+  String get bearingModeResection => 'La mia posizione';
+
+  @override
+  String get bearingModeObject => 'Punto sconosciuto';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Rileva 2–3 punti noti dalla carta. Non serve il GPS.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Rileva lo stesso punto da 2–3 luoghi diversi. Serve il GPS.';
+
+  @override
+  String get bearingPickTarget => 'Scegli il punto da rilevare';
+
+  @override
+  String get bearingNeedsTarget => 'Scegli prima un punto noto, poi rileva';
+
+  @override
+  String get bearingNeedsObject =>
+      'Prima dai un nome al punto che stai rilevando';
+
+  @override
+  String get bearingNewObject => 'Nuovo punto…';
+
+  @override
+  String get bearingObjectName => 'Nome del punto (es. scoglio sconosciuto)';
+
+  @override
+  String get bearingOpenObjects => 'Punti in determinazione';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count rilevamenti';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Lo stesso punto di prima: per il punto nave ne serve un altro.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Base corta: spostati e rileva di nuovo.';
+
+  @override
+  String get bearingMovedHint =>
+      'La barca si è mossa tra i rilevamenti: il punto nave presuppone che sia fermа.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Un altro rilevamento su un punto diverso e la posizione verrà fuori.';
+
+  @override
+  String get bearingMyPositionFix => 'La mia posizione';
+
+  @override
+  String get bearingObjectFix => 'Punto determinato';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Salva come waypoint';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name salvato come waypoint';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Declinazione calcolata nella posizione del punto rilevato';
+
+  @override
+  String get bearingResectionSection => 'Punto nave da punti noti';
+
+  @override
+  String get bearingObjectSection => 'Determinazione di punti sconosciuti';
+
+  @override
+  String get bearingPdfMark => 'Punto rilevato';
+
+  @override
+  String get bearingPdfResult => 'Risultato';
+
+  @override
+  String get bearingStartNew => 'Inizia un nuovo rilevamento';
 }

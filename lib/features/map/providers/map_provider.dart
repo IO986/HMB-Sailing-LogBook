@@ -144,6 +144,7 @@ class MapNotifier extends Notifier<MapState> {
   static const _kWindGrid = 'map_show_wind_grid';
   static const _kOceanCurrents = 'map_show_ocean_currents';
   static const _kCurrentGrid = 'map_show_current_grid';
+  static const _kBearings = 'map_show_bearings';
   static const _kFollowGps = 'map_follow_gps';
   static const _kNorthLocked = 'map_north_locked';
   static const _kBaseMap = 'map_base_map';
@@ -166,6 +167,7 @@ class MapNotifier extends Notifier<MapState> {
       showWindGrid: p.getBool(_kWindGrid) ?? state.showWindGrid,
       showOceanCurrents: p.getBool(_kOceanCurrents) ?? state.showOceanCurrents,
       showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
+      showBearings: p.getBool(_kBearings) ?? state.showBearings,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
       northLocked: p.getBool(_kNorthLocked) ?? state.northLocked,
       baseMap: BaseMap.values.firstWhere(
@@ -183,6 +185,7 @@ class MapNotifier extends Notifier<MapState> {
     await p.setBool(_kWindGrid, state.showWindGrid);
     await p.setBool(_kOceanCurrents, state.showOceanCurrents);
     await p.setBool(_kCurrentGrid, state.showCurrentGrid);
+    await p.setBool(_kBearings, state.showBearings);
     await p.setBool(_kFollowGps, state.followGps);
     await p.setBool(_kNorthLocked, state.northLocked);
     await p.setString(_kBaseMap, state.baseMap.name);
@@ -225,6 +228,11 @@ class MapNotifier extends Notifier<MapState> {
 
   void toggleCurrentGrid() {
     state = state.copyWith(showCurrentGrid: !state.showCurrentGrid);
+    _persist();
+  }
+
+  void toggleBearings() {
+    state = state.copyWith(showBearings: !state.showBearings);
     _persist();
   }
 
@@ -318,6 +326,12 @@ class MapState {
   final bool showOceanCurrents;
   /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
   final bool showCurrentGrid;
+
+  /// Zámerné priamky z námerového kompasu vrátane krížového fixu.
+  ///
+  /// Zapnuté od začiatku: keď si skiper dá prácu s odčítaním kurzu, čiara
+  /// má byť na mape hneď, nie až po hľadaní prepínača vo vrstvách.
+  final bool showBearings;
   final bool followGps;
   /// Rotácia mapy zamknutá na sever (north-up). Podržaním kompasu sa
   /// prepína; uchováva sa medzi spusteniami ako user setting.
@@ -338,6 +352,7 @@ class MapState {
     this.showWindGrid = false,
     this.showOceanCurrents = false,
     this.showCurrentGrid = false,
+    this.showBearings = true,
     this.followGps = true,
     this.northLocked = false,
     this.baseMap = BaseMap.osm,
@@ -352,6 +367,7 @@ class MapState {
     bool? showWindGrid,
     bool? showOceanCurrents,
     bool? showCurrentGrid,
+    bool? showBearings,
     bool? followGps,
     bool? northLocked,
     BaseMap? baseMap,
@@ -365,6 +381,7 @@ class MapState {
         showWindGrid: showWindGrid ?? this.showWindGrid,
         showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
         showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
+        showBearings: showBearings ?? this.showBearings,
         followGps: followGps ?? this.followGps,
         northLocked: northLocked ?? this.northLocked,
         baseMap: baseMap ?? this.baseMap,

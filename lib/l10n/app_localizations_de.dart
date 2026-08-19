@@ -2478,7 +2478,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Die Kompass-Registerkarte zeigt den Magnetkurs mithilfe der Telefonsensoren, mit der Rückkamera als Hintergrund zum Anpeilen von Objekten.\n\n• Gelbes Fadenkreuz – Richtung, in die du zielst\n• Kompassstreifen oben – N / NE / E / SE / S / SW / W / NW\n• Numerische Anzeige – Grad und Himmelsrichtung\n• Grüner Punkt = stabiles Ergebnis  ·  Oranger Punkt = kalibriert noch\n\nBei instabiler Anzeige: Telefon langsam in einer Achterbewegung führen.\n\nHinweis: Genauigkeit kann durch Metallstrukturen, Lautsprecher oder Elektronik beeinträchtigt werden.';
+      'Die Kompass-Registerkarte zeigt den Magnetkurs mithilfe der Telefonsensoren, mit der Rückkamera als Hintergrund zum Anpeilen von Objekten.\n\n• Gelbes Fadenkreuz – Richtung, in die du zielst\n• Kompassstreifen oben – N / NE / E / SE / S / SW / W / NW\n• Numerische Anzeige – Grad und Himmelsrichtung\n• Grüner Punkt = stabiles Ergebnis  ·  Oranger Punkt = kalibriert noch\n\nBei instabiler Anzeige: Telefon langsam in einer Achterbewegung führen.\n\nHinweis: Genauigkeit kann durch Metallstrukturen, Lautsprecher oder Elektronik beeinträchtigt werden.\n\nPeilung nehmen — zwei Modi, umgeschaltet über dem Knopf.\n\nMEIN ORT (Kreuzpeilung) — kein GPS nötig. Wähle einen bekannten Punkt aus der Karte, richte das Fadenkreuz darauf und tippe auf Peilung nehmen. Wiederhole es auf einem zweiten, besser dritten Punkt, solange das Boot stillliegt (das Fenster beträgt 5 Minuten). Wo sich die Rückpeilungen dieser Punkte schneiden, ist dein Ort. Die Genauigkeit gibt der Telefonkompass vor: bei ±8° und Punkten 4 sm entfernt sind das Hunderte Meter, nicht Meter. Es ist ein Rückfall für den GPS-Ausfall, kein Ersatz.\n\nUNBEKANNTER PUNKT — GPS nötig. Benenne das Objekt, das in die Karte soll, peile es an, fahre dann mindestens einige hundert Meter weiter und peile dasselbe Objekt erneut. Zwei bis drei Peilungen von verschiedenen Stellen ergeben seinen Ort, den du als Wegpunkt speichern kannst. Ohne Fahrt des Bootes fehlt die Basislinie. Das Objekt muss stillstehen — ein anderes Schiff lässt sich so nicht bestimmen.\n\n• Die Linie wird mit einem Kegel von ±8° gezeichnet: gestrichelt bei der Kreuzpeilung (vom Punkt zum Boot), durchgezogen bei der Objektsuche (vom Boot zum Punkt)\n• Die Beschriftung zeigt immer die GEMESSENE Peilung, auch wenn die Linie umgekehrt verläuft\n• Tippe auf die Spitze der Linie für Details und zum Löschen\n• Grünes Kreuz = guter Schnitt, orange = spitzer Winkel und unsicherer Ort\n• Solange GPS läuft, zeigt die Kreuzpeilung auch die Abweichung davon — so lernst du, wie weit dem Kompass zu trauen ist\n• Die Ebene schaltest du mit dem Peilsymbol; langes Drücken löscht alle Peilungen\n• Die Peilungen des Tages stehen im Tagesbuch und im PDF-Export\n\nDen besten Schnitt geben Punkte etwa 90° auseinander (zwei) oder 60° (drei).';
 
   @override
   String get guideSettingsTitle => 'Einstellungen';
@@ -3203,4 +3203,171 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get crewCertWatersLabel => 'Gewässerart';
+
+  @override
+  String get bearingTakeSight => 'Peilung nehmen';
+
+  @override
+  String bearingSaved(String bearing) {
+    return 'Peilung $bearing gespeichert';
+  }
+
+  @override
+  String get bearingNoPosition =>
+      'Ohne GPS lässt sich ein unbekannter Punkt nicht bestimmen. Wechsle zu „Mein Ort“ — die Kreuzpeilung bekannter Punkte braucht kein GPS.';
+
+  @override
+  String get bearingSaveFailed => 'Peilung konnte nicht gespeichert werden';
+
+  @override
+  String get bearingLabelHint => 'Was peilst du an? (optional)';
+
+  @override
+  String bearingDeclinationApplied(String value) {
+    return 'Missweisung $value';
+  }
+
+  @override
+  String get bearingDeclinationExpired =>
+      'Magnetmodell abgelaufen — Missweisung ist nur eine Schätzung';
+
+  @override
+  String get bearingsLayer => 'Peilungen';
+
+  @override
+  String get bearingsTitle => 'Peilungen';
+
+  @override
+  String get bearingsClearAll => 'Alle Peilungen löschen';
+
+  @override
+  String get bearingsClearConfirm =>
+      'Alle Peilungen löschen? Die Linien und der Kreuzpeilungsort verschwinden von der Karte.';
+
+  @override
+  String get bearingsEmpty =>
+      'Noch keine Peilungen. Richte das Telefon auf ein Objekt und tippe auf Peilung nehmen.';
+
+  @override
+  String bearingFixFrom(int count) {
+    return 'Position aus $count Peilungen';
+  }
+
+  @override
+  String bearingFixWeak(String angle) {
+    return 'Schwacher Ort — die Linien schneiden sich nur unter $angle';
+  }
+
+  @override
+  String bearingFixOffGps(String distance) {
+    return 'Abweichung vom GPS: $distance';
+  }
+
+  @override
+  String get bearingTrueLabel => 'rechtweisend';
+
+  @override
+  String get bearingMagneticLabel => 'missweisend';
+
+  @override
+  String bearingUncertaintyNote(String deg) {
+    return 'Der Kegel zeigt die ±$deg Unsicherheit eines Telefonkompasses.';
+  }
+
+  @override
+  String get bearingPdfSection => 'Peilungen';
+
+  @override
+  String get bearingPdfObject => 'Objekt';
+
+  @override
+  String get bearingPdfBearing => 'Rechtweisende Peilung';
+
+  @override
+  String get bearingModeResection => 'Mein Ort';
+
+  @override
+  String get bearingModeObject => 'Unbekannter Punkt';
+
+  @override
+  String get bearingModeResectionHint =>
+      'Peile 2–3 bekannte Punkte aus der Karte an. Kein GPS nötig.';
+
+  @override
+  String get bearingModeObjectHint =>
+      'Peile denselben Punkt von 2–3 verschiedenen Stellen an. GPS nötig.';
+
+  @override
+  String get bearingPickTarget => 'Anzupeilenden Punkt wählen';
+
+  @override
+  String get bearingNeedsTarget =>
+      'Wähle zuerst einen bekannten Punkt, dann peile';
+
+  @override
+  String get bearingNeedsObject => 'Benenne zuerst den anzupeilenden Punkt';
+
+  @override
+  String get bearingNewObject => 'Neuer Punkt…';
+
+  @override
+  String get bearingObjectName => 'Name des Punktes (z. B. unbekannter Fels)';
+
+  @override
+  String get bearingOpenObjects => 'Angepeilte Punkte';
+
+  @override
+  String bearingSightCount(int count) {
+    return '$count Peilungen';
+  }
+
+  @override
+  String get bearingSameTargetHint =>
+      'Derselbe Punkt wie zuvor — die Kreuzpeilung braucht einen anderen.';
+
+  @override
+  String get bearingShortBaselineHint =>
+      'Kurze Basislinie — fahre weiter und peile erneut.';
+
+  @override
+  String get bearingMovedHint =>
+      'Das Boot hat sich zwischen den Peilungen bewegt — die Kreuzpeilung setzt Stillstand voraus.';
+
+  @override
+  String get bearingNeedsSecondSight =>
+      'Noch eine Peilung auf einen anderen Punkt und der Ort steht.';
+
+  @override
+  String get bearingMyPositionFix => 'Mein Ort';
+
+  @override
+  String get bearingObjectFix => 'Bestimmter Punkt';
+
+  @override
+  String get bearingSaveObjectAsWaypoint => 'Als Wegpunkt speichern';
+
+  @override
+  String bearingObjectSaved(String name) {
+    return '$name als Wegpunkt gespeichert';
+  }
+
+  @override
+  String get bearingDeclinationFromTarget =>
+      'Missweisung am Ort des angepeilten Punktes berechnet';
+
+  @override
+  String get bearingResectionSection =>
+      'Kreuzpeilung — Ort aus bekannten Punkten';
+
+  @override
+  String get bearingObjectSection => 'Bestimmung unbekannter Punkte';
+
+  @override
+  String get bearingPdfMark => 'Angepeilter Punkt';
+
+  @override
+  String get bearingPdfResult => 'Ergebnis';
+
+  @override
+  String get bearingStartNew => 'Neue Peilung beginnen';
 }

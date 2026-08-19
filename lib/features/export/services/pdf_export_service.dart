@@ -93,6 +93,7 @@ class PdfExportService {
     required Map<int, Uint8List?> mapScreenshots,
     required AppLocalizations l10n,
     Map<int, List<DutyPeriod>> dutiesByDay = const {},
+    Map<int, List<Bearing>> bearingsByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
@@ -119,7 +120,8 @@ class PdfExportService {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
       for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos,
-          docId, rev, l10n, dutiesByDay[day.id] ?? const [])) {
+          docId, rev, l10n, dutiesByDay[day.id] ?? const [],
+          bearingsByDay[day.id] ?? const [])) {
         pdf.addPage(page);
       }
     }
@@ -163,6 +165,7 @@ class PdfExportService {
     required List<LogbookEntry> entries,
     required AppLocalizations l10n,
     List<DutyPeriod> duties = const [],
+    List<Bearing> bearings = const [],
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
@@ -172,7 +175,7 @@ class PdfExportService {
     final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
     for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev,
-        l10n, duties)) {
+        l10n, duties, bearings)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
@@ -214,6 +217,7 @@ class PdfExportService {
     required Map<int, Uint8List?> mapScreenshots,
     required AppLocalizations l10n,
     Map<int, List<DutyPeriod>> dutiesByDay = const {},
+    Map<int, List<Bearing>> bearingsByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     HandoverProtocol? checkInProtocol,
@@ -224,7 +228,7 @@ class PdfExportService {
     final bytes = await buildCharterPdfBytes(
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
-      l10n: l10n, dutiesByDay: dutiesByDay,
+      l10n: l10n, dutiesByDay: dutiesByDay, bearingsByDay: bearingsByDay,
       skipperProfile: skipperProfile,
       checkInProtocol: checkInProtocol, checkInChecklist: checkInChecklist,
       checkOutProtocol: checkOutProtocol, checkOutChecklist: checkOutChecklist,
@@ -238,13 +242,14 @@ class PdfExportService {
     required List<LogbookEntry> entries,
     required AppLocalizations l10n,
     List<DutyPeriod> duties = const [],
+    List<Bearing> bearings = const [],
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
   }) async {
     final bytes = await buildDayPdfBytes(
       charter: charter, day: day, entries: entries,
-      l10n: l10n, duties: duties,
+      l10n: l10n, duties: duties, bearings: bearings,
       mapScreenshot: mapScreenshot, signatureImage: signatureImage,
       skipperProfile: skipperProfile);
     return saveBytesToFile(bytes, 'day_${day.id}');
@@ -502,7 +507,7 @@ class PdfExportService {
   static List<pw.Page> _dayPages(Charter charter, DayLog day,
       List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
       String docId, int revision, AppLocalizations l,
-      List<DutyPeriod> duties) {
+      List<DutyPeriod> duties, [List<Bearing> bearings = const []]) {
     final pages = <pw.Page>[];
     final dayName = DateFormat('EEEE d. MMMM yyyy').format(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
@@ -667,8 +672,118 @@ class PdfExportService {
         ));
       }
     }
+
+    // ── Zamerania ──
+    // Vlastná strana, nie stĺpec v tabuľke záznamov: zameranie nie je
+    // hodinový záznam, robí sa ich za manéver niekoľko po sebe a do
+    // desaťstĺpcovej tabuľky by sa aj tak nezmestili súradnice pozorovateľa.
+    if (bearings.isNotEmpty) {
+      final sortedBearings = [...bearings]
+        ..sort((a, b) => a.takenAt.compareTo(b.takenAt));
+      for (int i = 0; i < sortedBearings.length; i += 26) {
+        final chunk = sortedBearings.skip(i).take(26).toList();
+        pages.add(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
+          build: (ctx) => pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                    '${_pdfText(dayName)} – '
+                    '${_pdfText(l.bearingPdfSection)}'
+                    '${i > 0 ? ' (${l.pdfContinued})' : ''}',
+                    style: pw.TextStyle(
+                        color: _navy,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 12)),
+                pw.SizedBox(height: 8),
+                _bearingsTable(chunk, l),
+                pw.SizedBox(height: 6),
+                pw.Text(
+                    _pdfText(l.bearingUncertaintyNote(
+                        '${chunk.first.uncertaintyDeg.round()}°')),
+                    style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+                if (chunk.any((b) => b.declinationSource == 'target'))
+                  pw.Text(_pdfText(l.bearingDeclinationFromTarget),
+                      style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+                pw.Spacer(),
+                _footer(
+                    '${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}',
+                    docId: docId,
+                    revision: revision),
+              ]),
+        ));
+      }
+    }
     return pages;
   }
+
+  // ── Bearings table ────────────────────────────────────────────
+
+  static pw.Widget _bearingsTable(List<Bearing> bearings, AppLocalizations l) {
+    pw.Widget head(String text) => pw.Container(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+          child: pw.Text(_pdfText(text.toUpperCase()),
+              style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 6.5,
+                  color: _navy)),
+        );
+    pw.Widget cell(String text, {bool bold = false}) => pw.Container(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+          child: pw.Text(_pdfText(text),
+              style: pw.TextStyle(
+                  fontSize: 7,
+                  fontWeight:
+                      bold ? pw.FontWeight.bold : pw.FontWeight.normal)),
+        );
+
+    return pw.Table(
+      border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      columnWidths: {
+        0: const pw.FixedColumnWidth(34), // Čas UTC
+        1: const pw.FlexColumnWidth(1), // Objekt
+        2: const pw.FixedColumnWidth(44), // Pravý kurz
+        3: const pw.FixedColumnWidth(44), // Magnetický
+        4: const pw.FixedColumnWidth(40), // Deklinácia
+        5: const pw.FixedColumnWidth(96), // Poloha pozorovateľa
+      },
+      children: [
+        pw.TableRow(
+          decoration: pw.BoxDecoration(color: _lgrey),
+          children: [
+            head(l.timeCol),
+            head(l.bearingPdfObject),
+            head(l.bearingPdfBearing),
+            head(l.bearingMagneticLabel),
+            head(l.bearingDeclinationApplied('').trim()),
+            head(l.gpsPosition),
+          ],
+        ),
+        for (final b in bearings)
+          pw.TableRow(children: [
+            cell(DateFormat('HH:mm').format(b.takenAt.toUtc())),
+            // Pri resekcii je podstatné, ČO sa zameriavalo — názov bodu má
+            // prednosť pred voľnou poznámkou.
+            cell(b.targetName ?? b.label ?? '—'),
+            cell(_bearingDeg(b.trueBearing), bold: true),
+            cell(_bearingDeg(b.magneticBearing)),
+            cell(_signedDeg(b.declination)),
+            // Resekcia polohu pozorovateľa nemá — je to práve to hľadané.
+            // Namiesto prázdneho stĺpca sa vypíše poloha zameraného bodu.
+            cell(b.observerLat != null
+                ? '${_latStr(b.observerLat)}  ${_lonStr(b.observerLon)}'
+                : '${_latStr(b.targetLat)}  ${_lonStr(b.targetLon)}'),
+          ]),
+      ],
+    );
+  }
+
+  static String _bearingDeg(double value) =>
+      '${(value.round() % 360).toString().padLeft(3, '0')}°';
+
+  static String _signedDeg(double value) =>
+      '${value >= 0 ? '+' : '-'}${value.abs().toStringAsFixed(1)}°';
 
   // ── Entries Table (rozšírená) ─────────────────────────────────
 

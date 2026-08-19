@@ -72,6 +72,11 @@ class ExportService {
             charter.id, start.toUtc(), start.add(const Duration(days: 1)).toUtc());
       }
 
+      final bearingsByDay = <int, List<Bearing>>{};
+      for (final day in days) {
+        bearingsByDay[day.id] = await db.getBearingsForDay(day.id);
+      }
+
       final pdf = await PdfExportService.exportCharter(
         charter: charter,
         days: days,
@@ -79,6 +84,7 @@ class ExportService {
         mapScreenshots: mapScreenshots ?? {},
         l10n: l10n,
         dutiesByDay: dutiesByDay,
+        bearingsByDay: bearingsByDay,
         signatureImage: signatureImage,
         checkInProtocol: checkInProtocol,
         checkInChecklist:
@@ -153,6 +159,7 @@ class ExportService {
       final dayStart = DateTime(day.date.year, day.date.month, day.date.day);
       final duties = await db.getDutiesOverlapping(charter.id, dayStart.toUtc(),
           dayStart.add(const Duration(days: 1)).toUtc());
+      final bearings = await db.getBearingsForDay(day.id);
 
       final pdf = await PdfExportService.exportDay(
         charter: charter,
@@ -160,6 +167,7 @@ class ExportService {
         entries: entries,
         l10n: l10n,
         duties: duties,
+        bearings: bearings,
         mapScreenshot: mapScreenshot,
         signatureImage: signatureImage,
       );
