@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -527,27 +526,6 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
     }
   }
 
-  /// Jednoveta o tom, ako blízko je výsledok — aby sa nemusela otvárať mapa.
-  String? _fixStatusLabel(AppLocalizations l) {
-    if (ref.watch(bearingModeProvider) == BearingKind.resection) {
-      final fix = ref.watch(resectionFixProvider);
-      if (fix != null) {
-        return '${l.bearingMyPositionFix} '
-            '±${fix.errorRadiusMeters.round()} m';
-      }
-      final count = ref.watch(resectionTargetCountProvider);
-      return count == 0 ? null : l.bearingSightCount(count);
-    }
-
-    final group = ref.watch(activeSightGroupProvider);
-    if (group == null) return null;
-    final fix = group.fix;
-    return fix == null
-        ? l.bearingSightCount(group.bearings.length)
-        : '${group.name.isEmpty ? l.bearingObjectFix : group.name} '
-            '±${fix.errorRadiusMeters.round()} m';
-  }
-
   static String _degrees(double value) =>
       '${(value.round() % 360).toString().padLeft(3, '0')}°';
 
@@ -568,6 +546,7 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final topPad = MediaQuery.of(context).padding.top;
+    final bottomPad = MediaQuery.of(context).padding.bottom;
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -633,43 +612,58 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
             ]),
           ),
 
-          // ── Stability indicator + calibration note ────────────
+          // ── Stability indicator ──────────────────────────────
           Positioned(
-            bottom: 156,
+            bottom: 232,
             left: 24, right: 24,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  width: 8, height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
-                  ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 8, height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
                 ),
-                const SizedBox(width: 6),
-                AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 500),
-                  style: TextStyle(
-                    color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
-                    fontSize: 11,
-                  ),
-                  child: Text(_isStable ? 'Stable' : 'Calibrating…'),
+              ),
+              const SizedBox(width: 6),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 500),
+                style: TextStyle(
+                  color: _isStable ? Colors.greenAccent : Colors.orangeAccent,
+                  fontSize: 11,
                 ),
-              ]),
-              const SizedBox(height: 6),
-              Text(l.compassCalibrationNote,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white24, fontSize: 10)),
+                child: Text(_isStable ? 'Stable' : 'Calibrating…'),
+              ),
             ]),
           ),
 
-          // ── Režim a cieľ ─────────────────────────────────────
-          // Nad indikátorom stability, nikdy pod tlačidlom: Zameraj musí
-          // zostať presne tam, kde ho má palec zvyknutý, aj keď nad ním
-          // pribudne prepínač.
+          // ── Poznámka o presnosti kompasu ──────────────────────
+          // Celkom dole, pod všetkým ostatným: je to varovanie, nie
+          // ovládací prvok, a predtým bolo skoro nečitateľné (biela na
+          // svetlom pozadí kamery, ledva viditeľná).
           Positioned(
-            bottom: 210,
+            bottom: bottomPad + 4,
+            left: 16, right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(l.compassCalibrationNote,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontSize: 10)),
+            ),
+          ),
+
+          // ── Režim, cieľ a zameranie ──────────────────────────
+          // Jeden stĺpec prilepený k spodku, nie dve samostatné vrstvy:
+          // predtým visel prepínač vysoko nad tlačidlom, takmer v strede
+          // obrazovky, kde prekážal výhľadu na objekt. Takto sedí prepínač
+          // aj výber bodu tesne nad tlačidlom Zameraj, čo najnižšie, a
+          // tlačidlo samo zostáva presne tam, kde ho má palec zvyknutý.
+          Positioned(
+            bottom: 36,
             left: 16, right: 16,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               _ModeToggle(
@@ -677,7 +671,7 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
                 onChanged: (m) =>
                     ref.read(bearingModeProvider.notifier).state = m,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               _SightTargetChip(
                 mode: ref.watch(bearingModeProvider),
                 targetName: ref.watch(resectionTargetProvider)?.name,
@@ -688,20 +682,8 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
                     ? _pickResectionTarget()
                     : _chooseSightObject(),
               ),
-            ]),
-          ),
-
-          // ── Zameranie ────────────────────────────────────────
-          Positioned(
-            bottom: 36,
-            left: 0, right: 0,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              _CaptureButton(busy: _capturing, onPressed: _capture),
               const SizedBox(height: 10),
-              _FixStatusChip(
-                label: _fixStatusLabel(l),
-                onTap: () => context.go('/map'),
-              ),
+              _CaptureButton(busy: _capturing, onPressed: _capture),
             ]),
           ),
         ],
@@ -743,27 +725,6 @@ class _CaptureButton extends StatelessWidget {
   }
 }
 
-/// Ako blízko je výsledok, bez prepínania obrazoviek.
-class _FixStatusChip extends StatelessWidget {
-  final String? label;
-  final VoidCallback onTap;
-  const _FixStatusChip({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final text = label;
-    if (text == null) return const SizedBox.shrink();
-    return Center(
-      child: TextButton.icon(
-        onPressed: onTap,
-        style: TextButton.styleFrom(foregroundColor: Colors.white70),
-        icon: const Icon(Icons.map_outlined, size: 16),
-        label: Text(text),
-      ),
-    );
-  }
-}
-
 /// Prepínač: hľadám seba, alebo hľadám bod?
 ///
 /// Pod prepínačom je jednoveta o tom, čo daný režim potrebuje — vrátane GPS.
@@ -799,12 +760,22 @@ class _ModeToggle extends StatelessWidget {
         ]),
       ),
       const SizedBox(height: 4),
-      Text(
-        mode == BearingKind.resection
-            ? l.bearingModeResectionHint
-            : l.bearingModeObjectHint,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white38, fontSize: 10),
+      // Vlastné pozadie, nie holý text priamo na kamere: nad slnkom
+      // zaliatou palubou bolo biele písmo na svetlom pozadí prakticky
+      // nečitateľné.
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          mode == BearingKind.resection
+              ? l.bearingModeResectionHint
+              : l.bearingModeObjectHint,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white, fontSize: 11),
+        ),
       ),
     ]);
   }

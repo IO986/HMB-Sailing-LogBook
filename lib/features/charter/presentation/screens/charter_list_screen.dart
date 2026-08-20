@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
+import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/voyage_progress.dart';
 import '../../../tracking/providers/tracking_provider.dart';
@@ -11,12 +12,35 @@ import '../../../../core/services/gps_tracking_service.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
+/// Jeden riadok zoznamu plavieb: buď plavba, alebo relácia zameraní zapísaná
+/// mimo trackingu. Zámerne v tom istom zozname a zoradené podľa dátumu — pre
+/// skipera je to jeden chronologický záznam toho, čo robil na vode, nie dve
+/// oddelené miesta, kde treba hľadať.
+sealed class _LogbookRow {
+  DateTime get sortDate;
+}
+
+class _CharterRow extends _LogbookRow {
+  final Charter charter;
+  _CharterRow(this.charter);
+  @override
+  DateTime get sortDate => charter.dateFrom;
+}
+
+class _BearingSessionRow extends _LogbookRow {
+  final BearingSession session;
+  _BearingSessionRow(this.session);
+  @override
+  DateTime get sortDate => session.date;
+}
+
 class CharterListScreen extends ConsumerWidget {
   const CharterListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chartersAsync = ref.watch(chartersProvider);
+    final sessions = ref.watch(orphanBearingSessionsProvider);
     final l = AppLocalizations.of(context);
 
     return Scaffold(
@@ -31,15 +55,73 @@ class CharterListScreen extends ConsumerWidget {
         ],
       ),
       body: chartersAsync.when(
-        data: (charters) => charters.isEmpty
-            ? const _EmptyState()
-            : ListView.builder(
-                padding: const EdgeInsets.only(bottom: 100),
-                itemCount: charters.length,
-                itemBuilder: (ctx, i) => _CharterCard(charter: charters[i]),
-              ),
+        data: (charters) {
+          if (charters.isEmpty && sessions.isEmpty) return const _EmptyState();
+          final rows = <_LogbookRow>[
+            for (final c in charters) _CharterRow(c),
+            for (final s in sessions) _BearingSessionRow(s),
+          ]..sort((a, b) => b.sortDate.compareTo(a.sortDate));
+          return ListView.builder(
+            padding: const EdgeInsets.only(bottom: 100),
+            itemCount: rows.length,
+            itemBuilder: (ctx, i) => switch (rows[i]) {
+              _CharterRow(:final charter) => _CharterCard(charter: charter),
+              _BearingSessionRow(:final session) =>
+                _BearingSessionCard(session: session),
+            },
+          );
+        },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
+      ),
+    );
+  }
+}
+
+// ── Bearing session card ─────────────────────────────────────
+
+class _BearingSessionCard extends ConsumerWidget {
+  final BearingSession session;
+  const _BearingSessionCard({required this.session});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final fmt = DateFormat('d. MMM yyyy', 'sk');
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => context.go(
+            '/logbook/bearings/${DateFormat('yyyy-MM-dd').format(session.date)}'),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            const Icon(Icons.architecture, size: 28),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.bearingsTitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(fmt.format(session.date),
+                      style:
+                          const TextStyle(color: Colors.grey, fontSize: 13)),
+                ],
+              ),
+            ),
+            Text(l.bearingSightCount(session.bearings.length),
+                style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            const SizedBox(width: 6),
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ]),
+        ),
       ),
     );
   }

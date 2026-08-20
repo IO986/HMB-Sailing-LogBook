@@ -1,0 +1,29 @@
+HMB Sailing Log — build 59 (1.29.0+59)
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• Nová funkcia: Námerový kompas. Zameraj 2–3 známe body na mape a appka vypočíta tvoju polohu aj bez GPS, alebo zameraj neznámy bod z dvoch miest a ulož ho ako waypoint
+• Zamerania bez plavby nájdeš v zozname plavieb ako samostatný riadok s dátumom, s exportom do PDF vrátane mapky
+• Kontrastnejšie texty na obrazovke kompasu
+
+=== English (en-US) ===
+• New feature: Sighting compass. Sight 2–3 known marks on the map and the app works out your position without GPS, or sight an unknown point from two spots and save it as a waypoint
+• Bearings taken without a voyage appear in the voyage list as their own dated row, with a PDF export including a map
+• Higher-contrast text on the compass screen
+
+=== Hrvatski (hr-HR) ===
+• Nova značajka: Kompas za azimute. Izmjeri 2–3 poznate točke na karti i aplikacija izračuna tvoju poziciju bez GPS-a, ili izmjeri nepoznatu točku s dva mjesta i spremi je kao waypoint
+• Azimuti bez plovidbe pojavljuju se u popisu plovidbi kao poseban redak s datumom, uz izvoz u PDF s kartom
+• Kontrastniji tekst na zaslonu kompasa
+
+=== Slovenščina (sl-SI) ===
+• Nova funkcija: Kompas za azimute. Izmeri 2–3 znane točke na zemljevidu in aplikacija izračuna tvoj položaj brez GPS, ali izmeri neznano točko z dveh mest in jo shrani kot waypoint
+• Azimuti brez plovbe se prikažejo na seznamu plovb kot posebna vrstica z datumom, z izvozom v PDF z zemljevidom
+• Bolj kontrasten besedilo na zaslonu kompasa
+
+=== Italiano (it-IT) ===
+• Nuova funzione: Bussola di rilevamento. Rileva 2–3 punti noti sulla carta e l'app calcola la tua posizione senza GPS, oppure rileva un punto sconosciuto da due posizioni e salvalo come waypoint
+• I rilevamenti senza navigazione compaiono nell'elenco come riga propria con data, con esportazione PDF e mappa
+• Testo più leggibile sulla schermata della bussola

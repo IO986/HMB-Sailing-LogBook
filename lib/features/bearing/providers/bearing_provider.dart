@@ -32,14 +32,14 @@ import '../services/bearing_geometry.dart';
 /// Ako ďaleko sa čiara zamerania kreslí na mapu, v námorných míľach.
 ///
 /// Zameranie samo o sebe vzdialenosť nedáva — je to polpriamka, ktorá musí
-/// niekde skončiť. Päť míľ bolo primálo: maják na hranici viditeľnosti je aj
-/// pätnásť míľ ďaleko a čiara k nemu vôbec nedosiahla, takže sa priesečník
-/// nedal ani odhadnúť okom.
+/// niekde skončiť. Desať míľ bolo stále primálo: maják na hranici
+/// viditeľnosti z výšky je aj cez tridsať míľ ďaleko a čiara k nemu vôbec
+/// nedosiahla, takže sa priesečník nedal ani odhadnúť okom.
 ///
-/// Kužeľ neistoty sa kreslí po celej dĺžke, hoci na desiatich míľach narastie
-/// na takmer tri míle šírky. Je to nepekné, ale pravdivé: presne taká je
-/// neistota ±8° na tú vzdialenosť a skracovať kužeľ by o nej klamalo.
-const double kBearingLineLengthNm = 10;
+/// Kužeľ neistoty sa kreslí po celej dĺžke, hoci na päťdesiatich míľach
+/// narastie na vyše štrnásť míľ šírky. Je to nepekné, ale pravdivé: presne
+/// taká je neistota ±8° na tú vzdialenosť a skracovať kužeľ by o nej klamalo.
+const double kBearingLineLengthNm = 50;
 
 /// Predvolená neistota telefónového kompasu na lodi (± stupňov).
 ///
@@ -106,9 +106,18 @@ final bearingsForDayProvider =
 /// druhé odčítanie toho istého majáka je oprava prvého, nie ďalšia priamka.
 final resectionBearingsProvider = Provider<List<Bearing>>((ref) {
   final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
-  final resections = all
+  return latestResectionCluster(all);
+});
+
+/// Zhluk resekčných zameraní okolo najnovšieho, po jednom na každý zameraný
+/// bod — logika [resectionBearingsProvider] vytiahnutá do funkcie, aby ju
+/// vedel zavolať aj spätný pohľad na jeden deň (denník, PDF), kde vstupom
+/// nie je celá databáza, ale len zamerania toho dňa.
+List<Bearing> latestResectionCluster(List<Bearing> allBearings) {
+  final resections = allBearings
       .where((b) => BearingKind.fromCode(b.kind) == BearingKind.resection)
-      .toList();
+      .toList()
+    ..sort((a, b) => b.takenAt.compareTo(a.takenAt));
   if (resections.isEmpty) return const [];
 
   final newest = resections.first.takenAt;
@@ -117,11 +126,11 @@ final resectionBearingsProvider = Provider<List<Bearing>>((ref) {
 
   final newestPerTarget = <String, Bearing>{};
   for (final b in inWindow) {
-    // `resections` prichádza od najnovšieho, takže prvý zápis vyhráva.
+    // `resections` je zoradené od najnovšieho, takže prvý zápis vyhráva.
     newestPerTarget.putIfAbsent(_targetKey(b), () => b);
   }
   return newestPerTarget.values.toList();
-});
+}
 
 /// Kľúč zameraného známeho bodu — id waypointu, alebo jeho súradnice, keď bol
 /// waypoint medzitým zmazaný a zostal len odpis.
@@ -202,8 +211,15 @@ class SightGroup {
 /// odstupom sú presne to, čo dá základnicu.
 final sightGroupsProvider = Provider<List<SightGroup>>((ref) {
   final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
+  return sightGroupsFrom(all);
+});
+
+/// Zoskupí zamerania na neznáme objekty podľa [Bearing.sightGroupId] —
+/// logika [sightGroupsProvider] vytiahnutá do funkcie, aby ju vedel zavolať
+/// aj spätný pohľad na jeden deň, kde vstupom je len tá dňová podmnožina.
+List<SightGroup> sightGroupsFrom(List<Bearing> allBearings) {
   final grouped = <String, List<Bearing>>{};
-  for (final b in all) {
+  for (final b in allBearings) {
     if (BearingKind.fromCode(b.kind) != BearingKind.intersection) continue;
     final groupId = b.sightGroupId;
     if (groupId == null) continue;
@@ -223,16 +239,16 @@ final sightGroupsProvider = Provider<List<SightGroup>>((ref) {
       fix: lines.length < 2
           ? null
           : BearingGeometry.fix(lines, kind: BearingKind.intersection),
-      baselineMeters: _widestSeparation(rows),
+      baselineMeters: widestObserverSeparation(rows),
     ));
   }
   groups.sort(
       (a, b) => b.bearings.last.takenAt.compareTo(a.bearings.last.takenAt));
   return groups;
-});
+}
 
 /// Najväčšia vzdialenosť medzi ktorýmikoľvek dvoma polohami pozorovateľa (m).
-double _widestSeparation(List<Bearing> rows) {
+double widestObserverSeparation(List<Bearing> rows) {
   final points = <LatLng>[
     for (final b in rows)
       if (b.observerLat != null && b.observerLon != null)
@@ -274,6 +290,64 @@ BearingLine? bearingLineOf(Bearing b) {
     id: b.id,
   );
 }
+
+// ── Zamerania mimo plavby ────────────────────────────────────────────────
+
+/// Zamerania jedného dňa zapísané BEZ aktívneho trackingu — deň a plavba sú
+/// obe null (`BearingRepository._voyage()`), takže inak by boli viditeľné
+/// len na mape a nikde inde. Skiper si na tomto zamerá aj bez toho, aby
+/// stlačil Spustiť tracking — napríklad na kotve, keď si len chce overiť
+/// polohu, alebo pri chôdzi po brehu.
+class BearingSession {
+  /// Kalendárny deň zameraní (lokálny čas zariadenia, nie UTC — merania sa
+  /// robia v čase a mieste, kde skiper stojí).
+  final DateTime date;
+
+  /// Zamerania toho dňa, od najstaršieho.
+  final List<Bearing> bearings;
+
+  const BearingSession({required this.date, required this.bearings});
+}
+
+/// Zamerania mimo plavby, zoskupené po dňoch, od najnovšieho.
+///
+/// Deň, nie hodina či týždeň: rovnaká zrnitosť ako denníkový záznam, s
+/// ktorým sa táto relácia zobrazuje bok po boku v zozname plavieb.
+final orphanBearingSessionsProvider = Provider<List<BearingSession>>((ref) {
+  final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
+  final orphans =
+      all.where((b) => b.dayLogId == null && b.charterId == null);
+
+  final byDate = <DateTime, List<Bearing>>{};
+  for (final b in orphans) {
+    final local = b.takenAt.toLocal();
+    final day = DateTime(local.year, local.month, local.day);
+    byDate.putIfAbsent(day, () => []).add(b);
+  }
+
+  final sessions = byDate.entries
+      .map((e) => BearingSession(
+          date: e.key,
+          bearings: e.value..sort((a, b) => a.takenAt.compareTo(b.takenAt))))
+      .toList()
+    ..sort((a, b) => b.date.compareTo(a.date));
+  return sessions;
+});
+
+/// Zamerania z [orphanBearingSessionsProvider] pre presne jeden kalendárny
+/// deň, alebo prázdny zoznam, keď sa medzitým zmazali.
+final bearingSessionForDateProvider =
+    Provider.family<BearingSession?, DateTime>((ref, date) {
+  final sessions = ref.watch(orphanBearingSessionsProvider);
+  for (final s in sessions) {
+    if (s.date.year == date.year &&
+        s.date.month == date.month &&
+        s.date.day == date.day) {
+      return s;
+    }
+  }
+  return null;
+});
 
 // ── Voľba na obrazovke kompasu ──────────────────────────────────────────
 

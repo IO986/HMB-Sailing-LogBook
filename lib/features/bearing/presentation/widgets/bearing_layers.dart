@@ -207,6 +207,9 @@ List<Widget> buildBearingLayers({
                   : Colors.green.shade700,
               title: l.bearingMyPositionFix,
               detail: '±${resectionFix.errorRadiusMeters.round()} m',
+              // Súradnice sa na mapu (a teda ani do jej odfotenej PDF
+              // snímky) nekreslia — patria do textového riadku pri tabuľke
+              // zameraní, kde sa dajú čítať aj skopírovať, nie na obrázok.
               extra: gpsPosition == null
                   ? null
                   : l.bearingFixOffGps(_metres(

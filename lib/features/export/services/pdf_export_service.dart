@@ -10,8 +10,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../../../core/database/app_database.dart';
+import '../../../core/models/bearing_kind.dart';
 import '../../../core/models/logbook_event_type.dart';
 import '../../../core/models/sail_mode.dart';
+import '../../bearing/providers/bearing_provider.dart'
+    show bearingLineOf, latestResectionCluster, sightGroupsFrom;
+import '../../bearing/services/bearing_geometry.dart';
 import '../../miles/services/voyage_miles_summary.dart';
 import '../../../core/models/crew_member_ref.dart';
 import '../../../core/services/units_service.dart';
@@ -716,6 +720,148 @@ class PdfExportService {
       }
     }
     return pages;
+  }
+
+  // ── Samostatná relácia zameraní (mimo plavby) ───────────────────
+
+  /// Jednoduchý PDF pre zamerania zapísané bez aktívneho trackingu — mapka
+  /// s kužeľmi a fixom plus tabuľky, presne ako denná stránka v plavbe, len
+  /// bez charteru a dňa okolo, ktoré taká relácia nemá.
+  static Future<Uint8List> buildBearingSessionPdfBytes({
+    required DateTime date,
+    required List<Bearing> bearings,
+    required AppLocalizations l,
+    Uint8List? mapScreenshot,
+  }) async {
+    final pdf = pw.Document(theme: await _theme());
+    final resections = latestResectionCluster(bearings);
+    final resectionLines =
+        resections.map(bearingLineOf).whereType<BearingLine>().toList();
+    final resectionFix = resectionLines.length < 2
+        ? null
+        : BearingGeometry.fix(resectionLines, kind: BearingKind.resection);
+
+    final objectGroups = sightGroupsFrom(bearings);
+
+    final dayName = DateFormat('EEEE d. MMMM yyyy').format(date);
+    final docId = 'HMBSL-BEARINGS-${DateFormat('yyyyMMdd').format(date)}';
+
+    pw.Widget header() => pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: pw.BoxDecoration(
+              color: _blue,
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(5))),
+          child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text(_pdfText('${l.bearingsTitle} – $dayName'),
+                    style: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 13)),
+                pw.Text('${bearings.length}',
+                    style: pw.TextStyle(
+                        color: PdfColors.white,
+                        fontSize: 16,
+                        fontWeight: pw.FontWeight.bold)),
+              ]),
+        );
+
+    // Mapa na vlastnej strane, takmer celá A4: na malej vložke uprostred
+    // tabuľkovej strany by značky a popisky boli nečitateľné. Zvyšok
+    // (tabuľky, výsledky) je na druhej strane, kde má miesto rásť.
+    if (mapScreenshot != null) {
+      pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
+        build: (ctx) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            header(),
+            pw.SizedBox(height: 8),
+            pw.Expanded(
+              child: pw.Container(
+                width: double.infinity,
+                decoration: pw.BoxDecoration(
+                    border: pw.Border.all(color: PdfColors.grey300),
+                    borderRadius:
+                        const pw.BorderRadius.all(pw.Radius.circular(4))),
+                child: pw.ClipRRect(
+                    horizontalRadius: 4,
+                    verticalRadius: 4,
+                    child: pw.Image(pw.MemoryImage(mapScreenshot),
+                        fit: pw.BoxFit.cover)),
+              ),
+            ),
+            pw.SizedBox(height: 6),
+            _footer(_pdfText(dayName), docId: docId, revision: 0),
+          ],
+        ),
+      ));
+    }
+
+    pdf.addPage(pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
+      build: (ctx) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (mapScreenshot == null) ...[header(), pw.SizedBox(height: 8)],
+
+          if (resections.isNotEmpty) ...[
+            pw.Text(_pdfText(l.bearingResectionSection.toUpperCase()),
+                style: pw.TextStyle(
+                    color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+            pw.SizedBox(height: 3),
+            _bearingsTable(resections, l),
+            if (resectionFix != null) ...[
+              pw.SizedBox(height: 3),
+              pw.Text(
+                  // Súradnice patria k výsledku rovnako ako chyba a rez —
+                  // je to poloha vypočítaná z námerov, nie odčítaná z GPS,
+                  // a bez čísla by sa dala len ukázať prstom na mape.
+                  _pdfText('${l.bearingMyPositionFix}: '
+                      '${_latStr(resectionFix.position.latitude)}  '
+                      '${_lonStr(resectionFix.position.longitude)}  '
+                      '±${resectionFix.errorRadiusMeters.round()} m'
+                      '${resectionFix.isWeak ? '  ·  ${l.bearingFixWeak('${resectionFix.cutAngleDeg.round()}°')}' : ''}'),
+                  style: pw.TextStyle(
+                      color: _dgrey, fontSize: 8, fontStyle: pw.FontStyle.italic)),
+            ],
+            pw.SizedBox(height: 10),
+          ],
+
+          if (objectGroups.isNotEmpty) ...[
+            pw.Text(_pdfText(l.bearingObjectSection.toUpperCase()),
+                style: pw.TextStyle(
+                    color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+            pw.SizedBox(height: 3),
+            for (final group in objectGroups) ...[
+              _bearingsTable(group.bearings, l),
+              if (group.fix != null)
+                pw.Padding(
+                  padding: const pw.EdgeInsets.only(top: 3, bottom: 8),
+                  child: pw.Text(
+                      _pdfText('${group.name.isEmpty ? l.bearingObjectFix : group.name}: '
+                          '±${group.fix!.errorRadiusMeters.round()} m'
+                          '${group.fix!.isWeak ? '  ·  ${l.bearingFixWeak('${group.fix!.cutAngleDeg.round()}°')}' : ''}'),
+                      style: pw.TextStyle(
+                          color: _dgrey, fontSize: 8, fontStyle: pw.FontStyle.italic)),
+                ),
+            ],
+          ],
+
+          if (bearings.any((b) => b.declinationSource == 'target'))
+            pw.Text(_pdfText(l.bearingDeclinationFromTarget),
+                style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+
+          pw.Spacer(),
+          _footer(_pdfText(dayName), docId: docId, revision: 0),
+        ],
+      ),
+    ));
+    return pdf.save();
   }
 
   // ── Bearings table ────────────────────────────────────────────

@@ -21,6 +21,7 @@ import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
 import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
+import 'features/bearing/presentation/screens/bearing_session_screen.dart';
 import 'features/sync/presentation/screens/sync_queue_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
 import 'features/miles/presentation/screens/crew_certificates_screen.dart';
@@ -54,6 +55,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 final prefill = s.extra as CharterPrefill?;
                 return CharterEditScreen(prefill: prefill, popOnCreate: prefill != null);
               }),
+              // Zamerania zapísané bez aktívneho trackingu — vlastný riadok
+              // v zozname plavieb, nie viazané na konkrétny charter.
+              GoRoute(
+                path: 'bearings/:date',
+                builder: (c, s) => BearingSessionScreen(
+                    date: DateTime.parse(s.pathParameters['date']!)),
+              ),
               GoRoute(
                 path: ':id',
                 builder: (c, s) => CharterDetailScreen(
