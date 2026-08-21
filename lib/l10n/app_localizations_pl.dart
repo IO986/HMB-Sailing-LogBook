@@ -3225,11 +3225,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get bearingsTitle => 'Namiary';
 
   @override
-  String get bearingsClearAll => 'Usuń wszystkie namiary';
+  String get bearingsClearAll => 'Ukryj wszystkie z mapy';
 
   @override
   String get bearingsClearConfirm =>
-      'Usunąć wszystkie namiary? Linie i pozycja z namiarów znikną z mapy.';
+      'Ukryć wszystkie namiary z mapy? Linie i pozycja z namiarów znikną z mapy, zostaną w dzienniku.';
 
   @override
   String get bearingsEmpty =>
@@ -3356,4 +3356,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Zacznij nowy namiar';
+
+  @override
+  String get bearingHideFromMap => 'Ukryj z mapy';
 }

@@ -69,13 +69,65 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   // Rotácia mapy (dvoma prstami) — kompas hore ju resetne späť na north-up.
   double _mapRotationDeg = 0;
+
+  /// Programový posun mapy práve prebieha (sledovanie GPS, alebo vynútené
+  /// prekreslenie dlaždíc po vstupe na obrazovku).
+  ///
+  /// Čisto obranné: `MapController.move()` v tejto verzii flutter_map vždy
+  /// posiela `hasGesture: false`, takže tento posun by `followGps` sám
+  /// nemal vypnúť. Skutočná príčina hláseného "pri prepnutí sa pozícia
+  /// nedrží" bola inde — `initState` nižšie, kde sa `/map` pri každom
+  /// prekliku z inej karty vytvára úplne odznova (obyčajná `ShellRoute`,
+  /// nedrží stav) a dovtedy štartoval natvrdo v Splite. Táto vlajka
+  /// zostáva ako lacná poistka pre prípad, že sa správanie flutter_map
+  /// niekedy zmení.
+  bool _programmaticMoveInFlight = false;
+
+  void _moveMapProgrammatically(LatLng target, double zoom) {
+    _programmaticMoveInFlight = true;
+    try {
+      _mapController.move(target, zoom);
+    } finally {
+      // onPositionChanged z tohto move() prichádza synchrónne v rámci
+      // move() samotného; mikroúloha po ňom nechá vlajku padnúť skôr, než
+      // príde ĎALŠIE, tentoraz skutočné gesto.
+      scheduleMicrotask(() => _programmaticMoveInFlight = false);
+    }
+  }
   // Lock na sever (podržanie ružice vypne gesto rotácie) je teraz uchovaný
   // user setting v mapNotifierProvider (`northLocked`), nie lokálny stav —
   // prežije reštart appky aj odchod z obrazovky mapy.
 
+  /// Stred a zoom, s ktorými sa mapa prvýkrát vykreslí.
+  ///
+  /// `/map` je obyčajná `ShellRoute`, nie `StatefulShellRoute` — pri
+  /// prepnutí na inú kartu a späť sa `MapScreen` zakaždým vytvorí nanovo,
+  /// nedrží si stav. Bez tohto by `initialCenter` bol napevno Split a mapa
+  /// by sa tam na chvíľu (kým nedobehne `_onMapReady`) vrátila pri KAŽDOM
+  /// prekliku — presne to bolo hlásené ako "pri prepnutí sa pozícia
+  /// nedrží". Namiesto čakania na dobehnutie časovača sa rovno štartuje
+  /// tam, kde appka vie, že loď naposledy bola.
+  late final LatLng _initialCenter;
+  late final double _initialZoom;
+
   @override
   void initState() {
     super.initState();
+    // Nezávisle od `followGps`: ten prepínač rozhoduje, či mapa BEŽÍ za
+    // GPS, kým je otvorená (obnovuje stred pri každom novom bode). O tom,
+    // ODKIAĽ mapa pri otvorení štartuje, sa nemá čo starať — nikto
+    // nečaká, že mu appka po vypnutí sledovania začne ukazovať Split
+    // namiesto toho, kde skutočne je.
+    final pos = LocationService().lastPosition;
+    debugPrint('[MAP] initState: lastPosition=${pos == null ? 'null' : '${pos.latitude},${pos.longitude}'} '
+        'followGps=${ref.read(mapNotifierProvider).followGps}');
+    if (pos != null) {
+      _initialCenter = LatLng(pos.latitude, pos.longitude);
+      _initialZoom = 13;
+    } else {
+      _initialCenter = const LatLng(43.5, 16.4);
+      _initialZoom = 10;
+    }
   }
 
   @override
@@ -123,7 +175,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           try {
-            _mapController.move(
+            _moveMapProgrammatically(
               _mapController.camera.center,
               _mapController.camera.zoom,
             );
@@ -137,11 +189,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void _centerIfFollowing() {
     if (!_mapReady || !mounted) return;
     final follow = ref.read(mapNotifierProvider).followGps;
+    debugPrint('[MAP] _centerIfFollowing: mapReady=$_mapReady follow=$follow '
+        'lastPosition=${LocationService().lastPosition == null ? 'null' : 'set'}');
     if (!follow) return;
     final pos = LocationService().lastPosition;
     if (pos == null) return;
     try {
-      _mapController.move(LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
+      _moveMapProgrammatically(LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
     } catch (_) {}
   }
 
@@ -226,13 +280,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   child: TextButton.icon(
                     onPressed: () async {
                       Navigator.pop(sheetContext);
+                      // Skryje z mapy, nezmaže: záznam zostáva v denníku a
+                      // v PDF. Skutočné zmazanie je len tam.
                       await ref
                           .read(bearingRepositoryProvider)
-                          .delete(bearing.id);
+                          .hideFromMap(bearing.id);
                     },
-                    icon: const Icon(Icons.delete_outline),
-                    style: TextButton.styleFrom(foregroundColor: Colors.red),
-                    label: Text(l.delete),
+                    icon: const Icon(Icons.visibility_off_outlined),
+                    label: Text(l.bearingHideFromMap),
                   ),
                 ),
               ],
@@ -318,13 +373,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 IconButton(
                   onPressed: () async {
                     Navigator.pop(sheetContext);
+                    // Skryje z mapy, nezmaže — rovnaký dôvod ako pri
+                    // jednotlivom zameraní.
                     await ref
                         .read(bearingRepositoryProvider)
-                        .deleteGroup(group.id);
+                        .hideGroupFromMap(group.id);
                   },
-                  icon: const Icon(Icons.delete_outline),
-                  color: Colors.red,
-                  tooltip: l.delete,
+                  icon: const Icon(Icons.visibility_off_outlined),
+                  tooltip: l.bearingHideFromMap,
                 ),
               ]),
             ],
@@ -334,6 +390,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
+  /// Skryje všetky zamerania z mapy. Nie je to zmazanie: záznamy zostávajú
+  /// v denníku a v PDF, len prestanú zapratávať mapu počas plavby — preto
+  /// tu nie je červené tlačidlo, nič nevratné sa nedeje.
   Future<void> _confirmClearBearings() async {
     final l = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
@@ -346,14 +405,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               child: Text(l.cancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: Text(l.bearingsClearAll),
           ),
         ],
       ),
     );
     if (confirmed != true) return;
-    await ref.read(bearingRepositoryProvider).clearAll();
+    await ref.read(bearingRepositoryProvider).hideAllFromMap();
   }
 
   /// Ponuka nad ikonou vrstvy zameraní: začni nanovo, alebo zmaž všetko.
@@ -472,8 +530,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           FlutterMap(
             mapController: _mapController,
             options: MapOptions(
-              initialCenter: const LatLng(43.5, 16.4),
-              initialZoom: 10,
+              initialCenter: _initialCenter,
+              initialZoom: _initialZoom,
               maxZoom: 19,
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
@@ -488,8 +546,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               onPositionChanged: (camera, hasGesture) {
                 // Ručný posun mapy vypne GPS follow — inak ju každý GPS
                 // update strhne späť. GPS tlačidlo follow znova zapne.
+                // `!_programmaticMoveInFlight` je len obranná poistka, viď
+                // komentár pri poli — reálny fix je initState nižšie.
                 if (hasGesture &&
+                    !_programmaticMoveInFlight &&
                     ref.read(mapNotifierProvider).followGps) {
+                  debugPrint('[MAP] onPositionChanged: hasGesture=true, '
+                      'programmaticMoveInFlight=$_programmaticMoveInFlight -> '
+                      'setFollowGps(false)');
                   ref.read(mapNotifierProvider.notifier).setFollowGps(false);
                 }
                 if (camera.rotation != _mapRotationDeg) {
@@ -837,7 +901,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   if (followGps) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       try {
-                        _mapController.move(
+                        _moveMapProgrammatically(
                           LatLng(pos.latitude, pos.longitude),
                           _mapController.camera.zoom,
                         );

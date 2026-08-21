@@ -3244,11 +3244,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get bearingsTitle => 'Rilevamenti';
 
   @override
-  String get bearingsClearAll => 'Cancella tutti i rilevamenti';
+  String get bearingsClearAll => 'Nascondi tutti dalla mappa';
 
   @override
   String get bearingsClearConfirm =>
-      'Cancellare tutti i rilevamenti? Le linee e il punto nave spariranno dalla mappa.';
+      'Nascondere tutti i rilevamenti dalla mappa? Le linee e il punto nave spariscono dalla mappa, ma restano nel diario.';
 
   @override
   String get bearingsEmpty =>
@@ -3375,4 +3375,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Inizia un nuovo rilevamento';
+
+  @override
+  String get bearingHideFromMap => 'Nascondi dalla mappa';
 }

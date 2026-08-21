@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Magnetic model has expired — variation is an estimate",
   "bearingsLayer": "Bearings",
   "bearingsTitle": "Bearings",
-  "bearingsClearAll": "Clear all bearings",
-  "bearingsClearConfirm": "Clear all bearings? The lines and the cross fix disappear from the map.",
+  "bearingsClearAll": "Hide all from map",
+  "bearingsClearConfirm": "Hide all bearings from the map? The lines and the cross fix disappear from the map; they stay in the logbook.",
   "bearingsEmpty": "No bearings yet. Point the phone at a landmark and tap Take bearing.",
   "bearingFixFrom": "Position from {count} bearings",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Mark sighted",
   "bearingPdfResult": "Result",
 
-  "bearingStartNew": "Start a new sighting"
+  "bearingStartNew": "Start a new sighting",
+
+  "bearingHideFromMap": "Hide from map"
 }

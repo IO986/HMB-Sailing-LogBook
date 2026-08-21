@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "El modelo magnético ha caducado: la declinación es una estimación",
   "bearingsLayer": "Demoras",
   "bearingsTitle": "Demoras",
-  "bearingsClearAll": "Borrar todas las demoras",
-  "bearingsClearConfirm": "¿Borrar todas las demoras? Las líneas y la situación por demoras desaparecerán del mapa.",
+  "bearingsClearAll": "Ocultar todas del mapa",
+  "bearingsClearConfirm": "¿Ocultar todas las demoras del mapa? Las líneas y la situación por demoras desaparecen del mapa, pero se quedan en el diario.",
   "bearingsEmpty": "Aún no hay demoras. Apunta el teléfono a un objeto y pulsa Tomar demora.",
   "bearingFixFrom": "Situación a partir de {count} demoras",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Punto demorado",
   "bearingPdfResult": "Resultado",
 
-  "bearingStartNew": "Empezar una demora nueva"
+  "bearingStartNew": "Empezar una demora nueva",
+
+  "bearingHideFromMap": "Ocultar del mapa"
 }

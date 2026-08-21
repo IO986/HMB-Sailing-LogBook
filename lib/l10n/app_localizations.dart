@@ -6131,13 +6131,13 @@ abstract class AppLocalizations {
   /// No description provided for @bearingsClearAll.
   ///
   /// In sk, this message translates to:
-  /// **'Zmazať všetky zamerania'**
+  /// **'Skryť všetky z mapy'**
   String get bearingsClearAll;
 
   /// No description provided for @bearingsClearConfirm.
   ///
   /// In sk, this message translates to:
-  /// **'Zmazať všetky zamerania? Čiary aj krížový fix zmiznú z mapy.'**
+  /// **'Skryť všetky zamerania z mapy? Čiary aj krížový fix zmiznú z mapy, v denníku zostanú.'**
   String get bearingsClearConfirm;
 
   /// No description provided for @bearingsEmpty.
@@ -6349,6 +6349,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Začať nové zameranie'**
   String get bearingStartNew;
+
+  /// No description provided for @bearingHideFromMap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skryť z mapy'**
+  String get bearingHideFromMap;
 }
 
 class _AppLocalizationsDelegate

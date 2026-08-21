@@ -22,6 +22,7 @@ void main() {
     int minute = 0,
   }) =>
       Bearing(
+        hiddenFromMap: false,
         id: id,
         kind: BearingKind.resection.code,
         magneticBearing: magnetic,
@@ -44,6 +45,7 @@ void main() {
     int minute = 0,
   }) =>
       Bearing(
+        hiddenFromMap: false,
         id: id,
         kind: BearingKind.intersection.code,
         observerLat: 43.5081,

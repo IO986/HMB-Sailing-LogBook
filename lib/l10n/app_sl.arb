@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Magnetni model je potekel — deklinacija je le ocena",
   "bearingsLayer": "Azimuti",
   "bearingsTitle": "Azimuti",
-  "bearingsClearAll": "Izbriši vse azimute",
-  "bearingsClearConfirm": "Izbrišem vse azimute? Črte in presečišče bodo izginili z zemljevida.",
+  "bearingsClearAll": "Skrij vse z zemljevida",
+  "bearingsClearConfirm": "Skriti vse azimute z zemljevida? Črte in presečišče izginejo z zemljevida, v dnevniku ostanejo.",
   "bearingsEmpty": "Še ni azimutov. Usmeri telefon v objekt in pritisni Izmeri azimut.",
   "bearingFixFrom": "Položaj iz {count} azimutov",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Izmerjena točka",
   "bearingPdfResult": "Rezultat",
 
-  "bearingStartNew": "Začni novo meritev"
+  "bearingStartNew": "Začni novo meritev",
+
+  "bearingHideFromMap": "Skrij z zemljevida"
 }

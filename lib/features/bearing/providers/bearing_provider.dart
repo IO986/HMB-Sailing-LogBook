@@ -87,13 +87,28 @@ final bearingsProvider = StreamProvider<List<Bearing>>((ref) {
 
 /// Zamerania patriace k jednému dňu plavby — pre denník a PDF.
 ///
-/// Sleduje [bearingsProvider], takže zmazanie zamerania z mapy sa prejaví aj
-/// v dennom zázname bez ručného obnovovania.
+/// Zámerne NEODFILTROVANÉ podľa [Bearing.hiddenFromMap]: skryté z mapy
+/// neznamená zabudnuté v denníku, to je celý zmysel toho rozlíšenia (viď
+/// [BearingRepository.hideFromMap]). Sleduje [bearingsProvider], takže
+/// zmazanie zamerania sa prejaví aj v dennom zázname bez ručného
+/// obnovovania.
 final bearingsForDayProvider =
     FutureProvider.family<List<Bearing>, int>((ref, dayLogId) async {
   ref.watch(bearingsProvider);
   final db = ref.watch(databaseProvider);
   return db.getBearingsForDay(dayLogId);
+});
+
+/// Zamerania viditeľné na mape — tie, ktoré skiper zo živej mapy nezmazal.
+///
+/// "Zmazať z mapy" tu neznamená zahodiť záznam, len uprataný pohľad; riadok
+/// v databáze ostáva a naďalej sa počíta do denníka aj PDF cez
+/// [bearingsProvider] priamo. Túto odfiltrovanú verziu sledujú len veci,
+/// ktoré naozaj kreslia mapu alebo počítajú AKTUÁLNY (živý) fix na nej —
+/// [resectionBearingsProvider] a [sightGroupsProvider] nižšie.
+final mapVisibleBearingsProvider = Provider<List<Bearing>>((ref) {
+  final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
+  return all.where((b) => !b.hiddenFromMap).toList();
 });
 
 // ── Resekcia: hľadám vlastnú polohu ─────────────────────────────────────
@@ -105,7 +120,7 @@ final bearingsForDayProvider =
 /// prezrieť na mape. Z každého známeho bodu sa berie len ten najnovší námer —
 /// druhé odčítanie toho istého majáka je oprava prvého, nie ďalšia priamka.
 final resectionBearingsProvider = Provider<List<Bearing>>((ref) {
-  final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
+  final all = ref.watch(mapVisibleBearingsProvider);
   return latestResectionCluster(all);
 });
 
@@ -210,7 +225,7 @@ class SightGroup {
 /// Na rozdiel od resekcie tu žiadne časové okno nie je: námery s hodinovým
 /// odstupom sú presne to, čo dá základnicu.
 final sightGroupsProvider = Provider<List<SightGroup>>((ref) {
-  final all = ref.watch(bearingsProvider).valueOrNull ?? const <Bearing>[];
+  final all = ref.watch(mapVisibleBearingsProvider);
   return sightGroupsFrom(all);
 });
 
@@ -263,6 +278,23 @@ double widestObserverSeparation(List<Bearing> rows) {
   return widest;
 }
 
+/// Súradnice ZNÁMEHO bodu daného zamerania — nikdy poloha lode pri
+/// resekcii, aj keby bola pri zameraní k dispozícii vďaka bežiacemu GPS.
+///
+/// Pri resekcii je známy bod ten zameraný waypoint; pri hľadaní objektu je
+/// to naopak pozorovateľ. Zápis oboch stĺpcov naraz (`observerLat` sa pri
+/// resekcii ukladá len ako doplnok na porovnanie s GPS, pozri
+/// `resectionOffGpsMetersProvider`) by si inak vyžiadal, aby si na to každý
+/// čitateľ riadku pamätal sám — v tabuľke PDF aj na kreslení čiary.
+(double?, double?) knownPointOf(Bearing b) {
+  final kind = BearingKind.fromCode(b.kind);
+  return switch (kind) {
+    BearingKind.resection => (b.targetLat, b.targetLon),
+    BearingKind.intersection => (b.observerLat, b.observerLon),
+    null => (null, null),
+  };
+}
+
 /// Zámerná priamka pre daný riadok, alebo null, keď riadku chýba to, čo jeho
 /// druh vyžaduje. (Databázový CHECK to nepustí, ale čítanie sa nemá spoliehať
 /// na to, že zápis bol v poriadku.)
@@ -270,16 +302,7 @@ BearingLine? bearingLineOf(Bearing b) {
   final kind = BearingKind.fromCode(b.kind);
   if (kind == null) return null;
 
-  final double? lat;
-  final double? lon;
-  switch (kind) {
-    case BearingKind.resection:
-      lat = b.targetLat;
-      lon = b.targetLon;
-    case BearingKind.intersection:
-      lat = b.observerLat;
-      lon = b.observerLon;
-  }
+  final (lat, lon) = knownPointOf(b);
   if (lat == null || lon == null) return null;
 
   return BearingGeometry.lineFor(
@@ -849,12 +872,25 @@ class BearingRepository {
     }
   }
 
+  /// Nevratne zmaže zameranie — jediná cesta k tomuto je denník
+  /// (`day_log_screen`, `bearing_session_screen`), nikdy živá mapa.
   Future<void> delete(int id) => _db.deleteBearing(id);
 
   Future<void> deleteGroup(String sightGroupId) =>
       _db.deleteBearingGroup(sightGroupId);
 
   Future<void> clearAll() => _db.deleteAllBearings();
+
+  /// Skryje zameranie z mapy. Riadok ostáva — vidno ho ďalej v denníku
+  /// (`bearingsForDayProvider`, `orphanBearingSessionsProvider`) a v PDF.
+  Future<void> hideFromMap(int id) => _db.hideBearingFromMap(id);
+
+  Future<void> hideGroupFromMap(String sightGroupId) =>
+      _db.hideBearingGroupFromMap(sightGroupId);
+
+  /// "Vyčistiť mapu" z jej vrstvového tlačidla — uprace preplnenú mapu
+  /// počas plavby bez toho, aby to zmazalo záznam z denníka.
+  Future<void> hideAllFromMap() => _db.hideAllBearingsFromMap();
 
   Future<void> rename(int id, String? label) =>
       _db.updateBearingLabel(id, label?.trim().isEmpty ?? true ? null : label);

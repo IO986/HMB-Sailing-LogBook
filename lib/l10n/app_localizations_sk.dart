@@ -3221,11 +3221,11 @@ class AppLocalizationsSk extends AppLocalizations {
   String get bearingsTitle => 'Zamerania';
 
   @override
-  String get bearingsClearAll => 'Zmazať všetky zamerania';
+  String get bearingsClearAll => 'Skryť všetky z mapy';
 
   @override
   String get bearingsClearConfirm =>
-      'Zmazať všetky zamerania? Čiary aj krížový fix zmiznú z mapy.';
+      'Skryť všetky zamerania z mapy? Čiary aj krížový fix zmiznú z mapy, v denníku zostanú.';
 
   @override
   String get bearingsEmpty =>
@@ -3352,4 +3352,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Začať nové zameranie';
+
+  @override
+  String get bearingHideFromMap => 'Skryť z mapy';
 }

@@ -3244,11 +3244,11 @@ class AppLocalizationsEl extends AppLocalizations {
   String get bearingsTitle => 'Διοπτεύσεις';
 
   @override
-  String get bearingsClearAll => 'Διαγραφή όλων των διοπτεύσεων';
+  String get bearingsClearAll => 'Απόκρυψη όλων από τον χάρτη';
 
   @override
   String get bearingsClearConfirm =>
-      'Διαγραφή όλων των διοπτεύσεων; Οι γραμμές και το στίγμα θα εξαφανιστούν από τον χάρτη.';
+      'Απόκρυψη όλων των διοπτεύσεων από τον χάρτη; Οι γραμμές και το στίγμα εξαφανίζονται από τον χάρτη, παραμένουν στο ημερολόγιο.';
 
   @override
   String get bearingsEmpty =>
@@ -3375,4 +3375,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Έναρξη νέας διόπτευσης';
+
+  @override
+  String get bearingHideFromMap => 'Απόκρυψη από τον χάρτη';
 }

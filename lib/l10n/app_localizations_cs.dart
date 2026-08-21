@@ -3218,11 +3218,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get bearingsTitle => 'Zaměření';
 
   @override
-  String get bearingsClearAll => 'Smazat všechna zaměření';
+  String get bearingsClearAll => 'Skrýt vše z mapy';
 
   @override
   String get bearingsClearConfirm =>
-      'Smazat všechna zaměření? Čáry i křížový fix zmizí z mapy.';
+      'Skrýt všechna zaměření z mapy? Čáry i křížové zaměření zmizí z mapy, v deníku zůstanou.';
 
   @override
   String get bearingsEmpty =>
@@ -3348,4 +3348,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Začít nové zaměření';
+
+  @override
+  String get bearingHideFromMap => 'Skrýt z mapy';
 }

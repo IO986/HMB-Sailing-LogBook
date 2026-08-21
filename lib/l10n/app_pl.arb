@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Model magnetyczny wygasł — deklinacja jest tylko szacunkiem",
   "bearingsLayer": "Namiary",
   "bearingsTitle": "Namiary",
-  "bearingsClearAll": "Usuń wszystkie namiary",
-  "bearingsClearConfirm": "Usunąć wszystkie namiary? Linie i pozycja z namiarów znikną z mapy.",
+  "bearingsClearAll": "Ukryj wszystkie z mapy",
+  "bearingsClearConfirm": "Ukryć wszystkie namiary z mapy? Linie i pozycja z namiarów znikną z mapy, zostaną w dzienniku.",
   "bearingsEmpty": "Brak namiarów. Wyceluj telefon w obiekt i naciśnij Zmierz namiar.",
   "bearingFixFrom": "Pozycja z {count} namiarów",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Namierzany punkt",
   "bearingPdfResult": "Wynik",
 
-  "bearingStartNew": "Zacznij nowy namiar"
+  "bearingStartNew": "Zacznij nowy namiar",
+
+  "bearingHideFromMap": "Ukryj z mapy"
 }

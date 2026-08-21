@@ -3218,11 +3218,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bearingsTitle => 'Bearings';
 
   @override
-  String get bearingsClearAll => 'Clear all bearings';
+  String get bearingsClearAll => 'Hide all from map';
 
   @override
   String get bearingsClearConfirm =>
-      'Clear all bearings? The lines and the cross fix disappear from the map.';
+      'Hide all bearings from the map? The lines and the cross fix disappear from the map; they stay in the logbook.';
 
   @override
   String get bearingsEmpty =>
@@ -3350,4 +3350,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Start a new sighting';
+
+  @override
+  String get bearingHideFromMap => 'Hide from map';
 }

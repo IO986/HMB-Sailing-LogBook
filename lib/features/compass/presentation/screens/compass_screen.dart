@@ -198,7 +198,15 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
       }
       return;
     }
-    if (mode == BearingKind.intersection && group == null) {
+    // `group == null` sama osebe nestačí: pri celkom novom bode je vybraná
+    // len jeho meno (`_pendingObjectName`), skupina v databáze ešte
+    // neexistuje, kým naň nepadne prvý námer — takže `group` je null aj v
+    // stave, ktorý je úplne v poriadku na zameranie. Bez tejto podmienky
+    // druhé ťuknutie na Zameraj po pomenovaní nového bodu znova pýtalo
+    // výber, namiesto aby zamerania.
+    if (mode == BearingKind.intersection &&
+        group == null &&
+        _pendingObjectName == null) {
       await _chooseSightObject();
       if (mounted &&
           ref.read(activeSightGroupIdProvider) == null &&

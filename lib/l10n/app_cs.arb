@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Magnetický model vypršel – deklinace je jen odhad",
   "bearingsLayer": "Zaměření",
   "bearingsTitle": "Zaměření",
-  "bearingsClearAll": "Smazat všechna zaměření",
-  "bearingsClearConfirm": "Smazat všechna zaměření? Čáry i křížový fix zmizí z mapy.",
+  "bearingsClearAll": "Skrýt vše z mapy",
+  "bearingsClearConfirm": "Skrýt všechna zaměření z mapy? Čáry i křížové zaměření zmizí z mapy, v deníku zůstanou.",
   "bearingsEmpty": "Zatím žádná zaměření. Namiř telefon na objekt a stiskni Zaměřit.",
   "bearingFixFrom": "Poloha z {count} zaměření",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Zaměřený bod",
   "bearingPdfResult": "Výsledek",
 
-  "bearingStartNew": "Začít nové zaměření"
+  "bearingStartNew": "Začít nové zaměření",
+
+  "bearingHideFromMap": "Skrýt z mapy"
 }

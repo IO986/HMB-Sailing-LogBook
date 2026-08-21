@@ -3225,11 +3225,11 @@ class AppLocalizationsSl extends AppLocalizations {
   String get bearingsTitle => 'Azimuti';
 
   @override
-  String get bearingsClearAll => 'Izbriši vse azimute';
+  String get bearingsClearAll => 'Skrij vse z zemljevida';
 
   @override
   String get bearingsClearConfirm =>
-      'Izbrišem vse azimute? Črte in presečišče bodo izginili z zemljevida.';
+      'Skriti vse azimute z zemljevida? Črte in presečišče izginejo z zemljevida, v dnevniku ostanejo.';
 
   @override
   String get bearingsEmpty =>
@@ -3356,4 +3356,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Začni novo meritev';
+
+  @override
+  String get bearingHideFromMap => 'Skrij z zemljevida';
 }

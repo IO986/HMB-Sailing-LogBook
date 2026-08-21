@@ -14,7 +14,7 @@ import '../../../core/models/bearing_kind.dart';
 import '../../../core/models/logbook_event_type.dart';
 import '../../../core/models/sail_mode.dart';
 import '../../bearing/providers/bearing_provider.dart'
-    show bearingLineOf, latestResectionCluster, sightGroupsFrom;
+    show bearingLineOf, knownPointOf, latestResectionCluster, sightGroupsFrom;
 import '../../bearing/services/bearing_geometry.dart';
 import '../../miles/services/voyage_miles_summary.dart';
 import '../../../core/models/crew_member_ref.dart';
@@ -814,21 +814,19 @@ class PdfExportService {
                 style: pw.TextStyle(
                     color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9)),
             pw.SizedBox(height: 3),
-            _bearingsTable(resections, l),
-            if (resectionFix != null) ...[
-              pw.SizedBox(height: 3),
-              pw.Text(
-                  // Súradnice patria k výsledku rovnako ako chyba a rez —
-                  // je to poloha vypočítaná z námerov, nie odčítaná z GPS,
-                  // a bez čísla by sa dala len ukázať prstom na mape.
-                  _pdfText('${l.bearingMyPositionFix}: '
-                      '${_latStr(resectionFix.position.latitude)}  '
-                      '${_lonStr(resectionFix.position.longitude)}  '
-                      '±${resectionFix.errorRadiusMeters.round()} m'
-                      '${resectionFix.isWeak ? '  ·  ${l.bearingFixWeak('${resectionFix.cutAngleDeg.round()}°')}' : ''}'),
-                  style: pw.TextStyle(
-                      color: _dgrey, fontSize: 8, fontStyle: pw.FontStyle.italic)),
-            ],
+            _bearingsTable(
+              resections,
+              l,
+              resultLabel: resectionFix == null
+                  ? null
+                  : '${l.bearingMyPositionFix}'
+                      '  ±${resectionFix.errorRadiusMeters.round()} m'
+                      '${resectionFix.isWeak ? '  ·  ${l.bearingFixWeak('${resectionFix.cutAngleDeg.round()}°')}' : ''}',
+              resultPosition: resectionFix == null
+                  ? null
+                  : '${_latStr(resectionFix.position.latitude)}  '
+                      '${_lonStr(resectionFix.position.longitude)}',
+            ),
             pw.SizedBox(height: 10),
           ],
 
@@ -838,17 +836,20 @@ class PdfExportService {
                     color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 9)),
             pw.SizedBox(height: 3),
             for (final group in objectGroups) ...[
-              _bearingsTable(group.bearings, l),
-              if (group.fix != null)
-                pw.Padding(
-                  padding: const pw.EdgeInsets.only(top: 3, bottom: 8),
-                  child: pw.Text(
-                      _pdfText('${group.name.isEmpty ? l.bearingObjectFix : group.name}: '
-                          '±${group.fix!.errorRadiusMeters.round()} m'
-                          '${group.fix!.isWeak ? '  ·  ${l.bearingFixWeak('${group.fix!.cutAngleDeg.round()}°')}' : ''}'),
-                      style: pw.TextStyle(
-                          color: _dgrey, fontSize: 8, fontStyle: pw.FontStyle.italic)),
-                ),
+              _bearingsTable(
+                group.bearings,
+                l,
+                resultLabel: group.fix == null
+                    ? null
+                    : '${group.name.isEmpty ? l.bearingObjectFix : group.name}'
+                        '  ±${group.fix!.errorRadiusMeters.round()} m'
+                        '${group.fix!.isWeak ? '  ·  ${l.bearingFixWeak('${group.fix!.cutAngleDeg.round()}°')}' : ''}',
+                resultPosition: group.fix == null
+                    ? null
+                    : '${_latStr(group.fix!.position.latitude)}  '
+                        '${_lonStr(group.fix!.position.longitude)}',
+              ),
+              pw.SizedBox(height: 8),
             ],
           ],
 
@@ -866,7 +867,8 @@ class PdfExportService {
 
   // ── Bearings table ────────────────────────────────────────────
 
-  static pw.Widget _bearingsTable(List<Bearing> bearings, AppLocalizations l) {
+  static pw.Widget _bearingsTable(List<Bearing> bearings, AppLocalizations l,
+      {String? resultLabel, String? resultPosition}) {
     pw.Widget head(String text) => pw.Container(
           padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
           child: pw.Text(_pdfText(text.toUpperCase()),
@@ -892,7 +894,7 @@ class PdfExportService {
         2: const pw.FixedColumnWidth(44), // Pravý kurz
         3: const pw.FixedColumnWidth(44), // Magnetický
         4: const pw.FixedColumnWidth(40), // Deklinácia
-        5: const pw.FixedColumnWidth(96), // Poloha pozorovateľa
+        5: const pw.FixedColumnWidth(96), // Poloha
       },
       children: [
         pw.TableRow(
@@ -915,12 +917,30 @@ class PdfExportService {
             cell(_bearingDeg(b.trueBearing), bold: true),
             cell(_bearingDeg(b.magneticBearing)),
             cell(_signedDeg(b.declination)),
-            // Resekcia polohu pozorovateľa nemá — je to práve to hľadané.
-            // Namiesto prázdneho stĺpca sa vypíše poloha zameraného bodu.
-            cell(b.observerLat != null
-                ? '${_latStr(b.observerLat)}  ${_lonStr(b.observerLon)}'
-                : '${_latStr(b.targetLat)}  ${_lonStr(b.targetLon)}'),
+            // Stĺpec je poloha ZNÁMEHO BODU (knownPointOf), nie
+            // pozorovateľa — pri resekcii sa nesmie prepnúť na polohu lode
+            // len preto, že GPS v okamihu zamerania náhodou bežalo.
+            cell(() {
+              final (lat, lon) = knownPointOf(b);
+              return '${_latStr(lat)}  ${_lonStr(lon)}';
+            }()),
           ]),
+        // Vypočítaný výsledok ako posledný riadok tej istej tabuľky, nie
+        // samostatný text pod ňou — čitateľ ho tak prečíta priamo vedľa
+        // riadkov, z ktorých vznikol, namiesto hľadania súvislosti o kus
+        // nižšie.
+        if (resultLabel != null && resultPosition != null)
+          pw.TableRow(
+            decoration: pw.BoxDecoration(color: _lblue),
+            children: [
+              cell(''),
+              cell(resultLabel, bold: true),
+              cell(''),
+              cell(''),
+              cell(''),
+              cell(resultPosition, bold: true),
+            ],
+          ),
       ],
     );
   }

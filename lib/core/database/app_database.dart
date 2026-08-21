@@ -303,6 +303,16 @@ class Bearings extends Table {
   IntColumn get dayLogId => integer().nullable().references(DayLogs, #id)();
   IntColumn get charterId => integer().nullable().references(Charters, #id)();
 
+  /// Skryté z mapy, ale zameranie samo zostáva — mazanie z mapy je vedomé
+  /// upratanie zaplnenej mapy počas plavby, nie rozhodnutie zahodiť záznam.
+  ///
+  /// Skutočné zmazanie riadku je len na dennom zázname (`day_log_screen`,
+  /// `bearing_session_screen`): tam skiper vidí zameranie ako riadok
+  /// v denníku, nie ako čiaru medzi desiatkami iných na preplnenej mape, a
+  /// má tak šancu si rozmyslieť, či ho naozaj zahodiť.
+  BoolColumn get hiddenFromMap =>
+      boolean().withDefault(const Constant(false))();
+
   @override
   List<String> get customConstraints => [
         // Resekcia bez zameraného bodu je len uhol bez zmyslu; hľadanie
@@ -522,7 +532,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 26;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -670,7 +680,13 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(charters, charters.tidalWaters);
       }
       if (from < 25) {
+        // createTable stavia AKTUÁLNY tvar tabuľky (vrátane hiddenFromMap
+        // pridaného v26), takže nasledujúci addColumn blok pre DB staršie
+        // než 25 nesmie bežať — rovnaká pasca ako pri tideSnapshots vyššie.
         await m.createTable(bearings);
+      }
+      if (from >= 25 && from < 26) {
+        await m.addColumn(bearings, bearings.hiddenFromMap);
       }
     },
     beforeOpen: (details) async {
@@ -1032,6 +1048,19 @@ class AppDatabase extends _$AppDatabase {
       (delete(bearings)..where((b) => b.sightGroupId.equals(sightGroupId)))
           .go();
 
+  /// Skryje zameranie z mapy bez zmazania riadku — vidno ho ďalej v denníku
+  /// aj v PDF, len sa prestane kresliť. Skutočné zmazanie je `deleteBearing`.
+  Future<void> hideBearingFromMap(int id) =>
+      (update(bearings)..where((b) => b.id.equals(id)))
+          .write(const BearingsCompanion(hiddenFromMap: Value(true)));
+
+  Future<void> hideBearingGroupFromMap(String sightGroupId) =>
+      (update(bearings)..where((b) => b.sightGroupId.equals(sightGroupId)))
+          .write(const BearingsCompanion(hiddenFromMap: Value(true)));
+
+  Future<void> hideAllBearingsFromMap() =>
+      update(bearings).write(const BearingsCompanion(hiddenFromMap: Value(true)));
+
   Future<void> updateBearingLabel(int id, String? label) =>
       (update(bearings)..where((b) => b.id.equals(id)))
           .write(BearingsCompanion(label: Value(label)));
@@ -1039,8 +1068,8 @@ class AppDatabase extends _$AppDatabase {
   Future<void> deleteBearing(int id) =>
       (delete(bearings)..where((b) => b.id.equals(id))).go();
 
-  /// Zmaže všetky zamerania. Používa sa pri "vyčistiť mapu" — čiary sú
-  /// pracovná pomôcka na jednu situáciu, nie trvalý záznam ako waypoint.
+  /// Nevratne zmaže VŠETKY zamerania. "Vyčistiť mapu" toto nevolá —
+  /// tam ide o `hideAllBearingsFromMap`, ktoré záznam nechá v denníku.
   Future<void> deleteAllBearings() => delete(bearings).go();
 
   // ── Weather ───────────────────────────────────────────────────

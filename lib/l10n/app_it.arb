@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Il modello magnetico è scaduto: la declinazione è una stima",
   "bearingsLayer": "Rilevamenti",
   "bearingsTitle": "Rilevamenti",
-  "bearingsClearAll": "Cancella tutti i rilevamenti",
-  "bearingsClearConfirm": "Cancellare tutti i rilevamenti? Le linee e il punto nave spariranno dalla mappa.",
+  "bearingsClearAll": "Nascondi tutti dalla mappa",
+  "bearingsClearConfirm": "Nascondere tutti i rilevamenti dalla mappa? Le linee e il punto nave spariscono dalla mappa, ma restano nel diario.",
   "bearingsEmpty": "Ancora nessun rilevamento. Punta il telefono su un oggetto e tocca Rileva.",
   "bearingFixFrom": "Posizione da {count} rilevamenti",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Punto rilevato",
   "bearingPdfResult": "Risultato",
 
-  "bearingStartNew": "Inizia un nuovo rilevamento"
+  "bearingStartNew": "Inizia un nuovo rilevamento",
+
+  "bearingHideFromMap": "Nascondi dalla mappa"
 }

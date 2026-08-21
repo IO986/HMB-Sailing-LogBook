@@ -3234,11 +3234,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bearingsTitle => 'Demoras';
 
   @override
-  String get bearingsClearAll => 'Borrar todas las demoras';
+  String get bearingsClearAll => 'Ocultar todas del mapa';
 
   @override
   String get bearingsClearConfirm =>
-      '¿Borrar todas las demoras? Las líneas y la situación por demoras desaparecerán del mapa.';
+      '¿Ocultar todas las demoras del mapa? Las líneas y la situación por demoras desaparecen del mapa, pero se quedan en el diario.';
 
   @override
   String get bearingsEmpty =>
@@ -3367,4 +3367,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Empezar una demora nueva';
+
+  @override
+  String get bearingHideFromMap => 'Ocultar del mapa';
 }

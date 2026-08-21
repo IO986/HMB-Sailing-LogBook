@@ -3238,11 +3238,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bearingsTitle => 'Peilungen';
 
   @override
-  String get bearingsClearAll => 'Alle Peilungen löschen';
+  String get bearingsClearAll => 'Alle von der Karte ausblenden';
 
   @override
   String get bearingsClearConfirm =>
-      'Alle Peilungen löschen? Die Linien und der Kreuzpeilungsort verschwinden von der Karte.';
+      'Alle Peilungen von der Karte ausblenden? Die Linien und die Kreuzpeilung verschwinden von der Karte, bleiben aber im Logbuch.';
 
   @override
   String get bearingsEmpty =>
@@ -3370,4 +3370,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Neue Peilung beginnen';
+
+  @override
+  String get bearingHideFromMap => 'Von der Karte ausblenden';
 }

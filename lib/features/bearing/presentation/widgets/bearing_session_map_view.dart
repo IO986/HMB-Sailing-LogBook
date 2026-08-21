@@ -72,8 +72,19 @@ class BearingSessionMapView extends StatelessWidget {
       final maxLat = points.map((p) => p.latitude).reduce(max);
       final minLon = points.map((p) => p.longitude).reduce(min);
       final maxLon = points.map((p) => p.longitude).reduce(max);
+
+      // Výrez o niečo širší než presne obostreté body: `sqrt(1.1)` na
+      // rozmer dá dokopy ~10 % väčšiu plochu, aby okolo bodov aj fixu
+      // zostal viditeľný kus okolia, nie len samotné značky pri okraji.
+      const expansion = 1.0488;
+      final latPad = (maxLat - minLat) * (expansion - 1) / 2;
+      final lonPad = (maxLon - minLon) * (expansion - 1) / 2;
+
       cameraFit = CameraFit.bounds(
-        bounds: LatLngBounds(LatLng(minLat, minLon), LatLng(maxLat, maxLon)),
+        bounds: LatLngBounds(
+          LatLng(minLat - latPad, minLon - lonPad),
+          LatLng(maxLat + latPad, maxLon + lonPad),
+        ),
         padding: const EdgeInsets.all(28),
         maxZoom: 13,
       );

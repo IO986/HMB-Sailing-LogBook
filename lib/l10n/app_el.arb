@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Το μαγνητικό μοντέλο έληξε — η απόκλιση είναι εκτίμηση",
   "bearingsLayer": "Διοπτεύσεις",
   "bearingsTitle": "Διοπτεύσεις",
-  "bearingsClearAll": "Διαγραφή όλων των διοπτεύσεων",
-  "bearingsClearConfirm": "Διαγραφή όλων των διοπτεύσεων; Οι γραμμές και το στίγμα θα εξαφανιστούν από τον χάρτη.",
+  "bearingsClearAll": "Απόκρυψη όλων από τον χάρτη",
+  "bearingsClearConfirm": "Απόκρυψη όλων των διοπτεύσεων από τον χάρτη; Οι γραμμές και το στίγμα εξαφανίζονται από τον χάρτη, παραμένουν στο ημερολόγιο.",
   "bearingsEmpty": "Καμία διόπτευση ακόμη. Στόχευσε το τηλέφωνο σε ένα αντικείμενο και πάτησε Λήψη διόπτευσης.",
   "bearingFixFrom": "Θέση από {count} διοπτεύσεις",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Διοπτευμένο σημείο",
   "bearingPdfResult": "Αποτέλεσμα",
 
-  "bearingStartNew": "Έναρξη νέας διόπτευσης"
+  "bearingStartNew": "Έναρξη νέας διόπτευσης",
+
+  "bearingHideFromMap": "Απόκρυψη από τον χάρτη"
 }

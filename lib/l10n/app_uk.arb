@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Магнітна модель застаріла — схилення є лише оцінкою",
   "bearingsLayer": "Пеленги",
   "bearingsTitle": "Пеленги",
-  "bearingsClearAll": "Видалити всі пеленги",
-  "bearingsClearConfirm": "Видалити всі пеленги? Лінії та перетин зникнуть з карти.",
+  "bearingsClearAll": "Приховати всі з карти",
+  "bearingsClearConfirm": "Приховати всі пеленги з карти? Лінії та перетин зникнуть з карти, залишаться в журналі.",
   "bearingsEmpty": "Пеленгів ще немає. Наведи телефон на об'єкт і натисни Взяти пеленг.",
   "bearingFixFrom": "Позиція з {count} пеленгів",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Пеленгована точка",
   "bearingPdfResult": "Результат",
 
-  "bearingStartNew": "Почати новий пеленг"
+  "bearingStartNew": "Почати новий пеленг",
+
+  "bearingHideFromMap": "Приховати з карти"
 }

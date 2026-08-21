@@ -3227,11 +3227,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bearingsTitle => 'Пеленги';
 
   @override
-  String get bearingsClearAll => 'Видалити всі пеленги';
+  String get bearingsClearAll => 'Приховати всі з карти';
 
   @override
   String get bearingsClearConfirm =>
-      'Видалити всі пеленги? Лінії та перетин зникнуть з карти.';
+      'Приховати всі пеленги з карти? Лінії та перетин зникнуть з карти, залишаться в журналі.';
 
   @override
   String get bearingsEmpty =>
@@ -3358,4 +3358,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get bearingStartNew => 'Почати новий пеленг';
+
+  @override
+  String get bearingHideFromMap => 'Приховати з карти';
 }

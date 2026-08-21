@@ -1104,8 +1104,8 @@
   "bearingDeclinationExpired": "Magnetmodell abgelaufen — Missweisung ist nur eine Schätzung",
   "bearingsLayer": "Peilungen",
   "bearingsTitle": "Peilungen",
-  "bearingsClearAll": "Alle Peilungen löschen",
-  "bearingsClearConfirm": "Alle Peilungen löschen? Die Linien und der Kreuzpeilungsort verschwinden von der Karte.",
+  "bearingsClearAll": "Alle von der Karte ausblenden",
+  "bearingsClearConfirm": "Alle Peilungen von der Karte ausblenden? Die Linien und die Kreuzpeilung verschwinden von der Karte, bleiben aber im Logbuch.",
   "bearingsEmpty": "Noch keine Peilungen. Richte das Telefon auf ein Objekt und tippe auf Peilung nehmen.",
   "bearingFixFrom": "Position aus {count} Peilungen",
   "@bearingFixFrom": { "placeholders": { "count": { "type": "int" } } },
@@ -1148,5 +1148,7 @@
   "bearingPdfMark": "Angepeilter Punkt",
   "bearingPdfResult": "Ergebnis",
 
-  "bearingStartNew": "Neue Peilung beginnen"
+  "bearingStartNew": "Neue Peilung beginnen",
+
+  "bearingHideFromMap": "Von der Karte ausblenden"
 }
