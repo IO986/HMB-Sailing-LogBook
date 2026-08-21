@@ -24,6 +24,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../providers/bearing_provider.dart';
 import '../../services/bearing_geometry.dart';
 import '../widgets/bearing_session_map_view.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class BearingSessionScreen extends ConsumerStatefulWidget {
   final DateTime date;
@@ -72,7 +73,7 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(DateFormat('EEEE d. MMMM yyyy', 'sk').format(widget.date)),
+        title: Text(AppDate.of(context, ref).long(widget.date)),
         actions: [
           IconButton(
             icon: _exporting
@@ -84,6 +85,13 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
             onPressed: bearings.isEmpty || _exporting
                 ? null
                 : () => _export(bearings, resectionFix, objectGroups, l),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: l.delete,
+            onPressed: bearings.isEmpty || _exporting
+                ? null
+                : () => _deleteWholeDay(bearings, l),
           ),
         ],
       ),
@@ -132,6 +140,50 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
     );
   }
 
+  /// Zmaže celý denný záznam zameraní.
+  ///
+  /// Riadok v zozname plavieb nie je samostatná entita — vzniká zoskupením
+  /// zameraní podľa dňa (`orphanBearingSessionsProvider`). Zmazaním
+  /// posledného zamerania teda zmizne aj on, bez ďalšieho upratovania.
+  ///
+  /// Na rozdiel od "skryť z mapy" je toto naozaj nevratné a zmizne aj z PDF —
+  /// preto potvrdenie a červené tlačidlo.
+  Future<void> _deleteWholeDay(
+      List<Bearing> bearings, AppLocalizations l) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.deleteEntryTitle),
+        content: Text(l.bearingsDeleteDayConfirm),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.delete, style: const TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final repo = ref.read(bearingRepositoryProvider);
+    // Skupinové zamerania sa mažú celé naraz, takže tá istá skupina by inak
+    // prišla na rad toľkokrát, koľko má členov.
+    final doneGroups = <String>{};
+    for (final b in bearings) {
+      final groupId = b.sightGroupId;
+      if (groupId != null) {
+        if (doneGroups.add(groupId)) await repo.deleteGroup(groupId);
+      } else {
+        await repo.delete(b.id);
+      }
+    }
+    if (!mounted) return;
+    Navigator.of(context).pop();
+  }
+
   /// Ide cez rovnaký náhľad ako denný a plavebný export
   /// (`PdfPreviewScreen`): sťahovacia ikona uloží PDF do viditeľného
   /// úložiska cez systémový dialóg, tlačidlo dole ho zdieľa. Predošlá
@@ -143,6 +195,7 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
     Uint8List bytes;
     try {
       bytes = await PdfExportService.buildBearingSessionPdfBytes(
+        dateFormat: AppDate.of(context, ref),
         date: widget.date,
         bearings: bearings,
         l: l,

@@ -34,6 +34,11 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
 
   double _magX = 0, _magY = 0, _magZ = 0;
   double _accX = 0, _accY = 0, _accZ = 0;
+  /// Pod týmto rozdielom sa kurzom na displeji nič viditeľne nezmení, takže
+  /// sa neprekresľuje. Nižšie než rozlíšenie údaja (1°) aj než reálna
+  /// presnosť telefónového kompasu (±8°).
+  static const double _minVisibleHeadingChangeDeg = 0.3;
+
   double _heading = 0;
   double _smoothedHeading = 0;
   bool _headingInitialized = false;
@@ -50,6 +55,9 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Zameranie na neznámy bod sa počíta z polohy lode v okamihu ťuknutia —
+    // tá musí byť čerstvá, nie 50 m stará.
+    LocationService().requestPrecise(this);
     _initCamera();
     _initSensors();
   }
@@ -155,7 +163,15 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
     if (_recentHeadings.length > 20) _recentHeadings.removeAt(0);
     final stable = _recentHeadings.length >= 10 && _headingVariance() < 4.0;
 
-    if (mounted) setState(() { _heading = _smoothedHeading; _isStable = stable; });
+    // Magnetometer tečie na ~15 Hz a každý vzorok prekresľoval celú obrazovku
+    // vrátane camera preview a kompasového pásu. Vyhladený kurz sa pritom pri
+    // pokojne držanom telefóne medzi vzorkami mení o stotiny stupňa — čo oko
+    // nerozozná. Prekresli, len keď je čo vidieť.
+    if (!mounted) return;
+    var delta = (_smoothedHeading - _heading).abs();
+    if (delta > 180) delta = 360 - delta;
+    if (delta < _minVisibleHeadingChangeDeg && stable == _isStable) return;
+    setState(() { _heading = _smoothedHeading; _isStable = stable; });
   }
 
   double _headingVariance() {
@@ -275,6 +291,41 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
       }
     }
     _reportCapture(result, wasStable);
+  }
+
+  /// Odloží doterajšie zamerania z mapy a začne s čistým štítom.
+  ///
+  /// Nič sa nemaže: riadky zostávajú v databáze a naďalej sa zobrazujú v
+  /// lodnom denníku aj v PDF exporte, len prestanú kresliť do mapy. Presne
+  /// preto to nie je červené tlačidlo — z pohľadu záznamu sa nič nestráca.
+  ///
+  /// Sedí to na kompase, nie na mape: čistý štít potrebuje skiper vo chvíli,
+  /// keď ide zameriavať, a to je práve tu.
+  Future<void> _startNewSighting() async {
+    final l = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(l.bearingsClearConfirm),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.bearingStartNew),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    await ref.read(bearingRepositoryProvider).hideAllFromMap();
+    if (!mounted) return;
+    // Aj voľby musia ísť dole, inak by ďalšie ťuknutie na Zameraj
+    // pokračovalo v starom bode či objekte namiesto nového zamerania.
+    ref.read(resectionTargetIdProvider.notifier).state = null;
+    ref.read(activeSightGroupIdProvider.notifier).state = null;
   }
 
   /// Ukáže spočítaný, ešte neuložený námer a spýta sa, či ho zapísať.
@@ -542,6 +593,7 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
 
   @override
   void dispose() {
+    LocationService().releasePrecise(this);
     WidgetsBinding.instance.removeObserver(this);
     _magSub?.cancel();
     _accSub?.cancel();
@@ -607,6 +659,19 @@ class _CompassScreenState extends ConsumerState<CompassScreen>
               child: Text(l.navCompass,
                   style: const TextStyle(
                       color: Colors.white60, fontSize: 12, letterSpacing: 2)),
+            ),
+          ),
+
+          // ── Čistý štít ────────────────────────────────────
+          // Hore vpravo, mimo dosahu palca, ktorý drží tlačidlo Zameraj:
+          // je to akcia na začiatku práce, nie počas nej.
+          Positioned(
+            top: topPad + 4,
+            right: 4,
+            child: IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.white70),
+              tooltip: l.bearingStartNew,
+              onPressed: _startNewSighting,
             ),
           ),
 

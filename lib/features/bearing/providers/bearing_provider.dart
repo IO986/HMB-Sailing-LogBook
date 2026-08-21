@@ -78,8 +78,14 @@ const double kMinBaselineMeters = 100;
 const _uuid = Uuid();
 const _distance = Distance();
 
-/// Všetky uložené zamerania, najnovšie prvé. Sleduje databázu, takže nová
-/// čiara sa objaví na mape hneď po uložení.
+/// Všetky uložené zamerania, najnovšie prvé, VRÁTANE skrytých z mapy.
+/// Sleduje databázu, takže nová čiara sa objaví hneď po uložení.
+///
+/// NEKRESLI z tohto priamo do mapy — na to je [mapVisibleBearingsProvider].
+/// Mapa tu raz siahla omylom a „skryť z mapy" tým prestalo fungovať:
+/// príznak sa do databázy zapísal správne, len ho nikto nečítal. Testy to
+/// nechytili, lebo overovali [mapVisibleBearingsProvider], ktorý bol v
+/// poriadku — chýbalo overenie, že ho mapa naozaj používa.
 final bearingsProvider = StreamProvider<List<Bearing>>((ref) {
   final db = ref.watch(databaseProvider);
   return db.watchAllBearings();

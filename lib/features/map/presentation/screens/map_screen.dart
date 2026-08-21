@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 
 import '../../../../core/providers/night_mode_provider.dart';
@@ -36,6 +35,7 @@ import '../widgets/waypoint_dialog.dart';
 // Explicit imports needed for CircleLayer
 import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
 /// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
@@ -113,6 +113,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     super.initState();
+    // Kým je mapa otvorená, marker vlastnej lode sa hýbe pred očami —
+    // idle režim (50 m / 15 s) by ho viditeľne trhal.
+    LocationService().requestPrecise(this);
     // Nezávisle od `followGps`: ten prepínač rozhoduje, či mapa BEŽÍ za
     // GPS, kým je otvorená (obnovuje stred pri každom novom bode). O tom,
     // ODKIAĽ mapa pri otvorení štartuje, sa nemá čo starať — nikto
@@ -132,6 +135,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void dispose() {
+    LocationService().releasePrecise(this);
     for (final t in _tileReloadTimers) {
       t.cancel();
     }
@@ -250,7 +254,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         _formatSignedDegrees(bearing.declination)),
                     ''),
                 _bearingDetailRow(l.timeCol,
-                    DateFormat('dd.MM.yyyy HH:mm').format(bearing.takenAt)),
+                    AppDate.of(context, ref).shortWithTime(bearing.takenAt)),
                 // Pri resekcii bez GPS poloha pozorovateľa neexistuje —
                 // je to práve to hľadané, nie chýbajúci údaj.
                 if (bearing.observerLat != null && bearing.observerLon != null)
@@ -388,68 +392,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ),
     );
-  }
-
-  /// Skryje všetky zamerania z mapy. Nie je to zmazanie: záznamy zostávajú
-  /// v denníku a v PDF, len prestanú zapratávať mapu počas plavby — preto
-  /// tu nie je červené tlačidlo, nič nevratné sa nedeje.
-  Future<void> _confirmClearBearings() async {
-    final l = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        content: Text(l.bearingsClearConfirm),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l.cancel)),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l.bearingsClearAll),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    await ref.read(bearingRepositoryProvider).hideAllFromMap();
-  }
-
-  /// Ponuka nad ikonou vrstvy zameraní: začni nanovo, alebo zmaž všetko.
-  ///
-  /// Jednotlivé zamerania sa mažú priamo na mape ťuknutím na ich hrot --
-  /// táto ponuka je len pre dve akcie, ktoré nemajú vlastný bod na mape.
-  Future<void> _showBearingLayerActions() async {
-    final l = AppLocalizations.of(context);
-    final action = await showModalBottomSheet<String>(
-      context: context,
-      builder: (sheetContext) => SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: 8),
-          ListTile(
-            leading: const Icon(Icons.refresh),
-            title: Text(l.bearingStartNew),
-            onTap: () => Navigator.pop(sheetContext, 'new'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete_sweep, color: Colors.red),
-            title: Text(l.bearingsClearAll,
-                style: const TextStyle(color: Colors.red)),
-            onTap: () => Navigator.pop(sheetContext, 'clear'),
-          ),
-          const SizedBox(height: 8),
-        ]),
-      ),
-    );
-    if (!mounted) return;
-    switch (action) {
-      case 'clear':
-        await _confirmClearBearings();
-      case 'new':
-        // Vyprázdni obe voľby na kompase, aby ďalšie ťuknutie na Zameraj
-        // znova pýtalo bod alebo názov objektu, nie pokračovalo v starom.
-        ref.read(resectionTargetIdProvider.notifier).state = null;
-        ref.read(activeSightGroupIdProvider.notifier).state = null;
-    }
   }
 
   static String _formatDegrees(double value) =>
@@ -739,8 +681,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // pomôcka, nesmú prekryť to, kde loď práve je.
               if (mapState.showBearings)
                 ...buildBearingLayers(
-                  bearings: ref.watch(bearingsProvider).valueOrNull ??
-                      const <Bearing>[],
+                  // mapVisibleBearingsProvider, nie bearingsProvider:
+                  // "skryť z mapy" zapisuje príznak do databázy, ale kým sa
+                  // kreslilo z nefiltrovanej verzie, zápis sa na mape nikdy
+                  // neprejavil a zameranie ostalo visieť.
+                  bearings: ref.watch(mapVisibleBearingsProvider),
                   resectionFix: ref.watch(resectionFixProvider),
                   sightGroups: ref.watch(sightGroupsProvider),
                   l: l,
@@ -1088,7 +1033,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 active: mapState.showBearings,
                 onPressed: () =>
                     ref.read(mapNotifierProvider.notifier).toggleBearings(),
-                onLongPress: _showBearingLayerActions,
               ),
               ],
 
@@ -1455,7 +1399,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void _openVoyagePicker(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final localeCode = Localizations.localeOf(context).languageCode;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1510,14 +1453,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     for (final day in days)
                                       ListTile(
                                         dense: true,
-                                        title: Text(DateFormat('EEEE d. MMM yyyy', localeCode).format(day.date)),
+                                        title: Text(AppDate.of(context, ref).long(day.date)),
                                         subtitle: Text(ref
                                             .watch(unitsSyncProvider)
                                             .formatDistance(day.distanceNm,
                                                 decimals: 1)),
                                         onTap: () => _selectDay(
                                             day.id,
-                                            '${charter.title} · ${DateFormat('d.M.yyyy').format(day.date)}',
+                                            '${charter.title} · ${AppDate.of(context, ref).short(day.date)}',
                                             sheetCtx),
                                       ),
                                   ],
