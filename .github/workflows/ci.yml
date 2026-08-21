@@ -26,7 +26,7 @@ jobs:
         env:
           HMB_CORE_PAT: ${{ secrets.HMB_CORE_PAT }}
         run: |
-          git clone --branch v1.0.0 --depth 1 \
+          git clone --branch v1.1.0 --depth 1 \
             https://x-access-token:${HMB_CORE_PAT}@github.com/IO986/hmb_core.git \
             ../hmb_core
 
