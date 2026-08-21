@@ -434,7 +434,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get newMultidayVoyage => 'Nowy wielodniowy rejs';
 
   @override
-  String get deleteCharterTitle => 'Usunąć czarter?';
+  String get deleteCharterTitle => 'Usunąć rejs?';
 
   @override
   String get deleteCharterContent => 'Usunięte zostaną wszystkie dni i wpisy.';
@@ -447,7 +447,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noVoyages => 'Brak rejsów';
 
   @override
-  String get createFirstCharter => 'Utwórz swój pierwszy czarter';
+  String get createFirstCharter => 'Utwórz swój pierwszy rejs';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -966,7 +966,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get checkOutLabel => 'Check-out (zdanie jachtu)';
 
   @override
-  String get charterCheckCard => 'Czarter';
+  String get charterCheckCard => 'Rejs';
 
   @override
   String get weatherTitle => 'Pogoda i morze';
@@ -1774,7 +1774,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportDayTitle => 'Eksport dnia';
 
   @override
-  String get exportCharterTitle => 'Eksport czarteru';
+  String get exportCharterTitle => 'Eksport rejsu';
 
   @override
   String get loadingData => 'Ładuję dane...';
@@ -1791,7 +1791,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportDayBtn => 'Eksportuj dzień';
 
   @override
-  String get exportCharterBtn => 'Eksportuj czarter';
+  String get exportCharterBtn => 'Eksportuj rejs';
 
   @override
   String get entriesLabel => 'Wpisy';
@@ -2052,7 +2052,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Zapisuję i generuję GPX...';
 
   @override
-  String get editCharter => 'Edytuj czarter';
+  String get editCharter => 'Edytuj rejs';
 
   @override
   String get basicInfo => 'Podstawowe informacje';
@@ -2451,7 +2451,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF czarteru\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.\n• Kontakty alarmowe dobierają się według pozycji nawet przy wyłączonym śledzeniu – aplikacja sama pobiera pozycję i zmienia numery po przekroczeniu granicy';
+      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF rejsu\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.\n• Kontakty alarmowe dobierają się według pozycji nawet przy wyłączonym śledzeniu – aplikacja sama pobiera pozycję i zmienia numery po przekroczeniu granicy';
 
   @override
   String get guideDutyTitle => 'Wachta załogi';
@@ -2465,14 +2465,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Zakładka Kompas pokazuje azymut magnetyczny za pomocą czujników telefonu, z podglądem tylnej kamery jako tłem do namierzania obiektów.\n\n• Żółty krzyż – kierunek, na który celujesz\n• Pasek kompasu u góry – N / NE / E / SE / S / SW / W / NW\n• Odczyt liczbowy – stopnie i strona świata\n• Zielona kropka = stabilny odczyt  ·  Pomarańczowa kropka = kalibruje\n\nJeśli odczyt jest niestabilny, powoli poruszaj telefonem w kształcie ósemki, aby skalibrować magnetometr.\n\nUwaga: dokładność może być obniżona w pobliżu konstrukcji metalowych, głośników lub elektroniki.\n\nKompas rozwiązuje dwa różne zadania — znalezienie SIEBIE, gdy nie wiesz, gdzie jesteś, albo wyznaczenie NIEZNANEGO PUNKTU, gdy chcesz nanieść na mapę coś, czego jeszcze na niej nie ma. Przełącznik nad przyciskiem Zmierz namiar wybiera, które z nich właśnie robisz.\n\nMOJA POZYCJA — znajdź siebie (GPS nie jest potrzebny)\n\n1. Sprawdź na mapie, czy znasz co najmniej dwa widoczne punkty (latarnia, szczyt, kościół) zapisane jako waypointy. Brakujący dodajesz długim przytrzymaniem na mapie dokładnie w jego miejscu.\n2. Na kompasie przełącz na \"Moja pozycja\".\n3. Dotknij etykiety pod przełącznikiem i wybierz pierwszy namierzany punkt.\n4. Wyceluj celownik dokładnie w niego i naciśnij Zmierz namiar.\n5. W oknie sprawdź zmierzony namiar i naciśnij Zapisz (Anuluj odrzuca szkic bez zapisu).\n6. Wybierz drugi, INNY punkt (wybór sam się czyści po zapisaniu) i powtórz.\n7. Na mapie zobaczysz dwie przerywane linie biegnące od punktów do ciebie. Ich przecięcie to twoja pozycja — zielony krzyżyk oznacza dobre przecięcie, pomarańczowy ostry kąt i niepewną pozycję.\n8. Trzeci punkt, najlepiej pod innym kątem, doprecyzowuje szacunek i rysuje trójkąt błędu.\n\nZrób to szybko, w ciągu 5 minut — pozycja z namiarów zakłada, że jacht między namiarami stoi.\n\nNIEZNANY PUNKT — wyznacz obiekt (GPS jest potrzebny)\n\n1. Przełącz na \"Nieznany punkt\".\n2. Dotknij etykiety, wybierz \"Nowy punkt…\" i nazwij to, co namierzasz, np. \"nieznana skała\".\n3. Wyceluj, Zmierz namiar, potwierdź Zapisz.\n4. Przemieść jacht o co najmniej kilkaset metrów — im dalej, tym pewniejszy wynik.\n5. Otwórz ponownie wybór celu, wybierz TEN SAM obiekt z listy (nie \"Nowy punkt\") i zmierz namiar po raz drugi.\n6. Na mapie pojawi się znacznik z wyliczoną pozycją obiektu. Dotknięcie zapisuje go jako waypoint — od tej chwili można go też użyć do pozycji z namiarów.\n\nDokładność\n\nKompas w telefonie ma rzeczywisty błąd rzędu ±8°, co na 10 Mm daje ponad 2,5 Mm odchylenia w bok — właśnie dlatego aplikacja rysuje stożek niepewności zamiast cienkiej linii. Najlepsze przecięcie dają punkty pod kątem bliskim 90°; gdy leżą niemal w jednej linii z tobą, przecięcie rozmywa się na setki metrów lub więcej.\n\nNamiary bez rejsu\n\nNamiar zapisuje się nawet przy wyłączonym śledzeniu — na kotwicy, na lądzie. Znajdziesz go na liście rejsów jako osobny wiersz z datą, między poszczególnymi rejsami. Otwarcie pokazuje namiary z tego dnia wraz z małą mapą, skąd można wyeksportować prosty PDF z mapą i tabelą namiarów.';
+      'Zakładka Kompas pokazuje azymut magnetyczny za pomocą czujników telefonu, z podglądem tylnej kamery jako tłem do namierzania obiektów.\n\n• Żółty krzyż – kierunek, na który celujesz\n• Pasek kompasu u góry – N / NE / E / SE / S / SW / W / NW\n• Odczyt liczbowy – stopnie i strona świata\n• Zielona kropka = stabilny odczyt  ·  Pomarańczowa kropka = kalibruje\n\nJeśli odczyt jest niestabilny, powoli poruszaj telefonem w kształcie ósemki, aby skalibrować magnetometr.\n\nUwaga: dokładność może być obniżona w pobliżu konstrukcji metalowych, głośników lub elektroniki.\n\nKompas rozwiązuje dwa różne zadania — znalezienie SIEBIE, gdy nie wiesz, gdzie jesteś, albo wyznaczenie NIEZNANEGO PUNKTU, gdy chcesz nanieść na mapę coś, czego jeszcze na niej nie ma. Przełącznik nad przyciskiem Zmierz namiar wybiera, które z nich właśnie robisz.\n\nMOJA POZYCJA — znajdź siebie (GPS nie jest potrzebny)\n\n1. Sprawdź na mapie, czy znasz co najmniej dwa widoczne punkty (latarnia, szczyt, kościół) zapisane jako waypointy. Brakujący dodajesz długim przytrzymaniem na mapie dokładnie w jego miejscu.\n2. Na kompasie przełącz na \"Moja pozycja\".\n3. Dotknij etykiety pod przełącznikiem i wybierz pierwszy namierzany punkt.\n4. Wyceluj celownik dokładnie w niego i naciśnij Zmierz namiar.\n5. W oknie sprawdź zmierzony namiar i naciśnij Zapisz (Anuluj odrzuca szkic bez zapisu).\n6. Wybierz drugi, INNY punkt (wybór sam się czyści po zapisaniu) i powtórz.\n7. Na mapie zobaczysz dwie przerywane linie biegnące od punktów do ciebie. Ich przecięcie to twoja pozycja — zielony krzyżyk oznacza dobre przecięcie, pomarańczowy ostry kąt i niepewną pozycję.\n8. Trzeci punkt, najlepiej pod innym kątem, doprecyzowuje szacunek i rysuje trójkąt błędu.\n\nZrób to szybko, w ciągu 5 minut — pozycja z namiarów zakłada, że jacht między namiarami stoi.\n\nNIEZNANY PUNKT — wyznacz obiekt (GPS jest potrzebny)\n\n1. Przełącz na \"Nieznany punkt\".\n2. Dotknij etykiety, wybierz \"Nowy punkt…\" i nazwij to, co namierzasz, np. \"nieznana skała\".\n3. Wyceluj, Zmierz namiar, potwierdź Zapisz.\n4. Przemieść jacht o co najmniej kilkaset metrów — im dalej, tym pewniejszy wynik.\n5. Otwórz ponownie wybór celu, wybierz TEN SAM obiekt z listy (nie \"Nowy punkt\") i zmierz namiar po raz drugi.\n6. Na mapie pojawi się znacznik z wyliczoną pozycją obiektu. Dotknięcie zapisuje go jako waypoint — od tej chwili można go też użyć do pozycji z namiarów.\n\nDokładność\n\nKompas w telefonie ma rzeczywisty błąd rzędu ±8°, co na 10 Mm daje ponad 2,5 Mm odchylenia w bok — właśnie dlatego aplikacja rysuje stożek niepewności zamiast cienkiej linii. Najlepsze przecięcie dają punkty pod kątem bliskim 90°; gdy leżą niemal w jednej linii z tobą, przecięcie rozmywa się na setki metrów lub więcej.\n\nNamiary bez rejsu\n\nNamiar zapisuje się nawet przy wyłączonym śledzeniu — na kotwicy, na lądzie. Znajdziesz go na liście rejsów jako osobny wiersz z datą, między poszczególnymi rejsami. Otwarcie pokazuje namiary z tego dnia wraz z małą mapą, skąd można wyeksportować prosty PDF z mapą i tabelą namiarów.\n\nCzyszczenie mapy i usuwanie namiarów\n\nNamierzanie na czystej mapie – na Kompasie ikona odświeżania w prawym górnym rogu. Zdejmuje z mapy dotychczasowe namiary i czyści wybrany punkt lub obiekt, więc kolejny Namierz zaczyna od nowa. Nic nie ginie: zapisy zostają w zakładce Dziennik pokładowy i w eksporcie PDF.\n\nTrwałe usunięcie – otwórz wiersz z datą na liście rejsów. Krzyżyk przy wierszu usuwa jeden namiar (przy obiekcie cały zestaw namiarów na niego). Kosz na górnym pasku usuwa cały dzień naraz i cofa cię do listy. Usunięcie jest nieodwracalne, a te namiary znikają też z eksportu PDF.\n\nKrótko: czyszczenie porządkuje mapę, usuwanie kasuje zapis. Zawartość PDF zmienia wyłącznie usuwanie.';
 
   @override
   String get guideSettingsTitle => 'Ustawienia';
 
   @override
   String get guideSettingsBody =>
-      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';
@@ -2486,7 +2486,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz czarter\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz rejs\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -2683,7 +2683,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costsSection => 'Koszty';
 
   @override
-  String get charterPriceLabel => 'Cena czarteru';
+  String get charterPriceLabel => 'Cena rejsu';
 
   @override
   String get currencyLabel => 'Waluta';
@@ -2748,7 +2748,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get saveVoyageButton => 'Zapisz rejs';
 
   @override
-  String get costBaseCharter => 'Cena podstawowa czarteru';
+  String get costBaseCharter => 'Cena podstawowa rejsu';
 
   @override
   String get costDeposit => 'Kaucja';
@@ -3096,6 +3096,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get speed => 'Prędkość';
 
   @override
+  String get dateFormatLabel => 'Format daty';
+
+  @override
+  String get dateFormatByLanguage => 'Według języka aplikacji';
+
+  @override
   String get crewCertTitle => 'Potwierdzenie przepłyniętych mil';
 
   @override
@@ -3234,6 +3240,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Brak namiarów. Wyceluj telefon w obiekt i naciśnij Zmierz namiar.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Wszystkie namiary z tego dnia zostaną trwale usunięte, także z eksportu PDF. Tej operacji nie można cofnąć.';
 
   @override
   String bearingFixFrom(int count) {

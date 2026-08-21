@@ -431,7 +431,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get newMultidayVoyage => 'Nová vícedenní plavba';
 
   @override
-  String get deleteCharterTitle => 'Smazat charter?';
+  String get deleteCharterTitle => 'Smazat plavbu?';
 
   @override
   String get deleteCharterContent => 'Smažou se všechny dny a záznamy.';
@@ -444,7 +444,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noVoyages => 'Žádné plavby';
 
   @override
-  String get createFirstCharter => 'Vytvoř svůj první charter';
+  String get createFirstCharter => 'Vytvoř svou první plavbu';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -962,7 +962,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get checkOutLabel => 'Check-out (předání lodi)';
 
   @override
-  String get charterCheckCard => 'Charter';
+  String get charterCheckCard => 'Plavba';
 
   @override
   String get weatherTitle => 'Počasí a moře';
@@ -1768,7 +1768,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportDayTitle => 'Export dne';
 
   @override
-  String get exportCharterTitle => 'Export charteru';
+  String get exportCharterTitle => 'Export plavby';
 
   @override
   String get loadingData => 'Načítám data...';
@@ -1785,7 +1785,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportDayBtn => 'Exportovat den';
 
   @override
-  String get exportCharterBtn => 'Exportovat charter';
+  String get exportCharterBtn => 'Exportovat plavbu';
 
   @override
   String get entriesLabel => 'Záznamy';
@@ -2046,7 +2046,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Ukládám a generuji GPX...';
 
   @override
-  String get editCharter => 'Upravit charter';
+  String get editCharter => 'Upravit plavbu';
 
   @override
   String get basicInfo => 'Základní informace';
@@ -2444,7 +2444,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu charteru\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.\n• Nouzové kontakty se vybírají podle aktuální polohy i bez zapnutého trasování – aplikace si polohu vyžádá sama a při přechodu do jiné země čísla vymění';
+      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu plavby\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.\n• Nouzové kontakty se vybírají podle aktuální polohy i bez zapnutého trasování – aplikace si polohu vyžádá sama a při přechodu do jiné země čísla vymění';
 
   @override
   String get guideDutyTitle => 'Služba posádky';
@@ -2458,14 +2458,14 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Záložka Kompas zobrazuje magnetický azimut pomocí senzorů telefonu, s výhledem zadní kamery jako pozadím pro zaměřování objektů.\n\n• Žlutý kříž – směr, na který míříš\n• Kompasová lišta nahoře – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazení – stupně a světová strana\n• Zelená tečka = stabilní čtení  ·  Oranžová tečka = kalibruje\n\nPokud je čtení nestabilní, pomalu pohybuj telefonem do tvaru osmičky pro kalibraci magnetometru.\n\nPozor: přesnost může být snížena v blízkosti kovových konstrukcí, reproduktorů nebo elektroniky.\n\nKompas řeší dva odlišné úkoly — najít SEBE, když nevíš, kde jsi, nebo najít NEZNÁMÝ BOD, když chceš na mapu zaznačit něco, co tam ještě není. Přepínač nad tlačítkem Zaměřit vybírá, který z nich právě děláš.\n\nMOJE POLOHA — najdi sebe (GPS není potřeba)\n\n1. Ověř si na mapě, že znáš alespoň dva viditelné body (maják, vrchol, kostel) jako waypointy. Chybějící bod přidáš dlouhým podržením na mapě přesně na jeho místě.\n2. Na kompase přepni na \"Moje poloha\".\n3. Klepni na štítek pod přepínačem a vyber první zaměřovaný bod.\n4. Namiř kříž přesně na něj a stiskni Zaměřit.\n5. V dialogu zkontroluj naměřený kurz a stiskni Uložit (Zrušit návrh zahodí bez zápisu).\n6. Vyber druhý, JINÝ bod (výběr se po uložení sám vyprázdní) a zopakuj.\n7. Na mapě uvidíš dvě čárkované čáry od bodů k tobě. Jejich průsečík je tvoje poloha — zelený křížek znamená dobrý řez, oranžový ostrý úhel a nejistou polohu.\n8. Třetí bod, ideálně pod jiným úhlem, zpřesní odhad a ukáže trojúhelník chyby.\n\nDělej to rychle za sebou, do 5 minut — resekce předpokládá, že loď mezi zaměřeními stojí.\n\nNEZNÁMÝ BOD — najdi objekt (GPS je potřeba)\n\n1. Přepni na \"Neznámý bod\".\n2. Klepni na štítek, zvol \"Nový bod…\" a pojmenuj, co zaměřuješ, například \"neznámá skála\".\n3. Namiř, Zaměřit, potvrď Uložit.\n4. Přesuň loď alespoň o pár set metrů — čím dál, tím jistější výsledek.\n5. Znovu otevři výběr cíle, vyber ten samý objekt ze seznamu (ne \"Nový bod\") a zaměř podruhé.\n6. Na mapě se objeví značka s vypočítanou polohou objektu. Klepnutím ji uložíš jako waypoint — a od té chvíle se dá použít i na resekci.\n\nPřesnost\n\nKompas v telefonu má reálnou chybu kolem ±8°, což je na 10 mílích vzdálenosti přes 2,5 míle do strany — přesně proto se kreslí kužel nejistoty, ne tenká čára. Nejlepší řez dávají body pod úhlem blízkým 90°; když leží skoro v jedné linii s tebou, průsečík se rozmaže na stovky metrů až kilometry.\n\nZaměření bez plavby\n\nZaměření se uloží i bez zapnutého trackingu — na kotvě, na břehu. Najdeš ho v seznamu plaveb jako samostatný řádek s datem, mezi jednotlivými plavbami. Otevřením zobrazíš zaměření toho dne i s mapkou a odtud spustíš export jednoduchého PDF s mapkou a tabulkou zaměření.';
+      'Záložka Kompas zobrazuje magnetický azimut pomocí senzorů telefonu, s výhledem zadní kamery jako pozadím pro zaměřování objektů.\n\n• Žlutý kříž – směr, na který míříš\n• Kompasová lišta nahoře – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazení – stupně a světová strana\n• Zelená tečka = stabilní čtení  ·  Oranžová tečka = kalibruje\n\nPokud je čtení nestabilní, pomalu pohybuj telefonem do tvaru osmičky pro kalibraci magnetometru.\n\nPozor: přesnost může být snížena v blízkosti kovových konstrukcí, reproduktorů nebo elektroniky.\n\nKompas řeší dva odlišné úkoly — najít SEBE, když nevíš, kde jsi, nebo najít NEZNÁMÝ BOD, když chceš na mapu zaznačit něco, co tam ještě není. Přepínač nad tlačítkem Zaměřit vybírá, který z nich právě děláš.\n\nMOJE POLOHA — najdi sebe (GPS není potřeba)\n\n1. Ověř si na mapě, že znáš alespoň dva viditelné body (maják, vrchol, kostel) jako waypointy. Chybějící bod přidáš dlouhým podržením na mapě přesně na jeho místě.\n2. Na kompase přepni na \"Moje poloha\".\n3. Klepni na štítek pod přepínačem a vyber první zaměřovaný bod.\n4. Namiř kříž přesně na něj a stiskni Zaměřit.\n5. V dialogu zkontroluj naměřený kurz a stiskni Uložit (Zrušit návrh zahodí bez zápisu).\n6. Vyber druhý, JINÝ bod (výběr se po uložení sám vyprázdní) a zopakuj.\n7. Na mapě uvidíš dvě čárkované čáry od bodů k tobě. Jejich průsečík je tvoje poloha — zelený křížek znamená dobrý řez, oranžový ostrý úhel a nejistou polohu.\n8. Třetí bod, ideálně pod jiným úhlem, zpřesní odhad a ukáže trojúhelník chyby.\n\nDělej to rychle za sebou, do 5 minut — resekce předpokládá, že loď mezi zaměřeními stojí.\n\nNEZNÁMÝ BOD — najdi objekt (GPS je potřeba)\n\n1. Přepni na \"Neznámý bod\".\n2. Klepni na štítek, zvol \"Nový bod…\" a pojmenuj, co zaměřuješ, například \"neznámá skála\".\n3. Namiř, Zaměřit, potvrď Uložit.\n4. Přesuň loď alespoň o pár set metrů — čím dál, tím jistější výsledek.\n5. Znovu otevři výběr cíle, vyber ten samý objekt ze seznamu (ne \"Nový bod\") a zaměř podruhé.\n6. Na mapě se objeví značka s vypočítanou polohou objektu. Klepnutím ji uložíš jako waypoint — a od té chvíle se dá použít i na resekci.\n\nPřesnost\n\nKompas v telefonu má reálnou chybu kolem ±8°, což je na 10 mílích vzdálenosti přes 2,5 míle do strany — přesně proto se kreslí kužel nejistoty, ne tenká čára. Nejlepší řez dávají body pod úhlem blízkým 90°; když leží skoro v jedné linii s tebou, průsečík se rozmaže na stovky metrů až kilometry.\n\nZaměření bez plavby\n\nZaměření se uloží i bez zapnutého trackingu — na kotvě, na břehu. Najdeš ho v seznamu plaveb jako samostatný řádek s datem, mezi jednotlivými plavbami. Otevřením zobrazíš zaměření toho dne i s mapkou a odtud spustíš export jednoduchého PDF s mapkou a tabulkou zaměření.\n\nČištění mapy a mazání zaměření\n\nZaměřování na čistou mapu – na Kompasu ikona obnovení vpravo nahoře. Odloží dosavadní zaměření z mapy a zruší vybraný bod či objekt, takže další Zaměř začíná načisto. Nic se neztrácí: záznamy zůstávají v kartě Lodní deník i v PDF exportu.\n\nSmazání natrvalo – otevři řádek s datem v seznamu plaveb. Křížek u řádku smaže jedno zaměření (u objektu celou sadu zaměření na něj). Koš v horní liště smaže celý den najednou a vrátí tě zpět do seznamu. Mazání je nevratné a ta zaměření zmizí i z PDF exportu.\n\nZkráceně: čištění uklízí mapu, mazání odstraňuje záznam. Obsah PDF mění jedině mazání.';
 
   @override
   String get guideSettingsTitle => 'Nastavení';
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt';
+      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt\n• Baterie – GPS běží na plnou přesnost jen tam, kde na přesné poloze záleží (sledování plavby, mapa, kompas, přístroje, kotevní stráž, MOB); jinde přepne do úsporného režimu a na pozadí bez zapnutého sledování se vypne úplně. Při připojených lodních přístrojích zůstává GPS telefonu vypnuté a poloha jde z NMEA.';
 
   @override
   String get guideBackupTitle => 'Záloha a obnova dat';
@@ -2479,7 +2479,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber charter\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. Otevři Deník → vyber plavbu\n2. Klepni na ikonu exportu nebo tři tečky → Export PDF\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -2677,7 +2677,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get costsSection => 'Náklady';
 
   @override
-  String get charterPriceLabel => 'Cena charteru';
+  String get charterPriceLabel => 'Cena plavby';
 
   @override
   String get currencyLabel => 'Měna';
@@ -2742,7 +2742,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get saveVoyageButton => 'Uložit plavbu';
 
   @override
-  String get costBaseCharter => 'Základní cena charteru';
+  String get costBaseCharter => 'Základní cena plavby';
 
   @override
   String get costDeposit => 'Kauce';
@@ -3089,6 +3089,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get speed => 'Rychlost';
 
   @override
+  String get dateFormatLabel => 'Formát data';
+
+  @override
+  String get dateFormatByLanguage => 'Podle jazyka aplikace';
+
+  @override
   String get crewCertTitle => 'Potvrzení o naplavaných mílích';
 
   @override
@@ -3227,6 +3233,10 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Zatím žádná zaměření. Namiř telefon na objekt a stiskni Zaměřit.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Všechna zaměření z tohoto dne se nenávratně smažou, i z PDF exportu. Tento krok nelze vrátit.';
 
   @override
   String bearingFixFrom(int count) {

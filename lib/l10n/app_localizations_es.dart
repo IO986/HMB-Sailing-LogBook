@@ -434,7 +434,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newMultidayVoyage => 'Nueva travesía de varios días';
 
   @override
-  String get deleteCharterTitle => '¿Eliminar charter?';
+  String get deleteCharterTitle => '¿Eliminar travesía?';
 
   @override
   String get deleteCharterContent => 'Se eliminarán todos los días y entradas.';
@@ -447,7 +447,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noVoyages => 'Sin travesías';
 
   @override
-  String get createFirstCharter => 'Crear su primer charter';
+  String get createFirstCharter => 'Crea tu primera travesía';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -965,7 +965,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get checkOutLabel => 'Check-out (entrega del barco)';
 
   @override
-  String get charterCheckCard => 'Chárter';
+  String get charterCheckCard => 'Travesía';
 
   @override
   String get weatherTitle => 'Tiempo y mar';
@@ -1778,7 +1778,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportDayTitle => 'Exportar día';
 
   @override
-  String get exportCharterTitle => 'Exportar charter';
+  String get exportCharterTitle => 'Exportación de travesía';
 
   @override
   String get loadingData => 'Cargando datos...';
@@ -1795,7 +1795,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportDayBtn => 'Exportar día';
 
   @override
-  String get exportCharterBtn => 'Exportar charter';
+  String get exportCharterBtn => 'Exportar travesía';
 
   @override
   String get entriesLabel => 'Entradas';
@@ -2056,7 +2056,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Guardando y generando GPX...';
 
   @override
-  String get editCharter => 'Editar charter';
+  String get editCharter => 'Editar travesía';
 
   @override
   String get basicInfo => 'Información básica';
@@ -2458,7 +2458,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF del charter\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.\n• Los contactos de emergencia siguen tu posición aunque el seguimiento esté apagado: la aplicación pide la posición y cambia los números al pasar a otro país';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF de la travesía\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.\n• Los contactos de emergencia siguen tu posición aunque el seguimiento esté apagado: la aplicación pide la posición y cambia los números al pasar a otro país';
 
   @override
   String get guideDutyTitle => 'Guardia de la tripulación';
@@ -2472,14 +2472,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.\n\nEl compás resuelve dos tareas distintas: encontrar MI PROPIA POSICIÓN cuando no sé dónde estoy, o determinar un PUNTO DESCONOCIDO cuando quiero llevar a la carta algo que todavía no tiene. El interruptor encima del botón Tomar demora elige cuál de las dos estás haciendo.\n\nMI SITUACIÓN — encuéntrate a ti mismo (no hace falta GPS)\n\n1. Comprueba en el mapa que conoces al menos dos puntos visibles (faro, cumbre, iglesia) guardados como waypoints. Añade el que falte con una pulsación larga en el mapa justo en su posición.\n2. En el compás, cambia a \"Mi situación\".\n3. Toca la etiqueta bajo el interruptor y elige el primer punto que vas a demorar.\n4. Alinea la retícula exactamente con él y pulsa Tomar demora.\n5. Comprueba la demora medida en el diálogo y pulsa Guardar (Cancelar descarta el borrador sin guardar).\n6. Elige un segundo punto, DISTINTO (la selección se vacía sola tras guardar) y repite.\n7. En el mapa verás dos líneas discontinuas que van de los puntos hacia ti. Donde se cruzan está tu situación: una cruz verde significa un buen corte, naranja un ángulo agudo y una situación incierta.\n8. Un tercer punto, mejor en otro ángulo, afina la estimación y dibuja el triángulo de error.\n\nHazlo rápido, en menos de 5 minutos: la situación por demoras supone que el barco está parado entre demoras.\n\nPUNTO DESCONOCIDO — determina un objeto (hace falta GPS)\n\n1. Cambia a \"Punto desconocido\".\n2. Toca la etiqueta, elige \"Nuevo punto…\" y nombra lo que estás demorando, por ejemplo \"roca desconocida\".\n3. Apunta, Tomar demora, confirma Guardar.\n4. Desplaza el barco al menos unos cientos de metros: cuanto más lejos, más fiable el resultado.\n5. Abre de nuevo el selector de objetivo, elige el MISMO objeto de la lista (no \"Nuevo punto\") y demóralo por segunda vez.\n6. En el mapa aparece una marca con la posición calculada. Tócala para guardarla como waypoint; desde ese momento también sirve para tomar demoras a un punto conocido.\n\nPrecisión\n\nUn compás de teléfono tiene un error real de unos ±8°, que a 10 millas son más de 2,5 millas de desviación lateral: por eso la app dibuja un cono de incertidumbre en vez de una línea fina. El mejor corte lo dan puntos separados cerca de 90°; si están casi alineados contigo, la intersección se difumina en cientos de metros o más.\n\nDemoras sin plavba (sin travesía activa)\n\nUna demora se guarda aunque el seguimiento esté apagado: fondeado, en tierra. La encontrarás en la lista de travesías como una fila propia con fecha, entre unas travesías y otras. Al abrirla verás las demoras de ese día con un pequeño mapa, y desde ahí puedes exportar un PDF sencillo con el mapa y la tabla de demoras.';
+      'La pestaña Brújula muestra el rumbo magnético usando los sensores del teléfono, con la cámara trasera de fondo para tomar marcaciones de objetos.\n\n• Cruz amarilla – dirección a la que apuntas\n• Franja de brújula arriba – N / NE / E / SE / S / SW / W / NW\n• Lectura numérica – grados y punto cardinal\n• Punto verde = lectura estable  ·  Punto naranja = calibrando\n\nSi la lectura es inestable, mueve el teléfono despacio en forma de ocho para calibrar el magnetómetro.\n\nNota: la precisión puede reducirse cerca de estructuras metálicas, altavoces o equipos electrónicos.\n\nEl compás resuelve dos tareas distintas: encontrar MI PROPIA POSICIÓN cuando no sé dónde estoy, o determinar un PUNTO DESCONOCIDO cuando quiero llevar a la carta algo que todavía no tiene. El interruptor encima del botón Tomar demora elige cuál de las dos estás haciendo.\n\nMI SITUACIÓN — encuéntrate a ti mismo (no hace falta GPS)\n\n1. Comprueba en el mapa que conoces al menos dos puntos visibles (faro, cumbre, iglesia) guardados como waypoints. Añade el que falte con una pulsación larga en el mapa justo en su posición.\n2. En el compás, cambia a \"Mi situación\".\n3. Toca la etiqueta bajo el interruptor y elige el primer punto que vas a demorar.\n4. Alinea la retícula exactamente con él y pulsa Tomar demora.\n5. Comprueba la demora medida en el diálogo y pulsa Guardar (Cancelar descarta el borrador sin guardar).\n6. Elige un segundo punto, DISTINTO (la selección se vacía sola tras guardar) y repite.\n7. En el mapa verás dos líneas discontinuas que van de los puntos hacia ti. Donde se cruzan está tu situación: una cruz verde significa un buen corte, naranja un ángulo agudo y una situación incierta.\n8. Un tercer punto, mejor en otro ángulo, afina la estimación y dibuja el triángulo de error.\n\nHazlo rápido, en menos de 5 minutos: la situación por demoras supone que el barco está parado entre demoras.\n\nPUNTO DESCONOCIDO — determina un objeto (hace falta GPS)\n\n1. Cambia a \"Punto desconocido\".\n2. Toca la etiqueta, elige \"Nuevo punto…\" y nombra lo que estás demorando, por ejemplo \"roca desconocida\".\n3. Apunta, Tomar demora, confirma Guardar.\n4. Desplaza el barco al menos unos cientos de metros: cuanto más lejos, más fiable el resultado.\n5. Abre de nuevo el selector de objetivo, elige el MISMO objeto de la lista (no \"Nuevo punto\") y demóralo por segunda vez.\n6. En el mapa aparece una marca con la posición calculada. Tócala para guardarla como waypoint; desde ese momento también sirve para tomar demoras a un punto conocido.\n\nPrecisión\n\nUn compás de teléfono tiene un error real de unos ±8°, que a 10 millas son más de 2,5 millas de desviación lateral: por eso la app dibuja un cono de incertidumbre en vez de una línea fina. El mejor corte lo dan puntos separados cerca de 90°; si están casi alineados contigo, la intersección se difumina en cientos de metros o más.\n\nDemoras sin plavba (sin travesía activa)\n\nUna demora se guarda aunque el seguimiento esté apagado: fondeado, en tierra. La encontrarás en la lista de travesías como una fila propia con fecha, entre unas travesías y otras. Al abrirla verás las demoras de ese día con un pequeño mapa, y desde ahí puedes exportar un PDF sencillo con el mapa y la tabla de demoras.\n\nLimpiar la carta y borrar demoras\n\nTomar demoras con la carta limpia – en la Brújula, el icono de actualizar arriba a la derecha. Retira de la carta las demoras que ya tienes y borra la marca u objeto elegido, de modo que la siguiente demora empieza de cero. No se pierde nada: los registros siguen en la pestaña Cuaderno de bitácora y en la exportación a PDF.\n\nBorrar definitivamente – abre la fila con la fecha en la lista de travesías. La X junto a una línea elimina esa única demora (en un objeto, toda la serie de demoras sobre él). La papelera de la barra superior borra el día entero de una vez y te devuelve a la lista. El borrado es irreversible y esas demoras desaparecen también de la exportación a PDF.\n\nEn resumen: limpiar ordena la carta, borrar elimina el registro. Solo el borrado cambia lo que acaba en el PDF.';
 
   @override
   String get guideSettingsTitle => 'Ajustes';
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';
@@ -2493,7 +2493,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar charter\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar travesía\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';
@@ -2691,7 +2691,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get costsSection => 'Costes';
 
   @override
-  String get charterPriceLabel => 'Precio del chárter';
+  String get charterPriceLabel => 'Precio de la travesía';
 
   @override
   String get currencyLabel => 'Moneda';
@@ -2756,7 +2756,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveVoyageButton => 'Guardar travesía';
 
   @override
-  String get costBaseCharter => 'Precio base del chárter';
+  String get costBaseCharter => 'Precio base de la travesía';
 
   @override
   String get costDeposit => 'Fianza';
@@ -3105,6 +3105,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get speed => 'Velocidad';
 
   @override
+  String get dateFormatLabel => 'Formato de fecha';
+
+  @override
+  String get dateFormatByLanguage => 'Según el idioma de la app';
+
+  @override
   String get crewCertTitle => 'Certificado de millas navegadas';
 
   @override
@@ -3243,6 +3249,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Aún no hay demoras. Apunta el teléfono a un objeto y pulsa Tomar demora.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Todas las demoras de este día se eliminarán definitivamente, también de la exportación a PDF. Esta acción no se puede deshacer.';
 
   @override
   String bearingFixFrom(int count) {

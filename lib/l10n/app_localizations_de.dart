@@ -434,7 +434,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get newMultidayVoyage => 'Neue mehrtägige Fahrt';
 
   @override
-  String get deleteCharterTitle => 'Charter löschen?';
+  String get deleteCharterTitle => 'Fahrt löschen?';
 
   @override
   String get deleteCharterContent => 'Alle Tage und Einträge werden gelöscht.';
@@ -447,7 +447,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noVoyages => 'Keine Fahrten';
 
   @override
-  String get createFirstCharter => 'Ersten Charter erstellen';
+  String get createFirstCharter => 'Erstelle deine erste Fahrt';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -966,7 +966,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get checkOutLabel => 'Check-out (Bootsrückgabe)';
 
   @override
-  String get charterCheckCard => 'Charter';
+  String get charterCheckCard => 'Fahrt';
 
   @override
   String get weatherTitle => 'Wetter & See';
@@ -1781,7 +1781,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportDayTitle => 'Tagesexport';
 
   @override
-  String get exportCharterTitle => 'Charterexport';
+  String get exportCharterTitle => 'Fahrt-Export';
 
   @override
   String get loadingData => 'Daten werden geladen...';
@@ -1798,7 +1798,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportDayBtn => 'Tag exportieren';
 
   @override
-  String get exportCharterBtn => 'Charter exportieren';
+  String get exportCharterBtn => 'Fahrt exportieren';
 
   @override
   String get entriesLabel => 'Einträge';
@@ -2059,7 +2059,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Speichern und GPX generieren...';
 
   @override
-  String get editCharter => 'Charter bearbeiten';
+  String get editCharter => 'Fahrt bearbeiten';
 
   @override
   String get basicInfo => 'Grundinformationen';
@@ -2464,7 +2464,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Charter-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.\n• Die Notfallkontakte richten sich nach der Position, auch ohne laufende Aufzeichnung – die App holt sich die Position selbst und wechselt die Nummern beim Grenzübertritt';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Fahrt-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.\n• Die Notfallkontakte richten sich nach der Position, auch ohne laufende Aufzeichnung – die App holt sich die Position selbst und wechselt die Nummern beim Grenzübertritt';
 
   @override
   String get guideDutyTitle => 'Wachdienst';
@@ -2478,14 +2478,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Die Kompass-Registerkarte zeigt den Magnetkurs mithilfe der Telefonsensoren, mit der Rückkamera als Hintergrund zum Anpeilen von Objekten.\n\n• Gelbes Fadenkreuz – Richtung, in die du zielst\n• Kompassstreifen oben – N / NE / E / SE / S / SW / W / NW\n• Numerische Anzeige – Grad und Himmelsrichtung\n• Grüner Punkt = stabiles Ergebnis  ·  Oranger Punkt = kalibriert noch\n\nBei instabiler Anzeige: Telefon langsam in einer Achterbewegung führen.\n\nHinweis: Genauigkeit kann durch Metallstrukturen, Lautsprecher oder Elektronik beeinträchtigt werden.\n\nDer Kompass löst zwei verschiedene Aufgaben — MICH SELBST finden, wenn ich nicht weiß, wo ich bin, oder einen UNBEKANNTEN PUNKT bestimmen, wenn ich etwas auf die Karte bringen will, das dort noch fehlt. Der Schalter über der Schaltfläche Peilung nehmen wählt, welche der beiden gerade läuft.\n\nMEIN ORT — mich selbst finden (kein GPS nötig)\n\n1. Prüfe auf der Karte, ob du mindestens zwei sichtbare Punkte (Leuchtturm, Gipfel, Kirche) als Wegpunkte kennst. Einen fehlenden fügst du mit langem Drücken auf der Karte genau an seiner Stelle hinzu.\n2. Schalte auf dem Kompass zu \"Mein Ort\" um.\n3. Tippe auf das Feld unter dem Schalter und wähle den ersten anzupeilenden Punkt.\n4. Richte das Fadenkreuz genau darauf aus und tippe auf Peilung nehmen.\n5. Prüfe im Dialog die gemessene Peilung und tippe auf Speichern (Abbrechen verwirft den Entwurf ungespeichert).\n6. Wähle einen zweiten, ANDEREN Punkt (die Auswahl leert sich nach dem Speichern selbst) und wiederhole.\n7. Auf der Karte siehst du zwei gestrichelte Linien von den Punkten zu dir. Ihr Schnittpunkt ist dein Ort — ein grünes Kreuz bedeutet einen guten Schnitt, orange einen spitzen Winkel und einen unsicheren Ort.\n8. Ein dritter Punkt, am besten in einem anderen Winkel, verfeinert die Schätzung und zeichnet das Fehlerdreieck.\n\nMach es zügig, innerhalb von 5 Minuten — die Kreuzpeilung setzt voraus, dass das Boot zwischen den Peilungen stillliegt.\n\nUNBEKANNTER PUNKT — ein Objekt bestimmen (GPS nötig)\n\n1. Schalte auf \"Unbekannter Punkt\" um.\n2. Tippe auf das Feld, wähle \"Neuer Punkt…\" und benenne, was du anpeilst, z. B. \"unbekannter Fels\".\n3. Anpeilen, Peilung nehmen, Speichern bestätigen.\n4. Fahre mindestens einige hundert Meter weiter — je weiter, desto zuverlässiger das Ergebnis.\n5. Öffne die Zielauswahl erneut, wähle DASSELBE Objekt aus der Liste (nicht \"Neuer Punkt\") und peile ein zweites Mal an.\n6. Auf der Karte erscheint eine Markierung mit dem berechneten Ort. Tippe darauf, um sie als Wegpunkt zu speichern — von da an lässt sie sich auch für die Kreuzpeilung nutzen.\n\nGenauigkeit\n\nEin Telefonkompass hat eine reale Abweichung von etwa ±8°, was bei 10 sm über 2,5 sm seitlich ausmacht — genau deshalb zeichnet die App einen Unsicherheitskegel statt einer dünnen Linie. Den besten Schnitt geben Punkte mit einem Winkel nahe 90°; liegen sie fast in einer Linie mit dir, verschmiert der Schnittpunkt auf Hunderte Meter oder mehr.\n\nPeilungen ohne Fahrt\n\nEine Peilung wird auch ohne laufendes Tracking gespeichert — vor Anker, an Land. Du findest sie in der Fahrtenliste als eigene Zeile mit Datum, zwischen den einzelnen Fahrten. Beim Öffnen siehst du die Peilungen dieses Tages mit einer kleinen Karte und kannst von dort ein einfaches PDF mit Karte und Peilungstabelle exportieren.';
+      'Die Kompass-Registerkarte zeigt den Magnetkurs mithilfe der Telefonsensoren, mit der Rückkamera als Hintergrund zum Anpeilen von Objekten.\n\n• Gelbes Fadenkreuz – Richtung, in die du zielst\n• Kompassstreifen oben – N / NE / E / SE / S / SW / W / NW\n• Numerische Anzeige – Grad und Himmelsrichtung\n• Grüner Punkt = stabiles Ergebnis  ·  Oranger Punkt = kalibriert noch\n\nBei instabiler Anzeige: Telefon langsam in einer Achterbewegung führen.\n\nHinweis: Genauigkeit kann durch Metallstrukturen, Lautsprecher oder Elektronik beeinträchtigt werden.\n\nDer Kompass löst zwei verschiedene Aufgaben — MICH SELBST finden, wenn ich nicht weiß, wo ich bin, oder einen UNBEKANNTEN PUNKT bestimmen, wenn ich etwas auf die Karte bringen will, das dort noch fehlt. Der Schalter über der Schaltfläche Peilung nehmen wählt, welche der beiden gerade läuft.\n\nMEIN ORT — mich selbst finden (kein GPS nötig)\n\n1. Prüfe auf der Karte, ob du mindestens zwei sichtbare Punkte (Leuchtturm, Gipfel, Kirche) als Wegpunkte kennst. Einen fehlenden fügst du mit langem Drücken auf der Karte genau an seiner Stelle hinzu.\n2. Schalte auf dem Kompass zu \"Mein Ort\" um.\n3. Tippe auf das Feld unter dem Schalter und wähle den ersten anzupeilenden Punkt.\n4. Richte das Fadenkreuz genau darauf aus und tippe auf Peilung nehmen.\n5. Prüfe im Dialog die gemessene Peilung und tippe auf Speichern (Abbrechen verwirft den Entwurf ungespeichert).\n6. Wähle einen zweiten, ANDEREN Punkt (die Auswahl leert sich nach dem Speichern selbst) und wiederhole.\n7. Auf der Karte siehst du zwei gestrichelte Linien von den Punkten zu dir. Ihr Schnittpunkt ist dein Ort — ein grünes Kreuz bedeutet einen guten Schnitt, orange einen spitzen Winkel und einen unsicheren Ort.\n8. Ein dritter Punkt, am besten in einem anderen Winkel, verfeinert die Schätzung und zeichnet das Fehlerdreieck.\n\nMach es zügig, innerhalb von 5 Minuten — die Kreuzpeilung setzt voraus, dass das Boot zwischen den Peilungen stillliegt.\n\nUNBEKANNTER PUNKT — ein Objekt bestimmen (GPS nötig)\n\n1. Schalte auf \"Unbekannter Punkt\" um.\n2. Tippe auf das Feld, wähle \"Neuer Punkt…\" und benenne, was du anpeilst, z. B. \"unbekannter Fels\".\n3. Anpeilen, Peilung nehmen, Speichern bestätigen.\n4. Fahre mindestens einige hundert Meter weiter — je weiter, desto zuverlässiger das Ergebnis.\n5. Öffne die Zielauswahl erneut, wähle DASSELBE Objekt aus der Liste (nicht \"Neuer Punkt\") und peile ein zweites Mal an.\n6. Auf der Karte erscheint eine Markierung mit dem berechneten Ort. Tippe darauf, um sie als Wegpunkt zu speichern — von da an lässt sie sich auch für die Kreuzpeilung nutzen.\n\nGenauigkeit\n\nEin Telefonkompass hat eine reale Abweichung von etwa ±8°, was bei 10 sm über 2,5 sm seitlich ausmacht — genau deshalb zeichnet die App einen Unsicherheitskegel statt einer dünnen Linie. Den besten Schnitt geben Punkte mit einem Winkel nahe 90°; liegen sie fast in einer Linie mit dir, verschmiert der Schnittpunkt auf Hunderte Meter oder mehr.\n\nPeilungen ohne Fahrt\n\nEine Peilung wird auch ohne laufendes Tracking gespeichert — vor Anker, an Land. Du findest sie in der Fahrtenliste als eigene Zeile mit Datum, zwischen den einzelnen Fahrten. Beim Öffnen siehst du die Peilungen dieses Tages mit einer kleinen Karte und kannst von dort ein einfaches PDF mit Karte und Peilungstabelle exportieren.\n\nKarte leeren und Peilungen löschen\n\nPeilen auf leerer Karte – im Kompass das Aktualisieren-Symbol oben rechts. Es nimmt die vorhandenen Peilungen von der Karte und löscht die gewählte Marke oder das Objekt, damit die nächste Peilung neu beginnt. Nichts geht verloren: die Einträge bleiben im Logbuch und im PDF-Export.\n\nEndgültig löschen – öffne die datierte Zeile in der Törnliste. Das X neben einer Zeile entfernt diese eine Peilung (bei einem Objekt die ganze Serie darauf). Der Papierkorb in der Kopfzeile löscht den ganzen Tag auf einmal und bringt dich zurück zur Liste. Löschen ist endgültig und diese Peilungen verschwinden auch aus dem PDF-Export.\n\nKurz: Leeren räumt die Karte auf, Löschen entfernt den Eintrag. Nur Löschen ändert den Inhalt des PDF.';
 
   @override
   String get guideSettingsTitle => 'Einstellungen';
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';
@@ -2499,7 +2499,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Charter auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Fahrt auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';
@@ -2697,7 +2697,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get costsSection => 'Kosten';
 
   @override
-  String get charterPriceLabel => 'Charterpreis';
+  String get charterPriceLabel => 'Fahrtpreis';
 
   @override
   String get currencyLabel => 'Währung';
@@ -2762,7 +2762,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get saveVoyageButton => 'Reise speichern';
 
   @override
-  String get costBaseCharter => 'Charter-Grundpreis';
+  String get costBaseCharter => 'Grundpreis der Fahrt';
 
   @override
   String get costDeposit => 'Kaution';
@@ -3109,6 +3109,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get speed => 'Geschwindigkeit';
 
   @override
+  String get dateFormatLabel => 'Datumsformat';
+
+  @override
+  String get dateFormatByLanguage => 'Nach App-Sprache';
+
+  @override
   String get crewCertTitle => 'Bescheinigung über gesegelte Seemeilen';
 
   @override
@@ -3247,6 +3253,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Noch keine Peilungen. Richte das Telefon auf ein Objekt und tippe auf Peilung nehmen.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Alle Peilungen dieses Tages werden endgültig gelöscht, auch aus dem PDF-Export. Das lässt sich nicht rückgängig machen.';
 
   @override
   String bearingFixFrom(int count) {

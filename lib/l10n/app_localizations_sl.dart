@@ -433,7 +433,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get newMultidayVoyage => 'Nova večdnevna plovba';
 
   @override
-  String get deleteCharterTitle => 'Izbrišem čarter?';
+  String get deleteCharterTitle => 'Izbrišem plovbo?';
 
   @override
   String get deleteCharterContent => 'Vsi dnevi in zapisi bodo izbrisani.';
@@ -446,7 +446,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get noVoyages => 'Ni plovb';
 
   @override
-  String get createFirstCharter => 'Ustvarite svoj prvi čarter';
+  String get createFirstCharter => 'Ustvari svojo prvo plovbo';
 
   @override
   String get briefingDone => 'Brifing ✓';
@@ -965,7 +965,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get checkOutLabel => 'Check-out (predaja plovila)';
 
   @override
-  String get charterCheckCard => 'Čarter';
+  String get charterCheckCard => 'Plovba';
 
   @override
   String get weatherTitle => 'Vreme in morje';
@@ -1771,7 +1771,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get exportDayTitle => 'Izvoz dneva';
 
   @override
-  String get exportCharterTitle => 'Izvoz čarterja';
+  String get exportCharterTitle => 'Izvoz plovbe';
 
   @override
   String get loadingData => 'Nalaganje podatkov...';
@@ -1788,7 +1788,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get exportDayBtn => 'Izvozi dan';
 
   @override
-  String get exportCharterBtn => 'Izvozi čarter';
+  String get exportCharterBtn => 'Izvozi plovbo';
 
   @override
   String get entriesLabel => 'Zapisi';
@@ -2049,7 +2049,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Shranjevanje in ustvarjanje GPX...';
 
   @override
-  String get editCharter => 'Uredi čarter';
+  String get editCharter => 'Uredi plovbo';
 
   @override
   String get basicInfo => 'Osnovni podatki';
@@ -2450,7 +2450,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF čarterja\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.\n• Klici v sili sledijo položaju tudi brez vklopljenega sledenja – aplikacija sama zahteva položaj in ob prehodu v drugo državo zamenja številke';
+      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF plovbe\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.\n• Klici v sili sledijo položaju tudi brez vklopljenega sledenja – aplikacija sama zahteva položaj in ob prehodu v drugo državo zamenja številke';
 
   @override
   String get guideDutyTitle => 'Posadka na straži';
@@ -2464,14 +2464,14 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'Zavihek Kompas prikazuje magnetni azimut s pomočjo senzorjev telefona, z zadnjo kamero kot ozadjem za merjenje azimuta na predmete.\n\n• Rumeni nitni križ – smer, v katero merite\n• Trak kompasa na vrhu – S / SV / V / JV / J / JZ / Z / SZ\n• Številčni prikaz – stopinje in stran neba\n• Zelena pika = stabilen odčitek  ·  Oranžna pika = umerjanje\n\nČe je odčitek nestabilen, počasi premikajte telefon v obliki osmice, da umerite magnetometer.\n\nNatančnost je lahko manjša v bližini kovinskih konstrukcij, zvočnikov ali elektronske opreme.\n\nKompas rešuje dve različni nalogi — najti SEBE, ko ne veš, kje si, ali določiti NEZNANO TOČKO, ko želiš na karto vnesti nekaj, česar tam še ni. Stikalo nad gumbom Izmeri azimut izbere, katero od njiju trenutno počneš.\n\nMOJ POLOŽAJ — najdi sebe (GPS ni potreben)\n\n1. Preveri na zemljevidu, ali poznaš vsaj dve vidni točki (svetilnik, vrh, cerkev), shranjeni kot waypointa. Manjkajočo dodaš z dolgim pritiskom na zemljevid natanko na njeno mesto.\n2. Na kompasu preklopi na \"Moj položaj\".\n3. Dotakni se oznake pod stikalom in izberi prvo točko, ki jo meriš.\n4. Nitni križ usmeri natanko nanjo in pritisni Izmeri azimut.\n5. V pogovornem oknu preveri izmerjeni azimut in pritisni Shrani (Prekliči zavrže osnutek brez shranjevanja).\n6. Izberi drugo, DRUGO točko (izbira se po shranjevanju sama izprazni) in ponovi.\n7. Na zemljevidu boš videl dve črtkani črti od točk proti tebi. Njuno presečišče je tvoj položaj — zeleni križec pomeni dober rez, oranžni oster kot in negotov položaj.\n8. Tretja točka, najbolje pod drugim kotom, izboljša oceno in nariše trikotnik napake.\n\nNaredi to hitro, v 5 minutah — presečišče predpostavlja, da barka med meritvama stoji.\n\nNEZNANA TOČKA — določi objekt (GPS je potreben)\n\n1. Preklopi na \"Neznana točka\".\n2. Dotakni se oznake, izberi \"Nova točka…\" in poimenuj, kaj meriš, npr. \"neznana čer\".\n3. Nameri, Izmeri azimut, potrdi Shrani.\n4. Premakni barko vsaj nekaj sto metrov — dlje ko greš, zanesljivejši je rezultat.\n5. Znova odpri izbiro cilja, izberi ISTI objekt s seznama (ne \"Nova točka\") in izmeri drugič.\n6. Na zemljevidu se prikaže oznaka z izračunanim položajem objekta. Z dotikom jo shraniš kot waypoint — odtlej jo lahko uporabiš tudi za presečišče.\n\nNatančnost\n\nKompas v telefonu ima realno napako okoli ±8°, kar je na 10 NM več kot 2,5 NM stranskega odstopanja — prav zato aplikacija riše stožec negotovosti namesto tanke črte. Najboljši rez dajo točke pod kotom blizu 90°; kadar ležijo skoraj v isti liniji s tabo, se presečišče razmaže na stotine metrov ali več.\n\nAzimuti brez plovbe\n\nAzimut se shrani tudi brez vklopljenega sledenja — na sidru, na kopnem. Najdeš ga na seznamu plovb kot samostojno vrstico z datumom, med posameznimi plovbami. Z odprtjem prikažeš azimute tega dne z majhnim zemljevidom, od tam pa sprožiš izvoz preprostega PDF-ja z zemljevidom in tabelo azimutov.';
+      'Zavihek Kompas prikazuje magnetni azimut s pomočjo senzorjev telefona, z zadnjo kamero kot ozadjem za merjenje azimuta na predmete.\n\n• Rumeni nitni križ – smer, v katero merite\n• Trak kompasa na vrhu – S / SV / V / JV / J / JZ / Z / SZ\n• Številčni prikaz – stopinje in stran neba\n• Zelena pika = stabilen odčitek  ·  Oranžna pika = umerjanje\n\nČe je odčitek nestabilen, počasi premikajte telefon v obliki osmice, da umerite magnetometer.\n\nNatančnost je lahko manjša v bližini kovinskih konstrukcij, zvočnikov ali elektronske opreme.\n\nKompas rešuje dve različni nalogi — najti SEBE, ko ne veš, kje si, ali določiti NEZNANO TOČKO, ko želiš na karto vnesti nekaj, česar tam še ni. Stikalo nad gumbom Izmeri azimut izbere, katero od njiju trenutno počneš.\n\nMOJ POLOŽAJ — najdi sebe (GPS ni potreben)\n\n1. Preveri na zemljevidu, ali poznaš vsaj dve vidni točki (svetilnik, vrh, cerkev), shranjeni kot waypointa. Manjkajočo dodaš z dolgim pritiskom na zemljevid natanko na njeno mesto.\n2. Na kompasu preklopi na \"Moj položaj\".\n3. Dotakni se oznake pod stikalom in izberi prvo točko, ki jo meriš.\n4. Nitni križ usmeri natanko nanjo in pritisni Izmeri azimut.\n5. V pogovornem oknu preveri izmerjeni azimut in pritisni Shrani (Prekliči zavrže osnutek brez shranjevanja).\n6. Izberi drugo, DRUGO točko (izbira se po shranjevanju sama izprazni) in ponovi.\n7. Na zemljevidu boš videl dve črtkani črti od točk proti tebi. Njuno presečišče je tvoj položaj — zeleni križec pomeni dober rez, oranžni oster kot in negotov položaj.\n8. Tretja točka, najbolje pod drugim kotom, izboljša oceno in nariše trikotnik napake.\n\nNaredi to hitro, v 5 minutah — presečišče predpostavlja, da barka med meritvama stoji.\n\nNEZNANA TOČKA — določi objekt (GPS je potreben)\n\n1. Preklopi na \"Neznana točka\".\n2. Dotakni se oznake, izberi \"Nova točka…\" in poimenuj, kaj meriš, npr. \"neznana čer\".\n3. Nameri, Izmeri azimut, potrdi Shrani.\n4. Premakni barko vsaj nekaj sto metrov — dlje ko greš, zanesljivejši je rezultat.\n5. Znova odpri izbiro cilja, izberi ISTI objekt s seznama (ne \"Nova točka\") in izmeri drugič.\n6. Na zemljevidu se prikaže oznaka z izračunanim položajem objekta. Z dotikom jo shraniš kot waypoint — odtlej jo lahko uporabiš tudi za presečišče.\n\nNatančnost\n\nKompas v telefonu ima realno napako okoli ±8°, kar je na 10 NM več kot 2,5 NM stranskega odstopanja — prav zato aplikacija riše stožec negotovosti namesto tanke črte. Najboljši rez dajo točke pod kotom blizu 90°; kadar ležijo skoraj v isti liniji s tabo, se presečišče razmaže na stotine metrov ali več.\n\nAzimuti brez plovbe\n\nAzimut se shrani tudi brez vklopljenega sledenja — na sidru, na kopnem. Najdeš ga na seznamu plovb kot samostojno vrstico z datumom, med posameznimi plovbami. Z odprtjem prikažeš azimute tega dne z majhnim zemljevidom, od tam pa sprožiš izvoz preprostega PDF-ja z zemljevidom in tabelo azimutov.\n\nČiščenje zemljevida in brisanje azimutov\n\nMerjenje na čistem zemljevidu – na Kompasu ikona osvežitve zgoraj desno. Umakne dosedanje azimute z zemljevida in počisti izbrano točko ali predmet, tako da naslednje Izmeri azimut začne na novo. Nič se ne izgubi: zapisi ostanejo v zavihku Ladijski dnevnik in v izvozu PDF.\n\nTrajen izbris – odpri vrstico z datumom na seznamu plovb. Križec ob vrstici izbriše en azimut (pri predmetu celoten niz meritev nanj). Koš v zgornji vrstici izbriše cel dan naenkrat in te vrne na seznam. Brisanje je nepovratno in ti azimuti izginejo tudi iz izvoza PDF.\n\nNa kratko: čiščenje pospravi zemljevid, brisanje odstrani zapis. Vsebino PDF spremeni le brisanje.';
 
   @override
   String get guideSettingsTitle => 'Nastavitve';
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';
@@ -2485,7 +2485,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite čarter\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite plovbo\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';
@@ -2683,7 +2683,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get costsSection => 'Stroški';
 
   @override
-  String get charterPriceLabel => 'Cena čarterja';
+  String get charterPriceLabel => 'Cena plovbe';
 
   @override
   String get currencyLabel => 'Valuta';
@@ -2748,7 +2748,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get saveVoyageButton => 'Shrani plovbo';
 
   @override
-  String get costBaseCharter => 'Osnovna cena čarterja';
+  String get costBaseCharter => 'Osnovna cena plovbe';
 
   @override
   String get costDeposit => 'Varščina';
@@ -3096,6 +3096,12 @@ class AppLocalizationsSl extends AppLocalizations {
   String get speed => 'Hitrost';
 
   @override
+  String get dateFormatLabel => 'Oblika datuma';
+
+  @override
+  String get dateFormatByLanguage => 'Po jeziku aplikacije';
+
+  @override
   String get crewCertTitle => 'Potrdilo o preplutih miljah';
 
   @override
@@ -3234,6 +3240,10 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Še ni azimutov. Usmeri telefon v objekt in pritisni Izmeri azimut.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Vsi azimuti tega dne bodo trajno izbrisani, tudi iz izvoza PDF. Tega dejanja ni mogoče razveljaviti.';
 
   @override
   String bearingFixFrom(int count) {

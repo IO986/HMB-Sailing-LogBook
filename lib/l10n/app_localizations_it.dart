@@ -433,7 +433,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get newMultidayVoyage => 'Nuova navigazione di più giorni';
 
   @override
-  String get deleteCharterTitle => 'Eliminare il charter?';
+  String get deleteCharterTitle => 'Eliminare la navigazione?';
 
   @override
   String get deleteCharterContent =>
@@ -447,7 +447,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noVoyages => 'Nessuna navigazione';
 
   @override
-  String get createFirstCharter => 'Crea il tuo primo charter';
+  String get createFirstCharter => 'Crea la tua prima navigazione';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -967,7 +967,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get checkOutLabel => 'Check-out (riconsegna della barca)';
 
   @override
-  String get charterCheckCard => 'Charter';
+  String get charterCheckCard => 'Navigazione';
 
   @override
   String get weatherTitle => 'Meteo e mare';
@@ -1782,7 +1782,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportDayTitle => 'Esportazione del giorno';
 
   @override
-  String get exportCharterTitle => 'Esportazione del charter';
+  String get exportCharterTitle => 'Esportazione della navigazione';
 
   @override
   String get loadingData => 'Caricamento dei dati...';
@@ -1799,7 +1799,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportDayBtn => 'Esporta il giorno';
 
   @override
-  String get exportCharterBtn => 'Esporta il charter';
+  String get exportCharterBtn => 'Esporta la navigazione';
 
   @override
   String get entriesLabel => 'Annotazioni';
@@ -2063,7 +2063,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Salvataggio e generazione del GPX...';
 
   @override
-  String get editCharter => 'Modifica il charter';
+  String get editCharter => 'Modifica la navigazione';
 
   @override
   String get basicInfo => 'Informazioni di base';
@@ -2466,7 +2466,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La scheda Sicurezza contiene anche delle schede di consultazione.\n\n• Briefing di sicurezza – lista di controllo per l\'equipaggio prima della partenza\n• Ogni membro dell\'equipaggio firma con la propria firma sullo schermo\n• Le firme vengono salvate e incluse automaticamente nell\'esportazione PDF del charter\n• Lista di riconsegna – panoramica delle voci di check-in/check-out, disponibile anche senza una navigazione aperta\n• Scheda MAYDAY – procedura per la chiamata di soccorso sul canale VHF 16\n• COLREG – regole per prevenire gli abbordi in mare (disponibili in slovacco e inglese; le altre lingue mostrano il testo inglese)\n• Contatti – numeri e contatti di emergenza\n\nNota: il tracciamento si può avviare in qualsiasi momento, anche senza aver completato il briefing – l\'app si limita a ricordartelo con l\'etichetta \"Manca il briefing di sicurezza\" nel Giornale finché non è fatto. Il briefing richiede che la scheda imbarcazione ed equipaggio sia già compilata e può essere salvato solo quando ogni membro dell\'equipaggio ha firmato.\n• I contatti di emergenza seguono la posizione anche senza tracciamento: l’app richiede da sola il punto nave e cambia i numeri quando passi in un altro paese';
+      'La scheda Sicurezza contiene anche delle schede di consultazione.\n\n• Briefing di sicurezza – lista di controllo per l\'equipaggio prima della partenza\n• Ogni membro dell\'equipaggio firma con la propria firma sullo schermo\n• Le firme vengono salvate e incluse automaticamente nell\'esportazione PDF della navigazione\n• Lista di riconsegna – panoramica delle voci di check-in/check-out, disponibile anche senza una navigazione aperta\n• Scheda MAYDAY – procedura per la chiamata di soccorso sul canale VHF 16\n• COLREG – regole per prevenire gli abbordi in mare (disponibili in slovacco e inglese; le altre lingue mostrano il testo inglese)\n• Contatti – numeri e contatti di emergenza\n\nNota: il tracciamento si può avviare in qualsiasi momento, anche senza aver completato il briefing – l\'app si limita a ricordartelo con l\'etichetta \"Manca il briefing di sicurezza\" nel Giornale finché non è fatto. Il briefing richiede che la scheda imbarcazione ed equipaggio sia già compilata e può essere salvato solo quando ogni membro dell\'equipaggio ha firmato.\n• I contatti di emergenza seguono la posizione anche senza tracciamento: l’app richiede da sola il punto nave e cambia i numeri quando passi in un altro paese';
 
   @override
   String get guideDutyTitle => 'Equipaggio di guardia';
@@ -2480,14 +2480,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'La scheda Bussola mostra il rilevamento magnetico usando i sensori del telefono, con la fotocamera posteriore come sfondo per prendere rilevamenti su oggetti.\n\n• Mirino giallo – direzione verso cui punti\n• Striscia della bussola in alto – N / NE / E / SE / S / SO / O / NO\n• Lettura numerica – gradi e punto cardinale\n• Punto verde = lettura stabile  ·  Punto arancione = calibrazione in corso\n\nSe la lettura è instabile, muovi lentamente il telefono a forma di otto per calibrare il magnetometro.\n\nLa precisione può ridursi vicino a strutture metalliche, altoparlanti o apparecchiature elettroniche.\n\nLa bussola risolve due compiti diversi: trovare SE STESSI quando non si sa dove ci si trova, oppure determinare un PUNTO SCONOSCIUTO quando si vuole mettere in carta qualcosa che ancora non c\'è. L\'interruttore sopra il pulsante Rileva sceglie quale delle due si sta facendo.\n\nLA MIA POSIZIONE — trova te stesso (il GPS non serve)\n\n1. Verifica sulla carta di conoscere almeno due punti visibili (faro, cima, chiesa) salvati come waypoint. Aggiungi quello mancante con una pressione prolungata sulla mappa esattamente nella sua posizione.\n2. Sulla bussola passa a \"La mia posizione\".\n3. Tocca l\'etichetta sotto l\'interruttore e scegli il primo punto da rilevare.\n4. Allinea il reticolo esattamente su di esso e tocca Rileva.\n5. Controlla il rilevamento misurato nella finestra e tocca Salva (Annulla scarta la bozza senza salvarla).\n6. Scegli un secondo punto, DIVERSO (la scelta si svuota da sola dopo il salvataggio) e ripeti.\n7. Sulla mappa vedrai due linee tratteggiate che vanno dai punti verso di te. Dove si incrociano c\'è la tua posizione: una croce verde indica un buon taglio, arancione un angolo stretto e una posizione incerta.\n8. Un terzo punto, meglio con un\'angolazione diversa, affina la stima e disegna il triangolo d\'errore.\n\nFallo rapidamente, entro 5 minuti: il punto nave per rilevamenti presuppone che la barca resti ferma tra un rilevamento e l\'altro.\n\nPUNTO SCONOSCIUTO — determina un oggetto (serve il GPS)\n\n1. Passa a \"Punto sconosciuto\".\n2. Tocca l\'etichetta, scegli \"Nuovo punto…\" e dai un nome a ciò che stai rilevando, ad esempio \"scoglio sconosciuto\".\n3. Punta, Rileva, conferma Salva.\n4. Sposta la barca di almeno qualche centinaio di metri: più lontano vai, più affidabile sarà il risultato.\n5. Riapri la selezione dell\'oggetto, scegli lo STESSO oggetto dall\'elenco (non \"Nuovo punto\") e rilevalo una seconda volta.\n6. Sulla mappa compare un segnaposto con la posizione calcolata. Toccalo per salvarlo come waypoint: da quel momento puoi usarlo anche per il punto nave per rilevamenti.\n\nPrecisione\n\nUna bussola da telefono ha un errore reale di circa ±8°, che a 10 NM sono oltre 2,5 NM di scarto laterale: è esattamente per questo che l\'app disegna un cono di incertezza invece di una linea sottile. Il taglio migliore lo danno punti separati da un angolo vicino ai 90°; se sono quasi allineati con te, l\'intersezione si sfuma su centinaia di metri o più.\n\nRilevamenti senza navigazione attiva\n\nUn rilevamento si salva anche a tracciamento spento: all\'ancora, a terra. Lo trovi nell\'elenco delle navigazioni come riga propria con data, tra una navigazione e l\'altra. Aprendolo vedi i rilevamenti di quel giorno con una piccola mappa, e da lì puoi esportare un PDF semplice con la mappa e la tabella dei rilevamenti.';
+      'La scheda Bussola mostra il rilevamento magnetico usando i sensori del telefono, con la fotocamera posteriore come sfondo per prendere rilevamenti su oggetti.\n\n• Mirino giallo – direzione verso cui punti\n• Striscia della bussola in alto – N / NE / E / SE / S / SO / O / NO\n• Lettura numerica – gradi e punto cardinale\n• Punto verde = lettura stabile  ·  Punto arancione = calibrazione in corso\n\nSe la lettura è instabile, muovi lentamente il telefono a forma di otto per calibrare il magnetometro.\n\nLa precisione può ridursi vicino a strutture metalliche, altoparlanti o apparecchiature elettroniche.\n\nLa bussola risolve due compiti diversi: trovare SE STESSI quando non si sa dove ci si trova, oppure determinare un PUNTO SCONOSCIUTO quando si vuole mettere in carta qualcosa che ancora non c\'è. L\'interruttore sopra il pulsante Rileva sceglie quale delle due si sta facendo.\n\nLA MIA POSIZIONE — trova te stesso (il GPS non serve)\n\n1. Verifica sulla carta di conoscere almeno due punti visibili (faro, cima, chiesa) salvati come waypoint. Aggiungi quello mancante con una pressione prolungata sulla mappa esattamente nella sua posizione.\n2. Sulla bussola passa a \"La mia posizione\".\n3. Tocca l\'etichetta sotto l\'interruttore e scegli il primo punto da rilevare.\n4. Allinea il reticolo esattamente su di esso e tocca Rileva.\n5. Controlla il rilevamento misurato nella finestra e tocca Salva (Annulla scarta la bozza senza salvarla).\n6. Scegli un secondo punto, DIVERSO (la scelta si svuota da sola dopo il salvataggio) e ripeti.\n7. Sulla mappa vedrai due linee tratteggiate che vanno dai punti verso di te. Dove si incrociano c\'è la tua posizione: una croce verde indica un buon taglio, arancione un angolo stretto e una posizione incerta.\n8. Un terzo punto, meglio con un\'angolazione diversa, affina la stima e disegna il triangolo d\'errore.\n\nFallo rapidamente, entro 5 minuti: il punto nave per rilevamenti presuppone che la barca resti ferma tra un rilevamento e l\'altro.\n\nPUNTO SCONOSCIUTO — determina un oggetto (serve il GPS)\n\n1. Passa a \"Punto sconosciuto\".\n2. Tocca l\'etichetta, scegli \"Nuovo punto…\" e dai un nome a ciò che stai rilevando, ad esempio \"scoglio sconosciuto\".\n3. Punta, Rileva, conferma Salva.\n4. Sposta la barca di almeno qualche centinaio di metri: più lontano vai, più affidabile sarà il risultato.\n5. Riapri la selezione dell\'oggetto, scegli lo STESSO oggetto dall\'elenco (non \"Nuovo punto\") e rilevalo una seconda volta.\n6. Sulla mappa compare un segnaposto con la posizione calcolata. Toccalo per salvarlo come waypoint: da quel momento puoi usarlo anche per il punto nave per rilevamenti.\n\nPrecisione\n\nUna bussola da telefono ha un errore reale di circa ±8°, che a 10 NM sono oltre 2,5 NM di scarto laterale: è esattamente per questo che l\'app disegna un cono di incertezza invece di una linea sottile. Il taglio migliore lo danno punti separati da un angolo vicino ai 90°; se sono quasi allineati con te, l\'intersezione si sfuma su centinaia di metri o più.\n\nRilevamenti senza navigazione attiva\n\nUn rilevamento si salva anche a tracciamento spento: all\'ancora, a terra. Lo trovi nell\'elenco delle navigazioni come riga propria con data, tra una navigazione e l\'altra. Aprendolo vedi i rilevamenti di quel giorno con una piccola mappa, e da lì puoi esportare un PDF semplice con la mappa e la tabella dei rilevamenti.\n\nPulire la carta ed eliminare i rilevamenti\n\nRilevare su una carta pulita – nella Bussola, l\'icona di aggiornamento in alto a destra. Toglie dalla carta i rilevamenti già presi e azzera il punto o l\'oggetto scelto, così il rilevamento successivo riparte da zero. Non si perde nulla: le registrazioni restano nella scheda Giornale di bordo e nell\'esportazione PDF.\n\nEliminare definitivamente – apri la riga con la data nell\'elenco delle navigazioni. La X accanto a una riga elimina quel singolo rilevamento (per un oggetto, l\'intera serie di rilevamenti su di esso). Il cestino nella barra in alto elimina l\'intera giornata in una volta e ti riporta all\'elenco. L\'eliminazione è definitiva e quei rilevamenti spariscono anche dall\'esportazione PDF.\n\nIn breve: pulire riordina la carta, eliminare rimuove la registrazione. Solo l\'eliminazione cambia il contenuto del PDF.';
 
   @override
   String get guideSettingsTitle => 'Impostazioni';
 
   @override
   String get guideSettingsBody =>
-      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti';
+      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';
@@ -2501,7 +2501,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona un charter\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona una navigazione\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';
@@ -2699,7 +2699,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get costsSection => 'Costi';
 
   @override
-  String get charterPriceLabel => 'Prezzo del charter';
+  String get charterPriceLabel => 'Prezzo della navigazione';
 
   @override
   String get currencyLabel => 'Valuta';
@@ -2764,7 +2764,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get saveVoyageButton => 'Salva la navigazione';
 
   @override
-  String get costBaseCharter => 'Prezzo base del charter';
+  String get costBaseCharter => 'Prezzo base della navigazione';
 
   @override
   String get costDeposit => 'Cauzione';
@@ -3115,6 +3115,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get speed => 'Velocità';
 
   @override
+  String get dateFormatLabel => 'Formato data';
+
+  @override
+  String get dateFormatByLanguage => 'Secondo la lingua dell\'app';
+
+  @override
   String get crewCertTitle => 'Attestato delle miglia navigate';
 
   @override
@@ -3253,6 +3259,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'Ancora nessun rilevamento. Punta il telefono su un oggetto e tocca Rileva.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'Tutti i rilevamenti di questo giorno saranno eliminati definitivamente, anche dall\'esportazione PDF. L\'operazione non è reversibile.';
 
   @override
   String bearingFixFrom(int count) {

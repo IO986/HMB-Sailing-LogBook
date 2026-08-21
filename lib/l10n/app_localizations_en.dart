@@ -432,7 +432,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMultidayVoyage => 'New multi-day voyage';
 
   @override
-  String get deleteCharterTitle => 'Delete charter?';
+  String get deleteCharterTitle => 'Delete voyage?';
 
   @override
   String get deleteCharterContent => 'All days and entries will be deleted.';
@@ -445,7 +445,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noVoyages => 'No voyages';
 
   @override
-  String get createFirstCharter => 'Create your first charter';
+  String get createFirstCharter => 'Create your first voyage';
 
   @override
   String get briefingDone => 'Briefing ✓';
@@ -963,7 +963,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkOutLabel => 'Check-out (handing over the boat)';
 
   @override
-  String get charterCheckCard => 'Charter';
+  String get charterCheckCard => 'Voyage';
 
   @override
   String get weatherTitle => 'Weather & Sea';
@@ -1769,7 +1769,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportDayTitle => 'Day export';
 
   @override
-  String get exportCharterTitle => 'Charter export';
+  String get exportCharterTitle => 'Voyage export';
 
   @override
   String get loadingData => 'Loading data...';
@@ -1786,7 +1786,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportDayBtn => 'Export day';
 
   @override
-  String get exportCharterBtn => 'Export charter';
+  String get exportCharterBtn => 'Export voyage';
 
   @override
   String get entriesLabel => 'Entries';
@@ -2047,7 +2047,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savingAndGeneratingGpx => 'Saving and generating GPX...';
 
   @override
-  String get editCharter => 'Edit charter';
+  String get editCharter => 'Edit voyage';
 
   @override
   String get basicInfo => 'Basic information';
@@ -2445,7 +2445,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the charter PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.\n• The emergency contacts follow your position even with tracking off – the app asks for a fix itself and swaps the numbers when you cross into another country';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the voyage PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.\n• The emergency contacts follow your position even with tracking off – the app asks for a fix itself and swaps the numbers when you cross into another country';
 
   @override
   String get guideDutyTitle => 'Crew on duty';
@@ -2459,14 +2459,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideCompassBody =>
-      'The Compass tab shows your magnetic bearing using the phone sensors, with the rear camera as background for taking bearings on objects.\n\n• Yellow crosshair – direction you are pointing\n• Compass strip at top – N / NE / E / SE / S / SW / W / NW\n• Numeric readout – degrees and cardinal point\n• Green dot = stable reading  ·  Orange dot = calibrating\n\nIf the reading is unstable, slowly move the phone in a figure-eight pattern to calibrate the magnetometer.\n\nAccuracy may be reduced near metal structures, speakers or electronic equipment.\n\nThe compass handles two different tasks — finding YOURSELF when you don\'t know where you are, or fixing an UNKNOWN POINT when you want to plot something the chart doesn\'t have yet. The switch above the Take bearing button picks which one you\'re doing.\n\nMY POSITION — find yourself (no GPS needed)\n\n1. Check the map for at least two charted marks you can actually see (a lighthouse, a peak, a church) saved as waypoints. Add a missing one with a long press on the map right at its location.\n2. On the compass, switch to \"My position\".\n3. Tap the chip under the switch and pick the first mark you\'re sighting.\n4. Line the crosshair up on it exactly and tap Take bearing.\n5. Check the measured bearing in the dialog and tap Save (Cancel discards the draft unsaved).\n6. Pick a second, DIFFERENT mark (the choice clears itself after saving) and repeat.\n7. On the map you\'ll see two dashed lines running from the marks toward you. Where they cross is your position — a green cross means a good cut, orange means a shallow angle and an uncertain position.\n8. A third mark, ideally at a different angle, sharpens the estimate and draws the error triangle.\n\nDo it quickly, within 5 minutes — resection assumes the boat holds still between sights.\n\nUNKNOWN POINT — fix an object (GPS needed)\n\n1. Switch to \"Unknown point\".\n2. Tap the chip, choose \"New point…\" and name what you\'re sighting, e.g. \"unknown rock\".\n3. Aim, Take bearing, confirm Save.\n4. Move the boat at least a few hundred metres — the further, the more reliable the result.\n5. Open the target picker again, pick the SAME object from the list (not \"New point\"), and sight it a second time.\n6. A marker with the computed position appears on the map. Tap it to save it as a waypoint — from then on you can use it for resection too.\n\nAccuracy\n\nA phone compass carries a real error of around ±8°, which at 10 NM is over 2.5 NM sideways — that is exactly why the app draws a cone of uncertainty instead of a thin line. The best cut comes from marks close to 90° apart; when they lie almost in line with you, the crossing point smears out to hundreds of metres or more.\n\nBearings taken without a voyage\n\nA bearing saves even with tracking off — at anchor, ashore. Find it in the voyage list as its own dated row, sitting between voyages. Opening it shows that day\'s bearings with a small map, and from there you can export a simple PDF with the map and the bearings table.';
+      'The Compass tab shows your magnetic bearing using the phone sensors, with the rear camera as background for taking bearings on objects.\n\n• Yellow crosshair – direction you are pointing\n• Compass strip at top – N / NE / E / SE / S / SW / W / NW\n• Numeric readout – degrees and cardinal point\n• Green dot = stable reading  ·  Orange dot = calibrating\n\nIf the reading is unstable, slowly move the phone in a figure-eight pattern to calibrate the magnetometer.\n\nAccuracy may be reduced near metal structures, speakers or electronic equipment.\n\nThe compass handles two different tasks — finding YOURSELF when you don\'t know where you are, or fixing an UNKNOWN POINT when you want to plot something the chart doesn\'t have yet. The switch above the Take bearing button picks which one you\'re doing.\n\nMY POSITION — find yourself (no GPS needed)\n\n1. Check the map for at least two charted marks you can actually see (a lighthouse, a peak, a church) saved as waypoints. Add a missing one with a long press on the map right at its location.\n2. On the compass, switch to \"My position\".\n3. Tap the chip under the switch and pick the first mark you\'re sighting.\n4. Line the crosshair up on it exactly and tap Take bearing.\n5. Check the measured bearing in the dialog and tap Save (Cancel discards the draft unsaved).\n6. Pick a second, DIFFERENT mark (the choice clears itself after saving) and repeat.\n7. On the map you\'ll see two dashed lines running from the marks toward you. Where they cross is your position — a green cross means a good cut, orange means a shallow angle and an uncertain position.\n8. A third mark, ideally at a different angle, sharpens the estimate and draws the error triangle.\n\nDo it quickly, within 5 minutes — resection assumes the boat holds still between sights.\n\nUNKNOWN POINT — fix an object (GPS needed)\n\n1. Switch to \"Unknown point\".\n2. Tap the chip, choose \"New point…\" and name what you\'re sighting, e.g. \"unknown rock\".\n3. Aim, Take bearing, confirm Save.\n4. Move the boat at least a few hundred metres — the further, the more reliable the result.\n5. Open the target picker again, pick the SAME object from the list (not \"New point\"), and sight it a second time.\n6. A marker with the computed position appears on the map. Tap it to save it as a waypoint — from then on you can use it for resection too.\n\nAccuracy\n\nA phone compass carries a real error of around ±8°, which at 10 NM is over 2.5 NM sideways — that is exactly why the app draws a cone of uncertainty instead of a thin line. The best cut comes from marks close to 90° apart; when they lie almost in line with you, the crossing point smears out to hundreds of metres or more.\n\nBearings taken without a voyage\n\nA bearing saves even with tracking off — at anchor, ashore. Find it in the voyage list as its own dated row, sitting between voyages. Opening it shows that day\'s bearings with a small map, and from there you can export a simple PDF with the map and the bearings table.\n\nClearing the map and deleting bearings\n\nSighting on a clean map – on the Compass, the refresh icon at the top right. It takes the bearings you already have off the map and clears the chosen mark or object, so the next Take bearing starts fresh. Nothing is lost: the records stay in the Logbook tab and in the PDF export.\n\nDeleting for good – open the dated row in the voyage list. The X beside a line removes that single bearing (for an object, the whole set of sightings on it). The bin in the top bar deletes the whole day at once and takes you back to the list. Deleting is permanent and those bearings disappear from the PDF export too.\n\nIn short: clearing tidies the map, deleting removes the record. Only deleting changes what ends up in the PDF.';
 
   @override
   String get guideSettingsTitle => 'Settings';
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';
@@ -2480,7 +2480,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a charter\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings';
+      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a voyage\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -2678,7 +2678,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get costsSection => 'Costs';
 
   @override
-  String get charterPriceLabel => 'Charter price';
+  String get charterPriceLabel => 'Voyage price';
 
   @override
   String get currencyLabel => 'Currency';
@@ -2743,7 +2743,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveVoyageButton => 'Save voyage';
 
   @override
-  String get costBaseCharter => 'Base charter price';
+  String get costBaseCharter => 'Base voyage price';
 
   @override
   String get costDeposit => 'Deposit';
@@ -3089,6 +3089,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get speed => 'Speed';
 
   @override
+  String get dateFormatLabel => 'Date format';
+
+  @override
+  String get dateFormatByLanguage => 'By app language';
+
+  @override
   String get crewCertTitle => 'Certificate of miles sailed';
 
   @override
@@ -3227,6 +3233,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bearingsEmpty =>
       'No bearings yet. Point the phone at a landmark and tap Take bearing.';
+
+  @override
+  String get bearingsDeleteDayConfirm =>
+      'All bearings taken on this day will be permanently deleted, including from the PDF export. This cannot be undone.';
 
   @override
   String bearingFixFrom(int count) {

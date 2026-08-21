@@ -905,7 +905,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteCharterTitle.
   ///
   /// In sk, this message translates to:
-  /// **'Zmazať charter?'**
+  /// **'Zmazať plavbu?'**
   String get deleteCharterTitle;
 
   /// No description provided for @deleteCharterContent.
@@ -929,7 +929,7 @@ abstract class AppLocalizations {
   /// No description provided for @createFirstCharter.
   ///
   /// In sk, this message translates to:
-  /// **'Vytvor svoj prvý charter'**
+  /// **'Vytvor svoju prvú plavbu'**
   String get createFirstCharter;
 
   /// No description provided for @briefingDone.
@@ -1913,7 +1913,7 @@ abstract class AppLocalizations {
   /// No description provided for @charterCheckCard.
   ///
   /// In sk, this message translates to:
-  /// **'Charter'**
+  /// **'Plavba'**
   String get charterCheckCard;
 
   /// No description provided for @weatherTitle.
@@ -3443,7 +3443,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportCharterTitle.
   ///
   /// In sk, this message translates to:
-  /// **'Export chartera'**
+  /// **'Export plavby'**
   String get exportCharterTitle;
 
   /// No description provided for @loadingData.
@@ -3473,7 +3473,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportCharterBtn.
   ///
   /// In sk, this message translates to:
-  /// **'Exportovať charter'**
+  /// **'Exportovať plavbu'**
   String get exportCharterBtn;
 
   /// No description provided for @entriesLabel.
@@ -3965,7 +3965,7 @@ abstract class AppLocalizations {
   /// No description provided for @editCharter.
   ///
   /// In sk, this message translates to:
-  /// **'Upraviť charter'**
+  /// **'Upraviť plavbu'**
   String get editCharter;
 
   /// No description provided for @basicInfo.
@@ -4721,7 +4721,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyBriefingBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu chartera\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.\n• Núdzové kontakty sa vyberajú podľa aktuálnej polohy aj bez zapnutého trasovania – appka si polohu vypýta sama a pri prechode do inej krajiny čísla vymení'**
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu plavby\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.\n• Núdzové kontakty sa vyberajú podľa aktuálnej polohy aj bez zapnutého trasovania – appka si polohu vypýta sama a pri prechode do inej krajiny čísla vymení'**
   String get guideSafetyBriefingBody;
 
   /// No description provided for @guideDutyTitle.
@@ -4745,7 +4745,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideCompassBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.\n\nKompas rieši dve odlišné úlohy — nájsť SEBA, keď nevieš, kde si, alebo nájsť NEZNÁMY BOD, keď chceš na mapu zaznačiť niečo, čo tam ešte nie je. Prepínač nad tlačidlom Zameraj vyberá, ktorú z nich práve robíš.\n\nMOJA POLOHA — nájdi seba (GPS netreba)\n\n1. Over si na mape, že poznáš aspoň dva viditeľné body (maják, vrchol, kostol) ako waypointy. Chýbajúci bod pridáš dlhým podržaním na mape presne na jeho mieste.\n2. Na kompase prepni na \"Moja poloha\".\n3. Ťukni na štítok pod prepínačom a vyber prvý zameriavaný bod.\n4. Namier kríž presne naň a stlač Zameraj.\n5. V dialógu skontroluj nameraný kurz a stlač Uložiť (Zrušiť návrh zahodí bez zápisu).\n6. Vyber druhý, INÝ bod (výber sa po uložení sám vyprázdni) a zopakuj.\n7. Na mape uvidíš dve čiarkované čiary od bodov k tebe. Ich priesečník je tvoja poloha — zelený krížik znamená dobrý rez, oranžový ostrý uhol a neistú polohu.\n8. Tretí bod, ideálne pod iným uhlom, spresní odhad a ukáže trojuholník chyby.\n\nRob to rýchlo za sebou, do 5 minút — resekcia predpokladá, že loď medzi zameraniami stojí.\n\nNEZNÁMY BOD — nájdi objekt (GPS treba)\n\n1. Prepni na \"Neznámy bod\".\n2. Ťukni na štítok, zvoľ \"Nový bod…\" a pomenuj, čo zameriavaš, napríklad \"neznáma skala\".\n3. Namier, Zameraj, potvrď Uložiť.\n4. Presuň loď aspoň o pár sto metrov — čím ďalej, tým istejší výsledok.\n5. Znova otvor výber cieľa, vyber ten istý objekt zo zoznamu (nie \"Nový bod\") a zameraj druhýkrát.\n6. Na mape sa objaví značka s vypočítanou polohou objektu. Ťuknutím ju uložíš ako waypoint — a od tej chvíle sa dá použiť aj na resekciu.\n\nPresnosť\n\nTelefónový kompas má reálnu chybu okolo ±8°, čo je na 10 míľach vzdialenosti vyše 2,5 míle do strany — presne preto sa kreslí kužeľ neistoty, nie tenká čiara. Najlepší rez dávajú body pod uhlom blízko 90°; keď ležia takmer v jednej línii s tebou, priesečník sa rozmaže na stovky metrov až kilometre.\n\nZamerania bez plavby\n\nZameranie sa uloží aj bez zapnutého trackingu — na kotve, na brehu. Nájdeš ho v zozname plavieb ako samostatný riadok s dátumom, medzi jednotlivými plavbami. Otvorením zobrazíš zamerania toho dňa aj s mapkou a odtiaľ spustíš export jednoduchého PDF s mapkou a tabuľkou zameraní.'**
+  /// **'Záložka Kompas zobrazuje magnetický azimut pomocou senzorov telefónu, s výhľadom zadnej kamery ako pozadím pre zameranie objektov.\n\n• Žltý kríž – smer, na ktorý mierite\n• Kompasová lišta hore – N / NE / E / SE / S / SW / W / NW\n• Číselné zobrazenie – stupne a svetová strana\n• Zelená bodka = stabilné čítanie  ·  Oranžová bodka = kalibruje\n\nAk je čítanie nestabilné, pomaly pohybuj telefónom do tvaru osmičky pre kalibráciu magnetometra.\n\nPozor: presnosť môže byť znížená v blízkosti kovových konštrukcií, reproduktorov alebo elektroniky.\n\nKompas rieši dve odlišné úlohy — nájsť SEBA, keď nevieš, kde si, alebo nájsť NEZNÁMY BOD, keď chceš na mapu zaznačiť niečo, čo tam ešte nie je. Prepínač nad tlačidlom Zameraj vyberá, ktorú z nich práve robíš.\n\nMOJA POLOHA — nájdi seba (GPS netreba)\n\n1. Over si na mape, že poznáš aspoň dva viditeľné body (maják, vrchol, kostol) ako waypointy. Chýbajúci bod pridáš dlhým podržaním na mape presne na jeho mieste.\n2. Na kompase prepni na \"Moja poloha\".\n3. Ťukni na štítok pod prepínačom a vyber prvý zameriavaný bod.\n4. Namier kríž presne naň a stlač Zameraj.\n5. V dialógu skontroluj nameraný kurz a stlač Uložiť (Zrušiť návrh zahodí bez zápisu).\n6. Vyber druhý, INÝ bod (výber sa po uložení sám vyprázdni) a zopakuj.\n7. Na mape uvidíš dve čiarkované čiary od bodov k tebe. Ich priesečník je tvoja poloha — zelený krížik znamená dobrý rez, oranžový ostrý uhol a neistú polohu.\n8. Tretí bod, ideálne pod iným uhlom, spresní odhad a ukáže trojuholník chyby.\n\nRob to rýchlo za sebou, do 5 minút — resekcia predpokladá, že loď medzi zameraniami stojí.\n\nNEZNÁMY BOD — nájdi objekt (GPS treba)\n\n1. Prepni na \"Neznámy bod\".\n2. Ťukni na štítok, zvoľ \"Nový bod…\" a pomenuj, čo zameriavaš, napríklad \"neznáma skala\".\n3. Namier, Zameraj, potvrď Uložiť.\n4. Presuň loď aspoň o pár sto metrov — čím ďalej, tým istejší výsledok.\n5. Znova otvor výber cieľa, vyber ten istý objekt zo zoznamu (nie \"Nový bod\") a zameraj druhýkrát.\n6. Na mape sa objaví značka s vypočítanou polohou objektu. Ťuknutím ju uložíš ako waypoint — a od tej chvíle sa dá použiť aj na resekciu.\n\nPresnosť\n\nTelefónový kompas má reálnu chybu okolo ±8°, čo je na 10 míľach vzdialenosti vyše 2,5 míle do strany — presne preto sa kreslí kužeľ neistoty, nie tenká čiara. Najlepší rez dávajú body pod uhlom blízko 90°; keď ležia takmer v jednej línii s tebou, priesečník sa rozmaže na stovky metrov až kilometre.\n\nZamerania bez plavby\n\nZameranie sa uloží aj bez zapnutého trackingu — na kotve, na brehu. Nájdeš ho v zozname plavieb ako samostatný riadok s dátumom, medzi jednotlivými plavbami. Otvorením zobrazíš zamerania toho dňa aj s mapkou a odtiaľ spustíš export jednoduchého PDF s mapkou a tabuľkou zameraní.\n\nČistenie mapy a mazanie zameraní\n\nZameriavanie na čistú mapu – na Kompase ikona obnovenia vpravo hore. Odloží doterajšie zamerania z mapy a zruší vybraný bod či objekt, takže ďalšie Zameraj začína načisto. Nič sa nestráca: záznamy zostávajú v karte Lodný denník aj v PDF exporte.\n\nZmazanie natrvalo – otvor riadok s dátumom v zozname plavieb. Krížik pri riadku zmaže jedno zameranie (pri objekte celú sadu zameraní naň). Kôš v hornej lište zmaže celý deň naraz a vráti ťa späť do zoznamu. Mazanie je nevratné a tie zamerania zmiznú aj z PDF exportu.\n\nSkrátene: čistenie upratuje mapu, mazanie odstraňuje záznam. Obsah PDF mení jedine mazanie.'**
   String get guideCompassBody;
 
   /// No description provided for @guideSettingsTitle.
@@ -4757,7 +4757,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
@@ -4781,7 +4781,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber charter\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber plavbu\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.
@@ -5165,7 +5165,7 @@ abstract class AppLocalizations {
   /// No description provided for @charterPriceLabel.
   ///
   /// In sk, this message translates to:
-  /// **'Cena charteru'**
+  /// **'Cena plavby'**
   String get charterPriceLabel;
 
   /// No description provided for @currencyLabel.
@@ -5291,7 +5291,7 @@ abstract class AppLocalizations {
   /// No description provided for @costBaseCharter.
   ///
   /// In sk, this message translates to:
-  /// **'Základná cena charteru'**
+  /// **'Základná cena plavby'**
   String get costBaseCharter;
 
   /// No description provided for @costDeposit.
@@ -5888,6 +5888,18 @@ abstract class AppLocalizations {
   /// **'Rýchlosť'**
   String get speed;
 
+  /// No description provided for @dateFormatLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Formát dátumu'**
+  String get dateFormatLabel;
+
+  /// No description provided for @dateFormatByLanguage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podľa jazyka appky'**
+  String get dateFormatByLanguage;
+
   /// No description provided for @crewCertTitle.
   ///
   /// In sk, this message translates to:
@@ -6145,6 +6157,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Zatiaľ žiadne zamerania. Namier telefón na objekt a stlač Zameraj.'**
   String get bearingsEmpty;
+
+  /// No description provided for @bearingsDeleteDayConfirm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Všetky zamerania z tohto dňa sa nenávratne zmažu, aj z PDF exportu. Tento krok sa nedá vrátiť.'**
+  String get bearingsDeleteDayConfirm;
 
   /// No description provided for @bearingFixFrom.
   ///

@@ -6,7 +6,27 @@ class TrackingIntervalSelector extends StatelessWidget {
   final Function(int) onChanged;
   const TrackingIntervalSelector({super.key, required this.value, required this.onChanged});
 
-  static const _options = [30, 60, 900, 1800, 3600, 7200];
+  /// Ponúkané frekvencie zápisu do denníka.
+  ///
+  /// 30 s a 1 min tu boli pôvodne, ale na plavbe nedávajú zmysel: zapisovali
+  /// by desiatky riadkov za hodinu státia na kotve a denník by sa stal
+  /// nečitateľným. Najhustejšia rozumná voľba je 5 minút, na dlhé prechody
+  /// pribudlo 6 hodín.
+  static const options = [300, 900, 1800, 3600, 7200, 21600];
+
+  /// Predvolená frekvencia, keď si používateľ ešte nevybral.
+  static const defaultSeconds = 3600;
+
+  /// Najbližšia platná voľba k [seconds].
+  ///
+  /// Uložené nastavenie môže obsahovať hodnotu, ktorá sa medzitým z ponuky
+  /// vytratila (30 s, 1 min). Bez tohto by sa v dialógu nezvýraznila žiadna
+  /// možnosť a používateľ by nevedel, čo je vlastne nastavené.
+  static int normalize(int seconds) {
+    if (options.contains(seconds)) return seconds;
+    return options.reduce((a, b) =>
+        (a - seconds).abs() <= (b - seconds).abs() ? a : b);
+  }
 
   /// Labels used to be hard-coded Slovak ('30 sek', '1 hod'), which every
   /// other language got to see as well. Derived from the value instead, so a
@@ -34,8 +54,8 @@ class TrackingIntervalSelector extends StatelessWidget {
         // možnosti sú tak viditeľné naraz, netreba rolovať.
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: _options.map((seconds) {
-            final sel = seconds == value;
+          children: options.map((seconds) {
+            final sel = seconds == normalize(value);
             return Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: ChoiceChip(
