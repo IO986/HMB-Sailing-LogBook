@@ -11,6 +11,7 @@ import '../database/app_database.dart';
 import '../models/logbook_event_type.dart';
 import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
+import '../utils/track_point_throttle.dart';
 import 'geocoding_service.dart';
 import 'location_service.dart';
 import 'raymarine_connection_service.dart';
@@ -56,6 +57,9 @@ class GpsTrackingService {
   // fixy vygenerujú náhodný/nulový kurz.
   static const double _minCourseDistM = 8;
   double? _lastComputedCourseDeg;
+
+  // Zápis trackpointu sa škrtí, súčet míľ nie — pozri TrackPointThrottle.
+  final _trackPointThrottle = TrackPointThrottle();
 
   Stream<Position> get positionStream => _posCtrl.stream;
   Position? get lastPosition => _lastPosition ?? LocationService().lastPosition;
@@ -133,9 +137,14 @@ class GpsTrackingService {
         : bridgedDistanceNm;
     _lastPersistedNm = _totalDistanceNm;
     _lastTrackPoint = null;
+    _trackPointThrottle.reset();
     _lastComputedCourseDeg = null;
     debugPrint('[GPS] Session created: ${_currentSession?.sessionId}, '
         'starting NM: ${_totalDistanceNm.toStringAsFixed(2)}');
+
+    // Tracking je jediný konzument, ktorý potrebuje presnú polohu aj so
+    // zhasnutou obrazovkou — drží ju bežiaci foreground service.
+    LocationService().requestPrecise(this, survivesBackground: true);
 
     // Použi LocationService stream (GPS je už aktívne)
     _posSub = LocationService().stream.listen(
@@ -264,6 +273,7 @@ class GpsTrackingService {
       _geocodeArrival(_lastPosition!.latitude, _lastPosition!.longitude);
     }
 
+    LocationService().releasePrecise(this);
     await _posSub?.cancel(); _posSub = null;
     _logbookTimer?.cancel(); _logbookTimer = null;
     _weatherTimer?.cancel(); _weatherTimer = null;
@@ -353,18 +363,20 @@ class GpsTrackingService {
       if (d < 10) _totalDistanceNm += d; // Ignoruj GPS skoky > 10 NM
     }
     _lastTrackPoint = latLng;
-    _trackCache.add(latLng);
 
-    await _db!.insertTrackPoint(TrackPointsCompanion.insert(
-      sessionId: drift.Value(_currentSession!.sessionId),
-      timestamp: pos.timestamp,
-      latitude: pos.latitude,
-      longitude: pos.longitude,
-      altitude: drift.Value(pos.altitude),
-      speed: drift.Value(_kts(pos.speed)),
-      course: drift.Value(_lastComputedCourseDeg ?? pos.heading),
-      accuracy: drift.Value(pos.accuracy),
-    ));
+    if (_trackPointThrottle.accept(latLng)) {
+      _trackCache.add(latLng);
+      await _db!.insertTrackPoint(TrackPointsCompanion.insert(
+        sessionId: drift.Value(_currentSession!.sessionId),
+        timestamp: pos.timestamp,
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        altitude: drift.Value(pos.altitude),
+        speed: drift.Value(_kts(pos.speed)),
+        course: drift.Value(_lastComputedCourseDeg ?? pos.heading),
+        accuracy: drift.Value(pos.accuracy),
+      ));
+    }
 
     await _persistDistanceIfGrown();
 

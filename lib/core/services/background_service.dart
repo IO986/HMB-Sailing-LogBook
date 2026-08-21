@@ -46,7 +46,6 @@ class BackgroundService {
   @pragma('vm:entry-point')
   static void _onStart(ServiceInstance service) async {
     Timer? weatherTimer;
-    Timer? logbookTimer;
 
     Position? lastWeatherSyncPosition;
     DateTime? lastWeatherSyncTime;
@@ -56,7 +55,12 @@ class BackgroundService {
       const Duration(minutes: 15),
       (_) async {
         try {
-          final pos = await Geolocator.getCurrentPosition();
+          // Zámerne last-known, nie getCurrentPosition(): tá by rozbehla
+          // vlastný GNSS fix v tomto izoláte, hoci appka v popredí má živý
+          // stream a poloha je teda čerstvá. Na rozhodnutie "posunuli sme sa
+          // o 25 km?" stačí posledná známa poloha aj keby bola staršia.
+          final pos = await Geolocator.getLastKnownPosition();
+          if (pos == null) return;
 
           final shouldSync = lastWeatherSyncPosition == null ||
               Geolocator.distanceBetween(
@@ -83,19 +87,12 @@ class BackgroundService {
       },
     );
 
-    // Automatický lodný denník každú hodinu
-    logbookTimer = Timer.periodic(
-      const Duration(hours: 1),
-      (_) async {
-        try {
-          // Auto entry sa vytvára automaticky v GPS service timerom
-        } catch (_) {}
-      },
-    );
+    // Automatický lodný denník tu ŽIADNY timer nemá — zapisuje ho
+    // GpsTrackingService vlastným timerom v hlavnom izoláte. Predtým tu stála
+    // hodinová Timer.periodic s prázdnym telom, ktorá len budila zariadenie.
 
     service.on('stopService').listen((event) {
       weatherTimer?.cancel();
-      logbookTimer?.cancel();
       service.stopSelf();
     });
   }

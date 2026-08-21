@@ -17,7 +17,14 @@ import '../../../core/services/units_service.dart';
 
 // ── Providers ─────────────────────────────────────────────────
 
-final _gpsProvider = StreamProvider<Position>((ref) => LocationService().stream);
+/// Prístrojová obrazovka číta SOG/COG v reálnom čase, takže kým je otvorená,
+/// drží GPS na plnej presnosti — a `autoDispose` ju zase pustí, len čo
+/// obrazovka zmizne.
+final _gpsProvider = StreamProvider.autoDispose<Position>((ref) {
+  LocationService().requestPrecise(ref);
+  ref.onDispose(() => LocationService().releasePrecise(ref));
+  return LocationService().stream;
+});
 
 final _weatherProvider = FutureProvider<WeatherData?>(
     (ref) => WeatherService().getCurrentWeather());

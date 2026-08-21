@@ -97,6 +97,8 @@ class MobNotifier extends Notifier<MobState> {
       ));
       debugPrint('[MOB] Logged MOB activation');
     } catch (e) { debugPrint('[MOB] Log error: $e'); }
+    // Muž cez palubu: smer a vzdialenosť k bodu pádu sa musia meniť plynulo.
+    LocationService().requestPrecise(this, survivesBackground: true);
     _sub = (GpsTrackingService().isTracking
         ? GpsTrackingService().positionStream
         : LocationService().stream).listen((pos) {
@@ -108,6 +110,7 @@ class MobNotifier extends Notifier<MobState> {
   }
 
   Future<void> deactivate() async {
+    LocationService().releasePrecise(this);
     _sub?.cancel();
     final lat = state.mobLat;
     final lon = state.mobLon;
@@ -202,6 +205,9 @@ class AnchorNotifier extends Notifier<AnchorState> {
       debugPrint('[ANCHOR] Logged anchor drop');
     } catch (e) { debugPrint('[ANCHOR] Log error: $e'); }
 
+    // Kotvová stráž stráca zmysel na idle presnosti — perimeter býva
+    // menší než idle distanceFilter, takže by drift nezachytila.
+    LocationService().requestPrecise(this, survivesBackground: true);
     _sub = LocationService().stream.listen((pos) {
       final dist = _haversine(lat, lon, pos.latitude, pos.longitude);
       final pts = [...state.trackPoints, LatLng(pos.latitude, pos.longitude)];
@@ -264,6 +270,7 @@ class AnchorNotifier extends Notifier<AnchorState> {
         ));
       } catch (_) {}
     }
+    LocationService().releasePrecise(this);
     _sub?.cancel();
     state = const AnchorState();
   }
