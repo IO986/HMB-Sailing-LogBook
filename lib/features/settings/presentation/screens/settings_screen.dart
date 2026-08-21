@@ -19,6 +19,7 @@ import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../core/utils/localized_date.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/services/udp_receiver_service.dart';
@@ -120,6 +121,17 @@ class SettingsScreen extends ConsumerWidget {
                   onSelectionChanged: (s) =>
                       ref.read(unitsProvider.notifier).setWind(s.first),
                 ),
+              ),
+              const Divider(height: 1),
+              // Nie SegmentedButton ako jednotky vyššie: štyri možnosti sa do
+              // riadku nezmestia a ukážka konkrétneho dátumu povie viac než
+              // skratka typu D.M.RRRR.
+              ListTile(
+                leading: const Icon(Icons.event),
+                title: Text(l.dateFormatLabel),
+                subtitle: Text(AppDate.of(context, ref).long(_dateSample)),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _pickDateStyle(context, ref, units.dateStyle),
               ),
             ])),
             const SizedBox(height: 16),
@@ -1397,5 +1409,42 @@ class _BottomNavSection extends ConsumerWidget {
         ],
       ]),
     );
+  }
+}
+
+/// Deň, na ktorom sa v nastaveniach ukazuje zvolený formát.
+///
+/// Napevno, nie dnešok: 21. je dvojciferné a august je mesiac s dlhým
+/// názvom, takže na ukážke vidno rozdiel medzi zápismi aj vtedy, keď by
+/// dnešný dátum vyzeral vo všetkých rovnako.
+final _dateSample = DateTime(2026, 8, 21);
+
+Future<void> _pickDateStyle(
+    BuildContext context, WidgetRef ref, DateStyle current) async {
+  final l = AppLocalizations.of(context);
+  final locale = Localizations.localeOf(context).languageCode;
+
+  final picked = await showDialog<DateStyle>(
+    context: context,
+    builder: (ctx) => SimpleDialog(
+      title: Text(l.dateFormatLabel),
+      children: [
+        for (final style in DateStyle.values)
+          RadioListTile<DateStyle>(
+            value: style,
+            groupValue: current,
+            onChanged: (v) => Navigator.pop(ctx, v),
+            title: Text(style == DateStyle.appLanguage
+                ? l.dateFormatByLanguage
+                : AppDate.sample(locale, style)),
+            subtitle: style == DateStyle.appLanguage
+                ? Text(AppDate.sample(locale, style))
+                : null,
+          ),
+      ],
+    ),
+  );
+  if (picked != null) {
+    await ref.read(unitsProvider.notifier).setDateStyle(picked);
   }
 }

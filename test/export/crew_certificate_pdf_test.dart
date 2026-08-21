@@ -5,11 +5,18 @@ import 'package:hmb_sailing_log/core/models/crew_member_ref.dart';
 import 'package:hmb_sailing_log/features/export/services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/features/miles/services/voyage_miles_summary.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:hmb_sailing_log/core/utils/localized_date.dart';
+import 'package:hmb_sailing_log/core/services/units_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// The certificate is generated on a phone, in the skipper's language, for a
 /// crew member who may have no ratings at all. Every one of those paths has to
 /// produce a file rather than throw during the export.
 void main() {
+  // Rovnako ako main() v aplikácii: bez toho DateFormat s konkrétnym jazykom
+  // vyhodí LocaleDataException.
+  setUpAll(() async => initializeDateFormatting());
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final start = DateTime(2026, 7, 15);
@@ -73,6 +80,7 @@ void main() {
 
   test('produces a PDF for a rated crew member', () async {
     final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       l: await l10n('sk'),
       charter: charter(),
       crew: crew,
@@ -87,6 +95,7 @@ void main() {
   test('an unrated crew member still gets a certificate', () async {
     // Skipping the ratings is allowed - the miles are the point of the paper.
     final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       l: await l10n('sk'),
       charter: charter(),
       crew: const CrewMemberRef(name: 'Peter Bez Licencie', role: 'crew'),
@@ -101,6 +110,7 @@ void main() {
     for (final code in ['sk', 'en', 'de', 'es', 'uk', 'cs', 'pl', 'el', 'hr',
       'sl', 'it']) {
       final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
         l: await l10n(code),
         charter: charter(),
         crew: crew,
@@ -115,6 +125,7 @@ void main() {
       () async {
     // The skipper rates the crew and is not rated; the miles are still theirs.
     final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       l: await l10n('sk'),
       charter: charter(),
       crew: const CrewMemberRef(name: 'Ján Novák', role: 'skipper'),
@@ -140,6 +151,7 @@ void main() {
       source: 'live',
     );
     final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       l: await l10n('sk'),
       charter: bare,
       crew: crew,
@@ -151,6 +163,7 @@ void main() {
 
   test('a voyage with no miles at all does not break the layout', () async {
     final bytes = await PdfExportService.buildCrewMilesCertificate(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       l: await l10n('en'),
       charter: charter(),
       crew: crew,

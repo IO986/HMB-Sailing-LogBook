@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/crew_member.dart';
 import '../../domain/duty_rules.dart';
 import '../../providers/duty_provider.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Full duty roster: what has been recorded, plus the way to fill in a duty
 /// after the fact.
@@ -67,7 +68,7 @@ class _DutyTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final fmtDay = DateFormat('E d.M.');
+    final fmtDay = AppDate.of(context, ref);
     final fmtTime = DateFormat('HH:mm');
     final from = duty.fromUtc.toLocal();
     final to = duty.toUtc?.toLocal();
@@ -79,7 +80,7 @@ class _DutyTile extends ConsumerWidget {
       ),
       title: Text(duty.crewName),
       subtitle: Text(
-        '${fmtDay.format(from)}  ${fmtTime.format(from)} – '
+        '${fmtDay.shortWithWeekday(from)}  ${fmtTime.format(from)} – '
         '${to == null ? l.dutyToOngoing : fmtTime.format(to)}'
         '${duty.isAutoClosed ? '  ·  auto' : ''}',
       ),
@@ -185,7 +186,7 @@ class _DutyFormState extends ConsumerState<_DutyForm> {
             dense: true,
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.calendar_today),
-            title: Text(DateFormat('EEEE d. M. yyyy').format(_day)),
+            title: Text(AppDate.of(context, ref).long(_day)),
             onTap: () async {
               final picked = await showDatePicker(
                 context: context,

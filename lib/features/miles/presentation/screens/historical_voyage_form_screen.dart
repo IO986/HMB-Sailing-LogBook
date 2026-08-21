@@ -4,7 +4,6 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
@@ -13,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../providers/miles_provider.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class HistoricalVoyageFormScreen extends ConsumerStatefulWidget {
   final String? voyageId;
@@ -196,7 +196,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final fmt = DateFormat('d. MMM yyyy');
+    final fmt = AppDate.of(context, ref);
 
     return Scaffold(
       appBar: AppBar(
@@ -215,7 +215,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
             onTap: () => _pickDate(true),
             child: InputDecorator(
               decoration: InputDecoration(labelText: l.dateFrom, prefixIcon: const Icon(Icons.calendar_today)),
-              child: Text(fmt.format(_dateFrom)),
+              child: Text(fmt.medium(_dateFrom)),
             ),
           )),
           const SizedBox(width: 12),
@@ -223,7 +223,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
             onTap: () => _pickDate(false),
             child: InputDecorator(
               decoration: InputDecoration(labelText: l.dateTo, prefixIcon: const Icon(Icons.calendar_today)),
-              child: Text(fmt.format(_dateTo)),
+              child: Text(fmt.medium(_dateTo)),
             ),
           )),
         ]),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
@@ -11,6 +10,7 @@ import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../map/providers/map_provider.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class CharterDetailScreen extends ConsumerWidget {
   final int charterId;
@@ -244,7 +244,7 @@ class _Body extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fmtRange = DateFormat('d. MMM yyyy', 'sk');
+    final fmtRange = AppDate.of(context, ref);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
 
@@ -265,7 +265,7 @@ class _Body extends ConsumerWidget {
                     style: TextStyle(color: Colors.grey.shade600)),
             ]),
             const SizedBox(height: 6),
-            Text('${fmtRange.format(charter.dateFrom)} – ${fmtRange.format(charter.dateTo)}',
+            Text('${fmtRange.medium(charter.dateFrom)} – ${fmtRange.medium(charter.dateTo)}',
                 style: TextStyle(color: Colors.grey.shade600)),
             if (charter.homePort != null)
               Text('⚓ ${charter.homePort}',
@@ -355,7 +355,7 @@ class _DayCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dayName = DateFormat('EEEE d. MMMM yyyy', 'sk').format(day.date);
+    final dayName = AppDate.of(context, ref).long(day.date);
     final entriesAsync = ref.watch(logbookEntriesForDayProvider(day.id));
 
     return Card(
@@ -474,20 +474,21 @@ class _Chip extends StatelessWidget {
 
 // ── Multi Delete Dialog ───────────────────────────────────────
 
-class _MultiDeleteDialog extends StatefulWidget {
+class _MultiDeleteDialog extends ConsumerStatefulWidget {
   final List<DayLog> days;
   final Function(List<int>) onDelete;
   const _MultiDeleteDialog({required this.days, required this.onDelete});
 
   @override
-  State<_MultiDeleteDialog> createState() => _MultiDeleteDialogState();
+  ConsumerState<_MultiDeleteDialog> createState() =>
+      _MultiDeleteDialogState();
 }
 
-class _MultiDeleteDialogState extends State<_MultiDeleteDialog> {
+class _MultiDeleteDialogState extends ConsumerState<_MultiDeleteDialog> {
   final Set<int> _selected = {};
   @override
   Widget build(BuildContext context) {
-    final fmt = DateFormat('EEEE d. MMMM', 'sk');
+    final fmt = AppDate.of(context, ref);
     final l = AppLocalizations.of(context);
     return AlertDialog(
       title: Text(l.selectDaysTitle),
@@ -495,7 +496,7 @@ class _MultiDeleteDialogState extends State<_MultiDeleteDialog> {
         width: double.maxFinite,
         child: ListView(shrinkWrap: true, children: widget.days.map((d) =>
           CheckboxListTile(
-            title: Text(fmt.format(d.date)),
+            title: Text(fmt.longNoYear(d.date)),
             subtitle: Text('${d.portFrom ?? "?"} → ${d.portTo ?? "?"}'),
             value: _selected.contains(d.id),
             onChanged: (v) => setState(() {

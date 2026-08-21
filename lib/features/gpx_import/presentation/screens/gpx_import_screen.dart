@@ -16,6 +16,7 @@ import '../../../charter/presentation/screens/charter_edit_screen.dart' show Cha
 import '../../../charter/providers/charter_provider.dart';
 import '../../../map/providers/map_provider.dart';
 import '../../services/gpx_importer.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class GpxImportScreen extends ConsumerStatefulWidget {
   const GpxImportScreen({super.key});
@@ -264,7 +265,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       final day = entry.value.where((d) => d.id == dayLogId).firstOrNull;
       if (day == null) continue;
       final charter = _charters.firstWhere((c) => c.id == entry.key);
-      return '${charter.title} · ${DateFormat('d.M.yyyy').format(day.date)}';
+      return '${charter.title} · ${AppDate.of(context, ref).short(day.date)}';
     }
     return l.gpxNewVoyage;
   }

@@ -4,7 +4,6 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
@@ -14,6 +13,7 @@ import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../providers/miles_provider.dart';
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Záznam do Knihy míľ pre plavbu z trackingu/GPX importu (na rozdiel od
 /// ručne zadanej [HistoricalVoyageFormScreen]). Dátumy/míle/oblasť sa berú
@@ -154,7 +154,7 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
       return Scaffold(appBar: AppBar(), body: Center(child: Text(l.error)));
     }
 
-    final fmt = DateFormat('d.M.yyyy');
+    final fmt = AppDate.of(context, ref);
     final totalNm = _days.fold<double>(0, (sum, d) => sum + d.distanceNm);
 
     return Scaffold(
@@ -174,7 +174,7 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(charter.title, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}'
+              Text('${fmt.short(charter.dateFrom)} – ${fmt.short(charter.dateTo)}'
                   '  ·  ${ref.watch(unitsSyncProvider).formatDistance(totalNm, decimals: 1)}'
                   '${charter.homePort != null ? "  ·  ${charter.homePort}" : ""}'),
               const SizedBox(height: 6),

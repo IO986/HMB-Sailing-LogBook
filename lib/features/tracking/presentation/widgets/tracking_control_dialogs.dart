@@ -16,6 +16,7 @@ import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../providers/tracking_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Zero-prerequisite Start: never blocks on check-in/briefing/vessel details.
 /// Only decision it ever asks is whether to continue the last open voyage or
@@ -32,12 +33,12 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
     return;
   }
 
-  final fmt = DateFormat('d.M.yyyy', 'sk');
+  final fmt = AppDate.of(context, ref);
   final choice = await showDialog<String>(
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text(l.continueLastVoyageTitle),
-      content: Text('${open.title}  ·  ${fmt.format(open.dateFrom)}'),
+      content: Text('${open.title}  ·  ${fmt.short(open.dateFrom)}'),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
         OutlinedButton(
@@ -257,9 +258,9 @@ Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter
   await _maybePromptBatterySettings(context);
   if (!context.mounted) return;
 
-  final dayFmt = DateFormat('EEE d.M.', 'sk');
+  final dayFmt = AppDate.of(context, ref);
   await ref.read(trackingNotifierProvider.notifier).startTracking(
-        '${dayFmt.format(DateTime.now())}: ${dayLog.portFrom ?? charter.title}',
+        '${dayFmt.shortWithWeekday(DateTime.now())}: ${dayLog.portFrom ?? charter.title}',
         dayLogId: dayLog.id,
         logIntervalSeconds: intervalSeconds,
         bridgedDistanceNm: bridgedDistanceNm,
@@ -269,7 +270,12 @@ Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter
 
 Future<int> _defaultLogInterval() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getInt('pending_log_interval') ?? 60;
+  // Cez normalize: staré uložené 30 s či 1 min sa už neponúkajú, ale niekomu
+  // v nastaveniach stále leží.
+  final stored = prefs.getInt('pending_log_interval');
+  return stored == null
+      ? TrackingIntervalSelector.defaultSeconds
+      : TrackingIntervalSelector.normalize(stored);
 }
 
 /// Stop always confirms first — no more "continue tomorrow / end voyage"

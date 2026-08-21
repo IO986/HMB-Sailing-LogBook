@@ -17,6 +17,7 @@ import '../widgets/sun_moon_card.dart';
 import '../widgets/tide_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/localized_date.dart';
 
 // Reverse geocoding + fallback na súradnice
 final _locationNameProvider = FutureProvider<String?>((ref) async {
@@ -540,14 +541,13 @@ class _WaveChart extends StatelessWidget {
       );
 }
 
-class _DailyTempCard extends StatelessWidget {
+class _DailyTempCard extends ConsumerWidget {
   final List<WeatherData> forecast;
   const _DailyTempCard({required this.forecast});
 
   @override
-  Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final dayFmt = DateFormat('EEE\nd.M.', locale);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dayFmt = AppDate.of(context, ref);
 
     // Group by calendar day, compute min/max temp and dominant rain probability
     final Map<String, List<WeatherData>> byDay = {};
@@ -598,7 +598,7 @@ class _DailyTempCard extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(dayFmt.format(date),
+                        Text('${dayFmt.weekdayShort(date)}\n${dayFmt.shortNoYear(date)}',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 10,
@@ -660,7 +660,7 @@ class _DailyTempCard extends StatelessWidget {
   }
 }
 
-class _HourlyTable extends StatelessWidget {
+class _HourlyTable extends ConsumerWidget {
   final List<WeatherData> forecast;
   const _HourlyTable({required this.forecast});
 
@@ -674,11 +674,11 @@ class _HourlyTable extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).languageCode;
     final timeFmt = DateFormat('HH:mm', locale);
-    final dayFmt = DateFormat('EEEE d.M.', locale);
+    final dayFmt = AppDate.of(context, ref);
 
     final data = _deduped;
 
@@ -694,7 +694,7 @@ class _HourlyTable extends StatelessWidget {
           children: List.generate(6, (i) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: i == 0
-                ? Text(dayFmt.format(w.time),
+                ? Text(dayFmt.longNoYear(w.time),
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11,
                         color: Theme.of(context).colorScheme.onSecondaryContainer))
                 : const SizedBox(),

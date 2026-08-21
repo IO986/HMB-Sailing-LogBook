@@ -11,6 +11,7 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Jeden riadok zoznamu plavieb: buď plavba, alebo relácia zameraní zapísaná
 /// mimo trackingu. Zámerne v tom istom zozname a zoradené podľa dátumu — pre
@@ -87,7 +88,7 @@ class _BearingSessionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final fmt = DateFormat('d. MMM yyyy', 'sk');
+    final fmt = AppDate.of(context, ref);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -110,7 +111,7 @@ class _BearingSessionCard extends ConsumerWidget {
                           .textTheme
                           .titleMedium
                           ?.copyWith(fontWeight: FontWeight.bold)),
-                  Text(fmt.format(session.date),
+                  Text(fmt.medium(session.date),
                       style:
                           const TextStyle(color: Colors.grey, fontSize: 13)),
                 ],
@@ -135,7 +136,7 @@ class _CharterCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fmt = DateFormat('d. MMM yyyy', 'sk');
+    final fmt = AppDate.of(context, ref);
     final days = charter.dateTo.difference(charter.dateFrom).inDays + 1;
     final isNew = ref.watch(voyageProgressProvider(charter.id))
         .maybeWhen(data: (p) => p.isNew, orElse: () => false);
@@ -231,7 +232,7 @@ class _CharterCard extends ConsumerWidget {
                 ),
               ]),
               const SizedBox(height: 4),
-              Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}  ·  ${AppLocalizations.of(context).daysCount(days)}',
+              Text('${fmt.medium(charter.dateFrom)} – ${fmt.medium(charter.dateTo)}  ·  ${AppLocalizations.of(context).daysCount(days)}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
               if (charter.vesselName != null) ...[
                 const SizedBox(height: 4),

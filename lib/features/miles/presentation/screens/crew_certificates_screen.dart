@@ -16,6 +16,7 @@ import '../../../charter/providers/charter_provider.dart';
 import '../../../export/services/export_service.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../services/voyage_miles_summary.dart';
+import '../../../../core/utils/localized_date.dart';
 
 /// Hodnotenie posádky po plavbe a export potvrdení o naplávaných míľach.
 ///
@@ -102,6 +103,7 @@ class _CrewCertificatesScreenState
       final files = <XFile>[];
       for (final member in crew) {
         final bytes = await PdfExportService.buildCrewMilesCertificate(
+          dateFormat: AppDate.of(context, ref),
           l: l,
           charter: charter,
           crew: member,

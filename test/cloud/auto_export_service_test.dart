@@ -11,6 +11,7 @@ import 'package:hmb_sailing_log/sync/drift_outbox_record_store.dart';
 import 'package:hmb_sailing_log/sync/sync_entity_types.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Same "connectivity offline" trick as domain_write_transaction_test.dart —
 /// enqueue()'s background sync trigger never reaches a transport, so what
@@ -29,6 +30,9 @@ class _NeverCalledTransport implements SyncTransport {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() => initializeDateFormatting('sk', null));
+  // AutoExportService si formát dátumu číta z uložených nastavení (nemá
+  // context ani ref), takže test potrebuje prázdne prefs, nie chýbajúci plugin.
+  setUp(() => SharedPreferences.setMockInitialValues({}));
 
   late AppDatabase db;
   late OutboxRepository repository;

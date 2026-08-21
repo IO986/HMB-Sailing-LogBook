@@ -4,6 +4,9 @@ import 'package:hmb_sailing_log/core/database/app_database.dart';
 import 'package:hmb_sailing_log/core/models/logbook_event_type.dart';
 import 'package:hmb_sailing_log/features/export/services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:hmb_sailing_log/core/utils/localized_date.dart';
+import 'package:hmb_sailing_log/core/services/units_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// Exercises PDF generation end to end for the localised path.
 ///
@@ -11,6 +14,10 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 /// duty clip or a font that cannot draw the text would only surface on a phone
 /// during an export — which is exactly when it matters.
 void main() {
+  // Rovnako ako main() v aplikácii: bez toho DateFormat s konkrétnym jazykom
+  // vyhodí LocaleDataException.
+  setUpAll(() async => initializeDateFormatting());
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final day = DateTime(2026, 7, 10);
@@ -62,6 +69,7 @@ void main() {
   Future<int> buildLength(Locale locale) async {
     final l10n = await AppLocalizations.delegate.load(locale);
     final bytes = await PdfExportService.buildDayPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       charter: charter(),
       day: dayLog(),
       l10n: l10n,
@@ -85,6 +93,7 @@ void main() {
   Future<int> buildCharterLength(Locale locale) async {
     final l10n = await AppLocalizations.delegate.load(locale);
     final bytes = await PdfExportService.buildCharterPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       charter: charter(),
       days: [dayLog()],
       entriesByDay: {

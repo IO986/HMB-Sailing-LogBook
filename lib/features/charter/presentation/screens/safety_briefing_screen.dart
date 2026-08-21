@@ -3,7 +3,6 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
@@ -11,6 +10,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
+import '../../../../core/utils/localized_date.dart';
 
 // ── Screen ────────────────────────────────────────────────────
 
@@ -335,13 +335,13 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
 
 // ── Charter header ────────────────────────────────────────────
 
-class _CharterHeader extends StatelessWidget {
+class _CharterHeader extends ConsumerWidget {
   final Charter charter;
   const _CharterHeader({required this.charter});
 
   @override
-  Widget build(BuildContext context) {
-    final fmt = DateFormat('d. MMMM yyyy', 'sk');
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fmt = AppDate.of(context, ref);
     return Card(child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -351,7 +351,7 @@ class _CharterHeader extends StatelessWidget {
         if (charter.vesselName != null)
           Text('⛵ ${charter.vesselName}',
               style: TextStyle(color: Colors.grey.shade600)),
-        Text('${fmt.format(charter.dateFrom)} – ${fmt.format(charter.dateTo)}',
+        Text('${fmt.full(charter.dateFrom)} – ${fmt.full(charter.dateTo)}',
             style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
         if (charter.homePort != null)
           Text('⚓ ${charter.homePort}',

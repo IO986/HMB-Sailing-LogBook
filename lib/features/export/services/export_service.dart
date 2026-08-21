@@ -8,6 +8,7 @@ import '../../../core/utils/gpx_exporter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../charter/services/handover_checklist.dart';
 import 'pdf_export_service.dart';
+import '../../../core/utils/localized_date.dart';
 
 class ExportService {
   static final ExportService _i = ExportService._();
@@ -78,6 +79,7 @@ class ExportService {
       }
 
       final pdf = await PdfExportService.exportCharter(
+        dateFormat: await AppDate.fromPreferences(),
         charter: charter,
         days: days,
         entriesByDay: entriesByDay,
@@ -162,6 +164,7 @@ class ExportService {
       final bearings = await db.getBearingsForDay(day.id);
 
       final pdf = await PdfExportService.exportDay(
+        dateFormat: await AppDate.fromPreferences(),
         charter: charter,
         day: day,
         entries: entries,

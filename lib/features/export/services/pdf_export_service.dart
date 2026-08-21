@@ -27,8 +27,21 @@ import '../../miles/services/solar_calculator.dart';
 import '../../charter/services/handover_checklist.dart';
 import '../../duty/domain/duty_rules.dart';
 import '../../duty/providers/duty_provider.dart' show DutyPeriodRules;
+import '../../../core/utils/localized_date.dart';
 
 class PdfExportService {
+  /// Formátovač dátumu pre práve stavaný dokument.
+  ///
+  /// Statické pole, nie parameter každej súkromnej pomôcky: dokument sa stavia
+  /// jednorazovo a sekvenčne z jedného volania, a pretiahnuť formátovač cez
+  /// pätnásť pomocných metód by pridalo šum bez úžitku. Verejné vstupy ho
+  /// VYŽADUJÚ, takže sa nedá zabudnúť nastaviť.
+  ///
+  /// Netýka sa kanonických reťazcov, z ktorých sa počíta sha256 podpis
+  /// dokumentu — tie používajú ISO zápis a voľba používateľa ich nesmie
+  /// ovplyvniť, inak by sa už vydané dokumenty nedali overiť.
+  static AppDate _date = const AppDate.raw('en', DateStyle.appLanguage);
+
   /// Bundled Unicode font, loaded once per process.
   ///
   /// The PDF format's built-in Helvetica covers Latin-1 only: no Latin
@@ -106,7 +119,9 @@ class PdfExportService {
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
     List<ChecklistItem>? checkOutChecklist,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final docId  = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
     final rev    = pdfRevision;
 
@@ -173,7 +188,9 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final docId = 'HMBSL-${charter.id}-${charter.dateFrom.year}';
     const rev = 0;
     final pdf = pw.Document(theme: await _theme());
@@ -193,7 +210,7 @@ class PdfExportService {
         signerName: charter.skipperName,
         signedAt: DateTime.now().toUtc(),
         hash: hash,
-        docTitle: '${charter.title} – ${DateFormat('d.M.yyyy').format(day.date)}',
+        docTitle: '${charter.title} – ${_date.short(day.date)}',
       ));
     }
     return pdf.save();
@@ -228,8 +245,11 @@ class PdfExportService {
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
     List<ChecklistItem>? checkOutChecklist,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final bytes = await buildCharterPdfBytes(
+      dateFormat: dateFormat,
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
       l10n: l10n, dutiesByDay: dutiesByDay, bearingsByDay: bearingsByDay,
@@ -250,8 +270,11 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final bytes = await buildDayPdfBytes(
+      dateFormat: dateFormat,
       charter: charter, day: day, entries: entries,
       l10n: l10n, duties: duties, bearings: bearings,
       mapScreenshot: mapScreenshot, signatureImage: signatureImage,
@@ -336,7 +359,7 @@ class PdfExportService {
   static pw.Page _titlePage(AppLocalizations l, Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper,
       String docId, int revision, List<pw.MemoryImage> vesselPhotos) {
-    final fmt = DateFormat('d. MMM yyyy');
+    final fmt = _date;
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
 
@@ -359,7 +382,7 @@ class PdfExportService {
                 pw.Text(_pdfText(charter.title), style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 24, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 3),
-                pw.Text('${fmt.format(charter.dateFrom)} - ${fmt.format(charter.dateTo)}',
+                pw.Text('${fmt.medium(charter.dateFrom)} - ${fmt.medium(charter.dateTo)}',
                     style: pw.TextStyle(color: PdfColors.grey200, fontSize: 12)),
               ]),
             ),
@@ -487,7 +510,7 @@ class PdfExportService {
               final d = e.value;
               return pw.TableRow(decoration: pw.BoxDecoration(
                   color: e.key.isEven ? _lgrey : PdfColors.white), children: [
-                _cell(DateFormat('EEE d.M.').format(d.date)),
+                _cell(_date.shortWithWeekday(d.date)),
                 _cell(_pdfText(d.portFrom ?? '-')),
                 _cell(_pdfText(d.portTo ?? '-')),
                 _cell(d.distanceNm.toStringAsFixed(1)),
@@ -513,7 +536,7 @@ class PdfExportService {
       String docId, int revision, AppLocalizations l,
       List<DutyPeriod> duties, [List<Bearing> bearings = const []]) {
     final pages = <pw.Page>[];
-    final dayName = DateFormat('EEEE d. MMMM yyyy').format(day.date);
+    final dayName = _date.long(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
 
     // Sort entries by time
@@ -653,7 +676,7 @@ class PdfExportService {
         ],
 
         pw.Spacer(),
-        _footer('${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
+        _footer('${_pdfText(charter.title)}  |  ${_date.short(day.date)}', docId: docId, revision: revision),
       ]),
     ));
 
@@ -671,7 +694,7 @@ class PdfExportService {
             pw.SizedBox(height: 8),
             _entriesTable(chunk, photos, l),
             pw.Spacer(),
-            _footer('${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}', docId: docId, revision: revision),
+            _footer('${_pdfText(charter.title)}  |  ${_date.short(day.date)}', docId: docId, revision: revision),
           ]),
         ));
       }
@@ -712,7 +735,7 @@ class PdfExportService {
                       style: pw.TextStyle(color: _dgrey, fontSize: 7)),
                 pw.Spacer(),
                 _footer(
-                    '${_pdfText(charter.title)}  |  ${DateFormat('d.M.yyyy').format(day.date)}',
+                    '${_pdfText(charter.title)}  |  ${_date.short(day.date)}',
                     docId: docId,
                     revision: revision),
               ]),
@@ -732,7 +755,9 @@ class PdfExportService {
     required List<Bearing> bearings,
     required AppLocalizations l,
     Uint8List? mapScreenshot,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final pdf = pw.Document(theme: await _theme());
     final resections = latestResectionCluster(bearings);
     final resectionLines =
@@ -743,7 +768,7 @@ class PdfExportService {
 
     final objectGroups = sightGroupsFrom(bearings);
 
-    final dayName = DateFormat('EEEE d. MMMM yyyy').format(date);
+    final dayName = _date.long(date);
     final docId = 'HMBSL-BEARINGS-${DateFormat('yyyyMMdd').format(date)}';
 
     pw.Widget header() => pw.Container(
@@ -1173,7 +1198,7 @@ class PdfExportService {
               return pw.TableRow(
                 decoration: pw.BoxDecoration(color: e.key.isEven ? _lgrey : PdfColors.white),
                 children: [
-                  _cell(DateFormat('EEE d.M.').format(d.date)),
+                  _cell(_date.shortWithWeekday(d.date)),
                   _cell(_pdfText(d.portFrom ?? '-')),
                   _cell(_pdfText(d.portTo ?? '-')),
                   _cell(units.formatDistance(d.distanceNm, decimals: 1)),
@@ -1194,7 +1219,7 @@ class PdfExportService {
         ),
         pw.Spacer(),
         _footer(
-          '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+          '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
           docId: docId, revision: revision,
         ),
       ]),
@@ -1346,7 +1371,7 @@ class PdfExportService {
                   ),
                   if (sigs[i].signedAt != null) ...[
                     pw.SizedBox(height: 3),
-                    pw.Text(DateFormat('d.M.yyyy HH:mm').format(sigs[i].signedAt!.toLocal()),
+                    pw.Text(_date.shortWithTime(sigs[i].signedAt!.toLocal()),
                         style: pw.TextStyle(color: _dgrey, fontSize: 6.5)),
                   ],
                 ]),
@@ -1389,7 +1414,7 @@ class PdfExportService {
     String docId = '',
     int revision = 0,
   }) {
-    final timeStr = DateFormat('d.M.yyyy HH:mm:ss').format(signedAt);
+    final timeStr = _date.shortWithSeconds(signedAt);
     final shortHash = hash.substring(0, 12);
     final qrData = 'HMB-LOG:v2'
         '|id:$docId'
@@ -1629,9 +1654,11 @@ class PdfExportService {
     required Charter charter,
     required HandoverProtocol protocol,
     required List<ChecklistItem> checklist,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final docId = 'HMBSL-HANDOVER-${charter.id}-${protocol.type}';
-    final fmt = DateFormat('d.M.yyyy HH:mm');
+    final fmt = _date;
     final typeLabel = protocol.type == 'checkOut' ? 'CHECK-OUT' : 'CHECK-IN';
 
     final thumbnails = await _loadHandoverThumbnails(checklist);
@@ -1665,7 +1692,7 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        '${l.pdfDatePlaceLabel}: ${fmt.format(protocol.dateTimeUtc.toLocal())}'
+        '${l.pdfDatePlaceLabel}: ${fmt.shortWithTime(protocol.dateTimeUtc.toLocal())}'
         '${protocol.location != null ? "  |  ${_pdfText(protocol.location!)}" : ""}',
         docId: docId, revision: 0,
       ),
@@ -1689,7 +1716,7 @@ class PdfExportService {
     required Map<String, Uint8List> thumbnails,
     required Uint8List? skipperSig,
     required Uint8List? companySig,
-    required DateFormat fmt,
+    required AppDate fmt,
   }) {
     return [
       pw.Row(children: [
@@ -1749,7 +1776,7 @@ class PdfExportService {
     required String docId,
     required int revision,
   }) async {
-    final fmt = DateFormat('d.M.yyyy HH:mm');
+    final fmt = _date;
     final typeLabel = protocol.type == 'checkOut' ? 'CHECK-OUT' : 'CHECK-IN';
     final thumbnails = await _loadHandoverThumbnails(checklist);
     final skipperSig = await _loadHandoverSignature(protocol.skipperSignaturePath);
@@ -1871,7 +1898,7 @@ class PdfExportService {
     required String? name,
     required Uint8List? signature,
     required DateTime? signedAt,
-    required DateFormat fmt,
+    required AppDate fmt,
     required AppLocalizations l,
   }) {
     return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -1887,7 +1914,7 @@ class PdfExportService {
       pw.SizedBox(height: 4),
       pw.Text(_pdfText(name ?? '-'), style: const pw.TextStyle(fontSize: 8.5)),
       if (signedAt != null)
-        pw.Text('${l.pdfSignedAt}: ${fmt.format(signedAt.toLocal())}',
+        pw.Text('${l.pdfSignedAt}: ${fmt.shortWithTime(signedAt.toLocal())}',
             style: pw.TextStyle(fontSize: 7, color: _dgrey)),
     ]);
   }
@@ -1933,7 +1960,9 @@ class PdfExportService {
     required VoyageMilesSummary summary,
     CrewAssessment? assessment,
     Uint8List? skipperSignature,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     // Potvrdenie často putuje do zahraničia (škola, charterová firma, úrad),
      // preto je dvojjazyčné. V anglickom rozhraní by bol druhý riadok ten
      // istý text, tak sa vynechá.
@@ -1953,10 +1982,10 @@ class PdfExportService {
 
     final docId = 'HMBSL-CREW-${charter.id}-${_pdfText(crew.name).replaceAll(' ', '')}';
     const rev = 0;
-    final fmt = DateFormat('d.M.yyyy');
+    final fmt = _date;
     final period = summary.dateFrom == null
-        ? fmt.format(charter.dateFrom)
-        : '${fmt.format(summary.dateFrom!)} – ${fmt.format(summary.dateTo ?? summary.dateFrom!)}';
+        ? fmt.short(charter.dateFrom)
+        : '${fmt.short(summary.dateFrom!)} – ${fmt.short(summary.dateTo ?? summary.dateFrom!)}';
 
     final canonical = StringBuffer()
       ..writeln('docId:$docId')
@@ -2006,7 +2035,7 @@ class PdfExportService {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
         docId: docId,
         revision: rev,
       ),
@@ -2209,9 +2238,11 @@ class PdfExportService {
     required AppLocalizations l,
     required MilesAggregate aggregate,
     String? signerName,
+    required AppDate dateFormat,
   }) async {
+    _date = dateFormat;
     final docId = 'HMBSL-MILES-${DateTime.now().year}';
-    final fmt = DateFormat('d.M.yyyy');
+    final fmt = _date;
 
     final pdf = pw.Document(
       theme: await _theme(),
@@ -2234,7 +2265,7 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
         docId: docId, revision: 0,
       ),
       build: (ctx) => [
@@ -2268,7 +2299,7 @@ class PdfExportService {
               [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, units.distanceLabel, l.pdfColRole].map((h) => _hcell(h)).toList()),
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
-                _cell('${v.isManualEntry ? "* " : ""}${fmt.format(v.dateFrom)}-${fmt.format(v.dateTo)}'),
+                _cell('${v.isManualEntry ? "* " : ""}${fmt.short(v.dateFrom)}-${fmt.short(v.dateTo)}'),
                 _cell(_pdfText(v.vesselName)),
                 _cell(_pdfText(v.area ?? '-')),
                 _cell(v.distanceNm.toStringAsFixed(1)),
@@ -2300,7 +2331,7 @@ class PdfExportService {
             pw.Container(width: 150, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text('${l.pdfDateLabel}: ${fmt.format(DateTime.now())}', style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text('${l.pdfDateLabel}: ${fmt.short(DateTime.now())}', style: const pw.TextStyle(fontSize: 8.5)),
           ])),
         ]),
       ],
@@ -2345,7 +2376,7 @@ class PdfExportService {
   static pw.Widget _footer(String text, {String? docId, int? revision}) {
     final right = [
       if (docId != null && revision != null) '$docId  |  Rev.$revision',
-      'HMB Sailing Log  |  ${DateFormat('d.M.yyyy').format(DateTime.now())}',
+      'HMB Sailing Log  |  ${_date.short(DateTime.now())}',
     ].join('  |  ');
     return pw.Column(children: [
       pw.Divider(color: _dgrey, thickness: 0.3),

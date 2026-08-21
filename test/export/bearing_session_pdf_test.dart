@@ -6,11 +6,18 @@ import 'package:hmb_sailing_log/core/database/app_database.dart';
 import 'package:hmb_sailing_log/core/models/bearing_kind.dart';
 import 'package:hmb_sailing_log/features/export/services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:hmb_sailing_log/core/utils/localized_date.dart';
+import 'package:hmb_sailing_log/core/services/units_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// PDF pre zamerania zapísané mimo plavby — bez charteru, bez dňa, len
 /// dátum a riadky. Musí vzniknúť súbor rovnako spoľahlivo ako pri
 /// bežnom dennom exporte.
 void main() {
+  // Rovnako ako main() v aplikácii: bez toho DateFormat s konkrétnym jazykom
+  // vyhodí LocaleDataException.
+  setUpAll(() async => initializeDateFormatting());
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final date = DateTime(2026, 8, 20);
@@ -65,6 +72,7 @@ void main() {
 
   test('relácia len s resekciou vyrobí PDF', () async {
     final bytes = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       date: date,
       bearings: [
         resection(id: 1, markName: 'Maják Stončica'),
@@ -77,6 +85,7 @@ void main() {
 
   test('relácia len s hľadaním objektu vyrobí PDF', () async {
     final bytes = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       date: date,
       bearings: [
         intersection(id: 10, minute: 0),
@@ -90,6 +99,7 @@ void main() {
   test('relácia s oboma režimami je väčšia než každý zvlášť', () async {
     Future<int> len(List<Bearing> bearings) async =>
         (await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
                 date: date, bearings: bearings, l: await l10n('sk')))
             .length;
 
@@ -105,8 +115,10 @@ void main() {
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42'
         'YAAAAASUVORK5CYII=';
     final withoutMap = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
         date: date, bearings: [resection()], l: await l10n('sk'));
     final withMap = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       date: date,
       bearings: [resection()],
       l: await l10n('sk'),
@@ -117,6 +129,7 @@ void main() {
 
   test('jediné zameranie bez fixu export nezhodí', () async {
     final bytes = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       date: date,
       bearings: [resection()],
       l: await l10n('sk'),
@@ -126,6 +139,7 @@ void main() {
 
   test('deklinácia z cieľa sa poznamená', () async {
     final bytes = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       date: date,
       bearings: [resection(), resection(id: 2, magnetic: 300, minute: 3)],
       l: await l10n('sk'),
@@ -138,6 +152,7 @@ void main() {
       'sk', 'en', 'de', 'es', 'uk', 'cs', 'pl', 'el', 'hr', 'sl', 'it'
     ]) {
       final bytes = await PdfExportService.buildBearingSessionPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
         date: date,
         bearings: [resection(), intersection()],
         l: await l10n(code),

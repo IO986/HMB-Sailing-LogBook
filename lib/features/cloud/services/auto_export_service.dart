@@ -10,6 +10,7 @@ import '../../../sync/sync_entity_types.dart';
 import '../../export/services/export_service.dart';
 import '../../export/services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../core/utils/localized_date.dart';
 
 /// Builds a day's PDF + GPX without any `BuildContext` and queues both for
 /// cloud upload — the headless counterpart to `ExportService.exportDay`
@@ -61,6 +62,7 @@ class AutoExportService {
     final l10n = await AppLocalizations.delegate.load(locale);
 
     final pdfBytes = await PdfExportService.buildDayPdfBytes(
+      dateFormat: await AppDate.fromPreferences(),
       charter: charter,
       day: day,
       entries: entries,

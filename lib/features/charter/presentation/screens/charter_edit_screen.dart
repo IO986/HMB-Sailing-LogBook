@@ -18,6 +18,7 @@ import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class CharterPrefill {
   final String title;
@@ -98,7 +99,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _notesCtrl = TextEditingController();
   bool _loading = false;
   Charter? _existing;
-  int _logInterval = 60;
+  int _logInterval = TrackingIntervalSelector.defaultSeconds;
 
   bool get _isNew => widget.charterId == null;
 
@@ -625,13 +626,13 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   }
 
   Widget _dateField(String label, DateTime value, VoidCallback onTap) {
-    final fmt = DateFormat('d. M. yyyy');
+    final fmt = AppDate.of(context, ref);
     return InkWell(
       onTap: onTap,
       child: InputDecorator(
         decoration: InputDecoration(
             labelText: label, prefixIcon: const Icon(Icons.calendar_today)),
-        child: Text(fmt.format(value)),
+        child: Text(fmt.short(value)),
       ),
     );
   }

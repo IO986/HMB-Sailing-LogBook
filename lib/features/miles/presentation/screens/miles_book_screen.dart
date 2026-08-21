@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -13,6 +12,7 @@ import '../../../export/services/pdf_export_service.dart';
 import '../../providers/miles_provider.dart';
 import '../../services/miles_calculator.dart';
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class MilesBookScreen extends ConsumerWidget {
   const MilesBookScreen({super.key});
@@ -30,7 +30,8 @@ class MilesBookScreen extends ConsumerWidget {
             icon: const Icon(Icons.save_alt),
             tooltip: l.saveToDevice,
             onPressed: aggregateAsync.maybeWhen(
-              data: (agg) => () => _exportPdf(context, agg, saveLocally: true),
+              data: (agg) => () => _exportPdf(context, agg,
+                  saveLocally: true, dateFormat: AppDate.of(context, ref)),
               orElse: () => null,
             ),
           ),
@@ -38,7 +39,8 @@ class MilesBookScreen extends ConsumerWidget {
             icon: const Icon(Icons.picture_as_pdf_outlined),
             tooltip: l.exportPdf,
             onPressed: aggregateAsync.maybeWhen(
-              data: (agg) => () => _exportPdf(context, agg, saveLocally: false),
+              data: (agg) => () => _exportPdf(context, agg,
+                  saveLocally: false, dateFormat: AppDate.of(context, ref)),
               orElse: () => null,
             ),
           ),
@@ -58,11 +60,12 @@ class MilesBookScreen extends ConsumerWidget {
   }
 
   Future<void> _exportPdf(BuildContext context, MilesAggregate agg,
-      {required bool saveLocally}) async {
+      {required bool saveLocally, required AppDate dateFormat}) async {
     final l = AppLocalizations.of(context);
     try {
       final pdfBytes =
-          await PdfExportService.exportMilesCertificate(l: l, aggregate: agg);
+          await PdfExportService.exportMilesCertificate(
+              dateFormat: dateFormat, l: l, aggregate: agg);
       final fileName = 'HMB_Kniha_Mil_${DateTime.now().millisecondsSinceEpoch}.pdf';
       if (saveLocally) {
         await FilePicker.platform.saveFile(
@@ -96,7 +99,7 @@ class _MilesBody extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final filter = ref.watch(milesFilterProvider);
     final yearsAsync = ref.watch(milesAvailableYearsProvider);
-    final fmt = DateFormat('d.M.yyyy');
+    final fmt = AppDate.of(context, ref);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -158,7 +161,7 @@ class _MilesBody extends ConsumerWidget {
                 title: Text(
                     '${v.isManualEntry ? "* " : ""}${v.vesselName}  ·  ${ref.watch(unitsSyncProvider).formatDistance(v.distanceNm, decimals: 1)}'),
                 subtitle: Text(
-                    '${fmt.format(v.dateFrom)} – ${fmt.format(v.dateTo)}'
+                    '${fmt.short(v.dateFrom)} – ${fmt.short(v.dateTo)}'
                     '${v.area != null ? " · ${v.area}" : ""}'),
                 onTap: v.isManualEntry
                     ? () => context.push('/miles/historical/${v.historicalVoyageId}/edit')

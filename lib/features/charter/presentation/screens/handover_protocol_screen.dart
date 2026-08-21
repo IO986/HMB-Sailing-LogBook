@@ -18,6 +18,7 @@ import '../../../export/presentation/pdf_preview_screen.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
+import '../../../../core/utils/localized_date.dart';
 
 String _statusLabel(AppLocalizations l, ChecklistStatus s) => switch (s) {
       ChecklistStatus.ok => l.checklistItemOk,
@@ -274,6 +275,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     // Captured before the await — context must not be used across one.
     final l = AppLocalizations.of(context);
     final bytes = await PdfExportService.exportHandoverProtocol(
+      dateFormat: AppDate.of(context, ref),
       l: l,
       charter: charter,
       protocol: protocol,
@@ -307,7 +309,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     }
 
     final title = _isCheckOut ? l.checkOutProtocol : l.checkInProtocol;
-    final fmt = DateFormat('d.M.yyyy HH:mm');
+    final fmt = AppDate.of(context, ref);
     final readOnly = _isClosed;
     final categories = _isCheckOut ? checkOutCategories : checkInCategories;
 
@@ -360,7 +362,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           onTap: readOnly ? null : _pickDate,
           child: InputDecorator(
             decoration: InputDecoration(labelText: l.handoverDateTime, prefixIcon: const Icon(Icons.event)),
-            child: Text(fmt.format(_dateTime)),
+            child: Text(fmt.shortWithTime(_dateTime)),
           ),
         ),
         const SizedBox(height: 12),

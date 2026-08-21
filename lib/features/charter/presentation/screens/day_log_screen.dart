@@ -17,6 +17,7 @@ import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/models/sail_mode.dart';
+import '../../../../core/utils/localized_date.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -56,7 +57,7 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
     if (_day == null) return Scaffold(body: Center(child: Text(AppLocalizations.of(context).dayNotFound)));
 
     final isTracking = ref.watch(isTrackingProvider);
-    final dayName = DateFormat('EEEE d. MMMM yyyy', 'sk').format(_day!.date);
+    final dayName = AppDate.of(context, ref).long(_day!.date);
 
     return Scaffold(
       appBar: AppBar(

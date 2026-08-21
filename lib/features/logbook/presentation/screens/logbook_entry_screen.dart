@@ -20,6 +20,7 @@ import '../../../../shared/utils/weather_condition_lookup.dart';
 import '../../../../core/models/sail_mode.dart';
 import '../../../../shared/widgets/location_quality_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/utils/localized_date.dart';
 
 // Spôsob plavby - multi-select
 const _sailOptions = [
@@ -645,15 +646,15 @@ class _WeatherConditionFieldState extends State<_WeatherConditionField> {
 
 // ─────────────────────────────────────────────────────────────
 
-class _TimestampBadge extends StatelessWidget {
+class _TimestampBadge extends ConsumerWidget {
   final DateTime ts;
   final bool isEdit;
   const _TimestampBadge(this.ts, {required this.isEdit});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final utc = ts.toUtc();
-    final date = DateFormat('d. MMM yyyy').format(utc);
+    final date = AppDate.of(context, ref).medium(utc);
     final time = DateFormat('HH:mm:ss').format(utc);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

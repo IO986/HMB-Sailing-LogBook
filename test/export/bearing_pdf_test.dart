@@ -4,11 +4,18 @@ import 'package:hmb_sailing_log/core/database/app_database.dart';
 import 'package:hmb_sailing_log/core/models/bearing_kind.dart';
 import 'package:hmb_sailing_log/features/export/services/pdf_export_service.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:hmb_sailing_log/core/utils/localized_date.dart';
+import 'package:hmb_sailing_log/core/services/units_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// Zamerania idú do PDF ako samostatná strana denného záznamu. Export sa robí
 /// na telefóne, v jazyku skipera a často bez signálu — každá z tých ciest musí
 /// vyrobiť súbor, nie vyhodiť výnimku.
 void main() {
+  // Rovnako ako main() v aplikácii: bez toho DateFormat s konkrétnym jazykom
+  // vyhodí LocaleDataException.
+  setUpAll(() async => initializeDateFormatting());
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final start = DateTime(2026, 8, 18);
@@ -96,6 +103,7 @@ void main() {
 
   Future<int> dayPdfLength(List<Bearing> bearings, {String code = 'sk'}) async {
     final bytes = await PdfExportService.buildDayPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       charter: charter(),
       day: day(),
       entries: const [],
@@ -179,6 +187,7 @@ void main() {
 
   test('celá plavba prevezme zamerania po dňoch', () async {
     final bytes = await PdfExportService.buildCharterPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       charter: charter(),
       days: [day()],
       entriesByDay: const {11: []},
@@ -191,6 +200,7 @@ void main() {
     expect(String.fromCharCodes(bytes.take(4)), '%PDF');
 
     final withoutBearings = await PdfExportService.buildCharterPdfBytes(
+      dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
       charter: charter(),
       days: [day()],
       entriesByDay: const {11: []},

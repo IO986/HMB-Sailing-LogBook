@@ -13,6 +13,27 @@ enum DistanceUnit { nauticalMiles, kilometers }
 /// ale vietor sa aj tam hlási v uzloch alebo Bft.
 enum SpeedUnit { knots, kmh }
 
+/// Ako sa píše dátum všade, kde ho skiper vidí.
+///
+/// Nie je to jednotka, ale patrí to sem z rovnakého dôvodu ako jednotky: je
+/// to voľba zobrazenia, ktorá nemení ani jeden uložený údaj. V databáze aj v
+/// exportoch je dátum vždy strojový, prepína sa len to, čo sa vykreslí.
+enum DateStyle {
+  /// Podľa jazyka appky — v slovenčine „piatok 21. augusta 2026",
+  /// v angličtine „Friday 21 August 2026". Predvolené.
+  appLanguage,
+
+  /// 21.08.2026 — európsky číselný zápis.
+  dmy,
+
+  /// 08/21/2026 — americký číselný zápis.
+  mdy,
+
+  /// 2026-08-21 — ISO 8601. Jednoznačné bez ohľadu na zvyklosti, praktické
+  /// v medzinárodnej posádke a pri triedení exportov.
+  iso,
+}
+
 const _kmPerNm = 1.852;
 
 class UnitsSettings {
@@ -21,6 +42,7 @@ class UnitsSettings {
   final WindUnit wind;
   final DistanceUnit distance;
   final SpeedUnit speed;
+  final DateStyle dateStyle;
 
   const UnitsSettings({
     this.temp = TempUnit.celsius,
@@ -28,6 +50,7 @@ class UnitsSettings {
     this.wind = WindUnit.knots,
     this.distance = DistanceUnit.nauticalMiles,
     this.speed = SpeedUnit.knots,
+    this.dateStyle = DateStyle.appLanguage,
   });
 
   UnitsSettings copyWith({
@@ -36,6 +59,7 @@ class UnitsSettings {
     WindUnit? wind,
     DistanceUnit? distance,
     SpeedUnit? speed,
+    DateStyle? dateStyle,
   }) =>
       UnitsSettings(
         temp: temp ?? this.temp,
@@ -43,6 +67,7 @@ class UnitsSettings {
         wind: wind ?? this.wind,
         distance: distance ?? this.distance,
         speed: speed ?? this.speed,
+        dateStyle: dateStyle ?? this.dateStyle,
       );
 
   // Formátovanie hodnôt
@@ -143,6 +168,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
   static const _kWind = 'units_wind';
   static const _kDistance = 'units_distance';
   static const _kSpeed = 'units_speed';
+  static const _kDateStyle = 'units_date_style';
 
   @override
   Future<UnitsSettings> build() async {
@@ -153,6 +179,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
       wind: WindUnit.values[prefs.getInt(_kWind) ?? 0],
       distance: DistanceUnit.values[prefs.getInt(_kDistance) ?? 0],
       speed: SpeedUnit.values[prefs.getInt(_kSpeed) ?? 0],
+      dateStyle: DateStyle.values[prefs.getInt(_kDateStyle) ?? 0],
     );
   }
 
@@ -184,6 +211,12 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kSpeed, v.index);
     state = AsyncData(state.value!.copyWith(speed: v));
+  }
+
+  Future<void> setDateStyle(DateStyle v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kDateStyle, v.index);
+    state = AsyncData(state.value!.copyWith(dateStyle: v));
   }
 }
 

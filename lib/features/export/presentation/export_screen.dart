@@ -22,6 +22,7 @@ import 'signature_pad_dialog.dart';
 import 'pdf_preview_screen.dart';
 import 'widgets/day_map_view.dart';
 import '../../../core/services/units_service.dart';
+import '../../../core/utils/localized_date.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -132,7 +133,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                 Text(_charter?.title ?? '',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 if (_day != null)
-                  Text(DateFormat('EEEE d. MMMM yyyy', 'sk').format(_day!.date),
+                  Text(AppDate.of(context, ref).long(_day!.date),
                       style: const TextStyle(fontSize: 14)),
                 const SizedBox(height: 8),
                 const Row(children: [
@@ -271,6 +272,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             await ref.read(databaseProvider).getBearingsForDay(freshDay.id);
 
         pdfBytes = await PdfExportService.buildDayPdfBytes(
+          dateFormat: AppDate.of(context, ref),
           charter: _charter!,
           day: freshDay,
           entries: entries,
@@ -312,6 +314,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         }
 
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
+          dateFormat: AppDate.of(context, ref),
           charter: _charter!,
           days: freshDays,
           entriesByDay: _entriesByDay,
@@ -441,7 +444,7 @@ class _DayMapPreview extends ConsumerWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(DateFormat('EEEE d. MMMM', 'sk').format(day.date),
+              Text(AppDate.of(context, ref).longNoYear(day.date),
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               Text('${day.portFrom ?? "?"} → ${day.portTo ?? "?"}',
                   style: const TextStyle(color: Colors.grey, fontSize: 13)),
