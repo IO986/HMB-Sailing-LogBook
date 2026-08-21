@@ -1,0 +1,41 @@
+HMB Sailing Log — build 60 (1.30.0+60)
+
+Prvý build v otvorenom testovaní.
+
+Play Console limit: 500 znakov na jazyk. Sekcie sú v tomto limite,
+overené skriptom — pri úprave to prosím prekontroluj.
+
+=== Slovensky (sk-SK) ===
+• Výrazne nižšia spotreba batérie. GPS beží na plnú presnosť len tam, kde na polohe naozaj záleží, a pri pripojených lodných prístrojoch sa vypne úplne
+• Nové nastavenie: formát dátumu. Platí všade, kde dátum vidíš, vrátane PDF exportov
+• Zamerania: skrytie z mapy konečne funguje a celý denný záznam sa dá z denníka zmazať
+• Nové zameranie na čistú mapu spustíš ikonou na Kompase
+• Frekvencia zápisov: namiesto 30 s a 1 min pribudlo 5 min a 6 hodín
+
+=== English (en-US) ===
+• Much lower battery use. GPS runs at full accuracy only where the position really matters, and shuts down completely when boat instruments are connected
+• New setting: date format. It applies everywhere you see a date, PDF exports included
+• Bearings: hiding them from the map finally works, and a whole day's record can be deleted from the logbook
+• Start a fresh sighting on a clean chart with the icon on the Compass
+• Log entry frequency: 30 s and 1 min replaced by 5 min and 6 hours
+
+=== Hrvatski (hr-HR) ===
+• Znatno manja potrošnja baterije. GPS radi punom točnošću samo ondje gdje je pozicija stvarno bitna, a uz spojene brodske instrumente isključuje se potpuno
+• Nova postavka: format datuma. Vrijedi svugdje gdje vidiš datum, uključujući PDF izvoze
+• Azimuti: skrivanje s karte napokon radi, a cijeli dnevni zapis može se obrisati iz dnevnika
+• Novo mjerenje na čistoj karti pokreneš ikonom na Kompasu
+• Učestalost zapisa: umjesto 30 s i 1 min sada 5 min i 6 sati
+
+=== Slovenščina (sl-SI) ===
+• Bistveno manjša poraba baterije. GPS deluje s polno natančnostjo le tam, kjer je položaj res pomemben, ob povezanih ladijskih instrumentih pa se povsem izklopi
+• Nova nastavitev: oblika datuma. Velja povsod, kjer vidiš datum, tudi v izvozih PDF
+• Azimuti: skrivanje z zemljevida končno deluje, celoten dnevni zapis pa lahko izbrišeš iz dnevnika
+• Novo merjenje na čistem zemljevidu sprožiš z ikono na Kompasu
+• Pogostost zapisov: namesto 30 s in 1 min zdaj 5 min in 6 ur
+
+=== Italiano (it-IT) ===
+• Consumo di batteria molto più basso. Il GPS lavora alla massima precisione solo dove la posizione conta davvero e si spegne del tutto con gli strumenti di bordo collegati
+• Nuova impostazione: formato data, valido ovunque, anche nei PDF
+• Rilevamenti: nasconderli dalla carta ora funziona e l'intera giornata si può eliminare dal giornale
+• Avvia un nuovo rilevamento su carta pulita con l'icona nella Bussola
+• Frequenza delle registrazioni: 30 s e 1 min sostituiti da 5 min e 6 ore
