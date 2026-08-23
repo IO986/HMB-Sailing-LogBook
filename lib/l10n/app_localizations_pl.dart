@@ -88,6 +88,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mapVoyageOverview => 'Przegląd rejsu';
 
   @override
+  String get playbackTitle => 'Odtwórz rejs';
+
+  @override
+  String get playbackSpeed => 'Prędkość';
+
+  @override
+  String get playbackNoTrack => 'Dla tego dnia nie zapisano trasy';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Stan o $time';
+  }
+
+  @override
   String get mapRuler => 'Linijka / trasa';
 
   @override
@@ -1735,6 +1749,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weatherSeaSection => 'Pogoda i morze';
 
   @override
+  String get cloudLayer => 'Zachmurzenie';
+
+  @override
+  String get cloudNone => 'Zachmurzenie: bezchmurnie w tym widoku';
+
+  @override
+  String get precipitationNone => 'Opady: brak w tym widoku';
+
+  @override
+  String get radarTitle => 'Radar opadów';
+
+  @override
+  String get radarRefresh => 'Odśwież obraz';
+
+  @override
+  String get radarUnavailable =>
+      'Nie udało się wczytać obrazu radaru. Spróbuj ponownie, gdy będziesz mieć zasięg.';
+
+  @override
+  String get radarSourceDhmz => 'Źródło: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Opady (prognoza)';
+
+  @override
   String get weatherSourceInstruments => 'Zmierzone przyrządami pokładowymi';
 
   @override
@@ -2415,7 +2454,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www, głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Radar – radar opadów nad mapą (RainViewer), obraz odświeża się ~co 10 minut\n• Wiatr – strzałki kierunku i siły wiatru (węzły) w siatce dla widocznego obszaru\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) – pobiera widoczny obszar (mapa + seamarki, aktualny zoom +3 poziomy) do użytku bez zasięgu; dodatkowo każdy przeglądany kafelek zapisuje się automatycznie\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, seamarki, porty, radar, wiatr…), śledzenie GPS i blokada północy zapamiętują się między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
+      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www, głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Opady – kolorowa warstwa na mapie według intensywności w mm/h. To PROGNOZA z modelu, nie radar, i działa w każdym przybliżeniu. Zmierzone opady znajdziesz w Pogodzie pod ikoną radaru — to oficjalny obraz DHMZ dla Chorwacji i Adriatyku.\n• Wiatr – strzałki kierunku i siły wiatru (węzły) w siatce dla widocznego obszaru\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) – pobiera widoczny obszar (mapa + seamarki, aktualny zoom +3 poziomy) do użytku bez zasięgu; dodatkowo każdy przeglądany kafelek zapisuje się automatycznie\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, seamarki, porty, radar, wiatr…), śledzenie GPS i blokada północy zapamiętują się między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
 
   @override
   String get guideInstrTitle => 'Przyrządy morskie';
@@ -2492,7 +2531,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';

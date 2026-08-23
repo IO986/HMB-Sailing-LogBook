@@ -87,6 +87,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapVoyageOverview => 'Törnübersicht';
 
   @override
+  String get playbackTitle => 'Fahrt abspielen';
+
+  @override
+  String get playbackSpeed => 'Geschwindigkeit';
+
+  @override
+  String get playbackNoTrack => 'Für diesen Tag ist keine Spur aufgezeichnet';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Zustand um $time';
+  }
+
+  @override
   String get mapRuler => 'Lineal / Route';
 
   @override
@@ -1742,6 +1756,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get weatherSeaSection => 'Wetter & See';
 
   @override
+  String get cloudLayer => 'Bewölkung';
+
+  @override
+  String get cloudNone => 'Bewölkung: in diesem Ausschnitt klar';
+
+  @override
+  String get precipitationNone => 'Niederschlag: keiner in diesem Ausschnitt';
+
+  @override
+  String get radarTitle => 'Niederschlagsradar';
+
+  @override
+  String get radarRefresh => 'Bild aktualisieren';
+
+  @override
+  String get radarUnavailable =>
+      'Das Radarbild konnte nicht geladen werden. Versuch es erneut, wenn du Empfang hast.';
+
+  @override
+  String get radarSourceDhmz => 'Quelle: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Niederschlag (Vorhersage)';
+
+  @override
   String get weatherSourceInstruments => 'Von den Bordinstrumenten gemessen';
 
   @override
@@ -2427,7 +2466,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Radar – Regenradar-Overlay (RainViewer), Bild aktualisiert sich ~alle 10 Minuten\n• Wind – Windrichtungs-/Stärke-Pfeile (Knoten) im Raster über dem sichtbaren Bereich\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) – lädt den sichtbaren Bereich (Karte + Seezeichen, aktueller Zoom +3 Stufen) für die Nutzung ohne Empfang; jede betrachtete Kachel wird zudem automatisch gespeichert\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Häfen, Radar, Wind…), GPS-Folgen und die Nordsperre werden zwischen den Starts gespeichert\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Niederschlag – eine Farbebene über der Karte nach Intensität in mm/h. Das ist eine VORHERSAGE aus einem Modell, kein Radar, und sie funktioniert in jedem Zoom. Gemessenen Niederschlag findest du im Wetter unter dem Radar-Symbol — das offizielle DHMZ-Bild für Kroatien und die Adria.\n• Wind – Windrichtungs-/Stärke-Pfeile (Knoten) im Raster über dem sichtbaren Bereich\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) – lädt den sichtbaren Bereich (Karte + Seezeichen, aktueller Zoom +3 Stufen) für die Nutzung ohne Empfang; jede betrachtete Kachel wird zudem automatisch gespeichert\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Häfen, Radar, Wind…), GPS-Folgen und die Nordsperre werden zwischen den Starts gespeichert\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
@@ -2504,7 +2543,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.\n\nGoogle-Konto und Cloud-Export\n\nDie Anmeldung mit einem Google-Konto ist freiwillig. Ohne sie funktioniert die App vollständig und alle Aufzeichnungen bleiben nur auf dem Telefon.\n\nWas hochgeladen wird – nach Abschluss eines Fahrttages das Logbuch-PDF und der GPX-Track dieses Tages. Sonst nichts: keine Fotos, keine Crew-Kontakte, keine Live-Positionen.\n\nWohin – auf deine eigene Google Drive, in HMB_Sailing_Log_DATA / Fahrtname / Day_Datum. Nicht auf einen App-Server – den gibt es nicht.\n\nWas die App auf der Drive sieht – nur die Dateien, die sie dort selbst angelegt hat. Sie nutzt die engste Berechtigung, die Google anbietet (drive.file), der Rest deiner Drive bleibt unerreichbar. Die Berechtigung wird zudem erst beim ersten Upload angefragt, nicht bei der Anmeldung.\n\nWie du es rückgängig machst – in den Einstellungen abmelden. Bereits hochgeladene Dateien bleiben deine – die App löscht sie nicht. Der Zugriff lässt sich jederzeit auch in den Google-Kontoeinstellungen entziehen.';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';

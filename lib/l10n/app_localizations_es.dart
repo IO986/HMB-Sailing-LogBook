@@ -88,6 +88,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapVoyageOverview => 'Resumen de la travesía';
 
   @override
+  String get playbackTitle => 'Reproducir travesía';
+
+  @override
+  String get playbackSpeed => 'Velocidad';
+
+  @override
+  String get playbackNoTrack => 'No hay ruta registrada para este día';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Estado a las $time';
+  }
+
+  @override
   String get mapRuler => 'Regla / ruta';
 
   @override
@@ -1738,6 +1752,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weatherSeaSection => 'Tiempo y mar';
 
   @override
+  String get cloudLayer => 'Nubosidad';
+
+  @override
+  String get cloudNone => 'Nubosidad: despejado en esta vista';
+
+  @override
+  String get precipitationNone => 'Precipitación: ninguna en esta vista';
+
+  @override
+  String get radarTitle => 'Radar de precipitación';
+
+  @override
+  String get radarRefresh => 'Actualizar imagen';
+
+  @override
+  String get radarUnavailable =>
+      'No se pudo cargar la imagen del radar. Inténtalo de nuevo cuando tengas señal.';
+
+  @override
+  String get radarSourceDhmz => 'Fuente: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Precipitación (previsión)';
+
+  @override
   String get weatherSourceInstruments =>
       'Medido por los instrumentos de a bordo';
 
@@ -2423,7 +2462,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Radar – radar de lluvia (RainViewer), la imagen se actualiza ~cada 10 minutos\n• Viento – flechas de dirección/fuerza del viento (nudos) en una cuadrícula sobre el área visible\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa offline (icono de descarga) – descarga el área visible (mapa + marcas náuticas, zoom actual +3 niveles) para usar sin señal; cada tesela vista también se guarda automáticamente\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, puertos, radar, viento…), el seguimiento GPS y el bloqueo al norte se recuerdan entre sesiones\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF Abajo aparece la reproducción: con el deslizador recorres la travesía en el tiempo y ves posición, velocidad, rumbo, viento y presión en cualquier momento. Las marcas del deslizador son eventos — inicio y fin de la travesía, fondeo, garreo, MOB.\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Precipitación – una capa de color sobre la carta según la intensidad en mm/h. Es una PREVISIÓN de un modelo, no un radar, y funciona en cualquier zoom. La lluvia medida está en Meteorología bajo el icono de radar — la imagen oficial del DHMZ para Croacia y el Adriático.\n• Viento – flechas de dirección/fuerza del viento (nudos) en una cuadrícula sobre el área visible\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa offline (icono de descarga) – descarga el área visible (mapa + marcas náuticas, zoom actual +3 niveles) para usar sin señal; cada tesela vista también se guarda automáticamente\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, puertos, radar, viento…), el seguimiento GPS y el bloqueo al norte se recuerdan entre sesiones\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
@@ -2500,7 +2539,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.\n\nCuenta de Google y exportación a la nube\n\nIniciar sesión con una cuenta de Google es opcional. Sin ella la app funciona por completo y todos los registros se quedan solo en el teléfono.\n\nQué se sube – al cerrar un día de travesía, el PDF del diario y la traza GPX de ese día. Nada más: ni fotos, ni contactos de la tripulación, ni posiciones en tiempo real.\n\nAdónde – a tu propio Google Drive, a la carpeta HMB_Sailing_Log_DATA / nombre de la travesía / Day_fecha. No a un servidor de la app – no existe.\n\nQué ve la app en tu Drive – solo los archivos que ella misma creó allí. Usa el permiso más estrecho que ofrece Google (drive.file), así que el resto de tu Drive queda fuera de su alcance. Además pide ese permiso en la primera subida, no al iniciar sesión.\n\nCómo deshacerlo – cierra la sesión en Ajustes. Los archivos que ya estén en el Drive siguen siendo tuyos – la app no los borra.';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';

@@ -87,6 +87,20 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mapVoyageOverview => 'Panoramica della navigazione';
 
   @override
+  String get playbackTitle => 'Riproduci la navigazione';
+
+  @override
+  String get playbackSpeed => 'Velocità';
+
+  @override
+  String get playbackNoTrack => 'Nessuna rotta registrata per questo giorno';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Situazione alle $time';
+  }
+
+  @override
   String get mapRuler => 'Righello / rotta';
 
   @override
@@ -1742,6 +1756,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get weatherSeaSection => 'Meteo e mare';
 
   @override
+  String get cloudLayer => 'Nuvolosità';
+
+  @override
+  String get cloudNone => 'Nuvolosità: sereno in questa vista';
+
+  @override
+  String get precipitationNone => 'Precipitazioni: nessuna in questa vista';
+
+  @override
+  String get radarTitle => 'Radar delle precipitazioni';
+
+  @override
+  String get radarRefresh => 'Aggiorna immagine';
+
+  @override
+  String get radarUnavailable =>
+      'Impossibile caricare l\'immagine radar. Riprova quando hai segnale.';
+
+  @override
+  String get radarSourceDhmz => 'Fonte: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Precipitazioni (previsione)';
+
+  @override
   String get weatherSourceInstruments => 'Misurato dagli strumenti di bordo';
 
   @override
@@ -2430,7 +2469,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Radar – livello del radar delle precipitazioni (RainViewer), l\'immagine si aggiorna circa ogni 10 minuti\n• Vento – frecce di direzione/velocità del vento (nodi) in una griglia sull\'area visibile\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) – scarica l\'area visibile (mappa + segnalamenti marittimi, zoom attuale +3 livelli) per l\'uso senza segnale; ogni tessera consultata viene inoltre salvata automaticamente\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• I livelli scelti (satellite, segnalamenti marittimi, porti, radar, vento…), l\'inseguimento GPS e il blocco del nord vengono ricordati tra un avvio e l\'altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
+      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Precipitazioni – uno strato colorato sulla carta secondo l\'intensità in mm/h. È una PREVISIONE da modello, non un radar, e funziona a qualsiasi zoom. Le precipitazioni misurate sono in Meteo sotto l\'icona del radar — l\'immagine ufficiale del DHMZ per Croazia e Adriatico.\n• Vento – frecce di direzione/velocità del vento (nodi) in una griglia sull\'area visibile\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) – scarica l\'area visibile (mappa + segnalamenti marittimi, zoom attuale +3 livelli) per l\'uso senza segnale; ogni tessera consultata viene inoltre salvata automaticamente\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• I livelli scelti (satellite, segnalamenti marittimi, porti, radar, vento…), l\'inseguimento GPS e il blocco del nord vengono ricordati tra un avvio e l\'altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Strumenti di bordo';
@@ -2507,7 +2546,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.';
+      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.\n\nAccount Google ed esportazione nel cloud\n\nAccedere con un account Google è facoltativo. Senza, l\'app funziona per intero e tutte le registrazioni restano solo sul telefono.\n\nChe cosa viene caricato – alla chiusura di una giornata di navigazione, il PDF del giornale e la traccia GPX di quel giorno. Nient\'altro: né foto, né contatti dell\'equipaggio, né posizioni in tempo reale.\n\nDove – sul tuo Google Drive, nella cartella HMB_Sailing_Log_DATA / nome della navigazione / Day_data. Non su un server dell\'app – non esiste.\n\nChe cosa vede l\'app sul Drive – solo i file che ha creato lei stessa. Usa il permesso più ristretto offerto da Google (drive.file), quindi il resto del tuo Drive resta fuori portata. Il permesso viene chiesto al primo caricamento, non all\'accesso.\n\nCome annullare – disconnetti l\'account nelle Impostazioni. I file già presenti sul Drive restano tuoi – l\'app non li elimina.';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';

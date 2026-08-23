@@ -87,6 +87,20 @@ class AppLocalizationsSl extends AppLocalizations {
   String get mapVoyageOverview => 'Pregled plovbe';
 
   @override
+  String get playbackTitle => 'Predvajaj plovbo';
+
+  @override
+  String get playbackSpeed => 'Hitrost';
+
+  @override
+  String get playbackNoTrack => 'Za ta dan ni zabeležene poti';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Stanje ob $time';
+  }
+
+  @override
   String get mapRuler => 'Ravnilo / pot';
 
   @override
@@ -1732,6 +1746,31 @@ class AppLocalizationsSl extends AppLocalizations {
   String get weatherSeaSection => 'Vreme in morje';
 
   @override
+  String get cloudLayer => 'Oblačnost';
+
+  @override
+  String get cloudNone => 'Oblačnost: jasno v tem pogledu';
+
+  @override
+  String get precipitationNone => 'Padavine: v tem pogledu jih ni';
+
+  @override
+  String get radarTitle => 'Radar padavin';
+
+  @override
+  String get radarRefresh => 'Osveži sliko';
+
+  @override
+  String get radarUnavailable =>
+      'Radarske slike ni bilo mogoče naložiti. Poskusi znova, ko boš imel signal.';
+
+  @override
+  String get radarSourceDhmz => 'Vir: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Padavine (napoved)';
+
+  @override
   String get weatherSourceInstruments => 'Izmerjeno z ladijskimi instrumenti';
 
   @override
@@ -2412,7 +2451,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Radar – sloj radarja padavin (RainViewer), sličica se osveži približno vsakih 10 minut\n• Veter – puščice smeri/hitrosti vetra (vozli) v mreži čez vidno območje\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) – prenese vidno območje (zemljevid + pomorske oznake, trenutna povečava +3 stopnje) za uporabo brez signala; vsaka pregledana ploščica se tudi samodejno shrani\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, radar, veter…), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Padavine – barvni sloj nad zemljevidom glede na intenzivnost v mm/h. To je NAPOVED iz modela, ne radar, in deluje pri vsaki povečavi. Izmerjene padavine najdeš v Vremenu pod ikono radarja — to je uradna slika DHMZ.\n• Veter – puščice smeri/hitrosti vetra (vozli) v mreži čez vidno območje\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) – prenese vidno območje (zemljevid + pomorske oznake, trenutna povečava +3 stopnje) za uporabo brez signala; vsaka pregledana ploščica se tudi samodejno shrani\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, radar, veter…), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';
@@ -2490,7 +2529,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';

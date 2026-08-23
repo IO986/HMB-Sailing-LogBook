@@ -36,6 +36,10 @@ import '../widgets/waypoint_dialog.dart';
 import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../widgets/playback_bar.dart';
+import '../../providers/playback_provider.dart';
+import '../../services/track_playback.dart';
+import '../../../../core/services/weather_overlay_grid_service.dart';
 
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
 /// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
@@ -421,9 +425,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final showMarinePois = mapState.showMarinePois;
     final marinePois =
         ref.watch(marinePoisProvider).valueOrNull ?? const <MarinePoi>[];
-    final radarUrl = mapState.showRainRadar
-        ? ref.watch(rainRadarUrlProvider).valueOrNull
-        : null;
+    final overlay = mapState.weatherOverlay;
+    final overlayAsync = overlay == WeatherOverlay.none
+        ? const AsyncValue<List<OverlayCell>>.data([])
+        : ref.watch(weatherOverlayGridProvider);
+    final overlayCells = overlayAsync.valueOrNull ?? const <OverlayCell>[];
+    // Suchý (alebo úplne jasný) deň vyzerá presne ako pokazená vrstva. Keď sa
+    // dáta načítali a nikde nič nie je, treba to povedať — inak si používateľ
+    // myslí, že appka nefunguje.
+    final overlayEmpty = overlay != WeatherOverlay.none &&
+        overlayAsync.hasValue &&
+        overlayCells.isEmpty;
     final windPoints = mapState.showWindGrid
         ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
         : const <WindPoint>[];
@@ -437,6 +449,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ref.read(mapNotifierProvider.notifier).clearPreview();
       }
     });
+
+    // Prehrávanie: poloha lode vo zvolenom okamihu a už prejdená časť trasy.
+    // Pri živom trackingu ostáva prázdne — prehráva sa len uložená plavba.
+    final playbackPoints = ref.watch(playbackTrackProvider);
+    final playbackTime = ref.watch(playbackProvider).time;
+    PlaybackFix? playbackFix;
+    var playbackPassed = const <LatLng>[];
+    if (playbackTime != null && playbackPoints.isNotEmpty) {
+      final track = TrackPlayback(playbackPoints);
+      playbackFix = track.fixAt(playbackTime);
+      final passed = track.passedIndex(playbackTime);
+      if (passed > 0) {
+        playbackPassed = [
+          for (var i = 0; i <= passed; i++)
+            LatLng(playbackPoints[i].latitude, playbackPoints[i].longitude),
+        ];
+      }
+    }
 
     final List<LatLng> trackPoints;
     if (previewDayLogId != null) {
@@ -562,21 +592,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   tileProvider: CachingTileProvider('seamark'),
                 ),
 
-              // ── Zrážkový radar (RainViewer) ───────────────────
-              if (radarUrl != null)
-                Opacity(
-                  opacity: 0.7,
-                  child: TileLayer(
-                    key: ValueKey('radar_$radarUrl'),
-                    urlTemplate: radarUrl,
-                    userAgentPackageName: 'com.hmb.sailinglog',
-                    // RainViewer dlaždice končia pri zoome 12 — hlbšie ich
-                    // server nemá ("zoom level not supported"), flutter_map
-                    // ich od tejto úrovne škáluje sám.
-                    maxNativeZoom: 12,
-                    maxZoom: 19,
-                  ),
-                ),
+              // ── Zrážky (mriežka z modelu Open-Meteo) ─────────
+              // Pod trasou a značkami: je to plocha na pozadí, nesmie
+              // prekryť to, kde loď je a kam ide.
+              if (overlayCells.isNotEmpty)
+                PolygonLayer(polygons: [
+                  for (final c in overlayCells)
+                    Polygon(
+                      points: [
+                        LatLng(c.lat - c.latSpan / 2, c.lon - c.lonSpan / 2),
+                        LatLng(c.lat - c.latSpan / 2, c.lon + c.lonSpan / 2),
+                        LatLng(c.lat + c.latSpan / 2, c.lon + c.lonSpan / 2),
+                        LatLng(c.lat + c.latSpan / 2, c.lon - c.lonSpan / 2),
+                      ],
+                      color: overlayColor(overlay, c.value)
+                          .withValues(alpha: 0.45),
+                      borderStrokeWidth: 0,
+                    ),
+                ]),
 
               // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
               if (showMarinePois && marinePois.isNotEmpty)
@@ -656,6 +689,29 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         ? Colors.orange.shade700
                         : Colors.blue.shade400,
                     strokeWidth: 3,
+                  ),
+                  // Prejdená časť pri prehrávaní — sýtejšia, aby bolo vidno,
+                  // kde loď v zvolenom okamihu bola a čo má ešte pred sebou.
+                  if (playbackPassed.length > 1)
+                    Polyline(
+                      points: playbackPassed,
+                      color: Colors.deepOrange.shade900,
+                      strokeWidth: 4,
+                    ),
+                ]),
+
+              // ── Loď v prehrávanom okamihu ────────────────────
+              if (playbackFix != null)
+                MarkerLayer(markers: [
+                  Marker(
+                    point: playbackFix.position,
+                    width: 26, height: 26,
+                    child: Transform.rotate(
+                      angle: ((playbackFix.cog ?? 0) - _mapRotationDeg) *
+                          math.pi / 180,
+                      child: Icon(Icons.navigation,
+                          color: Colors.deepOrange.shade900, size: 26),
+                    ),
                   ),
                 ]),
 
@@ -931,7 +987,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 active: _openPanel == _MapPanel.layers ||
                     showSeamarks ||
                     showMarinePois ||
-                    mapState.showRainRadar ||
+                    overlay != WeatherOverlay.none ||
                     mapState.showWindGrid ||
                     mapState.showOceanCurrents ||
                     mapState.showCurrentGrid ||
@@ -975,13 +1031,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 },
               ),
               const SizedBox(height: 8),
+              // Jedno tlačidlo pre obe plošné vrstvy: cyklí vypnuté →
+              // zrážky → oblačnosť. Ikona ukazuje, čo je práve zapnuté.
               _layerFab(
-                heroTag: 'radar',
-                tooltip: l.mapRainRadar,
-                icon: Icons.water_drop,
-                active: mapState.showRainRadar,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleRainRadar(),
+                heroTag: 'weatherOverlay',
+                tooltip: switch (overlay) {
+                  WeatherOverlay.cloud => l.cloudLayer,
+                  _ => l.precipitationLayer,
+                },
+                icon: overlay == WeatherOverlay.cloud
+                    ? Icons.cloud
+                    : Icons.water_drop,
+                active: overlay != WeatherOverlay.none,
+                onPressed: () => ref
+                    .read(mapNotifierProvider.notifier)
+                    .togglePrecipitation(),
               ),
               const SizedBox(height: 8),
               _layerFab(
@@ -1188,6 +1252,49 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ]),
                 ),
               ),
+            ),
+
+          // ── "Nikde neprší" ────────────────────────────────────
+          if (overlayEmpty)
+            Positioned(
+              top: mapState.previewLabel != null ? 96 : 56,
+              left: 12,
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(
+                        overlay == WeatherOverlay.cloud
+                            ? Icons.cloud_outlined
+                            : Icons.water_drop_outlined,
+                        size: 14,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer),
+                    const SizedBox(width: 6),
+                    Text(overlay == WeatherOverlay.cloud
+                        ? l.cloudNone
+                        : l.precipitationNone,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSecondaryContainer)),
+                  ]),
+                ),
+              ),
+            ),
+
+          // ── Prehrávanie plavby ────────────────────────────────
+          // Len pri zapnutej prehliadke: pri živom trackingu sa prehráva
+          // to, čo práve beží, a posuvník by nemal čo posúvať.
+          if (mapState.previewLabel != null)
+            const Positioned(
+              left: 0, right: 0, bottom: 0,
+              child: SafeArea(top: false, child: PlaybackBar()),
             ),
 
           // ── GPS + zoom (vľavo dole, GPS zarovnané nad +) ──────

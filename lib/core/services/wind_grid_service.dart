@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
+import '../utils/geo_grid.dart';
 
 /// Bod predpovede vetra pre šípku na mape.
 class WindPoint {
@@ -43,16 +44,11 @@ class WindGridService {
       return _cache!;
     }
 
-    final lats = <double>[];
-    final lons = <double>[];
-    for (var i = 0; i < _grid; i++) {
-      for (var j = 0; j < _grid; j++) {
-        lats.add(bounds.south +
-            (bounds.north - bounds.south) * (i + 0.5) / _grid);
-        lons.add(bounds.west +
-            (bounds.east - bounds.west) * (j + 0.5) / _grid);
-      }
-    }
+    // Spoločná mriežka s vrstvou zrážok — tá istá matematika napísaná dvakrát
+    // by sa časom rozišla.
+    final cells = gridOverBounds(bounds, _grid);
+    final lats = [for (final c in cells) c.lat];
+    final lons = [for (final c in cells) c.lon];
 
     try {
       final resp = await _dio.get(

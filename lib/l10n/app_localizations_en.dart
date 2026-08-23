@@ -86,6 +86,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapVoyageOverview => 'Voyage overview';
 
   @override
+  String get playbackTitle => 'Replay voyage';
+
+  @override
+  String get playbackSpeed => 'Speed';
+
+  @override
+  String get playbackNoTrack => 'No track recorded for this day';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'State at $time';
+  }
+
+  @override
   String get mapRuler => 'Ruler / route';
 
   @override
@@ -1730,6 +1744,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherSeaSection => 'Weather & sea';
 
   @override
+  String get cloudLayer => 'Cloud cover';
+
+  @override
+  String get cloudNone => 'Cloud cover: clear in this view';
+
+  @override
+  String get precipitationNone => 'Precipitation: none in this view';
+
+  @override
+  String get radarTitle => 'Precipitation radar';
+
+  @override
+  String get radarRefresh => 'Refresh image';
+
+  @override
+  String get radarUnavailable =>
+      'The radar image could not be loaded. Try again when you have a signal.';
+
+  @override
+  String get radarSourceDhmz => 'Source: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Precipitation (forecast)';
+
+  @override
   String get weatherSourceInstruments => 'Measured by the boat instruments';
 
   @override
@@ -2408,7 +2447,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Radar – rain radar overlay (RainViewer), frame refreshes ~every 10 minutes\n• Wind – wind direction/speed arrows (knots) in a grid over the visible area\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) – downloads the visible area (map + seamarks, current zoom +3 levels) for use without signal; every browsed tile is also cached automatically\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, harbours, radar, wind…), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Precipitation – a colour layer over the map by intensity in mm/h. It is a FORECAST from a model, not radar, and it works at any zoom. Measured rainfall is under the radar icon in Weather — the official DHMZ image for Croatia and the Adriatic.\n• Wind – wind direction/speed arrows (knots) in a grid over the visible area\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) – downloads the visible area (map + seamarks, current zoom +3 levels) for use without signal; every browsed tile is also cached automatically\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, harbours, radar, wind…), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -2485,7 +2524,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';

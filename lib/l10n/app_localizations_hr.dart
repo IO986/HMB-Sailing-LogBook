@@ -87,6 +87,20 @@ class AppLocalizationsHr extends AppLocalizations {
   String get mapVoyageOverview => 'Pregled plovidbe';
 
   @override
+  String get playbackTitle => 'Reproduciraj plovidbu';
+
+  @override
+  String get playbackSpeed => 'Brzina';
+
+  @override
+  String get playbackNoTrack => 'Za ovaj dan nije zabilježena ruta';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Stanje u $time';
+  }
+
+  @override
   String get mapRuler => 'Ravnalo / ruta';
 
   @override
@@ -1735,6 +1749,31 @@ class AppLocalizationsHr extends AppLocalizations {
   String get weatherSeaSection => 'Vrijeme i more';
 
   @override
+  String get cloudLayer => 'Naoblaka';
+
+  @override
+  String get cloudNone => 'Naoblaka: vedro u ovom prikazu';
+
+  @override
+  String get precipitationNone => 'Oborine: nema ih u ovom prikazu';
+
+  @override
+  String get radarTitle => 'Radar oborina';
+
+  @override
+  String get radarRefresh => 'Osvježi snimku';
+
+  @override
+  String get radarUnavailable =>
+      'Radarsku snimku nije moguće učitati. Pokušaj ponovno kad budeš imao signal.';
+
+  @override
+  String get radarSourceDhmz => 'Izvor: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Oborine (prognoza)';
+
+  @override
   String get weatherSourceInstruments => 'Izmjereno brodskim instrumentima';
 
   @override
@@ -2417,7 +2456,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Radar – sloj radara oborina (RainViewer), sličica se osvježava otprilike svakih 10 minuta\n• Vjetar – strelice smjera/brzine vjetra (čvorovi) u mreži preko vidljivog područja\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Izvanmrežna karta (ikona preuzimanja) – preuzima vidljivo područje (karta + pomorske oznake, trenutni zum +3 razine) za uporabu bez signala; svaka pregledana pločica također se automatski sprema\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, luke, radar, vjetar…), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
+      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom Dolje se pojavljuje reprodukcija: klizačem prolaziš plovidbu kroz vrijeme i vidiš poziciju, brzinu, kurs, vjetar i tlak u bilo kojem trenutku. Crtice na klizaču su događaji — početak i kraj plovidbe, sidro, drift, MOB.\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Oborine – obojani sloj nad kartom prema intenzitetu u mm/h. To je PROGNOZA iz modela, a ne radar, i radi u svakom zumu. Izmjerene oborine nađi ćeš u Vremenu pod ikonom radara — to je službena snimka DHMZ-a.\n• Vjetar – strelice smjera/brzine vjetra (čvorovi) u mreži preko vidljivog područja\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Izvanmrežna karta (ikona preuzimanja) – preuzima vidljivo područje (karta + pomorske oznake, trenutni zum +3 razine) za uporabu bez signala; svaka pregledana pločica također se automatski sprema\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, luke, radar, vjetar…), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
 
   @override
   String get guideInstrTitle => 'Brodski instrumenti';
@@ -2495,7 +2534,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – promjena jezika aplikacije\n• Instrumenti – postavite IP adresu Raymarine WiFi pristupnika (TCP ili UDP)\n• Izvor GPS-a – telefon ili Raymarine\n• Jedinice – udaljenost NM/km, brzina čvorovi/km/h, posebno temperatura, dubina i vjetar (na rijeci odgovaraju km + km/h)\n• Učestalost zapisa u dnevnik\n• Donji izbornik – prilagodite ga: pritisnite i povucite ikonu za promjenu redoslijeda, prekidačem sakrijte kartice koje ne koristite i postavite veličinu ikona (S/M/L). Skrivene kartice mogu se otvoriti upravo ovdje u Postavkama; Postavke su uvijek prikazane. Redoslijed i veličina se pamte. Natpisi ispod ikona su skriveni kako bi ikone stajale jednako u svim jezicima; dugim pritiskom prikaže se naziv.\n• Prikaz – Noćni način (crveni filtar za očuvanje noćnog vida)\n• Izvoz u oblak (Google Drive) – nakon prijave PDF i GPX svakog dovršenog dana automatski se prenose na vaš Google Drive. Bez prijave sve ostaje na uređaju.\n• Sigurnosna kopija podataka – vidi \"Sigurnosna kopija i vraćanje podataka\"\n• O aplikaciji – verzija i kontakt\n• Baterija – GPS radi punom točnošću samo ondje gdje je točna pozicija bitna (praćenje plovidbe, karta, kompas, instrumenti, sidrena straža, MOB); drugdje prelazi u štedljivi način, a u pozadini bez uključenog praćenja isključuje se potpuno. Uz spojene brodske instrumente GPS telefona ostaje isključen, a pozicija dolazi s NMEA.';
+      '• Jezik – promjena jezika aplikacije\n• Instrumenti – postavite IP adresu Raymarine WiFi pristupnika (TCP ili UDP)\n• Izvor GPS-a – telefon ili Raymarine\n• Jedinice – udaljenost NM/km, brzina čvorovi/km/h, posebno temperatura, dubina i vjetar (na rijeci odgovaraju km + km/h)\n• Učestalost zapisa u dnevnik\n• Donji izbornik – prilagodite ga: pritisnite i povucite ikonu za promjenu redoslijeda, prekidačem sakrijte kartice koje ne koristite i postavite veličinu ikona (S/M/L). Skrivene kartice mogu se otvoriti upravo ovdje u Postavkama; Postavke su uvijek prikazane. Redoslijed i veličina se pamte. Natpisi ispod ikona su skriveni kako bi ikone stajale jednako u svim jezicima; dugim pritiskom prikaže se naziv.\n• Prikaz – Noćni način (crveni filtar za očuvanje noćnog vida)\n• Izvoz u oblak (Google Drive) – nakon prijave PDF i GPX svakog dovršenog dana automatski se prenose na vaš Google Drive. Bez prijave sve ostaje na uređaju.\n• Sigurnosna kopija podataka – vidi \"Sigurnosna kopija i vraćanje podataka\"\n• O aplikaciji – verzija i kontakt\n• Baterija – GPS radi punom točnošću samo ondje gdje je točna pozicija bitna (praćenje plovidbe, karta, kompas, instrumenti, sidrena straža, MOB); drugdje prelazi u štedljivi način, a u pozadini bez uključenog praćenja isključuje se potpuno. Uz spojene brodske instrumente GPS telefona ostaje isključen, a pozicija dolazi s NMEA.\n\nGoogle račun i izvoz u oblak\n\nPrijava Google računom je dobrovoljna. Bez nje aplikacija radi u cijelosti, a svi zapisi ostaju samo u telefonu.\n\nŠto se šalje – po završetku dana plovidbe PDF dnevnika i GPX ruta tog dana. Ništa drugo: ni fotografije, ni kontakti posade, ni pozicije u stvarnom vremenu.\n\nKamo – na tvoj vlastiti Google Drive, u mapu HMB_Sailing_Log_DATA / naziv plovidbe / Day_datum. Ne na poslužitelj aplikacije – on ne postoji.\n\nŠto aplikacija vidi na Driveu – samo datoteke koje je ondje sama stvorila. Koristi najuže dopuštenje koje Google nudi (drive.file), pa ostatak tvog Drivea ostaje nedostupan. Dopuštenje traži tek pri prvom slanju, ne pri prijavi.\n\nKako to poništiti – odjavi račun u Postavkama. Datoteke koje su već na Driveu ostaju tvoje – aplikacija ih ne briše.';
 
   @override
   String get guideBackupTitle => 'Sigurnosna kopija i vraćanje podataka';

@@ -86,6 +86,20 @@ class AppLocalizationsCs extends AppLocalizations {
   String get mapVoyageOverview => 'Přehled plavby';
 
   @override
+  String get playbackTitle => 'Přehrát plavbu';
+
+  @override
+  String get playbackSpeed => 'Rychlost';
+
+  @override
+  String get playbackNoTrack => 'Tento den nemá zaznamenanou trasu';
+
+  @override
+  String playbackAtTime(String time) {
+    return 'Stav v $time';
+  }
+
+  @override
   String get mapRuler => 'Pravítko / trasa';
 
   @override
@@ -1729,6 +1743,31 @@ class AppLocalizationsCs extends AppLocalizations {
   String get weatherSeaSection => 'Počasí a moře';
 
   @override
+  String get cloudLayer => 'Oblačnost';
+
+  @override
+  String get cloudNone => 'Oblačnost: v tomto výřezu jasno';
+
+  @override
+  String get precipitationNone => 'Srážky: v tomto výřezu žádné';
+
+  @override
+  String get radarTitle => 'Srážkový radar';
+
+  @override
+  String get radarRefresh => 'Obnovit snímek';
+
+  @override
+  String get radarUnavailable =>
+      'Radarový snímek se nepodařilo načíst. Zkus to znovu, až budeš mít signál.';
+
+  @override
+  String get radarSourceDhmz => 'Zdroj: DHMZ – meteo.hr';
+
+  @override
+  String get precipitationLayer => 'Srážky (předpověď)';
+
+  @override
   String get weatherSourceInstruments => 'Naměřeno lodními přístroji';
 
   @override
@@ -2407,7 +2446,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web, hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Radar – srážkový radar nad mapou (RainViewer), snímek se obnovuje ~každých 10 minut\n• Vítr – šipky směru a síly větru (uzly) v mřížce pro viditelnou oblast\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stahování) – stáhne viditelnou oblast (mapa + seamarky, aktuální zoom +3 úrovně) pro použití bez signálu; navíc každá prohlédnutá dlaždice se ukládá automaticky\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, přístavy, radar, vítr…), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
+      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu Dole se objeví přehrávání: posuvníkem projdeš plavbu v čase a vidíš polohu, rychlost, kurz, vítr i tlak v kterékoli chvíli. Svislé čárky na posuvníku jsou události — začátek a konec plavby, kotva, drift, MOB.\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web, hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Srážky – barevná vrstva nad mapou podle intenzity v mm/h. Je to PŘEDPOVĚĎ z modelu, nikoli radar, a funguje v každém přiblížení. Naměřené srážky najdeš v Počasí pod ikonou radaru — je to oficiální snímek DHMZ pro Chorvatsko a Jadran.\n• Vítr – šipky směru a síly větru (uzly) v mřížce pro viditelnou oblast\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stahování) – stáhne viditelnou oblast (mapa + seamarky, aktuální zoom +3 úrovně) pro použití bez signálu; navíc každá prohlédnutá dlaždice se ukládá automaticky\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, přístavy, radar, vítr…), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
 
   @override
   String get guideInstrTitle => 'Námořní přístroje';
@@ -2484,7 +2523,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt\n• Baterie – GPS běží na plnou přesnost jen tam, kde na přesné poloze záleží (sledování plavby, mapa, kompas, přístroje, kotevní stráž, MOB); jinde přepne do úsporného režimu a na pozadí bez zapnutého sledování se vypne úplně. Při připojených lodních přístrojích zůstává GPS telefonu vypnuté a poloha jde z NMEA.';
+      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt\n• Baterie – GPS běží na plnou přesnost jen tam, kde na přesné poloze záleží (sledování plavby, mapa, kompas, přístroje, kotevní stráž, MOB); jinde přepne do úsporného režimu a na pozadí bez zapnutého sledování se vypne úplně. Při připojených lodních přístrojích zůstává GPS telefonu vypnuté a poloha jde z NMEA.\n\nGoogle účet a cloudový export\n\nPřihlášení Google účtu je dobrovolné. Bez něj aplikace funguje celá a všechny záznamy zůstávají jen v telefonu.\n\nCo se nahrává – po ukončení dne plavby PDF deníku a GPX trasa toho dne. Nic jiného: žádné fotky, žádné kontakty posádky, žádné polohy v reálném čase.\n\nKam – na tvůj vlastní Google Disk, do složky HMB_Sailing_Log_DATA / název plavby / Day_datum. Ne na server aplikace – ten neexistuje.\n\nCo aplikace na Disku vidí – pouze soubory, které tam sama vytvořila. Používá nejužší oprávnění, jaké Google nabízí (drive.file), takže k ostatnímu obsahu tvého Disku se nedostane. Oprávnění si navíc žádá až při prvním nahrávání, ne při přihlášení.\n\nJak to zrušíš – odhlas účet v Nastavení. Soubory, které už na Disku jsou, zůstanou tvoje – aplikace je nemaže. Přístup lze kdykoli odebrat i v nastavení Google účtu.';
 
   @override
   String get guideBackupTitle => 'Záloha a obnova dat';

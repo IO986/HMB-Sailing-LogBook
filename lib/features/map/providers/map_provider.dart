@@ -8,7 +8,7 @@ import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/marine_poi_service.dart';
 import '../../../core/services/ocean_current_service.dart';
-import '../../../core/services/rain_radar_service.dart';
+import '../../../core/services/weather_overlay_grid_service.dart';
 import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
@@ -51,35 +51,56 @@ final currentTrackProvider = Provider<List<LatLng>>((ref) {
   return GpsTrackingService().trackPoints;
 });
 
-/// GPS trasa vybraného dňa (na prehliadanie na mape mimo aktívneho
-/// trackingu – importovaná/historická plavba, nie len cez PDF export).
-final dayTrackPreviewProvider =
-    FutureProvider.family<List<LatLng>, int>((ref, dayLogId) async {
+/// Body trasy vybraného dňa, zoradené podľa času.
+///
+/// Celé `TrackPoint`, nie len súradnice: prehrávanie na časovej osi potrebuje
+/// čas, rýchlosť aj kurz. Deň môže mať viac úsekov, keď sa tracking uprostred
+/// prerušil, preto sa spájajú všetky session dňa.
+final dayTrackPointsProvider =
+    FutureProvider.family<List<TrackPoint>, int>((ref, dayLogId) async {
   final db = ref.watch(databaseProvider);
   final sessions = await db.getSessionsForDay(dayLogId);
-  final points = <LatLng>[];
+  final points = <TrackPoint>[];
   for (final s in sessions) {
-    final pts = await db.getTrackPointsForSession(s.sessionId);
-    points.addAll(pts.map((p) => LatLng(p.latitude, p.longitude)));
+    points.addAll(await db.getTrackPointsForSession(s.sessionId));
   }
+  points.sort((a, b) => a.timestamp.compareTo(b.timestamp));
   return points;
+});
+
+/// Body trasy celej plavby (všetky dni spojené), zoradené podľa času.
+final charterTrackPointsProvider =
+    FutureProvider.family<List<TrackPoint>, int>((ref, charterId) async {
+  final db = ref.watch(databaseProvider);
+  final days = await db.getDayLogs(charterId);
+  final points = <TrackPoint>[];
+  for (final day in days) {
+    final sessions = await db.getSessionsForDay(day.id);
+    for (final s in sessions) {
+      points.addAll(await db.getTrackPointsForSession(s.sessionId));
+    }
+  }
+  points.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  return points;
+});
+
+/// GPS trasa vybraného dňa (na prehliadanie na mape mimo aktívneho
+/// trackingu – importovaná/historická plavba, nie len cez PDF export).
+///
+/// Odvodené z [dayTrackPointsProvider], aby sa tie isté body neťahali
+/// z databázy dvakrát — mapa ich kreslí a prehrávanie po nich chodí.
+final dayTrackPreviewProvider =
+    FutureProvider.family<List<LatLng>, int>((ref, dayLogId) async {
+  final points = await ref.watch(dayTrackPointsProvider(dayLogId).future);
+  return [for (final p in points) LatLng(p.latitude, p.longitude)];
 });
 
 /// GPS trasa celej plavby (všetky dni spojené) – na prehliadanie celej
 /// trasy naraz namiesto po jednotlivých dňoch.
 final charterTrackPreviewProvider =
     FutureProvider.family<List<LatLng>, int>((ref, charterId) async {
-  final db = ref.watch(databaseProvider);
-  final days = await db.getDayLogs(charterId);
-  final points = <LatLng>[];
-  for (final day in days) {
-    final sessions = await db.getSessionsForDay(day.id);
-    for (final s in sessions) {
-      final pts = await db.getTrackPointsForSession(s.sessionId);
-      points.addAll(pts.map((p) => LatLng(p.latitude, p.longitude)));
-    }
-  }
-  return points;
+  final points = await ref.watch(charterTrackPointsProvider(charterId).future);
+  return [for (final p in points) LatLng(p.latitude, p.longitude)];
 });
 
 /// Denníkové záznamy s polohou pre aktuálny deň (s fotkou aj bez) —
@@ -107,12 +128,22 @@ final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
   return MarinePoiService().fetchForBounds(bounds);
 });
 
-/// URL šablóna dlaždíc najnovšej radarovej snímky (RainViewer), alebo null.
-final rainRadarUrlProvider = FutureProvider<String?>((ref) async {
-  final show = ref.watch(
-      mapNotifierProvider.select((s) => s.showRainRadar));
-  if (!show) return null;
-  return RainRadarService().latestTileUrl();
+/// Mriežka zrážok pre viditeľný výrez (Open-Meteo).
+///
+/// Nahradila radarové dlaždice z RainVieweru: tie sa bez API kľúča končili
+/// pri zoome 7 a nad ním vracali obrázok s nápisom "Zoom Level Not Supported",
+/// takže vrstva sa dala použiť jedine pri pohľade na celý Jadran.
+///
+/// Je to predpoveď, nie meranie — namerané zrážky ukazuje obrazovka
+/// s radarovou snímkou DHMZ.
+final weatherOverlayGridProvider =
+    FutureProvider<List<OverlayCell>>((ref) async {
+  final overlay =
+      ref.watch(mapNotifierProvider.select((s) => s.weatherOverlay));
+  if (overlay == WeatherOverlay.none) return const [];
+  final bounds = ref.watch(mapViewBoundsProvider);
+  if (bounds == null) return const [];
+  return WeatherOverlayGridService().fetchForBounds(bounds, overlay);
 });
 
 /// Mriežka šípok vetra pre viditeľný výrez (Open-Meteo).
@@ -141,7 +172,20 @@ class MapNotifier extends Notifier<MapState> {
   // Kľúče do SharedPreferences pre uchované vrstvy/prepínače mapy.
   static const _kSeamarks = 'map_show_seamarks';
   static const _kMarinePois = 'map_show_marine_pois';
-  static const _kRainRadar = 'map_show_rain_radar';
+  static const _kWeatherOverlay = 'map_weather_overlay';
+
+  /// Starý kľúč z čias, keď vrstva bola len zapnutá/vypnutá (RainViewer).
+  static const _kLegacyRainRadar = 'map_show_rain_radar';
+
+  /// Kto mal starý radar zapnutý, dostane zrážky — nie prázdnu mapu a pocit,
+  /// že sa vrstva stratila.
+  static WeatherOverlay _loadOverlay(SharedPreferences p) {
+    final stored = p.getInt(_kWeatherOverlay);
+    if (stored != null) return WeatherOverlay.fromIndex(stored);
+    return (p.getBool(_kLegacyRainRadar) ?? false)
+        ? WeatherOverlay.precipitation
+        : WeatherOverlay.none;
+  }
   static const _kWindGrid = 'map_show_wind_grid';
   static const _kOceanCurrents = 'map_show_ocean_currents';
   static const _kCurrentGrid = 'map_show_current_grid';
@@ -164,7 +208,7 @@ class MapNotifier extends Notifier<MapState> {
     state = state.copyWith(
       showSeamarks: p.getBool(_kSeamarks) ?? state.showSeamarks,
       showMarinePois: p.getBool(_kMarinePois) ?? state.showMarinePois,
-      showRainRadar: p.getBool(_kRainRadar) ?? state.showRainRadar,
+      weatherOverlay: _loadOverlay(p),
       showWindGrid: p.getBool(_kWindGrid) ?? state.showWindGrid,
       showOceanCurrents: p.getBool(_kOceanCurrents) ?? state.showOceanCurrents,
       showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
@@ -182,7 +226,7 @@ class MapNotifier extends Notifier<MapState> {
     final p = await SharedPreferences.getInstance();
     await p.setBool(_kSeamarks, state.showSeamarks);
     await p.setBool(_kMarinePois, state.showMarinePois);
-    await p.setBool(_kRainRadar, state.showRainRadar);
+    await p.setInt(_kWeatherOverlay, state.weatherOverlay.index);
     await p.setBool(_kWindGrid, state.showWindGrid);
     await p.setBool(_kOceanCurrents, state.showOceanCurrents);
     await p.setBool(_kCurrentGrid, state.showCurrentGrid);
@@ -213,8 +257,12 @@ class MapNotifier extends Notifier<MapState> {
     _persist();
   }
 
-  void toggleRainRadar() {
-    state = state.copyWith(showRainRadar: !state.showRainRadar);
+  void togglePrecipitation() {
+    // Cyklí none -> zrážky -> oblačnosť -> none. Ikona FABu sa mení s ním,
+    // takže stav je vidno bez otvárania menu.
+    const order = WeatherOverlay.values;
+    state = state.copyWith(
+        weatherOverlay: order[(state.weatherOverlay.index + 1) % order.length]);
     _persist();
   }
 
@@ -275,7 +323,7 @@ class MapNotifier extends Notifier<MapState> {
       MapState(
         showSeamarks: state.showSeamarks,
         showMarinePois: state.showMarinePois,
-        showRainRadar: state.showRainRadar,
+        weatherOverlay: state.weatherOverlay,
         showWindGrid: state.showWindGrid,
         showOceanCurrents: state.showOceanCurrents,
         showCurrentGrid: state.showCurrentGrid,
@@ -321,7 +369,9 @@ class MapState {
   /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
   final bool showMarinePois;
   /// Zrážkový radar (RainViewer overlay).
-  final bool showRainRadar;
+  /// Plošná vrstva počasia nad mapou. Zrážky a oblačnosť sa vylučujú —
+  /// dve poloprehľadné výplne cez seba nie sú čitateľné ani jedna.
+  final WeatherOverlay weatherOverlay;
   /// Šípky vetra v mriežke (Open-Meteo).
   final bool showWindGrid;
   /// Referenčná vrstva hlavných oceánskych prúdov (lokálne curated dáta).
@@ -350,7 +400,7 @@ class MapState {
   const MapState({
     this.showSeamarks = true,
     this.showMarinePois = false,
-    this.showRainRadar = false,
+    this.weatherOverlay = WeatherOverlay.none,
     this.showWindGrid = false,
     this.showOceanCurrents = false,
     this.showCurrentGrid = false,
@@ -365,7 +415,7 @@ class MapState {
   MapState copyWith({
     bool? showSeamarks,
     bool? showMarinePois,
-    bool? showRainRadar,
+    WeatherOverlay? weatherOverlay,
     bool? showWindGrid,
     bool? showOceanCurrents,
     bool? showCurrentGrid,
@@ -379,7 +429,7 @@ class MapState {
   }) => MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
         showMarinePois: showMarinePois ?? this.showMarinePois,
-        showRainRadar: showRainRadar ?? this.showRainRadar,
+        weatherOverlay: weatherOverlay ?? this.weatherOverlay,
         showWindGrid: showWindGrid ?? this.showWindGrid,
         showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
         showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,

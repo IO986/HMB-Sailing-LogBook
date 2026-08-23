@@ -16,6 +16,7 @@ import '../widgets/ocean_current_card.dart';
 import '../widgets/sun_moon_card.dart';
 import '../widgets/tide_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
 
@@ -80,6 +81,13 @@ class WeatherScreen extends ConsumerWidget {
           ],
         ),
         actions: [
+          // Namerané zrážky z oficiálnej radarovej snímky DHMZ. Vrstva
+          // v mape je model — toto je meranie, preto zvlášť.
+          IconButton(
+            icon: const Icon(Icons.radar),
+            tooltip: AppLocalizations.of(context).radarTitle,
+            onPressed: () => context.push('/radar'),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: AppLocalizations.of(context).updateForecast,
