@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,9 @@ import '../../../../core/models/sail_mode.dart';
 import '../../../../shared/widgets/location_quality_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../core/services/dhmz_observation_service.dart';
+import '../../../../core/services/entry_conditions.dart';
+import '../../../../shared/widgets/weather_source_badge.dart';
 
 // Spôsob plavby - multi-select
 const _sailOptions = [
@@ -47,6 +51,22 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   double? _accuracyMeters;
   String? _locationSource;
   bool? _isMocked;
+
+  /// Hodnoty počasia tak, ako sa načítali pri otvorení existujúceho záznamu.
+  ///
+  /// Keď ich skiper prepíše, zapísaný zdroj by klamal — hodnota už nie je zo
+  /// stanice ani z modelu, ale jeho vlastné odčítanie. Pri uložení sa preto
+  /// porovnáva a zdroj sa v tom prípade zahodí.
+  String? _loadedWeather;
+
+  static String _weatherSignature(double? windSpeed, double? windDir,
+          double? airTemp, double? waterTemp, double? pressure) =>
+      [windSpeed, windDir, airTemp, waterTemp, pressure].join('|');
+
+  // Pôvod hodnôt počasia — pozri LogbookEntries.weatherSource.
+  String? _weatherSource;
+  String? _weatherStation;
+  double? _weatherStationDistanceM;
   int? _existingId;
 
   final _noteCtrl = TextEditingController();
@@ -86,6 +106,11 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _accuracyMeters = e.accuracyMeters;
         _locationSource = e.locationSource;
         _isMocked = e.isMocked;
+        _weatherSource = e.weatherSource;
+        _weatherStation = e.weatherStation;
+        _weatherStationDistanceM = e.weatherStationDistanceM;
+        _loadedWeather = _weatherSignature(
+          e.windSpeed, e.windDirection, e.airTemp, e.waterTemp, e.airPressure);
         _windSpeedCtrl.text = e.windSpeed?.toStringAsFixed(0) ?? '';
         _windDirCtrl.text = e.windDirection?.toStringAsFixed(0) ?? '';
         _waveCtrl.text = e.waveHeight?.toStringAsFixed(1) ?? '';
@@ -123,21 +148,45 @@ class _State extends ConsumerState<LogbookEntryScreen> {
       _isMocked = pos != null ? LocationService().lastIsMocked : null;
     });
     try {
-      var w = await WeatherService().getCurrentWeather();
-      // Ak nie je cache, skús synchrónizovať a znova prečítaj.
-      if (w == null && pos != null) {
-        await WeatherRepository().syncWeather(
-            lat: pos.latitude, lon: pos.longitude);
-        w = await WeatherService().getCurrentWeather();
+      // Ak nie je nič v keši, skús doplniť — ale nikdy na to nečakaj tak, aby
+      // sa formulár nedal vyplniť bez siete.
+      if (pos != null && await WeatherService().getCurrentWeather() == null) {
+        await WeatherRepository()
+            .syncWeather(lat: pos.latitude, lon: pos.longitude);
       }
-      if (w != null && mounted) setState(() {
-        _windSpeedCtrl.text = w!.windSpeed.toStringAsFixed(0);
-        _windDirCtrl.text = w.windDirection.toStringAsFixed(0);
-        _waveCtrl.text = w.waveHeight.toStringAsFixed(1);
-        if (w.airTemp != 0) _airTempCtrl.text = w.airTemp.toStringAsFixed(1);
-        if (w.waterTemp != 0) _waterTempCtrl.text = w.waterTemp.toStringAsFixed(1);
-        if (w.airPressure != 0) _pressureCtrl.text = w.airPressure.toStringAsFixed(0);
-        _weatherCondition ??= _conditionFromCode(w.weatherCode);
+      unawaited(DhmzObservationService().sync());
+
+      // Cez ten istý reťazec priorít ako automatický záznam: prístroje na
+      // lodi → stanica DHMZ → model. Predtým si ručný záznam bral rovno
+      // model, takže sa oba spôsoby zápisu líšili.
+      if (pos == null) return;
+      final c = await EntryConditionsBuilder().build(
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+      );
+      final w = await WeatherService().getCurrentWeather();
+      if (!mounted) return;
+      setState(() {
+        if (c.windSpeed != null) {
+          _windSpeedCtrl.text = c.windSpeed!.toStringAsFixed(0);
+        }
+        if (c.windDirection != null) {
+          _windDirCtrl.text = c.windDirection!.toStringAsFixed(0);
+        }
+        if (c.waveHeight != null) {
+          _waveCtrl.text = c.waveHeight!.toStringAsFixed(1);
+        }
+        if (c.airTemp != null) _airTempCtrl.text = c.airTemp!.toStringAsFixed(1);
+        if (c.waterTemp != null) {
+          _waterTempCtrl.text = c.waterTemp!.toStringAsFixed(1);
+        }
+        if (c.airPressure != null) {
+          _pressureCtrl.text = c.airPressure!.toStringAsFixed(0);
+        }
+        _weatherSource = c.source.code;
+        _weatherStation = c.station;
+        _weatherStationDistanceM = c.stationDistanceM;
+        if (w != null) _weatherCondition ??= _conditionFromCode(w.weatherCode);
       });
     } catch (_) {}
   }
@@ -225,6 +274,12 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         const SizedBox(height: 16),
 
         _Sec(l.weatherSeaSection),
+        WeatherSourceBadge(
+          weatherSource: _weatherSource,
+          station: _weatherStation,
+          stationDistanceM: _weatherStationDistanceM,
+        ),
+        const SizedBox(height: 4),
         _WeatherConditionField(
           condition: _weatherCondition,
           onChanged: (v) => setState(() => _weatherCondition = v),
@@ -298,7 +353,23 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     final attachments = await _buildAttachments();
 
     if (_existingId != null) {
+      // Ak sa hodnoty počasia oproti načítanému stavu zmenili, sú to už
+      // údaje skipera a nie stanice — zdroj sa musí zahodiť, inak by záznam
+      // tvrdil, že ich nameral niekto iný.
+      final editedWeather = _weatherSignature(
+            double.tryParse(_windSpeedCtrl.text),
+            double.tryParse(_windDirCtrl.text),
+            double.tryParse(_airTempCtrl.text),
+            double.tryParse(_waterTempCtrl.text),
+            double.tryParse(_pressureCtrl.text),
+          ) !=
+          _loadedWeather;
+
       final companion = LogbookEntriesCompanion(
+        weatherSource: Value(editedWeather ? null : _weatherSource),
+        weatherStation: Value(editedWeather ? null : _weatherStation),
+        weatherStationDistanceM:
+            Value(editedWeather ? null : _weatherStationDistanceM),
         windSpeed: Value(double.tryParse(_windSpeedCtrl.text)),
         windDirection: Value(double.tryParse(_windDirCtrl.text)),
         waveHeight: Value(double.tryParse(_waveCtrl.text)),
@@ -353,6 +424,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         accuracyMeters: Value(_accuracyMeters),
         locationSource: Value(_locationSource),
         isMocked: Value(_isMocked),
+        weatherSource: Value(_weatherSource),
+        weatherStation: Value(_weatherStation),
+        weatherStationDistanceM: Value(_weatherStationDistanceM),
       );
 
       late final int newId;

@@ -155,6 +155,22 @@ class LogbookEntries extends Table {
   RealColumn get accuracyMeters => real().nullable()();
   TextColumn get locationSource => text().nullable()();
   BoolColumn get isMocked => boolean().nullable()();
+
+  /// Odkiaľ pochádzajú hodnoty počasia v tomto zázname:
+  /// `nmea` (lodné prístroje), `dhmz` (pozemná stanica), `model` (predpoveď).
+  ///
+  /// Doteraz sa zdroj lepil do textu poznámky ("Auto [NMEA]"), odkiaľ sa
+  /// nedal prečítať ani preložiť ani dostať do PDF. V dokladovateľnom
+  /// zázname musí byť vidno, či je hodnota meraná alebo počítaná.
+  TextColumn get weatherSource => text().nullable()();
+
+  /// Názov stanice pri `weatherSource == 'dhmz'`, inak `null`.
+  TextColumn get weatherStation => text().nullable()();
+
+  /// Ako ďaleko bola stanica v okamihu zápisu. Bez tohto je názov stanice
+  /// polovičná informácia — vietor spoza kopca 20 km ďaleko je niečo iné
+  /// než vietor z majáka, pri ktorom loď práve stojí.
+  RealColumn get weatherStationDistanceM => real().nullable()();
 }
 
 /// GPS track pointy
@@ -404,6 +420,38 @@ class WeatherSnapshots extends Table {
   RealColumn get precipitation => real().nullable()();               // mm
 }
 
+/// Kešované merania z pozemných staníc DHMZ (meteo.hr).
+///
+/// Na rozdiel od [WeatherSnapshots] to nie je predpoveď, ale hodnota, ktorú
+/// niekto naozaj nameral. Do denníka má prednosť pred modelom — pozri
+/// `DhmzObservationService`.
+///
+/// Tabuľka je keš, nie archív: pri každej synchronizácii sa prepíše celá.
+/// Historické hodnoty netreba, do záznamu sa hodnota kopíruje v okamihu zápisu.
+class DhmzObservations extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get station => text()();
+  RealColumn get latitude => real()();
+  RealColumn get longitude => real()();
+
+  /// Čas merania v UTC. Podľa neho sa zahadzujú zastarané feedy.
+  DateTimeColumn get observedAt => dateTime()();
+  DateTimeColumn get downloadedAt => dateTime()();
+
+  RealColumn get airTemp => real().nullable()();
+  RealColumn get airPressure => real().nullable()();
+
+  /// Zmena tlaku za 3 h (hPa). Model túto hodnotu nedáva vôbec.
+  RealColumn get pressureTendency => real().nullable()();
+
+  RealColumn get windSpeedKnots => real().nullable()();
+
+  /// `null` znamená bezvetrie alebo chýbajúci údaj — smer vtedy neexistuje.
+  RealColumn get windDirectionDeg => real().nullable()();
+
+  RealColumn get waterTemp => real().nullable()();
+}
+
 /// Kešované predikcie prílivu/odlivu (online fetch, offline zobrazenie —
 /// rovnaký vzor ako [WeatherSnapshots]). `heightM` je výška hladiny nad
 /// strednou hladinou mora (MSL), nie nad mapovým datom (LAT) a nie absolútna
@@ -523,7 +571,7 @@ class OutboxRows extends Table {
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
   CrewAssessments,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
-  DutyPeriods, Bearings,
+  DutyPeriods, Bearings, DhmzObservations,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -532,7 +580,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 26;
+  int get schemaVersion => 27;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -687,6 +735,13 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from >= 25 && from < 26) {
         await m.addColumn(bearings, bearings.hiddenFromMap);
+      }
+      if (from < 27) {
+        await m.createTable(dhmzObservations);
+        await m.addColumn(logbookEntries, logbookEntries.weatherSource);
+        await m.addColumn(logbookEntries, logbookEntries.weatherStation);
+        await m.addColumn(
+            logbookEntries, logbookEntries.weatherStationDistanceM);
       }
     },
     beforeOpen: (details) async {
@@ -1078,6 +1133,18 @@ class AppDatabase extends _$AppDatabase {
       into(weatherSnapshots).insert(e);
 
   Future<void> clearAllWeather() => delete(weatherSnapshots).go();
+
+  Future<List<DhmzObservation>> getDhmzObservations() =>
+      select(dhmzObservations).get();
+
+  /// Keš sa vždy prepisuje celá — staré merania nemajú komu poslúžiť a
+  /// polovičná výmena by nechala v tabuľke stanice, ktoré feed prestal hlásiť.
+  Future<void> replaceDhmzObservations(
+          List<DhmzObservationsCompanion> rows) async =>
+      transaction(() async {
+        await delete(dhmzObservations).go();
+        await batch((b) => b.insertAll(dhmzObservations, rows));
+      });
 
   Future<void> clearOldWeather() =>
       (delete(weatherSnapshots)

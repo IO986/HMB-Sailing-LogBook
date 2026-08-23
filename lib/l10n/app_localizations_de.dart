@@ -1742,6 +1742,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get weatherSeaSection => 'Wetter & See';
 
   @override
+  String get weatherSourceInstruments => 'Von den Bordinstrumenten gemessen';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Gemessen an der Station $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Gemessen an der Station $name, $km km entfernt';
+  }
+
+  @override
+  String get weatherSourceStationUnknown => 'An einer Wetterstation gemessen';
+
+  @override
+  String get weatherSourceModel => 'Vorhersagemodell, nicht gemessen';
+
+  @override
   String get windSpeed => 'Wind';
 
   @override

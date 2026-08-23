@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Temperature_mora>
+	<Copyright>DHMZ - meteo.hr</Copyright>
+	<Datum>23.08.2026</Datum>
+	<Podatci>
+		<Postaja autom="0">Postaja \ Termin mjerenja</Postaja>
+		<Termin>07</Termin>
+		<Termin>08</Termin>
+		<Termin>11</Termin>
+		<Termin>14</Termin>
+		<Termin>15</Termin>
+		<Termin>17</Termin>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="1">Dubrovnik</Postaja>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+	</Podatci>
+</Temperature_mora>

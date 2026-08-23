@@ -1744,6 +1744,25 @@ class AppLocalizationsEl extends AppLocalizations {
   String get weatherSeaSection => 'Καιρός & θάλασσα';
 
   @override
+  String get weatherSourceInstruments => 'Μετρήθηκε από τα όργανα του σκάφους';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Μετρήθηκε στον σταθμό $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Μετρήθηκε στον σταθμό $name, $km km μακριά';
+  }
+
+  @override
+  String get weatherSourceStationUnknown => 'Μετρήθηκε σε μετεωρολογικό σταθμό';
+
+  @override
+  String get weatherSourceModel => 'Μοντέλο πρόγνωσης, όχι μέτρηση';
+
+  @override
   String get windSpeed => 'Άνεμος';
 
   @override

@@ -3362,6 +3362,36 @@ abstract class AppLocalizations {
   /// **'Počasie a more'**
   String get weatherSeaSection;
 
+  /// No description provided for @weatherSourceInstruments.
+  ///
+  /// In sk, this message translates to:
+  /// **'Namerané lodnými prístrojmi'**
+  String get weatherSourceInstruments;
+
+  /// No description provided for @weatherSourceStation.
+  ///
+  /// In sk, this message translates to:
+  /// **'Namerané na stanici {name}'**
+  String weatherSourceStation(String name);
+
+  /// No description provided for @weatherSourceStationAt.
+  ///
+  /// In sk, this message translates to:
+  /// **'Namerané na stanici {name}, {km} km ďaleko'**
+  String weatherSourceStationAt(String name, String km);
+
+  /// No description provided for @weatherSourceStationUnknown.
+  ///
+  /// In sk, this message translates to:
+  /// **'Namerané na meteostanici'**
+  String get weatherSourceStationUnknown;
+
+  /// No description provided for @weatherSourceModel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Predpovedný model, nie meranie'**
+  String get weatherSourceModel;
+
   /// No description provided for @windSpeed.
   ///
   /// In sk, this message translates to:

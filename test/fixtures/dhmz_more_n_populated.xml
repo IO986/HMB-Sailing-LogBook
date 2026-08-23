@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Temperature_mora>
+	<Copyright>DHMZ - meteo.hr</Copyright>
+	<Datum>22.08.2026</Datum>
+	<Podatci>
+		<Postaja autom="0">Postaja \ Termin mjerenja</Postaja>
+		<Termin>07</Termin>
+		<Termin>08</Termin>
+		<Termin>11</Termin>
+		<Termin>14</Termin>
+		<Termin>15</Termin>
+		<Termin>17</Termin>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="0">Božava</Postaja>
+		<Termin>25.6</Termin>
+		<Termin/>
+		<Termin/>
+		<Termin>26.2</Termin>
+		<Termin/>
+		<Termin/>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="1">Crikvenica</Postaja>
+		<Termin>24.4</Termin>
+		<Termin>24.3</Termin>
+		<Termin>24.5</Termin>
+		<Termin>24.9</Termin>
+		<Termin>25.0</Termin>
+		<Termin>25.0</Termin>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="1">Dubrovnik</Postaja>
+		<Termin>27.0</Termin>
+		<Termin>27.1</Termin>
+		<Termin>27.1</Termin>
+		<Termin>27.5</Termin>
+		<Termin>27.5</Termin>
+		<Termin>27.7</Termin>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="1">Split</Postaja>
+		<Termin>26.1</Termin>
+		<Termin>26.2</Termin>
+		<Termin>26.4</Termin>
+		<Termin>26.9</Termin>
+		<Termin/>
+		<Termin/>
+	</Podatci>
+	<Podatci>
+		<Postaja autom="0">Stanica bez suradnic</Postaja>
+		<Termin>22.2</Termin>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+		<Termin/>
+	</Podatci>
+</Temperature_mora>

@@ -16,7 +16,9 @@ import 'geocoding_service.dart';
 import 'location_service.dart';
 import 'raymarine_connection_service.dart';
 import 'udp_receiver_service.dart';
+import 'entry_conditions.dart';
 import 'weather_repository.dart';
+import 'dhmz_observation_service.dart';
 
 class GpsTrackingService {
   static final GpsTrackingService _i = GpsTrackingService._();
@@ -24,6 +26,7 @@ class GpsTrackingService {
   GpsTrackingService._();
 
   final _weatherRepo = WeatherRepository();
+  final _conditions = EntryConditionsBuilder();
   StreamSubscription<Position>? _posSub;
   final _posCtrl = StreamController<Position>.broadcast();
   SailingSession? _currentSession;
@@ -258,6 +261,9 @@ class GpsTrackingService {
   void _syncWeather() {
     final pos = _lastPosition ?? LocationService().lastPosition;
     if (pos == null) return;
+    // Merania zo staníc sa ťahajú spolu s predpoveďou. Fire-and-forget:
+    // záznam do denníka na ne nikdy nečaká (pravidlo 4 — offline-first).
+    unawaited(DhmzObservationService().sync());
     _weatherRepo.syncWeather(lat: pos.latitude, lon: pos.longitude)
         .then((_) => debugPrint('[GPS] Weather synced'))
         .catchError((e) => debugPrint('[GPS] Weather err: $e'));
@@ -434,8 +440,6 @@ class GpsTrackingService {
 
     debugPrint('[GPS] Creating auto entry: note=$note dayLogId=$_activeDayLogId pos=${pos.latitude.toStringAsFixed(4)},${pos.longitude.toStringAsFixed(4)}');
 
-    final weather = await _weatherRepo.getNearestWeather(DateTime.now())
-        .catchError((_) => null);
     final nmea = _freshNmea();
 
     const fieldStale = Duration(seconds: 10);
@@ -447,16 +451,27 @@ class GpsTrackingService {
     // pos.heading z telefónu je nespoľahlivý (často 0°) — uprednostni kurz
     // dopočítaný z bearing medzi poslednými GPS bodmi.
     final cog = (nmea?.cogDegrees) ?? _lastComputedCourseDeg ?? pos.heading;
-    final windSpd = windFresh ? nmea.windSpeedKnots : weather?.windSpeed;
-    final windDir = windFresh ? nmea.windAngleDegrees : weather?.windDirection;
-    final waterTmp = nmea?.waterTempCelsius ?? weather?.waterTemp;
 
-    final src = nmea != null ? 'NMEA' : 'meteo';
+    // Vietor, teploty a tlak: prístroje na lodi → najbližšia stanica DHMZ →
+    // model. Prostredný stupeň je nový; kto prístroje nemá, mal doteraz
+    // v dokladovateľnom zázname čistý výstup modelu.
+    final conditions = await _conditions.build(
+      latitude: pos.latitude,
+      longitude: pos.longitude,
+      instrumentWind: windFresh
+          ? (speedKnots: nmea.windSpeedKnots, directionDeg: nmea.windAngleDegrees)
+          : null,
+      instrumentWaterTemp: nmea?.waterTempCelsius,
+    );
+
+    final src = conditions.source.code;
     debugPrint('[GPS] Entry data — SOG:${sog.toStringAsFixed(1)}kn COG:${cog.toStringAsFixed(0)}° '
-        'wind:${windSpd?.toStringAsFixed(1)}kn/${windDir?.toStringAsFixed(0)}° '
-        'source:$src');
+        'wind:${conditions.windSpeed?.toStringAsFixed(1)}kn/'
+        '${conditions.windDirection?.toStringAsFixed(0)}° '
+        'source:$src${conditions.station == null ? '' : ' (${conditions.station})'}');
 
-    // Pre bežné auto záznamy (nie Voyage start/end) pridam zdroj do note
+    // Zdroj v poznámke ostáva kvôli čitateľnosti starých záznamov, ale
+    // strojovo sa číta zo stĺpca weatherSource.
     final entryNote = note ?? 'Auto [$src]';
 
     // Vždy použi aktuálny čas — pos.timestamp je čas GPS fixu (môže byť starý z cache).
@@ -477,12 +492,15 @@ class GpsTrackingService {
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(sog),
       cog: drift.Value(cog),
-      windSpeed: drift.Value(windSpd),
-      windDirection: drift.Value(windDir),
-      waveHeight: drift.Value(weather?.waveHeight),
-      airPressure: drift.Value(weather?.airPressure),
-      airTemp: drift.Value(weather?.airTemp),
-      waterTemp: drift.Value(waterTmp),
+      windSpeed: drift.Value(conditions.windSpeed),
+      windDirection: drift.Value(conditions.windDirection),
+      waveHeight: drift.Value(conditions.waveHeight),
+      airPressure: drift.Value(conditions.airPressure),
+      airTemp: drift.Value(conditions.airTemp),
+      waterTemp: drift.Value(conditions.waterTemp),
+      weatherSource: drift.Value(conditions.source.code),
+      weatherStation: drift.Value(conditions.station),
+      weatherStationDistanceM: drift.Value(conditions.stationDistanceM),
       skipperNote: drift.Value(entryNote),
       eventType: drift.Value(event?.code),
       isAutoEntry: const drift.Value(true),
@@ -501,12 +519,14 @@ class GpsTrackingService {
       'longitude': pos.longitude,
       'sog': sog,
       'cog': cog,
-      'windSpeed': windSpd,
-      'windDirection': windDir,
-      'waveHeight': weather?.waveHeight,
-      'airPressure': weather?.airPressure,
-      'airTemp': weather?.airTemp,
-      'waterTemp': waterTmp,
+      'windSpeed': conditions.windSpeed,
+      'windDirection': conditions.windDirection,
+      'waveHeight': conditions.waveHeight,
+      'airPressure': conditions.airPressure,
+      'airTemp': conditions.airTemp,
+      'waterTemp': conditions.waterTemp,
+      'weatherSource': conditions.source.code,
+      'weatherStation': conditions.station,
       'skipperNote': entryNote,
     };
 

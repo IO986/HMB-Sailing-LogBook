@@ -1736,6 +1736,25 @@ class AppLocalizationsUk extends AppLocalizations {
   String get weatherSeaSection => 'Погода та море';
 
   @override
+  String get weatherSourceInstruments => 'Виміряно судновими приладами';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Виміряно на станції $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Виміряно на станції $name, за $km км';
+  }
+
+  @override
+  String get weatherSourceStationUnknown => 'Виміряно на метеостанції';
+
+  @override
+  String get weatherSourceModel => 'Прогностична модель, не вимірювання';
+
+  @override
   String get windSpeed => 'Вітер';
 
   @override

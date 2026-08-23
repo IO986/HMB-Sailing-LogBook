@@ -978,6 +978,21 @@ class PdfExportService {
 
   // ── Entries Table (rozšírená) ─────────────────────────────────
 
+  /// Krátky popis pôvodu hodnôt počasia, alebo `null` pri starých záznamoch
+  /// spred schémy v27, kde zdroj nikto nezaznamenal.
+  static String? _weatherSourceLabel(LogbookEntry e, AppLocalizations l) {
+    final source = e.weatherSource;
+    if (source == null) return null;
+    if (source == 'nmea') return l.weatherSourceInstruments;
+    if (source != 'dhmz') return l.weatherSourceModel;
+    final name = e.weatherStation;
+    if (name == null) return l.weatherSourceStationUnknown;
+    final d = e.weatherStationDistanceM;
+    return d == null
+        ? l.weatherSourceStation(name)
+        : l.weatherSourceStationAt(name, (d / 1000).toStringAsFixed(1));
+  }
+
   static pw.Widget _entriesTable(List<LogbookEntry> entries,
       Map<int, Uint8List> photos, AppLocalizations l) {
     return pw.Table(
@@ -1092,9 +1107,25 @@ class PdfExportService {
                     pw.Text('${l.pdfWaterShort}:${entry.waterLevel}%',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                 ])),
-              // Počasie
-              _dcell(_wcLabel(entry.weatherCondition, l),
-                  fontSize: 6.5, maxLines: 2),
+              // Počasie + odkiaľ hodnoty sú.
+              //
+              // Zdroj patrí do dokumentu, nie len na obrazovku: denník sa
+              // predkladá ako doklad a rozdiel medzi "namerané prístrojom na
+              // lodi" a "spočítané modelom" je preň podstatný.
+              pw.Padding(
+                padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(_pdfText(_wcLabel(entry.weatherCondition, l)),
+                        maxLines: 2, style: const pw.TextStyle(fontSize: 6.5)),
+                    if (_weatherSourceLabel(entry, l) case final src?)
+                      pw.Text(_pdfText(src),
+                          maxLines: 2,
+                          style: pw.TextStyle(fontSize: 5.5, color: _dgrey)),
+                  ],
+                ),
+              ),
               // Poznámka + foto priamo v riadku
               pw.Padding(
                 padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),

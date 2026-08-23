@@ -1730,6 +1730,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherSeaSection => 'Weather & sea';
 
   @override
+  String get weatherSourceInstruments => 'Measured by the boat instruments';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Measured at $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Measured at $name, $km km away';
+  }
+
+  @override
+  String get weatherSourceStationUnknown => 'Measured at a weather station';
+
+  @override
+  String get weatherSourceModel => 'Forecast model, not measured';
+
+  @override
   String get windSpeed => 'Wind';
 
   @override

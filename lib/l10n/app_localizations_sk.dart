@@ -1731,6 +1731,25 @@ class AppLocalizationsSk extends AppLocalizations {
   String get weatherSeaSection => 'Počasie a more';
 
   @override
+  String get weatherSourceInstruments => 'Namerané lodnými prístrojmi';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Namerané na stanici $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Namerané na stanici $name, $km km ďaleko';
+  }
+
+  @override
+  String get weatherSourceStationUnknown => 'Namerané na meteostanici';
+
+  @override
+  String get weatherSourceModel => 'Predpovedný model, nie meranie';
+
+  @override
   String get windSpeed => 'Vietor';
 
   @override

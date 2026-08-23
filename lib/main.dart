@@ -28,6 +28,7 @@ import 'l10n/app_localizations.dart';
 import 'shared/theme/app_theme.dart';
 import 'core/services/units_service.dart';
 import 'features/export/services/pdf_export_service.dart';
+import 'core/services/dhmz_observation_service.dart';
 
 AppDatabase _currentDb = AppDatabase();
 
@@ -51,6 +52,7 @@ void wireDatabaseSingletons(AppDatabase db) {
   TideRepository().setDatabase(db);
   ExportService().setDatabase(db);
   SyncService().setDatabase(db);
+  DhmzObservationService().setDatabase(db);
 }
 
 /// True, ak ešte nikdy neboli nastavené žiadne Raymarine pripojenie -

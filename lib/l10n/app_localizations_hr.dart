@@ -1735,6 +1735,26 @@ class AppLocalizationsHr extends AppLocalizations {
   String get weatherSeaSection => 'Vrijeme i more';
 
   @override
+  String get weatherSourceInstruments => 'Izmjereno brodskim instrumentima';
+
+  @override
+  String weatherSourceStation(String name) {
+    return 'Izmjereno na postaji $name';
+  }
+
+  @override
+  String weatherSourceStationAt(String name, String km) {
+    return 'Izmjereno na postaji $name, $km km daleko';
+  }
+
+  @override
+  String get weatherSourceStationUnknown =>
+      'Izmjereno na meteorološkoj postaji';
+
+  @override
+  String get weatherSourceModel => 'Prognostički model, nije izmjereno';
+
+  @override
   String get windSpeed => 'Vjetar';
 
   @override
