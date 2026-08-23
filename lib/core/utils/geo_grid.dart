@@ -1,4 +1,5 @@
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 /// Jeden bod pravidelnej mriežky nad viditeľným výrezom mapy.
 typedef GridCell = ({double lat, double lon, double latSpan, double lonSpan});
@@ -24,3 +25,32 @@ List<GridCell> gridOverBounds(LatLngBounds bounds, int n) {
         ),
   ];
 }
+
+/// Rozšíri výrez o [factor] jeho veľkosti na každú stranu.
+///
+/// Vrstvy počasia sa sťahujú pre väčšiu plochu, než je práve vidno, a kým sa
+/// mapa hýbe vnútri nej, nesiaha sa na sieť vôbec. Bez toho stál každý posun
+/// jedno stiahnutie — a keďže Open-Meteo počíta limit podľa počtu súradníc,
+/// nie požiadaviek, pár posunov mapy stačilo na HTTP 429 a vrstva prestala
+/// fungovať úplne.
+LatLngBounds padBounds(LatLngBounds b, double factor) {
+  final latPad = (b.north - b.south) * factor;
+  final lonPad = (b.east - b.west) * factor;
+  return LatLngBounds(
+    LatLng(
+      (b.south - latPad).clamp(-85.0, 85.0),
+      (b.west - lonPad).clamp(-180.0, 180.0),
+    ),
+    LatLng(
+      (b.north + latPad).clamp(-85.0, 85.0),
+      (b.east + lonPad).clamp(-180.0, 180.0),
+    ),
+  );
+}
+
+/// Je [inner] celý vnútri [outer]?
+bool boundsContain(LatLngBounds outer, LatLngBounds inner) =>
+    inner.south >= outer.south &&
+    inner.north <= outer.north &&
+    inner.west >= outer.west &&
+    inner.east <= outer.east;

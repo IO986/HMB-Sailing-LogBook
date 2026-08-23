@@ -1,4 +1,7 @@
-﻿import 'package:flutter/foundation.dart' show debugPrint;
+﻿import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart' show debugPrint;
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -12,6 +15,7 @@ import '../../../core/services/weather_overlay_grid_service.dart';
 import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
+import '../services/weather_overlay_raster.dart';
 
 /// Podkladová mapa: OSM/tmavá dlaždicová mapa alebo satelitné snímky.
 /// Uchováva sa ako user setting v [MapState.baseMap].
@@ -136,14 +140,24 @@ final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
 ///
 /// Je to predpoveď, nie meranie — namerané zrážky ukazuje obrazovka
 /// s radarovou snímkou DHMZ.
-final weatherOverlayGridProvider =
-    FutureProvider<List<OverlayCell>>((ref) async {
+final weatherOverlayFieldProvider =
+    FutureProvider<OverlayField?>((ref) async {
   final overlay =
       ref.watch(mapNotifierProvider.select((s) => s.weatherOverlay));
-  if (overlay == WeatherOverlay.none) return const [];
+  if (overlay == WeatherOverlay.none) return null;
   final bounds = ref.watch(mapViewBoundsProvider);
-  if (bounds == null) return const [];
+  if (bounds == null) return null;
   return WeatherOverlayGridService().fetchForBounds(bounds, overlay);
+});
+
+/// Vyhladený raster vrstvy počasia.
+///
+/// Počíta sa len keď prídu nové dáta, nie pri každom posune mapy — mapa si
+/// hotový obrázok škáluje sama.
+final weatherOverlayImageProvider = FutureProvider<Uint8List?>((ref) async {
+  final field = await ref.watch(weatherOverlayFieldProvider.future);
+  if (field == null || field.isEmpty) return null;
+  return WeatherOverlayRaster.buildPng(field);
 });
 
 /// Mriežka šípok vetra pre viditeľný výrez (Open-Meteo).
@@ -257,12 +271,12 @@ class MapNotifier extends Notifier<MapState> {
     _persist();
   }
 
-  void togglePrecipitation() {
-    // Cyklí none -> zrážky -> oblačnosť -> none. Ikona FABu sa mení s ním,
-    // takže stav je vidno bez otvárania menu.
-    const order = WeatherOverlay.values;
+  void setWeatherOverlay(WeatherOverlay overlay) {
+    // Každá vrstva má vlastný prepínač. Cyklenie jedným tlačidlom znamenalo,
+    // že vypnutie zrážok zapne oblačnosť — vypínanie nemá nič zapínať.
     state = state.copyWith(
-        weatherOverlay: order[(state.weatherOverlay.index + 1) % order.length]);
+        weatherOverlay:
+            state.weatherOverlay == overlay ? WeatherOverlay.none : overlay);
     _persist();
   }
 

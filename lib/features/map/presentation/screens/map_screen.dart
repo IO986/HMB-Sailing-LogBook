@@ -1,8 +1,9 @@
 ﻿import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -151,15 +152,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// až keď sa mapa na chvíľu ustáli, nie počas každého frame posunu.
   void _schedulePoiRefresh() {
     final st = ref.read(mapNotifierProvider);
-    if (!st.showMarinePois && !st.showWindGrid && !st.showCurrentGrid) return;
+    // Vrstva počasia tu chýbala, takže pri zapnutých len zrážkach či
+    // oblačnosti sa výrez po posune ani zoome nikdy neaktualizoval a vrstva
+    // sa nedoplnila.
+    if (!st.showMarinePois &&
+        !st.showWindGrid &&
+        !st.showCurrentGrid &&
+        st.weatherOverlay == WeatherOverlay.none) {
+      return;
+    }
     _poiDebounce?.cancel();
-    _poiDebounce = Timer(const Duration(milliseconds: 700), () {
+    _poiDebounce = Timer(const Duration(milliseconds: 400), () {
       if (!mounted || !_mapReady) return;
       final camera = _mapController.camera;
       // POI pod min zoomom nefetchuje (service kešuje po bunkách),
       // veterná a prúdová mriežka fungujú pri každom zoome.
-      final gridOn = ref.read(mapNotifierProvider).showWindGrid ||
-          ref.read(mapNotifierProvider).showCurrentGrid;
+      final state = ref.read(mapNotifierProvider);
+      final gridOn = state.showWindGrid ||
+          state.showCurrentGrid ||
+          state.weatherOverlay != WeatherOverlay.none;
       if (camera.zoom < _poiMinZoom && !gridOn) {
         return;
       }
@@ -426,16 +437,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final marinePois =
         ref.watch(marinePoisProvider).valueOrNull ?? const <MarinePoi>[];
     final overlay = mapState.weatherOverlay;
-    final overlayAsync = overlay == WeatherOverlay.none
-        ? const AsyncValue<List<OverlayCell>>.data([])
-        : ref.watch(weatherOverlayGridProvider);
-    final overlayCells = overlayAsync.valueOrNull ?? const <OverlayCell>[];
+    final overlayField = overlay == WeatherOverlay.none
+        ? const AsyncValue<OverlayField?>.data(null)
+        : ref.watch(weatherOverlayFieldProvider);
+    final overlayImage = overlay == WeatherOverlay.none
+        ? null
+        : ref.watch(weatherOverlayImageProvider).valueOrNull;
     // Suchý (alebo úplne jasný) deň vyzerá presne ako pokazená vrstva. Keď sa
     // dáta načítali a nikde nič nie je, treba to povedať — inak si používateľ
     // myslí, že appka nefunguje.
     final overlayEmpty = overlay != WeatherOverlay.none &&
-        overlayAsync.hasValue &&
-        overlayCells.isEmpty;
+        overlayField.hasValue &&
+        (overlayField.valueOrNull?.isEmpty ?? true);
     final windPoints = mapState.showWindGrid
         ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
         : const <WindPoint>[];
@@ -549,6 +562,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     userAgentPackageName: 'com.hmb.sailinglog',
                     maxZoom: 19,
                     tileProvider: CachingTileProvider('dark'),
+                    // Predsťahuje prstenec dlaždíc okolo výrezu a podrží viac
+                    // mimo neho: pri posune a zoome sa tak ukáže načítaná dlaždica
+                    // namiesto prázdneho miesta.
+                    panBuffer: 2,
+                    keepBuffer: 4,
                   )
                 else
                   TileLayer(
@@ -557,6 +575,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     userAgentPackageName: 'com.hmb.sailinglog',
                     maxZoom: 19,
                     tileProvider: CachingTileProvider('osm'),
+                    // Predsťahuje prstenec dlaždíc okolo výrezu a podrží viac
+                    // mimo neho: pri posune a zoome sa tak ukáže načítaná dlaždica
+                    // namiesto prázdneho miesta.
+                    panBuffer: 2,
+                    keepBuffer: 4,
                   ),
 
               if (baseMap == BaseMap.satellite) ...[
@@ -569,6 +592,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 19,
                   tileProvider: CachingTileProvider('satellite'),
+                  // Predsťahuje prstenec dlaždíc okolo výrezu a podrží viac
+                  // mimo neho: pri posune a zoome sa tak ukáže načítaná dlaždica
+                  // namiesto prázdneho miesta.
+                  panBuffer: 2,
+                  keepBuffer: 4,
                 ),
                 // CartoDB labels navrch - free, bez API kľúča
                 TileLayer(
@@ -590,25 +618,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   userAgentPackageName: 'com.hmb.sailinglog',
                   maxZoom: 18,
                   tileProvider: CachingTileProvider('seamark'),
+                  // Predsťahuje prstenec dlaždíc okolo výrezu a podrží viac
+                  // mimo neho: pri posune a zoome sa tak ukáže načítaná dlaždica
+                  // namiesto prázdneho miesta.
+                  panBuffer: 2,
+                  keepBuffer: 4,
                 ),
 
               // ── Zrážky (mriežka z modelu Open-Meteo) ─────────
               // Pod trasou a značkami: je to plocha na pozadí, nesmie
               // prekryť to, kde loď je a kam ide.
-              if (overlayCells.isNotEmpty)
-                PolygonLayer(polygons: [
-                  for (final c in overlayCells)
-                    Polygon(
-                      points: [
-                        LatLng(c.lat - c.latSpan / 2, c.lon - c.lonSpan / 2),
-                        LatLng(c.lat - c.latSpan / 2, c.lon + c.lonSpan / 2),
-                        LatLng(c.lat + c.latSpan / 2, c.lon + c.lonSpan / 2),
-                        LatLng(c.lat + c.latSpan / 2, c.lon - c.lonSpan / 2),
-                      ],
-                      color: overlayColor(overlay, c.value)
-                          .withValues(alpha: 0.45),
-                      borderStrokeWidth: 0,
-                    ),
+              if (overlayImage != null &&
+                  overlayField.valueOrNull != null)
+                OverlayImageLayer(overlayImages: [
+                  OverlayImage(
+                    bounds: overlayField.value!.bounds,
+                    opacity: 1,
+                    imageProvider: MemoryImage(overlayImage),
+                  ),
                 ]),
 
               // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
@@ -990,8 +1017,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     overlay != WeatherOverlay.none ||
                     mapState.showWindGrid ||
                     mapState.showOceanCurrents ||
-                    mapState.showCurrentGrid ||
-                    !mapState.showBearings,
+                    mapState.showCurrentGrid,
                 onPressed: () => setState(() => _openPanel =
                     _openPanel == _MapPanel.layers
                         ? _MapPanel.none
@@ -1031,21 +1057,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              // Jedno tlačidlo pre obe plošné vrstvy: cyklí vypnuté →
-              // zrážky → oblačnosť. Ikona ukazuje, čo je práve zapnuté.
+              // Zrážky a oblačnosť majú vlastné tlačidlá, ale kreslí sa vždy
+              // najviac jedna: dve poloprehľadné výplne cez seba nie sú
+              // čitateľné ani jedna.
               _layerFab(
                 heroTag: 'weatherOverlay',
-                tooltip: switch (overlay) {
-                  WeatherOverlay.cloud => l.cloudLayer,
-                  _ => l.precipitationLayer,
-                },
-                icon: overlay == WeatherOverlay.cloud
-                    ? Icons.cloud
-                    : Icons.water_drop,
-                active: overlay != WeatherOverlay.none,
+                tooltip: l.precipitationLayer,
+                icon: Icons.water_drop,
+                active: overlay == WeatherOverlay.precipitation,
                 onPressed: () => ref
                     .read(mapNotifierProvider.notifier)
-                    .togglePrecipitation(),
+                    .setWeatherOverlay(WeatherOverlay.precipitation),
+              ),
+              const SizedBox(height: 8),
+              _layerFab(
+                heroTag: 'cloudCover',
+                tooltip: l.cloudLayer,
+                icon: Icons.cloud,
+                active: overlay == WeatherOverlay.cloud,
+                onPressed: () => ref
+                    .read(mapNotifierProvider.notifier)
+                    .setWeatherOverlay(WeatherOverlay.cloud),
               ),
               const SizedBox(height: 8),
               _layerFab(
@@ -1087,17 +1119,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   }
                 },
               ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'bearings',
-                tooltip: l.bearingsLayer,
-                // Nie my_location: tú má na tej istej mape tlačidlo
-                // "Sleduj GPS" a obe sa pletú. Kružidlo sa s GPS nezamieňa.
-                icon: Icons.architecture,
-                active: mapState.showBearings,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleBearings(),
-              ),
               ],
 
               // ── Nástroje ─────────────────────────────────────
@@ -1110,7 +1131,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     : Icons.handyman_outlined,
                 active: _openPanel == _MapPanel.tools ||
                     _rulerActive ||
-                    isPreviewing,
+                    isPreviewing ||
+                    !mapState.showBearings,
                 onPressed: () => setState(() => _openPanel =
                     _openPanel == _MapPanel.tools
                         ? _MapPanel.none
@@ -1144,6 +1166,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 backgroundColor: _rulerActive ? Colors.purple.shade400 : null,
                 child: Icon(Icons.straighten,
                     color: _rulerActive ? Colors.white : null),
+              ),
+              const SizedBox(height: 8),
+              // Kružidlo patrí k pravítku, nie medzi vrstvy počasia: oboje sú
+              // meracie pomôcky, ktoré si skiper berie do ruky, keď niečo
+              // odmeriava. Medzi zrážkami a vetrom sa strácalo.
+              //
+              // Nie my_location: tú má na tej istej mape tlačidlo
+              // "Sleduj GPS" a obe sa pletú. Kružidlo sa s GPS nezamieňa.
+              _layerFab(
+                heroTag: 'bearings',
+                tooltip: l.bearingsLayer,
+                icon: Icons.architecture,
+                active: mapState.showBearings,
+                onPressed: () =>
+                    ref.read(mapNotifierProvider.notifier).toggleBearings(),
               ),
               const SizedBox(height: 8),
               FloatingActionButton.small(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -21,23 +22,41 @@ enum WeatherOverlay {
       (i == null || i < 0 || i >= values.length) ? none : values[i];
 }
 
-/// Hodnota v jednej bunke mriežky.
-class OverlayCell {
-  const OverlayCell({
-    required this.lat,
-    required this.lon,
-    required this.latSpan,
-    required this.lonSpan,
-    required this.value,
+/// Pravidelná mriežka hodnôt nad výrezom mapy.
+///
+/// Nesie VŠETKY hodnoty vrátane núl, nie len tie nad prahom: prázdne miesta sú
+/// pri vyhladzovaní rovnako dôležité ako plné, inak by okraje plôch skákali.
+class OverlayField {
+  const OverlayField({
+    required this.bounds,
+    required this.size,
+    required this.values,
+    required this.overlay,
   });
 
-  final double lat;
-  final double lon;
-  final double latSpan;
-  final double lonSpan;
+  final LatLngBounds bounds;
 
-  /// mm/h pri zrážkach, percentá pri oblačnosti.
-  final double value;
+  /// Mriežka je [size]×[size].
+  final int size;
+
+  /// Hodnoty po riadkoch od juhu na sever, v každom riadku od západu na východ.
+  final List<double> values;
+
+  final WeatherOverlay overlay;
+
+  /// Hodnota na mriežkovej pozícii, orezaná na okraje.
+  double at(int row, int col) {
+    final r = row.clamp(0, size - 1);
+    final c = col.clamp(0, size - 1);
+    return values[r * size + c];
+  }
+
+  /// Nie je čo kresliť — nikde nič nad prahom viditeľnosti.
+  bool get isEmpty =>
+      values.every((v) => v < WeatherOverlayGridService.minVisible(overlay));
+
+  double get maxValue =>
+      values.isEmpty ? 0 : values.reduce((a, b) => a > b ? a : b);
 }
 
 /// Plošné vrstvy počasia nad mapou z modelu Open-Meteo.
@@ -58,42 +77,63 @@ class WeatherOverlayGridService {
     receiveTimeout: const Duration(seconds: 12),
   ));
 
-  /// Hustejšie než vietor (4×4): šípka sa dá čítať aj riedko, ale plocha musí
-  /// mať tvar, inak je z prehánky štvorec cez pol mora. 8×8 = 64 bodov ide
-  /// stále jedným volaním.
-  static const _grid = 8;
+  /// Hustota mriežky.
+  ///
+  /// Bola 16×16 = 256 bodov a bola to chyba: Open-Meteo počíta svoj limit
+  /// podľa POČTU SÚRADNÍC, nie požiadaviek, takže každý posun mapy stál 256
+  /// „volaní" a po pár posunoch vracalo API HTTP 429 — vrstva prestala
+  /// fungovať úplne, aj vietor s ňou.
+  ///
+  /// 10×10 stačí: plynulosť nerobí hustota, ale bilineárna interpolácia do
+  /// rastra (viď `weather_overlay_raster.dart`).
+  static const gridSize = 10;
 
-  /// Pod týmto sa bunka nekreslí. Model dáva aj stotiny milimetra a jednotky
+  /// O koľko väčšia plocha sa sťahuje, než je práve vidno.
+  ///
+  /// Kým sa mapa hýbe vnútri stiahnutej plochy, na sieť sa nesiaha vôbec —
+  /// posun je tak plynulý a limit sa nemíňa.
+  static const _padFactor = 0.6;
+
+  /// Po HTTP 429 sa chvíľu neskúša nič. Ďalšie dotazy by limit len
+  /// predlžovali a používateľ by aj tak nič nedostal.
+  static const _rateLimitBackoff = Duration(minutes: 10);
+
+  DateTime? _rateLimitedUntil;
+
+  /// Pod týmto sa nekreslí nič. Model dáva aj stotiny milimetra a jednotky
   /// percent oblačnosti, z ktorých by bola mapa zafarbená aj za jasného dňa.
   static double minVisible(WeatherOverlay overlay) =>
       overlay == WeatherOverlay.cloud ? 10 : 0.1;
 
-  final _cache = <WeatherOverlay, List<OverlayCell>>{};
-  final _cacheKey = <WeatherOverlay, String>{};
+  final _cache = <WeatherOverlay, OverlayField>{};
   final _fetchedAt = <WeatherOverlay, DateTime>{};
 
-  String _key(LatLngBounds b) =>
-      '${b.south.toStringAsFixed(1)}:${b.west.toStringAsFixed(1)}:'
-      '${b.north.toStringAsFixed(1)}:${b.east.toStringAsFixed(1)}';
-
-  Future<List<OverlayCell>> fetchForBounds(
+  Future<OverlayField?> fetchForBounds(
       LatLngBounds bounds, WeatherOverlay overlay) async {
-    if (overlay == WeatherOverlay.none) return const [];
+    if (overlay == WeatherOverlay.none) return null;
 
-    final key = _key(bounds);
+    final cached = _cache[overlay];
     final at = _fetchedAt[overlay];
-    if (_cache[overlay] != null &&
-        _cacheKey[overlay] == key &&
-        at != null &&
-        DateTime.now().difference(at) < const Duration(minutes: 15)) {
-      return _cache[overlay]!;
+    final fresh = at != null &&
+        DateTime.now().difference(at) < const Duration(minutes: 15);
+
+    // Kým je viditeľný výrez celý vnútri už stiahnutej plochy, nesiaha sa na
+    // sieť — to je celý dôvod, prečo sa sťahuje väčšia plocha.
+    if (cached != null && fresh && boundsContain(cached.bounds, bounds)) {
+      return cached;
+    }
+    debugPrint('[OVERLAY] ${overlay.name} refetch '
+        '(cached=${cached != null} fresh=$fresh)');
+
+    final limited = _rateLimitedUntil;
+    if (limited != null && DateTime.now().isBefore(limited)) {
+      return cached;
     }
 
-    final field = overlay == WeatherOverlay.cloud
-        ? 'cloud_cover'
-        : 'precipitation';
-    final cells = gridOverBounds(bounds, _grid);
-    final threshold = minVisible(overlay);
+    final field =
+        overlay == WeatherOverlay.cloud ? 'cloud_cover' : 'precipitation';
+    final padded = padBounds(bounds, _padFactor);
+    final cells = gridOverBounds(padded, gridSize);
 
     try {
       final resp = await _dio.get(
@@ -108,26 +148,33 @@ class WeatherOverlayGridService {
       // pri jednej jediný objekt — rovnako ako pri vetre.
       final data = resp.data;
       final list = data is List ? data : [data];
+      if (list.length < cells.length) return _cache[overlay];
 
-      final out = <OverlayCell>[];
-      for (var i = 0; i < list.length && i < cells.length; i++) {
-        final v = (list[i]['current']?[field] as num?)?.toDouble();
-        if (v == null || v < threshold) continue;
-        final c = cells[i];
-        out.add(OverlayCell(
-          lat: c.lat,
-          lon: c.lon,
-          latSpan: c.latSpan,
-          lonSpan: c.lonSpan,
-          value: v,
-        ));
-      }
+      final values = <double>[
+        for (var i = 0; i < cells.length; i++)
+          (list[i]['current']?[field] as num?)?.toDouble() ?? 0,
+      ];
+
+      final out = OverlayField(
+        bounds: padded,
+        size: gridSize,
+        values: values,
+        overlay: overlay,
+      );
       _cache[overlay] = out;
-      _cacheKey[overlay] = key;
       _fetchedAt[overlay] = DateTime.now();
+      _rateLimitedUntil = null;
+      debugPrint('[OVERLAY] ${overlay.name} fetched, max=${out.maxValue}');
       return out;
-    } catch (_) {
-      return _cache[overlay] ?? const [];
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        _rateLimitedUntil = DateTime.now().add(_rateLimitBackoff);
+        debugPrint('[OVERLAY] rate limited, backing off');
+      }
+      return _cache[overlay];
+    } catch (e) {
+      debugPrint('[OVERLAY] ${overlay.name} fetch failed: $e');
+      return _cache[overlay];
     }
   }
 }
@@ -154,8 +201,8 @@ Color _precipitationColor(double mmPerHour) {
 /// Oblačnosť je odtieň sivej, nie farebná škála: farba by na mape súperila
 /// so zrážkami aj s vetrom a pritom ide len o "koľko je zamračené".
 Color _cloudColor(double percent) {
-  if (percent < 25) return const Color(0xFFE0E0E0);
-  if (percent < 50) return const Color(0xFFBDBDBD);
+  if (percent < 25) return const Color(0xFFE8E8E8);
+  if (percent < 50) return const Color(0xFFC4C4C4);
   if (percent < 75) return const Color(0xFF9E9E9E);
-  return const Color(0xFF616161);
+  return const Color(0xFF6E6E6E);
 }

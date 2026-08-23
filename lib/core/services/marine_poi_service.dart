@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'dart:convert';
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Prístav / marína / kotvisko / tankovacia stanica z OpenStreetMap
 /// (Overpass API).
@@ -21,6 +25,33 @@ class MarinePoi {
     this.name,
     required this.tags,
   });
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'type': type,
+        'lat': lat,
+        'lon': lon,
+        if (name != null) 'name': name,
+        'tags': tags,
+      };
+
+  static MarinePoi? fromJson(Map<String, dynamic> j) {
+    final id = j['id'], type = j['type'];
+    final lat = (j['lat'] as num?)?.toDouble();
+    final lon = (j['lon'] as num?)?.toDouble();
+    if (id is! String || type is! String || lat == null || lon == null) {
+      return null;
+    }
+    return MarinePoi(
+      id: id,
+      type: type,
+      lat: lat,
+      lon: lon,
+      name: j['name'] as String?,
+      tags: Map<String, String>.from(
+          (j['tags'] as Map?)?.cast<String, String>() ?? const {}),
+    );
+  }
 }
 
 /// Sťahuje kotviská, maríny a prístavy z Overpass API (OSM dáta) pre
@@ -64,10 +95,70 @@ class MarinePoiService {
 
   String _cellKey(int cx, int cy) => '$cx:$cy';
 
+  /// Keš prežíva reštart appky.
+  ///
+  /// Overpass je pomalý a je to cudzia infraštruktúra zadarmo; raz stiahnutá
+  /// oblasť sa nemá sťahovať znova len preto, že sa appka medzitým zavrela.
+  /// Na lodi bez signálu je to navyše jediný spôsob, ako vôbec niečo ukázať.
+  ///
+  /// Kotviská a maríny sa menia rádovo v rokoch, takže sa nič nezahadzuje
+  /// podľa veku — súbor sa prepíše, keď pribudnú nové bunky.
+  static const _diskFile = 'marine_poi_cache.json';
+  bool _diskLoaded = false;
+  Future<void>? _diskLoading;
+  Timer? _diskSaveDebounce;
+
+  Future<void> _loadFromDisk() {
+    if (_diskLoaded) return Future.value();
+    return _diskLoading ??= () async {
+      try {
+        final dir = await getApplicationSupportDirectory();
+        final file = File('${dir.path}/$_diskFile');
+        if (await file.exists()) {
+          final raw = jsonDecode(await file.readAsString());
+          if (raw is Map) {
+            raw.forEach((key, value) {
+              if (key is! String || value is! List) return;
+              _cells[key] = [
+                for (final e in value)
+                  if (e is Map<String, dynamic>)
+                    if (MarinePoi.fromJson(e) case final poi?) poi,
+              ];
+            });
+          }
+          debugPrint('[POI] disk cache loaded: ${_cells.length} cells');
+        }
+      } catch (e) {
+        debugPrint('[POI] disk cache load failed: $e');
+      } finally {
+        _diskLoaded = true;
+      }
+    }();
+  }
+
+  /// Zápis sa zlučuje — pri posune mapy pribúdajú bunky po dávkach a súbor
+  /// netreba prepisovať po každej.
+  void _scheduleDiskSave() {
+    _diskSaveDebounce?.cancel();
+    _diskSaveDebounce = Timer(const Duration(seconds: 3), () async {
+      try {
+        final dir = await getApplicationSupportDirectory();
+        final file = File('${dir.path}/$_diskFile');
+        await file.writeAsString(jsonEncode({
+          for (final e in _cells.entries)
+            e.key: [for (final poi in e.value) poi.toJson()],
+        }));
+      } catch (e) {
+        debugPrint('[POI] disk cache save failed: $e');
+      }
+    });
+  }
+
   /// Vráti POI pre daný výrez. Chýbajúce bunky dotiahne jedným Overpass
   /// dotazom (bbox = zjednotenie chýbajúcich buniek); pri chybe siete vráti
   /// aspoň to, čo už je v keši.
   Future<List<MarinePoi>> fetchForBounds(LatLngBounds bounds) async {
+    await _loadFromDisk();
     final cxMin = (bounds.west / _cellDeg).floor();
     final cxMax = (bounds.east / _cellDeg).floor();
     final cyMin = (bounds.south / _cellDeg).floor();
@@ -114,25 +205,65 @@ class MarinePoiService {
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
 
-  /// Skúša endpointy po poradí. Každý dostane vlastný časový strop (Dio
-  /// `receiveTimeout`); pri chybe/timeoute/non-2xx sa ide na ďalší. Vyhodí
-  /// až keď zlyhajú všetky — volajúci to odchytí a nechá bunky nekešované.
+  /// Ako dlho sa čaká na jeden mirror, kým sa k nemu pridá ďalší.
+  ///
+  /// Predtým sa mirrory skúšali striktne po sebe: keď prvý odpovedal 12 s,
+  /// čakalo sa 12 s, hoci druhý by bol hotový za dve. Preto sa dotaz po
+  /// tomto čase POŠLE aj na ďalší mirror a berie sa prvá platná odpoveď.
+  static const _hedgeDelay = Duration(seconds: 3);
+
+  /// Pošle dotaz na mirrory s odstupom a vezme prvú platnú odpoveď.
+  ///
+  /// Zámerne nie všetky naraz: verejné Overpass servery sú cudzia
+  /// infraštruktúra zadarmo a štyri súbežné dotazy na každý posun mapy by
+  /// boli neslušné. Ďalší sa pridá, až keď predošlý mlčí.
   Future<Response> _fetchWithFallback(String query) async {
+    final completer = Completer<Response>();
+    var pending = _endpoints.length;
     Object? lastError;
-    for (final endpoint in _endpoints) {
-      try {
-        final resp = await _post(endpoint, query);
-        // Overpass vracia 200 s JSON; 504/429/preťaženie majú iný kód a
-        // Dio ich (validateStatus default) hodí ako výnimku — ale pre istotu.
-        if (resp.statusCode == 200 && resp.data is Map) return resp;
+
+    void attempt(String endpoint) {
+      _post(endpoint, query).then((resp) {
+        if (resp.statusCode == 200 && resp.data is Map) {
+          if (!completer.isCompleted) completer.complete(resp);
+          return;
+        }
         lastError = 'HTTP ${resp.statusCode}';
-        debugPrint('[POI] $endpoint returned ${resp.statusCode}, next mirror');
-      } catch (e) {
+        debugPrint('[POI] $endpoint returned ${resp.statusCode}');
+        if (--pending == 0 && !completer.isCompleted) {
+          completer.completeError(
+              Exception('all Overpass endpoints failed: $lastError'));
+        }
+      }).catchError((Object e) {
         lastError = e;
-        debugPrint('[POI] $endpoint failed ($e), next mirror');
+        debugPrint('[POI] $endpoint failed ($e)');
+        if (--pending == 0 && !completer.isCompleted) {
+          completer.completeError(
+              Exception('all Overpass endpoints failed: $lastError'));
+        }
+      });
+    }
+
+    final timers = <Timer>[];
+    for (var i = 0; i < _endpoints.length; i++) {
+      final endpoint = _endpoints[i];
+      if (i == 0) {
+        attempt(endpoint);
+      } else {
+        timers.add(Timer(_hedgeDelay * i, () {
+          if (!completer.isCompleted) attempt(endpoint);
+        }));
       }
     }
-    throw Exception('all Overpass endpoints failed: $lastError');
+
+    try {
+      return await completer.future;
+    } finally {
+      // Mirrory, ktoré sa ešte nespustili, už netreba obťažovať.
+      for (final t in timers) {
+        t.cancel();
+      }
+    }
   }
 
   Future<void> _fetchCells(List<(int, int)> cells) {
@@ -212,6 +343,7 @@ out center 300;
         if (_cells.containsKey(key)) _cells[key]!.add(poi);
       }
       debugPrint('[POI] Overpass fetch ok: ${elements.length} elements, bbox=$bbox');
+      _scheduleDiskSave();
     } catch (e) {
       debugPrint('[POI] Overpass fetch failed: $e');
       // Nekešuj neúspech — bunky sa skúsia znova pri ďalšom posune mapy.

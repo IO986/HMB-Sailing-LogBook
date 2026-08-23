@@ -26,10 +26,28 @@ class WindGridService {
   ));
 
   static const _grid = 4; // 4×4 bodov
+
+  /// Po 429 sa chvíľu neskúša nič — ďalšie dotazy by limit len predlžovali.
+  static const _rateLimitBackoff = Duration(minutes: 10);
+
+  /// Najkratší odstup medzi dvoma sťahovaniami.
+  ///
+  /// Pri posúvaní mapy sa výrez mení stále a hrubý kľúč to nezachytí — v logu
+  /// bolo vidno sťahovanie každú sekundu. Šípky sú orientačná vrstva, na
+  /// dvadsať sekúnd starých hodnotách sa nič nestratí, a limit Open-Meteo sa
+  /// tým prestane míňať zbytočne.
+  static const _minRefetchInterval = Duration(seconds: 20);
+
   List<WindPoint>? _cache;
   String? _cacheKey;
   DateTime? _fetchedAt;
+  DateTime? _rateLimitedUntil;
 
+  /// Kľúč je zámerne hrubý (0,1°): drobné posuny mapy tak nespúšťajú nové
+  /// sťahovanie. Plocha sa NEVYPCHÁVA ako pri vrstve počasia — tam ide o
+  /// spojité pole, ktoré sa interpoluje, tu o riedku mriežku šípok, a
+  /// roztiahnuť 4×4 body cez väčšiu plochu by znamenalo menej šípok v tom,
+  /// čo je naozaj vidno.
   String _key(LatLngBounds b) =>
       '${b.south.toStringAsFixed(1)}:${b.west.toStringAsFixed(1)}:'
       '${b.north.toStringAsFixed(1)}:${b.east.toStringAsFixed(1)}';
@@ -39,13 +57,23 @@ class WindGridService {
     if (_cache != null &&
         _cacheKey == key &&
         _fetchedAt != null &&
-        DateTime.now().difference(_fetchedAt!) <
-            const Duration(minutes: 15)) {
+        DateTime.now().difference(_fetchedAt!) < const Duration(minutes: 15)) {
       return _cache!;
     }
 
-    // Spoločná mriežka s vrstvou zrážok — tá istá matematika napísaná dvakrát
-    // by sa časom rozišla.
+    final limited = _rateLimitedUntil;
+    if (limited != null && DateTime.now().isBefore(limited)) {
+      return _cache ?? const [];
+    }
+
+    if (_cache != null &&
+        _fetchedAt != null &&
+        DateTime.now().difference(_fetchedAt!) < _minRefetchInterval) {
+      return _cache!;
+    }
+
+    // Spoločná mriežka s vrstvou počasia — tá istá matematika napísaná
+    // dvakrát by sa časom rozišla.
     final cells = gridOverBounds(bounds, _grid);
     final lats = [for (final c in cells) c.lat];
     final lons = [for (final c in cells) c.lon];
@@ -76,8 +104,15 @@ class WindGridService {
       _cache = points;
       _cacheKey = key;
       _fetchedAt = DateTime.now();
+      _rateLimitedUntil = null;
       debugPrint('[WIND] grid fetched: ${points.length} points');
       return points;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        _rateLimitedUntil = DateTime.now().add(_rateLimitBackoff);
+        debugPrint('[WIND] rate limited, backing off');
+      }
+      return _cache ?? const [];
     } catch (e) {
       debugPrint('[WIND] fetch failed: $e');
       return _cache ?? const [];

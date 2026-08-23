@@ -121,22 +121,45 @@ class OceanCurrentService {
   /// tam, kde ich dáta naozaj platia; neposúva sa kresba, ale vzorkovanie.
   static const _grid = 3; // 3×3 bodov, posunuté o pol bunky oproti vetru
   static const _windGrid = 4;
+  static const _rateLimitBackoff = Duration(minutes: 10);
+
+  /// Najkratší odstup medzi dvoma sťahovaniami.
+  ///
+  /// Pri posúvaní mapy sa výrez mení stále a hrubý kľúč to nezachytí — v logu
+  /// bolo vidno sťahovanie každú sekundu. Šípky sú orientačná vrstva, na
+  /// dvadsať sekúnd starých hodnotách sa nič nestratí, a limit Open-Meteo sa
+  /// tým prestane míňať zbytočne.
+  static const _minRefetchInterval = Duration(seconds: 20);
+
   List<SeaCurrentPoint>? _cache;
   String? _cacheKey;
   DateTime? _fetchedAt;
+  DateTime? _rateLimitedUntil;
 
+  /// Hrubý kľúč namiesto vypchávania plochy — pozri [WindGridService].
   String _key(LatLngBounds b) =>
       '${b.south.toStringAsFixed(1)}:${b.west.toStringAsFixed(1)}:'
       '${b.north.toStringAsFixed(1)}:${b.east.toStringAsFixed(1)}';
 
   /// Aktuálny prúd v mriežke bodov cez výrez mapy. Jedna dávková
-  /// požiadavka, cache 15 min na výrez — rovnaký vzor ako [WindGridService].
+  /// požiadavka, cache 15 min — rovnaký vzor ako [WindGridService].
   Future<List<SeaCurrentPoint>> fetchForBounds(LatLngBounds bounds) async {
     final key = _key(bounds);
     if (_cache != null &&
         _cacheKey == key &&
         _fetchedAt != null &&
         DateTime.now().difference(_fetchedAt!) < const Duration(minutes: 15)) {
+      return _cache!;
+    }
+
+    final limited = _rateLimitedUntil;
+    if (limited != null && DateTime.now().isBefore(limited)) {
+      return _cache ?? const [];
+    }
+
+    if (_cache != null &&
+        _fetchedAt != null &&
+        DateTime.now().difference(_fetchedAt!) < _minRefetchInterval) {
       return _cache!;
     }
 
@@ -179,9 +202,16 @@ class OceanCurrentService {
       }
       _cache = points;
       _cacheKey = key;
+      _rateLimitedUntil = null;
       _fetchedAt = DateTime.now();
       debugPrint('[CURRENT] grid fetched: ${points.length} points');
       return points;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        _rateLimitedUntil = DateTime.now().add(_rateLimitBackoff);
+        debugPrint('[CURRENT] rate limited, backing off');
+      }
+      return _cache ?? const [];
     } catch (e) {
       debugPrint('[CURRENT] fetch failed: $e');
       return _cache ?? const [];
