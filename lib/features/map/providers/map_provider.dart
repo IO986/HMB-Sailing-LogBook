@@ -1,4 +1,4 @@
-﻿import 'dart:typed_data';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 
@@ -124,8 +124,7 @@ final mapViewBoundsProvider = StateProvider<LatLngBounds?>((_) => null);
 /// Kotviská/maríny/prístavy/tankovanie pre viditeľný výrez (Overpass API,
 /// kešované po bunkách v MarinePoiService). Prázdne, kým je vrstva vypnutá.
 final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
-  final show = ref.watch(
-      mapNotifierProvider.select((s) => s.showMarinePois));
+  final show = ref.watch(mapNotifierProvider.select((s) => s.showMarinePois));
   if (!show) return const [];
   final bounds = ref.watch(mapViewBoundsProvider);
   if (bounds == null) return const [];
@@ -140,8 +139,7 @@ final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
 ///
 /// Je to predpoveď, nie meranie — namerané zrážky ukazuje obrazovka
 /// s radarovou snímkou DHMZ.
-final weatherOverlayFieldProvider =
-    FutureProvider<OverlayField?>((ref) async {
+final weatherOverlayFieldProvider = FutureProvider<OverlayField?>((ref) async {
   final overlay =
       ref.watch(mapNotifierProvider.select((s) => s.weatherOverlay));
   if (overlay == WeatherOverlay.none) return null;
@@ -162,8 +160,7 @@ final weatherOverlayImageProvider = FutureProvider<Uint8List?>((ref) async {
 
 /// Mriežka šípok vetra pre viditeľný výrez (Open-Meteo).
 final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
-  final show = ref.watch(
-      mapNotifierProvider.select((s) => s.showWindGrid));
+  final show = ref.watch(mapNotifierProvider.select((s) => s.showWindGrid));
   if (!show) return const [];
   final bounds = ref.watch(mapViewBoundsProvider);
   if (bounds == null) return const [];
@@ -174,8 +171,7 @@ final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
 /// Odlišná od [MapState.showOceanCurrents], ktorá kreslí curated globálne
 /// prúdy — táto je predpoveď pre práve zobrazené miesto.
 final currentGridProvider = FutureProvider<List<SeaCurrentPoint>>((ref) async {
-  final show = ref.watch(
-      mapNotifierProvider.select((s) => s.showCurrentGrid));
+  final show = ref.watch(mapNotifierProvider.select((s) => s.showCurrentGrid));
   if (!show) return const [];
   final bounds = ref.watch(mapViewBoundsProvider);
   if (bounds == null) return const [];
@@ -200,6 +196,7 @@ class MapNotifier extends Notifier<MapState> {
         ? WeatherOverlay.precipitation
         : WeatherOverlay.none;
   }
+
   static const _kWindGrid = 'map_show_wind_grid';
   static const _kOceanCurrents = 'map_show_ocean_currents';
   static const _kCurrentGrid = 'map_show_current_grid';
@@ -380,16 +377,21 @@ class MapNotifier extends Notifier<MapState> {
 
 class MapState {
   final bool showSeamarks;
+
   /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
   final bool showMarinePois;
+
   /// Zrážkový radar (RainViewer overlay).
   /// Plošná vrstva počasia nad mapou. Zrážky a oblačnosť sa vylučujú —
   /// dve poloprehľadné výplne cez seba nie sú čitateľné ani jedna.
   final WeatherOverlay weatherOverlay;
+
   /// Šípky vetra v mriežke (Open-Meteo).
   final bool showWindGrid;
+
   /// Referenčná vrstva hlavných oceánskych prúdov (lokálne curated dáta).
   final bool showOceanCurrents;
+
   /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
   final bool showCurrentGrid;
 
@@ -399,14 +401,18 @@ class MapState {
   /// má byť na mape hneď, nie až po hľadaní prepínača vo vrstvách.
   final bool showBearings;
   final bool followGps;
+
   /// Rotácia mapy zamknutá na sever (north-up). Podržaním kompasu sa
   /// prepína; uchováva sa medzi spusteniami ako user setting.
   final bool northLocked;
+
   /// Podkladová mapa (OSM vs satelit). Uchováva sa ako user setting —
   /// prežije prepnutie tabu aj reštart appky.
   final BaseMap baseMap;
+
   /// Ak nastavené, mapa zobrazuje trasu tohto dňa namiesto živého trackingu.
   final int? previewDayLogId;
+
   /// Ak nastavené, mapa zobrazuje spojenú trasu celej tejto plavby.
   /// Vzájomne sa vylučuje s [previewDayLogId].
   final int? previewCharterId;
@@ -440,7 +446,8 @@ class MapState {
     int? previewDayLogId,
     int? previewCharterId,
     String? previewLabel,
-  }) => MapState(
+  }) =>
+      MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
         showMarinePois: showMarinePois ?? this.showMarinePois,
         weatherOverlay: weatherOverlay ?? this.weatherOverlay,

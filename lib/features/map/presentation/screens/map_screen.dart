@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -127,7 +127,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // nečaká, že mu appka po vypnutí sledovania začne ukazovať Split
     // namiesto toho, kde skutočne je.
     final pos = LocationService().lastPosition;
-    debugPrint('[MAP] initState: lastPosition=${pos == null ? 'null' : '${pos.latitude},${pos.longitude}'} '
+    debugPrint(
+        '[MAP] initState: lastPosition=${pos == null ? 'null' : '${pos.latitude},${pos.longitude}'} '
         'followGps=${ref.read(mapNotifierProvider).followGps}');
     if (pos != null) {
       _initialCenter = LatLng(pos.latitude, pos.longitude);
@@ -214,7 +215,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final pos = LocationService().lastPosition;
     if (pos == null) return;
     try {
-      _moveMapProgrammatically(LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
+      _moveMapProgrammatically(
+          LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
     } catch (_) {}
   }
 
@@ -251,18 +253,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.file(File(photo),
-                        height: 160,
-                        width: double.infinity,
-                        fit: BoxFit.cover),
+                        height: 160, width: double.infinity, fit: BoxFit.cover),
                   ),
                   const SizedBox(height: 12),
                 ],
                 _bearingDetailRow(
                     l.bearingPdfBearing,
                     '${_formatDegrees(bearing.trueBearing)} '
-                        '(${l.bearingTrueLabel})'),
-                _bearingDetailRow(
-                    l.bearingMagneticLabel,
+                    '(${l.bearingTrueLabel})'),
+                _bearingDetailRow(l.bearingMagneticLabel,
                     _formatDegrees(bearing.magneticBearing)),
                 _bearingDetailRow(
                     l.bearingDeclinationApplied(
@@ -276,12 +275,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   _bearingDetailRow(
                       l.gpsPosition,
                       '${bearing.observerLat!.toStringAsFixed(5)}, '
-                          '${bearing.observerLon!.toStringAsFixed(5)}'),
+                      '${bearing.observerLon!.toStringAsFixed(5)}'),
                 if (bearing.targetLat != null && bearing.targetLon != null)
                   _bearingDetailRow(
                       l.bearingPdfMark,
                       '${bearing.targetLat!.toStringAsFixed(5)}, '
-                          '${bearing.targetLon!.toStringAsFixed(5)}'),
+                      '${bearing.targetLon!.toStringAsFixed(5)}'),
                 const SizedBox(height: 4),
                 Text(
                   l.bearingUncertaintyNote(
@@ -354,7 +353,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               _bearingDetailRow(
                   l.gpsPosition,
                   '${fix.position.latitude.toStringAsFixed(5)}, '
-                      '${fix.position.longitude.toStringAsFixed(5)}'),
+                  '${fix.position.longitude.toStringAsFixed(5)}'),
               _bearingDetailRow(l.bearingSightCount(group.bearings.length),
                   '±${fix.errorRadiusMeters.round()} m'),
               if (fix.isWeak)
@@ -369,9 +368,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   child: FilledButton.icon(
                     onPressed: () async {
                       Navigator.pop(sheetContext);
-                      final name = group.name.isEmpty
-                          ? l.bearingObjectFix
-                          : group.name;
+                      final name =
+                          group.name.isEmpty ? l.bearingObjectFix : group.name;
                       await ref
                           .read(bearingRepositoryProvider)
                           .saveFixAsWaypoint(
@@ -381,8 +379,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           );
                       ref.invalidate(waypointsProvider);
                       if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(l.bearingObjectSaved(name))));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l.bearingObjectSaved(name))));
                     },
                     icon: const Icon(Icons.add_location_alt),
                     label: Text(l.bearingSaveObjectAsWaypoint),
@@ -453,12 +451,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
         : const <WindPoint>[];
     final currentPoints = mapState.showCurrentGrid
-        ? (ref.watch(currentGridProvider).valueOrNull ?? const <SeaCurrentPoint>[])
+        ? (ref.watch(currentGridProvider).valueOrNull ??
+            const <SeaCurrentPoint>[])
         : const <SeaCurrentPoint>[];
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
-      if (next && (mapState.previewDayLogId != null || mapState.previewCharterId != null)) {
+      if (next &&
+          (mapState.previewDayLogId != null ||
+              mapState.previewCharterId != null)) {
         ref.read(mapNotifierProvider.notifier).clearPreview();
       }
     });
@@ -483,9 +484,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final List<LatLng> trackPoints;
     if (previewDayLogId != null) {
-      trackPoints = ref.watch(dayTrackPreviewProvider(previewDayLogId)).valueOrNull ?? const [];
+      trackPoints =
+          ref.watch(dayTrackPreviewProvider(previewDayLogId)).valueOrNull ??
+              const [];
     } else if (previewCharterId != null) {
-      trackPoints = ref.watch(charterTrackPreviewProvider(previewCharterId)).valueOrNull ?? const [];
+      trackPoints = ref
+              .watch(charterTrackPreviewProvider(previewCharterId))
+              .valueOrNull ??
+          const [];
     } else {
       trackPoints = liveTrackPoints;
     }
@@ -548,7 +554,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               },
             ),
             children: [
-
               // ── Base layer ───────────────────────────────────
               // V nočnom režime tmavé dlaždice — svetlá OSM mapa by cez
               // červený filter oslepovala; tmavý podklad zachová kontrast.
@@ -571,7 +576,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 else
                   TileLayer(
                     key: ValueKey('osm_$_tileKey'),
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.hmb.sailinglog',
                     maxZoom: 19,
                     tileProvider: CachingTileProvider('osm'),
@@ -628,8 +634,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Zrážky (mriežka z modelu Open-Meteo) ─────────
               // Pod trasou a značkami: je to plocha na pozadí, nesmie
               // prekryť to, kde loď je a kam ide.
-              if (overlayImage != null &&
-                  overlayField.valueOrNull != null)
+              if (overlayImage != null && overlayField.valueOrNull != null)
                 OverlayImageLayer(overlayImages: [
                   OverlayImage(
                     bounds: overlayField.value!.bounds,
@@ -644,7 +649,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   for (final poi in marinePois)
                     Marker(
                       point: LatLng(poi.lat, poi.lon),
-                      width: 32, height: 32,
+                      width: 32,
+                      height: 32,
                       child: GestureDetector(
                         onTap: () => _showPoiDetail(poi),
                         child: _MarinePoiMarker(type: poi.type),
@@ -658,7 +664,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   for (final w in windPoints)
                     Marker(
                       point: LatLng(w.lat, w.lon),
-                      width: 46, height: 46,
+                      width: 46,
+                      height: 46,
                       child: _WindArrow(point: w),
                     ),
                 ]),
@@ -669,7 +676,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   for (final c in currentPoints)
                     Marker(
                       point: LatLng(c.lat, c.lon),
-                      width: 46, height: 46,
+                      width: 46,
+                      height: 46,
                       child: _CurrentArrowMarker(point: c),
                     ),
                 ]),
@@ -688,7 +696,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   for (var i = 0; i < _rulerPoints.length; i++)
                     Marker(
                       point: _rulerPoints[i],
-                      width: 22, height: 22,
+                      width: 22,
+                      height: 22,
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.purple.shade400,
@@ -732,10 +741,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 MarkerLayer(markers: [
                   Marker(
                     point: playbackFix.position,
-                    width: 26, height: 26,
+                    width: 26,
+                    height: 26,
                     child: Transform.rotate(
                       angle: ((playbackFix.cog ?? 0) - _mapRotationDeg) *
-                          math.pi / 180,
+                          math.pi /
+                          180,
                       child: Icon(Icons.navigation,
                           color: Colors.deepOrange.shade900, size: 26),
                     ),
@@ -745,15 +756,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── Waypoints ────────────────────────────────────
               waypoints.when(
                 data: (wps) => MarkerLayer(
-                  markers: wps.map((wp) => Marker(
-                    point: LatLng(wp.latitude, wp.longitude),
-                    width: 40, height: 40,
-                    child: GestureDetector(
-                      onTap: () => _editWaypoint(wp),
-                      child: const Icon(Icons.location_pin,
-                          color: Colors.red, size: 36),
-                    ),
-                  )).toList(),
+                  markers: wps
+                      .map((wp) => Marker(
+                            point: LatLng(wp.latitude, wp.longitude),
+                            width: 40,
+                            height: 40,
+                            child: GestureDetector(
+                              onTap: () => _editWaypoint(wp),
+                              child: const Icon(Icons.location_pin,
+                                  color: Colors.red, size: 36),
+                            ),
+                          ))
+                      .toList(),
                 ),
                 loading: () => const MarkerLayer(markers: []),
                 error: (_, __) => const MarkerLayer(markers: []),
@@ -786,7 +800,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
 
               // ── Kotva: polomer + ikona ───────────────────────────────
-              if (anchor.isActive && anchor.anchorLat != null && anchor.anchorLon != null) ...[
+              if (anchor.isActive &&
+                  anchor.anchorLat != null &&
+                  anchor.anchorLon != null) ...[
                 CircleLayer(circles: [
                   CircleMarker(
                     point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
@@ -803,13 +819,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 MarkerLayer(markers: [
                   Marker(
                     point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     child: Icon(Icons.anchor,
                         color: anchor.isDrifting
                             ? Colors.red.shade700
                             : Colors.blue.shade700,
                         size: 30,
-                        shadows: const [Shadow(color: Colors.white, blurRadius: 4)]),
+                        shadows: const [
+                          Shadow(color: Colors.white, blurRadius: 4)
+                        ]),
                   ),
                 ]),
               ],
@@ -832,11 +851,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           (c.path[i].lat + c.path[i + 1].lat) / 2,
                           (c.path[i].lon + c.path[i + 1].lon) / 2,
                         ),
-                        width: 24, height: 24,
+                        width: 24,
+                        height: 24,
                         child: Transform.rotate(
                           angle: DistanceCalculator.bearing(
-                                c.path[i].lat, c.path[i].lon,
-                                c.path[i + 1].lat, c.path[i + 1].lon,
+                                c.path[i].lat,
+                                c.path[i].lon,
+                                c.path[i + 1].lat,
+                                c.path[i + 1].lon,
                               ) *
                               math.pi /
                               180,
@@ -853,10 +875,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         c.path[c.path.length ~/ 2].lat,
                         c.path[c.path.length ~/ 2].lon,
                       ),
-                      width: 90, height: 20,
+                      width: 90,
+                      height: 20,
                       child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 1),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.85),
                           borderRadius: BorderRadius.circular(4),
@@ -879,7 +902,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 MarkerLayer(markers: [
                   Marker(
                     point: LatLng(mob.mobLat!, mob.mobLon!),
-                    width: 56, height: 56,
+                    width: 56,
+                    height: 56,
                     child: const _MobMarker(),
                   ),
                 ]),
@@ -891,12 +915,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     if (e.latitude != null && e.longitude != null)
                       Marker(
                         point: LatLng(e.latitude!, e.longitude!),
-                        width: 30, height: 30,
+                        width: 30,
+                        height: 30,
                         child: GestureDetector(
-                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                          onTap: () =>
+                              ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.skipperNote ??
-                                  (e.photoPath != null ? l.mapEntryPhoto : l.mapEntryNote)),
+                                  (e.photoPath != null
+                                      ? l.mapEntryPhoto
+                                      : l.mapEntryNote)),
                               duration: const Duration(seconds: 2),
                             ),
                           ),
@@ -906,10 +934,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                   ? Colors.amber.shade700
                                   : Colors.indigo.shade400,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1.5),
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
                             ),
                             child: Icon(
-                              e.photoPath != null ? Icons.camera_alt : Icons.edit_note,
+                              e.photoPath != null
+                                  ? Icons.camera_alt
+                                  : Icons.edit_note,
                               color: Colors.white,
                               size: 16,
                             ),
@@ -939,8 +970,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   return MarkerLayer(markers: [
                     Marker(
                       point: LatLng(pos.latitude, pos.longitude),
-                      width: 50, height: 50,
-                      child: _GpsMarker(heading: pos.heading, isTracking: isTracking),
+                      width: 50,
+                      height: 50,
+                      child: _GpsMarker(
+                          heading: pos.heading, isTracking: isTracking),
                     ),
                   ]);
                 },
@@ -963,7 +996,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               },
               onLongPress: () {
                 final nowLocked = !mapState.northLocked;
-                ref.read(mapNotifierProvider.notifier).setNorthLocked(nowLocked);
+                ref
+                    .read(mapNotifierProvider.notifier)
+                    .setNorthLocked(nowLocked);
                 if (nowLocked) {
                   _mapController.rotate(0);
                   setState(() => _mapRotationDeg = 0);
@@ -988,208 +1023,214 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // okrajom výrezu, keď sa odroluje nadol.
               padding: const EdgeInsets.only(bottom: 12),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-              // Základná mapa je jeden prepínač namiesto dvoch tlačidiel —
-              // ikona ukazuje, na čo sa prepne.
-              _layerFab(
-                heroTag: 'baseMap',
-                tooltip: baseMap == BaseMap.osm ? l.mapLayerSatellite : l.mapLayerMap,
-                icon: baseMap == BaseMap.osm
-                    ? Icons.satellite_alt
-                    : Icons.map,
-                active: baseMap == BaseMap.satellite,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleBaseMap(),
-              ),
-              const SizedBox(height: 8),
+                // Základná mapa je jeden prepínač namiesto dvoch tlačidiel —
+                // ikona ukazuje, na čo sa prepne.
+                _layerFab(
+                  heroTag: 'baseMap',
+                  tooltip: baseMap == BaseMap.osm
+                      ? l.mapLayerSatellite
+                      : l.mapLayerMap,
+                  icon:
+                      baseMap == BaseMap.osm ? Icons.satellite_alt : Icons.map,
+                  active: baseMap == BaseMap.satellite,
+                  onPressed: () =>
+                      ref.read(mapNotifierProvider.notifier).toggleBaseMap(),
+                ),
+                const SizedBox(height: 8),
 
-              // ── Vrstvy ───────────────────────────────────────
-              _layerFab(
-                heroTag: 'layersGroup',
-                tooltip: l.mapLayers,
-                icon: _openPanel == _MapPanel.layers
-                    ? Icons.close
-                    : Icons.layers,
-                // Zvýraznené aj po zbalení, keď je nejaká vrstva zapnutá —
-                // inak by sa nedalo poznať, že je niečo aktívne.
-                active: _openPanel == _MapPanel.layers ||
-                    showSeamarks ||
-                    showMarinePois ||
-                    overlay != WeatherOverlay.none ||
-                    mapState.showWindGrid ||
-                    mapState.showOceanCurrents ||
-                    mapState.showCurrentGrid,
-                onPressed: () => setState(() => _openPanel =
-                    _openPanel == _MapPanel.layers
-                        ? _MapPanel.none
-                        : _MapPanel.layers),
-              ),
-              if (_openPanel == _MapPanel.layers) ...[
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'seamarks',
-                tooltip: l.mapSeamarks,
-                icon: Icons.anchor,
-                active: showSeamarks,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleSeamarks(),
-              ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'pois',
-                tooltip: l.mapHarbours,
-                icon: Icons.directions_boat,
-                active: showMarinePois,
-                onPressed: () {
-                  ref.read(mapNotifierProvider.notifier).toggleMarinePois();
-                  final nowOn =
-                      ref.read(mapNotifierProvider).showMarinePois;
-                  if (nowOn && _mapReady) {
-                    if (_mapController.camera.zoom < _poiMinZoom) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(l.mapZoomInForPois),
-                        duration: const Duration(seconds: 3),
-                      ));
-                    } else {
-                      ref.read(mapViewBoundsProvider.notifier).state =
-                          _mapController.camera.visibleBounds;
-                    }
-                  }
-                },
-              ),
-              const SizedBox(height: 8),
-              // Zrážky a oblačnosť majú vlastné tlačidlá, ale kreslí sa vždy
-              // najviac jedna: dve poloprehľadné výplne cez seba nie sú
-              // čitateľné ani jedna.
-              _layerFab(
-                heroTag: 'weatherOverlay',
-                tooltip: l.precipitationLayer,
-                icon: Icons.water_drop,
-                active: overlay == WeatherOverlay.precipitation,
-                onPressed: () => ref
-                    .read(mapNotifierProvider.notifier)
-                    .setWeatherOverlay(WeatherOverlay.precipitation),
-              ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'cloudCover',
-                tooltip: l.cloudLayer,
-                icon: Icons.cloud,
-                active: overlay == WeatherOverlay.cloud,
-                onPressed: () => ref
-                    .read(mapNotifierProvider.notifier)
-                    .setWeatherOverlay(WeatherOverlay.cloud),
-              ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'wind',
-                tooltip: l.wind,
-                icon: Icons.air,
-                active: mapState.showWindGrid,
-                onPressed: () {
-                  ref.read(mapNotifierProvider.notifier).toggleWindGrid();
-                  if (ref.read(mapNotifierProvider).showWindGrid &&
-                      _mapReady) {
-                    ref.read(mapViewBoundsProvider.notifier).state =
-                        _mapController.camera.visibleBounds;
-                  }
-                },
-              ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'oceanCurrents',
-                tooltip: l.mapOceanCurrentsTooltip,
-                icon: Icons.moving,
-                active: mapState.showOceanCurrents,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleOceanCurrents(),
-                onLongPress: () => context.push('/ocean-currents'),
-              ),
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'currentGrid',
-                tooltip: l.mapCurrentForecast,
-                icon: Icons.double_arrow,
-                active: mapState.showCurrentGrid,
-                onPressed: () {
-                  ref.read(mapNotifierProvider.notifier).toggleCurrentGrid();
-                  if (ref.read(mapNotifierProvider).showCurrentGrid &&
-                      _mapReady) {
-                    ref.read(mapViewBoundsProvider.notifier).state =
-                        _mapController.camera.visibleBounds;
-                  }
-                },
-              ),
-              ],
+                // ── Vrstvy ───────────────────────────────────────
+                _layerFab(
+                  heroTag: 'layersGroup',
+                  tooltip: l.mapLayers,
+                  icon: _openPanel == _MapPanel.layers
+                      ? Icons.close
+                      : Icons.layers,
+                  // Zvýraznené aj po zbalení, keď je nejaká vrstva zapnutá —
+                  // inak by sa nedalo poznať, že je niečo aktívne.
+                  active: _openPanel == _MapPanel.layers ||
+                      showSeamarks ||
+                      showMarinePois ||
+                      overlay != WeatherOverlay.none ||
+                      mapState.showWindGrid ||
+                      mapState.showOceanCurrents ||
+                      mapState.showCurrentGrid,
+                  onPressed: () => setState(() => _openPanel =
+                      _openPanel == _MapPanel.layers
+                          ? _MapPanel.none
+                          : _MapPanel.layers),
+                ),
+                if (_openPanel == _MapPanel.layers) ...[
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'seamarks',
+                    tooltip: l.mapSeamarks,
+                    icon: Icons.anchor,
+                    active: showSeamarks,
+                    onPressed: () =>
+                        ref.read(mapNotifierProvider.notifier).toggleSeamarks(),
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'pois',
+                    tooltip: l.mapHarbours,
+                    icon: Icons.directions_boat,
+                    active: showMarinePois,
+                    onPressed: () {
+                      ref.read(mapNotifierProvider.notifier).toggleMarinePois();
+                      final nowOn =
+                          ref.read(mapNotifierProvider).showMarinePois;
+                      if (nowOn && _mapReady) {
+                        if (_mapController.camera.zoom < _poiMinZoom) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(l.mapZoomInForPois),
+                            duration: const Duration(seconds: 3),
+                          ));
+                        } else {
+                          ref.read(mapViewBoundsProvider.notifier).state =
+                              _mapController.camera.visibleBounds;
+                        }
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  // Zrážky a oblačnosť majú vlastné tlačidlá, ale kreslí sa vždy
+                  // najviac jedna: dve poloprehľadné výplne cez seba nie sú
+                  // čitateľné ani jedna.
+                  _layerFab(
+                    heroTag: 'weatherOverlay',
+                    tooltip: l.precipitationLayer,
+                    icon: Icons.water_drop,
+                    active: overlay == WeatherOverlay.precipitation,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .setWeatherOverlay(WeatherOverlay.precipitation),
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'cloudCover',
+                    tooltip: l.cloudLayer,
+                    icon: Icons.cloud,
+                    active: overlay == WeatherOverlay.cloud,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .setWeatherOverlay(WeatherOverlay.cloud),
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'wind',
+                    tooltip: l.wind,
+                    icon: Icons.air,
+                    active: mapState.showWindGrid,
+                    onPressed: () {
+                      ref.read(mapNotifierProvider.notifier).toggleWindGrid();
+                      if (ref.read(mapNotifierProvider).showWindGrid &&
+                          _mapReady) {
+                        ref.read(mapViewBoundsProvider.notifier).state =
+                            _mapController.camera.visibleBounds;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'oceanCurrents',
+                    tooltip: l.mapOceanCurrentsTooltip,
+                    icon: Icons.moving,
+                    active: mapState.showOceanCurrents,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .toggleOceanCurrents(),
+                    onLongPress: () => context.push('/ocean-currents'),
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'currentGrid',
+                    tooltip: l.mapCurrentForecast,
+                    icon: Icons.double_arrow,
+                    active: mapState.showCurrentGrid,
+                    onPressed: () {
+                      ref
+                          .read(mapNotifierProvider.notifier)
+                          .toggleCurrentGrid();
+                      if (ref.read(mapNotifierProvider).showCurrentGrid &&
+                          _mapReady) {
+                        ref.read(mapViewBoundsProvider.notifier).state =
+                            _mapController.camera.visibleBounds;
+                      }
+                    },
+                  ),
+                ],
 
-              // ── Nástroje ─────────────────────────────────────
-              const SizedBox(height: 8),
-              _layerFab(
-                heroTag: 'toolsGroup',
-                tooltip: l.mapTools,
-                icon: _openPanel == _MapPanel.tools
-                    ? Icons.close
-                    : Icons.handyman_outlined,
-                active: _openPanel == _MapPanel.tools ||
-                    _rulerActive ||
-                    isPreviewing ||
-                    !mapState.showBearings,
-                onPressed: () => setState(() => _openPanel =
-                    _openPanel == _MapPanel.tools
-                        ? _MapPanel.none
-                        : _MapPanel.tools),
-              ),
-              if (_openPanel == _MapPanel.tools) ...[
-              const SizedBox(height: 8),
-              FloatingActionButton.small(
-                heroTag: 'voyagePreview',
-                tooltip: l.mapVoyageOverview,
-                onPressed: () => _openVoyagePicker(context),
-                backgroundColor: isPreviewing ? Colors.orange.shade700 : null,
-                child: Icon(Icons.route,
-                    color: isPreviewing ? Colors.white : null),
-              ),
-              const SizedBox(height: 8),
-              FloatingActionButton.small(
-                heroTag: 'gpxImport',
-                tooltip: l.gpxImportTitle,
-                onPressed: () => context.push('/gpx-import'),
-                child: const Icon(Icons.file_upload_outlined),
-              ),
-              const SizedBox(height: 8),
-              FloatingActionButton.small(
-                heroTag: 'ruler',
-                tooltip: l.mapRuler,
-                onPressed: () => setState(() {
-                  _rulerActive = !_rulerActive;
-                  if (!_rulerActive) _rulerPoints.clear();
-                }),
-                backgroundColor: _rulerActive ? Colors.purple.shade400 : null,
-                child: Icon(Icons.straighten,
-                    color: _rulerActive ? Colors.white : null),
-              ),
-              const SizedBox(height: 8),
-              // Kružidlo patrí k pravítku, nie medzi vrstvy počasia: oboje sú
-              // meracie pomôcky, ktoré si skiper berie do ruky, keď niečo
-              // odmeriava. Medzi zrážkami a vetrom sa strácalo.
-              //
-              // Nie my_location: tú má na tej istej mape tlačidlo
-              // "Sleduj GPS" a obe sa pletú. Kružidlo sa s GPS nezamieňa.
-              _layerFab(
-                heroTag: 'bearings',
-                tooltip: l.bearingsLayer,
-                icon: Icons.architecture,
-                active: mapState.showBearings,
-                onPressed: () =>
-                    ref.read(mapNotifierProvider.notifier).toggleBearings(),
-              ),
-              const SizedBox(height: 8),
-              FloatingActionButton.small(
-                heroTag: 'offlineDl',
-                tooltip: l.mapDownloadOffline,
-                onPressed: () => _openOfflineDownload(context),
-                child: const Icon(Icons.download_for_offline_outlined),
-              ),
-              ],
+                // ── Nástroje ─────────────────────────────────────
+                const SizedBox(height: 8),
+                _layerFab(
+                  heroTag: 'toolsGroup',
+                  tooltip: l.mapTools,
+                  icon: _openPanel == _MapPanel.tools
+                      ? Icons.close
+                      : Icons.handyman_outlined,
+                  active: _openPanel == _MapPanel.tools ||
+                      _rulerActive ||
+                      isPreviewing ||
+                      !mapState.showBearings,
+                  onPressed: () => setState(() => _openPanel =
+                      _openPanel == _MapPanel.tools
+                          ? _MapPanel.none
+                          : _MapPanel.tools),
+                ),
+                if (_openPanel == _MapPanel.tools) ...[
+                  const SizedBox(height: 8),
+                  FloatingActionButton.small(
+                    heroTag: 'voyagePreview',
+                    tooltip: l.mapVoyageOverview,
+                    onPressed: () => _openVoyagePicker(context),
+                    backgroundColor:
+                        isPreviewing ? Colors.orange.shade700 : null,
+                    child: Icon(Icons.route,
+                        color: isPreviewing ? Colors.white : null),
+                  ),
+                  const SizedBox(height: 8),
+                  FloatingActionButton.small(
+                    heroTag: 'gpxImport',
+                    tooltip: l.gpxImportTitle,
+                    onPressed: () => context.push('/gpx-import'),
+                    child: const Icon(Icons.file_upload_outlined),
+                  ),
+                  const SizedBox(height: 8),
+                  FloatingActionButton.small(
+                    heroTag: 'ruler',
+                    tooltip: l.mapRuler,
+                    onPressed: () => setState(() {
+                      _rulerActive = !_rulerActive;
+                      if (!_rulerActive) _rulerPoints.clear();
+                    }),
+                    backgroundColor:
+                        _rulerActive ? Colors.purple.shade400 : null,
+                    child: Icon(Icons.straighten,
+                        color: _rulerActive ? Colors.white : null),
+                  ),
+                  const SizedBox(height: 8),
+                  // Kružidlo patrí k pravítku, nie medzi vrstvy počasia: oboje sú
+                  // meracie pomôcky, ktoré si skiper berie do ruky, keď niečo
+                  // odmeriava. Medzi zrážkami a vetrom sa strácalo.
+                  //
+                  // Nie my_location: tú má na tej istej mape tlačidlo
+                  // "Sleduj GPS" a obe sa pletú. Kružidlo sa s GPS nezamieňa.
+                  _layerFab(
+                    heroTag: 'bearings',
+                    tooltip: l.bearingsLayer,
+                    icon: Icons.architecture,
+                    active: mapState.showBearings,
+                    onPressed: () =>
+                        ref.read(mapNotifierProvider.notifier).toggleBearings(),
+                  ),
+                  const SizedBox(height: 8),
+                  FloatingActionButton.small(
+                    heroTag: 'offlineDl',
+                    tooltip: l.mapDownloadOffline,
+                    onPressed: () => _openOfflineDownload(context),
+                    child: const Icon(Icons.download_for_offline_outlined),
+                  ),
+                ],
               ]),
             ),
           ),
@@ -1225,17 +1266,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.red.shade700,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     child: Row(children: [
-                      const Icon(Icons.location_off, color: Colors.white, size: 16),
+                      const Icon(Icons.location_off,
+                          color: Colors.white, size: 16),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          serviceOff
-                              ? l.mapGpsDisabled
-                              : l.mapLocationDenied,
+                          serviceOff ? l.mapGpsDisabled : l.mapLocationDenied,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
                         ),
                       ),
                       InkWell(
@@ -1247,7 +1289,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                 : AppSettings.openAppSettings(
                                     type: AppSettingsType.location)),
                         child: Text(
-                          serviceOff || !avail.canRequest ? l.navSettings : l.notifPromptAllow,
+                          serviceOff || !avail.canRequest
+                              ? l.navSettings
+                              : l.notifPromptAllow,
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -1273,18 +1317,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.orange.shade700,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(children: [
                     const Icon(Icons.route, color: Colors.white, size: 16),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(mapState.previewLabel ?? '',
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white, fontSize: 12)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12)),
                     ),
                     InkWell(
-                      onTap: () => ref.read(mapNotifierProvider.notifier).clearPreview(),
-                      child: const Icon(Icons.close, color: Colors.white, size: 18),
+                      onTap: () =>
+                          ref.read(mapNotifierProvider.notifier).clearPreview(),
+                      child: const Icon(Icons.close,
+                          color: Colors.white, size: 18),
                     ),
                   ]),
                 ),
@@ -1312,9 +1360,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         color:
                             Theme.of(context).colorScheme.onSecondaryContainer),
                     const SizedBox(width: 6),
-                    Text(overlay == WeatherOverlay.cloud
-                        ? l.cloudNone
-                        : l.precipitationNone,
+                    Text(
+                        overlay == WeatherOverlay.cloud
+                            ? l.cloudNone
+                            : l.precipitationNone,
                         style: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context)
@@ -1330,7 +1379,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // to, čo práve beží, a posuvník by nemal čo posúvať.
           if (mapState.previewLabel != null)
             const Positioned(
-              left: 0, right: 0, bottom: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
               child: SafeArea(top: false, child: PlaybackBar()),
             ),
 
@@ -1417,8 +1468,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       // sa dlhé podržanie prejaví len ako bublina s názvom a nič viac.
       tooltip: onLongPress == null ? tooltip : null,
       onPressed: onPressed,
-      backgroundColor:
-          active ? Theme.of(context).colorScheme.primary : null,
+      backgroundColor: active ? Theme.of(context).colorScheme.primary : null,
       child: Icon(icon,
           color: active ? Theme.of(context).colorScheme.onPrimary : null),
     );
@@ -1525,7 +1575,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     } catch (_) {}
   }
 
-  Future<void> _selectDay(int dayLogId, String label, BuildContext sheetContext) async {
+  Future<void> _selectDay(
+      int dayLogId, String label, BuildContext sheetContext) async {
     ref.read(mapNotifierProvider.notifier).previewDay(dayLogId, label);
     ref.read(mapNotifierProvider.notifier).setFollowGps(false);
     Navigator.pop(sheetContext);
@@ -1533,11 +1584,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     if (mounted) _focusOnPoints(points);
   }
 
-  Future<void> _selectCharter(int charterId, String label, BuildContext sheetContext) async {
+  Future<void> _selectCharter(
+      int charterId, String label, BuildContext sheetContext) async {
     ref.read(mapNotifierProvider.notifier).previewCharter(charterId, label);
     ref.read(mapNotifierProvider.notifier).setFollowGps(false);
     Navigator.pop(sheetContext);
-    final points = await ref.read(charterTrackPreviewProvider(charterId).future);
+    final points =
+        await ref.read(charterTrackPreviewProvider(charterId).future);
     if (mounted) _focusOnPoints(points);
   }
 
@@ -1560,7 +1613,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   const Icon(Icons.route),
                   const SizedBox(width: 8),
                   Text(l.mapVoyageOverview,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                 ]),
                 const SizedBox(height: 12),
                 ListTile(
@@ -1576,7 +1630,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   data: (charters) => Column(children: [
                     for (final charter in charters)
                       Consumer(builder: (_, dayRef, __) {
-                        final daysAsync = dayRef.watch(dayLogsProvider(charter.id));
+                        final daysAsync =
+                            dayRef.watch(dayLogsProvider(charter.id));
                         return daysAsync.when(
                           data: (days) => days.isEmpty
                               ? const SizedBox()
@@ -1587,9 +1642,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                   children: [
                                     ListTile(
                                       dense: true,
-                                      leading: const Icon(Icons.route, size: 20),
+                                      leading:
+                                          const Icon(Icons.route, size: 20),
                                       title: Text(l.mapWholeVoyage,
-                                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold)),
                                       onTap: () => _selectCharter(
                                           charter.id, charter.title, sheetCtx),
                                     ),
@@ -1597,7 +1654,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                     for (final day in days)
                                       ListTile(
                                         dense: true,
-                                        title: Text(AppDate.of(context, ref).long(day.date)),
+                                        title: Text(AppDate.of(context, ref)
+                                            .long(day.date)),
                                         subtitle: Text(ref
                                             .watch(unitsSyncProvider)
                                             .formatDistance(day.distanceNm,
@@ -1614,7 +1672,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         );
                       }),
                   ]),
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Text('$e'),
                 ),
               ],
@@ -1653,8 +1712,12 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
   Future<void> _start() async {
     setState(() => _running = true);
     final errors = await widget.downloader.download(
-      widget.bounds, widget.minZ, widget.maxZ,
-      (done, total) { if (mounted) setState(() => _done = done); },
+      widget.bounds,
+      widget.minZ,
+      widget.maxZ,
+      (done, total) {
+        if (mounted) setState(() => _done = done);
+      },
     );
     if (mounted) {
       setState(() {
@@ -1677,7 +1740,8 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(l.offlineSheetTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15)),
             ),
           ]),
           const SizedBox(height: 8),
@@ -1815,8 +1879,10 @@ class _RulerPanel extends ConsumerWidget {
     var totalNm = 0.0;
     for (var i = 1; i < points.length; i++) {
       totalNm += DistanceCalculator.distanceNm(
-        points[i - 1].latitude, points[i - 1].longitude,
-        points[i].latitude, points[i].longitude,
+        points[i - 1].latitude,
+        points[i - 1].longitude,
+        points[i].latitude,
+        points[i].longitude,
       );
     }
     final brg = points.length >= 2
@@ -1877,7 +1943,8 @@ class _RulerPanel extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Text('ETA $eta',
-                    style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 11)),
               ),
           ],
         ),
@@ -1931,8 +1998,8 @@ class _MobMarkerState extends State<_MobMarker>
     _ctrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 900))
       ..repeat(reverse: true);
-    _pulse = Tween<double>(begin: 0.7, end: 1.0).animate(
-        CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+    _pulse = Tween<double>(begin: 0.7, end: 1.0)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -1955,7 +2022,8 @@ class _MobMarkerState extends State<_MobMarker>
           ),
         ),
         Container(
-          width: 26, height: 26,
+          width: 26,
+          height: 26,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.red,
@@ -2046,10 +2114,10 @@ class _CompassRosePainter extends CustomPainter {
     ui.Path spike(double angleDeg, double length, double halfWidth) {
       final rad = angleDeg * math.pi / 180;
       final tip = Offset(length * math.sin(rad), -length * math.cos(rad));
-      final baseL = Offset(
-          halfWidth * math.sin(rad + math.pi / 2), -halfWidth * math.cos(rad + math.pi / 2));
-      final baseR = Offset(
-          halfWidth * math.sin(rad - math.pi / 2), -halfWidth * math.cos(rad - math.pi / 2));
+      final baseL = Offset(halfWidth * math.sin(rad + math.pi / 2),
+          -halfWidth * math.cos(rad + math.pi / 2));
+      final baseR = Offset(halfWidth * math.sin(rad - math.pi / 2),
+          -halfWidth * math.cos(rad - math.pi / 2));
       return ui.Path()
         ..moveTo(tip.dx, tip.dy)
         ..lineTo(baseL.dx, baseL.dy)
