@@ -29,6 +29,7 @@ import 'shared/theme/app_theme.dart';
 import 'core/services/units_service.dart';
 import 'features/export/services/pdf_export_service.dart';
 import 'core/services/dhmz_observation_service.dart';
+import 'core/services/meteoalarm_service.dart';
 
 AppDatabase _currentDb = AppDatabase();
 
@@ -53,6 +54,7 @@ void wireDatabaseSingletons(AppDatabase db) {
   ExportService().setDatabase(db);
   SyncService().setDatabase(db);
   DhmzObservationService().setDatabase(db);
+  MeteoAlarmService().setDatabase(db);
 }
 
 /// True, ak ešte nikdy neboli nastavené žiadne Raymarine pripojenie -

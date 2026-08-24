@@ -3,9 +3,12 @@ import 'package:dio/dio.dart';
 class WeatherForecastService {
   final Dio _dio = Dio();
 
+  /// [model] je identifikátor Open-Meteo (napr. `icon_d2`). Keď je `null`,
+  /// nechá výber na Open-Meteo (`best_match`).
   Future<Map<String, dynamic>> fetchForecast({
     required double lat,
     required double lon,
+    String? model,
   }) async {
     final response = await _dio.get(
       'https://api.open-meteo.com/v1/forecast',
@@ -24,6 +27,7 @@ class WeatherForecastService {
         ].join(','),
         'wind_speed_unit': 'kn',
         'forecast_days': 3,
+        if (model != null) 'models': model,
       },
     );
 

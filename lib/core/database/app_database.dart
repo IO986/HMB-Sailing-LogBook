@@ -417,7 +417,14 @@ class WeatherSnapshots extends Table {
   RealColumn get cloudCover => real().nullable()();
   IntColumn get weatherCode => integer().nullable()();
   IntColumn get precipitationProbability => integer().nullable()();  // 0–100 %
-  RealColumn get precipitation => real().nullable()();               // mm
+  RealColumn get precipitation => real().nullable()();
+
+  /// Ktorý model hodnotu vyrobil (napr. "ARPAE ICON-2I").
+  ///
+  /// Uložené s dátami, nie dopočítané pri zobrazení: keď sa loď medzitým
+  /// presunie do inej krajiny, kešovaná predpoveď stále pochádza z modelu,
+  /// ktorý platil tam, kde sa sťahovala. Prázdne pri starších záznamoch.
+  TextColumn get modelName => text().nullable()();               // mm
 }
 
 /// Kešované merania z pozemných staníc DHMZ (meteo.hr).
@@ -450,6 +457,59 @@ class DhmzObservations extends Table {
   RealColumn get windDirectionDeg => real().nullable()();
 
   RealColumn get waterTemp => real().nullable()();
+}
+
+/// Úradné výstrahy pred nebezpečným počasím (MeteoAlarm).
+///
+/// Nie je to model ani meranie, ale rozhodnutie národnej meteorologickej
+/// služby — v Chorvátsku DHMZ, v Británii Met Office, vo Švédsku SMHI.
+/// MeteoAlarm je len spoločná strecha, pod ktorou tie služby svoje výstrahy
+/// zverejňujú, takže jedna integrácia pokrýva celú Európu.
+///
+/// Tabuľka je keš, nie archív: pri každej synchronizácii sa prepíše celá.
+class WeatherWarnings extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  /// Identifikátor z CAP — to isté varovanie sa v novšom vydaní feedu
+  /// objaví s tým istým identifikátorom.
+  TextColumn get identifier => text()();
+
+  /// Dvojpísmenový kód krajiny, ktorej feed to priniesol.
+  TextColumn get country => text()();
+
+  /// Oblasť platnosti tak, ako ju pomenoval vydavateľ ("Coastal Zadar").
+  TextColumn get areaDesc => text()();
+
+  /// Typ výstrahy vo vetách vydavateľa ("Yellow thunderstorm warning").
+  TextColumn get event => text()();
+
+  /// Stupeň 1–4 podľa MeteoAlarm: zelená, žltá, oranžová, červená.
+  IntColumn get awarenessLevel => integer()();
+
+  /// Odkedy platí a dokedy, v UTC. Po `expires` sa výstraha nezobrazuje.
+  DateTimeColumn get onset => dateTime()();
+  DateTimeColumn get expires => dateTime()();
+
+  DateTimeColumn get downloadedAt => dateTime()();
+
+  /// Text v jazyku, ktorý sa vo feede našiel — nie nutne v jazyku appky.
+  TextColumn get description => text().nullable()();
+  TextColumn get instruction => text().nullable()();
+
+  /// Jazyk, v ktorom sú [description] a [instruction] naozaj napísané.
+  /// UI to musí vedieť: tvrdiť, že je to po slovensky, keď je to po
+  /// chorvátsky, je horšie než to nepovedať vôbec.
+  TextColumn get language => text().nullable()();
+
+  /// Kto výstrahu vydal ("DHMZ Državni hidrometeorološki zavod").
+  TextColumn get sender => text().nullable()();
+
+  /// Odkaz na podrobný dokument CAP.
+  ///
+  /// Popis a pokyn sa doťahujú až keď o ne niekto požiada: sú tam vo viacerých
+  /// jazykoch a sťahovať ich pre všetky výstrahy v krajine dopredu by bolo
+  /// desiatky dotazov za text, ktorý väčšinou nikto neotvorí.
+  TextColumn get capUrl => text().nullable()();
 }
 
 /// Kešované predikcie prílivu/odlivu (online fetch, offline zobrazenie —
@@ -571,7 +631,7 @@ class OutboxRows extends Table {
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
   CrewAssessments,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
-  DutyPeriods, Bearings, DhmzObservations,
+  DutyPeriods, Bearings, DhmzObservations, WeatherWarnings,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -580,7 +640,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -742,6 +802,10 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(logbookEntries, logbookEntries.weatherStation);
         await m.addColumn(
             logbookEntries, logbookEntries.weatherStationDistanceM);
+      }
+      if (from < 28) {
+        await m.createTable(weatherWarnings);
+        await m.addColumn(weatherSnapshots, weatherSnapshots.modelName);
       }
     },
     beforeOpen: (details) async {
@@ -1133,6 +1197,56 @@ class AppDatabase extends _$AppDatabase {
       into(weatherSnapshots).insert(e);
 
   Future<void> clearAllWeather() => delete(weatherSnapshots).go();
+
+  /// Vymení celú keš predpovede naraz.
+  ///
+  /// V transakcii zámerne: mazanie a zápis musia byť jedna operácia, inak
+  /// pád medzi nimi nechá používateľa bez predpovede — a to práve vtedy, keď
+  /// je sieť najhoršia.
+  Future<void> replaceWeatherSnapshots(
+          List<WeatherSnapshotsCompanion> rows) async =>
+      transaction(() async {
+        await delete(weatherSnapshots).go();
+        await batch((b) => b.insertAll(weatherSnapshots, rows));
+      });
+
+  /// Výstrahy, ktoré ešte platia, od najzávažnejšej.
+  ///
+  /// Filtruje sa časom, nie len tým, čo prišlo z feedu: keš môže prežiť dlhšie
+  /// než výstraha a zobraziť skončené varovanie je horšie než nezobraziť nič.
+  Future<List<WeatherWarning>> getActiveWeatherWarnings(DateTime now) =>
+      (select(weatherWarnings)
+            ..where((w) => w.expires.isBiggerThanValue(now))
+            ..orderBy([
+              (w) => OrderingTerm.desc(w.awarenessLevel),
+              (w) => OrderingTerm.asc(w.onset),
+            ]))
+          .get();
+
+  /// Keš sa vždy prepisuje celá — feed je aktuálny stav, nie prírastok, a
+  /// odvolaná výstraha musí zmiznúť.
+  Future<void> replaceWeatherWarnings(
+          List<WeatherWarningsCompanion> rows) async =>
+      transaction(() async {
+        await delete(weatherWarnings).go();
+        if (rows.isNotEmpty) {
+          await batch((b) => b.insertAll(weatherWarnings, rows));
+        }
+      });
+
+  Future<void> updateWarningDetail(int id,
+          {required String? description,
+          required String? instruction,
+          required String? language,
+          required String? sender}) =>
+      (update(weatherWarnings)..where((w) => w.id.equals(id))).write(
+        WeatherWarningsCompanion(
+          description: Value(description),
+          instruction: Value(instruction),
+          language: Value(language),
+          sender: Value(sender),
+        ),
+      );
 
   Future<List<DhmzObservation>> getDhmzObservations() =>
       select(dhmzObservations).get();

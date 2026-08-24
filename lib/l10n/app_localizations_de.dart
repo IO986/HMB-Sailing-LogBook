@@ -65,6 +65,55 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapSeamarks => 'Seezeichen';
 
   @override
+  String get mapDepths => 'Tiefen';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Tiefe hier: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Keine Tiefendaten für diesen Punkt';
+
+  @override
+  String get mapStationNone => 'In diesem Ausschnitt misst keine Station';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Stationen: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Modell: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge =>
+      'Kein Signal — letzte gespeicherte Vorhersage';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Kein Signal — Vorhersage von $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Vorhersage ist alt — geladen $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Details konnten nicht geladen werden.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Quelle: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Text ist auf: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Häfen & Ankerplätze';
 
   @override
@@ -2460,7 +2509,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Stationen – gemessen: Pfeile in einer weißen Scheibe sind TATSÄCHLICH GEMESSENE Werte von Wetterstationen, keine Vorhersage. Sie bleiben an ihrer Station und werden nicht auf deine Position umgerechnet — tippe darauf für Stationsname, Messzeit und Entfernung vom Boot. Vorhersage, Wellen und Strömungen stehen im Wetter-Tab; die Karte bleibt für Navigation und Aufzeichnung.\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Karte und Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Häfen, Stationen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Tiefen – Tiefenlinien von EMODnet, in Metern beschriftet. Ein Vermessungsmodell des Meeresbodens, KEINE Seekarte: zur Törnplanung ja, zur Entscheidung „komme ich hier durch“ nein. Standardmäßig aus; betrachtete Kacheln werden wie alle anderen gespeichert. Bei eingeschalteter Ebene tippen Sie auf die Karte, um die Tiefe an diesem Punkt abzulesen (benötigt Empfang).\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Stationen – gemessen: Pfeile in einer weißen Scheibe sind TATSÄCHLICH GEMESSENE Werte von Wetterstationen, keine Vorhersage. Sie bleiben an ihrer Station und werden nicht auf deine Position umgerechnet — tippe darauf für Stationsname, Messzeit und Entfernung vom Boot. Vorhersage, Wellen und Strömungen stehen im Wetter-Tab; die Karte bleibt für Navigation und Aufzeichnung.\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Karte und Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Tiefen, Häfen, Stationen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
@@ -2502,7 +2551,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Die Wetter-Registerkarte zeigt die Vorhersage für deine aktuelle Position.\n\n• Aktualisiert sich automatisch bei Positionsänderung\n• Wind, Wellen, Temperatur und Bedingungen für die kommenden Stunden\n• Offline: letzte gespeicherte Vorhersage wird angezeigt\n\nSonne, Mond und Gezeiten:\n• Sonnenauf- und -untergang sowie die Mondphase werden auf dem Gerät berechnet — ohne Verbindung\n• Tippe auf Aktualisieren in der Gezeiten-Karte für eine 7-Tage-Vorhersage (kostenlos, ohne API-Schlüssel)\n• Gezeiten werden zwischengespeichert und bleiben offline lesbar; die Karte warnt, wenn die Vorhersage alt ist oder weit von hier geladen wurde\n• ⚠ Gezeitenhöhen beziehen sich auf den mittleren Meeresspiegel, nicht auf das Kartennull — niemals für die Wassertiefe unter dem Kiel verwenden\n\nMeeresströmung:\n• Die Karte Meeresströmung zeigt die echte Vorhersage für deine Position in Knoten und die Richtung, in die die Strömung setzt\n• Auf der Karte zeichnet die Doppelpfeil-Schaltfläche ein Strömungsgitter für den sichtbaren Bereich; die Pfeile zeigen, wohin das Wasser fließt\n• Nicht zu verwechseln mit der Ebene Ozeanströmungen — das ist eine Referenzkarte der großen globalen Strömungen';
+      'Die Wetter-Registerkarte zeigt die Vorhersage für deine aktuelle Position.\n\n• Aktualisiert sich automatisch bei Positionsänderung\n• Ganz oben stehen AMTLICHE WARNUNGEN (MeteoAlarm), sofern welche für dein Land gelten. Sie stammen nicht von einem Modell, sondern vom nationalen Wetterdienst — DHMZ in Kroatien, Met Office in Großbritannien, SMHI in Schweden. Aufklappen zeigt Beschreibung und Hinweis; fehlt der Text in deiner Sprache, sagt die App, in welcher Sprache du liest.\n• Die Vorhersage kommt vom NATIONALEN MODELL für deinen Standort — ARPAE ICON-2I für Adria und Italien, UKMO für Großbritannien, MET Norway für Skandinavien, ICON-D2 für Mitteleuropa, sonst ECMWF. Der Modellname steht unter den aktuellen Werten.\n• Die Karte Stationen – gemessen zeigt, was jemand tatsächlich gemessen hat, samt Entfernung und Messzeit. Modell und Messung können sich um die Hälfte unterscheiden.\n• Ohne Signal erscheint die letzte gespeicherte Vorhersage, immer mit dem Zeitpunkt des Downloads. Älter als sechs Stunden wird orange markiert.\n\nSonne, Mond und Gezeiten:\n• Sonnenauf- und -untergang sowie die Mondphase werden auf dem Gerät berechnet — ohne Verbindung\n• Tippe auf Aktualisieren in der Gezeiten-Karte für eine 7-Tage-Vorhersage (kostenlos, ohne API-Schlüssel)\n• Gezeiten werden zwischengespeichert und bleiben offline lesbar; die Karte warnt, wenn die Vorhersage alt ist oder weit von hier geladen wurde\n• ⚠ Gezeitenhöhen beziehen sich auf den mittleren Meeresspiegel, nicht auf das Kartennull — niemals für die Wassertiefe unter dem Kiel verwenden\n\nMeeresströmung:\n• Die Karte Meeresströmung zeigt die echte Vorhersage für deine Position in Knoten und die Richtung, in die die Strömung setzt\n• Nicht zu verwechseln mit der Ebene Ozeanströmungen — das ist eine Referenzkarte der großen globalen Strömungen';
 
   @override
   String get guideSafetyMobTitle => 'MOB & Anker';

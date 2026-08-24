@@ -65,6 +65,54 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mapSeamarks => 'Marcas náuticas';
 
   @override
+  String get mapDepths => 'Profundidades';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Profundidad aquí: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'No hay datos de profundidad para este punto';
+
+  @override
+  String get mapStationNone => 'Ninguna estación mide en esta vista';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Estaciones: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Modelo: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge => 'Sin señal — última previsión guardada';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Sin señal — previsión de $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Previsión antigua — descargada $when';
+  }
+
+  @override
+  String get warningNoDetail => 'No se pudieron cargar los detalles.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Fuente: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Texto en: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Puertos y fondeaderos';
 
   @override
@@ -2456,7 +2504,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF Abajo aparece la reproducción: con el deslizador recorres la travesía en el tiempo y ves posición, velocidad, rumbo, viento y presión en cualquier momento. Las marcas del deslizador son eventos — inicio y fin de la travesía, fondeo, garreo, MOB.\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Estaciones – medido: las flechas en un disco blanco son valores REALMENTE MEDIDOS en estaciones, no una previsión. Permanecen en su estación y no se trasladan a tu posición — toca para ver el nombre de la estación, la hora de la medición y su distancia al barco. La previsión, el oleaje y las corrientes están en la pestaña Meteorología; la carta queda para navegar y registrar.\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa sin conexión (icono de descarga) — descarga el área visible para usarla sin cobertura, desde el zoom actual tres niveles más. Siempre la carta y las marcas náuticas; con el satélite activado, también las imágenes y sus topónimos. Además, cada tesela que visitas se guarda automáticamente.\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, puertos, estaciones), el seguimiento GPS y el bloqueo al norte se recuerdan entre inicios\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF Abajo aparece la reproducción: con el deslizador recorres la travesía en el tiempo y ves posición, velocidad, rumbo, viento y presión en cualquier momento. Las marcas del deslizador son eventos — inicio y fin de la travesía, fondeo, garreo, MOB.\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Profundidades – isóbatas de EMODnet, rotuladas en metros. Un modelo del fondo obtenido de sondeos, NO una carta náutica: sirve para planificar una travesía, nunca para decidir si se puede pasar. Desactivado por defecto; las teselas consultadas se guardan como las demás. Con la capa activada, toca el mapa para leer la profundidad en ese punto (necesita señal).\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web, profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Estaciones – medido: las flechas en un disco blanco son valores REALMENTE MEDIDOS en estaciones, no una previsión. Permanecen en su estación y no se trasladan a tu posición — toca para ver el nombre de la estación, la hora de la medición y su distancia al barco. La previsión, el oleaje y las corrientes están en la pestaña Meteorología; la carta queda para navegar y registrar.\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa sin conexión (icono de descarga) — descarga el área visible para usarla sin cobertura, desde el zoom actual tres niveles más. Siempre la carta y las marcas náuticas; con el satélite activado, también las imágenes y sus topónimos. Además, cada tesela que visitas se guarda automáticamente.\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, profundidades, puertos, estaciones), el seguimiento GPS y el bloqueo al norte se recuerdan entre inicios\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
@@ -2498,7 +2546,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'La pestaña Tiempo muestra el pronóstico según tu posición actual.\n\n• Se actualiza automáticamente al cambiar de posición\n• Muestra viento, oleaje, temperatura y condiciones para las próximas horas\n• Sin conexión: se muestra el último pronóstico guardado\n\nSol, luna y mareas:\n• El orto, el ocaso y la fase lunar se calculan en el dispositivo — sin conexión\n• Toca actualizar en la tarjeta de Marea para descargar una predicción de 7 días (gratis, sin clave API)\n• Las mareas se guardan en caché y siguen visibles sin conexión; la tarjeta avisa si la predicción es antigua o se descargó lejos de aquí\n• ⚠ Las alturas de marea son sobre el nivel medio del mar, no sobre el cero hidrográfico — nunca las uses para calcular la profundidad bajo la quilla\n\nCorriente marina:\n• La tarjeta Corriente marina muestra la predicción real para tu posición en nudos y la dirección hacia la que va la corriente\n• En el mapa, el botón de doble flecha dibuja una malla de corriente para el área visible; las flechas indican hacia dónde se mueve el agua\n• No confundir con la capa Corrientes oceánicas — esa es una carta de referencia de las grandes corrientes globales';
+      'La pestaña Tiempo muestra el pronóstico según tu posición actual.\n\n• Se actualiza automáticamente al cambiar de posición\n• Arriba aparecen los AVISOS OFICIALES (MeteoAlarm) cuando hay alguno para tu país. No los emite un modelo, sino el servicio meteorológico nacional — DHMZ en Croacia, Met Office en Gran Bretaña, SMHI en Suecia. Al desplegarlo ves la descripción y el consejo; si no hay texto en tu idioma, la app dice en qué idioma lo estás leyendo.\n• La previsión usa el MODELO NACIONAL del lugar donde estás — ARPAE ICON-2I para el Adriático e Italia, UKMO para Gran Bretaña, MET Norway para Escandinavia, ICON-D2 para Europa central, ECMWF en el resto. El nombre del modelo aparece bajo los datos actuales.\n• La tarjeta Estaciones – medido muestra lo que alguien midió de verdad, con la distancia y la hora de la medición. El modelo y la medición pueden diferir hasta la mitad.\n• Sin cobertura se muestra la última previsión guardada, siempre con la hora de descarga. Si supera las seis horas se marca en naranja.\n\nSol, luna y mareas:\n• El orto, el ocaso y la fase lunar se calculan en el dispositivo — sin conexión\n• Toca actualizar en la tarjeta de Marea para descargar una predicción de 7 días (gratis, sin clave API)\n• Las mareas se guardan en caché y siguen visibles sin conexión; la tarjeta avisa si la predicción es antigua o se descargó lejos de aquí\n• ⚠ Las alturas de marea son sobre el nivel medio del mar, no sobre el cero hidrográfico — nunca las uses para calcular la profundidad bajo la quilla\n\nCorriente marina:\n• La tarjeta Corriente marina muestra la predicción real para tu posición en nudos y la dirección hacia la que va la corriente\n• No confundir con la capa Corrientes oceánicas — esa es una carta de referencia de las grandes corrientes globales';
 
   @override
   String get guideSafetyMobTitle => 'MOB y ancla';

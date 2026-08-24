@@ -12,11 +12,14 @@ import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
 import '../../../../core/providers/raymarine_providers.dart';
 import '../../../../core/models/marine_instrument_data.dart';
+import '../widgets/nearest_stations_card.dart';
 import '../widgets/ocean_current_card.dart';
+import '../widgets/warnings_card.dart';
 import '../widgets/sun_moon_card.dart';
 import '../widgets/tide_card.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
 
@@ -226,7 +229,12 @@ class _WeatherContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (forecast.isEmpty) return const SizedBox();
-    final current = forecast.first;
+    // Nie `first`: keš siaha aj do minulosti, takže prvý riadok je najstarší
+    // stiahnutý čas. Ako „aktuálne počasie" sa tak po pár hodinách ukazovalo
+    // ráno, ktoré už dávno bolo.
+    final now = DateTime.now();
+    final current = forecast.reduce((a, b) =>
+        a.time.difference(now).abs() <= b.time.difference(now).abs() ? a : b);
 
     final connState = ref.watch(raymarineConnectionStateProvider)
             .valueOrNull ??
@@ -239,11 +247,24 @@ class _WeatherContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // Výstrahy navrchu: je to jediná vec na tejto obrazovke, o ktorej
+        // nerozhodol model, ale človek v národnej meteorologickej službe.
+        const WarningsCard(),
+        _DataAgeNote(weather: current),
         if (showLive) ...[
           _LiveInstrumentsCard(data: marineData),
           const SizedBox(height: 12),
         ],
         _CurrentWeatherCard(weather: current),
+        const SizedBox(height: 12),
+        // Meranie hneď pod modelom: rozdiel medzi nimi je informácia, ktorú
+        // inak nikto neuvidí.
+        Builder(builder: (context) {
+          final pos =
+              GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+          return NearestStationsCard(
+              lat: pos?.latitude, lon: pos?.longitude);
+        }),
         const SizedBox(height: 12),
         _BeaufortCard(beaufort: current.beaufort),
         const SizedBox(height: 12),
@@ -334,6 +355,79 @@ class _LiveInstrumentsCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Vek dát a to, čí model ich vyrobil.
+///
+/// Predpoveď, ktorá sa tvári ako čerstvá, je horšia než žiadna: na mori sa
+/// podľa nej rozhoduje. Preto sa vek píše vždy, keď je čo povedať, a keď je
+/// telefón bez signálu, povie sa to rovno.
+class _DataAgeNote extends ConsumerWidget {
+  const _DataAgeNote({required this.weather});
+
+  final WeatherData weather;
+
+  /// Nad týmto sa predpoveď označí za starú. Šesť hodín je hranica, za ktorou
+  /// sa vietor v Jadrane vie zmeniť na niečo úplne iné.
+  static const _staleAfter = Duration(hours: 6);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final online = ref.watch(isOnlineProvider).valueOrNull ?? true;
+    final downloaded = weather.downloadedAt;
+    final model = weather.modelName;
+
+    final age = downloaded == null
+        ? null
+        : DateTime.now().difference(downloaded);
+    final stale = age != null && age >= _staleAfter;
+
+    // Čerstvé dáta a signál: netreba nič hlásiť, stačí meno modelu.
+    if (online && !stale) {
+      if (model == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(children: [
+          Icon(Icons.public, size: 14, color: Theme.of(context).hintColor),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(l.weatherModelSource(model),
+                style: TextStyle(
+                    fontSize: 11, color: Theme.of(context).hintColor)),
+          ),
+        ]),
+      );
+    }
+
+    final when = downloaded == null
+        ? null
+        : AppDate.of(context, ref).shortWithTime(downloaded);
+    final text = !online
+        ? (when == null ? l.weatherOfflineNoAge : l.weatherOfflineSince(when))
+        : l.weatherStaleSince(when ?? '');
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.orange.shade700, width: 1),
+      ),
+      child: Row(children: [
+        Icon(online ? Icons.schedule : Icons.cloud_off,
+            size: 16, color: Colors.orange.shade800),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            model == null ? text : '$text · ${l.weatherModelSource(model)}',
+            style: TextStyle(fontSize: 12, color: Colors.orange.shade900),
+          ),
+        ),
+      ]),
     );
   }
 }

@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-croatia"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:HR</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-08-24T15:36:03.061998Z</updated>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR801</value>
+    </cap:geocode>
+    <link title="West Istrian coast region" href="https://meteoalarm.org?geocode=EMMA_ID:HR801" hreflang="en"/>
+    <cap:areaDesc>West Istrian coast region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-24T13:30:47+00:00</cap:sent>
+    <cap:expires>2026-08-25T07:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-24T13:30:47+00:00</cap:effective>
+    <cap:onset>2026-08-25T00:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824153047_0_yellow_HR801</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/66e54f3a-96b4-40c3-8df8-ab9529790ab0"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T13:30:47Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/66e54f3a-96b4-40c3-8df8-ab9529790ab0?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - West Istrian coast region</title>
+    <updated>2026-08-24T13:30:47Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR005</value>
+    </cap:geocode>
+    <link title="Osijek region" href="https://meteoalarm.org?geocode=EMMA_ID:HR005" hreflang="en"/>
+    <cap:areaDesc>Osijek region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T07:56:10+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T07:56:10+00:00</cap:effective>
+    <cap:onset>2026-08-25T13:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824095610_3_yellow_HR005</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/ee6260e2-bb58-41f7-b2a9-a5e59de67fa3"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T07:56:10Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/ee6260e2-bb58-41f7-b2a9-a5e59de67fa3?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Osijek region</title>
+    <updated>2026-08-24T07:56:10Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR003</value>
+    </cap:geocode>
+    <link title="Karlovac region" href="https://meteoalarm.org?geocode=EMMA_ID:HR003" hreflang="en"/>
+    <cap:areaDesc>Karlovac region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T07:54:39+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T07:54:39+00:00</cap:effective>
+    <cap:onset>2026-08-25T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824095439_3_yellow_HR003</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/2edee37b-3c8c-4a08-92ba-217243ce4f92"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T07:54:39Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/2edee37b-3c8c-4a08-92ba-217243ce4f92?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Karlovac region</title>
+    <updated>2026-08-24T07:54:39Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR002</value>
+    </cap:geocode>
+    <link title="Zagreb region" href="https://meteoalarm.org?geocode=EMMA_ID:HR002" hreflang="en"/>
+    <cap:areaDesc>Zagreb region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T07:54:39+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T07:54:39+00:00</cap:effective>
+    <cap:onset>2026-08-25T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824095439_3_yellow_HR002</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/082fec28-f630-454f-ae9c-458aeecfd37f"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T07:54:39Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/082fec28-f630-454f-ae9c-458aeecfd37f?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Zagreb region</title>
+    <updated>2026-08-24T07:54:39Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR001</value>
+    </cap:geocode>
+    <link title="Knin region" href="https://meteoalarm.org?geocode=EMMA_ID:HR001" hreflang="en"/>
+    <cap:areaDesc>Knin region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T07:54:39+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T07:54:39+00:00</cap:effective>
+    <cap:onset>2026-08-25T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824095439_3_yellow_HR001</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/3f403521-716c-4c29-aaeb-750f2f7ed454"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T07:54:39Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/3f403521-716c-4c29-aaeb-750f2f7ed454?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Knin region</title>
+    <updated>2026-08-24T07:54:39Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR007</value>
+    </cap:geocode>
+    <link title="Dubrovnik region" href="https://meteoalarm.org?geocode=EMMA_ID:HR007" hreflang="en"/>
+    <cap:areaDesc>Dubrovnik region</cap:areaDesc>
+    <cap:event>Yellow high temperature warning</cap:event>
+    <cap:sent>2026-08-24T06:22:29+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T06:22:29+00:00</cap:effective>
+    <cap:onset>2026-08-24T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824082229_6_yellow_HR007</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/3e327561-49f1-4b62-815d-71700dc7095f"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T06:22:29Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/3e327561-49f1-4b62-815d-71700dc7095f?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Croatia - Dubrovnik region</title>
+    <updated>2026-08-24T06:22:29Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR006</value>
+    </cap:geocode>
+    <link title="Rijeka region" href="https://meteoalarm.org?geocode=EMMA_ID:HR006" hreflang="en"/>
+    <cap:areaDesc>Rijeka region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T06:22:29+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T06:22:29+00:00</cap:effective>
+    <cap:onset>2026-08-24T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824082229_3_yellow_HR006</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8bb96099-42a1-416d-827b-d5fb7af09c9b"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T06:22:29Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8bb96099-42a1-416d-827b-d5fb7af09c9b?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Rijeka region</title>
+    <updated>2026-08-24T06:22:29Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR008</value>
+    </cap:geocode>
+    <link title="Split region" href="https://meteoalarm.org?geocode=EMMA_ID:HR008" hreflang="en"/>
+    <cap:areaDesc>Split region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T06:22:29+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T06:22:29+00:00</cap:effective>
+    <cap:onset>2026-08-25T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824082229_3_yellow_HR008</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8238a5f2-6999-41ce-9a52-b858308c7a4d"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T06:22:29Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8238a5f2-6999-41ce-9a52-b858308c7a4d?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Split region</title>
+    <updated>2026-08-24T06:22:29Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR004</value>
+    </cap:geocode>
+    <link title="Gospic region" href="https://meteoalarm.org?geocode=EMMA_ID:HR004" hreflang="en"/>
+    <cap:areaDesc>Gospic region</cap:areaDesc>
+    <cap:event>Yellow thunderstorm warning</cap:event>
+    <cap:sent>2026-08-24T06:22:29+00:00</cap:sent>
+    <cap:expires>2026-08-25T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-24T06:22:29+00:00</cap:effective>
+    <cap:onset>2026-08-25T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260824082229_3_yellow_HR004</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8f286623-05a7-443d-8350-c15d4f8380e0"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-24T06:22:29Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/8f286623-05a7-443d-8350-c15d4f8380e0?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Croatia - Gospic region</title>
+    <updated>2026-08-24T06:22:29Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR802</value>
+    </cap:geocode>
+    <link title="Kvarner i Kvarneric region" href="https://meteoalarm.org?geocode=EMMA_ID:HR802" hreflang="en"/>
+    <cap:areaDesc>Kvarner i Kvarneric region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T15:54:03+00:00</cap:sent>
+    <cap:expires>2026-08-24T07:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-23T15:54:03+00:00</cap:effective>
+    <cap:onset>2026-08-23T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823175403_0_yellow_HR802</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/52a63dc3-62e0-446a-a5ed-bc154710b368"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T15:54:03Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/52a63dc3-62e0-446a-a5ed-bc154710b368?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - Kvarner i Kvarneric region</title>
+    <updated>2026-08-23T15:54:03Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR007</value>
+    </cap:geocode>
+    <link title="Dubrovnik region" href="https://meteoalarm.org?geocode=EMMA_ID:HR007" hreflang="en"/>
+    <cap:areaDesc>Dubrovnik region</cap:areaDesc>
+    <cap:event>Orange high temperature warning</cap:event>
+    <cap:sent>2026-08-23T08:03:08+00:00</cap:sent>
+    <cap:expires>2026-08-24T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-23T08:03:08+00:00</cap:effective>
+    <cap:onset>2026-08-23T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823100308_6_orange_HR007</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/b2229995-1571-49ed-9508-16d9f62b9aaf"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T08:03:08Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/b2229995-1571-49ed-9508-16d9f62b9aaf?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Croatia - Dubrovnik region</title>
+    <updated>2026-08-23T08:03:08Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR007</value>
+    </cap:geocode>
+    <link title="Dubrovnik region" href="https://meteoalarm.org?geocode=EMMA_ID:HR007" hreflang="en"/>
+    <cap:areaDesc>Dubrovnik region</cap:areaDesc>
+    <cap:event>Orange high temperature warning</cap:event>
+    <cap:sent>2026-08-23T08:02:53+00:00</cap:sent>
+    <cap:expires>2026-08-23T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-23T08:02:53+00:00</cap:effective>
+    <cap:onset>2026-08-22T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823100253_6_orange_HR007</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/2e7409a1-a146-4bcb-8636-7ec09d0eee25"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T08:02:53Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/2e7409a1-a146-4bcb-8636-7ec09d0eee25?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Croatia - Dubrovnik region</title>
+    <updated>2026-08-23T08:02:53Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR006</value>
+    </cap:geocode>
+    <link title="Rijeka region" href="https://meteoalarm.org?geocode=EMMA_ID:HR006" hreflang="en"/>
+    <cap:areaDesc>Rijeka region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T08:02:53+00:00</cap:sent>
+    <cap:expires>2026-08-23T10:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-23T08:02:53+00:00</cap:effective>
+    <cap:onset>2026-08-22T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823100253_0_yellow_HR006</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/bae7b711-7da5-4f97-a2d9-637771fb295a"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T08:02:53Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/bae7b711-7da5-4f97-a2d9-637771fb295a?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - Rijeka region</title>
+    <updated>2026-08-23T08:02:53Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR803</value>
+    </cap:geocode>
+    <link title="Velebit channel region" href="https://meteoalarm.org?geocode=EMMA_ID:HR803" hreflang="en"/>
+    <cap:areaDesc>Velebit channel region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T04:06:39+00:00</cap:sent>
+    <cap:expires>2026-08-24T10:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-23T04:06:39+00:00</cap:effective>
+    <cap:onset>2026-08-23T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823060639_0_yellow_HR803</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/6f4ecfa5-e692-48b5-910e-6cbc334afa0a"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T04:06:39Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/6f4ecfa5-e692-48b5-910e-6cbc334afa0a?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - Velebit channel region</title>
+    <updated>2026-08-23T04:06:39Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR804</value>
+    </cap:geocode>
+    <link title="North Dalmatia region" href="https://meteoalarm.org?geocode=EMMA_ID:HR804" hreflang="en"/>
+    <cap:areaDesc>North Dalmatia region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T04:05:06+00:00</cap:sent>
+    <cap:expires>2026-08-23T07:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-23T04:05:06+00:00</cap:effective>
+    <cap:onset>2026-08-23T04:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823060506_0_yellow_HR804</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/d9e088f7-bbb1-47b2-9a6f-74cf5e1520e5"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T04:05:06Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/d9e088f7-bbb1-47b2-9a6f-74cf5e1520e5?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - North Dalmatia region</title>
+    <updated>2026-08-23T04:05:06Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR802</value>
+    </cap:geocode>
+    <link title="Kvarner i Kvarneric region" href="https://meteoalarm.org?geocode=EMMA_ID:HR802" hreflang="en"/>
+    <cap:areaDesc>Kvarner i Kvarneric region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T04:05:06+00:00</cap:sent>
+    <cap:expires>2026-08-23T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-23T04:05:06+00:00</cap:effective>
+    <cap:onset>2026-08-22T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823060506_0_yellow_HR802</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/7b22147f-dadc-49d8-be00-2c5d23f15a33"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T04:05:06Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/7b22147f-dadc-49d8-be00-2c5d23f15a33?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - Kvarner i Kvarneric region</title>
+    <updated>2026-08-23T04:05:06Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR803</value>
+    </cap:geocode>
+    <link title="Velebit channel region" href="https://meteoalarm.org?geocode=EMMA_ID:HR803" hreflang="en"/>
+    <cap:areaDesc>Velebit channel region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T04:05:06+00:00</cap:sent>
+    <cap:expires>2026-08-23T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-08-23T04:05:06+00:00</cap:effective>
+    <cap:onset>2026-08-22T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823060506_0_yellow_HR803</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/88cc0b67-0dcc-4455-aca1-0a261b0820f7"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T04:05:06Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/88cc0b67-0dcc-4455-aca1-0a261b0820f7?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - Velebit channel region</title>
+    <updated>2026-08-23T04:05:06Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>HR801</value>
+    </cap:geocode>
+    <link title="West Istrian coast region" href="https://meteoalarm.org?geocode=EMMA_ID:HR801" hreflang="en"/>
+    <cap:areaDesc>West Istrian coast region</cap:areaDesc>
+    <cap:event>Yellow wind warning</cap:event>
+    <cap:sent>2026-08-23T04:05:06+00:00</cap:sent>
+    <cap:expires>2026-08-23T10:00:00+00:00</cap:expires>
+    <cap:effective>2026-08-23T04:05:06+00:00</cap:effective>
+    <cap:onset>2026-08-22T22:01:01+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.191.0.HR.260823060506_0_yellow_HR801</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/abe55ebf-4af8-44f5-a5ed-95627393fde9"/>
+    <link title="Croatia" rel="related" href="https://meteoalarm.org?region=HR" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-08-23T04:05:06Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-croatia/abe55ebf-4af8-44f5-a5ed-95627393fde9?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Croatia - West Istrian coast region</title>
+    <updated>2026-08-23T04:05:06Z</updated>
+  </entry>
+</feed>

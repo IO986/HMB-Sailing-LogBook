@@ -65,6 +65,54 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mapSeamarks => 'Znaki morskie';
 
   @override
+  String get mapDepths => 'Głębokości';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Głębokość tutaj: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Brak danych o głębokości dla tego punktu';
+
+  @override
+  String get mapStationNone => 'W tym widoku nie mierzy żadna stacja';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Stacje: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge => 'Brak zasięgu — ostatnia zapisana prognoza';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Brak zasięgu — prognoza z $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Prognoza jest stara — pobrana $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Nie udało się wczytać szczegółów.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Źródło: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Tekst w języku: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Porty i kotwicowiska';
 
   @override
@@ -2448,7 +2496,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www, głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Stacje – zmierzone: strzałki w białym krążku to wartości NAPRAWDĘ ZMIERZONE na stacjach, nie prognoza. Stoją na swojej stacji i nie są przeliczane na twoją pozycję — dotknij, aby zobaczyć nazwę stacji, czas pomiaru i odległość od łodzi. Prognozę, fale i prądy znajdziesz w zakładce Pogoda; mapa zostaje do nawigacji i zapisu.\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze mapę i oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, porty, stacje), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
+      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www, głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Stacje – zmierzone: strzałki w białym krążku to wartości NAPRAWDĘ ZMIERZONE na stacjach, nie prognoza. Stoją na swojej stacji i nie są przeliczane na twoją pozycję — dotknij, aby zobaczyć nazwę stacji, czas pomiaru i odległość od łodzi. Prognozę, fale i prądy znajdziesz w zakładce Pogoda; mapa zostaje do nawigacji i zapisu.\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze mapę i oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty, stacje), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
 
   @override
   String get guideInstrTitle => 'Przyrządy morskie';
@@ -2490,7 +2538,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Zakładka Pogoda pokazuje prognozę według aktualnej pozycji.\n\n• Aktualizuje się automatycznie przy zmianie pozycji\n• Pokazuje wiatr, fale, temperaturę i warunki najbliższych godzin\n• Bez internetu wyświetli się ostatnia zapisana prognoza\n\nSłońce, księżyc i pływy:\n• Wschód, zachód słońca i faza księżyca liczone są wprost w urządzeniu — internet nie jest potrzebny\n• Dotknięciem odśwież w karcie Przypływ/odpływ pobierzesz 7-dniową prognozę (za darmo, bez klucza API)\n• Pływy są keszowane, więc pozostają czytelne także offline; karta ostrzeże, gdy prognoza jest stara lub pobrana daleko stąd\n• ⚠ Wysokości pływów są nad średnim poziomem morza, nie nad zerem mapy — nigdy nie używaj ich do obliczania głębokości pod kilem\n\nPrąd morski:\n• Karta Prąd morski pokazuje realną prognozę dla twojej pozycji w węzłach i kierunek, DOKĄD prąd płynie\n• Na mapie przycisk z podwójną strzałką rysuje siatkę prądu dla widocznego obszaru; strzałki pokazują, dokąd przemieszcza się woda\n• Nie myl z warstwą Prądy oceaniczne — to referencyjna mapa wielkich prądów globalnych';
+      'Zakładka Pogoda pokazuje prognozę według aktualnej pozycji.\n\n• Aktualizuje się automatycznie przy zmianie pozycji\n• Na górze są OSTRZEŻENIA URZĘDOWE (MeteoAlarm), jeśli jakieś obowiązują dla twojego kraju. Nie wydaje ich model, tylko krajowa służba meteorologiczna — w Chorwacji DHMZ, w Wielkiej Brytanii Met Office, w Szwecji SMHI. Po rozwinięciu zobaczysz opis i zalecenie; jeśli tekstu w twoim języku nie ma, aplikacja powie, w jakim języku go czytasz.\n• Prognoza pochodzi z MODELU KRAJOWEGO dla miejsca, w którym jesteś — Adriatyk i Włochy ARPAE ICON-2I, Wielka Brytania UKMO, Skandynawia MET Norway, Europa środkowa ICON-D2, gdzie indziej ECMWF. Nazwa modelu jest pod bieżącą pogodą.\n• Karta Stacje – zmierzone pokazuje to, co ktoś naprawdę zmierzył, wraz z odległością i czasem pomiaru. Model i pomiar mogą różnić się nawet o połowę.\n• Bez zasięgu wyświetla się ostatnia zapisana prognoza, zawsze z czasem pobrania. Starsza niż sześć godzin jest oznaczona na pomarańczowo.\n\nSłońce, księżyc i pływy:\n• Wschód, zachód słońca i faza księżyca liczone są wprost w urządzeniu — internet nie jest potrzebny\n• Dotknięciem odśwież w karcie Przypływ/odpływ pobierzesz 7-dniową prognozę (za darmo, bez klucza API)\n• Pływy są keszowane, więc pozostają czytelne także offline; karta ostrzeże, gdy prognoza jest stara lub pobrana daleko stąd\n• ⚠ Wysokości pływów są nad średnim poziomem morza, nie nad zerem mapy — nigdy nie używaj ich do obliczania głębokości pod kilem\n\nPrąd morski:\n• Karta Prąd morski pokazuje realną prognozę dla twojej pozycji w węzłach i kierunek, DOKĄD prąd płynie\n• Nie myl z warstwą Prądy oceaniczne — to referencyjna mapa wielkich prądów globalnych';
 
   @override
   String get guideSafetyMobTitle => 'MOB i kotwica';

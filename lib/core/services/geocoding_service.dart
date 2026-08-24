@@ -71,6 +71,32 @@ class GeocodingService {
 
   /// Reverse geocode GPS → human-readable port/marina/bay name.
   /// Returns null on any failure.
+  /// Dvojpísmenový kód krajiny pre danú polohu, alebo `null`.
+  ///
+  /// Používajú ho úradné výstrahy: MeteoAlarm ich vydáva po krajinách a bez
+  /// kódu sa nedá vybrať feed. Funguje aj na mori — pobrežné vody sú v OSM
+  /// pričlenené k štátu, takže uprostred Jadranu vráti `hr`.
+  Future<String?> countryCode(double lat, double lon) async {
+    try {
+      final resp = await _dio.get('/reverse', queryParameters: {
+        'format': 'json',
+        'lat': lat.toStringAsFixed(4),
+        'lon': lon.toStringAsFixed(4),
+        'addressdetails': '1',
+        // Hrubé priblíženie stačí: hľadá sa štát, nie ulica, a menší zoom
+        // znamená menej práce pre cudzí server.
+        'zoom': '8',
+      });
+      final data = resp.data as Map<String, dynamic>?;
+      final address = data?['address'] as Map<String, dynamic>?;
+      final cc = address?['country_code'] as String?;
+      return (cc == null || cc.isEmpty) ? null : cc.toLowerCase();
+    } catch (e) {
+      debugPrint('[GEO] country lookup failed: $e');
+      return null;
+    }
+  }
+
   Future<String?> reverseGeocode(double lat, double lon) async {
     try {
       final resp = await _dio.get('/reverse', queryParameters: {

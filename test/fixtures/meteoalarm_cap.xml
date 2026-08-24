@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.191.0.HR.260824095610_3_yellow_HR005</identifier>
+  <sender>https://meteo.hr</sender>
+  <sent>2026-08-24T09:56:10+02:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>hr-HR</language>
+    <category>Met</category>
+    <event>Žuto upozorenje za grmljavinsku oluju</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-08-24T09:56:10+02:00</effective>
+    <onset>2026-08-25T15:00:00+02:00</onset>
+    <expires>2026-08-25T23:59:59+02:00</expires>
+    <senderName>DHMZ Državni hidrometeorološki zavod</senderName>
+    <description>Mjestimice mogući izraženiji pljuskovi praćeni grmljavinom. vjerojatnost grmljavine &gt; 50 %</description>
+    <instruction>BUDITE NA OPREZU zbog mogućih jačih grmljavinskih nevremena. Posebno pripazite u izloženim područjima kao što su planine, šume i livade odnosno otvoreni tereni. Mogući su prekidi u aktivnostima na otvorenom.</instruction>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>3; Thunderstorm</value>
+    </parameter>
+    <area>
+      <areaDesc>Osijek region</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>HR005</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>Yellow thunderstorm warning</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-08-24T09:56:10+02:00</effective>
+    <onset>2026-08-25T15:00:00+02:00</onset>
+    <expires>2026-08-25T23:59:59+02:00</expires>
+    <senderName>DHMZ Državni hidrometeorološki zavod</senderName>
+    <description>Locally severe thundershowers possible. lightning risk &gt; 50 %</description>
+    <instruction>STAY ALERT for possible heavy thunderstorms. Be especially careful in high-exposure areas such as mountains, forests, meadows and open grounds. Interruptions in outdoor activities are possible.</instruction>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>3; Thunderstorm</value>
+    </parameter>
+    <area>
+      <areaDesc>Osijek region</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>HR005</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

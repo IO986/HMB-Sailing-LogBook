@@ -21,11 +21,24 @@ class WeatherService {
       weatherCode: e.weatherCode,
       precipitationProbability: e.precipitationProbability,
       precipitation: e.precipitation,
+      downloadedAt: e.downloadedAt,
+      modelName: e.modelName,
     )).toList();
   }
 
+  /// Riadok, ktorý najlepšie sedí na „teraz".
+  ///
+  /// Nie `first`: keš siaha do minulosti, takže prvý riadok je najstarší
+  /// stiahnutý čas a po pár hodinách by sa ako aktuálne počasie ukazovalo
+  /// ráno, ktoré už dávno bolo.
   Future<WeatherData?> getCurrentWeather() async {
     final f = await getForecast();
-    return f.isEmpty ? null : f.first;
+    if (f.isEmpty) return null;
+    final now = DateTime.now();
+    f.sort((a, b) => a.time
+        .difference(now)
+        .abs()
+        .compareTo(b.time.difference(now).abs()));
+    return f.first;
   }
 }

@@ -65,6 +65,55 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mapSeamarks => 'Segnalamenti marittimi';
 
   @override
+  String get mapDepths => 'Profondità';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Profondità qui: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Nessun dato di profondità per questo punto';
+
+  @override
+  String get mapStationNone => 'Nessuna stazione misura in questa vista';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Stazioni: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Modello: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge =>
+      'Nessun segnale — ultima previsione salvata';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Nessun segnale — previsione delle $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Previsione vecchia — scaricata $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Impossibile caricare i dettagli.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Fonte: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Testo in lingua: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Porti e ancoraggi';
 
   @override
@@ -2463,7 +2512,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Stazioni – misurato: le frecce in un disco bianco sono valori REALMENTE MISURATI dalle stazioni, non una previsione. Restano sulla loro stazione e non vengono riportate sulla tua posizione — tocca per nome della stazione, ora della misura e distanza dalla barca. Previsione, onde e correnti stanno nella scheda Meteo; la carta resta per navigazione e registro.\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre carta e segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, porti, stazioni), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
+      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Profondità – isobate da EMODnet, con la quota in metri. Un modello del fondale ricavato da rilievi, NON una carta nautica: per pianificare una traversata sì, per decidere se si passa no. Disattivato di default; le tessere consultate vengono salvate come le altre. Con il livello attivo, tocca la mappa per leggere la profondità in quel punto (serve segnale).\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Stazioni – misurato: le frecce in un disco bianco sono valori REALMENTE MISURATI dalle stazioni, non una previsione. Restano sulla loro stazione e non vengono riportate sulla tua posizione — tocca per nome della stazione, ora della misura e distanza dalla barca. Previsione, onde e correnti stanno nella scheda Meteo; la carta resta per navigazione e registro.\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre carta e segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, profondità, porti, stazioni), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Strumenti di bordo';
@@ -2505,7 +2554,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'La scheda Meteo mostra le previsioni in base alla tua posizione attuale.\n\n• Si aggiorna automaticamente quando la posizione cambia\n• Mostra vento, onde, temperatura e condizioni per le ore successive\n• Senza connessione viene mostrata l\'ultima previsione salvata\n\nSole, luna e maree:\n• Alba, tramonto e fase lunare sono calcolati sul dispositivo — non serve connessione\n• Tocca aggiorna sulla scheda Marea per scaricare una previsione di marea di 7 giorni (gratuita, senza chiave API)\n• Le maree vengono memorizzate, così restano consultabili offline; la scheda ti avvisa quando la previsione è vecchia o è stata scaricata lontano da qui\n• ⚠ Le altezze di marea sono riferite al livello medio del mare, non allo zero idrografico — non usarle mai per calcolare la profondità sotto la chiglia\n\nCorrente marina:\n• La scheda Corrente marina mostra la previsione reale per la tua posizione in nodi e la direzione verso cui la corrente scorre\n• Sulla mappa, il pulsante con la doppia freccia disegna una griglia delle correnti per l\'area visibile; le frecce indicano dove si muove l\'acqua\n• Da non confondere con il livello Correnti oceaniche — quella è una carta di riferimento delle grandi correnti globali';
+      'La scheda Meteo mostra le previsioni in base alla tua posizione attuale.\n\n• Si aggiorna automaticamente al cambio di posizione\n• In alto stanno gli AVVISI UFFICIALI (MeteoAlarm), se ne valgono per il tuo Paese. Non li emette un modello ma il servizio meteorologico nazionale — DHMZ in Croazia, Met Office in Gran Bretagna, SMHI in Svezia. Espandendo vedi descrizione e indicazioni; se il testo nella tua lingua non c’è, l’app dice in che lingua stai leggendo.\n• La previsione viene dal MODELLO NAZIONALE del posto in cui sei — ARPAE ICON-2I per Adriatico e Italia, UKMO per la Gran Bretagna, MET Norway per la Scandinavia, ICON-D2 per l’Europa centrale, altrove ECMWF. Il nome del modello sta sotto i dati attuali.\n• La scheda Stazioni – misurato mostra ciò che qualcuno ha davvero misurato, con distanza e ora della misura. Modello e misura possono differire anche della metà.\n• Senza segnale compare l’ultima previsione salvata, sempre con l’ora di scaricamento. Oltre le sei ore viene segnalata in arancione.\n\nSole, luna e maree:\n• Alba, tramonto e fase lunare sono calcolati sul dispositivo — non serve connessione\n• Tocca aggiorna sulla scheda Marea per scaricare una previsione di marea di 7 giorni (gratuita, senza chiave API)\n• Le maree vengono memorizzate, così restano consultabili offline; la scheda ti avvisa quando la previsione è vecchia o è stata scaricata lontano da qui\n• ⚠ Le altezze di marea sono riferite al livello medio del mare, non allo zero idrografico — non usarle mai per calcolare la profondità sotto la chiglia\n\nCorrente marina:\n• La scheda Corrente marina mostra la previsione reale per la tua posizione in nodi e la direzione verso cui la corrente scorre\n• Da non confondere con il livello Correnti oceaniche — quella è una carta di riferimento delle grandi correnti globali';
 
   @override
   String get guideSafetyMobTitle => 'MOB e ancora';

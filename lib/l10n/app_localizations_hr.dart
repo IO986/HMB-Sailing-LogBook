@@ -65,6 +65,55 @@ class AppLocalizationsHr extends AppLocalizations {
   String get mapSeamarks => 'Pomorske oznake';
 
   @override
+  String get mapDepths => 'Dubine';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Dubina ovdje: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Nema podataka o dubini za ovu točku';
+
+  @override
+  String get mapStationNone => 'U ovom prikazu ne mjeri nijedna postaja';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Postaje: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge =>
+      'Bez signala — prikazana zadnja spremljena prognoza';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Bez signala — prognoza od $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Prognoza je stara — preuzeta $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Pojedinosti nije bilo moguće učitati.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Izvor: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Tekst je na jeziku: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Luke i sidrišta';
 
   @override
@@ -2451,7 +2500,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom Dolje se pojavljuje reprodukcija: klizačem prolaziš plovidbu kroz vrijeme i vidiš poziciju, brzinu, kurs, vjetar i tlak u bilo kojem trenutku. Crtice na klizaču su događaji — početak i kraj plovidbe, sidro, drift, MOB.\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Postaje – izmjereno: strelice u bijelom krugu su STVARNO IZMJERENE vrijednosti s postaja, ne prognoza. Stoje na svojoj postaji i ne preračunavaju se na tvoju poziciju — dodirni za ime postaje, vrijeme mjerenja i udaljenost od broda. Prognozu, valove i struje naći ćeš u kartici Vrijeme; karta ostaje za navigaciju i zapis.\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Offline karta (ikona preuzimanja) — preuzima vidljivo područje za rad bez signala, od trenutnog zumiranja tri razine dublje. Uvijek kartu i pomorske oznake; kad je uključen satelit, i snimke i njihova imena mjesta. Uz to se svaka pregledana pločica sprema automatski.\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, luke, postaje), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
+      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom Dolje se pojavljuje reprodukcija: klizačem prolaziš plovidbu kroz vrijeme i vidiš poziciju, brzinu, kurs, vjetar i tlak u bilo kojem trenutku. Crtice na klizaču su događaji — početak i kraj plovidbe, sidro, drift, MOB.\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Dubine – izobate iz EMODnet-a s dubinom u metrima. Model dna iz izmjera, NIJE pomorska karta: za planiranje plova da, za odluku „mogu li proći“ ne. Standardno isključeno; pregledane pločice spremaju se kao i ostale. Kad je sloj uključen, dodirom na kartu očitaš dubinu u toj točki (potreban je signal).\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Postaje – izmjereno: strelice u bijelom krugu su STVARNO IZMJERENE vrijednosti s postaja, ne prognoza. Stoje na svojoj postaji i ne preračunavaju se na tvoju poziciju — dodirni za ime postaje, vrijeme mjerenja i udaljenost od broda. Prognozu, valove i struje naći ćeš u kartici Vrijeme; karta ostaje za navigaciju i zapis.\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Offline karta (ikona preuzimanja) — preuzima vidljivo područje za rad bez signala, od trenutnog zumiranja tri razine dublje. Uvijek kartu i pomorske oznake; kad je uključen satelit, i snimke i njihova imena mjesta. Uz to se svaka pregledana pločica sprema automatski.\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, dubine, luke, postaje), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
 
   @override
   String get guideInstrTitle => 'Brodski instrumenti';
@@ -2494,7 +2543,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Kartica Vrijeme prikazuje prognozu na temelju vaše trenutne pozicije.\n\n• Ažurira se automatski kad se pozicija promijeni\n• Prikazuje vjetar, valove, temperaturu i uvjete za nadolazeće sate\n• Bez mreže prikazuje se zadnja spremljena prognoza\n\nSunce, Mjesec i plima:\n• Izlazak i zalazak sunca te Mjesečeva mijena izračunavaju se na uređaju — veza nije potrebna\n• Dodirnite osvježi na kartici Plima i oseka za preuzimanje sedmodnevne prognoze plime (besplatno, bez API ključa)\n• Plima se sprema u predmemoriju pa ostaje čitljiva bez mreže; kartica vas upozorava kad je prognoza stara ili preuzeta daleko odavde\n• ⚠ Visine plime su iznad srednje razine mora, ne iznad hidrografske nule — nikada ih ne koristite za izračun dubine ispod kobilice\n\nMorska struja:\n• Kartica Morska struja prikazuje stvarnu prognozu za vašu poziciju u čvorovima i smjer prema kojem struja teče\n• Na karti tipka s dvostrukom strelicom crta mrežu struja za vidljivo područje; strelice pokazuju kamo se voda kreće\n• Ne treba je brkati sa slojem Oceanske struje — to je referentna karta velikih globalnih struja';
+      'Kartica Vrijeme prikazuje prognozu na temelju vaše trenutne pozicije.\n\n• Ažurira se automatski pri promjeni pozicije\n• Na vrhu su SLUŽBENA UPOZORENJA (MeteoAlarm), ako za tvoju zemlju neka vrijede. Ne izdaje ih model, nego nacionalna meteorološka služba — u Hrvatskoj DHMZ, u Britaniji Met Office, u Švedskoj SMHI. Otvaranjem vidiš opis i uputu; ako teksta na tvom jeziku nema, aplikacija kaže na kojem jeziku ga čitaš.\n• Prognoza dolazi iz NACIONALNOG MODELA za mjesto gdje jesi — Jadran i Italija ARPAE ICON-2I, Britanija UKMO, Skandinavija MET Norway, srednja Europa ICON-D2, drugdje ECMWF. Ime modela piše ispod trenutnog vremena.\n• Kartica Postaje – izmjereno pokazuje što je netko stvarno izmjerio, s udaljenošću i vremenom mjerenja. Model i mjerenje mogu se razlikovati i za polovicu.\n• Bez signala prikazuje se zadnja spremljena prognoza, uvijek i s vremenom preuzimanja. Starija od šest sati označena je narančasto.\n\nSunce, Mjesec i plima:\n• Izlazak i zalazak sunca te Mjesečeva mijena izračunavaju se na uređaju — veza nije potrebna\n• Dodirnite osvježi na kartici Plima i oseka za preuzimanje sedmodnevne prognoze plime (besplatno, bez API ključa)\n• Plima se sprema u predmemoriju pa ostaje čitljiva bez mreže; kartica vas upozorava kad je prognoza stara ili preuzeta daleko odavde\n• ⚠ Visine plime su iznad srednje razine mora, ne iznad hidrografske nule — nikada ih ne koristite za izračun dubine ispod kobilice\n\nMorska struja:\n• Kartica Morska struja prikazuje stvarnu prognozu za vašu poziciju u čvorovima i smjer prema kojem struja teče\n• Ne treba je brkati sa slojem Oceanske struje — to je referentna karta velikih globalnih struja';
 
   @override
   String get guideSafetyMobTitle => 'MOB i sidro';

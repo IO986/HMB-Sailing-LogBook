@@ -12,6 +12,15 @@ class WeatherData {
   final int? precipitationProbability;  // 0–100 %
   final double? precipitation;          // mm
 
+  /// Kedy sa hodnota stiahla. Bez toho tab nevie povedať, aké staré dáta
+  /// ukazuje — a stará predpoveď, ktorá sa tvári ako čerstvá, je horšia než
+  /// žiadna.
+  final DateTime? downloadedAt;
+
+  /// Model, ktorý hodnotu vyrobil ("ARPAE ICON-2I · ItaliaMeteo"), alebo
+  /// `null` pri automatickom výbere Open-Meteo a pri starších záznamoch.
+  final String? modelName;
+
   const WeatherData({
     required this.time,
     required this.windSpeed,
@@ -25,6 +34,8 @@ class WeatherData {
     this.weatherCode,
     this.precipitationProbability,
     this.precipitation,
+    this.downloadedAt,
+    this.modelName,
   });
 
   int get beaufort {

@@ -65,6 +65,54 @@ class AppLocalizationsSl extends AppLocalizations {
   String get mapSeamarks => 'Pomorske oznake';
 
   @override
+  String get mapDepths => 'Globine';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Globina tukaj: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Ni podatkov o globini za to točko';
+
+  @override
+  String get mapStationNone => 'V tem pogledu ne meri nobena postaja';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Postaje: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge => 'Brez signala — zadnja shranjena napoved';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Brez signala — napoved z $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Napoved je stara — prenesena $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Podrobnosti ni bilo mogoče naložiti.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Vir: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Besedilo je v jeziku: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Pristanišča in sidrišča';
 
   @override
@@ -2445,7 +2493,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Postaje – izmerjeno: puščice v belem krogu so RESNIČNO IZMERJENE vrednosti s postaj, ne napoved. Ostanejo na svoji postaji in se ne preračunavajo na tvoj položaj — tapni za ime postaje, čas meritve in razdaljo od ladje. Napoved, valove in tokove najdeš v zavihku Vreme; zemljevid ostaja za navigacijo in zapis.\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno zemljevid in pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, postaje), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Postaje – izmerjeno: puščice v belem krogu so RESNIČNO IZMERJENE vrednosti s postaj, ne napoved. Ostanejo na svoji postaji in se ne preračunavajo na tvoj položaj — tapni za ime postaje, čas meritve in razdaljo od ladje. Napoved, valove in tokove najdeš v zavihku Vreme; zemljevid ostaja za navigacijo in zapis.\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno zemljevid in pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča, postaje), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';
@@ -2488,7 +2536,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Zavihek Vreme prikazuje napoved glede na vaš trenutni položaj.\n\n• Posodobi se samodejno, ko se položaj spremeni\n• Prikazuje veter, valove, temperaturo in razmere za prihajajoče ure\n• Brez povezave se prikaže zadnja shranjena napoved\n\nSonce, Luna in plima:\n• Sončni vzhod, zahod in Lunina mena se izračunajo v napravi — povezava ni potrebna\n• Tapnite osveži na kartici Plima in oseka za prenos sedemdnevne napovedi plime (brezplačno, brez ključa API)\n• Plima se shrani v predpomnilnik, zato ostane berljiva brez povezave; kartica vas opozori, ko je napoved stara ali prenesena daleč od tu\n• ⚠ Višine plime so nad srednjo gladino morja, ne nad hidrografsko ničlo — nikoli jih ne uporabljajte za izračun globine pod gredljem\n\nMorski tok:\n• Kartica Morski tok prikazuje dejansko napoved za vaš položaj v vozlih in smer, proti kateri tok teče\n• Na zemljevidu gumb z dvojno puščico nariše mrežo tokov za vidno območje; puščice kažejo, kam se voda giblje\n• Ne zamenjujte ga s slojem Oceanski tokovi — to je referenčna karta velikih globalnih tokov';
+      'Zavihek Vreme prikazuje napoved glede na vaš trenutni položaj.\n\n• Samodejno se posodobi ob spremembi položaja\n• Na vrhu so URADNA OPOZORILA (MeteoAlarm), če za tvojo državo katera veljajo. Ne izdaja jih model, ampak nacionalna meteorološka služba — na Hrvaškem DHMZ, v Britaniji Met Office, na Švedskem SMHI. Ob razprtju vidiš opis in navodilo; če besedila v tvojem jeziku ni, aplikacija pove, v katerem jeziku ga bereš.\n• Napoved prihaja iz NACIONALNEGA MODELA za kraj, kjer si — Jadran in Italija ARPAE ICON-2I, Britanija UKMO, Skandinavija MET Norway, srednja Evropa ICON-D2, drugod ECMWF. Ime modela je pod trenutnim vremenom.\n• Kartica Postaje – izmerjeno kaže, kaj je nekdo resnično izmeril, z razdaljo in časom meritve. Model in meritev se lahko razlikujeta tudi za polovico.\n• Brez signala se prikaže zadnja shranjena napoved, vedno tudi s časom prenosa. Starejša od šestih ur je označena oranžno.\n\nSonce, Luna in plima:\n• Sončni vzhod, zahod in Lunina mena se izračunajo v napravi — povezava ni potrebna\n• Tapnite osveži na kartici Plima in oseka za prenos sedemdnevne napovedi plime (brezplačno, brez ključa API)\n• Plima se shrani v predpomnilnik, zato ostane berljiva brez povezave; kartica vas opozori, ko je napoved stara ali prenesena daleč od tu\n• ⚠ Višine plime so nad srednjo gladino morja, ne nad hidrografsko ničlo — nikoli jih ne uporabljajte za izračun globine pod gredljem\n\nMorski tok:\n• Kartica Morski tok prikazuje dejansko napoved za vaš položaj v vozlih in smer, proti kateri tok teče\n• Ne zamenjujte ga s slojem Oceanski tokovi — to je referenčna karta velikih globalnih tokov';
 
   @override
   String get guideSafetyMobTitle => 'MOB in sidro';

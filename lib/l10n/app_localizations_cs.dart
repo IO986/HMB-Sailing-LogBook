@@ -65,6 +65,55 @@ class AppLocalizationsCs extends AppLocalizations {
   String get mapSeamarks => 'Námořní značky';
 
   @override
+  String get mapDepths => 'Hloubky';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Hloubka zde: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'Pro tento bod nejsou údaje o hloubce';
+
+  @override
+  String get mapStationNone => 'V tomto výřezu neměří žádná stanice';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Stanice: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge =>
+      'Bez signálu — zobrazena poslední uložená předpověď';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'Bez signálu — předpověď z $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Předpověď je stará — stažena $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Podrobnosti se nepodařilo načíst.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Zdroj: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Text je v jazyce: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Přístavy a kotviště';
 
   @override
@@ -2440,7 +2489,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu Dole se objeví přehrávání: posuvníkem projdeš plavbu v čase a vidíš polohu, rychlost, kurz, vítr i tlak v kterékoli chvíli. Svislé čárky na posuvníku jsou události — začátek a konec plavby, kotva, drift, MOB.\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web, hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Stanice – naměřeno: šipky v bílém terči jsou SKUTEČNĚ NAMĚŘENÉ hodnoty ze stanic, ne předpověď. Sedí na své stanici a nepřepočítávají se na tvoji polohu — ťukni a uvidíš název stanice, čas měření a její vzdálenost od lodi. Předpověď, vlny a proudy najdeš v záloźce Počasí; mapa zůstává na navigaci a záznam.\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stažení) — stáhne viditelnou oblast pro použití bez signálu, od aktuálního přiblížení o tři úrovně hlouběji. Vždy mapu a seamarky; když máš zapnutý satelit, i snímky a jejich popisky. Navíc se každá prohlížená dlaždice ukládá automaticky.\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, přístavy, stanice), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
+      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu Dole se objeví přehrávání: posuvníkem projdeš plavbu v čase a vidíš polohu, rychlost, kurz, vítr i tlak v kterékoli chvíli. Svislé čárky na posuvníku jsou události — začátek a konec plavby, kotva, drift, MOB.\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Hloubky – hloubnice z EMODnet s hloubkou v metrech. Model dna z průzkumů, NENÍ to námořní mapa: na plánování průlivu ano, na rozhodnutí „projedu tudy“ ne. Standardně vypnuto; prohlížené dlaždice se ukládají jako ostatní. Když je vrstva zapnutá, klepnutím do mapy přečteš hloubku v daném bodě (je potřeba signál).\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web, hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Stanice – naměřeno: šipky v bílém terči jsou SKUTEČNĚ NAMĚŘENÉ hodnoty ze stanic, ne předpověď. Sedí na své stanici a nepřepočítávají se na tvoji polohu — ťukni a uvidíš název stanice, čas měření a její vzdálenost od lodi. Předpověď, vlny a proudy najdeš v záloźce Počasí; mapa zůstává na navigaci a záznam.\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stažení) — stáhne viditelnou oblast pro použití bez signálu, od aktuálního přiblížení o tři úrovně hlouběji. Vždy mapu a seamarky; když máš zapnutý satelit, i snímky a jejich popisky. Navíc se každá prohlížená dlaždice ukládá automaticky.\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, hloubky, přístavy, stanice), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
 
   @override
   String get guideInstrTitle => 'Námořní přístroje';
@@ -2482,7 +2531,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'Záložka Počasí zobrazuje předpověď podle aktuální polohy.\n\n• Aktualizuje se automaticky při změně polohy\n• Zobrazuje vítr, vlny, teplotu a podmínky následujících hodin\n• Pokud nemáš internet, zobrazí se poslední uložená předpověď\n\nSlunce, měsíc a přílivy:\n• Východ, západ slunce a fáze měsíce se počítají přímo v zařízení — internet není potřeba\n• Klepnutím na obnovit v kartě Příliv/odliv stáhneš 7denní předpověď (zdarma, bez API klíče)\n• Přílivy se kešují, takže zůstanou čitelné i offline; karta tě upozorní, když je předpověď stará nebo stažená daleko odsud\n• ⚠ Výšky přílivu jsou nad střední hladinou moře, ne nad mapovým datem — nikdy je nepoužívej pro výpočet hloubky pod kýlem\n\nMořský proud:\n• Karta Mořský proud ukazuje reálnou předpověď pro tvou polohu v uzlech a směr, KAM proud teče\n• Na mapě tlačítko s dvojšipkou vykreslí mřížku proudu pro viditelnou oblast; šipky ukazují, kam se voda pohybuje\n• Nezaměňuj s vrstvou Oceánské proudy — ta je referenční mapa velkých globálních proudů';
+      'Záložka Počasí zobrazuje předpověď podle aktuální polohy.\n\n• Aktualizuje se automaticky při změně polohy\n• Nahoře jsou ÚŘEDNÍ VÝSTRAHY (MeteoAlarm), pokud pro tvoji zemi nějaké platí. Nevydává je model, ale národní meteorologická služba — v Chorvatsku DHMZ, v Británii Met Office, ve Švédsku SMHI. Rozbalením uvidíš popis a pokyn; když text ve tvém jazyce není, aplikace řekne, v jakém jazyce ho čteš.\n• Předpověď bere NÁRODNÍ MODEL podle toho, kde jsi — Jadran a Itálie ARPAE ICON-2I, Británie UKMO, Skandinávie MET Norway, střední Evropa ICON-D2, jinde ECMWF. Název modelu je vidět pod aktuálním počasím.\n• Karta Stanice – naměřeno ukazuje, co opravdu někdo naměřil, i se vzdáleností a časem měření. Model a měření se mohou lišit i o polovinu.\n• Bez signálu se zobrazí poslední uložená předpověď a vždy i to, kdy se stahovala. Předpověď starší než šest hodin se označí oranžově.\n\nSlunce, měsíc a přílivy:\n• Východ, západ slunce a fáze měsíce se počítají přímo v zařízení — internet není potřeba\n• Klepnutím na obnovit v kartě Příliv/odliv stáhneš 7denní předpověď (zdarma, bez API klíče)\n• Přílivy se kešují, takže zůstanou čitelné i offline; karta tě upozorní, když je předpověď stará nebo stažená daleko odsud\n• ⚠ Výšky přílivu jsou nad střední hladinou moře, ne nad mapovým datem — nikdy je nepoužívej pro výpočet hloubky pod kýlem\n\nMořský proud:\n• Karta Mořský proud ukazuje reálnou předpověď pro tvou polohu v uzlech a směr, KAM proud teče\n• Nezaměňuj s vrstvou Oceánské proudy — ta je referenční mapa velkých globálních proudů';
 
   @override
   String get guideSafetyMobTitle => 'MOB a kotva';

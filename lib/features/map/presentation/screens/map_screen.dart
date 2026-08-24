@@ -21,6 +21,7 @@ import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
 import '../../../../core/services/station_observation.dart';
+import '../../../../core/services/depth_probe_service.dart';
 import '../../../../core/services/tile_cache.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/utils/wind_scale.dart';
@@ -66,6 +67,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   // Pravítko / plánovanie trasy: body ťukané na mapu (so snapom na
   // existujúce waypointy), súčet NM, kurz poslednej nohy, ETA pri SOG.
   bool _rulerActive = false;
+
+  /// Beží dotaz na hĺbku — druhé ťuknutie sa ignoruje, kým sa nevráti.
+  bool _depthProbing = false;
   final List<LatLng> _rulerPoints = [];
 
   _MapPanel _openPanel = _MapPanel.none;
@@ -478,6 +482,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final followGps = mapState.followGps;
     final baseMap = mapState.baseMap;
     final showSeamarks = mapState.showSeamarks;
+    final showBathymetry = mapState.showBathymetry;
     final previewDayLogId = mapState.previewDayLogId;
     final previewCharterId = mapState.previewCharterId;
     final isPreviewing = previewDayLogId != null || previewCharterId != null;
@@ -567,7 +572,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               maxZoom: 19,
               onMapReady: _onMapReady,
               onLongPress: (_, ll) => _onMapTap(ll),
-              onTap: (_, ll) => _onRulerTap(ll),
+              onTap: (_, ll) => _onMapShortTap(ll),
               // Lock na sever (dlhé podržanie ružice) vypne gesto rotácie —
               // mapa ostane north-up, kým používateľ zámok znova neuvoľní.
               interactionOptions: InteractionOptions(
@@ -666,6 +671,34 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   keepBuffer: 4,
                 ),
               ],
+
+              // ── Izobaty (EMODnet) ────────────────────────────
+              // Pod seamarkami zámerne: bóje a svetlá sú navigačné značky a
+              // musia ostať navrchu, hĺbnice sú podklad pod nimi.
+              //
+              // WMS, nie XYZ — EMODnet dlaždicová služba dáva len nepriehľadný
+              // podklad, ktorý by prekryl mapu. Vrstva `emodnet:contours`
+              // cez WMS vracia priehľadné PNG so samotnými čiarami a
+              // popiskami hĺbky, takže sa dá položiť na OSM aj na satelit.
+              if (showBathymetry)
+                TileLayer(
+                  key: ValueKey('bathy_$_tileKey'),
+                  wmsOptions: WMSTileLayerOptions(
+                    baseUrl: 'https://ows.emodnet-bathymetry.eu/wms?',
+                    layers: const ['emodnet:contours'],
+                    version: '1.3.0',
+                  ),
+                  userAgentPackageName: 'com.hmb.sailinglog',
+                  // Nad z12 EMODnet vracia prázdnu dlaždicu — nie preto, že
+                  // by vrstva mala limit mierky, ale preto, že hustejšie
+                  // izobaty proste nemá. Bez maxNativeZoom by hĺbnice pri
+                  // priblížení ticho zmizli; takto sa posledná skutočná
+                  // úroveň roztiahne a čiara na mape ostane.
+                  maxNativeZoom: 12,
+                  tileProvider: CachingTileProvider('bathymetry'),
+                  panBuffer: 2,
+                  keepBuffer: 4,
+                ),
 
               // ── OpenSeaMap seamarky (nad satelitom aj OSM) ───
               if (showSeamarks)
@@ -1016,6 +1049,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   // inak by sa nedalo poznať, že je niečo aktívne.
                   active: _openPanel == _MapPanel.layers ||
                       showSeamarks ||
+                      showBathymetry ||
                       showMarinePois ||
                       mapState.showStationWind,
                   onPressed: () => setState(() => _openPanel =
@@ -1032,6 +1066,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     active: showSeamarks,
                     onPressed: () =>
                         ref.read(mapNotifierProvider.notifier).toggleSeamarks(),
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'bathymetry',
+                    tooltip: l.mapDepths,
+                    icon: Icons.waves,
+                    active: showBathymetry,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .toggleBathymetry(),
                   ),
                   const SizedBox(height: 8),
                   _layerFab(
@@ -1247,6 +1291,43 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
+          // ── Koľko staníc je vo výreze ─────────────────────────
+          // Meraných staníc je málo a je to vlastnosť sveta, nie appky:
+          // v Chorvátsku ich DHMZ prevádzkuje pár desiatok a METAR-y hlásia
+          // len letiská. Bez tohto počítadla vyzerá jedna značka nad Splitom
+          // ako pokazená vrstva — a žiadna značka ako vypnutá vrstva.
+          if (mapState.showStationWind)
+            Positioned(
+              top: MediaQuery.of(context).padding.top +
+                  (mapState.previewLabel != null ? 96 : 56),
+              left: 12,
+              child: Material(
+                elevation: 2,
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.sensors,
+                        size: 14,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer),
+                    const SizedBox(width: 6),
+                    Text(
+                        stationWinds.isEmpty
+                            ? l.mapStationNone
+                            : l.mapStationCount(stationWinds.length),
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSecondaryContainer)),
+                  ]),
+                ),
+              ),
+            ),
+
           // ── Prehrávanie plavby ────────────────────────────────
           // Len pri zapnutej prehliadke: pri živom trackingu sa prehráva
           // to, čo práve beží, a posuvník by nemal čo posúvať.
@@ -1372,6 +1453,43 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   /// Ťuknutie v režime pravítka: pridá bod, so snapom na blízky waypoint
   /// (do ~30 px), aby sa dala trasa plánovať presne cez uložené ciele.
+  /// Krátke ťuknutie do mapy.
+  ///
+  /// Pravítko má prednosť — keď meria, ťuknutie patrí jemu. Inak, a len
+  /// keď má skiper zapnutú vrstvu hĺbok, sa ťuknutím odmeria hĺbka dna.
+  /// Bez tej podmienky by každé zablúdené ťuknutie do mapy znamenalo dotaz
+  /// do siete, čo je na lodi bez signálu zbytočné a inde len drahé.
+  void _onMapShortTap(LatLng ll) {
+    if (_rulerActive) {
+      _onRulerTap(ll);
+      return;
+    }
+    if (ref.read(mapNotifierProvider).showBathymetry) _probeDepth(ll);
+  }
+
+  /// Odmeria hĺbku v bode a ukáže ju. Null sa hlási ako „bez údaja" —
+  /// mlčať by sa dalo zameniť za nulovú hĺbku.
+  Future<void> _probeDepth(LatLng ll) async {
+    if (_depthProbing) return;
+    setState(() => _depthProbing = true);
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final metres = await DepthProbeService().depthAt(ll);
+      if (!mounted) return;
+      final units = ref.read(unitsSyncProvider);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+        content: Text(metres == null
+            ? l.mapDepthNoData
+            : l.mapDepthHere(units.formatDepth(metres))),
+        duration: const Duration(seconds: 4),
+      ));
+    } finally {
+      if (mounted) setState(() => _depthProbing = false);
+    }
+  }
+
   void _onRulerTap(LatLng ll) {
     if (!_rulerActive) return;
     final wps = ref.read(waypointsProvider).valueOrNull ?? const <Waypoint>[];

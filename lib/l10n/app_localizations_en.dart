@@ -65,6 +65,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapSeamarks => 'Seamarks';
 
   @override
+  String get mapDepths => 'Depths';
+
+  @override
+  String mapDepthHere(String depth) {
+    return 'Depth here: $depth';
+  }
+
+  @override
+  String get mapDepthNoData => 'No depth data for this point';
+
+  @override
+  String get mapStationNone => 'No station measures in this view';
+
+  @override
+  String mapStationCount(int count) {
+    return 'Stations: $count';
+  }
+
+  @override
+  String weatherModelSource(String model) {
+    return 'Model: $model';
+  }
+
+  @override
+  String get weatherOfflineNoAge =>
+      'No signal — showing the last saved forecast';
+
+  @override
+  String weatherOfflineSince(String when) {
+    return 'No signal — forecast from $when';
+  }
+
+  @override
+  String weatherStaleSince(String when) {
+    return 'Forecast is old — downloaded $when';
+  }
+
+  @override
+  String get warningNoDetail => 'Details could not be loaded.';
+
+  @override
+  String get warningSourceMeteoalarm => 'Source: MeteoAlarm';
+
+  @override
+  String warningLanguageNote(String lang) {
+    return 'Text is in: $lang';
+  }
+
+  @override
   String get mapHarbours => 'Harbours & anchorages';
 
   @override
@@ -2441,7 +2490,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Stations – measured: arrows in a white disc are values ACTUALLY MEASURED at weather stations, not a forecast. They sit at their station and are never carried over to your position — tap one for the station name, time of the reading and its distance from the boat. Forecast, waves and currents live in the Weather tab; the map stays for navigation and the record.\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the map and seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, harbours, stations), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Stations – measured: arrows in a white disc are values ACTUALLY MEASURED at weather stations, not a forecast. They sit at their station and are never carried over to your position — tap one for the station name, time of the reading and its distance from the boat. Forecast, waves and currents live in the Weather tab; the map stays for navigation and the record.\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the map and seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours, stations), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -2483,7 +2532,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideWeatherBody =>
-      'The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• Shows wind, waves, temperature and conditions for the coming hours\n• If offline, the last saved forecast is displayed\n\nSun, moon and tides:\n• Sunrise, sunset and the moon phase are calculated on the device — no connection needed\n• Tap refresh on the Tide card to download a 7-day tide forecast (free, no API key)\n• Tides are cached, so they stay readable offline; the card warns you when the forecast is old or was downloaded far from here\n• ⚠ Tide heights are above mean sea level, not chart datum — never use them to work out depth under the keel\n\nSea current:\n• The Sea current card shows the real forecast for your position in knots, and the direction the current sets toward\n• On the map, the double-arrow button draws a current grid for the visible area; the arrows point the way the water moves\n• Not to be confused with the Ocean currents layer — that one is a reference chart of the great global currents';
+      'The Weather tab shows the forecast based on your current position.\n\n• Updates automatically when your position changes\n• OFFICIAL WARNINGS (MeteoAlarm) sit at the top whenever any apply to your country. They are not issued by a model but by the national weather service — DHMZ in Croatia, the Met Office in Britain, SMHI in Sweden. Expand one for the description and the advice; if there is no text in your language, the app says which language you are reading.\n• The forecast comes from the NATIONAL MODEL for where you are — ARPAE ICON-2I for the Adriatic and Italy, UKMO for Britain, MET Norway for Scandinavia, ICON-D2 for central Europe, ECMWF elsewhere. The model is named under the current conditions.\n• The Stations – measured card shows what someone actually measured, with the distance and the time of the reading. Model and measurement can differ by half, and seeing both side by side is the only way to notice.\n• With no signal the last saved forecast is shown, always together with when it was downloaded. Anything older than six hours is flagged in orange.\n\nSun, moon and tides:\n• Sunrise, sunset and the moon phase are calculated on the device — no connection needed\n• Tap refresh on the Tide card to download a 7-day tide forecast (free, no API key)\n• Tides are cached, so they stay readable offline; the card warns you when the forecast is old or was downloaded far from here\n• ⚠ Tide heights are above mean sea level, not chart datum — never use them to work out depth under the keel\n\nSea current:\n• The Sea current card shows the real forecast for your position in knots, and the direction the current sets toward\n• Not to be confused with the Ocean currents layer — that one is a reference chart of the great global currents';
 
   @override
   String get guideSafetyMobTitle => 'MOB & Anchor';

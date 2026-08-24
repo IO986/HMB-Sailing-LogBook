@@ -143,23 +143,40 @@ final stationWindProvider =
   if (!show) return const [];
 
   final db = ref.watch(databaseProvider);
+  final bounds = ref.watch(mapViewBoundsProvider);
+
+  // Obe siete naraz. Kým sa čakalo najprv na DHMZ (dva XML feedy, každý až
+  // dvadsať sekúnd na timeoute), METAR sa rozbiehal až po nich — na slabom
+  // spojení sa prvá značka objavila skoro minútu po posune mapy, čo vyzerá
+  // ako pokazená vrstva.
+  final metarFuture = bounds == null
+      ? Future.value(const <StationObservation>[])
+      : MetarObservationService().fetchForBounds(bounds);
   // Sieť nie je podmienka: keď nejde, ostane posledná keš.
-  await DhmzObservationService().sync();
+  final dhmzSync = DhmzObservationService().sync();
+
+  var cached = await db.getDhmzObservations();
+  // Prázdna keš je len pri prvom spustení; vtedy sa na sťahovanie počká,
+  // inak by prvý pohľad na Jadran ukázal iba letiská.
+  if (cached.isEmpty) {
+    await dhmzSync;
+    cached = await db.getDhmzObservations();
+  }
+
   final dhmz = [
-    for (final o in await db.getDhmzObservations())
+    for (final o in cached)
       if (o.windSpeedKnots != null) StationObservation.fromDhmz(o),
   ];
+  final metar = await metarFuture;
 
-  final bounds = ref.watch(mapViewBoundsProvider);
-  final metar = bounds == null
-      ? const <StationObservation>[]
-      : await MetarObservationService().fetchForBounds(bounds);
-
-  return mergeObservations(
+  final merged = mergeObservations(
     primary: dhmz,
     secondary: [for (final o in metar) if (o.windSpeedKnots != null) o],
     maxAge: DhmzObservationService.maxAge,
   );
+  debugPrint('[STATIONS] ${merged.length} shown '
+      '(dhmz ${dhmz.length}, metar ${metar.length})');
+  return merged;
 });
 
 class MapNotifier extends Notifier<MapState> {
@@ -167,6 +184,7 @@ class MapNotifier extends Notifier<MapState> {
   static const _kSeamarks = 'map_show_seamarks';
   static const _kMarinePois = 'map_show_marine_pois';
   static const _kStationWind = 'map_show_station_wind';
+  static const _kBathymetry = 'map_show_bathymetry';
 
   // Kľúče zrušených vrstiev počasia ('map_weather_overlay', 'map_show_wind_grid',
   // 'map_show_ocean_currents', 'map_show_current_grid', 'map_show_rain_radar')
@@ -192,6 +210,7 @@ class MapNotifier extends Notifier<MapState> {
       showSeamarks: p.getBool(_kSeamarks) ?? state.showSeamarks,
       showMarinePois: p.getBool(_kMarinePois) ?? state.showMarinePois,
       showStationWind: p.getBool(_kStationWind) ?? state.showStationWind,
+      showBathymetry: p.getBool(_kBathymetry) ?? state.showBathymetry,
       showBearings: p.getBool(_kBearings) ?? state.showBearings,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
       northLocked: p.getBool(_kNorthLocked) ?? state.northLocked,
@@ -207,6 +226,7 @@ class MapNotifier extends Notifier<MapState> {
     await p.setBool(_kSeamarks, state.showSeamarks);
     await p.setBool(_kMarinePois, state.showMarinePois);
     await p.setBool(_kStationWind, state.showStationWind);
+    await p.setBool(_kBathymetry, state.showBathymetry);
     await p.setBool(_kBearings, state.showBearings);
     await p.setBool(_kFollowGps, state.followGps);
     await p.setBool(_kNorthLocked, state.northLocked);
@@ -221,6 +241,11 @@ class MapNotifier extends Notifier<MapState> {
   void setFollowGps(bool v) {
     debugPrint('[MAP] setFollowGps($v) called, was ${state.followGps}');
     state = state.copyWith(followGps: v);
+    _persist();
+  }
+
+  void toggleBathymetry() {
+    state = state.copyWith(showBathymetry: !state.showBathymetry);
     _persist();
   }
 
@@ -283,6 +308,7 @@ class MapNotifier extends Notifier<MapState> {
         showSeamarks: state.showSeamarks,
         showMarinePois: state.showMarinePois,
         showStationWind: state.showStationWind,
+        showBathymetry: state.showBathymetry,
         followGps: state.followGps,
         northLocked: state.northLocked,
         baseMap: state.baseMap,
@@ -334,6 +360,17 @@ class MapState {
   /// z toho spraviť údaj a nie dohad.
   final bool showStationWind;
 
+  /// Izobaty z EMODnet Bathymetry — hĺbnice s popiskom hĺbky.
+  ///
+  /// Vypnuté od začiatku: je to sieťová vrstva navyše a nad plytkým pobrežím
+  /// pridá do mapy čiary, ktoré tam väčšinu času nikto nepotrebuje. Kto
+  /// pláva mimo vyznačených trás, si ju zapne.
+  ///
+  /// NIE JE to náhrada za námornú mapu — EMODnet je zjednotený model dna z
+  /// prieskumov rôzneho veku a rozlíšenia, nie hydrografické dielo. Na
+  /// plánovanie prielivu áno, na rozhodnutie „prejdem tadiaľ" nie.
+  final bool showBathymetry;
+
   /// Zámerné priamky z námerového kompasu vrátane krížového fixu.
   ///
   /// Zapnuté od začiatku: keď si skiper dá prácu s odčítaním kurzu, čiara
@@ -360,6 +397,7 @@ class MapState {
     this.showSeamarks = true,
     this.showMarinePois = false,
     this.showStationWind = false,
+    this.showBathymetry = false,
     this.showBearings = true,
     this.followGps = true,
     this.northLocked = false,
@@ -372,6 +410,7 @@ class MapState {
     bool? showSeamarks,
     bool? showMarinePois,
     bool? showStationWind,
+    bool? showBathymetry,
     bool? showBearings,
     bool? followGps,
     bool? northLocked,
@@ -384,6 +423,7 @@ class MapState {
         showSeamarks: showSeamarks ?? this.showSeamarks,
         showMarinePois: showMarinePois ?? this.showMarinePois,
         showStationWind: showStationWind ?? this.showStationWind,
+        showBathymetry: showBathymetry ?? this.showBathymetry,
         showBearings: showBearings ?? this.showBearings,
         followGps: followGps ?? this.followGps,
         northLocked: northLocked ?? this.northLocked,
