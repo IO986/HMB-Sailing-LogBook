@@ -1,0 +1,52 @@
+HMB Sailing Logbook is a ship's log for skippers, crews and charter boats. It works without a signal — writing a record never waits for the network.
+
+LOGBOOK
+• Voyages with full vessel and crew details
+• Entries written automatically from GPS, or by hand
+• Weather, sea state, ports, distances and skipper's notes
+• Your track on the chart, offline too
+
+GPS TRACKING
+• Position tracking under way
+• Automatic entries at the interval you choose
+• Export the track as GPX, import tracks from elsewhere
+• Raymarine Wi-Fi gateway (NMEA 0183) — with boat instruments connected the phone's GPS shuts down and the readings come from them
+
+SAFETY
+• MOB (man overboard) — records the position, counts the time and the distance back
+• Anchor alarm — warns when the boat leaves the circle you set
+• Safety briefing signed by the crew on screen
+• MAYDAY procedure, COLREG rules, flag signals, day shapes, Morse converter
+
+BEARING COMPASS
+• Take bearings through the camera — point the phone at a landmark or a vessel
+• Tilt-compensated magnetic heading
+• Fix your position by crossing several bearings
+
+WATCHES AND MILES
+• Crew watch roster with hours served
+• Mile book — miles sailed, night passages, crew certificates
+• Add older voyages retrospectively
+
+WEATHER AND SEA
+• Forecast for where you are: wind, waves, temperature, precipitation
+• Tides and ocean currents
+
+PDF EXPORT
+• The log with track, entries, photos and charts
+• Safety briefing page signed by the whole crew
+• Unique document ID (e.g. HMBSL-5-2026) and revision number
+• QR code carrying a cryptographic fingerprint, so the document can be checked for tampering
+
+BACKUP AND CLOUD
+• Back up the whole logbook to a file
+• Optional automatic upload to your own Google Drive
+
+DISPLAY
+• Night mode — a red filter that keeps your night vision on watch
+• Date format and units are yours to set, and apply everywhere, PDF exports included
+
+LANGUAGES
+English, German, Italian, Spanish, Croatian, Czech, Slovak, Polish, Slovenian, Greek and Ukrainian.
+
+The app runs fully offline. Syncing the logbook between devices is in preparation.

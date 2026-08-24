@@ -1,0 +1,52 @@
+HMB Sailing Logbook je lodný denník pre skiperov, posádky a charterové plavidlá. Funguje aj bez signálu — zápis nikdy nečaká na sieť.
+
+DENNÍK
+• Plavby s úplným popisom plavidla a posádky
+• Záznamy automaticky cez GPS alebo ručne
+• Počasie, stav mora, prístavy, vzdialenosti a poznámky skipera
+• Trasa na mape, aj offline
+
+GPS SLEDOVANIE
+• Sledovanie polohy počas plavby
+• Automatické záznamy v nastavenom intervale
+• Export trasy do súboru GPX a import cudzích trás
+• Wi-Fi brána Raymarine (NMEA 0183) — keď sú pripojené lodné prístroje, GPS telefónu sa vypne a údaje idú z nich
+
+BEZPEČNOSŤ
+• MOB (človek cez palubu) — zapíše polohu, meria čas a vzdialenosť späť
+• Kotevný alarm — upozorní, keď loď opustí zadaný okruh
+• Bezpečnostný brífing s podpismi posádky priamo na obrazovke
+• Postup MAYDAY, pravidlá COLREG, vlajkové signály, denné znaky, prevodník Morseovej abecedy
+
+NÁMEROVÝ KOMPAS
+• Zameriavanie cez kameru — namier telefón na orientačný bod alebo plavidlo
+• Magnetický kurz kompenzovaný na náklon
+• Určenie polohy pretínaním viacerých námerov
+
+SLUŽBY A MÍLE
+• Rozpis služieb posádky s prehľadom odslúžených hodín
+• Kniha míľ — odplavené míle, nočné plavby, certifikáty posádky
+• Doplnenie starších plavieb spätne
+
+POČASIE A MORE
+• Predpoveď podľa aktuálnej polohy: vietor, vlny, teplota, zrážky
+• Príliv a odliv, morské prúdy
+
+EXPORT DO PDF
+• Denník s trasou, záznamami, fotkami a mapami
+• Strana bezpečnostného brífingu s podpismi celej posádky
+• Jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie
+• QR kód s kryptografickým odtlačkom na overenie neporušenosti dokumentu
+
+ZÁLOHA A CLOUD
+• Záloha celého denníka do súboru
+• Voliteľné automatické ukladanie na Disk Google pod tvojím účtom
+
+ZOBRAZENIE
+• Nočný režim — červený filter, aby ti počas hliadky ostalo prispôsobené videnie
+• Nastaviteľný formát dátumu a jednotky, platia všade vrátane exportu do PDF
+
+JAZYKY
+Slovenčina, čeština, angličtina, nemčina, chorvátčina, taliančina, španielčina, poľština, slovinčina, gréčtina a ukrajinčina.
+
+Aplikácia funguje plne offline. Online synchronizácia denníka medzi zariadeniami sa pripravuje.
