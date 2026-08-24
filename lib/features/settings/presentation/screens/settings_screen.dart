@@ -815,6 +815,11 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (showBackendSync)
+                  // Vetvy pod vypnutým prepínačom sú zámerne mŕtve, kým
+                  // hmba.boats nie je hotové — kód tu ostáva, aby sa dal
+                  // vrátiť prepnutím tej jednej konštanty. Bez `ignore` na
+                  // tom padá CI (`flutter analyze --no-fatal-infos`).
+                  // ignore: dead_code
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     secondary: Icon(Icons.cloud_outlined,
@@ -836,6 +841,7 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                       }
                     },
                   ),
+                // ignore: dead_code
                 if (showBackendSync && settings.enabled) ...[
                   const Divider(height: 24),
                   if (isCustom) ...[
