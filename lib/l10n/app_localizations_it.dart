@@ -1756,6 +1756,29 @@ class AppLocalizationsIt extends AppLocalizations {
   String get weatherSeaSection => 'Meteo e mare';
 
   @override
+  String get windFieldLayer => 'Campo di vento';
+
+  @override
+  String get windFieldNone => 'Vento: debole in questa vista';
+
+  @override
+  String get mapWindAtBoat =>
+      'Vento e raffiche alla posizione della barca (modello)';
+
+  @override
+  String get weatherSourceLimited =>
+      'Fonte meteo esaurita per oggi (limite giornaliero)';
+
+  @override
+  String get weatherLayerUnavailable => 'Impossibile caricare lo strato meteo';
+
+  @override
+  String get mapStationWindLayer => 'Stazioni – misurato';
+
+  @override
+  String get mapStationDistance => 'Distanza dalla barca';
+
+  @override
   String get cloudLayer => 'Nuvolosità';
 
   @override
@@ -2469,7 +2492,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Precipitazioni – uno strato colorato sulla carta secondo l\'intensità in mm/h. È una PREVISIONE da modello, non un radar, e funziona a qualsiasi zoom. Le precipitazioni misurate sono in Meteo sotto l\'icona del radar — l\'immagine ufficiale del DHMZ per Croazia e Adriatico.\n• Vento – frecce di direzione/velocità del vento (nodi) in una griglia sull\'area visibile\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) – scarica l\'area visibile (mappa + segnalamenti marittimi, zoom attuale +3 livelli) per l\'uso senza segnale; ogni tessera consultata viene inoltre salvata automaticamente\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• I livelli scelti (satellite, segnalamenti marittimi, porti, radar, vento…), l\'inseguimento GPS e il blocco del nord vengono ricordati tra un avvio e l\'altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
+      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Precipitazioni – uno strato colorato sulla carta secondo l\'intensità in mm/h. È una PREVISIONE da modello, non un radar, e funziona a qualsiasi zoom. Le precipitazioni misurate sono in Meteo sotto l\'icona del radar — l\'immagine ufficiale del DHMZ per Croazia e Adriatico.\n• Vento – frecce di direzione/velocità del vento (nodi) in una griglia sull\'area visibile\n• Accanto alla barca compaiono vento e raffica — la freccia indica DOVE soffia il vento, la doppia freccia è la raffica e il colore è quello del campo di vento. Il cuneo azzurro sulla rosa dei venti indica DA DOVE soffia. Sono valori da modello (Open-Meteo), non dagli strumenti di bordo.\n• Stazioni – misurato: le frecce in un disco bianco sono valori REALMENTE MISURATI dalle stazioni DHMZ, non un modello. Restano sulla loro stazione e non vengono riportate sulla tua posizione — tocca per nome della stazione, ora della misura e distanza dalla barca. Il modello disegna una freccia nuda, la misura una freccia nel disco.\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) – scarica l\'area visibile (mappa + segnalamenti marittimi, zoom attuale +3 livelli) per l\'uso senza segnale; ogni tessera consultata viene inoltre salvata automaticamente\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• I livelli scelti (satellite, segnalamenti marittimi, porti, radar, vento…), l\'inseguimento GPS e il blocco del nord vengono ricordati tra un avvio e l\'altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Strumenti di bordo';

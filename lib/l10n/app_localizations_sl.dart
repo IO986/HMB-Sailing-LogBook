@@ -1746,6 +1746,29 @@ class AppLocalizationsSl extends AppLocalizations {
   String get weatherSeaSection => 'Vreme in morje';
 
   @override
+  String get windFieldLayer => 'Polje vetra';
+
+  @override
+  String get windFieldNone => 'Veter: šibek v tem pogledu';
+
+  @override
+  String get mapWindAtBoat => 'Veter in sunki na poziciji ladje (model)';
+
+  @override
+  String get weatherSourceLimited =>
+      'Vir vremena je za danes izčrpan (dnevna omejitev)';
+
+  @override
+  String get weatherLayerUnavailable =>
+      'Vremenskega sloja ni bilo mogoče naložiti';
+
+  @override
+  String get mapStationWindLayer => 'Postaje – izmerjeno';
+
+  @override
+  String get mapStationDistance => 'Razdalja od ladje';
+
+  @override
   String get cloudLayer => 'Oblačnost';
 
   @override
@@ -2451,7 +2474,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Padavine – barvni sloj nad zemljevidom glede na intenzivnost v mm/h. To je NAPOVED iz modela, ne radar, in deluje pri vsaki povečavi. Izmerjene padavine najdeš v Vremenu pod ikono radarja — to je uradna slika DHMZ.\n• Veter – puščice smeri/hitrosti vetra (vozli) v mreži čez vidno območje\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) – prenese vidno območje (zemljevid + pomorske oznake, trenutna povečava +3 stopnje) za uporabo brez signala; vsaka pregledana ploščica se tudi samodejno shrani\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, radar, veter…), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Padavine – barvni sloj nad zemljevidom glede na intenzivnost v mm/h. To je NAPOVED iz modela, ne radar, in deluje pri vsaki povečavi. Izmerjene padavine najdeš v Vremenu pod ikono radarja — to je uradna slika DHMZ.\n• Veter – puščice smeri/hitrosti vetra (vozli) v mreži čez vidno območje\n• Ob ladji se odčitata veter in sunek — puščica kaže, KAM veter piha, dvojna puščica je sunek, barva pa je enaka kot v sloju vetrovnega polja. Modri klin na kompasni roži kaže, OD KOD piha. To so vrednosti iz modela (Open-Meteo), ne z ladijskih instrumentov.\n• Postaje – izmerjeno: puščice v belem krogu so RESNIČNO IZMERJENE vrednosti s postaj DHMZ, ne model. Ostanejo na svoji postaji in se ne preračunavajo na tvoj položaj — tapni za ime postaje, čas meritve in razdaljo od ladje. Model nariše golo puščico, meritev puščico v krogu.\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) – prenese vidno območje (zemljevid + pomorske oznake, trenutna povečava +3 stopnje) za uporabo brez signala; vsaka pregledana ploščica se tudi samodejno shrani\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, pristanišča, radar, veter…), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';

@@ -12,6 +12,8 @@ import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/marine_poi_service.dart';
 import '../../../core/services/ocean_current_service.dart';
 import '../../../core/services/weather_overlay_grid_service.dart';
+import '../../../core/services/dhmz_observation_service.dart';
+import '../../../core/services/wind_at_position_service.dart';
 import '../../../core/services/wind_grid_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
@@ -167,6 +169,50 @@ final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
   return WindGridService().fetchForBounds(bounds);
 });
 
+/// Vietor a nárazy v polohe lode (Open-Meteo, jedna súradnica).
+///
+/// Kľúč je poloha zaokrúhlená na stotinu stupňa (~1 km): GPS hlási novú
+/// polohu každých pár sekúnd a bez zaokrúhlenia by každá z nich vyrobila
+/// vlastného providera, hoci model by pre ne vrátil to isté číslo.
+final boatWindProvider = FutureProvider.autoDispose
+    .family<WindReading?, ({double lat, double lon})>(
+        (ref, key) async => WindAtPositionService().fetchAt(key.lat, key.lon));
+
+/// Zaokrúhlenie polohy na kľúč pre [boatWindProvider].
+({double lat, double lon}) boatWindKey(double lat, double lon) => (
+      lat: (lat * 100).roundToDouble() / 100,
+      lon: (lon * 100).roundToDouble() / 100,
+    );
+
+/// Namerané vetry zo staníc DHMZ — každá šípka na svojej stanici.
+///
+/// Toto NIE JE model: sú to hodnoty, ktoré niekto naozaj nameral, a ako také
+/// majú prednosť pred predpoveďou. Cenou je, že merajú tam, kde stoja — preto
+/// sa nič neprenáša do polohy lode a vzdialenosť si posúdi ten, kto sa pozerá.
+///
+/// Zastarané merania sa zahadzujú: feed sa môže ticho zastaviť (predpovednému
+/// feedu DHMZ sa to stalo a mesiace vracal dva mesiace staré dáta).
+final stationWindProvider =
+    FutureProvider<List<DhmzObservation>>((ref) async {
+  final show =
+      ref.watch(mapNotifierProvider.select((s) => s.showStationWind));
+  if (!show) return const [];
+
+  final db = ref.watch(databaseProvider);
+  // Sieť nie je podmienka: keď nejde, ostane posledná keš v databáze.
+  await DhmzObservationService().sync();
+
+  final now = DateTime.now().toUtc();
+  final all = await db.getDhmzObservations();
+  return [
+    for (final o in all)
+      if (o.windSpeedKnots != null &&
+          now.difference(o.observedAt.toUtc()).abs() <=
+              DhmzObservationService.maxAge)
+        o,
+  ];
+});
+
 /// Mriežka šípok reálneho morského prúdu pre viditeľný výrez (Open-Meteo).
 /// Odlišná od [MapState.showOceanCurrents], ktorá kreslí curated globálne
 /// prúdy — táto je predpoveď pre práve zobrazené miesto.
@@ -183,6 +229,7 @@ class MapNotifier extends Notifier<MapState> {
   static const _kSeamarks = 'map_show_seamarks';
   static const _kMarinePois = 'map_show_marine_pois';
   static const _kWeatherOverlay = 'map_weather_overlay';
+  static const _kStationWind = 'map_show_station_wind';
 
   /// Starý kľúč z čias, keď vrstva bola len zapnutá/vypnutá (RainViewer).
   static const _kLegacyRainRadar = 'map_show_rain_radar';
@@ -223,6 +270,7 @@ class MapNotifier extends Notifier<MapState> {
       showWindGrid: p.getBool(_kWindGrid) ?? state.showWindGrid,
       showOceanCurrents: p.getBool(_kOceanCurrents) ?? state.showOceanCurrents,
       showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
+      showStationWind: p.getBool(_kStationWind) ?? state.showStationWind,
       showBearings: p.getBool(_kBearings) ?? state.showBearings,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
       northLocked: p.getBool(_kNorthLocked) ?? state.northLocked,
@@ -241,6 +289,7 @@ class MapNotifier extends Notifier<MapState> {
     await p.setBool(_kWindGrid, state.showWindGrid);
     await p.setBool(_kOceanCurrents, state.showOceanCurrents);
     await p.setBool(_kCurrentGrid, state.showCurrentGrid);
+    await p.setBool(_kStationWind, state.showStationWind);
     await p.setBool(_kBearings, state.showBearings);
     await p.setBool(_kFollowGps, state.followGps);
     await p.setBool(_kNorthLocked, state.northLocked);
@@ -292,6 +341,11 @@ class MapNotifier extends Notifier<MapState> {
     _persist();
   }
 
+  void toggleStationWind() {
+    state = state.copyWith(showStationWind: !state.showStationWind);
+    _persist();
+  }
+
   void toggleBearings() {
     state = state.copyWith(showBearings: !state.showBearings);
     _persist();
@@ -338,6 +392,7 @@ class MapNotifier extends Notifier<MapState> {
         showWindGrid: state.showWindGrid,
         showOceanCurrents: state.showOceanCurrents,
         showCurrentGrid: state.showCurrentGrid,
+        showStationWind: state.showStationWind,
         followGps: state.followGps,
         northLocked: state.northLocked,
         baseMap: state.baseMap,
@@ -395,6 +450,14 @@ class MapState {
   /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
   final bool showCurrentGrid;
 
+  /// Namerané vetry z pozemných staníc DHMZ, každý na svojej stanici.
+  ///
+  /// Vedome sa NEINTERPOLUJE do polohy lode: stanica sto míľ ďaleko meria
+  /// presne, ale inde, a v Jadrane sa bura aj maestral menia po desiatkach
+  /// kilometrov. Nechať šípku sedieť na svojej stanici je jediný spôsob, ako
+  /// z toho spraviť údaj a nie dohad.
+  final bool showStationWind;
+
   /// Zámerné priamky z námerového kompasu vrátane krížového fixu.
   ///
   /// Zapnuté od začiatku: keď si skiper dá prácu s odčítaním kurzu, čiara
@@ -424,6 +487,7 @@ class MapState {
     this.showWindGrid = false,
     this.showOceanCurrents = false,
     this.showCurrentGrid = false,
+    this.showStationWind = false,
     this.showBearings = true,
     this.followGps = true,
     this.northLocked = false,
@@ -439,6 +503,7 @@ class MapState {
     bool? showWindGrid,
     bool? showOceanCurrents,
     bool? showCurrentGrid,
+    bool? showStationWind,
     bool? showBearings,
     bool? followGps,
     bool? northLocked,
@@ -454,6 +519,7 @@ class MapState {
         showWindGrid: showWindGrid ?? this.showWindGrid,
         showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
         showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
+        showStationWind: showStationWind ?? this.showStationWind,
         showBearings: showBearings ?? this.showBearings,
         followGps: followGps ?? this.followGps,
         northLocked: northLocked ?? this.northLocked,

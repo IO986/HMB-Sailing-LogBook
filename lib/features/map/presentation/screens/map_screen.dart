@@ -22,6 +22,7 @@ import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
 import '../../../../core/services/ocean_current_service.dart';
 import '../../../../core/services/tile_cache.dart';
+import '../../../../core/services/wind_at_position_service.dart';
 import '../../../../core/services/wind_grid_service.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/config/ocean_currents_content.dart';
@@ -221,6 +222,68 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   /// Detail zamerania po ťuknutí na jeho hrot.
+  /// Detail meranej stanice.
+  ///
+  /// Vzdialenosť od lode je tu zámerne: hodnota je nameraná, ale inde, a bez
+  /// vzdialenosti sa nedá posúdiť, či to ešte niečo hovorí o mieste, kde loď
+  /// naozaj je.
+  void _showStationSheet(DhmzObservation o) {
+    final l = AppLocalizations.of(context);
+    final units = ref.read(unitsSyncProvider);
+    final fix = LocationService().lastPosition;
+    final distanceNm = fix == null
+        ? null
+        : DistanceCalculator.distanceNm(
+            fix.latitude, fix.longitude, o.latitude, o.longitude);
+
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Row(children: [
+              const Icon(Icons.sensors, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(o.station,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+            ]),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(l.weatherSourceStationUnknown,
+                  style: TextStyle(
+                      fontSize: 12, color: Theme.of(context).hintColor)),
+            ),
+            const Divider(height: 20),
+            _bearingDetailRow(l.wind, units.formatSpeed(o.windSpeedKnots, decimals: 1)),
+            if (o.windDirectionDeg != null)
+              _bearingDetailRow(l.windDir, _formatDegrees(o.windDirectionDeg!)),
+            if (o.airTemp != null)
+              _bearingDetailRow(l.temperature, '${o.airTemp!.toStringAsFixed(1)} °C'),
+            if (o.airPressure != null)
+              _bearingDetailRow(l.pressureLabel, '${o.airPressure!.toStringAsFixed(1)} hPa'),
+            if (distanceNm != null)
+              _bearingDetailRow(l.mapStationDistance,
+                  units.formatDistance(distanceNm, decimals: 1)),
+            _bearingDetailRow(
+                l.timeCol, AppDate.of(context, ref).shortWithTime(o.observedAt)),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(l.radarSourceDhmz,
+                  style: TextStyle(
+                      fontSize: 11, color: Theme.of(context).hintColor)),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+
   void _showBearingSheet(Bearing bearing) {
     final l = AppLocalizations.of(context);
     showModalBottomSheet(
@@ -444,16 +507,64 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // Suchý (alebo úplne jasný) deň vyzerá presne ako pokazená vrstva. Keď sa
     // dáta načítali a nikde nič nie je, treba to povedať — inak si používateľ
     // myslí, že appka nefunguje.
+    // „Nikde neprší" sa smie napísať len vtedy, keď mriežka NAOZAJ dorazila
+    // a je pod prahom. Chýbajúce dáta sa predtým počítali ako prázdna
+    // obloha, takže vyčerpaný limit API vyzeral ako jasný deň — appka
+    // tvrdila niečo, čo nevedela.
+    final overlayData = overlayField.valueOrNull;
     final overlayEmpty = overlay != WeatherOverlay.none &&
         overlayField.hasValue &&
-        (overlayField.valueOrNull?.isEmpty ?? true);
+        overlayData != null &&
+        overlayData.isEmpty;
+    final overlayNoData = overlay != WeatherOverlay.none &&
+        overlayField.hasValue &&
+        overlayData == null;
+    final overlayLimited = WeatherOverlayGridService().isRateLimited;
+    // Vietor a nárazy v polohe lode: jedna súradnica, obnova raz za štvrť
+    // hodiny alebo po piatich kilometroch (viď WindAtPositionService).
+    // Poloha sa berie z posledného známeho fixu, nie zo streamu — odčet sa
+    // nemusí prekresľovať pri každom tiknutí GPS, model má rovnakú hodnotu
+    // pre celé okolie.
+    // Odčet patrí k lodi, ale loď býva mimo výrez — vtedy sa berie stred
+    // mapy, aby vietor nezmizol pri prezeraní inej oblasti. Buď tak, alebo
+    // by vrstva vetra farbila Jadran a jediné číslo na obrazovke by ostalo
+    // schované sto míľ za okrajom.
+    final viewBounds = ref.watch(mapViewBoundsProvider);
+    final boatFix = LocationService().lastPosition;
+    final boatVisible = boatFix != null &&
+        viewBounds != null &&
+        viewBounds.contains(LatLng(boatFix.latitude, boatFix.longitude));
+    final windAnchor = boatVisible
+        ? LatLng(boatFix.latitude, boatFix.longitude)
+        : (viewBounds?.center ??
+            (boatFix == null
+                ? null
+                : LatLng(boatFix.latitude, boatFix.longitude)));
+    final boatWind = windAnchor == null
+        ? null
+        : ref
+            .watch(boatWindProvider(
+                boatWindKey(windAnchor.latitude, windAnchor.longitude)))
+            .valueOrNull;
     final windPoints = mapState.showWindGrid
         ? (ref.watch(windGridProvider).valueOrNull ?? const <WindPoint>[])
         : const <WindPoint>[];
+    final stationWinds =
+        ref.watch(stationWindProvider).valueOrNull ?? const <DhmzObservation>[];
     final currentPoints = mapState.showCurrentGrid
         ? (ref.watch(currentGridProvider).valueOrNull ??
             const <SeaCurrentPoint>[])
         : const <SeaCurrentPoint>[];
+
+    // Leží na mape práve teraz niečo z Open-Meteo? Atribúcia sa podľa toho
+    // doplní — trvalý nápis na mape, kde model nie je, by len klamal.
+    final weatherSources = <String>{
+      if (overlay != WeatherOverlay.none ||
+          mapState.showWindGrid ||
+          mapState.showCurrentGrid)
+        'Open-Meteo',
+      if (boatWind != null) boatWind.source.attribution,
+    };
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -667,6 +778,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       width: 46,
                       height: 46,
                       child: _WindArrow(point: w),
+                    ),
+                ]),
+
+              // ── Namerané vetry zo staníc DHMZ ────────────────
+              // Kreslia sa NAD modelovými mriežkami: keď sa prekryjú, hore
+              // patrí to, čo niekto nameral, nie to, čo model odhadol.
+              if (stationWinds.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (final o in stationWinds)
+                    Marker(
+                      point: LatLng(o.latitude, o.longitude),
+                      width: 54,
+                      height: 54,
+                      child: _StationWindMarker(
+                        observation: o,
+                        onTap: () => _showStationSheet(o),
+                      ),
                     ),
                 ]),
 
@@ -949,6 +1077,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       ),
                 ]),
 
+              // ── Odčet vetra ─────────────────────────────────
+              // Vľavo od kotvy (loď, alebo stred výrezu, keď je loď mimo);
+              // kotvený pravým okrajom, aby šípky značku lode neprekryli.
+              if (boatWind != null && windAnchor != null)
+                MarkerLayer(markers: [
+                  Marker(
+                    point: windAnchor,
+                    width: 132, height: 64,
+                    // Ľavé zarovnanie kladie kotvu na ĽAVÝ okraj widgetu,
+                    // takže obsah leží vpravo od nej — čísla sú zarovnané
+                    // doľava, aby začínali tesne pri lodi.
+                    alignment: Alignment.centerLeft,
+                    child: _WindReadout(reading: boatWind),
+                  ),
+                ]),
+
               // ── GPS pozícia ──────────────────────────────────
               // GPS marker - vždy aktívny cez LocationService
               StreamBuilder<Position>(
@@ -989,6 +1133,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             left: 12,
             child: _NorthResetButton(
               rotationDeg: _mapRotationDeg,
+              windDirDeg: boatWind?.dirDeg,
               locked: mapState.northLocked,
               onTap: () {
                 _mapController.rotate(0);
@@ -1116,6 +1261,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         .setWeatherOverlay(WeatherOverlay.cloud),
                   ),
                   const SizedBox(height: 8),
+                  // Vietor ako farebná plocha. Šípky nižšie ostávajú a kreslia sa
+                  // navrchu — plocha ukáže, kde vietor zosilňuje, šípky smer
+                  // a číslo. Jedno bez druhého je polovičná informácia.
+                  _layerFab(
+                    heroTag: 'windField',
+                    tooltip: l.windFieldLayer,
+                    icon: Icons.waves,
+                    active: overlay == WeatherOverlay.wind,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .setWeatherOverlay(WeatherOverlay.wind),
+                  ),
+                  const SizedBox(height: 8),
                   _layerFab(
                     heroTag: 'wind',
                     tooltip: l.wind,
@@ -1129,6 +1287,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             _mapController.camera.visibleBounds;
                       }
                     },
+                  ),
+                  const SizedBox(height: 8),
+                  _layerFab(
+                    heroTag: 'stationWind',
+                    tooltip: l.mapStationWindLayer,
+                    icon: Icons.sensors,
+                    active: mapState.showStationWind,
+                    onPressed: () => ref
+                        .read(mapNotifierProvider.notifier)
+                        .toggleStationWind(),
                   ),
                   const SizedBox(height: 8),
                   _layerFab(
@@ -1339,10 +1507,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
-          // ── "Nikde neprší" ────────────────────────────────────
-          if (overlayEmpty)
+          // ── "Nikde neprší" / zdroj nedostupný ─────────────────
+          // Odsadenie ide od bezpečnej zóny, nie od hrany displeja: pri
+          // pevnej hodnote 56 padol nápis rovno na ružicu kompasu.
+          if (overlayEmpty || overlayNoData)
             Positioned(
-              top: mapState.previewLabel != null ? 96 : 56,
+              top: MediaQuery.of(context).padding.top +
+                  (mapState.previewLabel != null ? 96 : 56),
               left: 12,
               child: Material(
                 elevation: 2,
@@ -1353,17 +1524,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(
-                        overlay == WeatherOverlay.cloud
-                            ? Icons.cloud_outlined
-                            : Icons.water_drop_outlined,
+                        overlayNoData
+                            ? Icons.cloud_off
+                            : switch (overlay) {
+                                WeatherOverlay.cloud => Icons.cloud_outlined,
+                                WeatherOverlay.wind => Icons.waves,
+                                _ => Icons.water_drop_outlined,
+                              },
                         size: 14,
                         color:
                             Theme.of(context).colorScheme.onSecondaryContainer),
                     const SizedBox(width: 6),
                     Text(
-                        overlay == WeatherOverlay.cloud
-                            ? l.cloudNone
-                            : l.precipitationNone,
+                        overlayNoData
+                            ? (overlayLimited
+                                ? l.weatherSourceLimited
+                                : l.weatherLayerUnavailable)
+                            : switch (overlay) {
+                                WeatherOverlay.cloud => l.cloudNone,
+                                WeatherOverlay.wind => l.windFieldNone,
+                                _ => l.precipitationNone,
+                              },
                         style: TextStyle(
                             fontSize: 12,
                             color: Theme.of(context)
@@ -1429,21 +1610,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ]),
           ),
 
-          // ── Attribution ──────────────────────────────────────
-          if (baseMap == BaseMap.satellite)
-            Positioned(
-              bottom: 4,
-              left: 4,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                color: Colors.white.withOpacity(0.7),
-                child: const Text(
-                  'Tiles © Esri — Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, '
-                  'AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo',
-                  style: TextStyle(fontSize: 8, color: Colors.black54),
+          // ── Atribúcia zdrojov ────────────────────────────────
+          // Podklad aj počasie na jednom riadku. Nie je to zdvorilosť:
+          // OpenStreetMap aj Open-Meteo uvedenie zdroja vyžadujú, a keď na
+          // mape ležia dáta z modelu, používateľ má vidieť, čí model to je.
+          Positioned(
+            bottom: 4,
+            left: 4,
+            right: 4,
+            child: Row(children: [
+              Flexible(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  color: Colors.white.withValues(alpha: 0.7),
+                  child: Text(
+                    [
+                      if (baseMap == BaseMap.satellite)
+                        'Tiles © Esri — Esri, DigitalGlobe, GeoEye, i-cubed, '
+                            'USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, '
+                            'IGP, swisstopo'
+                      else
+                        '© OpenStreetMap',
+                      for (final source in weatherSources) source,
+                    ].join(' · '),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 8, color: Colors.black54),
+                  ),
                 ),
               ),
-            ),
+            ]),
+          ),
         ],
       ),
     );
@@ -1793,13 +1991,10 @@ class _WindArrow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kn = point.speedKn;
-    final color = kn < 10
-        ? Colors.green.shade600
-        : kn < 20
-            ? Colors.amber.shade700
-            : kn < 30
-                ? Colors.orange.shade800
-                : Colors.red.shade700;
+    // Tá istá stupnica, akou vietor farbí plochu aj odčet pri lodi. Kým mala
+    // mriežka vlastné prahy, ukazovala tá istá rýchlosť inú farbu na šípke a
+    // inú pod ňou na mape.
+    final color = windColor(kn);
     // Bez pozadia aj bez Icon shadows (tieň rotovanej ikony sa na Androide
     // kreslí posunutý — vyzerá ako fantómová šípka).
     return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -1828,14 +2023,18 @@ class _CurrentArrowMarker extends StatelessWidget {
   Widget build(BuildContext context) {
     final kn = point.speedKn;
     // Prúdy sú rádovo slabšie než vietor — prahy v desatinách uzla, inak by
-    // bolo všetko rovnako zelené.
+    // bola celá mriežka rovnakej farby.
+    //
+    // Modrá rodina zámerne: kým mali prúdy aj vietor zelenú, deväť šípok s
+    // číslom vyzeralo na mape rovnako a nedalo sa poznať, na ktorú vrstvu sa
+    // človek pozerá. Voda je modrá, vzduch má vlastnú stupnicu.
     final color = kn < 0.5
-        ? Colors.green.shade600
+        ? Colors.lightBlue.shade300
         : kn < 1.5
-            ? Colors.teal.shade600
+            ? Colors.cyan.shade600
             : kn < 3
-                ? Colors.orange.shade800
-                : Colors.red.shade700;
+                ? Colors.indigo.shade400
+                : Colors.purple.shade700;
 
     return Column(mainAxisSize: MainAxisSize.min, children: [
       Transform.rotate(
@@ -2042,11 +2241,16 @@ class _MobMarkerState extends State<_MobMarker>
 class _NorthResetButton extends StatelessWidget {
   final double rotationDeg;
   final bool locked;
+
+  /// Meteorologický smer vetra (odkiaľ fúka), alebo `null` keď nie je známy.
+  final double? windDirDeg;
+
   final VoidCallback onTap;
   final VoidCallback onLongPress;
   const _NorthResetButton({
     required this.rotationDeg,
     required this.locked,
+    required this.windDirDeg,
     required this.onTap,
     required this.onLongPress,
   });
@@ -2073,7 +2277,10 @@ class _NorthResetButton extends StatelessWidget {
             // ukazuje vždy na skutočný sever bez ohľadu na natočenie mapy.
             CustomPaint(
               size: const Size(44, 44),
-              painter: _CompassRosePainter(rotationDeg: rotationDeg),
+              painter: _CompassRosePainter(
+                rotationDeg: rotationDeg,
+                windDirDeg: windDirDeg,
+              ),
             ),
             if (locked)
               Positioned(
@@ -2100,7 +2307,13 @@ class _NorthResetButton extends StatelessWidget {
 /// + 4 vedľajšie hroty, s popiskou "N".
 class _CompassRosePainter extends CustomPainter {
   final double rotationDeg;
-  _CompassRosePainter({required this.rotationDeg});
+
+  /// Smer vetra na prstenci ružice — odkiaľ fúka, teda tam, kam sa skiper
+  /// pozerá, keď mu ide vietor do tváre. Kreslí sa len keď je známy;
+  /// chýbajúci údaj sa nesmie tváriť ako bezvetrie.
+  final double? windDirDeg;
+
+  _CompassRosePainter({required this.rotationDeg, this.windDirDeg});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -2151,6 +2364,20 @@ class _CompassRosePainter extends CustomPainter {
     canvas.drawPath(northSpike, northPaint);
     canvas.drawPath(northSpike, outline);
 
+    // Šípka vetra na prstenci. Kreslí sa PRED stredovým krúžkom, aby ju
+    // krúžok prekryl a nevyzerala ako ďalší hrot ružice.
+    final wind = windDirDeg;
+    if (wind != null) {
+      final wedge = spike(wind, r * 0.74, r * 0.16);
+      canvas.drawPath(wedge, Paint()..color = Colors.lightBlue.shade300);
+      canvas.drawPath(
+          wedge,
+          Paint()
+            ..color = Colors.blue.shade900
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 0.8);
+    }
+
     // Stredový krúžok.
     canvas.drawCircle(Offset.zero, r * 0.16, Paint()..color = Colors.white);
     canvas.drawCircle(Offset.zero, r * 0.16, outline);
@@ -2174,7 +2401,147 @@ class _CompassRosePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CompassRosePainter oldDelegate) =>
-      oldDelegate.rotationDeg != rotationDeg;
+      oldDelegate.rotationDeg != rotationDeg ||
+      oldDelegate.windDirDeg != windDirDeg;
+}
+
+// ── Meraná stanica ────────────────────────────────────────────
+
+/// Nameraný vietor na stanici DHMZ.
+///
+/// Odlišuje sa od modelových šípok bielym terčom: na mape musí byť na prvý
+/// pohľad vidno, čo je meranie a čo odhad. Model kreslí holú šípku, meranie
+/// šípku v terči.
+class _StationWindMarker extends ConsumerWidget {
+  final DhmzObservation observation;
+  final VoidCallback onTap;
+  const _StationWindMarker({required this.observation, required this.onTap});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final kn = observation.windSpeedKnots ?? 0;
+    final dir = observation.windDirectionDeg;
+    final units = ref.watch(unitsSyncProvider);
+    final color = windColor(kn);
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: color, width: 2),
+            boxShadow: const [
+              BoxShadow(color: Colors.black38, blurRadius: 3),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: dir == null
+              // Bezvetrie alebo chýbajúci smer — šípka by tu tvrdila niečo,
+              // čo stanica nenamerala.
+              ? Icon(Icons.circle, size: 8, color: color)
+              : Transform.rotate(
+                  angle: (dir + 180) * math.pi / 180,
+                  child: Icon(Icons.navigation, size: 18, color: color),
+                ),
+        ),
+        Text(
+          units.speedValue(kn).toStringAsFixed(0),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: color,
+            shadows: const [Shadow(color: Colors.white, blurRadius: 3)],
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+// ── Odčet vetra pri lodi ──────────────────────────────────────
+
+/// Vietor a náraz v polohe lode: šípka so smerom a číslo.
+///
+/// Šípka ukazuje, KAM vietor fúka (smer z modelu je „odkiaľ", preto sa otáča
+/// o 180°) — tak sa dá jedným pohľadom porovnať so smerom trasy. Farba je tá
+/// istá, akou pole vetra farbí mapu, aby číslo a plocha hovorili to isté.
+///
+/// Nekreslí sa žiadny rámik ani pozadie: pri značke lode je málo miesta a
+/// obdĺžnik by zakryl mapu práve tam, kde sa loď pozerá. Čitateľnosť rieši
+/// tieň pod ťahmi.
+class _WindReadout extends ConsumerWidget {
+  final WindReading reading;
+  const _WindReadout({required this.reading});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final units = ref.watch(unitsSyncProvider);
+    final gust = reading.gustKn;
+
+    Widget line(IconData icon, Color color, String text, double size) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform.rotate(
+              // Meteorologický smer je „odkiaľ", ikony ukazujú hore = na sever.
+              angle: (reading.dirDeg + 180) * math.pi / 180,
+              child: Icon(icon, size: size, color: color, shadows: const [
+                Shadow(color: Colors.black54, blurRadius: 3)
+              ]),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: size * 0.78,
+                fontWeight: FontWeight.bold,
+                color: color,
+                shadows: const [Shadow(color: Colors.black87, blurRadius: 3)],
+              ),
+            ),
+          ],
+        );
+
+    return Semantics(
+      label: l.mapWindAtBoat,
+      // Odsadenie o polomer značky lode (50 px široká) plus rezerva — bez
+      // neho číslo skončí pod modrým kruhom a nedá sa prečítať.
+      child: Padding(
+        padding: const EdgeInsets.only(right: 34),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          // Obsah pri pravom okraji widgetu, ktorý leží vľavo od kotvy —
+          // čísla tak sedia tesne pri lodi, nie odsunuté o šírku boxu.
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            line(
+              Icons.navigation,
+              windColor(reading.speedKn),
+              units.speedValue(reading.speedKn).toStringAsFixed(0),
+              22,
+            ),
+            if (gust != null) ...[
+              const SizedBox(height: 2),
+              // Dvojitá šípka odlišuje náraz od stredného vetra bez popisky —
+              // popiska by pri lodi zaberala miesto, ktoré tam nie je.
+              line(
+                Icons.keyboard_double_arrow_up,
+                windColor(gust),
+                units.formatSpeed(gust, decimals: 0),
+                20,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ── GPS Marker ────────────────────────────────────────────────

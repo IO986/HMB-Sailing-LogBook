@@ -16,7 +16,14 @@ enum WeatherOverlay {
   precipitation,
 
   /// Oblačnosť v percentách.
-  cloud;
+  cloud,
+
+  /// Rýchlosť vetra v uzloch.
+  ///
+  /// Ako plocha, nie šípky: spojité pole ukáže, kde vietor zosilňuje a kde
+  /// slabne, na čo je riedka mriežka šípok slepá. Šípky sa kreslia navrchu —
+  /// tie zas vedia smer a číslo, čo farba nepovie.
+  wind;
 
   static WeatherOverlay fromIndex(int? i) =>
       (i == null || i < 0 || i >= values.length) ? none : values[i];
@@ -100,10 +107,30 @@ class WeatherOverlayGridService {
 
   DateTime? _rateLimitedUntil;
 
+  /// Narazilo sa na denný limit API?
+  ///
+  /// Prázdna vrstva a vyčerpaný limit vyzerajú na mape rovnako — bez tohto
+  /// príznaku by appka na oboje napísala „v tomto výreze slabý vietor" a
+  /// tvrdila by tým niečo, čo nevie.
+  bool get isRateLimited {
+    final until = _rateLimitedUntil;
+    return until != null && DateTime.now().isBefore(until);
+  }
+
   /// Pod týmto sa nekreslí nič. Model dáva aj stotiny milimetra a jednotky
   /// percent oblačnosti, z ktorých by bola mapa zafarbená aj za jasného dňa.
-  static double minVisible(WeatherOverlay overlay) =>
-      overlay == WeatherOverlay.cloud ? 10 : 0.1;
+  static double minVisible(WeatherOverlay overlay) => switch (overlay) {
+        WeatherOverlay.cloud => 10,
+        // Pod dva uzly je hladina; farbiť ju by len zašpinilo mapu.
+        WeatherOverlay.wind => 2,
+        _ => 0.1,
+      };
+
+  static String _apiField(WeatherOverlay overlay) => switch (overlay) {
+        WeatherOverlay.cloud => 'cloud_cover',
+        WeatherOverlay.wind => 'wind_speed_10m',
+        _ => 'precipitation',
+      };
 
   final _cache = <WeatherOverlay, OverlayField>{};
   final _fetchedAt = <WeatherOverlay, DateTime>{};
@@ -130,8 +157,7 @@ class WeatherOverlayGridService {
       return cached;
     }
 
-    final field =
-        overlay == WeatherOverlay.cloud ? 'cloud_cover' : 'precipitation';
+    final field = _apiField(overlay);
     final padded = padBounds(bounds, _padFactor);
     final cells = gridOverBounds(padded, gridSize);
 
@@ -142,6 +168,7 @@ class WeatherOverlayGridService {
           'latitude': cells.map((c) => c.lat.toStringAsFixed(3)).join(','),
           'longitude': cells.map((c) => c.lon.toStringAsFixed(3)).join(','),
           'current': field,
+          if (overlay == WeatherOverlay.wind) 'wind_speed_unit': 'kn',
         },
       );
       // Pri viacerých súradniciach vráti Open-Meteo pole objektov,
@@ -180,10 +207,27 @@ class WeatherOverlayGridService {
 }
 
 /// Farba bunky podľa vrstvy a hodnoty.
-Color overlayColor(WeatherOverlay overlay, double value) =>
-    overlay == WeatherOverlay.cloud
-        ? _cloudColor(value)
-        : _precipitationColor(value);
+Color overlayColor(WeatherOverlay overlay, double value) => switch (overlay) {
+      WeatherOverlay.cloud => _cloudColor(value),
+      WeatherOverlay.wind => windColor(value),
+      _ => _precipitationColor(value),
+    };
+
+/// Stupnica rýchlosti vetra v uzloch.
+///
+/// Modrá pre hladinu, cez zelenú a žltú do červenej — rovnaké poradie, aké
+/// pozná každý z máp vetra, takže sa nemusí učiť nová konvencia. Prahy sedia
+/// na to, čo skipera zaujíma: 12 kn je príjemná plavba, 20 kn refovanie,
+/// 30 kn už rozhodovanie, či vôbec vyplávať.
+Color windColor(double knots) {
+  if (knots < 6) return const Color(0xFF3E7BD6);
+  if (knots < 12) return const Color(0xFF35A79C);
+  if (knots < 18) return const Color(0xFF7CB342);
+  if (knots < 24) return const Color(0xFFFDD835);
+  if (knots < 30) return const Color(0xFFFB8C00);
+  if (knots < 40) return const Color(0xFFE53935);
+  return const Color(0xFF8E24AA);
+}
 
 /// Stupnica zrážok zámerne kopíruje tú, akú používa radar DHMZ (mm/h): kto si
 /// zvykol čítať oficiálnu snímku, vidí v appke tie isté farby pre tie isté
