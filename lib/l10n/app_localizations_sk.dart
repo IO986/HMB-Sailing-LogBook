@@ -75,12 +75,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get mapRainRadar => 'Zrážkový radar';
 
   @override
-  String get mapOceanCurrentsTooltip => 'Oceánske prúdy (podrž pre zoznam)';
-
-  @override
-  String get mapCurrentForecast => 'Morský prúd — predpoveď (kt)';
-
-  @override
   String get mapTools => 'Nástroje';
 
   @override
@@ -1745,35 +1739,17 @@ class AppLocalizationsSk extends AppLocalizations {
   String get weatherSeaSection => 'Počasie a more';
 
   @override
-  String get windFieldLayer => 'Pole vetra';
-
-  @override
-  String get windFieldNone => 'Vietor: v tomto výreze slabý';
-
-  @override
-  String get mapWindAtBoat => 'Vietor a nárazy v polohe lode (model)';
-
-  @override
-  String get weatherSourceLimited =>
-      'Zdroj počasia je dnes vyčerpaný (denný limit)';
-
-  @override
-  String get weatherLayerUnavailable => 'Vrstvu počasia sa nepodarilo načítať';
-
-  @override
   String get mapStationWindLayer => 'Stanice – namerané';
 
   @override
   String get mapStationDistance => 'Vzdialenosť od lode';
 
   @override
-  String get cloudLayer => 'Oblačnosť';
+  String get windGust => 'Náraz';
 
   @override
-  String get cloudNone => 'Oblačnosť: v tomto výreze jasno';
-
-  @override
-  String get precipitationNone => 'Zrážky: v tomto výreze žiadne';
+  String get mapStationSourceMetar =>
+      'Zdroj: METAR – letiskové hlásenie (NOAA)';
 
   @override
   String get radarTitle => 'Zrážkový radar';
@@ -1787,9 +1763,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get radarSourceDhmz => 'Zdroj: DHMZ – meteo.hr';
-
-  @override
-  String get precipitationLayer => 'Zrážky (predpoveď)';
 
   @override
   String get weatherSourceInstruments => 'Namerané lodnými prístrojmi';
@@ -2471,7 +2444,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web, hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Zrážky – farebná vrstva nad mapou podľa intenzity v mm/h. Je to PREDPOVEď z modelu, nie radar, a funguje v každom pribížení. Namerané zrážky nájdeš v Počasí pod ikonou radaru — je to oficiálna snímka DHMZ pre Chorvátsko a Jadran.\n• Vietor – šípky smeru a sily vetra (uzly) v mriežke pre viditeľnú oblasť\n• Pri lodi sa odčíta vietor a náraz — šípka ukazuje, KAM vietor fúka, dvojitá šípka je náraz a farba je tá istá ako vo vrstve poľa vetra. Modrý klin na ružici kompasu ukazuje, ODKIAĽ fúka. Sú to hodnoty z modelu (Open-Meteo), nie z prístrojov na lodi.\n• Stanice – namerané: šípky v bielom terči sú SKUTOČNE NAMERANÉ hodnoty zo staníc DHMZ, nie model. Sedia na svojej stanici a neprepočítavajú sa na tvoju polohu — ťuknutím uvidíš názov stanice, čas merania a jej vzdialenosť od lode. Model kreslí holú šípku, meranie šípku v terči.\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) – stiahne viditeľnú oblasť (mapa + seamarky, aktuálny zoom +3 úrovne) na použitie bez signálu; navyše každá prezretá dlaždica sa ukladá automaticky\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, prístavy, radar, vietor…), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš';
+      'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web, hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Stanice – namerané: šípky v bielom terči sú SKUTOČNE NAMERANÉ hodnoty zo staníc, nie predpoveď. Sedia na svojej stanici a neprepočítavajú sa na tvoju polohu — ťuknutím uvidíš názov stanice, čas merania a jej vzdialenosť od lode. Predpoveď, vlny a prúdy nájdeš v záloźke Počasie; mapa ostáva na navigáciu a záznam.\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) — stiahne viditeľnú oblasť na použitie bez signálu, od aktuálneho priblíženia o tri úrovne hlbšie. Vždy mapu a seamarky; keď máš zapnutý satelit, aj snímky a ich popisky. Navyše sa každá prezretá dlaždica ukladá automaticky.\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, prístavy, stanice), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš';
 
   @override
   String get guideInstrTitle => 'Námorné prístroje';

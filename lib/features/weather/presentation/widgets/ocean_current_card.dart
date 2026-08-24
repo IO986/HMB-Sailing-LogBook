@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 
@@ -36,11 +37,23 @@ class OceanCurrentCard extends ConsumerWidget {
             Row(children: [
               const Icon(Icons.moving, size: 18, color: Colors.teal),
               const SizedBox(width: 6),
-              Text(l.oceanCurrentCardTitle,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(l.oceanCurrentCardTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+              ),
+              // Referenčný zoznam veľkých globálnych prúdov. Visel na dlhom
+              // podržaní tlačidla vrstvy v mape a s tou vrstvou by prišiel
+              // o jediný vstup — obrazovka existuje ďalej, len sa na ňu ide
+              // odtiaľto, od prúdu pre tvoju polohu.
+              IconButton(
+                icon: const Icon(Icons.public, size: 18),
+                tooltip: l.oceanCurrentsTitle,
+                visualDensity: VisualDensity.compact,
+                onPressed: () => context.push('/ocean-currents'),
+              ),
             ]),
             if (lat == null || lon == null)
               _hint(l.noSunMoonGps)

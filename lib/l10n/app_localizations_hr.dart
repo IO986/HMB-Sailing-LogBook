@@ -75,12 +75,6 @@ class AppLocalizationsHr extends AppLocalizations {
   String get mapRainRadar => 'Radar oborina';
 
   @override
-  String get mapOceanCurrentsTooltip => 'Oceanske struje (držite za popis)';
-
-  @override
-  String get mapCurrentForecast => 'Morska struja — prognoza (čv)';
-
-  @override
   String get mapTools => 'Alati';
 
   @override
@@ -1749,35 +1743,17 @@ class AppLocalizationsHr extends AppLocalizations {
   String get weatherSeaSection => 'Vrijeme i more';
 
   @override
-  String get windFieldLayer => 'Polje vjetra';
-
-  @override
-  String get windFieldNone => 'Vjetar: slab u ovom prikazu';
-
-  @override
-  String get mapWindAtBoat => 'Vjetar i udari na poziciji broda (model)';
-
-  @override
-  String get weatherSourceLimited =>
-      'Izvor vremena danas je iscrpljen (dnevno ograničenje)';
-
-  @override
-  String get weatherLayerUnavailable => 'Sloj vremena nije se mogao učitati';
-
-  @override
   String get mapStationWindLayer => 'Postaje – izmjereno';
 
   @override
   String get mapStationDistance => 'Udaljenost od broda';
 
   @override
-  String get cloudLayer => 'Naoblaka';
+  String get windGust => 'Udar';
 
   @override
-  String get cloudNone => 'Naoblaka: vedro u ovom prikazu';
-
-  @override
-  String get precipitationNone => 'Oborine: nema ih u ovom prikazu';
+  String get mapStationSourceMetar =>
+      'Izvor: METAR – zrakoplovno izvješće (NOAA)';
 
   @override
   String get radarTitle => 'Radar oborina';
@@ -1791,9 +1767,6 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get radarSourceDhmz => 'Izvor: DHMZ – meteo.hr';
-
-  @override
-  String get precipitationLayer => 'Oborine (prognoza)';
 
   @override
   String get weatherSourceInstruments => 'Izmjereno brodskim instrumentima';
@@ -2478,7 +2451,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom Dolje se pojavljuje reprodukcija: klizačem prolaziš plovidbu kroz vrijeme i vidiš poziciju, brzinu, kurs, vjetar i tlak u bilo kojem trenutku. Crtice na klizaču su događaji — početak i kraj plovidbe, sidro, drift, MOB.\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Oborine – obojani sloj nad kartom prema intenzitetu u mm/h. To je PROGNOZA iz modela, a ne radar, i radi u svakom zumu. Izmjerene oborine nađi ćeš u Vremenu pod ikonom radara — to je službena snimka DHMZ-a.\n• Vjetar – strelice smjera/brzine vjetra (čvorovi) u mreži preko vidljivog područja\n• Uz brod se očitava vjetar i udar — strelica pokazuje KAMO vjetar puše, dvostruka strelica je udar, a boja je ista kao u sloju polja vjetra. Plavi klin na ruži kompasa pokazuje ODAKLE puše. To su vrijednosti iz modela (Open-Meteo), ne s brodskih instrumenata.\n• Postaje – izmjereno: strelice u bijelom krugu su STVARNO IZMJERENE vrijednosti s postaja DHMZ-a, ne model. Stoje na svojoj postaji i ne preračunavaju se na tvoju poziciju — dodirni za ime postaje, vrijeme mjerenja i udaljenost od broda. Model crta golu strelicu, mjerenje strelicu u krugu.\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Izvanmrežna karta (ikona preuzimanja) – preuzima vidljivo područje (karta + pomorske oznake, trenutni zum +3 razine) za uporabu bez signala; svaka pregledana pločica također se automatski sprema\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, luke, radar, vjetar…), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
+      'Kartica Karta prikazuje vašu trenutnu poziciju i trag plovidbe.\n\n• Plava točka = trenutna pozicija\n• Plava linija = trag koji se trenutno bilježi\n• Ikona rute – odaberite bilo koju plovidbu ili dan za pregled traga na karti (narančasto), bez potrebe za PDF izvozom Dolje se pojavljuje reprodukcija: klizačem prolaziš plovidbu kroz vrijeme i vidiš poziciju, brzinu, kurs, vjetar i tlak u bilo kojem trenutku. Crtice na klizaču su događaji — početak i kraj plovidbe, sidro, drift, MOB.\n• Prebacivanje između satelitskog i kartografskog prikaza\n• Pomorske oznake – uključite nautičke oznake (olupine, plićine, plutače)\n• Luke – sloj sidrišta, marina i luka na dodir (podaci OpenStreetMap): dodirnite ikonu za naziv, VHF kanal, telefon, web stranicu, dubinu ili kapacitet gdje su poznati; spremite mjesto kao točku rute jednim dodirom; sloj uključuje i pumpe za gorivo (narančasta pumpa)\n• Postaje – izmjereno: strelice u bijelom krugu su STVARNO IZMJERENE vrijednosti s postaja, ne prognoza. Stoje na svojoj postaji i ne preračunavaju se na tvoju poziciju — dodirni za ime postaje, vrijeme mjerenja i udaljenost od broda. Prognozu, valove i struje naći ćeš u kartici Vrijeme; karta ostaje za navigaciju i zapis.\n• Ravnalo (ljubičasta ikona) – dodirujte točke na karti: ukupno NM, azimut zadnje dionice i ETA pri trenutnoj brzini; točke se lijepe na točke rute pa možete mjeriti rutu kroz svoje ciljeve\n• Offline karta (ikona preuzimanja) — preuzima vidljivo područje za rad bez signala, od trenutnog zumiranja tri razine dublje. Uvijek kartu i pomorske oznake; kad je uključen satelit, i snimke i njihova imena mjesta. Uz to se svaka pregledana pločica sprema automatski.\n• U noćnom načinu karta automatski prelazi na tamne pločice\n• Ikona sidra = pozicija sidrenja (samo kad je alarm sidra aktivan)\n• Ikona uvoza – učitajte tragove i točke rute iz .gpx datoteke (vidi \"GPX uvoz\")\n• Zaključavanje sjevera – dugo pritisnite ružu vjetrova (gore lijevo); karta se prestaje rotirati i ostaje sjeverom prema gore. Dodirnite je bilo kada za povratak na sjever.\n• Odabrani slojevi (satelit, pomorske oznake, luke, postaje), praćenje GPS-a i zaključavanje sjevera pamte se između pokretanja\n• Dugi pritisak na kartu = dodavanje točke rute (navigacijskog cilja); dodirnite postojeću točku za preimenovanje ili brisanje';
 
   @override
   String get guideInstrTitle => 'Brodski instrumenti';

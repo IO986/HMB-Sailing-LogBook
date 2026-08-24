@@ -128,10 +128,35 @@ class _CachedTileImage extends ImageProvider<_CachedTileImage> {
 
 /// Stiahne dlaždice regiónu pre offline použitie na mori.
 class TileRegionDownloader {
-  static const layers = {
+  /// Vrstvy, ktoré sa sťahujú vždy — mapa a námorné značky sú to, na čom sa
+  /// naviguje bez signálu.
+  static const baseLayers = {
     'osm': 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     'seamark': 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
   };
+
+  /// Satelitné snímky a ich popisky.
+  ///
+  /// Sťahujú sa len tomu, kto satelit naozaj používa: sú rádovo väčšie než
+  /// mapové dlaždice a niekomu, kto sa na satelit nikdy neprepne, by len
+  /// zabrali miesto v telefóne a čas na linke.
+  ///
+  /// Popisky sú tu s nimi zámerne. Samotné snímky nemajú jediné meno, takže
+  /// satelit bez nich je offline nemý presne vtedy, keď na názve zátoky
+  /// najviac záleží.
+  static const satelliteLayers = {
+    'satellite': 'https://server.arcgisonline.com/ArcGIS/rest/services/'
+        'World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    'sat_labels': 'https://server.arcgisonline.com/ArcGIS/rest/services/'
+        'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+  };
+
+  /// Čo sa stiahne pri danom nastavení podkladu.
+  static Map<String, String> layersFor({required bool satellite}) => {
+        ...baseLayers,
+        if (satellite) ...satelliteLayers,
+      };
+
   static const maxTiles = 6000;
 
   bool _cancelled = false;
@@ -166,10 +191,11 @@ class TileRegionDownloader {
     LatLngBounds b,
     int minZ,
     int maxZ,
-    void Function(int done, int total) onProgress,
-  ) async {
+    void Function(int done, int total) onProgress, {
+    bool satellite = false,
+  }) async {
     final jobs = <(String, String, int, int, int)>[]; // layer, url, z, x, y
-    for (final entry in layers.entries) {
+    for (final entry in layersFor(satellite: satellite).entries) {
       for (var z = minZ; z <= maxZ; z++) {
         final (x1, y1) = _tileXY(b.north, b.west, z);
         final (x2, y2) = _tileXY(b.south, b.east, z);

@@ -74,12 +74,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapRainRadar => 'Rain radar';
 
   @override
-  String get mapOceanCurrentsTooltip => 'Ocean currents (hold for list)';
-
-  @override
-  String get mapCurrentForecast => 'Sea current — forecast (kt)';
-
-  @override
   String get mapTools => 'Tools';
 
   @override
@@ -1744,35 +1738,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherSeaSection => 'Weather & sea';
 
   @override
-  String get windFieldLayer => 'Wind field';
-
-  @override
-  String get windFieldNone => 'Wind: light in this view';
-
-  @override
-  String get mapWindAtBoat => 'Wind and gusts at the boat (model)';
-
-  @override
-  String get weatherSourceLimited =>
-      'Weather source used up for today (daily limit)';
-
-  @override
-  String get weatherLayerUnavailable => 'The weather layer could not be loaded';
-
-  @override
   String get mapStationWindLayer => 'Stations – measured';
 
   @override
   String get mapStationDistance => 'Distance from the boat';
 
   @override
-  String get cloudLayer => 'Cloud cover';
+  String get windGust => 'Gust';
 
   @override
-  String get cloudNone => 'Cloud cover: clear in this view';
-
-  @override
-  String get precipitationNone => 'Precipitation: none in this view';
+  String get mapStationSourceMetar => 'Source: METAR – airport report (NOAA)';
 
   @override
   String get radarTitle => 'Precipitation radar';
@@ -1786,9 +1761,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get radarSourceDhmz => 'Source: DHMZ – meteo.hr';
-
-  @override
-  String get precipitationLayer => 'Precipitation (forecast)';
 
   @override
   String get weatherSourceInstruments => 'Measured by the boat instruments';
@@ -2469,7 +2441,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Precipitation – a colour layer over the map by intensity in mm/h. It is a FORECAST from a model, not radar, and it works at any zoom. Measured rainfall is under the radar icon in Weather — the official DHMZ image for Croatia and the Adriatic.\n• Wind – wind direction/speed arrows (knots) in a grid over the visible area\n• Wind and gust are shown next to the boat — the arrow points WHERE the wind blows to, the double arrow is the gust, and the colour matches the wind field layer. The blue wedge on the compass rose shows WHERE it blows FROM. These are model values (Open-Meteo), not readings from onboard instruments.\n• Stations – measured: arrows in a white disc are values ACTUALLY MEASURED at DHMZ stations, not a model. They sit at their station and are never carried over to your position — tap one for the station name, time of the reading and its distance from the boat. The model draws a bare arrow, a measurement draws one in a disc.\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) – downloads the visible area (map + seamarks, current zoom +3 levels) for use without signal; every browsed tile is also cached automatically\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, harbours, radar, wind…), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Stations – measured: arrows in a white disc are values ACTUALLY MEASURED at weather stations, not a forecast. They sit at their station and are never carried over to your position — tap one for the station name, time of the reading and its distance from the boat. Forecast, waves and currents live in the Weather tab; the map stays for navigation and the record.\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the map and seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, harbours, stations), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';

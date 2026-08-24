@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart' show debugPrint;
 
 import 'package:flutter_map/flutter_map.dart';
@@ -10,14 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/marine_poi_service.dart';
-import '../../../core/services/ocean_current_service.dart';
-import '../../../core/services/weather_overlay_grid_service.dart';
 import '../../../core/services/dhmz_observation_service.dart';
-import '../../../core/services/wind_at_position_service.dart';
-import '../../../core/services/wind_grid_service.dart';
+import '../../../core/services/metar_observation_service.dart';
+import '../../../core/services/station_observation.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
-import '../services/weather_overlay_raster.dart';
 
 /// Podkladová mapa: OSM/tmavá dlaždicová mapa alebo satelitné snímky.
 /// Uchováva sa ako user setting v [MapState.baseMap].
@@ -133,120 +128,50 @@ final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
   return MarinePoiService().fetchForBounds(bounds);
 });
 
-/// Mriežka zrážok pre viditeľný výrez (Open-Meteo).
-///
-/// Nahradila radarové dlaždice z RainVieweru: tie sa bez API kľúča končili
-/// pri zoome 7 a nad ním vracali obrázok s nápisom "Zoom Level Not Supported",
-/// takže vrstva sa dala použiť jedine pri pohľade na celý Jadran.
-///
-/// Je to predpoveď, nie meranie — namerané zrážky ukazuje obrazovka
-/// s radarovou snímkou DHMZ.
-final weatherOverlayFieldProvider = FutureProvider<OverlayField?>((ref) async {
-  final overlay =
-      ref.watch(mapNotifierProvider.select((s) => s.weatherOverlay));
-  if (overlay == WeatherOverlay.none) return null;
-  final bounds = ref.watch(mapViewBoundsProvider);
-  if (bounds == null) return null;
-  return WeatherOverlayGridService().fetchForBounds(bounds, overlay);
-});
-
-/// Vyhladený raster vrstvy počasia.
-///
-/// Počíta sa len keď prídu nové dáta, nie pri každom posune mapy — mapa si
-/// hotový obrázok škáluje sama.
-final weatherOverlayImageProvider = FutureProvider<Uint8List?>((ref) async {
-  final field = await ref.watch(weatherOverlayFieldProvider.future);
-  if (field == null || field.isEmpty) return null;
-  return WeatherOverlayRaster.buildPng(field);
-});
-
-/// Mriežka šípok vetra pre viditeľný výrez (Open-Meteo).
-final windGridProvider = FutureProvider<List<WindPoint>>((ref) async {
-  final show = ref.watch(mapNotifierProvider.select((s) => s.showWindGrid));
-  if (!show) return const [];
-  final bounds = ref.watch(mapViewBoundsProvider);
-  if (bounds == null) return const [];
-  return WindGridService().fetchForBounds(bounds);
-});
-
-/// Vietor a nárazy v polohe lode (Open-Meteo, jedna súradnica).
-///
-/// Kľúč je poloha zaokrúhlená na stotinu stupňa (~1 km): GPS hlási novú
-/// polohu každých pár sekúnd a bez zaokrúhlenia by každá z nich vyrobila
-/// vlastného providera, hoci model by pre ne vrátil to isté číslo.
-final boatWindProvider = FutureProvider.autoDispose
-    .family<WindReading?, ({double lat, double lon})>(
-        (ref, key) async => WindAtPositionService().fetchAt(key.lat, key.lon));
-
-/// Zaokrúhlenie polohy na kľúč pre [boatWindProvider].
-({double lat, double lon}) boatWindKey(double lat, double lon) => (
-      lat: (lat * 100).roundToDouble() / 100,
-      lon: (lon * 100).roundToDouble() / 100,
-    );
-
-/// Namerané vetry zo staníc DHMZ — každá šípka na svojej stanici.
+/// Namerané vetry zo staníc — každá šípka na svojej stanici.
 ///
 /// Toto NIE JE model: sú to hodnoty, ktoré niekto naozaj nameral, a ako také
 /// majú prednosť pred predpoveďou. Cenou je, že merajú tam, kde stoja — preto
 /// sa nič neprenáša do polohy lode a vzdialenosť si posúdi ten, kto sa pozerá.
 ///
-/// Zastarané merania sa zahadzujú: feed sa môže ticho zastaviť (predpovednému
-/// feedu DHMZ sa to stalo a mesiace vracal dva mesiace staré dáta).
+/// Dva zdroje, lebo appka nie je len pre Jadran: DHMZ pokrýva Chorvátsko
+/// hustejšie a pri pobreží, METAR pokrýva zvyšok sveta a jediný hlási nárazy.
 final stationWindProvider =
-    FutureProvider<List<DhmzObservation>>((ref) async {
+    FutureProvider<List<StationObservation>>((ref) async {
   final show =
       ref.watch(mapNotifierProvider.select((s) => s.showStationWind));
   if (!show) return const [];
 
   final db = ref.watch(databaseProvider);
-  // Sieť nie je podmienka: keď nejde, ostane posledná keš v databáze.
+  // Sieť nie je podmienka: keď nejde, ostane posledná keš.
   await DhmzObservationService().sync();
-
-  final now = DateTime.now().toUtc();
-  final all = await db.getDhmzObservations();
-  return [
-    for (final o in all)
-      if (o.windSpeedKnots != null &&
-          now.difference(o.observedAt.toUtc()).abs() <=
-              DhmzObservationService.maxAge)
-        o,
+  final dhmz = [
+    for (final o in await db.getDhmzObservations())
+      if (o.windSpeedKnots != null) StationObservation.fromDhmz(o),
   ];
-});
 
-/// Mriežka šípok reálneho morského prúdu pre viditeľný výrez (Open-Meteo).
-/// Odlišná od [MapState.showOceanCurrents], ktorá kreslí curated globálne
-/// prúdy — táto je predpoveď pre práve zobrazené miesto.
-final currentGridProvider = FutureProvider<List<SeaCurrentPoint>>((ref) async {
-  final show = ref.watch(mapNotifierProvider.select((s) => s.showCurrentGrid));
-  if (!show) return const [];
   final bounds = ref.watch(mapViewBoundsProvider);
-  if (bounds == null) return const [];
-  return OceanCurrentService().fetchForBounds(bounds);
+  final metar = bounds == null
+      ? const <StationObservation>[]
+      : await MetarObservationService().fetchForBounds(bounds);
+
+  return mergeObservations(
+    primary: dhmz,
+    secondary: [for (final o in metar) if (o.windSpeedKnots != null) o],
+    maxAge: DhmzObservationService.maxAge,
+  );
 });
 
 class MapNotifier extends Notifier<MapState> {
   // Kľúče do SharedPreferences pre uchované vrstvy/prepínače mapy.
   static const _kSeamarks = 'map_show_seamarks';
   static const _kMarinePois = 'map_show_marine_pois';
-  static const _kWeatherOverlay = 'map_weather_overlay';
   static const _kStationWind = 'map_show_station_wind';
 
-  /// Starý kľúč z čias, keď vrstva bola len zapnutá/vypnutá (RainViewer).
-  static const _kLegacyRainRadar = 'map_show_rain_radar';
-
-  /// Kto mal starý radar zapnutý, dostane zrážky — nie prázdnu mapu a pocit,
-  /// že sa vrstva stratila.
-  static WeatherOverlay _loadOverlay(SharedPreferences p) {
-    final stored = p.getInt(_kWeatherOverlay);
-    if (stored != null) return WeatherOverlay.fromIndex(stored);
-    return (p.getBool(_kLegacyRainRadar) ?? false)
-        ? WeatherOverlay.precipitation
-        : WeatherOverlay.none;
-  }
-
-  static const _kWindGrid = 'map_show_wind_grid';
-  static const _kOceanCurrents = 'map_show_ocean_currents';
-  static const _kCurrentGrid = 'map_show_current_grid';
+  // Kľúče zrušených vrstiev počasia ('map_weather_overlay', 'map_show_wind_grid',
+  // 'map_show_ocean_currents', 'map_show_current_grid', 'map_show_rain_radar')
+  // sa už nečítajú. Staré hodnoty ostávajú v SharedPreferences ležať a nikomu
+  // neprekážajú; mazať cudzie kľúče pri aktualizácii je viac rizika než úžitku.
   static const _kBearings = 'map_show_bearings';
   static const _kFollowGps = 'map_follow_gps';
   static const _kNorthLocked = 'map_north_locked';
@@ -266,10 +191,6 @@ class MapNotifier extends Notifier<MapState> {
     state = state.copyWith(
       showSeamarks: p.getBool(_kSeamarks) ?? state.showSeamarks,
       showMarinePois: p.getBool(_kMarinePois) ?? state.showMarinePois,
-      weatherOverlay: _loadOverlay(p),
-      showWindGrid: p.getBool(_kWindGrid) ?? state.showWindGrid,
-      showOceanCurrents: p.getBool(_kOceanCurrents) ?? state.showOceanCurrents,
-      showCurrentGrid: p.getBool(_kCurrentGrid) ?? state.showCurrentGrid,
       showStationWind: p.getBool(_kStationWind) ?? state.showStationWind,
       showBearings: p.getBool(_kBearings) ?? state.showBearings,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
@@ -285,10 +206,6 @@ class MapNotifier extends Notifier<MapState> {
     final p = await SharedPreferences.getInstance();
     await p.setBool(_kSeamarks, state.showSeamarks);
     await p.setBool(_kMarinePois, state.showMarinePois);
-    await p.setInt(_kWeatherOverlay, state.weatherOverlay.index);
-    await p.setBool(_kWindGrid, state.showWindGrid);
-    await p.setBool(_kOceanCurrents, state.showOceanCurrents);
-    await p.setBool(_kCurrentGrid, state.showCurrentGrid);
     await p.setBool(_kStationWind, state.showStationWind);
     await p.setBool(_kBearings, state.showBearings);
     await p.setBool(_kFollowGps, state.followGps);
@@ -317,29 +234,6 @@ class MapNotifier extends Notifier<MapState> {
     _persist();
   }
 
-  void setWeatherOverlay(WeatherOverlay overlay) {
-    // Každá vrstva má vlastný prepínač. Cyklenie jedným tlačidlom znamenalo,
-    // že vypnutie zrážok zapne oblačnosť — vypínanie nemá nič zapínať.
-    state = state.copyWith(
-        weatherOverlay:
-            state.weatherOverlay == overlay ? WeatherOverlay.none : overlay);
-    _persist();
-  }
-
-  void toggleWindGrid() {
-    state = state.copyWith(showWindGrid: !state.showWindGrid);
-    _persist();
-  }
-
-  void toggleOceanCurrents() {
-    state = state.copyWith(showOceanCurrents: !state.showOceanCurrents);
-    _persist();
-  }
-
-  void toggleCurrentGrid() {
-    state = state.copyWith(showCurrentGrid: !state.showCurrentGrid);
-    _persist();
-  }
 
   void toggleStationWind() {
     state = state.copyWith(showStationWind: !state.showStationWind);
@@ -388,10 +282,6 @@ class MapNotifier extends Notifier<MapState> {
       MapState(
         showSeamarks: state.showSeamarks,
         showMarinePois: state.showMarinePois,
-        weatherOverlay: state.weatherOverlay,
-        showWindGrid: state.showWindGrid,
-        showOceanCurrents: state.showOceanCurrents,
-        showCurrentGrid: state.showCurrentGrid,
         showStationWind: state.showStationWind,
         followGps: state.followGps,
         northLocked: state.northLocked,
@@ -436,20 +326,6 @@ class MapState {
   /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
   final bool showMarinePois;
 
-  /// Zrážkový radar (RainViewer overlay).
-  /// Plošná vrstva počasia nad mapou. Zrážky a oblačnosť sa vylučujú —
-  /// dve poloprehľadné výplne cez seba nie sú čitateľné ani jedna.
-  final WeatherOverlay weatherOverlay;
-
-  /// Šípky vetra v mriežke (Open-Meteo).
-  final bool showWindGrid;
-
-  /// Referenčná vrstva hlavných oceánskych prúdov (lokálne curated dáta).
-  final bool showOceanCurrents;
-
-  /// Šípky reálneho morského prúdu v mriežke (Open-Meteo predpoveď).
-  final bool showCurrentGrid;
-
   /// Namerané vetry z pozemných staníc DHMZ, každý na svojej stanici.
   ///
   /// Vedome sa NEINTERPOLUJE do polohy lode: stanica sto míľ ďaleko meria
@@ -483,10 +359,6 @@ class MapState {
   const MapState({
     this.showSeamarks = true,
     this.showMarinePois = false,
-    this.weatherOverlay = WeatherOverlay.none,
-    this.showWindGrid = false,
-    this.showOceanCurrents = false,
-    this.showCurrentGrid = false,
     this.showStationWind = false,
     this.showBearings = true,
     this.followGps = true,
@@ -499,10 +371,6 @@ class MapState {
   MapState copyWith({
     bool? showSeamarks,
     bool? showMarinePois,
-    WeatherOverlay? weatherOverlay,
-    bool? showWindGrid,
-    bool? showOceanCurrents,
-    bool? showCurrentGrid,
     bool? showStationWind,
     bool? showBearings,
     bool? followGps,
@@ -515,10 +383,6 @@ class MapState {
       MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
         showMarinePois: showMarinePois ?? this.showMarinePois,
-        weatherOverlay: weatherOverlay ?? this.weatherOverlay,
-        showWindGrid: showWindGrid ?? this.showWindGrid,
-        showOceanCurrents: showOceanCurrents ?? this.showOceanCurrents,
-        showCurrentGrid: showCurrentGrid ?? this.showCurrentGrid,
         showStationWind: showStationWind ?? this.showStationWind,
         showBearings: showBearings ?? this.showBearings,
         followGps: followGps ?? this.followGps,

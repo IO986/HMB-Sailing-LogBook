@@ -799,34 +799,44 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
         // show them regardless of the persisted `settings.target` value.
         const isCustom = true;
 
+        // Syncing the log to your own server is half-built and reads as a
+        // promise the app does not yet keep, so the whole branch is hidden
+        // until it works. The setting itself is untouched — nothing is
+        // silently switched off behind anyone's back, and flipping this one
+        // constant brings the UI back.
+        //
+        // Cloud export to Google Drive is a separate feature and stays.
+        const showBackendSync = false;
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  secondary: Icon(Icons.cloud_outlined,
-                      color: Theme.of(context).colorScheme.primary),
-                  title: Text(l.syncEnableToggle),
-                  subtitle: Text(l.syncEnableToggleDesc),
-                  value: settings.enabled,
-                  onChanged: (v) {
-                    ref.read(syncSettingsProvider.notifier).setEnabled(v);
-                    // hmba.boats is hidden for now (backend not ready) — the
-                    // picker above is gone, so force the only remaining,
-                    // actually-wired-up option. Without this, a persisted
-                    // default of SyncTarget.hmbAcademy would silently ignore
-                    // the custom URL/token fields shown below.
-                    if (settings.target != SyncTarget.custom) {
-                      ref
-                          .read(syncSettingsProvider.notifier)
-                          .setTarget(SyncTarget.custom);
-                    }
-                  },
-                ),
-                if (settings.enabled) ...[
+                if (showBackendSync)
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: Icon(Icons.cloud_outlined,
+                        color: Theme.of(context).colorScheme.primary),
+                    title: Text(l.syncEnableToggle),
+                    subtitle: Text(l.syncEnableToggleDesc),
+                    value: settings.enabled,
+                    onChanged: (v) {
+                      ref.read(syncSettingsProvider.notifier).setEnabled(v);
+                      // hmba.boats is hidden for now (backend not ready) —
+                      // the picker above is gone, so force the only
+                      // remaining, actually-wired-up option. Without this, a
+                      // persisted default of SyncTarget.hmbAcademy would
+                      // silently ignore the custom URL/token fields below.
+                      if (settings.target != SyncTarget.custom) {
+                        ref
+                            .read(syncSettingsProvider.notifier)
+                            .setTarget(SyncTarget.custom);
+                      }
+                    },
+                  ),
+                if (showBackendSync && settings.enabled) ...[
                   const Divider(height: 24),
                   if (isCustom) ...[
                     const SizedBox(height: 8),
@@ -992,13 +1002,17 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                   ),
                   const Divider(height: 24),
                 ],
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.sync),
-                  title: Text(l.syncQueueTitle),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/sync-queue'),
-                ),
+                // The queue only ever holds items put there by the two
+                // toggles above; with both off it is an empty screen behind a
+                // row that explains nothing.
+                if (showBackendSync || settings.cloudEnabled)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.sync),
+                    title: Text(l.syncQueueTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/sync-queue'),
+                  ),
               ],
             ),
           ),

@@ -1,6 +1,5 @@
 ﻿import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 /// Prúd v jednom bode a čase.
 ///
@@ -111,110 +110,5 @@ class OceanCurrentService {
       }
     }
     return best ?? points.first;
-  }
-
-  // ── Mapa: mriežka cez viditeľný výrez ─────────────────────────
-
-  /// Vetrová mriežka vzorkuje stredy buniek 4×4, teda zlomky 1/8, 3/8, 5/8,
-  /// 7/8 výrezu. Prúd preto vzorkuje rohy tých istých buniek — 2/8, 4/8, 6/8 —
-  /// takže obe mriežky sa prekladajú a šípky si nesadnú na seba. Body zostávajú
-  /// tam, kde ich dáta naozaj platia; neposúva sa kresba, ale vzorkovanie.
-  static const _grid = 3; // 3×3 bodov, posunuté o pol bunky oproti vetru
-  static const _windGrid = 4;
-  static const _rateLimitBackoff = Duration(minutes: 10);
-
-  /// Najkratší odstup medzi dvoma sťahovaniami.
-  ///
-  /// Pri posúvaní mapy sa výrez mení stále a hrubý kľúč to nezachytí — v logu
-  /// bolo vidno sťahovanie každú sekundu. Šípky sú orientačná vrstva, na
-  /// dvadsať sekúnd starých hodnotách sa nič nestratí, a limit Open-Meteo sa
-  /// tým prestane míňať zbytočne.
-  static const _minRefetchInterval = Duration(seconds: 20);
-
-  List<SeaCurrentPoint>? _cache;
-  String? _cacheKey;
-  DateTime? _fetchedAt;
-  DateTime? _rateLimitedUntil;
-
-  /// Hrubý kľúč namiesto vypchávania plochy — pozri [WindGridService].
-  String _key(LatLngBounds b) =>
-      '${b.south.toStringAsFixed(1)}:${b.west.toStringAsFixed(1)}:'
-      '${b.north.toStringAsFixed(1)}:${b.east.toStringAsFixed(1)}';
-
-  /// Aktuálny prúd v mriežke bodov cez výrez mapy. Jedna dávková
-  /// požiadavka, cache 15 min — rovnaký vzor ako [WindGridService].
-  Future<List<SeaCurrentPoint>> fetchForBounds(LatLngBounds bounds) async {
-    final key = _key(bounds);
-    if (_cache != null &&
-        _cacheKey == key &&
-        _fetchedAt != null &&
-        DateTime.now().difference(_fetchedAt!) < const Duration(minutes: 15)) {
-      return _cache!;
-    }
-
-    final limited = _rateLimitedUntil;
-    if (limited != null && DateTime.now().isBefore(limited)) {
-      return _cache ?? const [];
-    }
-
-    if (_cache != null &&
-        _fetchedAt != null &&
-        DateTime.now().difference(_fetchedAt!) < _minRefetchInterval) {
-      return _cache!;
-    }
-
-    final lats = <double>[];
-    final lons = <double>[];
-    for (var i = 0; i < _grid; i++) {
-      for (var j = 0; j < _grid; j++) {
-        lats.add(bounds.south +
-            (bounds.north - bounds.south) * (i + 1) / _windGrid);
-        lons.add(
-            bounds.west + (bounds.east - bounds.west) * (j + 1) / _windGrid);
-      }
-    }
-
-    try {
-      final resp = await _dio.get(_endpoint, queryParameters: {
-        'latitude': lats.map((v) => v.toStringAsFixed(3)).join(','),
-        'longitude': lons.map((v) => v.toStringAsFixed(3)).join(','),
-        'current': _hourlyVars,
-      });
-
-      // Pri viacerých súradniciach vráti Open-Meteo pole objektov,
-      // pri jednej jediný objekt.
-      final data = resp.data;
-      final list = data is List ? data : [data];
-      final points = <SeaCurrentPoint>[];
-      for (var i = 0; i < list.length && i < lats.length; i++) {
-        final cur = list[i]['current'];
-        if (cur == null) continue;
-        final speed = (cur['ocean_current_velocity'] as num?)?.toDouble();
-        final dir = (cur['ocean_current_direction'] as num?)?.toDouble();
-        // Pevnina vracia nully — taký bod sa jednoducho nekreslí.
-        if (speed == null || dir == null) continue;
-        points.add(SeaCurrentPoint(
-          lat: lats[i],
-          lon: lons[i],
-          speedKn: knotsFromKmh(speed),
-          dirDeg: dir,
-        ));
-      }
-      _cache = points;
-      _cacheKey = key;
-      _rateLimitedUntil = null;
-      _fetchedAt = DateTime.now();
-      debugPrint('[CURRENT] grid fetched: ${points.length} points');
-      return points;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 429) {
-        _rateLimitedUntil = DateTime.now().add(_rateLimitBackoff);
-        debugPrint('[CURRENT] rate limited, backing off');
-      }
-      return _cache ?? const [];
-    } catch (e) {
-      debugPrint('[CURRENT] fetch failed: $e');
-      return _cache ?? const [];
-    }
   }
 }
