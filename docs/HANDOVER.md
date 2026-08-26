@@ -1,3 +1,59 @@
+# Kde sme skončili — 26. 8. 2026 (NMEA na lodi)
+
+## B&G Zeus³ 12" (NOS v25.2) — FUNGUJE, a nie tak, ako by človek čakal
+
+Skipperov plotter sa podarilo pripojiť. Funkčné nastavenie v appke:
+
+- režim **TCP**
+- **IP `169.254.160.58`**
+- **port `10110`**
+
+Číta všetko. Telefón musí byť na **WiFi sieti Zeusu** (jeho AP dáva podsieť
+`192.168.76.x`, telefón dostal `.65`, brána je `192.168.76.1`).
+
+**Prečo práve táto adresa:** `169.254.160.58` je **vlastné ethernetové
+rozhranie Zeusu** (link-local), nie WiFi. Vidno ju v plotri na dvoch
+miestach — `Settings → Network → NMEA 0183` ako Eth/WiFi výstup, a pri
+položke iperf servera. NMEA 0183 server beží **len na ethernetovej strane**;
+Zeus ale smeruje medzi svojím ethernetom a WiFi, takže z telefónu je
+dosiahnuteľný, hoci je to iná podsieť.
+
+**Čo NEfunguje a prečo (aby sa to neskúšalo znova):**
+
+- `192.168.76.1:2053` — spojenie sa nadviaže, dáta žiadne. Je to **GoFree**
+  služba s vlastným protokolom (JSON/binárne), nie textové NMEA vety.
+- `192.168.76.1:10110` a `:2000` — spojenie sa nadviaže, dáta žiadne. Nie je
+  tam ten 0183 server.
+- **UDP režim** — v appke sa nedá zadať cieľová IP a je to správne: appka len
+  počúva na porte, adresu určuje zdroj. Zeus svoj výstup nasmerovať nevie,
+  to pole je len na čítanie (je to „kde počúvam", nie „kam posielam").
+- `Serial` bol na plotri vypnutý; na telefón je aj tak nanič (je na kábel).
+
+**Autodetekcia v appke to nikdy nenájde.** `autoDetectHost`
+(`raymarine_connection_service.dart`) skenuje podsieť telefónu **len na TCP
+porte 2000**. Hľadaná adresa je v úplne inej podsieti (`169.254.x.x`) a na
+inom porte, takže sken z princípu zlyhá — používateľ to musí zadať ručne.
+
+## Otvorené / na zváženie
+
+- **Stabilita adresy:** `169.254.x.x` je self-assigned (APIPA). Zvyčajne
+  ostáva rovnaká, ale po výmene hardvéru alebo dlhšom odpojení sa môže
+  zmeniť. Ak to raz prestane fungovať, adresu treba znova prečítať v
+  `Settings → Network → Diagnostics` (položka IP address).
+- **Discovery:** GoFree na `UDP 2052` vysiela broadcast s JSON zoznamom
+  služieb, kde je IP aj port streamu — takmer isto presne tá dvojica
+  `169.254.160.58:10110`. Odchytiť ten broadcast a podať ho existujúcemu TCP
+  klientovi by odstránilo ručné zadávanie. Neimplementované, čaká na
+  rozhodnutie.
+- **Zapnúť „Automaticky pripojiť pri spustení"**, nech sa to po reštarte
+  obnoví samo.
+- Ak by sa Zeus raz ukázal ako slepá ulička (iná loď, iný plotter), cesta cez
+  **NMEA 2000 gateway** (Yacht Devices YDWG-02 — UDP broadcast, Actisense
+  W2K-1, Digital Yacht WLN10) funguje s appkou bez zmeny kódu. Na charterovej
+  lodi je to ale zásah do zbernice a rozhodnutie majiteľa.
+
+---
+
 # Kde sme skončili — 26. 8. 2026 (večer)
 
 `main` je na `98beb2c`, pushnutá. Nadväzuje na sekciu nižšie (ta istá
