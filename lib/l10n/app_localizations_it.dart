@@ -951,6 +951,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get logDutyStillRunning => 'in corso';
 
   @override
+  String get autoEntryNote => 'Voce automatica';
+
+  @override
+  String get logEventSailChange => 'Cambio di mure';
+
+  @override
+  String logEventSailChangeTo(String direction) {
+    return 'Cambio di mure: $direction';
+  }
+
+  @override
   String get logEventAnchorDropped => 'Ancora data';
 
   @override
@@ -1781,6 +1792,30 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sailMain => 'Randa';
 
   @override
+  String get sailDirection => 'Andatura';
+
+  @override
+  String get pointOfSailCloseHauled => 'Bolina stretta';
+
+  @override
+  String get pointOfSailCloseReach => 'Bolina larga';
+
+  @override
+  String get pointOfSailBeamReach => 'Traverso';
+
+  @override
+  String get pointOfSailBroadReach => 'Lasco';
+
+  @override
+  String get pointOfSailRunning => 'Poppa';
+
+  @override
+  String get tackPort => 'Sinistra';
+
+  @override
+  String get tackStarboard => 'Dritta';
+
+  @override
   String get navigationSection => 'Navigazione';
 
   @override
@@ -2507,14 +2542,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'La scheda Strumenti mostra i dati di navigazione in tempo reale.\n\n• SOG – velocità sul fondo (nodi)\n• TWS – velocità del vento reale\n• TWA – angolo del vento reale rispetto alla barca (verde = dritta, rosso = sinistra)\n• DEPTH – profondità dell\'acqua (rosso = meno di 5 m)\n• VMG WP – velocità verso un waypoint selezionato; scegline uno dal riquadro per vedere distanza/rilevamento e una freccia direttamente sulla rosa dei venti. Per disattivare la navigazione scegli \"Nessuna destinazione\" nello stesso riquadro — la disattiva anche l\'eliminazione del waypoint sulla mappa\n\nOrigine dei dati: GPS del telefono o Raymarine (gateway WiFi TCP o UDP).\nLe impostazioni della connessione (compresa la scelta TCP/UDP) sono in Impostazioni → Strumenti.\n\nCome si collega la barca: l\'app legge i dati NMEA via WiFi (TCP o UDP). L\'hotspot WiFi di un MFD Raymarine di solito non basta — è pensato per le app Raymarine e in genere non espone i dati NMEA grezzi a terze parti. Serve un gateway NMEA-WiFi (ad es. Digital Yacht, Yacht Devices, Actisense, Quark-elec) collegato al bus di bordo, che crei una propria rete o trasmetta NMEA sul WiFi. Collegati al WiFi di quel gateway e inserisci il suo IP e la porta nelle Impostazioni (oppure prova il Rilevamento automatico).';
+      'La scheda Strumenti mostra i dati di navigazione in tempo reale.\n\n• SOG – velocità sul fondo (nodi)\n• TWS – velocità del vento reale\n• TWA – angolo del vento reale rispetto alla barca (verde = dritta, rosso = sinistra)\n• DEPTH – profondità dell\'acqua (rosso = meno di 5 m)\n• VMG WP – velocità verso un waypoint selezionato; scegline uno dal riquadro per vedere distanza/rilevamento e una freccia direttamente sulla rosa dei venti. Per disattivare la navigazione scegli \"Nessuna destinazione\" nello stesso riquadro — la disattiva anche l\'eliminazione del waypoint sulla mappa\n\nOrigine dei dati: GPS del telefono o Raymarine (gateway WiFi TCP o UDP).\nLe impostazioni della connessione (compresa la scelta TCP/UDP) sono in Impostazioni → Strumenti.\n\nCome si collega la barca: l\'app legge i dati NMEA via WiFi (TCP o UDP). L\'hotspot WiFi di un MFD Raymarine di solito non basta — è pensato per le app Raymarine e in genere non espone i dati NMEA grezzi a terze parti. Serve un gateway NMEA-WiFi (ad es. Digital Yacht, Yacht Devices, Actisense, Quark-elec) collegato al bus di bordo, che crei una propria rete o trasmetta NMEA sul WiFi. Collegati al WiFi di quel gateway e inserisci il suo IP e la porta nelle Impostazioni (oppure prova il Rilevamento automatico).\n\nB&G Zeus e plotter Navico simili: collega il telefono al WiFi del plotter e scegli TCP nelle Impostazioni. L indirizzo del plotter sulla rete WiFi NON funziona — il server NMEA gira sulla sua interfaccia Ethernet. Quell indirizzo si trova nel plotter stesso: Settings → Network → Diagnostics, voce IP address (di solito nella forma 169.254.x.x). Inseriscilo insieme alla porta 10110. Verificato su uno Zeus III con NOS v25.2. La porta 2053 accetta la connessione ma non invia dati — è il servizio GoFree con un protocollo proprio, non NMEA. Attiva Connetti automaticamente all avvio. Se un giorno smette di funzionare, l indirizzo potrebbe essere cambiato — rileggilo in Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Giornale di bordo';
 
   @override
   String get guideLogbookBody =>
-      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono\n• L’attestato è bilingue (la tua lingua + inglese), riporta dimensioni e registrazione dell’imbarcazione, il tipo di acque (con o senza marea) e una riga per il numero di passaporto o carta d’identità; puoi condividerlo o salvarlo sul telefono';
+      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono\n• L’attestato è bilingue (la tua lingua + inglese), riporta dimensioni e registrazione dell’imbarcazione, il tipo di acque (con o senza marea) e una riga per il numero di passaporto o carta d’identità; puoi condividerlo o salvarlo sul telefono\n• Andatura – la sagoma della barca del giornale di bordo cartaceo: tocca l\'andatura sul lato da cui arriva il vento (sinistra rosso, dritta verde). La poppa sta in basso, lì non c\'è lato da registrare. Toccando di nuovo si cancella la scelta: un dato indovinato è peggio di una casella vuota. Finisce nel PDF accanto alla propulsione.\n• Durante la registrazione un secondo pulsante rapido (icona barca a vela, in basso a sinistra) registra una virata o una strambata: scegli la nuova andatura sulla sagoma e la voce viene salvata con posizione e ora. Le voci automatiche successive mantengono quell\'andatura finché non la cambi di nuovo.';
 
   @override
   String get guideMilesTitle => 'Libretto delle miglia';

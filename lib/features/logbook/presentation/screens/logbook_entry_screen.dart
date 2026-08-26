@@ -19,6 +19,8 @@ import '../../../../core/services/units_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import '../../../../core/models/sail_mode.dart';
+import '../../../../core/models/point_of_sail.dart';
+import '../../../../shared/widgets/sail_direction_picker.dart';
 import '../../../../shared/widgets/location_quality_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -81,6 +83,10 @@ class _State extends ConsumerState<LogbookEntryScreen> {
 
   // Spôsob plavby - multi-select
   final Set<String> _sailModes = {'motor'};
+
+  /// Kurz voči vetru aj s bokom — políčko so siluetou z papierového denníka.
+  /// `null` znamená „nezaznamenané"; nikdy sa nedopĺňa odhadom.
+  SailDirection? _sailDirection;
   String? _weatherCondition;
   String? _photoPath;
   int? _fuelLevel;
@@ -128,6 +134,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           ..clear()
           ..addAll(parsed.modes);
         _noteCtrl.text = parsed.note;
+        _sailDirection = SailDirection.fromCodes(e.pointOfSail, e.tack);
         _weatherCondition = e.weatherCondition;
         _photoPath = e.photoPath;
         _fuelLevel = e.fuelLevel;
@@ -257,6 +264,14 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         ),
         const SizedBox(height: 16),
 
+        // Kurz voči vetru — silueta lode s bokmi, ako na papieri
+        _Sec(l.sailDirection),
+        SailDirectionPicker(
+          value: _sailDirection,
+          onChanged: (v) => setState(() => _sailDirection = v),
+        ),
+        const SizedBox(height: 16),
+
         _Sec(l.navigationSection),
         _NavRow(l.latitude, _lat?.toStringAsFixed(6) ?? '-'),
         _NavRow(l.longitude, _lon?.toStringAsFixed(6) ?? '-'),
@@ -380,6 +395,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
         skipperNote: Value(note),
         sailMode: Value(modesStr),
+        pointOfSail: Value(_sailDirection?.pointOfSail.code),
+        tack: Value(_sailDirection?.tack?.code),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
@@ -417,6 +434,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
         skipperNote: Value(note),
         sailMode: Value(modesStr),
+        pointOfSail: Value(_sailDirection?.pointOfSail.code),
+        tack: Value(_sailDirection?.tack?.code),
         weatherCondition: Value(_weatherCondition),
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
@@ -478,6 +497,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         'waterTemp': double.tryParse(_waterTempCtrl.text),
         'airPressure': double.tryParse(_pressureCtrl.text),
         'skipperNote': note,
+        'pointOfSail': _sailDirection?.pointOfSail.code,
+        'tack': _sailDirection?.tack?.code,
         'weatherCondition': _weatherCondition,
         'fuelLevel': _fuelLevel,
         'waterLevel': _waterLevel,

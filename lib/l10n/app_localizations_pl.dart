@@ -949,6 +949,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get logDutyStillRunning => 'trwa';
 
   @override
+  String get autoEntryNote => 'Wpis automatyczny';
+
+  @override
+  String get logEventSailChange => 'Zwrot';
+
+  @override
+  String logEventSailChangeTo(String direction) {
+    return 'Zwrot: $direction';
+  }
+
+  @override
   String get logEventAnchorDropped => 'Kotwica rzucona';
 
   @override
@@ -1773,6 +1784,30 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sailMain => 'Grot';
 
   @override
+  String get sailDirection => 'Kurs względem wiatru';
+
+  @override
+  String get pointOfSailCloseHauled => 'Ostry bejdewind';
+
+  @override
+  String get pointOfSailCloseReach => 'Bejdewind';
+
+  @override
+  String get pointOfSailBeamReach => 'Półwiatr';
+
+  @override
+  String get pointOfSailBroadReach => 'Baksztag';
+
+  @override
+  String get pointOfSailRunning => 'Fordewind';
+
+  @override
+  String get tackPort => 'Lewy hals';
+
+  @override
+  String get tackStarboard => 'Prawy hals';
+
+  @override
   String get navigationSection => 'Nawigacja';
 
   @override
@@ -2491,14 +2526,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Zakładka Przyrządy pokazuje dane nawigacyjne w czasie rzeczywistym.\n\n• SOG – prędkość nad dnem (węzły)\n• TWS – rzeczywista prędkość wiatru\n• TWA – kąt wiatru względem jednostki (zielony = prawa burta, czerwony = lewa burta)\n• DEPTH – głębokość wody (czerwone = mniej niż 5 m)\n• VMG WP – prędkość do wybranego waypointu; po wyborze z kafelka zobaczysz odległość/kierunek oraz strzałkę wprost na róży kursowej. Nawigację wyłączysz opcją \"Brak celu\" w tym samym kafelku — wyłącza ją także usunięcie waypointu na mapie\n\nŹródło danych: GPS telefonu lub Raymarine (TCP i UDP WiFi gateway).\nUstawienia połączenia (w tym wybór TCP/UDP) znajdziesz w Ustawienia → Przyrządy.\n\nJak łączy się jednostka: aplikacja czyta dane NMEA przez WiFi (TCP lub UDP). Sam hotspot WiFi Raymarine MFD zwykle nie wystarcza — służy aplikacjom Raymarine i surowego NMEA zwykle nie udostępnia stronom trzecim. Potrzebujesz gateway NMEA→WiFi (np. Digital Yacht, Yacht Devices, Actisense, Quark-elec) podłączonego do magistrali jachtu, który albo tworzy własny hotspot, albo rozgłasza NMEA do WiFi. Połącz telefon z WiFi tego gateway i w Ustawieniach podaj jego IP i port (lub spróbuj Autowykrywania).';
+      'Zakładka Przyrządy pokazuje dane nawigacyjne w czasie rzeczywistym.\n\n• SOG – prędkość nad dnem (węzły)\n• TWS – rzeczywista prędkość wiatru\n• TWA – kąt wiatru względem jednostki (zielony = prawa burta, czerwony = lewa burta)\n• DEPTH – głębokość wody (czerwone = mniej niż 5 m)\n• VMG WP – prędkość do wybranego waypointu; po wyborze z kafelka zobaczysz odległość/kierunek oraz strzałkę wprost na róży kursowej. Nawigację wyłączysz opcją \"Brak celu\" w tym samym kafelku — wyłącza ją także usunięcie waypointu na mapie\n\nŹródło danych: GPS telefonu lub Raymarine (TCP i UDP WiFi gateway).\nUstawienia połączenia (w tym wybór TCP/UDP) znajdziesz w Ustawienia → Przyrządy.\n\nJak łączy się jednostka: aplikacja czyta dane NMEA przez WiFi (TCP lub UDP). Sam hotspot WiFi Raymarine MFD zwykle nie wystarcza — służy aplikacjom Raymarine i surowego NMEA zwykle nie udostępnia stronom trzecim. Potrzebujesz gateway NMEA→WiFi (np. Digital Yacht, Yacht Devices, Actisense, Quark-elec) podłączonego do magistrali jachtu, który albo tworzy własny hotspot, albo rozgłasza NMEA do WiFi. Połącz telefon z WiFi tego gateway i w Ustawieniach podaj jego IP i port (lub spróbuj Autowykrywania).\n\nB&G Zeus i podobne plotery Navico: połącz telefon z WiFi plotera i w Ustawieniach wybierz TCP. Adres plotera w sieci WiFi jednak NIE działa — serwer NMEA działa na jego interfejsie Ethernet. Ten adres znajdziesz w samym ploterze: Settings → Network → Diagnostics, pozycja IP address (zwykle w postaci 169.254.x.x). Wpisz go razem z portem 10110. Sprawdzone na Zeus III z oprogramowaniem NOS v25.2. Port 2053 przyjmuje połączenie, ale nie wysyła danych — to usługa GoFree z własnym protokołem, nie NMEA. Włącz Automatyczne łączenie przy starcie. Jeśli kiedyś przestanie działać, adres mógł się zmienić — odczytaj go ponownie w Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Dziennik pokładowy';
 
   @override
   String get guideLogbookBody =>
-      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują\n• Potwierdzenie jest dwujęzyczne (twój język + angielski), zawiera wymiary i rejestrację jachtu, rodzaj wód (pływowe/bezpływowe) oraz rubrykę na numer paszportu lub dowodu; można je udostępnić albo zapisać w telefonie';
+      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują\n• Potwierdzenie jest dwujęzyczne (twój język + angielski), zawiera wymiary i rejestrację jachtu, rodzaj wód (pływowe/bezpływowe) oraz rubrykę na numer paszportu lub dowodu; można je udostępnić albo zapisać w telefonie\n• Kurs względem wiatru – sylwetka jachtu z papierowego dziennika: dotknij kursu po tej burcie, z której wieje (lewy hals czerwony, prawy zielony). Fordewind jest na dole, tam burty się nie rozróżnia. Ponowne dotknięcie kasuje wybór – zgadnięty zapis jest gorszy od pustego pola. Trafia do PDF obok napędu.\n• Podczas śledzenia drugi szybki przycisk (ikona jachtu, lewy dolny róg) zapisuje zwrot przez sztag lub rufę: wybierz nowy kurs na sylwetce, a wpis zapisze się z pozycją i czasem. Kolejne wpisy automatyczne trzymają ten kurs, dopóki go znowu nie zmienisz.';
 
   @override
   String get guideMilesTitle => 'Książka mil';

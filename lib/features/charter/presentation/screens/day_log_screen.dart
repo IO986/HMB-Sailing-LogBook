@@ -17,6 +17,9 @@ import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/models/sail_mode.dart';
+import '../../../../core/models/point_of_sail.dart';
+import '../../../../shared/utils/sail_direction_labels.dart';
+import '../../../../shared/utils/auto_entry_note.dart';
 import '../../../../core/utils/localized_date.dart';
 
 class DayLogScreen extends ConsumerStatefulWidget {
@@ -377,6 +380,8 @@ class _EntryTile extends ConsumerWidget {
         return l.voyageStart;
       case LogbookEventType.voyageEnd:
         return l.voyageEnd;
+      case LogbookEventType.sailChange:
+        return l.logEventSailChange;
       case LogbookEventType.anchorDropped:
         return l.logEventAnchorDropped;
       case LogbookEventType.anchorRaised:
@@ -400,6 +405,8 @@ class _EntryTile extends ConsumerWidget {
         return Colors.green;
       case LogbookEventType.voyageEnd:
         return Colors.red;
+      case LogbookEventType.sailChange:
+        return Colors.indigo;
       case LogbookEventType.anchorDropped:
         return Colors.blue;
       case LogbookEventType.anchorRaised:
@@ -433,9 +440,27 @@ class _EntryTile extends ConsumerWidget {
     final isLast  = event == LogbookEventType.voyageEnd;
     final isAuto  = entry.isAutoEntry;
     final anchor  = _anchorKind(event);
-    final eventLabel = _eventLabel(event, entry.skipperNote, l);
+    var eventLabel = _eventLabel(event, entry.skipperNote, l);
     final parsed  = _parseEntry(entry);
-    final note    = isFirst ? '' : (isLast ? '' : (anchor != _AnchorKind.none ? '' : parsed.note));
+    final sailDir = SailDirection.fromCodes(entry.pointOfSail, entry.tack);
+    // Pri zmene plachiet je kurz samotnou udalosťou, nie doplnkom — nech
+    // stojí rovno v štítku a neopakuje sa o riadok nižšie.
+    if (event == LogbookEventType.sailChange && sailDir != null) {
+      eventLabel = l.logEventSailChangeTo(sailDirectionPhrase(sailDir, l));
+    }
+    // Poradie: udalosť má vlastný štítok a poznámku nepotrebuje; strojová
+    // značka ('Auto [MODEL]' zo starých záznamov, prázdny text z nových) sa
+    // nahradí preloženým „Automatický záznam"; ostatné je text skipera.
+    final String note;
+    if (eventLabel != null || isFirst || isLast || anchor != _AnchorKind.none) {
+      note = '';
+    } else if (isMachineAutoNote(parsed.note)) {
+      note = autoEntryNoteLabel(
+              isAutoEntry: isAuto, note: parsed.note, l: l) ??
+          '';
+    } else {
+      note = parsed.note;
+    }
 
     Color? bgColor;
     if (isFirst) bgColor = Colors.green.shade800.withValues(alpha: 0.12);
@@ -500,6 +525,8 @@ class _EntryTile extends ConsumerWidget {
                   const _BigIcon(Icons.warning_amber, Colors.red)
                 else if (anchor == _AnchorKind.driftIn)
                   const _BigIcon(Icons.check_circle_outline, Colors.orange)
+                else if (event == LogbookEventType.sailChange)
+                  const _BigIcon(Icons.swap_horiz, Colors.indigo)
                 // Spôsob plavby má prednosť pred ikonou "automatický
                 // záznam" — práve tú informáciu skiper v prehľade hľadá.
                 else if (parsed.modes.isNotEmpty)
@@ -534,6 +561,24 @@ class _EntryTile extends ConsumerWidget {
                           style: const TextStyle(fontSize: 13, color: Colors.grey)),
                     ],
                   ]),
+
+                // Kurz voči vetru — jeden riadok, ako políčko so siluetou
+                // v papierovom denníku
+                if (sailDir != null && event != LogbookEventType.sailChange)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Row(children: [
+                      Icon(Icons.sailing, size: 13,
+                          color: sailDir.tack == Tack.port
+                              ? Colors.red.shade700
+                              : (sailDir.tack == Tack.starboard
+                                  ? Colors.green.shade700
+                                  : Colors.blueGrey)),
+                      const SizedBox(width: 4),
+                      Text(sailDirectionSummary(sailDir, l),
+                          style: const TextStyle(fontSize: 12)),
+                    ]),
+                  ),
 
                 // Weather icon row
                 if (entry.windSpeed != null || entry.waveHeight != null || entry.weatherCondition != null)

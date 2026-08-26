@@ -148,6 +148,16 @@ class LogbookEntries extends Table {
   /// nemali vôbec a detail im ho dopĺňal na 'motor' — z terénu: "v detaile je
   /// vždy motor, aj keď som ho vypol". v22 prefix vyťahuje do stĺpca.
   TextColumn get sailMode => text().nullable()();
+
+  /// Kurz voči vetru (`close_hauled` … `running`) a bok, na ktorom vietor
+  /// prichádza (`S`/`P`).
+  ///
+  /// Papierový denník to má ako jedno políčko so siluetou lode; tu sú to dva
+  /// stĺpce, lebo pri behu na plný vietor bok neexistuje a `tack` vtedy ostáva
+  /// prázdny. Nezamieňať so [sailMode], ktorý hovorí, čo je vytiahnuté.
+  TextColumn get pointOfSail => text().nullable()();
+  TextColumn get tack => text().nullable()();
+
   TextColumn get weatherCondition => text().nullable()();
   TextColumn get photoPath => text().nullable()();
   // Kvalita GPS fixu z LocationFix (hmb_core) – staré riadky (pred v16)
@@ -640,7 +650,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 28;
+  int get schemaVersion => 29;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -806,6 +816,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 28) {
         await m.createTable(weatherWarnings);
         await m.addColumn(weatherSnapshots, weatherSnapshots.modelName);
+      }
+      if (from < 29) {
+        await m.addColumn(logbookEntries, logbookEntries.pointOfSail);
+        await m.addColumn(logbookEntries, logbookEntries.tack);
       }
     },
     beforeOpen: (details) async {
@@ -1000,6 +1014,23 @@ class AppDatabase extends _$AppDatabase {
           ..limit(1))
         .get();
     return rows.isEmpty ? null : rows.first.sailMode;
+  }
+
+  /// Posledný zapísaný kurz voči vetru v danom dni.
+  ///
+  /// Rovnaká logika ako pri [lastSailModeForDay]: kurz sa nemení každou
+  /// minútou, takže automatické záznamy ho preberajú od posledného zápisu.
+  /// Skiper ho prepne pri obrate a medzitým platí ďalej. Vracia dvojicu
+  /// kódov tak, ako sú v stĺpcoch — preklad na model je vecou volajúceho.
+  Future<({String? pointOfSail, String? tack})?> lastSailDirectionForDay(
+      int dayLogId) async {
+    final rows = await (select(logbookEntries)
+          ..where((e) => e.dayLogId.equals(dayLogId) & e.pointOfSail.isNotNull())
+          ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+          ..limit(1))
+        .get();
+    if (rows.isEmpty) return null;
+    return (pointOfSail: rows.first.pointOfSail, tack: rows.first.tack);
   }
 
   Future<void> updateSessionDistance(int id, double distanceNm) =>

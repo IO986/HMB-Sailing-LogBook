@@ -1868,6 +1868,24 @@ abstract class AppLocalizations {
   /// **'trvá'**
   String get logDutyStillRunning;
 
+  /// No description provided for @autoEntryNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Automatický záznam'**
+  String get autoEntryNote;
+
+  /// No description provided for @logEventSailChange.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prehodenie plachiet'**
+  String get logEventSailChange;
+
+  /// No description provided for @logEventSailChangeTo.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmena plachiet: {direction}'**
+  String logEventSailChangeTo(String direction);
+
   /// No description provided for @logEventAnchorDropped.
   ///
   /// In sk, this message translates to:
@@ -3416,6 +3434,54 @@ abstract class AppLocalizations {
   /// **'Hlavná'**
   String get sailMain;
 
+  /// No description provided for @sailDirection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kurz voči vetru'**
+  String get sailDirection;
+
+  /// No description provided for @pointOfSailCloseHauled.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ostro proti vetru'**
+  String get pointOfSailCloseHauled;
+
+  /// No description provided for @pointOfSailCloseReach.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ostrý bočný'**
+  String get pointOfSailCloseReach;
+
+  /// No description provided for @pointOfSailBeamReach.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bočný vietor'**
+  String get pointOfSailBeamReach;
+
+  /// No description provided for @pointOfSailBroadReach.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zadobočný vietor'**
+  String get pointOfSailBroadReach;
+
+  /// No description provided for @pointOfSailRunning.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zadný vietor'**
+  String get pointOfSailRunning;
+
+  /// No description provided for @tackPort.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ľavobok'**
+  String get tackPort;
+
+  /// No description provided for @tackStarboard.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pravobok'**
+  String get tackStarboard;
+
   /// No description provided for @navigationSection.
   ///
   /// In sk, this message translates to:
@@ -4781,7 +4847,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideInstrBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k vybranému waypointu; po výbere z dlaždice uvidíš vzdialenosť/smer aj šípku priamo na smerovej ružici. Navigáciu vypneš voľbou \"Žiadny cieľ\" v tej istej dlaždici — vypne ju aj zmazanie waypointu na mape\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.\n\nAko sa loď pripája: appka číta NMEA dáta cez WiFi (TCP alebo UDP). Samotný WiFi hotspot Raymarine MFD zvyčajne nestačí — slúži pre appky Raymarine a surové NMEA tretím stranám väčšinou nepúšťa. Potrebuješ NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) pripojený na lodnú zbernicu, ktorý buď vytvorí vlastný hotspot, alebo broadcastuje NMEA do WiFi. Telefón pripoj na WiFi tohto gateway a v Nastaveniach zadaj jeho IP a port (alebo skús Automaticky nájsť).'**
+  /// **'Záložka Prístroje zobrazuje navigačné dáta v reálnom čase.\n\n• SOG – rýchlosť nad dnom (uzly)\n• TWS – skutočná rýchlosť vetra\n• TWA – smer vetra voči lodi (zelená = pravobok, červená = ľavobok)\n• DEPTH – hĺbka vody (červené = menej ako 5 m)\n• VMG WP – rýchlosť k vybranému waypointu; po výbere z dlaždice uvidíš vzdialenosť/smer aj šípku priamo na smerovej ružici. Navigáciu vypneš voľbou \"Žiadny cieľ\" v tej istej dlaždici — vypne ju aj zmazanie waypointu na mape\n\nZdroj dát: telefónne GPS alebo Raymarine (TCP aj UDP WiFi gateway).\nNastavenia pripojenia (vrátane voľby TCP/UDP) nájdeš v Nastavenia → Prístroje.\n\nAko sa loď pripája: appka číta NMEA dáta cez WiFi (TCP alebo UDP). Samotný WiFi hotspot Raymarine MFD zvyčajne nestačí — slúži pre appky Raymarine a surové NMEA tretím stranám väčšinou nepúšťa. Potrebuješ NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) pripojený na lodnú zbernicu, ktorý buď vytvorí vlastný hotspot, alebo broadcastuje NMEA do WiFi. Telefón pripoj na WiFi tohto gateway a v Nastaveniach zadaj jeho IP a port (alebo skús Automaticky nájsť).\n\nB&G Zeus a podobné Navico plottery: pripoj telefón na WiFi plotra a v Nastaveniach zvoľ TCP. Adresa plotra vo WiFi sieti ale NEFUNGUJE — server NMEA beží na jeho ethernetovom rozhraní. Tú adresu nájdeš priamo v plotri: Settings → Network → Diagnostics, položka IP address (býva v tvare 169.254.x.x). Zadaj ju spolu s portom 10110. Overené na Zeus III so softvérom NOS v25.2. Port 2053 spojenie prijme, ale dáta neposiela — to je služba GoFree s vlastným protokolom, nie NMEA. Zapni si Automaticky pripojiť pri spustení. Ak to raz prestane fungovať, adresa sa mohla zmeniť — prečítaj ju znova v Diagnostics.'**
   String get guideInstrBody;
 
   /// No description provided for @guideLogbookTitle.
@@ -4793,7 +4859,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLogbookBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape\n• Po plavbe vieš pre každého člena posádky vyexportovať potvrdenie o naplávaných míľach – dni na mori, denné a nočné míle, oblasť plavby, hodnotenie zručností od skipera a QR na overenie pravosti\n• Spôsob plavby (motor/plachty) sa preberá aj do automatických zápisov – prepneš ho raz a ďalšie zápisy v ňom pokračujú, kým ho nezmeníš\n• Potvrdenie je dvojjazyčné (tvoj jazyk + angličtina), obsahuje rozmery a registráciu lode, typ vôd (prílivové/neprílivové) a kolonku na číslo pasu alebo OP; dá sa zdieľať aj uložiť priamo do telefónu'**
+  /// **'Denník je hlavná záložka pre správu pláv.\n\n• Veľké tlačidlo \"Spustiť plavbu\" hore spustí tracking – opýta sa len na frekvenciu automatických zápisov (dá sa zmeniť pri každom ďalšom spustení), žiadny formulár netreba vyplniť vopred\n• Ak existuje rozostavaná plavba, appka sa opýta, či pokračovať v nej alebo založiť nový záznam\n• Chýbajúce údaje (check-in, safety briefing, karta lode/posádky) appka pripomenie farebnými chipmi priamo na karte plavby – ťuknutím na chip ich doplníš\n• Každý deň plavby sa zobrazuje zvlášť\n• Záznamy možno pridávať ručne počas dňa, vrátane motohodín, paliva a vody v sekcii \"Motor a nádrže\"\n• Počas trackingu sa objaví tlačidlo fotoaparátu (vľavo dole) – odfoť zaujímavý bod a rýchlo ho ulož ako záznam s polohou a časom\n• Denník možno exportovať do PDF cez menu dňa\n• Ikona podania rúk v detaile plavby otvorí odovzdávací protokol (check-in/check-out)\n• Podrobný formulár plavby (ikona lode v detaile) eviduje loď a jej parametre, oblasť plavby, posádku s preukazmi skippera aj fotky lode (max 3, prenášajú sa do PDF)\n• Nevyplnené karty (Safety Briefing, check-in/out, karta lode) blikajú červeno v hornej lište detailu plavby, kým ich nedokončíš\n• Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe – vrátane dopočítania vzdialenosti prejdenej, kým appka nebežala\n• Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť\n• Ikona trasy v hlavičke plavby (vedľa SB, protokolu a karty lode) zobrazí trasu celej plavby na mape\n• Po plavbe vieš pre každého člena posádky vyexportovať potvrdenie o naplávaných míľach – dni na mori, denné a nočné míle, oblasť plavby, hodnotenie zručností od skipera a QR na overenie pravosti\n• Spôsob plavby (motor/plachty) sa preberá aj do automatických zápisov – prepneš ho raz a ďalšie zápisy v ňom pokračujú, kým ho nezmeníš\n• Potvrdenie je dvojjazyčné (tvoj jazyk + angličtina), obsahuje rozmery a registráciu lode, typ vôd (prílivové/neprílivové) a kolonku na číslo pasu alebo OP; dá sa zdieľať aj uložiť priamo do telefónu\n• Kurz voči vetru – silueta lode z papierového denníka: ťukni na polohu na tom boku, z ktorého fúka (ľavobok červený, pravobok zelený). Zadný vietor je dole, tam sa bok nerozlišuje. Opätovné ťuknutie výber zruší – odhadnutý údaj je horší ako prázdne políčko. Do PDF ide vedľa spôsobu plavby.\n• Počas plavby je vľavo dole druhé rýchle tlačidlo (ikona plachetnice) na obrat alebo halzu: vyber nový kurz na siluete a záznam sa zapíše aj s polohou a časom. Ďalšie automatické zápisy ten kurz preberajú, kým ho znova nezmeníš.'**
   String get guideLogbookBody;
 
   /// No description provided for @guideMilesTitle.

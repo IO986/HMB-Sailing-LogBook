@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
+import '../../features/logbook/presentation/widgets/quick_sail_change_sheet.dart';
 import 'main_nav_bar.dart';
 import 'tracking_control_bar.dart';
 import '../../features/tracking/presentation/widgets/tracking_control_dialogs.dart';
@@ -421,6 +422,12 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     );
   }
 
+  void _quickSailChange(BuildContext context) => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => const QuickSailChangeSheet(),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -453,12 +460,29 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
           Expanded(child: widget.child),
         ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        // Počas plavby dve rýchle akcie vedľa seba: obrat a fotka. Obe
+        // zapisujú do denníka bez otvárania formulára — na kormidle je na
+        // vyplňovanie polí neskoro. Vedľa seba, nie nad sebou: nad sebou
+        // horné tlačidlo prekrývalo obsah.
         floatingActionButton: isTracking
-            ? FloatingActionButton(
-                heroTag: 'quickPhotoLog',
-                tooltip: l.quickPhotoLogTitle,
-                onPressed: () => _quickPhotoLog(context),
-                child: const Icon(Icons.add_a_photo),
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'quickSailChange',
+                    tooltip: l.logEventSailChange,
+                    onPressed: () => _quickSailChange(context),
+                    child: const Icon(Icons.sailing),
+                  ),
+                  const SizedBox(width: 12),
+                  FloatingActionButton(
+                    heroTag: 'quickPhotoLog',
+                    tooltip: l.quickPhotoLogTitle,
+                    onPressed: () => _quickPhotoLog(context),
+                    child: const Icon(Icons.add_a_photo),
+                  ),
+                ],
               )
             : null,
         bottomNavigationBar: MainNavBar(

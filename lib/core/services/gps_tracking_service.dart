@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 import '../database/app_database.dart';
 import '../models/logbook_event_type.dart';
+import '../models/point_of_sail.dart';
 import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
 import '../utils/track_point_throttle.dart';
@@ -427,7 +428,12 @@ class GpsTrackingService {
     return null;
   }
 
-  Future<void> createAutomaticLogbookEntry({String? note, LogbookEventType? event}) async {
+  Future<void> createAutomaticLogbookEntry({
+    String? note,
+    LogbookEventType? event,
+    SailDirection? sailDirection,
+    bool isAutoEntry = true,
+  }) async {
     if (_currentSession == null || _db == null) {
       debugPrint('[GPS] Cannot create entry: no session or db');
       return;
@@ -470,18 +476,32 @@ class GpsTrackingService {
         '${conditions.windDirection?.toStringAsFixed(0)}° '
         'source:$src${conditions.station == null ? '' : ' (${conditions.station})'}');
 
-    // Zdroj v poznámke ostáva kvôli čitateľnosti starých záznamov, ale
-    // strojovo sa číta zo stĺpca weatherSource.
-    final entryNote = note ?? 'Auto [$src]';
+    // Poznámka ostáva prázdna. Zdroj počasia má vlastný stĺpec
+    // (weatherSource) a v denníku aj v exporte sa ukazuje preložený —
+    // značka 'Auto [MODEL]' v texte bola po slovensky a v cudzojazyčnom
+    // exporte nečitateľná. Staré riadky si ju nesú ďalej, čítanie ich
+    // pozná (isMachineAutoNote).
 
     // Vždy použi aktuálny čas — pos.timestamp je čas GPS fixu (môže byť starý z cache).
     final entryTimestamp = DateTime.now().toUtc();
+    final entryNote = note ?? '';
 
     // Prevezmi posledný spôsob plavby dňa: skiper prepne motor/plachty raz
     // a automatické zápisy majú pokračovať v tom, čo zadal.
     final sailMode = _activeDayLogId != null
         ? await _db!.lastSailModeForDay(_activeDayLogId!)
         : null;
+
+    // Kurz voči vetru sa preberá rovnako ako spôsob plavby: skiper ho zadá
+    // pri obrate a dovtedy platí ďalej. Volajúci ho môže prebiť — presne to
+    // robí rýchle tlačidlo obratu.
+    final direction = sailDirection ??
+        (_activeDayLogId != null
+            ? await _db!.lastSailDirectionForDay(_activeDayLogId!).then(
+                (r) => r == null
+                    ? null
+                    : SailDirection.fromCodes(r.pointOfSail, r.tack))
+            : null);
 
     final companion = LogbookEntriesCompanion.insert(
       dayLogId: drift.Value(_activeDayLogId),
@@ -502,8 +522,10 @@ class GpsTrackingService {
       weatherStation: drift.Value(conditions.station),
       weatherStationDistanceM: drift.Value(conditions.stationDistanceM),
       skipperNote: drift.Value(entryNote),
+      pointOfSail: drift.Value(direction?.pointOfSail.code),
+      tack: drift.Value(direction?.tack?.code),
       eventType: drift.Value(event?.code),
-      isAutoEntry: const drift.Value(true),
+      isAutoEntry: drift.Value(isAutoEntry),
       accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
       locationSource: drift.Value(LocationService().lastSource?.name),
       isMocked: drift.Value(LocationService().lastIsMocked),
@@ -528,6 +550,8 @@ class GpsTrackingService {
       'weatherSource': conditions.source.code,
       'weatherStation': conditions.station,
       'skipperNote': entryNote,
+      'pointOfSail': direction?.pointOfSail.code,
+      'tack': direction?.tack?.code,
     };
 
     final engine = _syncEngine;

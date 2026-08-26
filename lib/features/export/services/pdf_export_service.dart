@@ -13,6 +13,9 @@ import '../../../core/database/app_database.dart';
 import '../../../core/models/bearing_kind.dart';
 import '../../../core/models/logbook_event_type.dart';
 import '../../../core/models/sail_mode.dart';
+import '../../../core/models/point_of_sail.dart';
+import '../../../shared/utils/sail_direction_labels.dart';
+import '../../../shared/utils/auto_entry_note.dart';
 import '../../bearing/providers/bearing_provider.dart'
     show bearingLineOf, knownPointOf, latestResectionCluster, sightGroupsFrom;
 import '../../bearing/services/bearing_geometry.dart';
@@ -1024,6 +1027,9 @@ class PdfExportService {
           final sailMode = parsedMode.modes.isEmpty
               ? '-'
               : _sailModeLabel(parsedMode.modes.join(','), l);
+          // Kurz voči vetru ide do toho istého stĺpca ako pohon: papierový
+          // denník ho má tiež pri plachtách, nie ako vlastnú kolónku.
+          final sailDir = SailDirection.fromCodes(entry.pointOfSail, entry.tack);
           String noteText = parsedMode.note;
           // An automatic entry is printed from its event type, so the reader
           // gets it in their own language instead of the stored English.
@@ -1032,12 +1038,19 @@ class PdfExportService {
               noteText,
               l);
           if (eventLabel != null) noteText = eventLabel;
-          // Extract data source tag before stripping auto entries
-          String? srcLabel;
-          if (noteText.startsWith('Auto') || noteText.startsWith('Automatick')) {
-            final srcMatch = RegExp(r'\[([^\]]+)\]').firstMatch(noteText);
-            srcLabel = srcMatch?.group(1)?.toUpperCase();
-            noteText = '';
+          // Zmena plachiet nesie v poznámke celý kurz — kto číta export,
+          // nemá stĺpec so siluetou, takže „Zmena plachiet" samo o sebe
+          // nehovorí nič.
+          if (LogbookEventType.resolve(entry.eventType, entry.skipperNote) ==
+                  LogbookEventType.sailChange &&
+              sailDir != null) {
+            noteText = l.logEventSailChangeTo(sailDirectionPhrase(sailDir, l));
+          }
+          // Strojová značka ('Auto [MODEL]') sa netlačí. Zdroj počasia stojí
+          // preložený vo vlastnom stĺpci vedľa — skratka NMEA/MODEL v
+          // poznámke ho len duplikovala, a to po slovensky.
+          if (eventLabel == null && isMachineAutoNote(noteText)) {
+            noteText = entry.isAutoEntry ? l.autoEntryNote : '';
           }
 
           return pw.TableRow(
@@ -1095,6 +1108,10 @@ class PdfExportService {
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
                   pw.Text(_pdfText(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
                       style: const pw.TextStyle(fontSize: 7.5)),
+                  if (sailDir != null)
+                    pw.Text(_pdfText(sailDirectionShort(sailDir, l)),
+                        maxLines: 1, overflow: pw.TextOverflow.clip,
+                        style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
@@ -1143,18 +1160,6 @@ class PdfExportService {
                         child: pw.ClipRRect(horizontalRadius: 2, verticalRadius: 2,
                           child: pw.Image(pw.MemoryImage(photos[entry.id]!),
                               fit: pw.BoxFit.cover)),
-                      ),
-                    if (srcLabel != null)
-                      pw.Container(
-                        margin: const pw.EdgeInsets.only(bottom: 2),
-                        padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-                        decoration: pw.BoxDecoration(
-                          color: srcLabel == 'NMEA' ? _blue : _dgrey,
-                          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
-                        ),
-                        child: pw.Text(srcLabel,
-                            style: pw.TextStyle(color: PdfColors.white,
-                                fontSize: 5.5, fontWeight: pw.FontWeight.bold)),
                       ),
                     if (noteText.isNotEmpty)
                       pw.Text(_pdfText(noteText),
@@ -2509,6 +2514,8 @@ class PdfExportService {
         return l.voyageStart;
       case LogbookEventType.voyageEnd:
         return l.voyageEnd;
+      case LogbookEventType.sailChange:
+        return l.logEventSailChange;
       case LogbookEventType.anchorDropped:
         return l.logEventAnchorDropped;
       case LogbookEventType.anchorRaised:

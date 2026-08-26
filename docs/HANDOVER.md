@@ -1,3 +1,97 @@
+# Kde sme skončili — 26. 8. 2026 (večer, dva paralelné terminály)
+
+`main` bola na `f3dfffb`, tento commit ju posúva ďalej. Overené pred
+commitom presne tým, čo beží v CI: `flutter analyze --no-fatal-infos`
+**exit 0** (0 chýb, 0 warningov, 496 infos — tie CI prepúšťa), `flutter test`
+**614 testov prešlo**.
+
+Pracovalo sa v dvoch termináloch naraz do tých istých súborov (hlavne
+`lib/l10n/*.arb`). Nič sa nestratilo, ale kto bude pokračovať, nech si
+uvedomí, že tento commit obsahuje **dva nezávislé prúdy**.
+
+## Prúd A — kurz voči vetru (druhý terminál)
+
+Papierový lodný denník má políčko so siluetou lode: kde je vietor a z ktorého
+boku. Appka to teraz vie tiež.
+
+- **Schéma v29** — `logbook_entries` dostalo stĺpce `point_of_sail` a `tack`.
+  Dva stĺpce zámerne, nie jeden: pri behu na plný vietor bok neexistuje a
+  `tack` vtedy ostáva prázdny.
+- **`lib/core/models/point_of_sail.dart`** — enum `PointOfSail`
+  (`close_hauled`, `close_reach`, `beam_reach`, `broad_reach`, `running`) a
+  `Tack`. Čistý Dart, bez driftu a Flutteru, aby sa dal testovať priamo.
+  Kódy sa **nikdy neprekladajú** — v databáze aj v exporte stojí
+  `beam_reach`, nech je appka v akomkoľvek jazyku.
+- **Nezamieňať so `sailMode`** (motor/hlavná/genova). `sailMode` hovorí, ČO je
+  vytiahnuté; `pointOfSail` hovorí, KAM sa ide voči vetru.
+- **`sail_direction_picker.dart`** — silueta lode, ťuká sa na polohu na tom
+  boku, z ktorého fúka (ľavobok červený, pravobok zelený). Opätovné ťuknutie
+  výber zruší; odhadnutý údaj je horší ako prázdne políčko.
+- **`quick_sail_change_sheet.dart`** + rýchla akcia v `main_scaffold.dart` —
+  počas plavby sú vedľa seba dve tlačidlá, obrat a fotka. Obe zapisujú do
+  denníka bez otvárania formulára; na kormidle je na vypĺňanie polí neskoro.
+  Vedľa seba, nie nad sebou — nad sebou horné tlačidlo prekrývalo obsah.
+- **Preberá sa do automatických záznamov**, rovnako ako `sailMode`: kurz sa
+  nemení každou minútou, skiper ho prepne pri obrate a medzitým platí ďalej
+  (`lastSailDirectionForDay`).
+- Ide aj **do PDF** vedľa spôsobu plavby.
+- l10n v 11 jazykoch + bod v príručke denníka.
+- Testy: `point_of_sail_test`, `sail_direction_dao_test`,
+  `sail_direction_labels_test`, `schema_v29`.
+
+### Prúd A, druhá vec — strojové poznámky v denníku
+
+`lib/shared/utils/auto_entry_note.dart`. Automatické záznamy si písali
+poznámku `Auto [MODEL]` / `Automaticky [NMEA]` — nikdy to nebola veta pre
+človeka, bola to značka pre appku, navyše po slovensky. Chorvát v exporte
+čítal slovenské slovo a k nemu kód zdroja, ktorý mu nič nehovoril. Zdroj
+počasia má od schémy v27 vlastný stĺpec (`weatherSource`) a zobrazuje sa
+preložený; v `auto_entry_note.dart` ostáva len rozpoznanie starých riadkov,
+aby sa tá značka nedostala na oči. Test: `auto_entry_note_test`.
+
+## Prúd B — postup na pripojenie B&G do príručky (prvý terminál)
+
+Do `guideInstrBody` pribudol vo **všetkých 11 jazykoch** odsek o pripojení
+Navico plotrov. Nadväzuje na sekciu nižšie, kde je popísané, ako sa to na
+lodi vypátralo.
+
+Zámerne tam **nie je konkrétna adresa `169.254.160.58`** — tá patrí jednému
+plotru. Namiesto nej je návod, kde si ju každý nájde
+(`Settings → Network → Diagnostics`, položka IP address), aby text platil aj
+na inej lodi. Názvy položiek v menu ostali po anglicky vo všetkých jazykoch,
+lebo plotter je anglický.
+
+## Zajtra v práci — odkiaľ pokračovať
+
+Poradie podľa toho, čo je najbližšie k hotovému:
+
+1. **Vyskúšať kurz voči vetru na vode.** Kód aj testy sú hotové, ale rýchla
+   akcia pri obrate je vec, ktorá sa dá posúdiť až za kormidlom — či sa dá
+   trafiť jednou rukou a či nechýba potvrdenie, že sa zápis uložil.
+2. **GoFree discovery.** Teraz už má oporu v dátach: vieme, že plotter
+   servíruje 0183 na `169.254.x.x:10110` a že broadcast na `UDP 2052`
+   takmer isto obsahuje presne tú dvojicu. Odchytiť ho a podať existujúcemu
+   TCP klientovi by znamenalo, že používateľ nezadáva nič. Rozsah: nová malá
+   služba + úprava `autoDetectHost`, ktorý dnes skenuje len port 2000, a
+   jeho jediného volania v `main_scaffold.dart`. **Nezačaté, čaká na súhlas.**
+3. **Vetva `feat/emodnet-depths`** je na origine stále a je zbytočná
+   (dávno zliata): `git push origin --delete feat/emodnet-depths`
+4. **Verzia sa stále nebumpovala.** Čo je na Console, nie je v gite — pýtať
+   sa pred bumpom, version code sa nedá použiť druhýkrát. Od build 60 sa
+   nazbieralo dosť na ďalší build: hĺbky, meranie hĺbky ťuknutím, odstránená
+   vrstva staníc, oprava sekania mapy, MeteoAlarm, kurz voči vetru.
+5. **PMTiles/R2** ostáva tam, kde bolo — archív žije na
+   `maps.hmba.fyi/adriatic.pmtiles`, vektorové vykresľovanie sa vrátilo
+   pre výkon na Honore. Detaily v sekcii nižšie.
+
+## Nezacommitované naschvál
+
+`.claude/settings.local.json` (lokálne nastavenie), `screenshot.jpg` a
+`lodný denník.jpeg` (obrázky odložené v koreni repa — ak sú potrebné, patria
+do `docs/`, inak preč).
+
+---
+
 # Kde sme skončili — 26. 8. 2026 (NMEA na lodi)
 
 ## B&G Zeus³ 12" (NOS v25.2) — FUNGUJE, a nie tak, ako by človek čakal

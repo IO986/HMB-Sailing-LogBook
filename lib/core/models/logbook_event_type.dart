@@ -20,7 +20,11 @@ enum LogbookEventType {
   mob('mob'),
   mobCancelled('mob_cancelled'),
   voyageStart('voyage_start'),
-  voyageEnd('voyage_end');
+  voyageEnd('voyage_end'),
+
+  /// Prehodenie plachiet — obrat alebo halza. Zapisuje ho človek, nie
+  /// automatika: appka nevie rozlíšiť zámerný obrat od zmeny kurzu.
+  sailChange('sail_change');
 
   final String code;
   const LogbookEventType(this.code);
