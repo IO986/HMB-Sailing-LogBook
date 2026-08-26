@@ -9,6 +9,7 @@
   "poiTypeHarbour": "Hafen",
   "poiVhfChannel": "UKW-Kanal",
   "poiPhone": "Telefon",
+  "poiCannotOpen": "Kann nicht geöffnet werden",
   "poiWebsite": "Web",
   "poiEmail": "E-Mail",
   "poiCapacity": "Kapazität",

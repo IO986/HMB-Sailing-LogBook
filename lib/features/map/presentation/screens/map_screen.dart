@@ -20,11 +20,9 @@ import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
-import '../../../../core/services/station_observation.dart';
 import '../../../../core/services/depth_probe_service.dart';
 import '../../../../core/services/tile_cache.dart';
 import '../../../../core/utils/distance_calculator.dart';
-import '../../../../core/utils/wind_scale.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/bearing_kind.dart';
 import '../../../bearing/presentation/widgets/bearing_layers.dart';
@@ -75,7 +73,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   _MapPanel _openPanel = _MapPanel.none;
 
   // Rotácia mapy (dvoma prstami) — kompas hore ju resetne späť na north-up.
-  double _mapRotationDeg = 0;
+  //
+  // ValueNotifier, nie plain double + setState: `onPositionChanged` volá
+  // toto pri takmer každom framey posunu/zoomu — pri štípaní dvoma prstami
+  // takmer vždy zachytí aj nepatrnú rotáciu. `setState` na celej
+  // `_MapScreenState` (dlaždice, markery, FAB stĺpce, playback bar) pri
+  // KAŽDOM takom frame bolo presne to, čo appku pri zoome sekalo.
+  // ValueNotifier prekreslí len tie dva widgety nižšie, čo naň naozaj
+  // počúvajú (kompas a šípka lode pri prehrávaní).
+  final _mapRotation = ValueNotifier<double>(0);
 
   /// Programový posun mapy práve prebieha (sledovanie GPS, alebo vynútené
   /// prekreslenie dlaždíc po vstupe na obrazovku).
@@ -148,23 +154,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       t.cancel();
     }
     _poiDebounce?.cancel();
+    _mapRotation.dispose();
     super.dispose();
   }
 
-  /// Debounced aktualizácia viditeľného výrezu pre POI/veternú vrstvu —
-  /// až keď sa mapa na chvíľu ustáli, nie počas každého frame posunu.
+  /// Debounced aktualizácia viditeľného výrezu pre POI vrstvu — až keď sa
+  /// mapa na chvíľu ustáli, nie počas každého frame posunu.
   void _schedulePoiRefresh() {
     final st = ref.read(mapNotifierProvider);
-    if (!st.showMarinePois && !st.showStationWind) return;
+    if (!st.showMarinePois) return;
     _poiDebounce?.cancel();
     _poiDebounce = Timer(const Duration(milliseconds: 400), () {
       if (!mounted || !_mapReady) return;
       final camera = _mapController.camera;
-      final state = ref.read(mapNotifierProvider);
       // Pod minimálnym zoomom sa POI neťahajú — služba kešuje po bunkách a
-      // pri pohľade na pol Európy by ich bolo treba tisíce. Meraných staníc
-      // je rádovo menej a tie si strop rieši samy podľa rozsahu výrezu.
-      if (camera.zoom < _poiMinZoom && !state.showStationWind) return;
+      // pri pohľade na pol Európy by ich bolo treba tisíce.
+      if (camera.zoom < _poiMinZoom) return;
       ref.read(mapViewBoundsProvider.notifier).state = camera.visibleBounds;
     });
   }
@@ -208,79 +213,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _moveMapProgrammatically(
           LatLng(pos.latitude, pos.longitude), _mapController.camera.zoom);
     } catch (_) {}
-  }
-
-  /// Detail meranej stanice.
-  ///
-  /// Vzdialenosť od lode je tu zámerne: hodnota je nameraná, ale inde, a bez
-  /// vzdialenosti sa nedá posúdiť, či to ešte niečo hovorí o mieste, kde loď
-  /// naozaj je.
-  void _showStationSheet(StationObservation o) {
-    final l = AppLocalizations.of(context);
-    final units = ref.read(unitsSyncProvider);
-    final fix = LocationService().lastPosition;
-    final distanceNm = fix == null
-        ? null
-        : DistanceCalculator.distanceNm(
-            fix.latitude, fix.longitude, o.latitude, o.longitude);
-
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Row(children: [
-              const Icon(Icons.sensors, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(o.station,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-            ]),
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(l.weatherSourceStationUnknown,
-                  style: TextStyle(
-                      fontSize: 12, color: Theme.of(context).hintColor)),
-            ),
-            const Divider(height: 20),
-            _bearingDetailRow(
-                l.wind, units.formatSpeed(o.windSpeedKnots, decimals: 1)),
-            if (o.gustKnots != null)
-              _bearingDetailRow(
-                  l.windGust, units.formatSpeed(o.gustKnots, decimals: 1)),
-            if (o.windDirectionDeg != null)
-              _bearingDetailRow(l.windDir, _formatDegrees(o.windDirectionDeg!)),
-            if (o.airTemp != null)
-              _bearingDetailRow(l.temperature, '${o.airTemp!.toStringAsFixed(1)} °C'),
-            if (o.airPressure != null)
-              _bearingDetailRow(l.pressureLabel, '${o.airPressure!.toStringAsFixed(1)} hPa'),
-            if (distanceNm != null)
-              _bearingDetailRow(l.mapStationDistance,
-                  units.formatDistance(distanceNm, decimals: 1)),
-            _bearingDetailRow(
-                l.timeCol, AppDate.of(context, ref).shortWithTime(o.observedAt)),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              // Zdroj sa píše menom, nie ikonou: dve merania z rôznych
-              // zdrojov sa môžu líšiť a vtedy je jediná užitočná otázka,
-              // ktoré je ktoré.
-              child: Text(
-                  o.source == ObservationSource.dhmz
-                      ? l.radarSourceDhmz
-                      : '${l.mapStationSourceMetar}'
-                          '${o.code == null ? '' : ' · ${o.code}'}',
-                  style: TextStyle(
-                      fontSize: 11, color: Theme.of(context).hintColor)),
-            ),
-          ]),
-        ),
-      ),
-    );
   }
 
   void _showBearingSheet(Bearing bearing) {
@@ -495,11 +427,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final anchor = ref.watch(anchorProvider);
     final dayEntries = ref.watch(dayEntryMarkersProvider).valueOrNull ?? [];
     final showMarinePois = mapState.showMarinePois;
-    final marinePois =
-        ref.watch(marinePoisProvider).valueOrNull ?? const <MarinePoi>[];
-    final stationWinds =
-        ref.watch(stationWindProvider).valueOrNull ??
-            const <StationObservation>[];
+    // marinePois/stationWinds sú NARÁMERNE nie tu, ale vo vlastných
+    // Consumer widgetoch nižšie (marker vrstvy + počítadlo staníc) — watch
+    // priamo tu by pri každom sieťovom dotiahnutí prekreslil celú obrazovku
+    // mapy, čo bola príčina trhania pri posune/zoome so zapnutou vrstvou.
 
     // Nový tracking vždy vyhráva nad prezeraním starej plavby.
     ref.listen<bool>(isTrackingProvider, (prev, next) {
@@ -593,9 +524,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       'setFollowGps(false)');
                   ref.read(mapNotifierProvider.notifier).setFollowGps(false);
                 }
-                if (camera.rotation != _mapRotationDeg) {
-                  setState(() => _mapRotationDeg = camera.rotation);
-                }
+                _mapRotation.value = camera.rotation;
                 _schedulePoiRefresh();
               },
             ),
@@ -717,34 +646,30 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
 
               // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
-              if (showMarinePois && marinePois.isNotEmpty)
-                MarkerLayer(markers: [
-                  for (final poi in marinePois)
-                    Marker(
-                      point: LatLng(poi.lat, poi.lon),
-                      width: 32,
-                      height: 32,
-                      child: GestureDetector(
-                        onTap: () => _showPoiDetail(poi),
-                        child: _MarinePoiMarker(type: poi.type),
+              //
+              // Vlastný Consumer namiesto watch na začiatku build(): tieto
+              // markery sa menia s každým posunom mapy (POI dotiahnuté pre
+              // nový výrez), a top-level watch by pri každej zmene
+              // prekresľoval CELÚ obrazovku mapy — všetky dlaždicové vrstvy,
+              // FAB stĺpce aj playback bar — nielen tieto značky. Presne to
+              // bolo príčinou trhania pri posune/zoome, keď je vrstva zapnutá.
+              if (showMarinePois)
+                Consumer(builder: (context, ref, _) {
+                  final pois = ref.watch(marinePoisProvider).valueOrNull ??
+                      const <MarinePoi>[];
+                  return MarkerLayer(markers: [
+                    for (final poi in pois)
+                      Marker(
+                        point: LatLng(poi.lat, poi.lon),
+                        width: 32,
+                        height: 32,
+                        child: GestureDetector(
+                          onTap: () => _showPoiDetail(poi),
+                          child: _MarinePoiMarker(type: poi.type),
+                        ),
                       ),
-                    ),
-                ]),
-
-              // ── Namerané vetry zo staníc ────────────────────
-              if (stationWinds.isNotEmpty)
-                MarkerLayer(markers: [
-                  for (final o in stationWinds)
-                    Marker(
-                      point: LatLng(o.latitude, o.longitude),
-                      width: 54,
-                      height: 54,
-                      child: _StationWindMarker(
-                        observation: o,
-                        onTap: () => _showStationSheet(o),
-                      ),
-                    ),
-                ]),
+                  ]);
+                }),
 
               // ── Pravítko / trasa ─────────────────────────────
               if (_rulerPoints.isNotEmpty) ...[
@@ -801,18 +726,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ]),
 
               // ── Loď v prehrávanom okamihu ────────────────────
-              if (playbackFix != null)
+              if (playbackFix case final fix?)
                 MarkerLayer(markers: [
                   Marker(
-                    point: playbackFix.position,
+                    point: fix.position,
                     width: 26,
                     height: 26,
-                    child: Transform.rotate(
-                      angle: ((playbackFix.cog ?? 0) - _mapRotationDeg) *
-                          math.pi /
-                          180,
-                      child: Icon(Icons.navigation,
-                          color: Colors.deepOrange.shade900, size: 26),
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _mapRotation,
+                      builder: (context, rotationDeg, _) => Transform.rotate(
+                        angle: ((fix.cog ?? 0) - rotationDeg) *
+                            math.pi /
+                            180,
+                        child: Icon(Icons.navigation,
+                            color: Colors.deepOrange.shade900, size: 26),
+                      ),
                     ),
                   ),
                 ]),
@@ -987,23 +915,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
             left: 12,
-            child: _NorthResetButton(
-              rotationDeg: _mapRotationDeg,
-              locked: mapState.northLocked,
-              onTap: () {
-                _mapController.rotate(0);
-                setState(() => _mapRotationDeg = 0);
-              },
-              onLongPress: () {
-                final nowLocked = !mapState.northLocked;
-                ref
-                    .read(mapNotifierProvider.notifier)
-                    .setNorthLocked(nowLocked);
-                if (nowLocked) {
+            child: ValueListenableBuilder<double>(
+              valueListenable: _mapRotation,
+              builder: (context, rotationDeg, _) => _NorthResetButton(
+                rotationDeg: rotationDeg,
+                locked: mapState.northLocked,
+                onTap: () {
                   _mapController.rotate(0);
-                  setState(() => _mapRotationDeg = 0);
-                }
-              },
+                  _mapRotation.value = 0;
+                },
+                onLongPress: () {
+                  final nowLocked = !mapState.northLocked;
+                  ref
+                      .read(mapNotifierProvider.notifier)
+                      .setNorthLocked(nowLocked);
+                  if (nowLocked) {
+                    _mapController.rotate(0);
+                    _mapRotation.value = 0;
+                  }
+                },
+              ),
             ),
           ),
 
@@ -1050,8 +981,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   active: _openPanel == _MapPanel.layers ||
                       showSeamarks ||
                       showBathymetry ||
-                      showMarinePois ||
-                      mapState.showStationWind,
+                      showMarinePois,
                   onPressed: () => setState(() => _openPanel =
                       _openPanel == _MapPanel.layers
                           ? _MapPanel.none
@@ -1099,16 +1029,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         }
                       }
                     },
-                  ),
-                  const SizedBox(height: 8),
-                  _layerFab(
-                    heroTag: 'stationWind',
-                    tooltip: l.mapStationWindLayer,
-                    icon: Icons.sensors,
-                    active: mapState.showStationWind,
-                    onPressed: () => ref
-                        .read(mapNotifierProvider.notifier)
-                        .toggleStationWind(),
                   ),
                 ],
 
@@ -1286,43 +1206,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       child: const Icon(Icons.close,
                           color: Colors.white, size: 18),
                     ),
-                  ]),
-                ),
-              ),
-            ),
-
-          // ── Koľko staníc je vo výreze ─────────────────────────
-          // Meraných staníc je málo a je to vlastnosť sveta, nie appky:
-          // v Chorvátsku ich DHMZ prevádzkuje pár desiatok a METAR-y hlásia
-          // len letiská. Bez tohto počítadla vyzerá jedna značka nad Splitom
-          // ako pokazená vrstva — a žiadna značka ako vypnutá vrstva.
-          if (mapState.showStationWind)
-            Positioned(
-              top: MediaQuery.of(context).padding.top +
-                  (mapState.previewLabel != null ? 96 : 56),
-              left: 12,
-              child: Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.sensors,
-                        size: 14,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer),
-                    const SizedBox(width: 6),
-                    Text(
-                        stationWinds.isEmpty
-                            ? l.mapStationNone
-                            : l.mapStationCount(stationWinds.length),
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondaryContainer)),
                   ]),
                 ),
               ),
@@ -2127,66 +2010,6 @@ class _CompassRosePainter extends CustomPainter {
 }
 
 // ── Meraná stanica ────────────────────────────────────────────
-
-/// Nameraný vietor na stanici (DHMZ alebo METAR).
-///
-/// Biely terč hovorí „toto niekto nameral". Číslo pod ním je stredný vietor;
-/// keď stanica hlási aj náraz, pripíše sa za lomkou — rozdiel medzi 12 a 12/25
-/// uzlami rozhoduje o tom, či sa vypláva.
-class _StationWindMarker extends ConsumerWidget {
-  final StationObservation observation;
-  final VoidCallback onTap;
-  const _StationWindMarker({required this.observation, required this.onTap});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final kn = observation.windSpeedKnots ?? 0;
-    final dir = observation.windDirectionDeg;
-    final gust = observation.gustKnots;
-    final units = ref.watch(unitsSyncProvider);
-    final color = windColor(kn);
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: color, width: 2),
-            boxShadow: const [
-              BoxShadow(color: Colors.black38, blurRadius: 3),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: dir == null
-              // Bezvetrie alebo chýbajúci smer — šípka by tu tvrdila niečo,
-              // čo stanica nenamerala.
-              ? Icon(Icons.circle, size: 8, color: color)
-              : Transform.rotate(
-                  angle: (dir + 180) * math.pi / 180,
-                  child: Icon(Icons.navigation, size: 18, color: color),
-                ),
-        ),
-        Text(
-          gust == null
-              ? units.speedValue(kn).toStringAsFixed(0)
-              : '${units.speedValue(kn).toStringAsFixed(0)}/'
-                  '${units.speedValue(gust).toStringAsFixed(0)}',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: color,
-            shadows: const [Shadow(color: Colors.white, blurRadius: 3)],
-          ),
-        ),
-      ]),
-    );
-  }
-}
 
 // ── GPS Marker ────────────────────────────────────────────────
 

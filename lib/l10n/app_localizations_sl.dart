@@ -30,6 +30,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get poiPhone => 'Telefon';
 
   @override
+  String get poiCannotOpen => 'Ni mogoče odpreti';
+
+  @override
   String get poiWebsite => 'Spletna stran';
 
   @override

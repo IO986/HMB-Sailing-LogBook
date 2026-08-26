@@ -30,6 +30,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get poiPhone => 'Телефон';
 
   @override
+  String get poiCannotOpen => 'Не вдалося відкрити';
+
+  @override
   String get poiWebsite => 'Веб';
 
   @override

@@ -128,10 +128,14 @@ class _CachedTileImage extends ImageProvider<_CachedTileImage> {
 
 /// Stiahne dlaždice regiónu pre offline použitie na mori.
 class TileRegionDownloader {
-  /// Vrstvy, ktoré sa sťahujú vždy — mapa a námorné značky sú to, na čom sa
-  /// naviguje bez signálu.
+  /// Vrstvy, ktoré sa sťahujú vždy.
+  ///
+  /// Základná mapa tu zámerne CHÝBA: `tile.openstreetmap.org` bulk
+  /// sťahovanie výslovne zakazuje (viď docs/HANDOVER.md, "PMTiles na
+  /// Cloudflare R2"). Základná mapa je teraz vlastná vektorová vrstva
+  /// (`VectorBasemapProvider`, PMTiles z R2) s vlastným súborovým cache —
+  /// tento predsťahovač sa jej netýka.
   static const baseLayers = {
-    'osm': 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     'seamark': 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
   };
 

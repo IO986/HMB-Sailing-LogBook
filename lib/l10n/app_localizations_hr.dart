@@ -30,6 +30,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get poiPhone => 'Telefon';
 
   @override
+  String get poiCannotOpen => 'Ne može se otvoriti';
+
+  @override
   String get poiWebsite => 'Web stranica';
 
   @override

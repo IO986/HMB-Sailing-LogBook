@@ -30,6 +30,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get poiPhone => 'Telefon';
 
   @override
+  String get poiCannotOpen => 'Nelze otevřít';
+
+  @override
   String get poiWebsite => 'Web';
 
   @override

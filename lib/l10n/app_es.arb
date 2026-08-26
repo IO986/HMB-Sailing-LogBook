@@ -9,6 +9,7 @@
   "poiTypeHarbour": "Puerto",
   "poiVhfChannel": "Canal VHF",
   "poiPhone": "Teléfono",
+  "poiCannotOpen": "No se puede abrir",
   "poiWebsite": "Web",
   "poiEmail": "Correo electrónico",
   "poiCapacity": "Capacidad",

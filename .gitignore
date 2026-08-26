@@ -82,3 +82,4 @@ key.txt
 .debug-info/
 screenshots/
 *.gpx
+.wrangler/

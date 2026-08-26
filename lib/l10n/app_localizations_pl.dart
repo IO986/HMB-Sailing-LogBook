@@ -30,6 +30,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get poiPhone => 'Telefon';
 
   @override
+  String get poiCannotOpen => 'Nie można otworzyć';
+
+  @override
   String get poiWebsite => 'Strona';
 
   @override

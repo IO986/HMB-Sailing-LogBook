@@ -9,6 +9,7 @@
   "poiTypeHarbour": "Гавань",
   "poiVhfChannel": "Канал VHF",
   "poiPhone": "Телефон",
+  "poiCannotOpen": "Не вдалося відкрити",
   "poiWebsite": "Веб",
   "poiEmail": "Email",
   "poiCapacity": "Місткість",

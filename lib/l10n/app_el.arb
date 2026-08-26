@@ -9,6 +9,7 @@
   "poiTypeHarbour": "Λιμάνι",
   "poiVhfChannel": "Κανάλι VHF",
   "poiPhone": "Τηλέφωνο",
+  "poiCannotOpen": "Δεν είναι δυνατό το άνοιγμα",
   "poiWebsite": "Ιστότοπος",
   "poiEmail": "Email",
   "poiCapacity": "Χωρητικότητα",

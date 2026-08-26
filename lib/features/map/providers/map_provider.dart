@@ -8,9 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/marine_poi_service.dart';
-import '../../../core/services/dhmz_observation_service.dart';
-import '../../../core/services/metar_observation_service.dart';
-import '../../../core/services/station_observation.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
 
@@ -128,62 +125,10 @@ final marinePoisProvider = FutureProvider<List<MarinePoi>>((ref) async {
   return MarinePoiService().fetchForBounds(bounds);
 });
 
-/// Namerané vetry zo staníc — každá šípka na svojej stanici.
-///
-/// Toto NIE JE model: sú to hodnoty, ktoré niekto naozaj nameral, a ako také
-/// majú prednosť pred predpoveďou. Cenou je, že merajú tam, kde stoja — preto
-/// sa nič neprenáša do polohy lode a vzdialenosť si posúdi ten, kto sa pozerá.
-///
-/// Dva zdroje, lebo appka nie je len pre Jadran: DHMZ pokrýva Chorvátsko
-/// hustejšie a pri pobreží, METAR pokrýva zvyšok sveta a jediný hlási nárazy.
-final stationWindProvider =
-    FutureProvider<List<StationObservation>>((ref) async {
-  final show =
-      ref.watch(mapNotifierProvider.select((s) => s.showStationWind));
-  if (!show) return const [];
-
-  final db = ref.watch(databaseProvider);
-  final bounds = ref.watch(mapViewBoundsProvider);
-
-  // Obe siete naraz. Kým sa čakalo najprv na DHMZ (dva XML feedy, každý až
-  // dvadsať sekúnd na timeoute), METAR sa rozbiehal až po nich — na slabom
-  // spojení sa prvá značka objavila skoro minútu po posune mapy, čo vyzerá
-  // ako pokazená vrstva.
-  final metarFuture = bounds == null
-      ? Future.value(const <StationObservation>[])
-      : MetarObservationService().fetchForBounds(bounds);
-  // Sieť nie je podmienka: keď nejde, ostane posledná keš.
-  final dhmzSync = DhmzObservationService().sync();
-
-  var cached = await db.getDhmzObservations();
-  // Prázdna keš je len pri prvom spustení; vtedy sa na sťahovanie počká,
-  // inak by prvý pohľad na Jadran ukázal iba letiská.
-  if (cached.isEmpty) {
-    await dhmzSync;
-    cached = await db.getDhmzObservations();
-  }
-
-  final dhmz = [
-    for (final o in cached)
-      if (o.windSpeedKnots != null) StationObservation.fromDhmz(o),
-  ];
-  final metar = await metarFuture;
-
-  final merged = mergeObservations(
-    primary: dhmz,
-    secondary: [for (final o in metar) if (o.windSpeedKnots != null) o],
-    maxAge: DhmzObservationService.maxAge,
-  );
-  debugPrint('[STATIONS] ${merged.length} shown '
-      '(dhmz ${dhmz.length}, metar ${metar.length})');
-  return merged;
-});
-
 class MapNotifier extends Notifier<MapState> {
   // Kľúče do SharedPreferences pre uchované vrstvy/prepínače mapy.
   static const _kSeamarks = 'map_show_seamarks';
   static const _kMarinePois = 'map_show_marine_pois';
-  static const _kStationWind = 'map_show_station_wind';
   static const _kBathymetry = 'map_show_bathymetry';
 
   // Kľúče zrušených vrstiev počasia ('map_weather_overlay', 'map_show_wind_grid',
@@ -209,7 +154,6 @@ class MapNotifier extends Notifier<MapState> {
     state = state.copyWith(
       showSeamarks: p.getBool(_kSeamarks) ?? state.showSeamarks,
       showMarinePois: p.getBool(_kMarinePois) ?? state.showMarinePois,
-      showStationWind: p.getBool(_kStationWind) ?? state.showStationWind,
       showBathymetry: p.getBool(_kBathymetry) ?? state.showBathymetry,
       showBearings: p.getBool(_kBearings) ?? state.showBearings,
       followGps: p.getBool(_kFollowGps) ?? state.followGps,
@@ -225,7 +169,6 @@ class MapNotifier extends Notifier<MapState> {
     final p = await SharedPreferences.getInstance();
     await p.setBool(_kSeamarks, state.showSeamarks);
     await p.setBool(_kMarinePois, state.showMarinePois);
-    await p.setBool(_kStationWind, state.showStationWind);
     await p.setBool(_kBathymetry, state.showBathymetry);
     await p.setBool(_kBearings, state.showBearings);
     await p.setBool(_kFollowGps, state.followGps);
@@ -256,12 +199,6 @@ class MapNotifier extends Notifier<MapState> {
 
   void toggleMarinePois() {
     state = state.copyWith(showMarinePois: !state.showMarinePois);
-    _persist();
-  }
-
-
-  void toggleStationWind() {
-    state = state.copyWith(showStationWind: !state.showStationWind);
     _persist();
   }
 
@@ -307,7 +244,6 @@ class MapNotifier extends Notifier<MapState> {
       MapState(
         showSeamarks: state.showSeamarks,
         showMarinePois: state.showMarinePois,
-        showStationWind: state.showStationWind,
         showBathymetry: state.showBathymetry,
         followGps: state.followGps,
         northLocked: state.northLocked,
@@ -352,14 +288,6 @@ class MapState {
   /// Klikateľná vrstva kotvísk, marín a prístavov (OSM/Overpass).
   final bool showMarinePois;
 
-  /// Namerané vetry z pozemných staníc DHMZ, každý na svojej stanici.
-  ///
-  /// Vedome sa NEINTERPOLUJE do polohy lode: stanica sto míľ ďaleko meria
-  /// presne, ale inde, a v Jadrane sa bura aj maestral menia po desiatkach
-  /// kilometrov. Nechať šípku sedieť na svojej stanici je jediný spôsob, ako
-  /// z toho spraviť údaj a nie dohad.
-  final bool showStationWind;
-
   /// Izobaty z EMODnet Bathymetry — hĺbnice s popiskom hĺbky.
   ///
   /// Vypnuté od začiatku: je to sieťová vrstva navyše a nad plytkým pobrežím
@@ -396,7 +324,6 @@ class MapState {
   const MapState({
     this.showSeamarks = true,
     this.showMarinePois = false,
-    this.showStationWind = false,
     this.showBathymetry = false,
     this.showBearings = true,
     this.followGps = true,
@@ -409,7 +336,6 @@ class MapState {
   MapState copyWith({
     bool? showSeamarks,
     bool? showMarinePois,
-    bool? showStationWind,
     bool? showBathymetry,
     bool? showBearings,
     bool? followGps,
@@ -422,7 +348,6 @@ class MapState {
       MapState(
         showSeamarks: showSeamarks ?? this.showSeamarks,
         showMarinePois: showMarinePois ?? this.showMarinePois,
-        showStationWind: showStationWind ?? this.showStationWind,
         showBathymetry: showBathymetry ?? this.showBathymetry,
         showBearings: showBearings ?? this.showBearings,
         followGps: followGps ?? this.followGps,

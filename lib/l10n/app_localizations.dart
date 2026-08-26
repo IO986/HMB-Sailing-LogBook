@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Telefón'**
   String get poiPhone;
 
+  /// No description provided for @poiCannotOpen.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nedá sa otvoriť'**
+  String get poiCannotOpen;
+
   /// No description provided for @poiWebsite.
   ///
   /// In sk, this message translates to:

@@ -30,6 +30,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get poiPhone => 'Telefón';
 
   @override
+  String get poiCannotOpen => 'Nedá sa otvoriť';
+
+  @override
   String get poiWebsite => 'Web';
 
   @override
