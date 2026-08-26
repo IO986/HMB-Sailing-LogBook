@@ -79,14 +79,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get mapDepthNoData => 'Pro tento bod nejsou údaje o hloubce';
 
   @override
-  String get mapStationNone => 'V tomto výřezu neměří žádná stanice';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Stanice: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Model: $model';
   }
@@ -1792,13 +1784,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get mapStationWindLayer => 'Stanice – naměřeno';
 
   @override
-  String get mapStationDistance => 'Vzdálenost od lodi';
-
-  @override
   String get windGust => 'Náraz';
-
-  @override
-  String get mapStationSourceMetar => 'Zdroj: METAR – letištní hlášení (NOAA)';
 
   @override
   String get radarTitle => 'Srážkový radar';
@@ -2492,7 +2478,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu Dole se objeví přehrávání: posuvníkem projdeš plavbu v čase a vidíš polohu, rychlost, kurz, vítr i tlak v kterékoli chvíli. Svislé čárky na posuvníku jsou události — začátek a konec plavby, kotva, drift, MOB.\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Hloubky – hloubnice z EMODnet s hloubkou v metrech. Model dna z průzkumů, NENÍ to námořní mapa: na plánování průlivu ano, na rozhodnutí „projedu tudy“ ne. Standardně vypnuto; prohlížené dlaždice se ukládají jako ostatní. Když je vrstva zapnutá, klepnutím do mapy přečteš hloubku v daném bodě (je potřeba signál).\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web, hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Stanice – naměřeno: šipky v bílém terči jsou SKUTEČNĚ NAMĚŘENÉ hodnoty ze stanic, ne předpověď. Sedí na své stanici a nepřepočítávají se na tvoji polohu — ťukni a uvidíš název stanice, čas měření a její vzdálenost od lodi. Předpověď, vlny a proudy najdeš v záloźce Počasí; mapa zůstává na navigaci a záznam.\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stažení) — stáhne viditelnou oblast pro použití bez signálu, od aktuálního přiblížení o tři úrovně hlouběji. Vždy mapu a seamarky; když máš zapnutý satelit, i snímky a jejich popisky. Navíc se každá prohlížená dlaždice ukládá automaticky.\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, hloubky, přístavy, stanice), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
+      'Záložka Mapa zobrazuje tvou aktuální polohu a trasu plavby.\n\n• Modrá tečka = aktuální poloha\n• Modrá čára = právě trackovaná trasa\n• Ikona trasy – vyber libovolnou plavbu nebo den a podívej se na její trasu na mapě (oranžově), i bez PDF exportu Dole se objeví přehrávání: posuvníkem projdeš plavbu v čase a vidíš polohu, rychlost, kurz, vítr i tlak v kterékoli chvíli. Svislé čárky na posuvníku jsou události — začátek a konec plavby, kotva, drift, MOB.\n• Můžeš přepínat mezi satelitní a mapovou vrstvou\n• Seamarky – přepínač pro námořní značky (vraky, mělčiny, bóje)\n• Hloubky – hloubnice z EMODnet s hloubkou v metrech. Model dna z průzkumů, NENÍ to námořní mapa: na plánování průlivu ano, na rozhodnutí „projedu tudy“ ne. Standardně vypnuto; prohlížené dlaždice se ukládají jako ostatní. Když je vrstva zapnutá, klepnutím do mapy přečteš hloubku v daném bodě (je potřeba signál).\n• Přístavy – klikatelná vrstva kotvišť, marín a přístavů (data z OpenStreetMap): klepni na ikonku a uvidíš název, VHF kanál, telefon, web (klepnutím rovnou zavoláš nebo otevřeš stránku), hloubku či kapacitu, pokud jsou známé; místo si můžeš rovnou uložit jako waypoint; vrstva zahrnuje i tankovací stanice pro lodě (oranžová pumpa)\n• Pravítko (fialová ikona) – klepej body na mapě: součet NM, kurz posledního úseku a ETA při aktuální rychlosti; body se přichytávají k waypointům, takže si můžeš změřit trasu přes cíle\n• Offline mapa (ikona stažení) — stáhne viditelnou oblast pro použití bez signálu, od aktuálního přiblížení o tři úrovně hlouběji. Vždy seamarky; když máš zapnutý satelit, i snímky a jejich popisky. Navíc se každá prohlížená dlaždice ukládá automaticky.\n• V nočním režimu se mapa automaticky přepne na tmavé dlaždice\n• Ikona kotvy = místo kotvení (jen když je kotva aktivní)\n• Ikona importu – načte trasy a waypointy z .gpx souboru (viz sekce \"Import GPX\")\n• Zámek severu – podrž růžici kompasu vlevo nahoře; mapa se přestane otáčet a zůstane na sever. Klepnutím ji kdykoli vrátíš na sever.\n• Zvolené vrstvy (satelit, seamarky, hloubky, přístavy), sledování GPS i zámek severu se pamatují mezi spuštěními\n• Podrž prst na mapě = přidej waypoint (navigační cíl); klepnutím na existující waypoint ho přejmenuješ nebo smažeš';
 
   @override
   String get guideInstrTitle => 'Námořní přístroje';

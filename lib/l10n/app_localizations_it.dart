@@ -79,14 +79,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mapDepthNoData => 'Nessun dato di profondità per questo punto';
 
   @override
-  String get mapStationNone => 'Nessuna stazione misura in questa vista';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Stazioni: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Modello: $model';
   }
@@ -1804,14 +1796,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get mapStationWindLayer => 'Stazioni – misurato';
 
   @override
-  String get mapStationDistance => 'Distanza dalla barca';
-
-  @override
   String get windGust => 'Raffica';
-
-  @override
-  String get mapStationSourceMetar =>
-      'Fonte: METAR – bollettino aeroportuale (NOAA)';
 
   @override
   String get radarTitle => 'Radar delle precipitazioni';
@@ -2515,7 +2500,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Profondità – isobate da EMODnet, con la quota in metri. Un modello del fondale ricavato da rilievi, NON una carta nautica: per pianificare una traversata sì, per decidere se si passa no. Disattivato di default; le tessere consultate vengono salvate come le altre. Con il livello attivo, tocca la mappa per leggere la profondità in quel punto (serve segnale).\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web, profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Stazioni – misurato: le frecce in un disco bianco sono valori REALMENTE MISURATI dalle stazioni, non una previsione. Restano sulla loro stazione e non vengono riportate sulla tua posizione — tocca per nome della stazione, ora della misura e distanza dalla barca. Previsione, onde e correnti stanno nella scheda Meteo; la carta resta per navigazione e registro.\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre carta e segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, profondità, porti, stazioni), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
+      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Profondità – isobate da EMODnet, con la quota in metri. Un modello del fondale ricavato da rilievi, NON una carta nautica: per pianificare una traversata sì, per decidere se si passa no. Disattivato di default; le tessere consultate vengono salvate come le altre. Con il livello attivo, tocca la mappa per leggere la profondità in quel punto (serve segnale).\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web (tocca per chiamare o aprire il sito direttamente), profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, profondità, porti), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo';
 
   @override
   String get guideInstrTitle => 'Strumenti di bordo';

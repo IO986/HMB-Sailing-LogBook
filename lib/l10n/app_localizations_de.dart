@@ -79,14 +79,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapDepthNoData => 'Keine Tiefendaten für diesen Punkt';
 
   @override
-  String get mapStationNone => 'In diesem Ausschnitt misst keine Station';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Stationen: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Modell: $model';
   }
@@ -1805,13 +1797,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mapStationWindLayer => 'Stationen – gemessen';
 
   @override
-  String get mapStationDistance => 'Entfernung vom Boot';
-
-  @override
   String get windGust => 'Bö';
-
-  @override
-  String get mapStationSourceMetar => 'Quelle: METAR – Flughafenmeldung (NOAA)';
 
   @override
   String get radarTitle => 'Niederschlagsradar';
@@ -2512,7 +2498,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Tiefen – Tiefenlinien von EMODnet, in Metern beschriftet. Ein Vermessungsmodell des Meeresbodens, KEINE Seekarte: zur Törnplanung ja, zur Entscheidung „komme ich hier durch“ nein. Standardmäßig aus; betrachtete Kacheln werden wie alle anderen gespeichert. Bei eingeschalteter Ebene tippen Sie auf die Karte, um die Tiefe an diesem Punkt abzulesen (benötigt Empfang).\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website, Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Stationen – gemessen: Pfeile in einer weißen Scheibe sind TATSÄCHLICH GEMESSENE Werte von Wetterstationen, keine Vorhersage. Sie bleiben an ihrer Station und werden nicht auf deine Position umgerechnet — tippe darauf für Stationsname, Messzeit und Entfernung vom Boot. Vorhersage, Wellen und Strömungen stehen im Wetter-Tab; die Karte bleibt für Navigation und Aufzeichnung.\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Karte und Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Tiefen, Häfen, Stationen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Tiefen – Tiefenlinien von EMODnet, in Metern beschriftet. Ein Vermessungsmodell des Meeresbodens, KEINE Seekarte: zur Törnplanung ja, zur Entscheidung „komme ich hier durch“ nein. Standardmäßig aus; betrachtete Kacheln werden wie alle anderen gespeichert. Bei eingeschalteter Ebene tippen Sie auf die Karte, um die Tiefe an diesem Punkt abzulesen (benötigt Empfang).\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website (antippen ruft direkt an oder öffnet die Seite), Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Tiefen, Häfen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';

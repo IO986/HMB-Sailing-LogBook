@@ -79,14 +79,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get mapDepthNoData => 'Ni podatkov o globini za to točko';
 
   @override
-  String get mapStationNone => 'V tem pogledu ne meri nobena postaja';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Postaje: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Model: $model';
   }
@@ -1794,13 +1786,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get mapStationWindLayer => 'Postaje – izmerjeno';
 
   @override
-  String get mapStationDistance => 'Razdalja od ladje';
-
-  @override
   String get windGust => 'Sunek';
-
-  @override
-  String get mapStationSourceMetar => 'Vir: METAR – letališko poročilo (NOAA)';
 
   @override
   String get radarTitle => 'Radar padavin';
@@ -2496,7 +2482,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran, globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Postaje – izmerjeno: puščice v belem krogu so RESNIČNO IZMERJENE vrednosti s postaj, ne napoved. Ostanejo na svoji postaji in se ne preračunavajo na tvoj položaj — tapni za ime postaje, čas meritve in razdaljo od ladje. Napoved, valove in tokove najdeš v zavihku Vreme; zemljevid ostaja za navigacijo in zapis.\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno zemljevid in pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča, postaje), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran (tap takoj pokliče ali odpre stran), globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';

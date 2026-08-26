@@ -79,14 +79,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapDepthNoData => 'No depth data for this point';
 
   @override
-  String get mapStationNone => 'No station measures in this view';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Stations: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Model: $model';
   }
@@ -1793,13 +1785,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapStationWindLayer => 'Stations – measured';
 
   @override
-  String get mapStationDistance => 'Distance from the boat';
-
-  @override
   String get windGust => 'Gust';
-
-  @override
-  String get mapStationSourceMetar => 'Source: METAR – airport report (NOAA)';
 
   @override
   String get radarTitle => 'Precipitation radar';
@@ -2493,7 +2479,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website, depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Stations – measured: arrows in a white disc are values ACTUALLY MEASURED at weather stations, not a forecast. They sit at their station and are never carried over to your position — tap one for the station name, time of the reading and its distance from the boat. Forecast, waves and currents live in the Weather tab; the map stays for navigation and the record.\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the map and seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours, stations), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website (tap to call or open the site directly), depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';

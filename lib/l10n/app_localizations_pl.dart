@@ -79,14 +79,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mapDepthNoData => 'Brak danych o głębokości dla tego punktu';
 
   @override
-  String get mapStationNone => 'W tym widoku nie mierzy żadna stacja';
-
-  @override
-  String mapStationCount(int count) {
-    return 'Stacje: $count';
-  }
-
-  @override
   String weatherModelSource(String model) {
     return 'Model: $model';
   }
@@ -1796,14 +1788,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mapStationWindLayer => 'Stacje – zmierzone';
 
   @override
-  String get mapStationDistance => 'Odległość od łodzi';
-
-  @override
   String get windGust => 'Poryw';
-
-  @override
-  String get mapStationSourceMetar =>
-      'Źródło: METAR – depesza lotniskowa (NOAA)';
 
   @override
   String get radarTitle => 'Radar opadów';
@@ -2499,7 +2484,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www, głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Stacje – zmierzone: strzałki w białym krążku to wartości NAPRAWDĘ ZMIERZONE na stacjach, nie prognoza. Stoją na swojej stacji i nie są przeliczane na twoją pozycję — dotknij, aby zobaczyć nazwę stacji, czas pomiaru i odległość od łodzi. Prognozę, fale i prądy znajdziesz w zakładce Pogoda; mapa zostaje do nawigacji i zapisu.\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze mapę i oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty, stacje), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
+      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www (dotknięcie od razu dzwoni lub otwiera stronę), głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
 
   @override
   String get guideInstrTitle => 'Przyrządy morskie';
