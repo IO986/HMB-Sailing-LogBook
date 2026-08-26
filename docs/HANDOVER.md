@@ -1,3 +1,120 @@
+# Kde sme skončili — 26. 8. 2026
+
+`main` je na `e68e651`, pushnutá, CI zelené. Nič nezostalo len na jednom
+stroji okrem vecí vymenovaných v „Čo NIE je v gite" na konci tejto sekcie.
+
+## Čo pribudlo (24. 8.)
+
+**Hĺbky na mape** — voliteľná vrstva z EMODnet Bathymetry.
+
+- Dlaždicová služba EMODnet dáva len **nepriehľadný** podklad, ktorý by
+  prekryl mapu. Preto sa kreslí WMS vrstva `emodnet:contours` — priehľadné
+  PNG so samotnými izobatami a popiskom hĺbky.
+- Leží **pod** seamarkami zámerne: bóje a svetlá sú navigačné značky a
+  patria navrch.
+- `maxNativeZoom: 12`. Overené meraním: nad priblížením 12 vracia EMODnet
+  prázdnu dlaždicu (vždy presne 1784 B), a to **aj nad hlbokým Jadranom** —
+  nie je to limit mierky, hustejšie izobaty proste neexistujú. Bez
+  `maxNativeZoom` by hĺbnice pri priblížení ticho zmizli.
+- Štandardne vypnuté, prepínač vo Vrstvách (`Icons.waves`).
+
+**Hĺbka v bode** — `lib/core/services/depth_probe_service.dart`.
+
+- Izobaty na otázku „koľko je pod kýlom" neodpovedajú. Odpovedá podkladový
+  model `emodnet:mean` cez WMS **GetFeatureInfo**: vráti hĺbku v bode pri
+  akomkoľvek priblížení, odpoveď má pár stoviek bajtov.
+- Krátke ťuknutie do mapy. Meria sa **len pri zapnutej vrstve hĺbok** — inak
+  by každé zablúdené ťuknutie znamenalo dotaz do siete. Pravítko má prednosť,
+  dlhé podržanie ostáva waypoint.
+- Rešpektuje prepínač meter/stopa (`UnitsSettings.formatDepth`).
+- Rozlíšenie mriežky je **~115 m na bunku** (odmerané: vzorky po 40 m, hodnota
+  sa mení každé tri). Desatiny metra v odpovedi sú falošná presnosť
+  interpolácie. Je to podklad na plánovanie, **nie námorná mapa** — príručka
+  to hovorí otvorene vo všetkých 11 jazykoch.
+
+**Oprava CI** — `const showBackendSync = false` v `settings_screen.dart` robí
+z vetiev pod ním mŕtvy kód. CI beží `flutter analyze --no-fatal-infos`, kde
+infos prejdú, ale **warningy nie**. Kód pod prepínačom má ostať, tak dostal
+cielené `// ignore: dead_code`. `final` namiesto `const` nepomôže, analyzátor
+si hodnotu aj tak vyhodnotí.
+
+## Mapové podklady zadarmo — čo sa overilo živým dotazom
+
+| podklad | bez kľúča | reálne dáta nad Jadranom |
+|---|---|---|
+| Esri World Ocean Base | áno | **len po z10** — vyššie vracia HTTP 200 a dlaždicu „Map data not yet available" (rovnaké md5 z11–z16), hoci metadáta hlásia LOD 0–16 |
+| Esri World Topo / NatGeo | áno | po z16 |
+| Esri World Shaded Relief | áno | po ~z13 |
+| OpenTopoMap | áno | po z16, pravidlá prísnejšie než OSM |
+| EOX Sentinel-2 cloudless | áno | po z16, 10 m; **CC BY-NC-SA**, komerčné použitie chce licenciu od EOX |
+| EMODnet Bathymetry | áno | po z16 (podklad), izobaty len po z12 |
+| NASA GIBS | áno | max z9 návrhom |
+| GEBCO WMS | — | starý endpoint 404 |
+
+Pozor na pascu: viacero služieb vracia **HTTP 200 s náhradnou dlaždicou**
+namiesto chyby. Vždy porovnať md5 dlaždíc naprieč zoomami, nie len status.
+
+## Ďalší krok: PMTiles na Cloudflare R2
+
+**Prečo vôbec:** `TileRegionDownloader` (`lib/core/services/tile_cache.dart`,
+`maxTiles = 6000`) predsťahuje oblasť z `tile.openstreetmap.org` a z Esri.
+Pravidlá OSM to zakazujú doslovne — „bulk downloading" je definované ako
+„any pre-emptive fetching of tiles other than those a user is actively
+viewing", a „Offline use is not permitted on tile.openstreetmap.org".
+Zákaz je na správanie, nie na objem z jednej IP, a blokuje sa podľa
+User-Agentu (`com.hmb.sailinglog`), takže by to zasiahlo všetkých
+používateľov naraz. Pravidlá **nerozlišujú** komerčné a nekomerčné použitie.
+
+`CachingTileProvider` (pasívny cache toho, čo si používateľ pozrel) je v
+poriadku a ostáva — problém je len ten predsťahovač.
+
+**Prečo R2 a nie VPS:** appka je zadarmo natrvalo, takže náklad nesmie rásť s
+počtom používateľov. R2 má 10 GB úložiska a **egress zadarmo**, čítacie
+operácie 10 mil./mesiac zadarmo. Jadran do z14 sú rádovo stovky MB. VPS by
+stál 48–75 €/rok za to isté. PMTiles je jeden súbor čítaný cez HTTP Range —
+**žiadny tile server nebeží**, stačí statické úložisko.
+
+**Postup:**
+
+1. Účet Cloudflare + R2 bucket (cez web, nedá sa skriptom). **Hneď nastaviť
+   spending limit** — R2 chce kartu aj pri free tier.
+2. `pmtiles` CLI — Go binárka, jeden súbor:
+   `https://github.com/protomaps/go-pmtiles/releases` (v1.31.2,
+   `go-pmtiles_1.31.2_Windows_x86_64.zip`). Na stroji **nie je**.
+3. `npm i -g wrangler` na nahranie (node v24 na stroji je, wrangler nie).
+4. `pmtiles extract` s bboxom Jadranu priamo z denného planet buildu
+   Protomaps cez HTTP range — **planet sťahovať netreba**. Pozor:
+   `https://build.protomaps.com/` vracia 404, správnu URL denného buildu
+   treba dohľadať v dokumentácii Protomaps.
+5. Vo Flutteri `vector_map_tiles_pmtiles`.
+6. Dáta sú OSM pod **ODbL** — redistribúcia povolená s atribúciou. To je
+   presne to, čo `tile.openstreetmap.org` zakazuje; rozdiel nie je v dátach,
+   ale v tom, koho infraštruktúru zaťažuješ.
+
+Keď raz VPS bude, ten istý súbor sa len presunie, nič sa neprerába.
+
+## Otvorené
+
+- **Vetva `feat/emodnet-depths`** je na origine stále, už je zbytočná (zliata
+  fast-forward): `git push origin --delete feat/emodnet-depths`
+- **APK v telefóne** (Honor REA NX9) je z `c49dd3f`, teda bez opravy CI — na
+  správanie appky to nemá vplyv. Neprejdené: či ťuknutie mlčí pri vypnutej
+  vrstve a či pravítko dostane prednosť.
+- **`debugPrint('[STATIONS] …')`** v `map_provider.dart` sa vypíše pri každom
+  obnovení staníc aj v release. Ak už netreba, je to jeden riadok von.
+- **Predsťahovač dlaždíc** sa zatiaľ nezmenil — čaká na rozhodnutie vyššie.
+- **Verzia sa nebumpovala.** Čo je na Console, nie je v gite — pýtať sa pred
+  bumpom, version code sa nedá použiť druhýkrát.
+
+## Čo NIE je v gite
+
+Poznámky, ktoré si Claude drží medzi sedeniami, žijú v adresári
+`~/.claude/projects/C--dev-sailing-logbook/memory/` — sú **viazané na stroj**
+a na iný počítač neprejdú. Tento súbor je ich prenosná verzia; čo má prežiť
+presun, musí skončiť tu.
+
+---
+
 # Kde sme skončili — 20. 7. 2026
 
 Prenosný zápis stavu, aby sa dalo pokračovať z iného počítača. Všetko
