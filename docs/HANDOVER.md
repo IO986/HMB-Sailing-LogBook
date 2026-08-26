@@ -1,3 +1,96 @@
+# Kde sme skončili — 26. 8. 2026 (večer)
+
+`main` je na `98beb2c`, pushnutá. Nadväzuje na sekciu nižšie (ta istá
+session, o pár hodín neskôr — pretiahla `98beb2c` cez `1e3f808`, pred tým
+pretiahla aj `hmb_core` na v1.1.0, bez ktorého appka nekompiluje).
+
+## PMTiles na R2 — vyskúšané, vrátené späť
+
+Plán z predchádzajúcej sekcie ("Ďalší krok: PMTiles na Cloudflare R2") sa
+zrealizoval, otestoval na Honore a **vrátil späť**. Zhrnutie, nech sa
+budúca session nepúšťa do toho istého znova bez dôvodu:
+
+- **Infraštruktúra funguje a ostáva pripravená**: Cloudflare účet, R2 bucket
+  `hmb-maps`, custom domain `maps.hmba.fyi` (nová malá doména, kúpená len na
+  toto — `hmba.boats` zámerne nepresúvaná na Cloudflare DNS, riziko pre
+  mail/ostatné záznamy). `pmtiles`/`wrangler`/`rclone` nainštalované v
+  `~/bin`. Extrakcia Jadranu z denného Protomaps buildu (`pmtiles extract
+  https://build.protomaps.com/<YYYYMMDD>.pmtiles ... --bbox=12.0,39.5,20.0,46.0
+  --maxzoom=14`) funguje, dáva ~994 MB. Upload cez `wrangler r2 object put`
+  má tvrdý limit 300 MiB na súbor — na väčšie treba `rclone` (S3 API,
+  `--s3-no-check-bucket` flag nutný, token je bucket-scoped bez práv na
+  `ListBuckets`/`CreateBucket`; endpoint **bez** `.eu.` prefixu, pokiaľ
+  bucket nie je vyslovene v EU jurisdikcii). Archív je stále na
+  `maps.hmba.fyi/adriatic.pmtiles`, nikto ho nemaže — ďalšia session ho
+  môže rovno použiť, nemusí nič extrahovať znova.
+- **Vektorové vykresľovanie (`vector_map_tiles` 9.0.0-beta.11 +
+  vendorovaný fork `vector_map_tiles_pmtiles` 1.5.0) skompilovalo** — vyžadovalo
+  vendorovanie balíka do `packages/` (pridanie `TileOffset get tileOffset`
+  gettera, ktorý 9.x pridala oproti 8.x), viď git história commitu, ktorý to
+  potom revertol, pre presný diff.
+- **Prečo sa to vrátilo**: na reálnom Honore (mid-range telefón) bolo
+  vykresľovanie vektorových dlaždíc citeľne pomalšie/trhanejšie než pôvodný
+  raster OSM — CPU réžia dekódovania MVT + štýlovania pri každom
+  posune/zoome. Navyše popisky (mená miest) potrebujú font/glyph službu
+  (`protomaps.github.io/basemaps-assets/fonts/...`) — **druhú externú
+  závislosť za behu**, presne to, čo malo self-hosting odstrániť; na mori
+  bez signálu by popisky proste nenačítalo.
+- **Skutočný dôvod celej migrácie** (pripomienka, nech sa nezabudne
+  nabudúce) bol vždy len `TileRegionDownloader`, nie živá mapa —
+  `CachingTileProvider` (pasívne kešovanie toho, čo si používateľ pozrel) je
+  a vždy bolo v poriadku. Táto session to poriešila najkratšou cestou:
+  `'osm'` sa vyhodilo z `TileRegionDownloader.baseLayers`
+  (`lib/core/services/tile_cache.dart`), živá mapa ostala nedotknutá,
+  žiadny nový balík, žiadne nové riziko.
+- **Ak sa má PMTiles/R2 riešenie použiť budúcnosti**, najreálnejšie
+  miesto je práve tam, kde chýba teraz: `TileRegionDownloader`
+  potrebuje vlastný, self-hosted zdroj namiesto `tile.openstreetmap.org`,
+  aby "stiahnuť oblasť offline" sťahovalo aj základnú mapu, nielen
+  seamarky (viď nižšie). Buď (a) rastrové PNG dlaždice vygenerované raz
+  a hosťované na tom istom bucket/doméne (žiadna Flutter-side zmena,
+  len iný zdroj URL), alebo (b) znova vektor, až raz vyjde stabilná
+  (nie beta) verzia `vector_map_tiles` s prijateľným výkonom.
+
+## Sekanie mapy pri zoome — opravené
+
+`onPositionChanged` volal `setState()` na CELÝ `_MapScreenState` pri každej,
+aj nepatrnej zmene rotácie — pri štípaní dvoma prstami (zoom gesto) sa
+rotácia takmer vždy nepatrne zmení, takže sa prekresľovala celá obrazovka
+(všetky dlaždicové vrstvy, markery, FAB stĺpce) niekoľkokrát za sekundu.
+`_mapRotationDeg` je teraz `ValueNotifier`, čítajú ho len dva widgety, čo
+ho naozaj potrebujú (kompas hore, šípka lode pri prehrávaní). Overené na
+Honore cez `PerformanceOverlay` (dočasne pridaný do `main.dart`, potom
+odstránený) a subjektívne potvrdené používateľom ("o dosť lepšie").
+
+Podobný, menší problém bol aj pri vrstvách meraného vetra/POI — `ref.watch`
+na ich providerov bol na začiatku `build()`, takže každé sieťové
+dotiahnutie prekreslilo celú obrazovku. Presunuté do vlastných `Consumer`
+widgetov okolo príslušných `MarkerLayer`.
+
+## Vrstva meraného vetra zo staníc — odstránená z mapy
+
+Na explicitnú žiadosť používateľa ("zbytočné informácie"). `stationWindProvider`,
+`showStationWind` a súvisiaci FAB/marker/legenda vyhodené z
+`map_provider.dart`/`map_screen.dart`. `DhmzObservationService`/
+`MetarObservationService` OSTÁVAJÚ — používa ich denník (zápis nameraných
+podmienok) a `nearest_stations_card.dart` na Počasí obrazovke, tie sa
+netýkali.
+
+## Kontakty na POI klikateľné
+
+`marine_poi_sheet.dart`: telefón/web/email z OSM tagov teraz spúšťajú
+`tel:`/`https:`/`mailto:` cez `url_launcher` namiesto obyčajného
+`SelectableText`. Nový l10n kľúč `poiCannotOpen` (11 jazykov).
+
+## Otvorené
+
+- Rovnaké body ako v sekcii nižšie (`feat/emodnet-depths` vetva,
+  `[STATIONS]` debugPrint, verzia sa nebumpovala) — nezmenené.
+- `TileRegionDownloader` teraz sťahuje len seamarky pre offline použitie,
+  nie základnú mapu — viď vyššie, "Ak sa má PMTiles/R2 riešenie použiť".
+
+---
+
 # Kde sme skončili — 26. 8. 2026
 
 `main` je na `e68e651`, pushnutá, CI zelené. Nič nezostalo len na jednom
