@@ -25,11 +25,6 @@ import '../../../../core/services/tile_cache.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/bearing_kind.dart';
-import '../../../../core/models/logbook_event_type.dart';
-import '../../../../core/models/sail_mode.dart';
-import '../../../../core/services/gps_tracking_service.dart';
-import '../../../../shared/utils/sail_mode_label.dart';
-import '../../../../main.dart';
 import '../../../bearing/presentation/widgets/bearing_layers.dart';
 import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/map_provider.dart';
@@ -47,7 +42,7 @@ import '../../services/track_playback.dart';
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
 /// naraz sa na displej nezmestilo, takže sú v dvoch skupinách a rozbalená
 /// môže byť vždy len jedna.
-enum _MapPanel { none, layers, tools, sails }
+enum _MapPanel { none, layers, tools }
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -1108,59 +1103,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     child: const Icon(Icons.download_for_offline_outlined),
                   ),
                 ],
-
-                // ── Plachty ──────────────────────────────────────
-                //
-                // Len počas plavby: bez bežiaceho trackingu nie je deň, do
-                // ktorého by sa zápis vložil. Postavenie plachiet sa mení
-                // častejšie než čokoľvek iné na tejto obrazovke a doteraz sa
-                // dalo zapísať len cez formulár v denníku.
-                if (isTracking) ...[
-                  const SizedBox(height: 8),
-                  _layerFab(
-                    heroTag: 'sailsGroup',
-                    tooltip: l.mapSails,
-                    icon: _openPanel == _MapPanel.sails
-                        ? Icons.close
-                        : Icons.sailing,
-                    active: _openPanel == _MapPanel.sails,
-                    onPressed: () {
-                      final opening = _openPanel != _MapPanel.sails;
-                      setState(() => _openPanel =
-                          opening ? _MapPanel.sails : _MapPanel.none);
-                      if (opening) _loadSailSelection();
-                    },
-                  ),
-                  if (_openPanel == _MapPanel.sails) ...[
-                    for (final mode in const [
-                      (code: 'motor', icon: Icons.settings),
-                      (code: 'main', icon: Icons.sailing),
-                      (code: 'genoa', icon: Icons.air),
-                      (code: 'reef1', icon: Icons.filter_1),
-                      (code: 'reef2', icon: Icons.filter_2),
-                    ]) ...[
-                      const SizedBox(height: 8),
-                      _layerFab(
-                        heroTag: 'sail_${mode.code}',
-                        tooltip: sailModeSummary([mode.code], l),
-                        icon: mode.icon,
-                        active: _sailSelection.contains(mode.code),
-                        onPressed: () => setState(() =>
-                            _sailSelection.contains(mode.code)
-                                ? _sailSelection.remove(mode.code)
-                                : _sailSelection.add(mode.code)),
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    FloatingActionButton.small(
-                      heroTag: 'sailSave',
-                      tooltip: l.save,
-                      backgroundColor: Colors.green.shade700,
-                      onPressed: _sailSelection.isEmpty ? null : _saveSailSet,
-                      child: const Icon(Icons.check, color: Colors.white),
-                    ),
-                  ],
-                ],
               ]),
             ),
           ),
@@ -1359,42 +1301,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   /// Jednotné okrúhle tlačidlo vrstvy/prepínača — bez popisu, aktívne má
   /// plnú primary farbu, identifikáciu nesie ikona + tooltip.
-  /// Čo je práve naklikané v rýchlych tlačidlách plachiet. Napĺňa sa
-  /// posledným zapísaným postavením dňa, keď sa skupina rozbalí — po zmene
-  /// sa spravidla pridáva alebo uberá jedna plachta, nie sa začína odznova.
-  final Set<String> _sailSelection = {};
-
-  Future<void> _loadSailSelection() async {
-    final dayLogId = GpsTrackingService().activeDayLogId;
-    if (dayLogId == null) return;
-    final last = await ref.read(databaseProvider).lastSailModeForDay(dayLogId);
-    if (!mounted) return;
-    setState(() {
-      _sailSelection
-        ..clear()
-        ..addAll(parseSailMode(last, null).modes);
-    });
-  }
-
-  /// Zapíše postavenie plachiet do denníka. Nie automatický záznam: čo je
-  /// hore, vie jedine človek — prístroje o plachtách nehovoria.
-  Future<void> _saveSailSet() async {
-    final l = AppLocalizations.of(context);
-    final modes = _sailSelection.toList();
-    await GpsTrackingService().createAutomaticLogbookEntry(
-      note: '',
-      event: LogbookEventType.sailSet,
-      sailMode: modes.join(','),
-      isAutoEntry: false,
-    );
-    if (!mounted) return;
-    setState(() => _openPanel = _MapPanel.none);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(l.logEventSailSet(sailModeSummary(modes, l))),
-      duration: const Duration(seconds: 2),
-    ));
-  }
-
   Widget _layerFab({
     required String heroTag,
     required String tooltip,

@@ -594,10 +594,6 @@ class GpsTrackingService {
     String? note,
     LogbookEventType? event,
     SailDirection? sailDirection,
-    /// Čo je práve vytiahnuté (`motor,main,genoa`). Keď je null, prevezme sa
-    /// posledné zapísané postavenie plachiet dňa — automatický záznam
-    /// pokračuje v tom, čo skiper naposledy zadal.
-    String? sailMode,
     bool isAutoEntry = true,
   }) async {
     if (_currentSession == null || _db == null) {
@@ -663,10 +659,9 @@ class GpsTrackingService {
 
     // Prevezmi posledný spôsob plavby dňa: skiper prepne motor/plachty raz
     // a automatické zápisy majú pokračovať v tom, čo zadal.
-    final modes = sailMode ??
-        (_activeDayLogId != null
-            ? await _db!.lastSailModeForDay(_activeDayLogId!)
-            : null);
+    final sailMode = _activeDayLogId != null
+        ? await _db!.lastSailModeForDay(_activeDayLogId!)
+        : null;
 
     // Kurz voči vetru sa preberá rovnako ako spôsob plavby: skiper ho zadá
     // pri obrate a dovtedy platí ďalej. Volajúci ho môže prebiť — presne to
@@ -683,7 +678,7 @@ class GpsTrackingService {
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
       timestamp: entryTimestamp,
-      sailMode: drift.Value(modes),
+      sailMode: drift.Value(sailMode),
       latitude: drift.Value(pos.latitude),
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(sog),

@@ -15,7 +15,6 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
-import '../../../../shared/utils/sail_mode_label.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/models/sail_mode.dart';
 import '../../../../core/models/point_of_sail.dart';
@@ -375,8 +374,7 @@ class _EntryTile extends ConsumerWidget {
   /// MOB is deliberately left as stored: it is the same word at sea in every
   /// language these locales cover.
   static String? _eventLabel(
-      LogbookEventType? event, String? note, AppLocalizations l,
-      {String? sailMode}) {
+      LogbookEventType? event, String? note, AppLocalizations l) {
     switch (event) {
       case LogbookEventType.voyageStart:
         return l.voyageStart;
@@ -404,9 +402,6 @@ class _EntryTile extends ConsumerWidget {
         return l.logEventEngineStart;
       case LogbookEventType.engineStop:
         return l.logEventEngineStop;
-      case LogbookEventType.sailSet:
-        return l.logEventSailSet(
-            sailModeSummary(parseSailMode(sailMode, null).modes, l));
       default:
         return null;
     }
@@ -481,8 +476,7 @@ class _EntryTile extends ConsumerWidget {
     final isLast  = event == LogbookEventType.voyageEnd;
     final isAuto  = entry.isAutoEntry;
     final anchor  = _anchorKind(event);
-    var eventLabel =
-        _eventLabel(event, entry.skipperNote, l, sailMode: entry.sailMode);
+    var eventLabel = _eventLabel(event, entry.skipperNote, l);
     final parsed  = _parseEntry(entry);
     final sailDir = SailDirection.fromCodes(entry.pointOfSail, entry.tack);
     // Pri zmene plachiet je kurz samotnou udalosťou, nie doplnkom — nech
