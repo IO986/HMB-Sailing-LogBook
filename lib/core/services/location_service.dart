@@ -67,6 +67,26 @@ class LocationService {
   /// a zapínaním prijímača (každý štart stojí studený fix).
   static const _instrumentHandoverDelay = Duration(seconds: 30);
 
+  /// Ako staré smie byť posledné hlásenie polohy z NMEA, aby sa ešte smelo
+  /// vydávať za aktuálnu polohu.
+  ///
+  /// Zámerne sa pozerá na [MarineInstrumentData.gpsLastUpdate], nie na
+  /// `hasFreshData`: to sa hýbe pri každej vete, takže loď, ktorej vypadol
+  /// GPS prijímač, ale ďalej hlási vietor a hĺbku, by donekonečna vydávala
+  /// polohu spred hodiny.
+  static const _nmeaFixMaxAge = Duration(seconds: 8);
+
+  /// Ako starý smie byť fix z telefónu, keď sú v hre lodné inštrumenty.
+  ///
+  /// Po handovere ([_instrumentHandoverDelay]) je GNSS telefónu vypnuté,
+  /// takže `_lastAndroidPosition` zamrzne na mieste, kde sa handover stal.
+  /// Bez tejto kontroly stačí jediná chýbajúca NMEA veta a do streamu sa
+  /// vypustí tá zamrznutá poloha — z terénu to vyzerá ako teleport na
+  /// staré miesto a hneď späť, a rovnaký skok sa naráta aj do najazdených
+  /// míľ. Bez pripojených inštrumentov je telefón jediný zdroj a žiadny
+  /// vekový strop nedáva zmysel (v idle režime chodia fixy raz za 15 s).
+  static const _androidFixMaxAgeWithInstruments = Duration(seconds: 20);
+
   StreamSubscription<LocationFix>? _androidSub;
   StreamSubscription<MarineInstrumentData>? _raymarineSub;
   StreamSubscription<MarineInstrumentData>? _udpSub;
@@ -97,6 +117,8 @@ class LocationService {
   // zastaraný SOG/COG).
   Position? _lastEmittedPosition;
   Position? _lastAndroidPosition;
+  /// Kedy fix z telefónu dorazil (nie čas fixu — ten môže byť z cache).
+  DateTime? _lastAndroidAt;
   LocationSource? _lastAndroidSource;
   bool _lastAndroidIsMocked = false;
   LocationSource? _lastSource;
@@ -309,6 +331,7 @@ class LocationService {
       final fix = await _gps.getBest(config: config);
       if (fix != null) {
         _lastAndroidPosition = _fixToPosition(fix);
+        _lastAndroidAt = DateTime.now();
         _lastAndroidSource = fix.source;
         _lastAndroidIsMocked = fix.isMocked;
         _reEvaluateSource();
@@ -339,6 +362,7 @@ class LocationService {
       );
       if (last != null) {
         _lastAndroidPosition = _fixToPosition(last);
+        _lastAndroidAt = DateTime.now();
         _lastAndroidSource = last.source;
         _lastAndroidIsMocked = last.isMocked;
         _reEvaluateSource();
@@ -348,6 +372,7 @@ class LocationService {
     // Spusti stream
     _androidSub = _gps.watch(config: config).listen((fix) {
       _lastAndroidPosition = _fixToPosition(fix);
+      _lastAndroidAt = DateTime.now();
       _lastAndroidSource = fix.source;
       _lastAndroidIsMocked = fix.isMocked;
       _reEvaluateSource();
@@ -382,11 +407,12 @@ class LocationService {
     final udp = UdpReceiverService();
 
     MarineInstrumentData? nmea;
-    if (tcp.isConnected && tcp.hasFreshData && tcp.current.hasGpsFix) {
+    if (tcp.isConnected && _hasFreshNmeaFix(tcp.current)) {
       nmea = tcp.current;
-    } else if (udp.isListening && udp.hasFreshData && udp.current.hasGpsFix) {
+    } else if (udp.isListening && _hasFreshNmeaFix(udp.current)) {
       nmea = udp.current;
     }
+    final instrumentsInPlay = tcp.isConnected || udp.isListening;
 
     // Sleduj, ako dlho inštrumenty dodávajú fix bez prerušenia — po
     // _instrumentHandoverDelay sa GPS telefónu vypne úplne (pozri
@@ -421,14 +447,35 @@ class LocationService {
       return;
     }
 
-    // Fallback na Android GPS
-    if (_lastAndroidPosition != null) {
-      _usingRaymarine = false;
-      _lastPosition = _lastAndroidPosition;
-      _lastSource = _lastAndroidSource;
-      _lastIsMocked = _lastAndroidIsMocked;
-      _emit(_lastAndroidPosition!);
+    // Fallback na Android GPS — len kým je fix z telefónu ešte použiteľný.
+    final android = _lastAndroidPosition;
+    if (android == null) return;
+    if (instrumentsInPlay && _androidFixStale) {
+      // Inštrumenty na chvíľu stíchli a telefón nemá nič čerstvé. Radšej
+      // nevydať nič než vydať zamrznutú polohu: posledná známa poloha
+      // ostáva v _lastPosition a mapa aj tracking na nej počkajú.
+      return;
     }
+    _usingRaymarine = false;
+    _lastPosition = android;
+    _lastSource = _lastAndroidSource;
+    _lastIsMocked = _lastAndroidIsMocked;
+    _emit(android);
+  }
+
+  /// True, keď inštrumenty hlásili polohu naposledy dávnejšie než
+  /// [_nmeaFixMaxAge] — vtedy sa ich fix už nesmie použiť.
+  bool _hasFreshNmeaFix(MarineInstrumentData d) {
+    if (!d.hasGpsFix) return false;
+    final at = d.gpsLastUpdate;
+    if (at == null) return false;
+    return DateTime.now().difference(at) < _nmeaFixMaxAge;
+  }
+
+  bool get _androidFixStale {
+    final at = _lastAndroidAt;
+    return at == null ||
+        DateTime.now().difference(at) >= _androidFixMaxAgeWithInstruments;
   }
 
   /// Do streamu pošle fix len ak je od posledného odoslaného skutočne iný —

@@ -102,6 +102,13 @@ class DayLogs extends Table {
   // Správa dňa
   TextColumn get skipperNote => text().nullable()();
   BoolColumn get isComplete => boolean().withDefault(const Constant(false))();
+
+  /// Motohodiny za deň, počítané z otáčok z NMEA (RPM veta).
+  ///
+  /// Doteraz sa zapisovali len ručne do záznamu. Keď motor hlási otáčky,
+  /// vie ich appka narátať sama a skiper už nemusí strážiť hodinky —
+  /// charterová firma pýta motohodiny pri odovzdaní lode.
+  RealColumn get engineHours => real().nullable()();
 }
 
 /// Hodinový záznam počas dňa
@@ -157,6 +164,14 @@ class LogbookEntries extends Table {
   /// prázdny. Nezamieňať so [sailMode], ktorý hovorí, čo je vytiahnuté.
   TextColumn get pointOfSail => text().nullable()();
   TextColumn get tack => text().nullable()();
+
+  /// Hĺbka pod lodou v metroch v čase záznamu, z NMEA (DBT/DPT).
+  ///
+  /// Papierový denník ju má vedľa polohy a je to údaj, ktorý sa spätne nedá
+  /// dopočítať odnikiaľ — mapa hovorí, aká je hĺbka na mieste podľa merania
+  /// spred rokov, sonda hovorí, koľko vody bolo pod kýlom v tej minúte.
+  /// NULL, keď loď sondu nemá alebo veta neprišla.
+  RealColumn get depthMeters => real().nullable()();
 
   TextColumn get weatherCondition => text().nullable()();
   TextColumn get photoPath => text().nullable()();
@@ -650,7 +665,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 29;
+  int get schemaVersion => 30;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -820,6 +835,11 @@ class AppDatabase extends _$AppDatabase {
       if (from < 29) {
         await m.addColumn(logbookEntries, logbookEntries.pointOfSail);
         await m.addColumn(logbookEntries, logbookEntries.tack);
+      }
+
+      if (from < 30) {
+        await m.addColumn(logbookEntries, logbookEntries.depthMeters);
+        await m.addColumn(dayLogs, dayLogs.engineHours);
       }
     },
     beforeOpen: (details) async {

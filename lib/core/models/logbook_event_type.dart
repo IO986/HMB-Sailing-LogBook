@@ -24,7 +24,21 @@ enum LogbookEventType {
 
   /// Prehodenie plachiet — obrat alebo halza. Zapisuje ho človek, nie
   /// automatika: appka nevie rozlíšiť zámerný obrat od zmeny kurzu.
-  sailChange('sail_change');
+  sailChange('sail_change'),
+
+  /// Autopilot prevzal kormidlo / bol vypnutý. Hlásia to prístroje
+  /// (HTC/HTD, APB, SeaTalk 0x84), zapisuje sa automaticky — v denníku je
+  /// to rovnako podstatný údaj ako v palubnom denníku lietadla: kto v tej
+  /// chvíli riadil loď.
+  autopilotOn('autopilot_on'),
+  autopilotOff('autopilot_off'),
+
+  /// Motor naštartoval / zhasol. Rovnako ako autopilot to hlásia prístroje
+  /// (otáčky cez RPM vetu) a z toho istého dôvodu: v denníku musí byť vidno,
+  /// kedy loď šla na plachty a kedy na motor — a z toho sa počítajú
+  /// motohodiny.
+  engineStart('engine_start'),
+  engineStop('engine_stop');
 
   final String code;
   const LogbookEventType(this.code);
@@ -77,4 +91,8 @@ enum LogbookEventType {
       this == driftIn;
 
   bool get isDutyEvent => this == dutyStart || this == dutyEnd;
+
+  bool get isAutopilotEvent => this == autopilotOn || this == autopilotOff;
+
+  bool get isEngineEvent => this == engineStart || this == engineStop;
 }

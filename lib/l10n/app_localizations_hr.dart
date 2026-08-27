@@ -972,6 +972,41 @@ class AppLocalizationsHr extends AppLocalizations {
   String get logEventDriftIn => 'Oranje – plovilo se vratilo';
 
   @override
+  String logEventAutopilotOn(String mode) {
+    return 'Autopilot UKLJ - $mode';
+  }
+
+  @override
+  String get logEventAutopilotOff => 'Autopilot ISKLJ';
+
+  @override
+  String get logEventEngineStart => 'Motor pokrenut';
+
+  @override
+  String get logEventEngineStop => 'Motor zaustavljen';
+
+  @override
+  String get autopilotLabel => 'Autopilot';
+
+  @override
+  String get autopilotModeAuto => 'Auto';
+
+  @override
+  String get autopilotModeWind => 'Vjetar';
+
+  @override
+  String get autopilotModeTrack => 'Ruta';
+
+  @override
+  String get autopilotModeHeading => 'Kurs';
+
+  @override
+  String get autopilotModeRudder => 'Kormilo';
+
+  @override
+  String get autopilotModeStandby => 'Standby';
+
+  @override
   String logEventDutyStart(String name) {
     return 'Preuzeo stražu: $name';
   }
@@ -2530,14 +2565,14 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Kartica Instrumenti prikazuje navigacijske podatke u stvarnom vremenu.\n\n• SOG – brzina preko dna (čvorovi)\n• TWS – brzina pravog vjetra\n• TWA – kut pravog vjetra u odnosu na brod (zeleno = desni bok, crveno = lijevi bok)\n• DEPTH – dubina mora (crveno = manje od 5 m)\n• VMG WP – brzina prema odabranoj točki rute; odaberite je na pločici za prikaz udaljenosti/azimuta i strelice izravno na ruži vjetrova. Navigaciju isključite odabirom \"Nema cilja\" na istoj pločici — isključuje je i brisanje točke rute na karti\n\nIzvor podataka: GPS telefona ili Raymarine (TCP ili UDP WiFi pristupnik).\nPostavke veze (uključujući izbor TCP/UDP) nalaze se u Postavke → Instrumenti.\n\nKako se brod povezuje: aplikacija čita NMEA podatke preko WiFi-ja (TCP ili UDP). Vlastita WiFi pristupna točka Raymarine MFD-a obično nije dovoljna — namijenjena je Raymarineovim aplikacijama i najčešće ne izlaže sirove NMEA podatke trećim stranama. Potreban vam je NMEA-na-WiFi pristupnik (npr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) spojen na brodsku sabirnicu, koji ili stvara vlastitu pristupnu točku ili emitira NMEA na WiFi. Spojite se na WiFi tog pristupnika i unesite njegov IP i port u Postavkama (ili pokušajte s Automatskim otkrivanjem).\n\nB&G Zeus i slični Navico ploteri: spoji telefon na WiFi plotera i u Postavkama odaberi TCP. Adresa plotera u WiFi mreži NE radi — NMEA poslužitelj radi na njegovom Ethernet sučelju. Tu adresu naći ćeš u samom ploteru: Settings → Network → Diagnostics, stavka IP address (obično u obliku 169.254.x.x). Upiši je zajedno s portom 10110. Provjereno na Zeus III sa softverom NOS v25.2. Port 2053 prihvaća vezu, ali ne šalje podatke — to je usluga GoFree s vlastitim protokolom, ne NMEA. Uključi Automatski poveži pri pokretanju. Ako jednom prestane raditi, adresa se možda promijenila — pročitaj je ponovno u Diagnostics.';
+      'Kartica Instrumenti prikazuje navigacijske podatke u stvarnom vremenu.\n\n• SOG – brzina preko dna (čvorovi)\n• TWS – brzina pravog vjetra\n• TWA – kut pravog vjetra u odnosu na brod (zeleno = desni bok, crveno = lijevi bok)\n• DEPTH – dubina mora (crveno = manje od 5 m)\n• VMG WP – brzina prema odabranoj točki rute; odaberite je na pločici za prikaz udaljenosti/azimuta i strelice izravno na ruži vjetrova. Navigaciju isključite odabirom \"Nema cilja\" na istoj pločici — isključuje je i brisanje točke rute na karti\n• AUTOPILOT – prikazuje UKLJ/ISKLJ i način upravljanja kad ga instrumenti javljaju (HTC/HTD, APB ili SeaTalk). Svako prebacivanje automatski se upisuje u dnevnik, kao u zrakoplovnom dnevniku.\n\nIzvor podataka: GPS telefona ili Raymarine (TCP ili UDP WiFi pristupnik).\nPostavke veze (uključujući izbor TCP/UDP) nalaze se u Postavke → Instrumenti.\n\nKako se brod povezuje: aplikacija čita NMEA podatke preko WiFi-ja (TCP ili UDP). Vlastita WiFi pristupna točka Raymarine MFD-a obično nije dovoljna — namijenjena je Raymarineovim aplikacijama i najčešće ne izlaže sirove NMEA podatke trećim stranama. Potreban vam je NMEA-na-WiFi pristupnik (npr. Digital Yacht, Yacht Devices, Actisense, Quark-elec) spojen na brodsku sabirnicu, koji ili stvara vlastitu pristupnu točku ili emitira NMEA na WiFi. Spojite se na WiFi tog pristupnika i unesite njegov IP i port u Postavkama (ili pokušajte s Automatskim otkrivanjem).\n\nB&G Zeus i slični Navico ploteri: spoji telefon na WiFi plotera i u Postavkama odaberi TCP. Adresa plotera u WiFi mreži NE radi — NMEA poslužitelj radi na njegovom Ethernet sučelju. Tu adresu naći ćeš u samom ploteru: Settings → Network → Diagnostics, stavka IP address (obično u obliku 169.254.x.x). Upiši je zajedno s portom 10110. Provjereno na Zeus III sa softverom NOS v25.2. Port 2053 prihvaća vezu, ali ne šalje podatke — to je usluga GoFree s vlastitim protokolom, ne NMEA. Uključi Automatski poveži pri pokretanju. Ako jednom prestane raditi, adresa se možda promijenila — pročitaj je ponovno u Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Dnevnik plovidbe';
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju\n• Potvrda je dvojezična (tvoj jezik + engleski), sadrži dimenzije i registraciju plovila, vrstu voda (plimne/neplimne) i rubriku za broj putovnice ili osobne; može se podijeliti ili spremiti izravno u telefon\n• Kurs prema vjetru – silueta broda iz papirnatog dnevnika: dodirni položaj na boku s kojeg puše (lijevi bok crveno, desni zeleno). Niz vjetar je na dnu, ondje se bok ne razlikuje. Ponovni dodir briše odabir – pogođeni podatak gori je od praznog polja. U PDF ide uz propulziju.\n• Tijekom praćenja drugi brzi gumb (ikona jedrilice, dolje lijevo) bilježi okret ili letanje: odaberi novi kurs na silueti i zapis se sprema s pozicijom i vremenom. Sljedeći automatski zapisi zadržavaju taj kurs dok ga opet ne promijeniš.';
+      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju\n• Potvrda je dvojezična (tvoj jezik + engleski), sadrži dimenzije i registraciju plovila, vrstu voda (plimne/neplimne) i rubriku za broj putovnice ili osobne; može se podijeliti ili spremiti izravno u telefon\n• Kurs prema vjetru – silueta broda iz papirnatog dnevnika: dodirni položaj na boku s kojeg puše (lijevi bok crveno, desni zeleno). Niz vjetar je na dnu, ondje se bok ne razlikuje. Ponovni dodir briše odabir – pogođeni podatak gori je od praznog polja. U PDF ide uz propulziju.\n• Tijekom praćenja drugi brzi gumb (ikona jedrilice, dolje lijevo) bilježi okret ili letanje: odaberi novi kurs na silueti i zapis se sprema s pozicijom i vremenom. Sljedeći automatski zapisi zadržavaju taj kurs dok ga opet ne promijeniš.\n• Dubina sa sonde sprema se uz automatske zapise, a u ručnom zapisu je unaprijed popunjena (potrebni su spojeni instrumenti).\n• Motosati se računaju iz okretaja s instrumenata, a pokretanje i zaustavljanje motora upisuje se u dnevnik samo.';
 
   @override
   String get guideMilesTitle => 'Knjiga milja';

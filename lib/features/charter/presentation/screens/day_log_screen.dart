@@ -394,6 +394,14 @@ class _EntryTile extends ConsumerWidget {
         return l.logEventDutyStart(_crewFromNote(note));
       case LogbookEventType.dutyEnd:
         return l.logEventDutyEnd(_crewFromNote(note));
+      case LogbookEventType.autopilotOn:
+        return l.logEventAutopilotOn(_autopilotModeLabel(note, l));
+      case LogbookEventType.autopilotOff:
+        return l.logEventAutopilotOff;
+      case LogbookEventType.engineStart:
+        return l.logEventEngineStart;
+      case LogbookEventType.engineStop:
+        return l.logEventEngineStop;
       default:
         return null;
     }
@@ -419,8 +427,36 @@ class _EntryTile extends ConsumerWidget {
         return Colors.teal.shade700;
       case LogbookEventType.dutyEnd:
         return Colors.teal.shade300;
+      case LogbookEventType.autopilotOn:
+        return Colors.deepPurple.shade400;
+      case LogbookEventType.autopilotOff:
+        return Colors.deepPurple.shade200;
+      case LogbookEventType.engineStart:
+        return Colors.brown.shade400;
+      case LogbookEventType.engineStop:
+        return Colors.brown.shade200;
       default:
         return Colors.grey;
+    }
+  }
+
+  /// Preklad režimu autopilota. V poznámke záznamu stojí strojový kód
+  /// ('auto', 'wind', 'track', …), aby sa dal preložiť aj v cudzom jazyku
+  /// a v exporte — presne z toho istého dôvodu ako [LogbookEventType].
+  static String _autopilotModeLabel(String? mode, AppLocalizations l) {
+    switch (mode?.trim()) {
+      case 'wind':
+        return l.autopilotModeWind;
+      case 'track':
+        return l.autopilotModeTrack;
+      case 'heading':
+        return l.autopilotModeHeading;
+      case 'rudder':
+        return l.autopilotModeRudder;
+      case 'standby':
+        return l.autopilotModeStandby;
+      default:
+        return l.autopilotModeAuto;
     }
   }
 
@@ -581,7 +617,10 @@ class _EntryTile extends ConsumerWidget {
                   ),
 
                 // Weather icon row
-                if (entry.windSpeed != null || entry.waveHeight != null || entry.weatherCondition != null)
+                if (entry.windSpeed != null ||
+                    entry.waveHeight != null ||
+                    entry.depthMeters != null ||
+                    entry.weatherCondition != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 3),
                     child: Row(children: [
@@ -600,6 +639,14 @@ class _EntryTile extends ConsumerWidget {
                       if (entry.waveHeight != null) ...[
                         const Text('🌊', style: TextStyle(fontSize: 12)),
                         Text(' ${entry.waveHeight!.toStringAsFixed(1)} m',
+                            style: const TextStyle(fontSize: 12)),
+                        const SizedBox(width: 6),
+                      ],
+                      // Hĺbka zo sondy — meranie z tej minúty, nie údaj z mapy.
+                      if (entry.depthMeters != null) ...[
+                        const Icon(Icons.waves, size: 13, color: Colors.teal),
+                        const SizedBox(width: 2),
+                        Text('${entry.depthMeters!.toStringAsFixed(1)} m',
                             style: const TextStyle(fontSize: 12)),
                       ],
                     ]),

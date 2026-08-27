@@ -102,6 +102,15 @@ class InstrumentsScreen extends ConsumerWidget {
 
     final depthM = depthOk ? marine.depthMeters : null;
 
+    // Autopilot a motor: stavové riadky, nie číselníky. Ako v lietadle —
+    // podstatné je, či pilot riadi a či beží motor, nie s akou presnosťou.
+    final autopilotOk = rayOk &&
+        marine.hasAutopilot &&
+        _freshField(marine.autopilotLastUpdate);
+    final engineOk = rayOk &&
+        marine.engineRpm != null &&
+        _freshField(marine.engineLastUpdate);
+
     // --- VMG WP ---
     double? vmgWp, distWpNm, brgWp;
     if (activeWp != null && pos != null) {
@@ -183,6 +192,37 @@ class InstrumentsScreen extends ConsumerWidget {
             )),
           ]),
         ),
+
+        // ── Autopilot + motor ────────────────────────────────
+        if (autopilotOk || engineOk)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+            child: Row(children: [
+              Expanded(
+                child: _StateBox(
+                  label: 'AUTOPILOT',
+                  on: autopilotOk && marine.autopilotEngaged == true,
+                  detail: autopilotOk
+                      ? (marine.autopilotEngaged == true
+                          ? (marine.autopilotMode ?? 'auto').toUpperCase()
+                          : 'STANDBY')
+                      : null,
+                  color: const Color(0xFF9B59B6),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _StateBox(
+                  label: 'ENGINE',
+                  on: engineOk && marine.isEngineRunning,
+                  detail: engineOk
+                      ? '${marine.engineRpm!.toStringAsFixed(0)} RPM'
+                      : null,
+                  color: const Color(0xFFE67E22),
+                ),
+              ),
+            ]),
+          ),
 
         // ── VMG WP ───────────────────────────────────────────
         Padding(
@@ -374,6 +414,70 @@ class _DigitBox extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.w400)),
           ),
+        ]),
+      ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Stavová dlaždica (AUTOPILOT / ENGINE)
+// ─────────────────────────────────────────────────────────────
+
+/// ON/OFF dlaždica pre veci, ktoré buď bežia, alebo nie.
+///
+/// Zámerne bez prekladu, rovnako ako SOG/TWS/DEPTH vedľa: ide o palubný
+/// panel, kde sú skratky rovnaké vo všetkých jazykoch.
+class _StateBox extends StatelessWidget {
+  final String label;
+  final bool on;
+  final String? detail;
+  final Color color;
+
+  const _StateBox({
+    required this.label,
+    required this.on,
+    required this.color,
+    this.detail,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final active = on ? color : Colors.white.withValues(alpha: 0.25);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D1B2A),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: on ? color.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.07),
+          width: on ? 1.5 : 0.5,
+        ),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label,
+            style: TextStyle(
+                color: active, fontSize: 10, letterSpacing: 2,
+                fontWeight: FontWeight.w500)),
+        const SizedBox(height: 4),
+        Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Text(on ? 'ON' : 'OFF',
+              style: TextStyle(
+                  color: on ? Colors.white : Colors.white38,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w200,
+                  height: 1.0)),
+          if (detail != null) ...[
+            const SizedBox(width: 8),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2),
+              child: Text(detail!,
+                  style: TextStyle(
+                      color: active.withValues(alpha: 0.7),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400)),
+            ),
+          ],
         ]),
       ]),
     );

@@ -154,6 +154,7 @@ class UdpReceiverService {
         sogKnots: fix.speedKnots,
         cogDegrees: fix.courseDegrees,
         gpsTimestampUtc: fix.timestampUtc,
+        gpsLastUpdate: now,
         lastUpdate: now,
       );
     } else if (result.wind != null) {
@@ -186,6 +187,14 @@ class UdpReceiverService {
     } else if (result.engine != null) {
       updated = updated.copyWith(
         engineRpm: result.engine!.rpm,
+        engineLastUpdate: now,
+        lastUpdate: now,
+      );
+    } else if (result.autopilot != null) {
+      updated = updated.copyWith(
+        autopilotEngaged: result.autopilot!.engaged,
+        autopilotMode: result.autopilot!.mode,
+        autopilotLastUpdate: now,
         lastUpdate: now,
       );
     } else {

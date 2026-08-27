@@ -12,6 +12,7 @@ import '../models/logbook_event_type.dart';
 import '../models/point_of_sail.dart';
 import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
+import '../utils/fix_quality_filter.dart';
 import '../utils/track_point_throttle.dart';
 import 'geocoding_service.dart';
 import 'location_service.dart';
@@ -35,6 +36,7 @@ class GpsTrackingService {
   AppDatabase? _db;
   Timer? _logbookTimer;
   Timer? _weatherTimer;
+  Timer? _instrumentWatchTimer;
   int? _activeDayLogId;
   int _logIntervalSeconds = 3600;
   SyncEngine? _syncEngine;
@@ -64,6 +66,28 @@ class GpsTrackingService {
 
   // Zápis trackpointu sa škrtí, súčet míľ nie — pozri TrackPointThrottle.
   final _trackPointThrottle = TrackPointThrottle();
+
+  // Kvalita fixu: nepresné polohy a fyzikálne nemožné skoky sa do trasy ani
+  // do míľ vôbec nedostanú — pozri FixQualityFilter.
+  final _fixFilter = FixQualityFilter();
+
+  // ── Stav lodných prístrojov: autopilot a motor ──────────────────────
+  //
+  // Zapísaný stav sa mení až po dvoch rovnakých vzorkách za sebou
+  // (_instrumentWatchPeriod × 2). Jedna chýbajúca veta alebo krátky
+  // prepad otáčok pri radení tak nespraví v denníku pár záznamov
+  // „motor zhasol / motor naštartoval" v tej istej minúte.
+  static const _instrumentWatchPeriod = Duration(seconds: 5);
+  bool? _autopilotLogged;
+  bool? _autopilotPending;
+  bool? _engineLogged;
+  bool? _enginePending;
+  DateTime? _engineRunningSince;
+
+  /// Motohodiny dňa narátané z otáčok. Základ sa berie z DayLogu, takže
+  /// prerušený tracking ani reštart appky ich nevynuluje.
+  double _engineHours = 0;
+  double _lastPersistedEngineHours = 0;
 
   Stream<Position> get positionStream => _posCtrl.stream;
   Position? get lastPosition => _lastPosition ?? LocationService().lastPosition;
@@ -142,7 +166,17 @@ class GpsTrackingService {
     _lastPersistedNm = _totalDistanceNm;
     _lastTrackPoint = null;
     _trackPointThrottle.reset();
+    _fixFilter.reset();
     _lastComputedCourseDeg = null;
+    _autopilotLogged = null;
+    _autopilotPending = null;
+    _engineLogged = null;
+    _enginePending = null;
+    _engineRunningSince = null;
+    _engineHours = dayLogId != null
+        ? (await _db!.getDayLogById(dayLogId))?.engineHours ?? 0
+        : 0;
+    _lastPersistedEngineHours = _engineHours;
     debugPrint('[GPS] Session created: ${_currentSession?.sessionId}, '
         'starting NM: ${_totalDistanceNm.toStringAsFixed(2)}');
 
@@ -171,6 +205,10 @@ class GpsTrackingService {
     // Počasie
     Timer(const Duration(seconds: 3), _syncWeather);
     _weatherTimer = Timer.periodic(const Duration(hours: 1), (_) => _syncWeather());
+
+    // Autopilot a motor — sleduj prepnutia a rátaj motohodiny.
+    _instrumentWatchTimer =
+        Timer.periodic(_instrumentWatchPeriod, (_) => _pollInstruments());
 
     // Auto logbook timer
     debugPrint('[GPS] Starting logbook timer: ${_logIntervalSeconds}s');
@@ -284,6 +322,8 @@ class GpsTrackingService {
     await _posSub?.cancel(); _posSub = null;
     _logbookTimer?.cancel(); _logbookTimer = null;
     _weatherTimer?.cancel(); _weatherTimer = null;
+    _instrumentWatchTimer?.cancel(); _instrumentWatchTimer = null;
+    await _flushEngineHours(force: true);
     _lastLoggedCourse = null;
     _courseChangeStart = null;
     _courseChangeHeading = null;
@@ -340,39 +380,54 @@ class GpsTrackingService {
   }
 
   Future<void> _onPosition(Position pos) async {
+    if (_db == null || _currentSession == null) {
+      _lastPosition = pos;
+      _posCtrl.add(pos);
+      return;
+    }
+
+    final latLng = LatLng(pos.latitude, pos.longitude);
+
+    // Kvalita fixu sa posudzuje PRED čímkoľvek ďalším: nepresná poloha
+    // (bunka/wifi) ani nemožný skok nesmú ovplyvniť ani trasu, ani míle,
+    // ani kurz, ani auto-záznam v denníku — a preto sa taký fix nepustí ani
+    // do _lastPosition.
+    // Čas príchodu, nie pos.timestamp: ten môže byť z cache a pri polohe
+    // z NMEA ide o čas z GPS vety — miešali by sa dve rôzne časové osi
+    // a rýchlosť medzi fixmi by z toho vyšla nezmyselná.
+    final check = _fixFilter.check(latLng,
+        accuracyM: pos.accuracy, at: DateTime.now());
+    if (!check.isAccepted) {
+      debugPrint('[GPS] Fix rejected (${check.verdict.name}): '
+          '${pos.latitude.toStringAsFixed(5)},${pos.longitude.toStringAsFixed(5)} '
+          'acc=${pos.accuracy.toStringAsFixed(0)}m');
+      return;
+    }
+
     _lastPosition = pos;
     _posCtrl.add(pos);
-    if (_db == null || _currentSession == null) return;
 
     // Bearing k aktuálnemu fixu z predošlého bodu — kým je _lastTrackPoint
     // ešte "predošlý" bod (prepíše sa až nižšie). Pri zanedbateľnom posune
     // (GPS šum, duplicitný fix) ponechaj posledný známy kurz.
-    final latLng = LatLng(pos.latitude, pos.longitude);
-    double distM = 0;
-    if (_lastTrackPoint != null) {
-      distM = DistanceCalculator.distanceM(
+    if (_lastTrackPoint != null && check.distanceM >= _minCourseDistM) {
+      _lastComputedCourseDeg = DistanceCalculator.bearing(
         _lastTrackPoint!.latitude, _lastTrackPoint!.longitude,
         pos.latitude, pos.longitude,
       );
-      if (distM >= _minCourseDistM) {
-        _lastComputedCourseDeg = DistanceCalculator.bearing(
-          _lastTrackPoint!.latitude, _lastTrackPoint!.longitude,
-          pos.latitude, pos.longitude,
-        );
-      }
     }
 
     await _checkCourseChange(pos);
 
-    // Track cache + NM accumulation
-    if (_lastTrackPoint != null) {
-      final d = distM / 1852; // m -> NM
-      if (d < 10) _totalDistanceNm += d; // Ignoruj GPS skoky > 10 NM
-    }
+    // Súčet míľ: len z prijatých fixov a len zo skutočného posunu.
+    // Vzdialenosť po diere v zázname (resynced) sa nepočíta — nevie sa,
+    // ktorou cestou loď medzitým šla.
+    _totalDistanceNm += check.distanceM / 1852;
     _lastTrackPoint = latLng;
 
     if (_trackPointThrottle.accept(latLng)) {
       _trackCache.add(latLng);
+      final loc = LocationService();
       await _db!.insertTrackPoint(TrackPointsCompanion.insert(
         sessionId: drift.Value(_currentSession!.sessionId),
         timestamp: pos.timestamp,
@@ -382,6 +437,14 @@ class GpsTrackingService {
         speed: drift.Value(_kts(pos.speed)),
         course: drift.Value(_lastComputedCourseDeg ?? pos.heading),
         accuracy: drift.Value(pos.accuracy),
+        // Odkiaľ bod je, sa musí dať prečítať aj spätne zo zálohy: bez toho
+        // sa pri hlásení „trasa skáče" nedá odlíšiť poloha z lodných
+        // prístrojov od polohy z telefónu (stĺpce existujú od v16, ale
+        // tracking ich nikdy nevyplnil).
+        accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
+        locationSource: drift.Value(
+            loc.isUsingInstrumentGps ? 'instruments' : loc.lastSource?.name),
+        isMocked: drift.Value(loc.lastIsMocked),
       ));
     }
 
@@ -419,6 +482,105 @@ class GpsTrackingService {
     }
   }
 
+  /// Sleduje autopilota a motor a zapisuje ich prepnutia do denníka.
+  ///
+  /// Beží z timeru, nie zo streamu NMEA viet: veta o autopilote chodí aj
+  /// niekoľkokrát za sekundu a stav sa musí posudzovať v čase, nie na každý
+  /// rámec. Zmena sa zapíše až keď ju potvrdí druhá vzorka — inak by jedna
+  /// stratená veta alebo prepad otáčok pri radení vyrobil v denníku dvojicu
+  /// záznamov v tej istej minúte.
+  Future<void> _pollInstruments() async {
+    if (_db == null || _currentSession == null) return;
+    final nmea = _freshNmea();
+    const fieldStale = Duration(seconds: 10);
+    bool fresh(DateTime? t) =>
+        t != null && DateTime.now().difference(t) < fieldStale;
+
+    // ── Autopilot ──
+    if (nmea != null &&
+        nmea.autopilotEngaged != null &&
+        fresh(nmea.autopilotLastUpdate)) {
+      final engaged = nmea.autopilotEngaged!;
+      if (engaged == _autopilotLogged) {
+        _autopilotPending = null;
+      } else if (_autopilotPending == engaged) {
+        final first = _autopilotLogged == null;
+        _autopilotPending = null;
+        _autopilotLogged = engaged;
+        // Pri prvom čítaní sa zapíše len zapnutý pilot: „autopilot vypnutý"
+        // na začiatku plavby nie je udalosť, to je normálny stav.
+        if (!first || engaged) {
+          await createAutomaticLogbookEntry(
+            event: engaged
+                ? LogbookEventType.autopilotOn
+                : LogbookEventType.autopilotOff,
+            note: engaged ? (nmea.autopilotMode ?? 'auto') : '',
+          );
+        }
+      } else {
+        _autopilotPending = engaged;
+      }
+    } else {
+      _autopilotPending = null;
+    }
+
+    // ── Motor ──
+    if (nmea != null && nmea.engineRpm != null && fresh(nmea.engineLastUpdate)) {
+      final running = nmea.isEngineRunning;
+      if (running) {
+        final since = _engineRunningSince;
+        final now = DateTime.now();
+        if (since != null) {
+          _engineHours += now.difference(since).inMilliseconds / 3600000.0;
+        }
+        _engineRunningSince = now;
+      } else {
+        _engineRunningSince = null;
+      }
+
+      if (running == _engineLogged) {
+        _enginePending = null;
+      } else if (_enginePending == running) {
+        final first = _engineLogged == null;
+        _enginePending = null;
+        _engineLogged = running;
+        if (!first || running) {
+          await createAutomaticLogbookEntry(
+            event: running
+                ? LogbookEventType.engineStart
+                : LogbookEventType.engineStop,
+          );
+        }
+      } else {
+        _enginePending = running;
+      }
+    } else {
+      // Prístroje o motore mlčia — beh sa nedá ďalej rátať ani predpokladať.
+      _enginePending = null;
+      _engineRunningSince = null;
+    }
+
+    await _flushEngineHours();
+  }
+
+  /// Zapíše narátané motohodiny do DayLogu. Priebežne, nie až na konci —
+  /// z rovnakého dôvodu ako prejdené míle (pozri [_persistDistanceIfGrown]).
+  Future<void> _flushEngineHours({bool force = false}) async {
+    final dayLogId = _activeDayLogId;
+    if (_db == null || dayLogId == null) return;
+    if (!force && _engineHours - _lastPersistedEngineHours < 0.01) return;
+    if (_engineHours <= 0) return;
+    _lastPersistedEngineHours = _engineHours;
+    try {
+      await _db!.updateDayLog(DayLogsCompanion(
+        id: drift.Value(dayLogId),
+        engineHours: drift.Value(_engineHours),
+      ));
+    } catch (e) {
+      debugPrint('[GPS] Engine hours update failed: $e');
+    }
+  }
+
   /// Vráti aktuálne NMEA dáta z aktívneho zdroja (TCP alebo UDP), ak sú čerstvé.
   MarineInstrumentData? _freshNmea() {
     final tcp = RaymarineConnectionService();
@@ -453,6 +615,14 @@ class GpsTrackingService {
         t != null && DateTime.now().difference(t) < fieldStale;
     final windFresh = nmea != null && freshField(nmea.windLastUpdate);
 
+    // Hĺbka pod kýlom zo sondy. Do denníka patrí z rovnakého dôvodu ako
+    // poloha: spätne sa nedá zistiť odnikiaľ a pri nájazde na plytčinu je to
+    // prvý údaj, na ktorý sa každý pýta. Zapíše sa len meranie čerstvé
+    // v rovnakom zmysle ako vietor — stará hodnota zo sondy je horšia než
+    // žiadna.
+    final depthMeters =
+        nmea != null && freshField(nmea.depthLastUpdate) ? nmea.depthMeters : null;
+
     final sog = (nmea?.sogKnots) ?? _kts(pos.speed);
     // pos.heading z telefónu je nespoľahlivý (často 0°) — uprednostni kurz
     // dopočítaný z bearing medzi poslednými GPS bodmi.
@@ -472,6 +642,7 @@ class GpsTrackingService {
 
     final src = conditions.source.code;
     debugPrint('[GPS] Entry data — SOG:${sog.toStringAsFixed(1)}kn COG:${cog.toStringAsFixed(0)}° '
+        'depth:${depthMeters?.toStringAsFixed(1) ?? '-'}m '
         'wind:${conditions.windSpeed?.toStringAsFixed(1)}kn/'
         '${conditions.windDirection?.toStringAsFixed(0)}° '
         'source:$src${conditions.station == null ? '' : ' (${conditions.station})'}');
@@ -518,6 +689,10 @@ class GpsTrackingService {
       airPressure: drift.Value(conditions.airPressure),
       airTemp: drift.Value(conditions.airTemp),
       waterTemp: drift.Value(conditions.waterTemp),
+      depthMeters: drift.Value(depthMeters),
+      // Motohodiny narátané z otáčok — v ručnom zázname ich skiper píše sám,
+      // tu ich vie appka doplniť sama.
+      engineHours: drift.Value(_engineHours > 0 ? _engineHours : null),
       weatherSource: drift.Value(conditions.source.code),
       weatherStation: drift.Value(conditions.station),
       weatherStationDistanceM: drift.Value(conditions.stationDistanceM),
@@ -547,6 +722,8 @@ class GpsTrackingService {
       'airPressure': conditions.airPressure,
       'airTemp': conditions.airTemp,
       'waterTemp': conditions.waterTemp,
+      'depthMeters': depthMeters,
+      'engineHours': _engineHours > 0 ? _engineHours : null,
       'weatherSource': conditions.source.code,
       'weatherStation': conditions.station,
       'skipperNote': entryNote,
@@ -617,6 +794,7 @@ class GpsTrackingService {
     _posSub?.cancel();
     _logbookTimer?.cancel();
     _weatherTimer?.cancel();
+    _instrumentWatchTimer?.cancel();
     _posCtrl.close();
   }
 }

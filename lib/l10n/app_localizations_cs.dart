@@ -970,6 +970,41 @@ class AppLocalizationsCs extends AppLocalizations {
   String get logEventDriftIn => 'Drift – loď zpět v perimetru';
 
   @override
+  String logEventAutopilotOn(String mode) {
+    return 'Autopilot ZAP - $mode';
+  }
+
+  @override
+  String get logEventAutopilotOff => 'Autopilot VYP';
+
+  @override
+  String get logEventEngineStart => 'Motor nastartován';
+
+  @override
+  String get logEventEngineStop => 'Motor zastaven';
+
+  @override
+  String get autopilotLabel => 'Autopilot';
+
+  @override
+  String get autopilotModeAuto => 'Auto';
+
+  @override
+  String get autopilotModeWind => 'Vítr';
+
+  @override
+  String get autopilotModeTrack => 'Trasa';
+
+  @override
+  String get autopilotModeHeading => 'Kurz';
+
+  @override
+  String get autopilotModeRudder => 'Kormidlo';
+
+  @override
+  String get autopilotModeStandby => 'Standby';
+
+  @override
   String logEventDutyStart(String name) {
     return 'Nástup do služby: $name';
   }
@@ -2520,14 +2555,14 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Záložka Přístroje zobrazuje navigační data v reálném čase.\n\n• SOG – rychlost nad dnem (uzly)\n• TWS – skutečná rychlost větru\n• TWA – směr větru vůči lodi (zelená = pravobok, červená = levobok)\n• DEPTH – hloubka vody (červené = méně než 5 m)\n• VMG WP – rychlost k vybranému waypointu; po výběru z dlaždice uvidíš vzdálenost/směr i šipku přímo na směrové růžici. Navigaci vypneš volbou \"Žádný cíl\" ve stejné dlaždici — vypne ji i smazání waypointu na mapě\n\nZdroj dat: telefonní GPS nebo Raymarine (TCP i UDP WiFi gateway).\nNastavení připojení (včetně volby TCP/UDP) najdeš v Nastavení → Přístroje.\n\nJak se loď připojuje: aplikace čte NMEA data přes WiFi (TCP nebo UDP). Samotný WiFi hotspot Raymarine MFD obvykle nestačí — slouží pro aplikace Raymarine a surové NMEA třetím stranám většinou nepouští. Potřebuješ NMEA→WiFi gateway (např. Digital Yacht, Yacht Devices, Actisense, Quark-elec) připojený na lodní sběrnici, který buď vytvoří vlastní hotspot, nebo broadcastuje NMEA do WiFi. Telefon připoj k WiFi tohoto gateway a v Nastavení zadej jeho IP a port (nebo zkus Automaticky najít).\n\nB&G Zeus a podobné plottery Navico: připoj telefon na WiFi plotru a v Nastavení zvol TCP. Adresa plotru ve WiFi síti ale NEFUNGUJE — server NMEA běží na jeho ethernetovém rozhraní. Tu adresu najdeš přímo v plotru: Settings → Network → Diagnostics, položka IP address (bývá ve tvaru 169.254.x.x). Zadej ji spolu s portem 10110. Ověřeno na Zeus III se softwarem NOS v25.2. Port 2053 spojení přijme, ale data neposílá — to je služba GoFree s vlastním protokolem, ne NMEA. Zapni si Automaticky připojit při spuštění. Pokud to jednou přestane fungovat, adresa se mohla změnit — přečti ji znovu v Diagnostics.';
+      'Záložka Přístroje zobrazuje navigační data v reálném čase.\n\n• SOG – rychlost nad dnem (uzly)\n• TWS – skutečná rychlost větru\n• TWA – směr větru vůči lodi (zelená = pravobok, červená = levobok)\n• DEPTH – hloubka vody (červené = méně než 5 m)\n• VMG WP – rychlost k vybranému waypointu; po výběru z dlaždice uvidíš vzdálenost/směr i šipku přímo na směrové růžici. Navigaci vypneš volbou \"Žádný cíl\" ve stejné dlaždici — vypne ji i smazání waypointu na mapě\n• AUTOPILOT – ukazuje ZAP/VYP i režim řízení, když to přístroje hlásí (HTC/HTD, APB nebo SeaTalk). Každé přepnutí se automaticky zapíše do deníku, jako v palubním deníku letadla.\n\nZdroj dat: telefonní GPS nebo Raymarine (TCP i UDP WiFi gateway).\nNastavení připojení (včetně volby TCP/UDP) najdeš v Nastavení → Přístroje.\n\nJak se loď připojuje: aplikace čte NMEA data přes WiFi (TCP nebo UDP). Samotný WiFi hotspot Raymarine MFD obvykle nestačí — slouží pro aplikace Raymarine a surové NMEA třetím stranám většinou nepouští. Potřebuješ NMEA→WiFi gateway (např. Digital Yacht, Yacht Devices, Actisense, Quark-elec) připojený na lodní sběrnici, který buď vytvoří vlastní hotspot, nebo broadcastuje NMEA do WiFi. Telefon připoj k WiFi tohoto gateway a v Nastavení zadej jeho IP a port (nebo zkus Automaticky najít).\n\nB&G Zeus a podobné plottery Navico: připoj telefon na WiFi plotru a v Nastavení zvol TCP. Adresa plotru ve WiFi síti ale NEFUNGUJE — server NMEA běží na jeho ethernetovém rozhraní. Tu adresu najdeš přímo v plotru: Settings → Network → Diagnostics, položka IP address (bývá ve tvaru 169.254.x.x). Zadej ji spolu s portem 10110. Ověřeno na Zeus III se softwarem NOS v25.2. Port 2053 spojení přijme, ale data neposílá — to je služba GoFree s vlastním protokolem, ne NMEA. Zapni si Automaticky připojit při spuštění. Pokud to jednou přestane fungovat, adresa se mohla změnit — přečti ji znovu v Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Deník plavby';
 
   @override
   String get guideLogbookBody =>
-      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě\n• Po plavbě můžeš pro každého člena posádky vyexportovat potvrzení o naplavaných mílích – dny na moři, denní a noční míle, oblast plavby, hodnocení od skippera a QR pro ověření\n• Způsob plavby (motor/plachty) se přebírá i do automatických zápisů – přepneš ho jednou a další zápisy v něm pokračují\n• Potvrzení je dvojjazyčné (tvůj jazyk + angličtina), obsahuje rozměry a registraci lodi, typ vod (přílivové/nepřílivové) a kolonku na číslo pasu nebo OP; dá se sdílet i uložit přímo do telefonu\n• Kurz vůči větru – silueta lodi z papírového deníku: klepni na polohu na tom boku, ze kterého fouká (levobok červený, pravobok zelený). Zadní vítr je dole, tam se bok nerozlišuje. Opětovné klepnutí výběr zruší – odhadnutý údaj je horší než prázdné políčko. Do PDF jde vedle způsobu plavby.\n• Během plavby je vlevo dole druhé rychlé tlačítko (ikona plachetnice) na obrat nebo halzu: vyber nový kurz na siluetě a záznam se zapíše i s polohou a časem. Další automatické zápisy ten kurz přebírají, dokud ho znovu nezměníš.';
+      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě\n• Po plavbě můžeš pro každého člena posádky vyexportovat potvrzení o naplavaných mílích – dny na moři, denní a noční míle, oblast plavby, hodnocení od skippera a QR pro ověření\n• Způsob plavby (motor/plachty) se přebírá i do automatických zápisů – přepneš ho jednou a další zápisy v něm pokračují\n• Potvrzení je dvojjazyčné (tvůj jazyk + angličtina), obsahuje rozměry a registraci lodi, typ vod (přílivové/nepřílivové) a kolonku na číslo pasu nebo OP; dá se sdílet i uložit přímo do telefonu\n• Kurz vůči větru – silueta lodi z papírového deníku: klepni na polohu na tom boku, ze kterého fouká (levobok červený, pravobok zelený). Zadní vítr je dole, tam se bok nerozlišuje. Opětovné klepnutí výběr zruší – odhadnutý údaj je horší než prázdné políčko. Do PDF jde vedle způsobu plavby.\n• Během plavby je vlevo dole druhé rychlé tlačítko (ikona plachetnice) na obrat nebo halzu: vyber nový kurz na siluetě a záznam se zapíše i s polohou a časem. Další automatické zápisy ten kurz přebírají, dokud ho znovu nezměníš.\n• Hloubka ze sondy se ukládá k automatickým záznamům a v ručním záznamu je předvyplněná (potřebuje připojené přístroje).\n• Motohodiny se počítají z otáček z přístrojů a nastartování i zastavení motoru se zapíše do deníku samo.';
 
   @override
   String get guideMilesTitle => 'Kniha mil';

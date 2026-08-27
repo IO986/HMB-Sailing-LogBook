@@ -195,4 +195,56 @@ void main() {
       expect(results[2]!.wind, isNotNull);
     });
   });
+
+  group('autopilot', () {
+    test('HTC v režime track hlási zapnutý pilot', () {
+      final r = parser.parseLine(
+          _withChecksum('APHTC,A,0.0,V,T,,,,,,,,,'));
+      expect(r!.autopilot!.engaged, isTrue);
+      expect(r.autopilot!.mode, 'track');
+    });
+
+    test('HTC v manuáli hlási standby', () {
+      final r = parser.parseLine(
+          _withChecksum('APHTC,V,0.0,V,M,,,,,,,,,'));
+      expect(r!.autopilot!.engaged, isFalse);
+      expect(r.autopilot!.mode, 'standby');
+    });
+
+    test('APB s platnou navigáciou znamená riadenie po trase', () {
+      final r = parser.parseLine(_withChecksum(
+          'APAPB,A,A,0.10,R,N,V,V,011,M,DEST,011,M,011,M'));
+      expect(r!.autopilot!.engaged, isTrue);
+      expect(r.autopilot!.mode, 'track');
+    });
+
+    test('APB s neplatnou navigáciou nie je zapnutý pilot', () {
+      final r = parser.parseLine(_withChecksum(
+          'APAPB,V,V,0.10,R,N,V,V,011,M,DEST,011,M,011,M'));
+      expect(r!.autopilot!.engaged, isFalse);
+    });
+
+    test('SeaTalk 0x84: bit vetra = pilot vo vetrovom režime', () {
+      final r = parser.parseLine(_withChecksum('STALK,84,06,26,97,04,00,00,00,08'));
+      expect(r!.autopilot!.engaged, isTrue);
+      expect(r.autopilot!.mode, 'wind');
+    });
+
+    test('SeaTalk 0x84: nulový režim = standby', () {
+      final r = parser.parseLine(_withChecksum('STALK,84,06,26,97,00,00,00,00,08'));
+      expect(r!.autopilot!.engaged, isFalse);
+      expect(r.autopilot!.mode, 'standby');
+    });
+
+    test('iný SeaTalk datagram sa neinterpretuje ako autopilot', () {
+      expect(parser.parseLine(_withChecksum('STALK,00,02,00,00')), isNull);
+    });
+  });
+
+  group('engine', () {
+    test('RPM veta nesie otáčky', () {
+      final r = parser.parseLine(_withChecksum('ERRPM,E,1,1850.0,10.5,A'));
+      expect(r!.engine!.rpm, 1850.0);
+    });
+  });
 }
