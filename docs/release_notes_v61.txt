@@ -1,0 +1,10 @@
+HMB Sailing Log — build 61 (1.31.0+61)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Depth contours (EMODnet) on the map, with tap-to-read depth at a point
+• Marina and harbour contacts (phone, website) are now tappable — call or open the site in one tap
+• Point of sail and tack recorded in the logbook, with a one-tap action while underway, included in the PDF export
+• Smoother map panning and zooming
+• Measured wind station readings moved to the Weather tab
