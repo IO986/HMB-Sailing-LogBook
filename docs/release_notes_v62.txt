@@ -1,0 +1,10 @@
+HMB Sailing Log — build 62 (1.31.0+62)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Track no longer jumps: inaccurate and impossible positions are discarded, so distance in the logbook is the distance actually sailed
+• Depth from the sounder is stored with log entries and printed in the PDF
+• Autopilot and engine state read from NMEA, shown on the Instruments panel and logged automatically on every switch
+• Engine hours counted from engine RPM
+• PDF export no longer drops entries onto blank pages
