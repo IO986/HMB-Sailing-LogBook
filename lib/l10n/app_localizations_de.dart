@@ -974,6 +974,41 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logEventDriftIn => 'Drift – Schiff zurück im Radius';
 
   @override
+  String logEventAutopilotOn(String mode) {
+    return 'Autopilot EIN - $mode';
+  }
+
+  @override
+  String get logEventAutopilotOff => 'Autopilot AUS';
+
+  @override
+  String get logEventEngineStart => 'Motor gestartet';
+
+  @override
+  String get logEventEngineStop => 'Motor gestoppt';
+
+  @override
+  String get autopilotLabel => 'Autopilot';
+
+  @override
+  String get autopilotModeAuto => 'Auto';
+
+  @override
+  String get autopilotModeWind => 'Wind';
+
+  @override
+  String get autopilotModeTrack => 'Track';
+
+  @override
+  String get autopilotModeHeading => 'Kurs';
+
+  @override
+  String get autopilotModeRudder => 'Ruder';
+
+  @override
+  String get autopilotModeStandby => 'Standby';
+
+  @override
   String logEventDutyStart(String name) {
     return 'Wache übernommen: $name';
   }
@@ -2540,14 +2575,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zu einem gewählten Wegpunkt; nach Auswahl siehst du Distanz/Peilung sowie einen Pfeil direkt auf der Kompassrose. Zum Abschalten der Navigation wähle im selben Feld \"Kein Ziel\" — auch das Löschen des Wegpunkts auf der Karte schaltet sie ab\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.\n\nSo verbindet sich das Boot: Die App liest NMEA-Daten über WiFi (TCP oder UDP). Der eigene WiFi-Hotspot eines Raymarine-MFD reicht meist nicht — er ist für Raymarines Apps gedacht und gibt rohe NMEA-Daten in der Regel nicht an Dritte frei. Du brauchst ein NMEA-zu-WiFi-Gateway (z. B. Digital Yacht, Yacht Devices, Actisense, Quark-elec) am Bus des Bootes, das entweder einen eigenen Hotspot erstellt oder NMEA ins WiFi sendet. Verbinde dich mit dessen WiFi und trage IP und Port in den Einstellungen ein (oder nutze Automatisch suchen).\n\nB&G Zeus und ähnliche Navico-Plotter: Verbinde das Telefon mit dem WLAN des Plotters und wähle in den Einstellungen TCP. Die Adresse des Plotters im WLAN funktioniert jedoch NICHT — der NMEA-Server läuft auf seiner Ethernet-Schnittstelle. Diese Adresse findest du im Plotter selbst: Settings → Network → Diagnostics, Eintrag IP address (meist in der Form 169.254.x.x). Gib sie zusammen mit Port 10110 ein. Getestet auf einem Zeus III mit NOS v25.2. Port 2053 nimmt die Verbindung an, sendet aber keine Daten — das ist der GoFree-Dienst mit eigenem Protokoll, kein NMEA. Aktiviere Beim Start automatisch verbinden. Falls es einmal nicht mehr geht, kann sich die Adresse geändert haben — lies sie erneut in Diagnostics.';
+      'Die Instrumenten-Karte zeigt Navigationsdaten in Echtzeit.\n\n• SOG – Fahrt über Grund (Knoten)\n• TWS – wahre Windgeschwindigkeit\n• TWA – wahrer Windwinkel (grün = Steuerbord, rot = Backbord)\n• DEPTH – Wassertiefe (rot = unter 5 m)\n• VMG WP – Geschwindigkeit zu einem gewählten Wegpunkt; nach Auswahl siehst du Distanz/Peilung sowie einen Pfeil direkt auf der Kompassrose. Zum Abschalten der Navigation wähle im selben Feld \"Kein Ziel\" — auch das Löschen des Wegpunkts auf der Karte schaltet sie ab\n• AUTOPILOT – zeigt EIN/AUS samt Steuermodus, sobald die Instrumente ihn melden (HTC/HTD, APB oder SeaTalk). Jeder Wechsel wird automatisch ins Logbuch geschrieben, wie im Bordbuch eines Flugzeugs.\n\nDatenquelle: Telefon-GPS oder Raymarine (TCP- oder UDP-WiFi-Gateway).\nVerbindungseinstellungen (inkl. TCP/UDP-Wahl): Einstellungen → Instrumente.\n\nSo verbindet sich das Boot: Die App liest NMEA-Daten über WiFi (TCP oder UDP). Der eigene WiFi-Hotspot eines Raymarine-MFD reicht meist nicht — er ist für Raymarines Apps gedacht und gibt rohe NMEA-Daten in der Regel nicht an Dritte frei. Du brauchst ein NMEA-zu-WiFi-Gateway (z. B. Digital Yacht, Yacht Devices, Actisense, Quark-elec) am Bus des Bootes, das entweder einen eigenen Hotspot erstellt oder NMEA ins WiFi sendet. Verbinde dich mit dessen WiFi und trage IP und Port in den Einstellungen ein (oder nutze Automatisch suchen).\n\nB&G Zeus und ähnliche Navico-Plotter: Verbinde das Telefon mit dem WLAN des Plotters und wähle in den Einstellungen TCP. Die Adresse des Plotters im WLAN funktioniert jedoch NICHT — der NMEA-Server läuft auf seiner Ethernet-Schnittstelle. Diese Adresse findest du im Plotter selbst: Settings → Network → Diagnostics, Eintrag IP address (meist in der Form 169.254.x.x). Gib sie zusammen mit Port 10110 ein. Getestet auf einem Zeus III mit NOS v25.2. Port 2053 nimmt die Verbindung an, sendet aber keine Daten — das ist der GoFree-Dienst mit eigenem Protokoll, kein NMEA. Aktiviere Beim Start automatisch verbinden. Falls es einmal nicht mehr geht, kann sich die Adresse geändert haben — lies sie erneut in Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Fahrtenbuch';
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei\n• Die Bescheinigung ist zweisprachig (deine Sprache + Englisch) und enthält Schiffsmaße und Registrierung, die Gewässerart (Tidengewässer/tidenfrei) und eine Zeile für die Pass- oder Ausweisnummer; teilen oder direkt aufs Telefon speichern\n• Kurs zum Wind – die Bootssilhouette aus dem Papierlogbuch: Tippe den Kurs auf der Seite an, von der der Wind kommt (Backbord rot, Steuerbord grün). Vor dem Wind steht unten, dort gibt es keine Seite. Nochmal tippen löscht die Auswahl – ein geratener Eintrag ist schlechter als ein leeres Feld. Er erscheint im PDF neben dem Antrieb.\n• Während der Aufzeichnung nimmt eine zweite Schnelltaste (Segelsymbol, unten links) eine Wende oder Halse auf: neuen Kurs auf der Silhouette wählen, der Eintrag entsteht mit Position und Zeit. Folgende automatische Einträge übernehmen diesen Kurs, bis du ihn wieder änderst.';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei\n• Die Bescheinigung ist zweisprachig (deine Sprache + Englisch) und enthält Schiffsmaße und Registrierung, die Gewässerart (Tidengewässer/tidenfrei) und eine Zeile für die Pass- oder Ausweisnummer; teilen oder direkt aufs Telefon speichern\n• Kurs zum Wind – die Bootssilhouette aus dem Papierlogbuch: Tippe den Kurs auf der Seite an, von der der Wind kommt (Backbord rot, Steuerbord grün). Vor dem Wind steht unten, dort gibt es keine Seite. Nochmal tippen löscht die Auswahl – ein geratener Eintrag ist schlechter als ein leeres Feld. Er erscheint im PDF neben dem Antrieb.\n• Während der Aufzeichnung nimmt eine zweite Schnelltaste (Segelsymbol, unten links) eine Wende oder Halse auf: neuen Kurs auf der Silhouette wählen, der Eintrag entsteht mit Position und Zeit. Folgende automatische Einträge übernehmen diesen Kurs, bis du ihn wieder änderst.\n• Die Tiefe vom Echolot wird bei automatischen Einträgen gespeichert und im manuellen Eintrag vorausgefüllt (benötigt verbundene Instrumente).\n• Die Motorstunden werden aus der Drehzahl der Instrumente gezählt; Start und Stopp des Motors landen automatisch im Logbuch.';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';

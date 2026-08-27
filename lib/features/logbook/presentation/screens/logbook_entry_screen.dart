@@ -13,6 +13,8 @@ import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
+import '../../../../core/services/raymarine_connection_service.dart';
+import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
@@ -80,6 +82,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   final _airTempCtrl = TextEditingController();
   final _waterTempCtrl = TextEditingController();
   final _pressureCtrl = TextEditingController();
+  final _depthCtrl = TextEditingController();
 
   // Spôsob plavby - multi-select
   final Set<String> _sailModes = {'motor'};
@@ -125,6 +128,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _airTempCtrl.text = e.airTemp?.toStringAsFixed(1) ?? '';
         _waterTempCtrl.text = e.waterTemp?.toStringAsFixed(1) ?? '';
         _pressureCtrl.text = e.airPressure?.toStringAsFixed(0) ?? '';
+        _depthCtrl.text = e.depthMeters?.toStringAsFixed(1) ?? '';
 
         // Spôsob plavby má vlastný stĺpec; prefix [mode1,mode2] v poznámke
         // je starý formát (do v21) a číta sa už len ako záloha, napr. pri
@@ -190,6 +194,10 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         if (c.airPressure != null) {
           _pressureCtrl.text = c.airPressure!.toStringAsFixed(0);
         }
+        // Hĺbka ide výhradne zo sondy — model ani stanica ju nemajú odkiaľ
+        // vedieť. Keď loď sondu nemá, políčko ostane prázdne na ručný zápis.
+        final depth = _instrumentDepthMeters();
+        if (depth != null) _depthCtrl.text = depth.toStringAsFixed(1);
         _weatherSource = c.source.code;
         _weatherStation = c.station;
         _weatherStationDistanceM = c.stationDistanceM;
@@ -306,8 +314,16 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           Expanded(child: _Num(ctrl: _windDirCtrl, label: l.windDirection, suffix: '°')),
         ]),
         const SizedBox(height: 8),
-        _Num(ctrl: _waveCtrl, label: l.waveHeight2,
-            suffix: units.depth == DepthUnit.meters ? 'm' : 'ft'),
+        Row(children: [
+          Expanded(
+            child: _Num(ctrl: _waveCtrl, label: l.waveHeight2,
+                suffix: units.depth == DepthUnit.meters ? 'm' : 'ft'),
+          ),
+          const SizedBox(width: 12),
+          // Hĺbka pod lodou: pri zapojenej sonde je predvyplnená z NMEA,
+          // inak sa dá zapísať ručne (papierový denník ju má tiež).
+          Expanded(child: _Num(ctrl: _depthCtrl, label: l.depthLabel, suffix: 'm')),
+        ]),
         const SizedBox(height: 8),
         Row(children: [
           Expanded(child: _Num(ctrl: _airTempCtrl, label: l.airTempLabel, suffix: '°C')),
@@ -393,6 +409,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airTemp: Value(double.tryParse(_airTempCtrl.text)),
         waterTemp: Value(double.tryParse(_waterTempCtrl.text)),
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
+        depthMeters: Value(double.tryParse(_depthCtrl.text)),
         skipperNote: Value(note),
         sailMode: Value(modesStr),
         pointOfSail: Value(_sailDirection?.pointOfSail.code),
@@ -432,6 +449,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         airTemp: Value(double.tryParse(_airTempCtrl.text)),
         waterTemp: Value(double.tryParse(_waterTempCtrl.text)),
         airPressure: Value(double.tryParse(_pressureCtrl.text)),
+        depthMeters: Value(double.tryParse(_depthCtrl.text)),
         skipperNote: Value(note),
         sailMode: Value(modesStr),
         pointOfSail: Value(_sailDirection?.pointOfSail.code),
@@ -478,6 +496,21 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     if (mounted) context.pop();
   }
 
+  /// Čerstvá hĺbka z lodných prístrojov, alebo null.
+  double? _instrumentDepthMeters() {
+    final tcp = RaymarineConnectionService();
+    final udp = UdpReceiverService();
+    final d = tcp.isConnected && tcp.hasFreshData
+        ? tcp.current
+        : (udp.isListening && udp.hasFreshData ? udp.current : null);
+    if (d == null) return null;
+    final at = d.depthLastUpdate;
+    if (at == null || DateTime.now().difference(at) > const Duration(seconds: 10)) {
+      return null;
+    }
+    return d.depthMeters;
+  }
+
   /// Čo pôjde na server — mapovanie doménového modelu na opaque payload,
   /// ktorý `hmb_core` nikdy neinterpretuje.
   Map<String, dynamic> _buildPayload(String note, String? sailMode) => {
@@ -496,6 +529,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         'airTemp': double.tryParse(_airTempCtrl.text),
         'waterTemp': double.tryParse(_waterTempCtrl.text),
         'airPressure': double.tryParse(_pressureCtrl.text),
+        'depthMeters': double.tryParse(_depthCtrl.text),
         'skipperNote': note,
         'pointOfSail': _sailDirection?.pointOfSail.code,
         'tack': _sailDirection?.tack?.code,
@@ -524,6 +558,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     _noteCtrl.dispose(); _windSpeedCtrl.dispose(); _windDirCtrl.dispose();
     _waveCtrl.dispose(); _fuelCtrl.dispose(); _engineCtrl.dispose();
     _airTempCtrl.dispose(); _waterTempCtrl.dispose(); _pressureCtrl.dispose();
+    _depthCtrl.dispose();
     super.dispose();
   }
 }

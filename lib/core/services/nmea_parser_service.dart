@@ -12,6 +12,9 @@
 /// - HDG / HDM / HDT (Heading) – kompas
 /// - XDR (Transducer) – všeobecné dáta (napr. teplota motora, RPM cez výrobcom rozšírenia)
 /// - RPM (Engine RPM) – otáčky motora
+/// - HTC / HTD (Heading/Track Control) – režim autopilota
+/// - APB (Autopilot Sentence B) – autopilot riadi loď po trase
+/// - STALK (SeaTalk cez NMEA gateway) – datagram 0x84 s režimom autopilota
 library;
 
 class NmeaFix {
@@ -65,6 +68,18 @@ class NmeaHeading {
   const NmeaHeading(this.degrees, {this.isTrue = false});
 }
 
+/// Stav autopilota tak, ako ho hlásia prístroje.
+class NmeaAutopilot {
+  /// True, keď autopilot kormidluje (auto / vietor / trasa).
+  final bool engaged;
+
+  /// Režim v strojovo čitateľnej podobe: `standby`, `auto`, `wind`, `track`,
+  /// `heading`, `rudder`. Preklad rieši UI, tu ostáva kód.
+  final String mode;
+
+  const NmeaAutopilot({required this.engaged, required this.mode});
+}
+
 class NmeaEngine {
   final double rpm;
   const NmeaEngine(this.rpm);
@@ -78,6 +93,7 @@ class NmeaParseResult {
   final NmeaWaterTemp? waterTemp;
   final NmeaHeading? heading;
   final NmeaEngine? engine;
+  final NmeaAutopilot? autopilot;
 
   const NmeaParseResult({
     this.fix,
@@ -86,6 +102,7 @@ class NmeaParseResult {
     this.waterTemp,
     this.heading,
     this.engine,
+    this.autopilot,
   });
 
   bool get isEmpty =>
@@ -94,7 +111,8 @@ class NmeaParseResult {
       depth == null &&
       waterTemp == null &&
       heading == null &&
-      engine == null;
+      engine == null &&
+      autopilot == null;
 }
 
 class NmeaParserService {
@@ -149,6 +167,13 @@ class NmeaParserService {
           return NmeaParseResult(heading: _parseHDT(fields));
         case 'RPM':
           return NmeaParseResult(engine: _parseRPM(fields));
+        case 'HTC':
+        case 'HTD':
+          return NmeaParseResult(autopilot: _parseHeadingControl(fields));
+        case 'APB':
+          return NmeaParseResult(autopilot: _parseAPB(fields));
+        case 'ALK': // $STALK — SeaTalk datagram tunelovaný cez NMEA
+          return NmeaParseResult(autopilot: _parseSeaTalk(fields));
         default:
           return null;
       }
@@ -335,5 +360,71 @@ class NmeaParserService {
     final rpm = _toDouble(f[3]);
     if (rpm == null) throw const FormatException('RPM no value');
     return NmeaEngine(rpm);
+  }
+
+  // ── Autopilot ────────────────────────────────────────────────────
+  //
+  // Autopilot hlási svoj stav troma rôznymi cestami podľa toho, čo je na
+  // lodi zapojené, a žiadna z nich nie je univerzálna:
+  //   • HTC/HTD — norma NMEA 0183 pre riadenie kurzu (novšie pilotoy, NMEA 2000
+  //     gateway), režim je písmeno v poli 4.
+  //   • APB — pilot kormidluje na waypoint; nesie len „platné/neplatné".
+  //   • $STALK — SeaTalk gateway (Raymarine ST60/S1–S3), režim je bitové pole
+  //     v datagrame 0x84.
+  // Preto sa čítajú všetky tri a berie sa tá, ktorá dorazí.
+
+  /// `$--HTC,A,x.x,a,a,a,...` / `$--HTD,...`
+  ///
+  /// Pole 1 je override (A = pilot riadi, V = nie), pole 4 vybraný režim:
+  /// M = manual, S = stand-alone, H = heading, T = track, R = rudder.
+  NmeaAutopilot _parseHeadingControl(List<String> f) {
+    if (f.length < 5) throw const FormatException('HTC incomplete');
+    final override = f[1].toUpperCase();
+    final mode = f[4].toUpperCase();
+    const modes = {
+      'S': 'auto',
+      'H': 'heading',
+      'T': 'track',
+      'R': 'rudder',
+      'M': 'standby',
+    };
+    final code = modes[mode];
+    if (code == null && override.isEmpty) {
+      throw const FormatException('HTC no mode');
+    }
+    final resolved = code ?? 'standby';
+    final engaged = override == 'A' && resolved != 'standby';
+    return NmeaAutopilot(engaged: engaged, mode: engaged ? resolved : 'standby');
+  }
+
+  /// `$--APB,A,A,...` — pilot vedie loď po trase; obe statusové polia musia
+  /// byť 'A', inak veta hovorí len to, že navigácia neplatí.
+  NmeaAutopilot _parseAPB(List<String> f) {
+    if (f.length < 3) throw const FormatException('APB incomplete');
+    final ok = f[1].toUpperCase() == 'A' && f[2].toUpperCase() == 'A';
+    return NmeaAutopilot(engaged: ok, mode: ok ? 'track' : 'standby');
+  }
+
+  /// `$STALK,84,U6,VW,XY,0Z,0M,RR,SS,TT` — SeaTalk datagram 0x84.
+  ///
+  /// Režim je v spodnom polbajte piateho bajtu (`0Z`): bit 1 auto,
+  /// bit 2 vietor, bit 3 trasa; 0 = standby.
+  NmeaAutopilot _parseSeaTalk(List<String> f) {
+    if (f.length < 6 || f[1].toUpperCase() != '84') {
+      throw const FormatException('not a SeaTalk 0x84 datagram');
+    }
+    final z = int.tryParse(f[5], radix: 16);
+    if (z == null) throw const FormatException('SeaTalk bad mode byte');
+    final bits = z & 0x0F;
+    if (bits & 0x08 != 0) {
+      return const NmeaAutopilot(engaged: true, mode: 'track');
+    }
+    if (bits & 0x04 != 0) {
+      return const NmeaAutopilot(engaged: true, mode: 'wind');
+    }
+    if (bits & 0x02 != 0) {
+      return const NmeaAutopilot(engaged: true, mode: 'auto');
+    }
+    return const NmeaAutopilot(engaged: false, mode: 'standby');
   }
 }

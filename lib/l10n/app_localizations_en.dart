@@ -971,6 +971,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logEventDriftIn => 'Drift – vessel returned';
 
   @override
+  String logEventAutopilotOn(String mode) {
+    return 'Autopilot ON - $mode';
+  }
+
+  @override
+  String get logEventAutopilotOff => 'Autopilot OFF';
+
+  @override
+  String get logEventEngineStart => 'Engine started';
+
+  @override
+  String get logEventEngineStop => 'Engine stopped';
+
+  @override
+  String get autopilotLabel => 'Autopilot';
+
+  @override
+  String get autopilotModeAuto => 'Auto';
+
+  @override
+  String get autopilotModeWind => 'Wind';
+
+  @override
+  String get autopilotModeTrack => 'Track';
+
+  @override
+  String get autopilotModeHeading => 'Heading';
+
+  @override
+  String get autopilotModeRudder => 'Rudder';
+
+  @override
+  String get autopilotModeStandby => 'Standby';
+
+  @override
   String logEventDutyStart(String name) {
     return 'On duty: $name';
   }
@@ -2521,14 +2556,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideInstrBody =>
-      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose. To switch the navigation off, pick \"No target\" in the same tile — deleting the waypoint on the map switches it off too\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.\n\nHow the boat connects: the app reads NMEA data over WiFi (TCP or UDP). A Raymarine MFD\'s own WiFi hotspot usually isn\'t enough — it\'s meant for Raymarine\'s apps and typically won\'t expose raw NMEA to third parties. You need an NMEA-to-WiFi gateway (e.g. Digital Yacht, Yacht Devices, Actisense, Quark-elec) wired to the boat\'s bus, which either creates its own hotspot or broadcasts NMEA onto the WiFi. Join that gateway\'s WiFi and enter its IP and port in Settings (or try Auto-detect).\n\nB&G Zeus and similar Navico plotters: join the plotter WiFi and choose TCP in Settings. The plotter address on the WiFi network will NOT work — the NMEA server runs on its Ethernet interface. Find that address on the plotter itself: Settings → Network → Diagnostics, item IP address (usually of the form 169.254.x.x). Enter it together with port 10110. Verified on a Zeus III running NOS v25.2. Port 2053 accepts the connection but sends no data — that is the GoFree service with its own protocol, not NMEA. Turn on Auto-connect on start. If it ever stops working, the address may have changed — read it again in Diagnostics.';
+      'The Instruments tab shows navigation data in real time.\n\n• SOG – speed over ground (knots)\n• TWS – true wind speed\n• TWA – true wind angle relative to the boat (green = starboard, red = port)\n• DEPTH – water depth (red = less than 5 m)\n• VMG WP – speed toward a selected waypoint; pick one from the tile to see distance/bearing and an arrow directly on the compass rose. To switch the navigation off, pick \"No target\" in the same tile — deleting the waypoint on the map switches it off too\n• AUTOPILOT – shows ON/OFF with the steering mode whenever the instruments report it (HTC/HTD, APB or SeaTalk). Every switch is written into the logbook automatically, the way an aircraft log records it.\n\nData source: phone GPS or Raymarine (TCP or UDP WiFi gateway).\nConnection settings (including the TCP/UDP choice) are in Settings → Instruments.\n\nHow the boat connects: the app reads NMEA data over WiFi (TCP or UDP). A Raymarine MFD\'s own WiFi hotspot usually isn\'t enough — it\'s meant for Raymarine\'s apps and typically won\'t expose raw NMEA to third parties. You need an NMEA-to-WiFi gateway (e.g. Digital Yacht, Yacht Devices, Actisense, Quark-elec) wired to the boat\'s bus, which either creates its own hotspot or broadcasts NMEA onto the WiFi. Join that gateway\'s WiFi and enter its IP and port in Settings (or try Auto-detect).\n\nB&G Zeus and similar Navico plotters: join the plotter WiFi and choose TCP in Settings. The plotter address on the WiFi network will NOT work — the NMEA server runs on its Ethernet interface. Find that address on the plotter itself: Settings → Network → Diagnostics, item IP address (usually of the form 169.254.x.x). Enter it together with port 10110. Verified on a Zeus III running NOS v25.2. Port 2053 accepts the connection but sends no data — that is the GoFree service with its own protocol, not NMEA. Turn on Auto-connect on start. If it ever stops working, the address may have changed — read it again in Diagnostics.';
 
   @override
   String get guideLogbookTitle => 'Voyage Logbook';
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it\n• The certificate is bilingual (your language + English) and carries the vessel dimensions and registration, the type of waters (tidal/non-tidal) and a line for the passport or ID number; you can share it or save it straight to the phone\n• Sail direction – the boat silhouette from the paper logbook: tap the point of sail on the side the wind comes from (port red, starboard green). Running sits at the bottom, where there is no side to record. Tap the selected position again to clear it – an entry that guesses is worse than an empty box. It goes into the PDF next to the propulsion.\n• During tracking a second quick button (sailing icon, bottom left) records a tack or gybe: pick the new point of sail on the silhouette and the entry is written with position and time. Following automatic entries keep that course until you change it again.';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it\n• The certificate is bilingual (your language + English) and carries the vessel dimensions and registration, the type of waters (tidal/non-tidal) and a line for the passport or ID number; you can share it or save it straight to the phone\n• Sail direction – the boat silhouette from the paper logbook: tap the point of sail on the side the wind comes from (port red, starboard green). Running sits at the bottom, where there is no side to record. Tap the selected position again to clear it – an entry that guesses is worse than an empty box. It goes into the PDF next to the propulsion.\n• During tracking a second quick button (sailing icon, bottom left) records a tack or gybe: pick the new point of sail on the silhouette and the entry is written with position and time. Following automatic entries keep that course until you change it again.\n• Depth from the sounder is stored with automatic entries and prefilled in manual ones (needs connected instruments).\n• Engine hours are counted from the instruments\' RPM, and engine start/stop is written into the log automatically.';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';

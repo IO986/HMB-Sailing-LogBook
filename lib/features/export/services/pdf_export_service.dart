@@ -559,10 +559,28 @@ class PdfExportService {
             LogbookEventType.voyageEnd)
         .toList();
 
-    pages.add(pw.Page(
+    // Denná strana je MultiPage, nie Page: obsah dňa (mapa, počasie, služby,
+    // tabuľka záznamov) sa na jednu A4 nezmestí vždy a pevná strana nemá kam
+    // pretiecť — dart_pdf v takom prípade tabuľku ani pätičku nevykreslí
+    // vôbec. Tu sa obsah prirodzene rozlije na ďalšiu stranu.
+    int? firstPageNumber;
+    pages.add(pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
-      build: (ctx) => pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+      header: (ctx) {
+        firstPageNumber ??= ctx.pageNumber;
+        if (ctx.pageNumber == firstPageNumber) return pw.SizedBox();
+        return pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 8),
+          child: pw.Text('${_pdfText(dayName)} – ${l.pdfContinued}',
+              style: pw.TextStyle(
+                  color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        );
+      },
+      footer: (ctx) => _footer(
+          '${_pdfText(charter.title)}  |  ${_date.short(day.date)}',
+          docId: docId, revision: revision),
+      build: (ctx) => [
 
         // ── Compact header ──
         pw.Container(
@@ -615,6 +633,15 @@ class PdfExportService {
             if (crew.isNotEmpty) ...[
               pw.Text('${l.pdfCrewSection}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
               pw.Text(crew.map(_pdfText).join(', '),
+                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
+            ],
+            // Motohodiny za deň — charterová firma ich pýta pri odovzdaní
+            // lode a appka ich vie narátať z otáčok, keď ich motor hlási.
+            if (day.engineHours != null) ...[
+              pw.SizedBox(width: 12),
+              pw.Text('${l.engineHours}: ',
+                  style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+              pw.Text('${day.engineHours!.toStringAsFixed(1)} h',
                   style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
             ],
           ]),
@@ -671,37 +698,18 @@ class PdfExportService {
         ],
 
         // ── Záznamy ──
+        //
+        // Celá tabuľka naraz; MultiPage si ju rozdelí podľa skutočnej výšky
+        // riadkov. Predtým sa krájala na 18 + po 30 riadkov na vlastné
+        // strany a keď sa taký blok na stranu nezmestil, ostala prázdna.
         if (sorted.isNotEmpty) ...[
           pw.Text(l.pdfEntriesSection.toUpperCase(), style: pw.TextStyle(
               color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
           pw.SizedBox(height: 3),
-          _entriesTable(sorted.take(18).toList(), photos, l),
+          _entriesTable(sorted, photos, l),
         ],
-
-        pw.Spacer(),
-        _footer('${_pdfText(charter.title)}  |  ${_date.short(day.date)}', docId: docId, revision: revision),
-      ]),
+      ],
     ));
-
-    // ── Pokračovanie ──
-    if (sorted.length > 18) {
-      final remaining = sorted.skip(18).toList();
-      for (int i = 0; i < remaining.length; i += 30) {
-        final chunk = remaining.skip(i).take(30).toList();
-        pages.add(pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
-          build: (ctx) => pw.Column(children: [
-            pw.Text('${_pdfText(dayName)} – ${l.pdfContinued}',
-                style: pw.TextStyle(color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
-            pw.SizedBox(height: 8),
-            _entriesTable(chunk, photos, l),
-            pw.Spacer(),
-            _footer('${_pdfText(charter.title)}  |  ${_date.short(day.date)}', docId: docId, revision: revision),
-          ]),
-        ));
-      }
-    }
 
     // ── Zamerania ──
     // Vlastná strana, nie stĺpec v tabuľke záznamov: zameranie nie je
@@ -710,40 +718,34 @@ class PdfExportService {
     if (bearings.isNotEmpty) {
       final sortedBearings = [...bearings]
         ..sort((a, b) => a.takenAt.compareTo(b.takenAt));
-      for (int i = 0; i < sortedBearings.length; i += 26) {
-        final chunk = sortedBearings.skip(i).take(26).toList();
-        pages.add(pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
-          build: (ctx) => pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                    '${_pdfText(dayName)} – '
-                    '${_pdfText(l.bearingPdfSection)}'
-                    '${i > 0 ? ' (${l.pdfContinued})' : ''}',
-                    style: pw.TextStyle(
-                        color: _navy,
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 12)),
-                pw.SizedBox(height: 8),
-                _bearingsTable(chunk, l),
-                pw.SizedBox(height: 6),
-                pw.Text(
-                    _pdfText(l.bearingUncertaintyNote(
-                        '${chunk.first.uncertaintyDeg.round()}°')),
-                    style: pw.TextStyle(color: _dgrey, fontSize: 7)),
-                if (chunk.any((b) => b.declinationSource == 'target'))
-                  pw.Text(_pdfText(l.bearingDeclinationFromTarget),
-                      style: pw.TextStyle(color: _dgrey, fontSize: 7)),
-                pw.Spacer(),
-                _footer(
-                    '${_pdfText(charter.title)}  |  ${_date.short(day.date)}',
-                    docId: docId,
-                    revision: revision),
-              ]),
-        ));
-      }
+      // Rovnaký dôvod pre MultiPage ako pri záznamoch vyššie: pevných
+      // 26 riadkov na stranu bola stávka, ktorú stačilo prehrať jedným
+      // vyšším riadkom, a strana ostala prázdna.
+      pages.add(pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.fromLTRB(28, 28, 28, 28),
+        header: (ctx) => pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 8),
+          child: pw.Text(
+              '${_pdfText(dayName)} – ${_pdfText(l.bearingPdfSection)}',
+              style: pw.TextStyle(
+                  color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        ),
+        footer: (ctx) => _footer(
+            '${_pdfText(charter.title)}  |  ${_date.short(day.date)}',
+            docId: docId, revision: revision),
+        build: (ctx) => [
+          _bearingsTable(sortedBearings, l),
+          pw.SizedBox(height: 6),
+          pw.Text(
+              _pdfText(l.bearingUncertaintyNote(
+                  '${sortedBearings.first.uncertaintyDeg.round()}°')),
+              style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+          if (sortedBearings.any((b) => b.declinationSource == 'target'))
+            pw.Text(_pdfText(l.bearingDeclinationFromTarget),
+                style: pw.TextStyle(color: _dgrey, fontSize: 7)),
+        ],
+      ));
     }
     return pages;
   }
@@ -926,6 +928,7 @@ class PdfExportService {
       },
       children: [
         pw.TableRow(
+          repeat: true,
           decoration: pw.BoxDecoration(color: _lgrey),
           children: [
             head(l.timeCol),
@@ -1005,18 +1008,25 @@ class PdfExportService {
         1: const pw.FixedColumnWidth(50),   // GPS lat+lon (2 riadky)
         2: const pw.FixedColumnWidth(28),   // SOG + jednotka v hlavičke
         3: const pw.FixedColumnWidth(22),   // COG °
-        4: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
-        5: const pw.FixedColumnWidth(26),   // hPa
-        6: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
-        7: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
-        8: const pw.FixedColumnWidth(40),   // Počasie – plný názov, 2 riadky
-        9: const pw.FlexColumnWidth(1),     // Poznámka
+        4: const pw.FixedColumnWidth(24),   // Hĺbka pod kýlom
+        5: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
+        6: const pw.FixedColumnWidth(26),   // hPa
+        7: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
+        8: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
+        9: const pw.FixedColumnWidth(40),   // Počasie – plný názov, 2 riadky
+        10: const pw.FlexColumnWidth(1),    // Poznámka
       },
       children: [
-        pw.TableRow(decoration: pw.BoxDecoration(color: _blue), children:
+        // repeat: hlavička sa zopakuje na každej strane, na ktorú tabuľka
+        // pretečie. Bez toho je pokračovanie dňa stĺpec čísel bez názvov a
+        // čitateľ musí listovať späť, aby vedel, čo je čo.
+        pw.TableRow(repeat: true, decoration: pw.BoxDecoration(color: _blue), children:
           // Rýchlosť a teplota nesú jednotku v hlavičke, nie pri každej
           // hodnote — v stĺpci širokom 28 px sa jednotka k číslu nezmestí.
           [l.pdfColTimeUtc, 'GPS', 'SOG ${units.speedLabel}', 'COG',
+              // Hĺbka zo sondy — v papierovom denníku stojí hneď pri polohe
+              // a tu tiež: patrí k tomu, kde loď bola, nie k počasiu.
+              '${l.depthLabel} m',
               l.pdfColWind, 'hPa', 'T ${units.tempLabel}',
               l.pdfColPropulsion, l.pdfColWeatherShort, l.pdfColNote]
               .map((h) => _hcell(h)).toList()),
@@ -1073,6 +1083,10 @@ class PdfExportService {
                   : '-'),
               // COG
               _dcell(entry.cog != null ? '${entry.cog!.toStringAsFixed(0)}°' : '-'),
+              // Hĺbka
+              _dcell(entry.depthMeters != null
+                  ? entry.depthMeters!.toStringAsFixed(1)
+                  : '-'),
               // Vietor + smer + vlny
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -2528,8 +2542,36 @@ class PdfExportService {
         return l.logEventDutyStart(_crewFromNote(note));
       case LogbookEventType.dutyEnd:
         return l.logEventDutyEnd(_crewFromNote(note));
+      case LogbookEventType.autopilotOn:
+        return l.logEventAutopilotOn(_autopilotModeLabel(note, l));
+      case LogbookEventType.autopilotOff:
+        return l.logEventAutopilotOff;
+      case LogbookEventType.engineStart:
+        return l.logEventEngineStart;
+      case LogbookEventType.engineStop:
+        return l.logEventEngineStop;
       default:
         return null;
+    }
+  }
+
+  /// Preklad režimu autopilota. V poznámke záznamu stojí strojový kód
+  /// ('auto', 'wind', 'track', …), aby sa dal preložiť aj v cudzom jazyku
+  /// a v exporte — presne z toho istého dôvodu ako [LogbookEventType].
+  static String _autopilotModeLabel(String? mode, AppLocalizations l) {
+    switch (mode?.trim()) {
+      case 'wind':
+        return l.autopilotModeWind;
+      case 'track':
+        return l.autopilotModeTrack;
+      case 'heading':
+        return l.autopilotModeHeading;
+      case 'rudder':
+        return l.autopilotModeRudder;
+      case 'standby':
+        return l.autopilotModeStandby;
+      default:
+        return l.autopilotModeAuto;
     }
   }
 
