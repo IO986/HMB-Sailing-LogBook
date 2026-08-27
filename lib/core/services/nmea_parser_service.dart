@@ -392,8 +392,9 @@ class NmeaParserService {
     if (code == null && override.isEmpty) {
       throw const FormatException('HTC no mode');
     }
-    final engaged = override == 'A' && code != null && code != 'standby';
-    return NmeaAutopilot(engaged: engaged, mode: engaged ? code ?? 'auto' : 'standby');
+    final resolved = code ?? 'standby';
+    final engaged = override == 'A' && resolved != 'standby';
+    return NmeaAutopilot(engaged: engaged, mode: engaged ? resolved : 'standby');
   }
 
   /// `$--APB,A,A,...` — pilot vedie loď po trase; obe statusové polia musia
