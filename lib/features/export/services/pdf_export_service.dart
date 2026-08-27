@@ -928,6 +928,7 @@ class PdfExportService {
       },
       children: [
         pw.TableRow(
+          repeat: true,
           decoration: pw.BoxDecoration(color: _lgrey),
           children: [
             head(l.timeCol),
@@ -1016,7 +1017,10 @@ class PdfExportService {
         10: const pw.FlexColumnWidth(1),    // Poznámka
       },
       children: [
-        pw.TableRow(decoration: pw.BoxDecoration(color: _blue), children:
+        // repeat: hlavička sa zopakuje na každej strane, na ktorú tabuľka
+        // pretečie. Bez toho je pokračovanie dňa stĺpec čísel bez názvov a
+        // čitateľ musí listovať späť, aby vedel, čo je čo.
+        pw.TableRow(repeat: true, decoration: pw.BoxDecoration(color: _blue), children:
           // Rýchlosť a teplota nesú jednotku v hlavičke, nie pri každej
           // hodnote — v stĺpci širokom 28 px sa jednotka k číslu nezmestí.
           [l.pdfColTimeUtc, 'GPS', 'SOG ${units.speedLabel}', 'COG',
