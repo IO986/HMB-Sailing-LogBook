@@ -1,3 +1,39 @@
+# Kde sme skončili — 27. 8. 2026
+
+Krátka poznámka, nie plnohodnotná session — len zápis budúcej úlohy, aby
+sa nestratila.
+
+## Nové Google Play požiadavky na kvalitu (mail od Google, 27. 8.)
+
+Google Play zavádza od **februára 2027** limity na pamäť a povinnú
+optimalizáciu kódu, a od **apríla 2027** požiadavku na bezproblémovú
+migráciu medzi zariadeniami. Nesplnenie neznamená zákaz appky, len
+"zníženú viditeľnosť a možnosti publikovania" (presne nešpecifikované).
+Netreba riešiť teraz, ale patrí to na zoznam pred rokom 2027:
+
+- **Zero-Tap Sign-In (apríl 2027)** — appka MÁ Google Sign-In (cloud
+  export na Drive), takže sa jej to bude týkať. Ide o implementáciu
+  `Android Restore Credentials API`, aby sa prihlásenie obnovilo samo pri
+  prechode na nové zariadenie. Zatiaľ neimplementované, čaká na túto
+  úlohu.
+- **Optimalizácia kódu (25% shrink/obfuscation pre DEX >10 MB)** —
+  overené: release build (`android/app/build.gradle:58-60`) už má
+  `minifyEnabled true` + `shrinkResources true` s R8/ProGuard. Toto appka
+  pravdepodobne spĺňa už teraz, len si to pred nasadením overiť ešte raz
+  (limit sa mohol medzičasom spresniť).
+- **Limity pamäte** (RSS+Swap ~1-2 GB podľa RAM triedy zariadenia,
+  bitmapy do 200-400 MB v pozadí/cache) — nič konkrétne nezmerané.
+  Rizikové miesta na budúce overenie: generovanie PDF s mapovými
+  snímkami (`pdf_export_service.dart`), kamerový náhľad na Kompase,
+  disková cache dlaždíc mapy (`tile_cache.dart`) — či sa dekódované
+  bitmapy nedržia zbytočne dlho v pamäti mimo popredia appky.
+
+Zdroj: [Android Developers Blog, august
+2026](https://android-developers.googleblog.com/2026/08/app-quality-memory-optimization-secure-onboarding.html),
+[Play Console technical quality requirements](https://support.google.com/googleplay/android-developer/answer/17492799).
+
+---
+
 # Kde sme skončili — 26. 8. 2026 (večer, dva paralelné terminály)
 
 `main` bola na `f3dfffb`, tento commit ju posúva ďalej. Overené pred
