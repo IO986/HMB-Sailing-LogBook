@@ -1046,7 +1046,8 @@ class PdfExportService {
           final eventLabel = _eventLabel(
               LogbookEventType.resolve(entry.eventType, entry.skipperNote),
               noteText,
-              l);
+              l,
+              sailMode: entry.sailMode);
           if (eventLabel != null) noteText = eventLabel;
           // Zmena plachiet nesie v poznámke celý kurz — kto číta export,
           // nemá stĺpec so siluetou, takže „Zmena plachiet" samo o sebe
@@ -2522,7 +2523,8 @@ class PdfExportService {
   /// what an entry says. MOB is left as stored — the same word at sea in every
   /// language covered here.
   static String? _eventLabel(
-      LogbookEventType? event, String? note, AppLocalizations l) {
+      LogbookEventType? event, String? note, AppLocalizations l,
+      {String? sailMode}) {
     switch (event) {
       case LogbookEventType.voyageStart:
         return l.voyageStart;
@@ -2550,6 +2552,9 @@ class PdfExportService {
         return l.logEventEngineStart;
       case LogbookEventType.engineStop:
         return l.logEventEngineStop;
+      case LogbookEventType.sailSet:
+        return l.logEventSailSet(
+            _sailModeLabel(parseSailMode(sailMode, null).modes.join(','), l));
       default:
         return null;
     }

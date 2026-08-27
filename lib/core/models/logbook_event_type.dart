@@ -38,7 +38,15 @@ enum LogbookEventType {
   /// kedy loď šla na plachty a kedy na motor — a z toho sa počítajú
   /// motohodiny.
   engineStart('engine_start'),
-  engineStop('engine_stop');
+  engineStop('engine_stop'),
+
+  /// Zmena postavenia plachiet (motor, hlavná, genoa, refy) — čo je práve
+  /// vytiahnuté. Zapisuje ju človek z rýchlych tlačidiel na mape; appka to
+  /// sama nevie, prístroje o plachtách nehovoria.
+  ///
+  /// Nezamieňať so [sailChange], ktorý je o obrate či halze — teda o kurze
+  /// voči vetru, nie o tom, čo je hore.
+  sailSet('sail_set');
 
   final String code;
   const LogbookEventType(this.code);
