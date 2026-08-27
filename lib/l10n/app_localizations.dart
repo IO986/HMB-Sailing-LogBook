@@ -1934,6 +1934,18 @@ abstract class AppLocalizations {
   /// **'Motor zastavený'**
   String get logEventEngineStop;
 
+  /// No description provided for @updateDownloaded.
+  ///
+  /// In sk, this message translates to:
+  /// **'Aktualizácia je stiahnutá'**
+  String get updateDownloaded;
+
+  /// No description provided for @updateRestart.
+  ///
+  /// In sk, this message translates to:
+  /// **'Reštartovať'**
+  String get updateRestart;
+
   /// No description provided for @autopilotLabel.
   ///
   /// In sk, this message translates to:
@@ -5033,7 +5045,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n• Aktualizácie – keď je na Google Play novšia verzia, appka ju stiahne na pozadí a ponúkne reštart. Počas záznamu plavby sa nepýta nikdy.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
