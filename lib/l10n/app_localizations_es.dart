@@ -699,6 +699,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pdfColTimeUtc => 'Hora UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Hora $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Zona horaria';
+
+  @override
+  String get timeZoneLocalShort => 'Local';
+
+  @override
   String get pdfColWind => 'Viento';
 
   @override
@@ -952,6 +963,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Cambio de amura';
+
+  @override
+  String get logEventCourseChange => 'Cambio de rumbo';
+
+  @override
+  String get pdfNightShort => 'noche';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Navegación nocturna $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1887,6 +1909,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Medido por los instrumentos de a bordo';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Instrumentos';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Estación $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Estación met.';
+
+  @override
+  String get pdfWeatherSourceModel => 'Modelo';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Medido en la estación $name';
   }
@@ -2582,7 +2623,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa\n• Tras la travesía puedes exportar un certificado de millas para cada tripulante: días en el mar, millas de día y de noche, zona de navegación, valoración del patrón y un QR de verificación\n• La propulsión (motor/velas) pasa también a las anotaciones automáticas: la marcas una vez y las siguientes la mantienen\n• El certificado es bilingüe (tu idioma + inglés) e incluye las dimensiones y la matrícula del barco, el tipo de aguas (con o sin marea) y una línea para el número de pasaporte o DNI; se puede compartir o guardar en el teléfono\n• Rumbo respecto al viento – la silueta del barco del cuaderno en papel: toca la posición en el costado por el que entra el viento (babor rojo, estribor verde). La empopada está abajo, allí no hay costado que anotar. Tocar de nuevo borra la selección: un dato adivinado es peor que una casilla vacía. Aparece en el PDF junto a la propulsión.\n• Durante el seguimiento, un segundo botón rápido (icono de vela, abajo a la izquierda) registra una virada o trasluchada: elige el nuevo rumbo en la silueta y la anotación se guarda con posición y hora. Las anotaciones automáticas siguientes mantienen ese rumbo hasta que lo cambies de nuevo.\n• La sonda guarda la profundidad en los registros automáticos y la rellena en el registro manual (requiere instrumentos conectados).\n• Las horas de motor se cuentan a partir de las revoluciones de los instrumentos, y el arranque y la parada se anotan solos en el cuaderno.';
+      'El Diario es la pestaña principal para gestionar travesías.\n\n• El botón grande \"Iniciar travesía\" arriba inicia el seguimiento – solo pregunta la frecuencia de las entradas automáticas (modificable en cada reinicio), sin formularios previos\n• Si ya hay una travesía abierta, la app pregunta si continuarla o crear un nuevo registro\n• Los datos que falten (check-in, briefing de seguridad, ficha de barco/tripulación) se recuerdan con chips de color directamente en la tarjeta de la travesía – toca un chip para completarlo\n• Cada día de travesía se muestra por separado\n• Se pueden añadir entradas manualmente durante el día, incluidas horas de motor, combustible y agua en la sección \"Motor y tanques\"\n• Durante el rastreo aparece un botón de cámara (abajo a la izquierda) para fotografiar un punto de interés y guardarlo como entrada rápida con posición y hora\n• Exportar a PDF desde el menú del día\n• El icono de manos en el detalle de la travesía abre el protocolo de entrega (check-in/check-out)\n• El formulario detallado de la travesía (icono de barco en el detalle) registra el barco y sus parámetros, la zona de navegación, tripulación con las licencias del patrón y fotos del barco (máx. 3, se incluyen en el PDF)\n• Las tarjetas sin completar (briefing de seguridad, check-in/out, ficha del barco) parpadean en rojo en la barra superior del detalle hasta completarse\n• Si la aplicación se cierra durante la travesía sin detener el seguimiento (el sistema la cierra, un deslizamiento accidental), al abrirla de nuevo ofrece continuar la misma travesía, incluida la distancia recorrida mientras no estaba activa\n• La primera vez que inicias una travesía la aplicación recuerda los ajustes de batería: sin ellos el sistema (sobre todo Honor/Huawei) puede detener el seguimiento en segundo plano\n• El icono de ruta en la cabecera de la travesía (junto al briefing, el protocolo y la ficha del barco) muestra toda la derrota en el mapa\n• Tras la travesía puedes exportar un certificado de millas para cada tripulante: días en el mar, millas de día y de noche, zona de navegación, valoración del patrón y un QR de verificación\n• La propulsión (motor/velas) pasa también a las anotaciones automáticas: la marcas una vez y las siguientes la mantienen\n• El certificado es bilingüe (tu idioma + inglés) e incluye las dimensiones y la matrícula del barco, el tipo de aguas (con o sin marea) y una línea para el número de pasaporte o DNI; se puede compartir o guardar en el teléfono\n• Rumbo respecto al viento – la silueta del barco del cuaderno en papel: toca la posición en el costado por el que entra el viento (babor rojo, estribor verde). La empopada está abajo, allí no hay costado que anotar. Tocar de nuevo borra la selección: un dato adivinado es peor que una casilla vacía. Aparece en el PDF junto a la propulsión.\n• Durante el seguimiento, un segundo botón rápido (icono de vela, abajo a la izquierda) registra una virada o trasluchada: elige el nuevo rumbo en la silueta y la anotación se guarda con posición y hora. Las anotaciones automáticas siguientes mantienen ese rumbo hasta que lo cambies de nuevo.\n• La sonda guarda la profundidad en los registros automáticos y la rellena en el registro manual (requiere instrumentos conectados).\n• Las horas de motor se cuentan a partir de las revoluciones de los instrumentos, y el arranque y la parada se anotan solos en el cuaderno.\n• El botón rápido del velero (abajo a la izquierda durante la navegación) ahora también registra la propulsión — Motor / Mayor / Génova / Rizo. Las entradas automáticas siguientes la heredan hasta que la cambies, así que la columna Propulsión del PDF ya no queda vacía.\n• La app anota sola el cambio de rumbo: cuando el rumbo se desvía 30° o más y mantiene la nueva dirección al menos un minuto. Guiñadas por la ola o un salto del GPS no lo disparan.\n• Las entradas automáticas llevan también el estado del cielo — se rellena del modelo para la hora y la posición de la entrada, igual que viento y presión.\n• La navegación nocturna se calcula sola, por el ocaso y el orto reales para la posición del barco. Una entrada tras el anochecer lleva una luna, y el día y toda la travesía llevan el total de horas nocturnas, en el diario y en el PDF.';
 
   @override
   String get guideMilesTitle => 'Libro de millas';
@@ -2617,7 +2658,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido';
+      'La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido\n• La guardia de ancla graba ahora su propia traza, así que una noche fondeado ya no es un hueco en el GPX. Es un tramo aparte — nunca cuenta para las millas, la distancia del día ni las horas nocturnas, porque bornear sobre la cadena no es navegar.\n• La guardia sobrevive a un reinicio de la app: si el sistema la mata en segundo plano, al volver continúa sobre el mismo fondeo.\n• Las entradas de fondeo y de levar ancla llevan ahora viento, presión, temperaturas, sonda bajo la quilla y propulsión — hasta ahora solo tenían hora y posición.';
 
   @override
   String get guideSafetyBriefingTitle => 'Briefing de seguridad y MAYDAY';
@@ -2645,7 +2686,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.\n• Actualizaciones – cuando hay una versión más reciente en Google Play, la app la descarga en segundo plano y ofrece reiniciar. Nunca pregunta mientras se registra una travesía.\n\nCuenta de Google y exportación a la nube\n\nIniciar sesión con una cuenta de Google es opcional. Sin ella la app funciona por completo y todos los registros se quedan solo en el teléfono.\n\nQué se sube – al cerrar un día de travesía, el PDF del diario y la traza GPX de ese día. Nada más: ni fotos, ni contactos de la tripulación, ni posiciones en tiempo real.\n\nAdónde – a tu propio Google Drive, a la carpeta HMB_Sailing_Log_DATA / nombre de la travesía / Day_fecha. No a un servidor de la app – no existe.\n\nQué ve la app en tu Drive – solo los archivos que ella misma creó allí. Usa el permiso más estrecho que ofrece Google (drive.file), así que el resto de tu Drive queda fuera de su alcance. Además pide ese permiso en la primera subida, no al iniciar sesión.\n\nCómo deshacerlo – cierra la sesión en Ajustes. Los archivos que ya estén en el Drive siguen siendo tuyos – la app no los borra.';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.\n• Actualizaciones – cuando hay una versión más reciente en Google Play, la app la descarga en segundo plano y ofrece reiniciar. Nunca pregunta mientras se registra una travesía.\n• Zona horaria – las horas en pantalla y en el PDF se muestran en hora local (la zona del teléfono, es decir, donde estás) o en UTC. Los registros guardados no cambian, solo la visualización; el PDF siempre indica qué zona se aplica.\n\nCuenta de Google y exportación a la nube\n\nIniciar sesión con una cuenta de Google es opcional. Sin ella la app funciona por completo y todos los registros se quedan solo en el teléfono.\n\nQué se sube – al cerrar un día de travesía, el PDF del diario y la traza GPX de ese día. Nada más: ni fotos, ni contactos de la tripulación, ni posiciones en tiempo real.\n\nAdónde – a tu propio Google Drive, a la carpeta HMB_Sailing_Log_DATA / nombre de la travesía / Day_fecha. No a un servidor de la app – no existe.\n\nQué ve la app en tu Drive – solo los archivos que ella misma creó allí. Usa el permiso más estrecho que ofrece Google (drive.file), así que el resto de tu Drive queda fuera de su alcance. Además pide ese permiso en la primera subida, no al iniciar sesión.\n\nCómo deshacerlo – cierra la sesión en Ajustes. Los archivos que ya estén en el Drive siguen siendo tuyos – la app no los borra.';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';

@@ -32,6 +32,7 @@ class EntryConditions {
     this.waveHeight,
     this.station,
     this.stationDistanceM,
+    this.condition,
   });
 
   final WeatherSource source;
@@ -47,6 +48,34 @@ class EntryConditions {
 
   final String? station;
   final double? stationDistanceM;
+
+  /// Stav oblohy ako kód (`sunny`, `overcast`, `thunderstorm`…), preložený
+  /// až pri zobrazení. Vždy z modelu: ani lodné prístroje, ani pozemná
+  /// stanica DHMZ nehlásia, ako obloha vyzerá.
+  final String? condition;
+}
+
+/// Kód stavu oblohy z WMO weather code, aký vracia Open-Meteo.
+///
+/// Verejné, lebo to isté mapovanie potrebuje automatický aj ručný zápis —
+/// dve kópie by sa časom rozišli a v jednom denníku by tá istá obloha
+/// vyšla raz ako dážď a raz ako prehánka.
+String? weatherConditionFromCode(int? code) {
+  if (code == null) return null;
+  if (code <= 1) return 'sunny';
+  if (code == 2) return 'partly_cloudy';
+  if (code == 3) return 'overcast';
+  if (code == 45 || code == 48) return 'foggy';
+  if (code >= 51 && code <= 57) return 'drizzle';
+  if (code == 61 || code == 80) return 'light_rain';
+  if (code == 63 || code == 81) return 'rain';
+  if (code == 65 || code == 82) return 'heavy_rain';
+  if (code >= 66 && code <= 67) return 'rain';
+  if (code >= 71 && code <= 77) return 'cold';
+  if (code == 85 || code == 86) return 'cold';
+  if (code == 95) return 'thunderstorm';
+  if (code == 96 || code == 99) return 'hail';
+  return 'overcast';
 }
 
 /// Zostaví podmienky pre záznam denníka z najlepšieho dostupného zdroja.
@@ -119,6 +148,7 @@ class EntryConditionsBuilder {
       station: source == WeatherSource.dhmz ? obs?.station : null,
       stationDistanceM:
           source == WeatherSource.dhmz ? station?.distanceM : null,
+      condition: weatherConditionFromCode(model?.weatherCode),
     );
   }
 }

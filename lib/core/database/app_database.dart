@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../services/night_hours.dart';
 import '../utils/distance_calculator.dart';
 
 part 'app_database.g.dart';
@@ -228,6 +229,14 @@ class SailingSessions extends Table {
   RealColumn get maxSpeedKnots => real().withDefault(const Constant(0.0))();
   RealColumn get avgSpeedKnots => real().withDefault(const Constant(0.0))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+
+  /// Úsek nahratý kotvovou strážou, nie plavbou.
+  ///
+  /// Kotvová stráž zapisuje body ako ktorékoľvek iné trasovanie — inak by
+  /// v GPX ostala diera cez celú noc na kotve a doklad by o tých hodinách
+  /// mlčal. Ale hojdanie na reťazi nie je plavba: bez tohto príznaku by sa
+  /// načítalo do prejdených míľ, do vzdialenosti dňa aj do nočných hodín.
+  BoolColumn get isAnchorWatch => boolean().withDefault(const Constant(false))();
 }
 
 /// Waypoints
@@ -665,7 +674,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 30;
+  int get schemaVersion => 31;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -841,6 +850,10 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(logbookEntries, logbookEntries.depthMeters);
         await m.addColumn(dayLogs, dayLogs.engineHours);
       }
+
+      if (from < 31) {
+        await m.addColumn(sailingSessions, sailingSessions.isAnchorWatch);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -1009,18 +1022,52 @@ class AppDatabase extends _$AppDatabase {
 
   // ── Sessions ─────────────────────────────────────────────────
 
+  /// Uzavrie úsek trasovania: prestane byť aktívny a dostane čas konca.
+  Future<void> closeSession(String sessionId, {DateTime? endTime}) =>
+      (update(sailingSessions)..where((s) => s.sessionId.equals(sessionId)))
+          .write(SailingSessionsCompanion(
+        isActive: const Value(false),
+        endTime: Value(endTime ?? DateTime.now().toUtc()),
+      ));
+
   Future<int> upsertSession(SailingSessionsCompanion s) =>
       into(sailingSessions).insertOnConflictUpdate(s);
 
+  /// Bežiaca **plavba**. Kotvová stráž sa sem zámerne nepočíta: trasovanie aj
+  /// zápis do denníka sa pýtajú na plavbu, a keby dostali úsek kotvy, zapísali
+  /// by záznamy pod session, ktorá plavbou nie je.
   Future<SailingSession?> getActiveSession() =>
       (select(sailingSessions)
-            ..where((s) => s.isActive.equals(true))
+            ..where((s) =>
+                s.isActive.equals(true) & s.isAnchorWatch.equals(false))
             ..orderBy([(s) => OrderingTerm.desc(s.startTime)])
             ..limit(1))
           .getSingleOrNull();
 
-  Future<List<SailingSession>> getSessionsForDay(int dayLogId) =>
-      (select(sailingSessions)..where((s) => s.dayLogId.equals(dayLogId))).get();
+  /// Bežiaci úsek kotvovej stráže, ak nejaký ostal z predošlého behu appky.
+  Future<SailingSession?> getActiveAnchorWatchSession() =>
+      (select(sailingSessions)
+            ..where((s) =>
+                s.isActive.equals(true) & s.isAnchorWatch.equals(true))
+            ..orderBy([(s) => OrderingTerm.desc(s.startTime)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  /// Úseky trasovania daného dňa.
+  ///
+  /// Predvolene **bez** úsekov kotvovej stráže: skoro každý volajúci z nich
+  /// počíta míle, kreslí trasu alebo prehráva plavbu, a hodiny na reťazi tam
+  /// nepatria. Do exportu GPX sa vypýtajú výslovne — tam naopak patria, inak
+  /// by v ňom ostala cez noc diera.
+  Future<List<SailingSession>> getSessionsForDay(int dayLogId,
+          {bool includeAnchorWatch = false}) =>
+      (select(sailingSessions)
+            ..where((s) =>
+                s.dayLogId.equals(dayLogId) &
+                (includeAnchorWatch
+                    ? const Constant(true)
+                    : s.isAnchorWatch.equals(false))))
+          .get();
 
   /// Posledný známy spôsob plavby v danom dni.
   ///
@@ -1057,6 +1104,40 @@ class AppDatabase extends _$AppDatabase {
       (update(sailingSessions)..where((s) => s.id.equals(id)))
           .write(SailingSessionsCompanion(totalDistanceNm: Value(distanceNm)));
 
+  /// Nočné hodiny odplávané v daný deň.
+  ///
+  /// Noc sa berie zo skutočného západu a východu slnka pre polohu, kde loď
+  /// v tej chvíli bola — nie z hodín a nie z pásma telefónu. Rovnaké
+  /// pravidlo ako v Knihe míľ, aby potvrdenie o míľach a denník o tej istej
+  /// plavbe nikdy nevykázali dve rôzne čísla.
+  ///
+  /// Prednosť majú body trasy: sú husté a ukazujú, kedy loď naozaj išla.
+  /// Keď trasa chýba (deň zapísaný ručne, import bez bodov), počíta sa zo
+  /// záznamov denníka — tie polohu a čas nesú tiež, len redšie.
+  Future<double> nightHoursForDay(int dayLogId) async {
+    final samples = <NightSample>[];
+    for (final session in await getSessionsForDay(dayLogId)) {
+      for (final p in await getTrackPointsForSession(session.sessionId)) {
+        samples.add(NightSample(
+          timeUtc: p.timestamp,
+          latitude: p.latitude,
+          longitude: p.longitude,
+        ));
+      }
+    }
+    if (samples.length < 2) {
+      samples.clear();
+      for (final e in await getEntriesForDay(dayLogId)) {
+        final lat = e.latitude;
+        final lon = e.longitude;
+        if (lat == null || lon == null) continue;
+        samples.add(
+            NightSample(timeUtc: e.timestamp, latitude: lat, longitude: lon));
+      }
+    }
+    return NightHours.forSamples(samples);
+  }
+
   /// Vzdialenosť už zaznamenaná pre daný deň, prepočítaná z uložených bodov.
   ///
   /// DayLog.distanceNm ani SailingSession.totalDistanceNm sa nedajú brať ako
@@ -1091,7 +1172,12 @@ class AppDatabase extends _$AppDatabase {
   /// žiadny časový limit.
   Future<SailingSession?> getInterruptedSession() =>
       (select(sailingSessions)
-            ..where((s) => s.endTime.isNull() & s.isActive.equals(true))
+            ..where((s) =>
+                s.endTime.isNull() &
+                s.isActive.equals(true) &
+                // Kotvová stráž bez konca nie je prerušená plavba — ponuka
+                // „pokračovať v plavbe" by po nej vyskočila neprávom.
+                s.isAnchorWatch.equals(false))
             ..orderBy([(s) => OrderingTerm.desc(s.startTime)])
             ..limit(1))
           .getSingleOrNull();

@@ -133,6 +133,27 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _pickDateStyle(context, ref, units.dateStyle),
               ),
+              const Divider(height: 1),
+              // Neprepisuje uložené časy — tie sú v databáze vždy UTC.
+              // Prepína sa len to, na aké hodiny sa prepočítajú na
+              // obrazovke a v PDF.
+              ListTile(
+                leading: const Icon(Icons.schedule),
+                title: Text(l.timeZoneLabel),
+                subtitle: Text(units.zoneLabel(DateTime.now())),
+                trailing: SegmentedButton<TimeZoneMode>(
+                  segments: [
+                    ButtonSegment(
+                        value: TimeZoneMode.local,
+                        label: Text(l.timeZoneLocalShort)),
+                    const ButtonSegment(
+                        value: TimeZoneMode.utc, label: Text('UTC')),
+                  ],
+                  selected: {units.timeZone},
+                  onSelectionChanged: (s) =>
+                      ref.read(unitsProvider.notifier).setTimeZone(s.first),
+                ),
+              ),
             ])),
             const SizedBox(height: 16),
 

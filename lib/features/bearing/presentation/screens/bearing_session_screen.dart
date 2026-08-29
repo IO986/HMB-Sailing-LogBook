@@ -25,6 +25,7 @@ import '../../providers/bearing_provider.dart';
 import '../../services/bearing_geometry.dart';
 import '../widgets/bearing_session_map_view.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../core/services/units_service.dart';
 
 class BearingSessionScreen extends ConsumerStatefulWidget {
   final DateTime date;
@@ -234,13 +235,13 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
   }
 }
 
-class _BearingRow extends StatelessWidget {
+class _BearingRow extends ConsumerWidget {
   final Bearing bearing;
   final Future<void> Function() onDelete;
   const _BearingRow({required this.bearing, required this.onDelete});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final name = bearing.targetName ?? bearing.label;
     return Padding(
@@ -256,7 +257,7 @@ class _BearingRow extends StatelessWidget {
         const SizedBox(width: 6),
         SizedBox(
           width: 44,
-          child: Text(DateFormat('HH:mm').format(bearing.takenAt),
+          child: Text(ref.watch(unitsSyncProvider).formatTime(bearing.takenAt),
               style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ),
         SizedBox(

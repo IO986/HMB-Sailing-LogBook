@@ -29,15 +29,7 @@ import '../../../../core/utils/localized_date.dart';
 import '../../../../core/services/dhmz_observation_service.dart';
 import '../../../../core/services/entry_conditions.dart';
 import '../../../../shared/widgets/weather_source_badge.dart';
-
-// Spôsob plavby - multi-select
-const _sailOptions = [
-  (value: 'motor',   label: 'Motor',       icon: Icons.settings),
-  (value: 'main',    label: 'Main',        icon: Icons.sailing),
-  (value: 'genoa',   label: 'Genoa',       icon: Icons.air),
-  (value: 'reef1',   label: 'Reef 1',      icon: Icons.arrow_downward),
-  (value: 'reef2',   label: 'Reef 2',      icon: Icons.arrow_downward),
-];
+import '../../../../shared/widgets/sail_mode_picker.dart';
 
 class LogbookEntryScreen extends ConsumerStatefulWidget {
   final int dayLogId;
@@ -201,28 +193,12 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _weatherSource = c.source.code;
         _weatherStation = c.station;
         _weatherStationDistanceM = c.stationDistanceM;
-        if (w != null) _weatherCondition ??= _conditionFromCode(w.weatherCode);
+        _weatherCondition ??= c.condition ??
+            (w == null ? null : weatherConditionFromCode(w.weatherCode));
       });
     } catch (_) {}
   }
 
-  static String _conditionFromCode(int? code) {
-    if (code == null) return 'partly_cloudy';
-    if (code <= 1) return 'sunny';
-    if (code == 2) return 'partly_cloudy';
-    if (code == 3) return 'overcast';
-    if (code == 45 || code == 48) return 'foggy';
-    if (code >= 51 && code <= 57) return 'drizzle';
-    if (code == 61 || code == 80) return 'light_rain';
-    if (code == 63 || code == 81) return 'rain';
-    if (code == 65 || code == 82) return 'heavy_rain';
-    if (code >= 66 && code <= 67) return 'rain';
-    if (code >= 71 && code <= 77) return 'cold';
-    if (code == 85 || code == 86) return 'cold';
-    if (code == 95) return 'thunderstorm';
-    if (code == 96 || code == 99) return 'hail';
-    return 'overcast';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -252,23 +228,13 @@ class _State extends ConsumerState<LogbookEntryScreen> {
 
         // Spôsob plavby - multi-select chips
         _Sec(l.sailMode),
-        Wrap(
-          spacing: 8, runSpacing: 8,
-          children: _sailOptions.map((opt) {
-            final sel = _sailModes.contains(opt.value);
-            return FilterChip(
-              avatar: Icon(opt.icon, size: 15,
-                  color: sel ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Theme.of(context).colorScheme.onSurface),
-              label: Text(opt.value == 'main' ? l.sailMain : opt.label),
-              selected: sel,
-              onSelected: (v) => setState(() {
-                if (v) _sailModes.add(opt.value);
-                else _sailModes.remove(opt.value);
-              }),
-              selectedColor: Theme.of(context).colorScheme.primaryContainer,
-            );
-          }).toList(),
+        SailModePicker(
+          value: _sailModes,
+          onChanged: (v) => setState(() {
+            _sailModes
+              ..clear()
+              ..addAll(v);
+          }),
         ),
         const SizedBox(height: 16),
 
@@ -783,9 +749,9 @@ class _TimestampBadge extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final utc = ts.toUtc();
-    final date = AppDate.of(context, ref).medium(utc);
-    final time = DateFormat('HH:mm:ss').format(utc);
+    final units = ref.watch(unitsSyncProvider);
+    final date = AppDate.of(context, ref).medium(units.atZone(ts));
+    final time = units.formatTimeWithZone(ts, seconds: true);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
@@ -798,7 +764,7 @@ class _TimestampBadge extends ConsumerWidget {
         const SizedBox(width: 10),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(date, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-          Text('$time UTC', style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          Text(time, style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold, fontFeatures: [const FontFeature.tabularFigures()])),
         ]),
         const Spacer(),

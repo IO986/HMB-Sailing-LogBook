@@ -699,6 +699,17 @@ class AppLocalizationsSl extends AppLocalizations {
   String get pdfColTimeUtc => 'Čas UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Čas $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Časovni pas';
+
+  @override
+  String get timeZoneLocalShort => 'Lokalni';
+
+  @override
   String get pdfColWind => 'Veter';
 
   @override
@@ -952,6 +963,17 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Sprememba jader';
+
+  @override
+  String get logEventCourseChange => 'Sprememba kurza';
+
+  @override
+  String get pdfNightShort => 'noč';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Nočna plovba $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1881,6 +1903,25 @@ class AppLocalizationsSl extends AppLocalizations {
   String get weatherSourceInstruments => 'Izmerjeno z ladijskimi instrumenti';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Instrumenti';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Postaja $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Meteo postaja';
+
+  @override
+  String get pdfWeatherSourceModel => 'Model';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Izmerjeno na postaji $name';
   }
@@ -2572,7 +2613,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu\n• Po plovbi lahko za vsakega člana posadke izvoziš potrdilo o preplutih miljah – dnevi na morju, dnevne in nočne milje, območje, ocena skiperja in QR za preverjanje\n• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise – nastaviš ga enkrat, naslednji ga ohranijo\n• Potrdilo je dvojezično (tvoj jezik + angleščina), vsebuje dimenzije in registracijo plovila, vrsto voda (plimne/neplimne) in polje za številko potnega lista ali osebne; lahko ga deliš ali shraniš v telefon\n• Kurz glede na veter – silhueta ladje iz papirnatega dnevnika: tapni položaj na boku, s katerega piha (levi bok rdeč, desni zelen). Fordevind je spodaj, tam boka ni. Ponoven tap izbiro izbriše – ugibana vrednost je slabša od praznega polja. V PDF gre poleg pogona.\n• Med sledenjem drugi hitri gumb (ikona jadrnice, spodaj levo) zabeleži obrat ali letanje: izberi nov kurz na silhueti in zapis se shrani s položajem in časom. Naslednji samodejni zapisi ta kurz ohranijo, dokler ga spet ne spremeniš.\n• Globina s sonde se shrani k samodejnim zapisom, pri ročnem zapisu pa je vnaprej izpolnjena (potrebni so povezani instrumenti).\n• Motorne ure se računajo iz vrtljajev z instrumentov, zagon in ustavitev motorja pa se v dnevnik zapišeta sama.';
+      'Dnevnik je glavni zavihek za upravljanje plovb.\n\n• Velik gumb \"Začni plovbo\" na vrhu zažene sledenje – vpraša le po pogostosti samodejnih zapisov (spremenljivi ob vsakem zagonu), brez obrazca za vnaprejšnje izpolnjevanje\n• Če je plovba že odprta, aplikacija vpraša, ali jo želite nadaljevati ali začeti nov zapis\n• Na manjkajoče podatke (check-in, varnostni brifing, kartica plovila/posadke) opozarjajo barvne oznake neposredno na kartici plovbe – tapnite oznako, da jih izpolnite\n• Vsak dan plovbe je prikazan posebej\n• Zapise lahko med dnevom dodajate ročno, vključno z urami motorja, gorivom in vodo v razdelku \"Motor in rezervoarji\"\n• Med sledenjem gumb kamere (spodaj levo) omogoča posnetek zanimive točke in shranjevanje kot hiter zapis s položajem in časom\n• Dnevnik lahko izvozite v PDF prek menija dneva\n• Ikona rokovanja v podrobnostih plovbe odpre zapisnik o primopredaji (check-in/check-out)\n• Podroben obrazec plovbe (ikona plovila v podrobnostih) beleži plovilo in njegove parametre, območje plovbe, posadko z dovoljenji skiperja ter fotografije plovila (največ 3, prenesejo se v PDF)\n• Nedokončane kartice (Varnostni brifing, check-in/out, kartica plovila) utripajo rdeče v zgornji vrstici podrobnosti plovbe, dokler niso dokončane\n• Če se aplikacija med plovbo zapre brez ustavitve sledenja (zapre jo sistem, nenamerni poteg), ob naslednjem zagonu ponudi nadaljevanje iste plovbe – vključno z razdaljo, prevoženo med tem, ko ni tekla\n• Ob prvem zagonu plovbe aplikacija opomni na nastavitve baterije – brez njih lahko sistem (zlasti Honor/Huawei) ustavi sledenje v ozadju\n• Ikona poti v glavi plovbe (poleg brifinga, protokola in kartice plovila) pokaže celotno sled plovbe na zemljevidu\n• Po plovbi lahko za vsakega člana posadke izvoziš potrdilo o preplutih miljah – dnevi na morju, dnevne in nočne milje, območje, ocena skiperja in QR za preverjanje\n• Način plovbe (motor/jadra) se prenese tudi v samodejne vpise – nastaviš ga enkrat, naslednji ga ohranijo\n• Potrdilo je dvojezično (tvoj jezik + angleščina), vsebuje dimenzije in registracijo plovila, vrsto voda (plimne/neplimne) in polje za številko potnega lista ali osebne; lahko ga deliš ali shraniš v telefon\n• Kurz glede na veter – silhueta ladje iz papirnatega dnevnika: tapni položaj na boku, s katerega piha (levi bok rdeč, desni zelen). Fordevind je spodaj, tam boka ni. Ponoven tap izbiro izbriše – ugibana vrednost je slabša od praznega polja. V PDF gre poleg pogona.\n• Med sledenjem drugi hitri gumb (ikona jadrnice, spodaj levo) zabeleži obrat ali letanje: izberi nov kurz na silhueti in zapis se shrani s položajem in časom. Naslednji samodejni zapisi ta kurz ohranijo, dokler ga spet ne spremeniš.\n• Globina s sonde se shrani k samodejnim zapisom, pri ročnem zapisu pa je vnaprej izpolnjena (potrebni so povezani instrumenti).\n• Motorne ure se računajo iz vrtljajev z instrumentov, zagon in ustavitev motorja pa se v dnevnik zapišeta sama.\n• Hitri gumb z jadrnico (spodaj levo med plovbo) zdaj zapiše tudi pogon — Motor / Glavno / Genova / Krajšanje. Naslednji samodejni zapisi ga prevzamejo, dokler ga ne spremeniš, zato stolpec Pogon v PDF ne ostane več prazen.\n• Aplikacija sama zapiše spremembo kurza: ko se smer odkloni za 30° ali več in novo smer zadrži vsaj minuto. Vijuganje na valu ali skok GPS tega ne sproži.\n• Samodejni zapisi nosijo tudi stanje neba — dopolni se iz modela za čas in položaj zapisa, tako kot veter in tlak.\n• Nočna plovba se izračuna sama, po dejanskem sončnem zahodu in vzhodu za položaj ladje. Zapis po mraku nosi luno, dan in celotna plovba pa vsoto nočnih ur, v dnevniku in v PDF.';
 
   @override
   String get guideMilesTitle => 'Knjiga milj';
@@ -2608,7 +2649,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Zavihek Varnost vsebuje funkcije za primer sile.\n\nMOB (človek v morju):\n• Držite rdeči gumb MOB za aktivacijo\n• Aplikacija zabeleži položaj GPS ter spremlja čas in razdaljo\n• Navigirajte nazaj do mesta padca\n\nAlarm sidra:\n• Nastavite polmer sidranja (priporočilo: 2× dolžina verige/vrvi)\n• Alarm zavibrira, če plovilo zaide izven dovoljenega polmera';
+      'Zavihek Varnost vsebuje funkcije za primer sile.\n\nMOB (človek v morju):\n• Držite rdeči gumb MOB za aktivacijo\n• Aplikacija zabeleži položaj GPS ter spremlja čas in razdaljo\n• Navigirajte nazaj do mesta padca\n\nAlarm sidra:\n• Nastavite polmer sidranja (priporočilo: 2× dolžina verige/vrvi)\n• Alarm zavibrira, če plovilo zaide izven dovoljenega polmera\n• Sidrna straža zdaj beleži lastno sled, zato noč na sidru ni več luknja v GPX. To je samostojen odsek — nikoli se ne šteje v milje, dnevno razdaljo ali nočne ure, saj zibanje na verigi ni plovba.\n• Straža preživi ponovni zagon aplikacije: če jo sistem v ozadju ubije, po zagonu nadaljuje na istem sidru.\n• Zapisa o spustu in dvigu sidra zdaj nosita tudi veter, tlak, temperature, globino pod gredljem in pogon — doslej sta imela le čas in položaj.';
 
   @override
   String get guideSafetyBriefingTitle => 'Varnostni brifing in MAYDAY';
@@ -2636,7 +2677,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n• Časovni pas – čas na zaslonu in v PDF se prikaže krajevno (pas telefona, torej tam, kjer si) ali v UTC. Shranjeni zapisi se ne spremenijo, spremeni se le prikaz; PDF vedno navede, kateri pas velja.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';

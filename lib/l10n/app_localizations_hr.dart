@@ -700,6 +700,17 @@ class AppLocalizationsHr extends AppLocalizations {
   String get pdfColTimeUtc => 'Vrijeme UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Vrijeme $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Vremenska zona';
+
+  @override
+  String get timeZoneLocalShort => 'Lokalno';
+
+  @override
   String get pdfColWind => 'Vjetar';
 
   @override
@@ -953,6 +964,17 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Promjena jedara';
+
+  @override
+  String get logEventCourseChange => 'Promjena kursa';
+
+  @override
+  String get pdfNightShort => 'noć';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Noćna plovidba $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1885,6 +1907,25 @@ class AppLocalizationsHr extends AppLocalizations {
   String get weatherSourceInstruments => 'Izmjereno brodskim instrumentima';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Instrumenti';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Postaja $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Meteo postaja';
+
+  @override
+  String get pdfWeatherSourceModel => 'Model';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Izmjereno na postaji $name';
   }
@@ -2578,7 +2619,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju\n• Potvrda je dvojezična (tvoj jezik + engleski), sadrži dimenzije i registraciju plovila, vrstu voda (plimne/neplimne) i rubriku za broj putovnice ili osobne; može se podijeliti ili spremiti izravno u telefon\n• Kurs prema vjetru – silueta broda iz papirnatog dnevnika: dodirni položaj na boku s kojeg puše (lijevi bok crveno, desni zeleno). Niz vjetar je na dnu, ondje se bok ne razlikuje. Ponovni dodir briše odabir – pogođeni podatak gori je od praznog polja. U PDF ide uz propulziju.\n• Tijekom praćenja drugi brzi gumb (ikona jedrilice, dolje lijevo) bilježi okret ili letanje: odaberi novi kurs na silueti i zapis se sprema s pozicijom i vremenom. Sljedeći automatski zapisi zadržavaju taj kurs dok ga opet ne promijeniš.\n• Dubina sa sonde sprema se uz automatske zapise, a u ručnom zapisu je unaprijed popunjena (potrebni su spojeni instrumenti).\n• Motosati se računaju iz okretaja s instrumenata, a pokretanje i zaustavljanje motora upisuje se u dnevnik samo.';
+      'Dnevnik je glavna kartica za upravljanje plovidbama.\n\n• Velika tipka \"Započni plovidbu\" na vrhu pokreće praćenje – traži samo učestalost automatskih zapisa (promjenjivu pri svakom pokretanju), bez obrasca koji treba ispuniti unaprijed\n• Ako je plovidba već otvorena, aplikacija pita želite li je nastaviti ili započeti novi zapis\n• Na nedostajuće podatke (check-in, sigurnosna instruktaža, kartica plovila/posade) podsjećaju obojene oznake izravno na kartici plovidbe – dodirnite oznaku da ih ispunite\n• Svaki dan plovidbe prikazan je zasebno\n• Zapisi se mogu dodavati ručno tijekom dana, uključujući sate motora, gorivo i vodu u odjeljku \"Motor i tankovi\"\n• Tijekom praćenja tipka kamere (dolje lijevo) omogućuje snimanje zanimljive točke i spremanje kao brzi zapis s pozicijom i vremenom\n• Dnevnik se može izvesti u PDF putem izbornika dana\n• Ikona rukovanja u detalju plovidbe otvara zapisnik o primopredaji (check-in/check-out)\n• Detaljni obrazac plovidbe (ikona broda u detalju) bilježi plovilo i njegove parametre, područje plovidbe, posadu s ovlaštenjima skipera te fotografije plovila (najviše 3, prenose se u PDF)\n• Nedovršene kartice (Sigurnosna instruktaža, check-in/out, kartica plovila) trepere crveno u gornjoj traci detalja plovidbe dok se ne dovrše\n• Ako se aplikacija tijekom plovidbe zatvori bez zaustavljanja praćenja (zatvori je sustav, slučajan swipe), pri sljedećem pokretanju ponudit će nastavak iste plovidbe – uključujući udaljenost prijeđenu dok nije radila\n• Pri prvom pokretanju plovidbe aplikacija podsjeti na postavke baterije – bez njih sustav (osobito Honor/Huawei) može ugasiti praćenje u pozadini\n• Ikona rute u zaglavlju plovidbe (uz brifing, protokol i karticu plovila) prikazuje cijeli trag plovidbe na karti\n• Nakon plovidbe možeš za svakog člana posade izvesti potvrdu o preplovljenim miljama – dani na moru, dnevne i noćne milje, područje, ocjena skipera i QR za provjeru\n• Način plovidbe (motor/jedra) prenosi se i u automatske zapise – postaviš ga jednom i sljedeći ga zadržavaju\n• Potvrda je dvojezična (tvoj jezik + engleski), sadrži dimenzije i registraciju plovila, vrstu voda (plimne/neplimne) i rubriku za broj putovnice ili osobne; može se podijeliti ili spremiti izravno u telefon\n• Kurs prema vjetru – silueta broda iz papirnatog dnevnika: dodirni položaj na boku s kojeg puše (lijevi bok crveno, desni zeleno). Niz vjetar je na dnu, ondje se bok ne razlikuje. Ponovni dodir briše odabir – pogođeni podatak gori je od praznog polja. U PDF ide uz propulziju.\n• Tijekom praćenja drugi brzi gumb (ikona jedrilice, dolje lijevo) bilježi okret ili letanje: odaberi novi kurs na silueti i zapis se sprema s pozicijom i vremenom. Sljedeći automatski zapisi zadržavaju taj kurs dok ga opet ne promijeniš.\n• Dubina sa sonde sprema se uz automatske zapise, a u ručnom zapisu je unaprijed popunjena (potrebni su spojeni instrumenti).\n• Motosati se računaju iz okretaja s instrumenata, a pokretanje i zaustavljanje motora upisuje se u dnevnik samo.\n• Brzi gumb s jedrilicom (dolje lijevo tijekom plovidbe) sada zapisuje i pogon — Motor / Glavno / Genova / Kratica. Sljedeći automatski zapisi ga preuzimaju dok ga ne promijeniš, pa stupac Pogon u PDF-u više ne ostaje prazan.\n• Aplikacija sama zapisuje promjenu kursa: kad se smjer otkloni za 30° ili više i novi smjer izdrži barem minutu. Krivudanje na valu ni trzaj GPS-a to ne pokreću.\n• Automatski zapisi nose i stanje neba — popunjava se iz modela za vrijeme i položaj zapisa, kao vjetar i tlak.\n• Noćna plovidba se računa sama, prema stvarnom zalasku i izlasku sunca za položaj broda. Zapis nakon mraka nosi mjesec, a dan i cijela plovidba nose zbroj noćnih sati, u dnevniku i u PDF-u.';
 
   @override
   String get guideMilesTitle => 'Knjiga milja';
@@ -2614,7 +2655,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Kartica Sigurnost sadrži funkcije za slučaj nužde.\n\nMOB (čovjek u moru):\n• Držite crvenu MOB tipku za aktivaciju\n• Aplikacija bilježi GPS poziciju te prati vrijeme i udaljenost\n• Navigirajte natrag do mjesta pada\n\nAlarm sidra:\n• Postavite radijus sidrenja (preporuka: 2× duljina lanca/konopa)\n• Alarm vibrira ako brod izađe izvan dopuštenog radijusa';
+      'Kartica Sigurnost sadrži funkcije za slučaj nužde.\n\nMOB (čovjek u moru):\n• Držite crvenu MOB tipku za aktivaciju\n• Aplikacija bilježi GPS poziciju te prati vrijeme i udaljenost\n• Navigirajte natrag do mjesta pada\n\nAlarm sidra:\n• Postavite radijus sidrenja (preporuka: 2× duljina lanca/konopa)\n• Alarm vibrira ako brod izađe izvan dopuštenog radijusa\n• Sidrena straža sada bilježi vlastiti trag, pa noć na sidru više nije rupa u GPX-u. To je zaseban odsječak — nikad se ne računa u milje, dnevnu udaljenost ni noćne sate, jer njihanje na lancu nije plovidba.\n• Straža preživljava ponovno pokretanje aplikacije: ako je sustav ubije u pozadini, nakon pokretanja nastavlja na istom sidru.\n• Zapisi o spuštanju i dizanju sidra sada nose i vjetar, tlak, temperature, dubinu ispod kobilice i pogon — dosad su imali samo vrijeme i položaj.';
 
   @override
   String get guideSafetyBriefingTitle => 'Sigurnosna instruktaža i MAYDAY';
@@ -2642,7 +2683,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – promjena jezika aplikacije\n• Instrumenti – postavite IP adresu Raymarine WiFi pristupnika (TCP ili UDP)\n• Izvor GPS-a – telefon ili Raymarine\n• Jedinice – udaljenost NM/km, brzina čvorovi/km/h, posebno temperatura, dubina i vjetar (na rijeci odgovaraju km + km/h)\n• Učestalost zapisa u dnevnik\n• Donji izbornik – prilagodite ga: pritisnite i povucite ikonu za promjenu redoslijeda, prekidačem sakrijte kartice koje ne koristite i postavite veličinu ikona (S/M/L). Skrivene kartice mogu se otvoriti upravo ovdje u Postavkama; Postavke su uvijek prikazane. Redoslijed i veličina se pamte. Natpisi ispod ikona su skriveni kako bi ikone stajale jednako u svim jezicima; dugim pritiskom prikaže se naziv.\n• Prikaz – Noćni način (crveni filtar za očuvanje noćnog vida)\n• Izvoz u oblak (Google Drive) – nakon prijave PDF i GPX svakog dovršenog dana automatski se prenose na vaš Google Drive. Bez prijave sve ostaje na uređaju.\n• Sigurnosna kopija podataka – vidi \"Sigurnosna kopija i vraćanje podataka\"\n• O aplikaciji – verzija i kontakt\n• Baterija – GPS radi punom točnošću samo ondje gdje je točna pozicija bitna (praćenje plovidbe, karta, kompas, instrumenti, sidrena straža, MOB); drugdje prelazi u štedljivi način, a u pozadini bez uključenog praćenja isključuje se potpuno. Uz spojene brodske instrumente GPS telefona ostaje isključen, a pozicija dolazi s NMEA.\n• Ažuriranja – kad je na Google Playu novija verzija, aplikacija je preuzme u pozadini i ponudi ponovno pokretanje. Tijekom snimanja plovidbe ne pita nikada.\n\nGoogle račun i izvoz u oblak\n\nPrijava Google računom je dobrovoljna. Bez nje aplikacija radi u cijelosti, a svi zapisi ostaju samo u telefonu.\n\nŠto se šalje – po završetku dana plovidbe PDF dnevnika i GPX ruta tog dana. Ništa drugo: ni fotografije, ni kontakti posade, ni pozicije u stvarnom vremenu.\n\nKamo – na tvoj vlastiti Google Drive, u mapu HMB_Sailing_Log_DATA / naziv plovidbe / Day_datum. Ne na poslužitelj aplikacije – on ne postoji.\n\nŠto aplikacija vidi na Driveu – samo datoteke koje je ondje sama stvorila. Koristi najuže dopuštenje koje Google nudi (drive.file), pa ostatak tvog Drivea ostaje nedostupan. Dopuštenje traži tek pri prvom slanju, ne pri prijavi.\n\nKako to poništiti – odjavi račun u Postavkama. Datoteke koje su već na Driveu ostaju tvoje – aplikacija ih ne briše.';
+      '• Jezik – promjena jezika aplikacije\n• Instrumenti – postavite IP adresu Raymarine WiFi pristupnika (TCP ili UDP)\n• Izvor GPS-a – telefon ili Raymarine\n• Jedinice – udaljenost NM/km, brzina čvorovi/km/h, posebno temperatura, dubina i vjetar (na rijeci odgovaraju km + km/h)\n• Učestalost zapisa u dnevnik\n• Donji izbornik – prilagodite ga: pritisnite i povucite ikonu za promjenu redoslijeda, prekidačem sakrijte kartice koje ne koristite i postavite veličinu ikona (S/M/L). Skrivene kartice mogu se otvoriti upravo ovdje u Postavkama; Postavke su uvijek prikazane. Redoslijed i veličina se pamte. Natpisi ispod ikona su skriveni kako bi ikone stajale jednako u svim jezicima; dugim pritiskom prikaže se naziv.\n• Prikaz – Noćni način (crveni filtar za očuvanje noćnog vida)\n• Izvoz u oblak (Google Drive) – nakon prijave PDF i GPX svakog dovršenog dana automatski se prenose na vaš Google Drive. Bez prijave sve ostaje na uređaju.\n• Sigurnosna kopija podataka – vidi \"Sigurnosna kopija i vraćanje podataka\"\n• O aplikaciji – verzija i kontakt\n• Baterija – GPS radi punom točnošću samo ondje gdje je točna pozicija bitna (praćenje plovidbe, karta, kompas, instrumenti, sidrena straža, MOB); drugdje prelazi u štedljivi način, a u pozadini bez uključenog praćenja isključuje se potpuno. Uz spojene brodske instrumente GPS telefona ostaje isključen, a pozicija dolazi s NMEA.\n• Ažuriranja – kad je na Google Playu novija verzija, aplikacija je preuzme u pozadini i ponudi ponovno pokretanje. Tijekom snimanja plovidbe ne pita nikada.\n• Vremenska zona – vrijeme na zaslonu i u PDF-u prikazuje se lokalno (zona telefona, dakle gdje se nalaziš) ili u UTC-u. Spremljeni zapisi se ne mijenjaju, mijenja se samo prikaz; PDF uvijek navodi koja zona vrijedi.\n\nGoogle račun i izvoz u oblak\n\nPrijava Google računom je dobrovoljna. Bez nje aplikacija radi u cijelosti, a svi zapisi ostaju samo u telefonu.\n\nŠto se šalje – po završetku dana plovidbe PDF dnevnika i GPX ruta tog dana. Ništa drugo: ni fotografije, ni kontakti posade, ni pozicije u stvarnom vremenu.\n\nKamo – na tvoj vlastiti Google Drive, u mapu HMB_Sailing_Log_DATA / naziv plovidbe / Day_datum. Ne na poslužitelj aplikacije – on ne postoji.\n\nŠto aplikacija vidi na Driveu – samo datoteke koje je ondje sama stvorila. Koristi najuže dopuštenje koje Google nudi (drive.file), pa ostatak tvog Drivea ostaje nedostupan. Dopuštenje traži tek pri prvom slanju, ne pri prijavi.\n\nKako to poništiti – odjavi račun u Postavkama. Datoteke koje su već na Driveu ostaju tvoje – aplikacija ih ne briše.';
 
   @override
   String get guideBackupTitle => 'Sigurnosna kopija i vraćanje podataka';

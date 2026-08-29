@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import '../../../core/database/app_database.dart';
-import 'solar_calculator.dart';
+import '../../../core/services/night_hours.dart';
 
 /// Súhrn jednej plavby pre potvrdenie o naplávaných míľach.
 class VoyageMilesSummary {
@@ -114,10 +114,5 @@ double _distanceNm(TrackPoint a, TrackPoint b) {
 
 double _rad(double deg) => deg * math.pi / 180.0;
 
-bool _isNight(TrackPoint p) {
-  final utc = p.timestamp.toUtc();
-  final solar = SolarCalculator.sunriseSunsetUtc(
-      DateTime.utc(utc.year, utc.month, utc.day), p.latitude, p.longitude);
-  if (solar.sunrise == null || solar.sunset == null) return false;
-  return utc.isBefore(solar.sunrise!) || utc.isAfter(solar.sunset!);
-}
+bool _isNight(TrackPoint p) =>
+    NightHours.isNight(p.timestamp, p.latitude, p.longitude);

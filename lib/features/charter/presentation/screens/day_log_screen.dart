@@ -15,6 +15,7 @@ import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../../../core/services/night_hours.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/models/sail_mode.dart';
 import '../../../../core/models/point_of_sail.dart';
@@ -129,13 +130,13 @@ class _BearingsSection extends ConsumerWidget {
   }
 }
 
-class _BearingRow extends StatelessWidget {
+class _BearingRow extends ConsumerWidget {
   final Bearing bearing;
   final Future<void> Function() onDelete;
   const _BearingRow({required this.bearing, required this.onDelete});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final label = bearing.targetName ?? bearing.label;
     return Padding(
@@ -152,7 +153,7 @@ class _BearingRow extends StatelessWidget {
         const SizedBox(width: 4),
         SizedBox(
           width: 44,
-          child: Text(DateFormat('HH:mm').format(bearing.takenAt),
+          child: Text(ref.watch(unitsSyncProvider).formatTime(bearing.takenAt),
               style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ),
         SizedBox(
@@ -183,6 +184,17 @@ class _BearingRow extends StatelessWidget {
 }
 
 // ── Tab 1: Záznamy ────────────────────────────────────────────
+
+/// Nočné hodiny dňa.
+///
+/// Počíta sa z bodov trasy — z toho istého zdroja ako v PDF a v Knihe míľ,
+/// aby to isté číslo nevyšlo na obrazovke inak než v doklade. Prepočíta sa,
+/// keď pribudne záznam: dovtedy je hotová aj trasa.
+final _nightHoursForDayProvider =
+    FutureProvider.family<double, int>((ref, dayLogId) async {
+  await ref.watch(logbookEntriesForDayProvider(dayLogId).future);
+  return ref.read(databaseProvider).nightHoursForDay(dayLogId);
+});
 
 class _EntriesTab extends ConsumerWidget {
   final int dayLogId, charterId;
@@ -228,6 +240,22 @@ class _EntriesTab extends ConsumerWidget {
               Text(AppLocalizations.of(context).recordCount(entries.length),
                   style: TextStyle(fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary)),
+              // Nočné hodiny dňa — v papierovom denníku sa vykazujú a pri
+              // potvrdení o naplávaných míľach sa na ne pýtajú hneď po
+              // vzdialenosti.
+              if (ref.watch(_nightHoursForDayProvider(dayLogId)).valueOrNull
+                  case final night? when night > 0.05) ...[
+                const SizedBox(width: 10),
+                Icon(Icons.nightlight_round,
+                    size: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(width: 3),
+                Text(
+                  AppLocalizations.of(context)
+                      .nightSailingHours(night.toStringAsFixed(1)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
               const Spacer(),
               TextButton.icon(
                 onPressed: () =>
@@ -382,6 +410,8 @@ class _EntryTile extends ConsumerWidget {
         return l.voyageEnd;
       case LogbookEventType.sailChange:
         return l.logEventSailChange;
+      case LogbookEventType.courseChange:
+        return l.logEventCourseChange;
       case LogbookEventType.anchorDropped:
         return l.logEventAnchorDropped;
       case LogbookEventType.anchorRaised:
@@ -470,7 +500,7 @@ class _EntryTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final fmt = DateFormat('HH:mm');
+    final fmt = ref.watch(unitsSyncProvider);
     final event   = LogbookEventType.resolve(entry.eventType, entry.skipperNote);
     final isFirst = event == LogbookEventType.voyageStart;
     final isLast  = event == LogbookEventType.voyageEnd;
@@ -546,8 +576,18 @@ class _EntryTile extends ConsumerWidget {
             SizedBox(width: 52, child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(fmt.format(entry.timestamp.toLocal()),
+                Text(fmt.formatTime(entry.timestamp),
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                // Nočná plavba: rozhoduje skutočný západ slnka pre polohu
+                // záznamu, nie hodiny — ten istý čas je v Jadrane deň a
+                // v Škandinávii noc.
+                if (entry.latitude != null &&
+                    entry.longitude != null &&
+                    NightHours.isNight(
+                        entry.timestamp, entry.latitude!, entry.longitude!))
+                  Icon(Icons.nightlight_round,
+                      size: 11,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 const SizedBox(height: 4),
                 if (isFirst)
                   const _BigIcon(Icons.play_arrow, Colors.green)

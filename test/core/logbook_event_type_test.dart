@@ -61,6 +61,15 @@ void main() {
       expect(LogbookEventType.mob.code, 'mob');
       expect(LogbookEventType.voyageStart.code, 'voyage_start');
       expect(LogbookEventType.voyageEnd.code, 'voyage_end');
+      expect(LogbookEventType.courseChange.code, 'course_change');
+    });
+
+    test('a course change written before it had a type is still recognised', () {
+      // Production rows carry the Slovak note the app used to write.
+      expect(LogbookEventType.resolve(null, 'Zmena kurzu'),
+          LogbookEventType.courseChange);
+      expect(LogbookEventType.resolve('course_change', ''),
+          LogbookEventType.courseChange);
     });
 
     test('grouping helpers', () {

@@ -33,6 +33,7 @@ import '../../features/help/presentation/screens/user_guide_screen.dart';
 import '../../main.dart';
 import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../features/safety/presentation/screens/safety_screen.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -56,6 +57,10 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       await BackgroundService.stopIfOrphaned(
           trackingActive: GpsTrackingService().isTracking);
       if (mounted) await maybePromptInterruptedVoyage(context, ref);
+      // Kotva je stále dole aj vtedy, keď appku medzitým zabil systém.
+      // Stráž sa ticho rozbehne ďalej — inak by skiper spal v presvedčení,
+      // že mu niekto sleduje kotvu, a nesledoval by ju nikto.
+      await ref.read(anchorProvider.notifier).restore();
       _watchForUpdate();
     });
   }

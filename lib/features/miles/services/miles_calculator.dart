@@ -1,5 +1,5 @@
 import '../../../core/database/app_database.dart';
-import 'solar_calculator.dart';
+import '../../../core/services/night_hours.dart';
 
 class MilesFilter {
   final int? year;
@@ -203,11 +203,6 @@ class MilesCalculator {
     return hours;
   }
 
-  static bool _isNight(TrackPoint p) {
-    final utc = p.timestamp.toUtc();
-    final solar = SolarCalculator.sunriseSunsetUtc(
-        DateTime.utc(utc.year, utc.month, utc.day), p.latitude, p.longitude);
-    if (solar.sunrise == null || solar.sunset == null) return false;
-    return utc.isBefore(solar.sunrise!) || utc.isAfter(solar.sunset!);
-  }
+  static bool _isNight(TrackPoint p) =>
+      NightHours.isNight(p.timestamp, p.latitude, p.longitude);
 }

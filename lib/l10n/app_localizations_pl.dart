@@ -699,6 +699,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pdfColTimeUtc => 'Czas UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Czas $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Strefa czasowa';
+
+  @override
+  String get timeZoneLocalShort => 'Lokalny';
+
+  @override
   String get pdfColWind => 'Wiatr';
 
   @override
@@ -953,6 +964,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Zwrot';
+
+  @override
+  String get logEventCourseChange => 'Zmiana kursu';
+
+  @override
+  String get pdfNightShort => 'noc';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Żegluga nocna $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1883,6 +1905,25 @@ class AppLocalizationsPl extends AppLocalizations {
   String get weatherSourceInstruments => 'Zmierzone przyrządami pokładowymi';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Przyrządy';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Stacja $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Stacja meteo';
+
+  @override
+  String get pdfWeatherSourceModel => 'Model';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Zmierzone na stacji $name';
   }
@@ -2574,7 +2615,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują\n• Potwierdzenie jest dwujęzyczne (twój język + angielski), zawiera wymiary i rejestrację jachtu, rodzaj wód (pływowe/bezpływowe) oraz rubrykę na numer paszportu lub dowodu; można je udostępnić albo zapisać w telefonie\n• Kurs względem wiatru – sylwetka jachtu z papierowego dziennika: dotknij kursu po tej burcie, z której wieje (lewy hals czerwony, prawy zielony). Fordewind jest na dole, tam burty się nie rozróżnia. Ponowne dotknięcie kasuje wybór – zgadnięty zapis jest gorszy od pustego pola. Trafia do PDF obok napędu.\n• Podczas śledzenia drugi szybki przycisk (ikona jachtu, lewy dolny róg) zapisuje zwrot przez sztag lub rufę: wybierz nowy kurs na sylwetce, a wpis zapisze się z pozycją i czasem. Kolejne wpisy automatyczne trzymają ten kurs, dopóki go znowu nie zmienisz.\n• Głębokość z sondy zapisuje się przy wpisach automatycznych, a we wpisie ręcznym jest wstępnie wypełniona (wymaga podłączonych przyrządów).\n• Motogodziny liczone są z obrotów z przyrządów, a uruchomienie i zatrzymanie silnika trafia do dziennika automatycznie.';
+      'Dziennik to główna zakładka do zarządzania rejsami.\n\n• Duży przycisk \"Rozpocznij rejs\" u góry uruchamia śledzenie – pyta tylko o częstotliwość automatycznych zapisów (można zmienić przy każdym kolejnym uruchomieniu), żadnego formularza nie trzeba wypełniać z góry\n• Jeśli istnieje rozpoczęty rejs, aplikacja zapyta, czy kontynuować go, czy założyć nowy wpis\n• Brakujące dane (check-in, safety briefing, karta jachtu/załogi) aplikacja przypomni kolorowymi chipami wprost na karcie rejsu – dotknięciem chipa je uzupełnisz\n• Każdy dzień rejsu wyświetla się osobno\n• Wpisy można dodawać ręcznie w ciągu dnia, w tym motogodziny, paliwo i wodę w sekcji \"Silnik i zbiorniki\"\n• Podczas śledzenia pojawia się przycisk aparatu (lewy dolny róg) – zrób zdjęcie ciekawego miejsca i szybko zapisz je jako wpis z pozycją i czasem\n• Dziennik można wyeksportować do PDF przez menu dnia\n• Ikona uścisku dłoni w szczegółach rejsu otwiera protokół przekazania (check-in/check-out)\n• Szczegółowy formularz rejsu (ikona jachtu w szczegółach) ewidencjonuje jednostkę i jej parametry, akwen, załogę z uprawnieniami skippera oraz zdjęcia jachtu (maks. 3, przenoszą się do PDF)\n• Niewypełnione karty (Safety Briefing, check-in/out, karta jachtu) migają na czerwono w górnym pasku szczegółów rejsu, dopóki ich nie ukończysz\n• Jeśli aplikacja zamknie się w trakcie rejsu bez zatrzymania śledzenia (zamknie ją system, przypadkowy swipe), przy kolejnym uruchomieniu zaproponuje kontynuację tego samego rejsu – wraz z doliczeniem odległości pokonanej, gdy nie działała\n• Przy pierwszym starcie rejsu aplikacja przypomni o ustawieniach baterii – bez nich system (zwłaszcza Honor/Huawei) może wyłączyć śledzenie w tle\n• Ikona trasy w nagłówku rejsu (obok briefingu, protokołu i karty jachtu) pokazuje cały ślad rejsu na mapie\n• Po rejsie możesz wyeksportować potwierdzenie przepłyniętych mil dla każdego członka załogi – dni na morzu, mile dzienne i nocne, akwen, ocena skipera i kod QR do weryfikacji\n• Napęd (silnik/żagle) przenosi się także do zapisów automatycznych – ustawiasz raz, kolejne go zachowują\n• Potwierdzenie jest dwujęzyczne (twój język + angielski), zawiera wymiary i rejestrację jachtu, rodzaj wód (pływowe/bezpływowe) oraz rubrykę na numer paszportu lub dowodu; można je udostępnić albo zapisać w telefonie\n• Kurs względem wiatru – sylwetka jachtu z papierowego dziennika: dotknij kursu po tej burcie, z której wieje (lewy hals czerwony, prawy zielony). Fordewind jest na dole, tam burty się nie rozróżnia. Ponowne dotknięcie kasuje wybór – zgadnięty zapis jest gorszy od pustego pola. Trafia do PDF obok napędu.\n• Podczas śledzenia drugi szybki przycisk (ikona jachtu, lewy dolny róg) zapisuje zwrot przez sztag lub rufę: wybierz nowy kurs na sylwetce, a wpis zapisze się z pozycją i czasem. Kolejne wpisy automatyczne trzymają ten kurs, dopóki go znowu nie zmienisz.\n• Głębokość z sondy zapisuje się przy wpisach automatycznych, a we wpisie ręcznym jest wstępnie wypełniona (wymaga podłączonych przyrządów).\n• Motogodziny liczone są z obrotów z przyrządów, a uruchomienie i zatrzymanie silnika trafia do dziennika automatycznie.\n• Szybki przycisk z żaglówką (na dole po lewej podczas rejsu) zapisuje teraz także napęd — Silnik / Grot / Genua / Ref. Kolejne wpisy automatyczne przejmują go, dopóki go nie zmienisz, więc kolumna Napęd w PDF już nie zostaje pusta.\n• Aplikacja sama zapisuje zmianę kursu: gdy kurs odchyli się o 30° lub więcej i utrzyma nowy kierunek przez co najmniej minutę. Wężykowanie na fali ani drgnięcie GPS tego nie wywoła.\n• Wpisy automatyczne niosą też stan nieba — uzupełniany z modelu dla czasu i pozycji wpisu, tak jak wiatr i ciśnienie.\n• Żegluga nocna liczy się sama, według rzeczywistego zachodu i wschodu słońca dla pozycji jachtu. Wpis po zmroku ma księżyc, a dzień i cały rejs mają sumę godzin nocnych, w dzienniku i w PDF.';
 
   @override
   String get guideMilesTitle => 'Książka mil';
@@ -2609,7 +2650,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Zakładka Bezpieczeństwo zawiera funkcje awaryjne.\n\nMOB (Człowiek za burtą):\n• Przytrzymaj czerwony przycisk MOB, aby aktywować\n• Aplikacja zapisze pozycję GPS i mierzy czas oraz odległość\n• Nawigacja z powrotem do miejsca upadku\n\nKotwica:\n• Ustaw promień kotwiczenia (zalecane: 2× długość liny kotwicznej)\n• Alarm zawibruje, jeśli jednostka oddali się z dozwolonego okręgu';
+      'Zakładka Bezpieczeństwo zawiera funkcje awaryjne.\n\nMOB (Człowiek za burtą):\n• Przytrzymaj czerwony przycisk MOB, aby aktywować\n• Aplikacja zapisze pozycję GPS i mierzy czas oraz odległość\n• Nawigacja z powrotem do miejsca upadku\n\nKotwica:\n• Ustaw promień kotwiczenia (zalecane: 2× długość liny kotwicznej)\n• Alarm zawibruje, jeśli jednostka oddali się z dozwolonego okręgu\n• Wachta kotwiczna zapisuje teraz własny ślad, więc noc na kotwicy nie jest już dziurą w GPX. To osobny odcinek — nigdy nie liczy się do mil, dystansu dnia ani godzin nocnych, bo huśtanie na łańcuchu to nie żegluga.\n• Wachta przeżywa restart aplikacji: gdy system ubije ją w tle, po uruchomieniu wraca na tę samą kotwicę.\n• Wpisy o rzuceniu i podniesieniu kotwicy niosą teraz wiatr, ciśnienie, temperatury, głębokość pod kilem i napęd — dotąd był w nich tylko czas i pozycja.';
 
   @override
   String get guideSafetyBriefingTitle => 'Odprawa bezpieczeństwa i MAYDAY';
@@ -2637,7 +2678,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n• Strefa czasowa – czas na ekranie i w PDF jest pokazywany lokalnie (strefa telefonu, czyli miejsca, w którym jesteś) albo w UTC. Zapisane wpisy się nie zmieniają, zmienia się tylko wyświetlanie; PDF zawsze podaje, która strefa obowiązuje.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';

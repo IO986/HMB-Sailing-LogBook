@@ -8,6 +8,7 @@ import '../../domain/crew_member.dart';
 import '../../domain/duty_rules.dart';
 import '../../providers/duty_provider.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../core/services/units_service.dart';
 
 /// Full duty roster: what has been recorded, plus the way to fill in a duty
 /// after the fact.
@@ -69,9 +70,9 @@ class _DutyTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final fmtDay = AppDate.of(context, ref);
-    final fmtTime = DateFormat('HH:mm');
-    final from = duty.fromUtc.toLocal();
-    final to = duty.toUtc?.toLocal();
+    final units = ref.watch(unitsSyncProvider);
+    final from = units.atZone(duty.fromUtc);
+    final to = duty.toUtc == null ? null : units.atZone(duty.toUtc!);
 
     return ListTile(
       leading: Icon(
@@ -80,8 +81,8 @@ class _DutyTile extends ConsumerWidget {
       ),
       title: Text(duty.crewName),
       subtitle: Text(
-        '${fmtDay.shortWithWeekday(from)}  ${fmtTime.format(from)} – '
-        '${to == null ? l.dutyToOngoing : fmtTime.format(to)}'
+        '${fmtDay.shortWithWeekday(from)}  ${units.formatTime(from)} – '
+        '${to == null ? l.dutyToOngoing : units.formatTime(to)}'
         '${duty.isAutoClosed ? '  ·  auto' : ''}',
       ),
       trailing: PopupMenuButton<String>(

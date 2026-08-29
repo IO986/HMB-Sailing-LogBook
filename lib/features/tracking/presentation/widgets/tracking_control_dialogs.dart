@@ -10,6 +10,7 @@ import '../../../../core/services/location_service.dart';
 import '../../../../core/utils/distance_calculator.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
@@ -153,12 +154,29 @@ Future<void> maybePromptInterruptedVoyage(
 
   // Session sa uzatvára tak či tak — plavba pokračuje novou session.
   await db.closeInterruptedSession(interrupted);
-  if (resume != true) return;
+  if (resume != true) {
+    // Plavba, ktorú prerušilo vypnutie appky, by inak ostala v denníku bez
+    // konca — a keď skiper neskôr spustí novú, deň by mal dva začiatky a
+    // jeden koniec. Koniec sa zapíše časom a polohou POSLEDNÉHO
+    // zaznamenaného bodu: to je pozorovaný údaj, nie dohad o tom, kedy sa
+    // loď naozaj zastavila.
+    await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
+      dayLogId: Value(dayLogId),
+      sessionId: Value(interrupted.sessionId),
+      timestamp: lastPoint.timestamp,
+      latitude: Value(lastPoint.latitude),
+      longitude: Value(lastPoint.longitude),
+      skipperNote: const Value('Voyage end'),
+      eventType: Value(LogbookEventType.voyageEnd.code),
+      isAutoEntry: const Value(true),
+    ));
+    return;
+  }
 
   final interval = await _defaultLogInterval();
   if (!context.mounted) return;
   await _beginTracking(context, ref, charter, dayLog, interval,
-      bridgedDistanceNm: offersGap && addGap ? gapNm : 0);
+      bridgedDistanceNm: offersGap && addGap ? gapNm : 0, isResume: true);
 }
 
 /// Popup hneď po ťuknutí na Start: výber frekvencie zápisov do denníka.
@@ -254,7 +272,7 @@ Future<void> _maybePromptBatterySettings(BuildContext context) async {
 
 Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter,
     DayLog dayLog, int intervalSeconds,
-    {double bridgedDistanceNm = 0}) async {
+    {double bridgedDistanceNm = 0, bool isResume = false}) async {
   await _maybePromptBatterySettings(context);
   if (!context.mounted) return;
 
@@ -264,6 +282,7 @@ Future<void> _beginTracking(BuildContext context, WidgetRef ref, Charter charter
         dayLogId: dayLog.id,
         logIntervalSeconds: intervalSeconds,
         bridgedDistanceNm: bridgedDistanceNm,
+        isResume: isResume,
       );
   if (context.mounted) context.go('/map');
 }

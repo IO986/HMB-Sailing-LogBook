@@ -700,6 +700,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColTimeUtc => 'Ora UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Ora $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Fuso orario';
+
+  @override
+  String get timeZoneLocalShort => 'Locale';
+
+  @override
   String get pdfColWind => 'Vento';
 
   @override
@@ -955,6 +966,17 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Cambio di mure';
+
+  @override
+  String get logEventCourseChange => 'Cambio di rotta';
+
+  @override
+  String get pdfNightShort => 'notte';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Navigazione notturna $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1891,6 +1913,25 @@ class AppLocalizationsIt extends AppLocalizations {
   String get weatherSourceInstruments => 'Misurato dagli strumenti di bordo';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Strumenti';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Stazione $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Stazione meteo';
+
+  @override
+  String get pdfWeatherSourceModel => 'Modello';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Misurato alla stazione $name';
   }
@@ -2590,7 +2631,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono\n• L’attestato è bilingue (la tua lingua + inglese), riporta dimensioni e registrazione dell’imbarcazione, il tipo di acque (con o senza marea) e una riga per il numero di passaporto o carta d’identità; puoi condividerlo o salvarlo sul telefono\n• Andatura – la sagoma della barca del giornale di bordo cartaceo: tocca l\'andatura sul lato da cui arriva il vento (sinistra rosso, dritta verde). La poppa sta in basso, lì non c\'è lato da registrare. Toccando di nuovo si cancella la scelta: un dato indovinato è peggio di una casella vuota. Finisce nel PDF accanto alla propulsione.\n• Durante la registrazione un secondo pulsante rapido (icona barca a vela, in basso a sinistra) registra una virata o una strambata: scegli la nuova andatura sulla sagoma e la voce viene salvata con posizione e ora. Le voci automatiche successive mantengono quell\'andatura finché non la cambi di nuovo.\n• La profondità dell\'ecoscandaglio viene salvata nelle registrazioni automatiche e precompilata in quella manuale (servono strumenti collegati).\n• Le ore motore si contano dai giri trasmessi dagli strumenti e l\'avvio e l\'arresto del motore finiscono da soli nel giornale.';
+      'Il Giornale è la scheda principale per gestire le navigazioni.\n\n• Il grande pulsante \"Inizia la navigazione\" in alto avvia il tracciamento – chiede solo la frequenza delle annotazioni automatiche (modificabile a ogni avvio), senza moduli da compilare prima\n• Se una navigazione è già aperta, l\'app chiede se continuarla o iniziare una nuova registrazione\n• I dati mancanti (check-in, briefing di sicurezza, scheda imbarcazione/equipaggio) sono segnalati da etichette colorate direttamente sulla scheda della navigazione – tocca un\'etichetta per compilarli\n• Ogni giorno di navigazione è mostrato separatamente\n• Le annotazioni si possono aggiungere manualmente durante la giornata, comprese ore motore, carburante e acqua nella sezione \"Motore e serbatoi\"\n• Durante il tracciamento, il pulsante della fotocamera (in basso a sinistra) permette di fotografare un punto d\'interesse e salvarlo come annotazione rapida con posizione e ora\n• Il giornale si può esportare in PDF dal menu del giorno\n• L\'icona della stretta di mano nel dettaglio della navigazione apre il verbale di riconsegna (check-in/check-out)\n• Il modulo dettagliato della navigazione (icona della barca nel dettaglio) registra l\'imbarcazione e i suoi parametri, la zona di navigazione, l\'equipaggio con le abilitazioni dello skipper e le foto dell\'imbarcazione (max 3, riportate nel PDF)\n• Le schede incomplete (Briefing di sicurezza, check-in/out, scheda imbarcazione) lampeggiano in rosso nella barra superiore del dettaglio finché non vengono completate\n• Se l’app si chiude durante la navigazione senza fermare il tracciamento (la chiude il sistema, uno swipe involontario), al riavvio propone di continuare la stessa navigazione, inclusa la distanza percorsa mentre non era attiva\n• Al primo avvio di una navigazione l’app ricorda le impostazioni della batteria: senza di esse il sistema (soprattutto Honor/Huawei) può interrompere il tracciamento in background\n• L’icona rotta nell’intestazione della navigazione (accanto a briefing, protocollo e scheda barca) mostra l’intera traccia sulla mappa\n• Dopo la navigazione puoi esportare per ogni membro dell’equipaggio un attestato delle miglia – giorni in mare, miglia diurne e notturne, zona, valutazione dello skipper e QR di verifica\n• La propulsione (motore/vele) passa anche nelle annotazioni automatiche: la imposti una volta e le successive la mantengono\n• L’attestato è bilingue (la tua lingua + inglese), riporta dimensioni e registrazione dell’imbarcazione, il tipo di acque (con o senza marea) e una riga per il numero di passaporto o carta d’identità; puoi condividerlo o salvarlo sul telefono\n• Andatura – la sagoma della barca del giornale di bordo cartaceo: tocca l\'andatura sul lato da cui arriva il vento (sinistra rosso, dritta verde). La poppa sta in basso, lì non c\'è lato da registrare. Toccando di nuovo si cancella la scelta: un dato indovinato è peggio di una casella vuota. Finisce nel PDF accanto alla propulsione.\n• Durante la registrazione un secondo pulsante rapido (icona barca a vela, in basso a sinistra) registra una virata o una strambata: scegli la nuova andatura sulla sagoma e la voce viene salvata con posizione e ora. Le voci automatiche successive mantengono quell\'andatura finché non la cambi di nuovo.\n• La profondità dell\'ecoscandaglio viene salvata nelle registrazioni automatiche e precompilata in quella manuale (servono strumenti collegati).\n• Le ore motore si contano dai giri trasmessi dagli strumenti e l\'avvio e l\'arresto del motore finiscono da soli nel giornale.\n• Il pulsante rapido con la barca a vela (in basso a sinistra durante la navigazione) ora registra anche la propulsione — Motore / Randa / Genoa / Terzarolo. Le voci automatiche successive la ereditano finché non la cambi, così la colonna Propulsione nel PDF non resta più vuota.\n• L\'app annota da sola il cambio di rotta: quando la rotta devia di 30° o più e mantiene la nuova direzione per almeno un minuto. Le serpentine sull\'onda o uno scatto del GPS non lo attivano.\n• Le voci automatiche portano anche lo stato del cielo — riempito dal modello per l\'ora e la posizione della voce, come vento e pressione.\n• La navigazione notturna si calcola da sola, dal tramonto e dall\'alba reali per la posizione della barca. Una voce dopo il buio porta una luna, e il giorno e l\'intera navigazione portano il totale delle ore notturne, nel giornale e nel PDF.';
 
   @override
   String get guideMilesTitle => 'Libretto delle miglia';
@@ -2625,7 +2666,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'La scheda Sicurezza contiene le funzioni di emergenza.\n\nMOB (uomo in mare):\n• Tieni premuto il pulsante rosso MOB per attivarlo\n• L\'app registra la posizione GPS e tiene traccia di tempo e distanza\n• Naviga di nuovo verso il punto di caduta\n\nAllarme ancora:\n• Imposta il raggio di ancoraggio (consigliato: 2× la lunghezza di catena/cima)\n• L\'allarme vibra se la barca esce dal raggio consentito';
+      'La scheda Sicurezza contiene le funzioni di emergenza.\n\nMOB (uomo in mare):\n• Tieni premuto il pulsante rosso MOB per attivarlo\n• L\'app registra la posizione GPS e tiene traccia di tempo e distanza\n• Naviga di nuovo verso il punto di caduta\n\nAllarme ancora:\n• Imposta il raggio di ancoraggio (consigliato: 2× la lunghezza di catena/cima)\n• L\'allarme vibra se la barca esce dal raggio consentito\n• La guardia all\'ancora registra ora una propria traccia, così una notte all\'ancora non è più un buco nel GPX. È un tratto a sé — non conta mai per le miglia, la distanza del giorno o le ore notturne, perché girare sulla catena non è navigare.\n• La guardia sopravvive al riavvio dell\'app: se il sistema la chiude in background, alla riapertura riprende sullo stesso ancoraggio.\n• Le voci ancora data e ancora salpata portano ora vento, pressione, temperature, profondità sotto la chiglia e propulsione — finora avevano solo ora e posizione.';
 
   @override
   String get guideSafetyBriefingTitle => 'Briefing di sicurezza e MAYDAY';
@@ -2653,7 +2694,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.\n• Aggiornamenti – quando su Google Play c\'è una versione più recente, l\'app la scarica in background e propone il riavvio. Non chiede mai durante la registrazione di una navigazione.\n\nAccount Google ed esportazione nel cloud\n\nAccedere con un account Google è facoltativo. Senza, l\'app funziona per intero e tutte le registrazioni restano solo sul telefono.\n\nChe cosa viene caricato – alla chiusura di una giornata di navigazione, il PDF del giornale e la traccia GPX di quel giorno. Nient\'altro: né foto, né contatti dell\'equipaggio, né posizioni in tempo reale.\n\nDove – sul tuo Google Drive, nella cartella HMB_Sailing_Log_DATA / nome della navigazione / Day_data. Non su un server dell\'app – non esiste.\n\nChe cosa vede l\'app sul Drive – solo i file che ha creato lei stessa. Usa il permesso più ristretto offerto da Google (drive.file), quindi il resto del tuo Drive resta fuori portata. Il permesso viene chiesto al primo caricamento, non all\'accesso.\n\nCome annullare – disconnetti l\'account nelle Impostazioni. I file già presenti sul Drive restano tuoi – l\'app non li elimina.';
+      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.\n• Aggiornamenti – quando su Google Play c\'è una versione più recente, l\'app la scarica in background e propone il riavvio. Non chiede mai durante la registrazione di una navigazione.\n• Fuso orario – gli orari a schermo e nel PDF sono mostrati in ora locale (il fuso del telefono, cioè dove ti trovi) oppure in UTC. I dati salvati non cambiano, cambia solo la visualizzazione; il PDF indica sempre quale fuso vale.\n\nAccount Google ed esportazione nel cloud\n\nAccedere con un account Google è facoltativo. Senza, l\'app funziona per intero e tutte le registrazioni restano solo sul telefono.\n\nChe cosa viene caricato – alla chiusura di una giornata di navigazione, il PDF del giornale e la traccia GPX di quel giorno. Nient\'altro: né foto, né contatti dell\'equipaggio, né posizioni in tempo reale.\n\nDove – sul tuo Google Drive, nella cartella HMB_Sailing_Log_DATA / nome della navigazione / Day_data. Non su un server dell\'app – non esiste.\n\nChe cosa vede l\'app sul Drive – solo i file che ha creato lei stessa. Usa il permesso più ristretto offerto da Google (drive.file), quindi il resto del tuo Drive resta fuori portata. Il permesso viene chiesto al primo caricamento, non all\'accesso.\n\nCome annullare – disconnetti l\'account nelle Impostazioni. I file già presenti sul Drive restano tuoi – l\'app non li elimina.';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';

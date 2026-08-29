@@ -698,6 +698,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pdfColTimeUtc => 'Čas UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Čas $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Časové pásmo';
+
+  @override
+  String get timeZoneLocalShort => 'Místní';
+
+  @override
   String get pdfColWind => 'Vítr';
 
   @override
@@ -951,6 +962,17 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Přehození plachet';
+
+  @override
+  String get logEventCourseChange => 'Změna kurzu';
+
+  @override
+  String get pdfNightShort => 'noc';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Noční plavba $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1879,6 +1901,25 @@ class AppLocalizationsCs extends AppLocalizations {
   String get weatherSourceInstruments => 'Naměřeno lodními přístroji';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Přístroje';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Stanice $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Meteostanice';
+
+  @override
+  String get pdfWeatherSourceModel => 'Model';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Naměřeno na stanici $name';
   }
@@ -2568,7 +2609,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě\n• Po plavbě můžeš pro každého člena posádky vyexportovat potvrzení o naplavaných mílích – dny na moři, denní a noční míle, oblast plavby, hodnocení od skippera a QR pro ověření\n• Způsob plavby (motor/plachty) se přebírá i do automatických zápisů – přepneš ho jednou a další zápisy v něm pokračují\n• Potvrzení je dvojjazyčné (tvůj jazyk + angličtina), obsahuje rozměry a registraci lodi, typ vod (přílivové/nepřílivové) a kolonku na číslo pasu nebo OP; dá se sdílet i uložit přímo do telefonu\n• Kurz vůči větru – silueta lodi z papírového deníku: klepni na polohu na tom boku, ze kterého fouká (levobok červený, pravobok zelený). Zadní vítr je dole, tam se bok nerozlišuje. Opětovné klepnutí výběr zruší – odhadnutý údaj je horší než prázdné políčko. Do PDF jde vedle způsobu plavby.\n• Během plavby je vlevo dole druhé rychlé tlačítko (ikona plachetnice) na obrat nebo halzu: vyber nový kurz na siluetě a záznam se zapíše i s polohou a časem. Další automatické zápisy ten kurz přebírají, dokud ho znovu nezměníš.\n• Hloubka ze sondy se ukládá k automatickým záznamům a v ručním záznamu je předvyplněná (potřebuje připojené přístroje).\n• Motohodiny se počítají z otáček z přístrojů a nastartování i zastavení motoru se zapíše do deníku samo.';
+      'Deník je hlavní záložka pro správu plaveb.\n\n• Velké tlačítko \"Spustit plavbu\" nahoře spustí tracking – zeptá se jen na frekvenci automatických zápisů (lze změnit při každém dalším spuštění), žádný formulář není třeba vyplnit předem\n• Pokud existuje rozdělaná plavba, aplikace se zeptá, zda pokračovat v ní nebo založit nový záznam\n• Chybějící údaje (check-in, safety briefing, karta lodi/posádky) aplikace připomene barevnými chipy přímo na kartě plavby – klepnutím na chip je doplníš\n• Každý den plavby se zobrazuje zvlášť\n• Záznamy lze přidávat ručně během dne, včetně motohodin, paliva a vody v sekci \"Motor a nádrže\"\n• Během trackingu se objeví tlačítko fotoaparátu (vlevo dole) – vyfoť zajímavý bod a rychle ho ulož jako záznam s polohou a časem\n• Deník lze exportovat do PDF přes menu dne\n• Ikona podání rukou v detailu plavby otevře předávací protokol (check-in/check-out)\n• Podrobný formulář plavby (ikona lodi v detailu) eviduje loď a její parametry, oblast plavby, posádku s průkazy skippera i fotky lodi (max 3, přenášejí se do PDF)\n• Nevyplněné karty (Safety Briefing, check-in/out, karta lodi) blikají červeně v horní liště detailu plavby, dokud je nedokončíš\n• Pokud se aplikace během plavby vypne bez ukončení trasování (zavře ji systém, nechtěný swipe), při dalším spuštění nabídne pokračování ve stejné plavbě – včetně dopočítání vzdálenosti ujeté, když aplikace neběžela\n• Při prvním spuštění plavby aplikace připomene nastavení baterie – bez něj může systém (hlavně Honor/Huawei) trasování na pozadí vypnout\n• Ikona trasy v hlavičce plavby (vedle SB, protokolu a karty lodi) zobrazí trasu celé plavby na mapě\n• Po plavbě můžeš pro každého člena posádky vyexportovat potvrzení o naplavaných mílích – dny na moři, denní a noční míle, oblast plavby, hodnocení od skippera a QR pro ověření\n• Způsob plavby (motor/plachty) se přebírá i do automatických zápisů – přepneš ho jednou a další zápisy v něm pokračují\n• Potvrzení je dvojjazyčné (tvůj jazyk + angličtina), obsahuje rozměry a registraci lodi, typ vod (přílivové/nepřílivové) a kolonku na číslo pasu nebo OP; dá se sdílet i uložit přímo do telefonu\n• Kurz vůči větru – silueta lodi z papírového deníku: klepni na polohu na tom boku, ze kterého fouká (levobok červený, pravobok zelený). Zadní vítr je dole, tam se bok nerozlišuje. Opětovné klepnutí výběr zruší – odhadnutý údaj je horší než prázdné políčko. Do PDF jde vedle způsobu plavby.\n• Během plavby je vlevo dole druhé rychlé tlačítko (ikona plachetnice) na obrat nebo halzu: vyber nový kurz na siluetě a záznam se zapíše i s polohou a časem. Další automatické zápisy ten kurz přebírají, dokud ho znovu nezměníš.\n• Hloubka ze sondy se ukládá k automatickým záznamům a v ručním záznamu je předvyplněná (potřebuje připojené přístroje).\n• Motohodiny se počítají z otáček z přístrojů a nastartování i zastavení motoru se zapíše do deníku samo.\n• Rychlé tlačítko plachetnice (vlevo dole během plavby) nyní zapisuje i pohon — Motor / Hlavní / Genova / Reef. Další automatické záznamy ho přebírají, dokud ho nezměníš, takže sloupec Pohon v PDF už nezůstává prázdný.\n• Appka si sama zapíše změnu kurzu: když se směr odkloní o 30° a více a v novém směru vydrží aspoň minutu. Kličkování na vlně ani zákmit GPS to nespustí.\n• Automatické záznamy mají i stav oblohy — doplňuje se z modelu k času a poloze záznamu, stejně jako vítr a tlak.\n• Noční plavba se počítá sama: podle skutečného západu a východu slunce pro polohu, kde loď byla. Záznam po setmění má měsíček, den i celá plavba mají součet nočních hodin v deníku i v PDF.';
 
   @override
   String get guideMilesTitle => 'Kniha mil';
@@ -2603,7 +2644,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Záložka Bezpečnost obsahuje nouzové funkce.\n\nMOB (Muž přes palubu):\n• Podrž červené tlačítko MOB pro aktivaci\n• Aplikace zaznamená GPS polohu a měří čas a vzdálenost\n• Navigace zpět k místu pádu\n\nKotva:\n• Nastav poloměr kotvení (doporučeno: 2× délka kotevního lana)\n• Alarm zavibruje, pokud se loď vzdálí z povoleného okruhu';
+      'Záložka Bezpečnost obsahuje nouzové funkce.\n\nMOB (Muž přes palubu):\n• Podrž červené tlačítko MOB pro aktivaci\n• Aplikace zaznamená GPS polohu a měří čas a vzdálenost\n• Navigace zpět k místu pádu\n\nKotva:\n• Nastav poloměr kotvení (doporučeno: 2× délka kotevního lana)\n• Alarm zavibruje, pokud se loď vzdálí z povoleného okruhu\n• Kotevní stráž si zapisuje vlastní trasu, takže noc na kotvě už není v GPX díra. Je to samostatný úsek — do najetých mil, vzdálenosti dne ani nočních hodin se nepočítá, houpání na řetězu není plavba.\n• Stráž přežije i restart appky: když ji systém na pozadí zabije, po spuštění sama pokračuje na téže kotvě.\n• Záznam o spuštění a vytažení kotvy už nese i vítr, tlak, teploty, hloubku pod kýlem a pohon — do té doby v něm byl jen čas a poloha.';
 
   @override
   String get guideSafetyBriefingTitle => 'Bezpečnostní briefing a MAYDAY';
@@ -2631,7 +2672,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt\n• Baterie – GPS běží na plnou přesnost jen tam, kde na přesné poloze záleží (sledování plavby, mapa, kompas, přístroje, kotevní stráž, MOB); jinde přepne do úsporného režimu a na pozadí bez zapnutého sledování se vypne úplně. Při připojených lodních přístrojích zůstává GPS telefonu vypnuté a poloha jde z NMEA.\n• Aktualizace – když je na Google Play novější verze, aplikace ji stáhne na pozadí a nabídne restart. Během záznamu plavby se neptá nikdy.\n\nGoogle účet a cloudový export\n\nPřihlášení Google účtu je dobrovolné. Bez něj aplikace funguje celá a všechny záznamy zůstávají jen v telefonu.\n\nCo se nahrává – po ukončení dne plavby PDF deníku a GPX trasa toho dne. Nic jiného: žádné fotky, žádné kontakty posádky, žádné polohy v reálném čase.\n\nKam – na tvůj vlastní Google Disk, do složky HMB_Sailing_Log_DATA / název plavby / Day_datum. Ne na server aplikace – ten neexistuje.\n\nCo aplikace na Disku vidí – pouze soubory, které tam sama vytvořila. Používá nejužší oprávnění, jaké Google nabízí (drive.file), takže k ostatnímu obsahu tvého Disku se nedostane. Oprávnění si navíc žádá až při prvním nahrávání, ne při přihlášení.\n\nJak to zrušíš – odhlas účet v Nastavení. Soubory, které už na Disku jsou, zůstanou tvoje – aplikace je nemaže. Přístup lze kdykoli odebrat i v nastavení Google účtu.';
+      '• Jazyk – změň jazyk aplikace\n• Přístroje – nastav IP adresu Raymarine WiFi gateway (TCP nebo UDP)\n• GPS zdroj – telefon nebo Raymarine\n• Jednotky – vzdálenost NM/km, rychlost uzly/km/h, zvlášť teplota, hloubka a vítr (na řece se hodí km + km/h)\n• Frekvence zápisů do deníku\n• Spodní menu – přizpůsob si ho: podrž a táhni ikonu pro změnu pořadí, přepínačem skryj karty, které nepoužíváš, a nastav velikost ikon (S/M/L). Skryté karty otevřeš přímo tady v Nastavení; Nastavení jsou vždy zobrazena. Pořadí i velikost se pamatují. Popisky pod ikonami jsou skryté, aby ikony seděly stejně ve všech jazycích; podržením ikony se název zobrazí.\n• Zobrazení – noční režim (červený filtr pro zachování nočního vidění)\n• Cloud export (Google Drive) – po přihlášení Google účtu se PDF a GPX z ukončeného dne automaticky nahrají na tvůj vlastní Google Drive. Bez přihlášení zůstává vše jen v zařízení.\n• Záloha dat – viz sekce \"Záloha a obnova dat\"\n• O aplikaci – verze a kontakt\n• Baterie – GPS běží na plnou přesnost jen tam, kde na přesné poloze záleží (sledování plavby, mapa, kompas, přístroje, kotevní stráž, MOB); jinde přepne do úsporného režimu a na pozadí bez zapnutého sledování se vypne úplně. Při připojených lodních přístrojích zůstává GPS telefonu vypnuté a poloha jde z NMEA.\n• Aktualizace – když je na Google Play novější verze, aplikace ji stáhne na pozadí a nabídne restart. Během záznamu plavby se neptá nikdy.\n• Časové pásmo – čas na obrazovce i v PDF se zobrazuje buď místně (pásmo telefonu, tedy oblasti, kde právě jsi), nebo v UTC. Uložené záznamy se tím nemění, přepíná se jen zobrazení; PDF vždy uvede, které pásmo platí.\n\nGoogle účet a cloudový export\n\nPřihlášení Google účtu je dobrovolné. Bez něj aplikace funguje celá a všechny záznamy zůstávají jen v telefonu.\n\nCo se nahrává – po ukončení dne plavby PDF deníku a GPX trasa toho dne. Nic jiného: žádné fotky, žádné kontakty posádky, žádné polohy v reálném čase.\n\nKam – na tvůj vlastní Google Disk, do složky HMB_Sailing_Log_DATA / název plavby / Day_datum. Ne na server aplikace – ten neexistuje.\n\nCo aplikace na Disku vidí – pouze soubory, které tam sama vytvořila. Používá nejužší oprávnění, jaké Google nabízí (drive.file), takže k ostatnímu obsahu tvého Disku se nedostane. Oprávnění si navíc žádá až při prvním nahrávání, ne při přihlášení.\n\nJak to zrušíš – odhlas účet v Nastavení. Soubory, které už na Disku jsou, zůstanou tvoje – aplikace je nemaže. Přístup lze kdykoli odebrat i v nastavení Google účtu.';
 
   @override
   String get guideBackupTitle => 'Záloha a obnova dat';

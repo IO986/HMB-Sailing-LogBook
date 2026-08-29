@@ -70,7 +70,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
     for (final day in _days) {
       _entriesByDay[day.id] = await db.getEntriesForDay(day.id);
-      final sessions = await db.getSessionsForDay(day.id);
+      final sessions =
+          await db.getSessionsForDay(day.id, includeAnchorWatch: true);
       _sessionsByDay[day.id] = sessions;
       final pts = <TrackPoint>[];
       for (final s in sessions) {
@@ -282,6 +283,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           mapScreenshot: _mapScreenshots[freshDay.id],
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
+          nightHours:
+              await ref.read(databaseProvider).nightHoursForDay(freshDay.id),
         );
         previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
@@ -312,6 +315,11 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               _charter!.id, s.toUtc(), s.add(const Duration(days: 1)).toUtc());
           bearingsByDay[d.id] = await db.getBearingsForDay(d.id);
         }
+        // Z bodov trasy, teda z toho istého zdroja ako Kniha míľ.
+        final nightHoursByDay = <int, double>{};
+        for (final d in freshDays) {
+          nightHoursByDay[d.id] = await db.nightHoursForDay(d.id);
+        }
 
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
           dateFormat: AppDate.of(context, ref),
@@ -322,6 +330,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           l10n: l10n,
           dutiesByDay: dutiesByDay,
           bearingsByDay: bearingsByDay,
+          nightHoursByDay: nightHoursByDay,
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
           crewSignatures: _crewSignatures,

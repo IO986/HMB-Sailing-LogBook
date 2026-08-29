@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum TempUnit { celsius, fahrenheit }
@@ -34,6 +35,21 @@ enum DateStyle {
   iso,
 }
 
+/// V akom pásme sa tlačí čas všade, kde ho skiper číta.
+///
+/// Uložený okamih sa nemení — v databáze je vždy UTC. Prepína sa len to, na
+/// aké hodiny sa prepočíta pri zobrazení a v PDF.
+enum TimeZoneMode {
+  /// Čas telefónu, teda pásmo oblasti, v ktorej sa loď nachádza (pokiaľ má
+  /// telefón pásmo nastavené správne — pri roamingu si ho nastaví sám).
+  /// Predvolené: skiper číta ten istý čas, aký má na hodinkách.
+  local,
+
+  /// UTC. Konvencia lodného denníka — jednoznačné bez ohľadu na to, kde sa
+  /// loď nachádzala a či práve platil letný čas.
+  utc,
+}
+
 const _kmPerNm = 1.852;
 
 class UnitsSettings {
@@ -43,6 +59,7 @@ class UnitsSettings {
   final DistanceUnit distance;
   final SpeedUnit speed;
   final DateStyle dateStyle;
+  final TimeZoneMode timeZone;
 
   const UnitsSettings({
     this.temp = TempUnit.celsius,
@@ -51,6 +68,7 @@ class UnitsSettings {
     this.distance = DistanceUnit.nauticalMiles,
     this.speed = SpeedUnit.knots,
     this.dateStyle = DateStyle.appLanguage,
+    this.timeZone = TimeZoneMode.local,
   });
 
   UnitsSettings copyWith({
@@ -60,6 +78,7 @@ class UnitsSettings {
     DistanceUnit? distance,
     SpeedUnit? speed,
     DateStyle? dateStyle,
+    TimeZoneMode? timeZone,
   }) =>
       UnitsSettings(
         temp: temp ?? this.temp,
@@ -68,7 +87,46 @@ class UnitsSettings {
         distance: distance ?? this.distance,
         speed: speed ?? this.speed,
         dateStyle: dateStyle ?? this.dateStyle,
+        timeZone: timeZone ?? this.timeZone,
       );
+
+  // ── Čas ─────────────────────────────────────────────────────────
+  // Uložený okamih je vždy UTC; tieto metódy ho prepočítajú na pásmo, ktoré
+  // si skiper zvolil. Volajú sa aj tam, kde predtým stálo `.toUtc()` natvrdo
+  // — `.toUtc()` nebolo nikdy zbytočné: drift vracia DateTime označený ako
+  // lokálny, takže formátovanie bez prevodu by vypísalo lokálny čas a
+  // označilo ho ako UTC.
+
+  /// Okamih prevedený do zvoleného pásma.
+  DateTime atZone(DateTime t) =>
+      timeZone == TimeZoneMode.utc ? t.toUtc() : t.toLocal();
+
+  /// Posun pásma pre daný okamih, napr. `UTC+2`. Berie sa k okamihu, nie k
+  /// „teraz" — inak by záznam z júla vyšiel v zime o hodinu vedľa.
+  String offsetLabel(DateTime t) {
+    final off = t.toLocal().timeZoneOffset;
+    final sign = off.isNegative ? '-' : '+';
+    final h = off.inHours.abs();
+    final m = off.inMinutes.abs() % 60;
+    return m == 0
+        ? 'UTC$sign$h'
+        : 'UTC$sign$h:${m.toString().padLeft(2, '0')}';
+  }
+
+  /// Označenie pásma pre hlavičky, pätičky a podpisy. Pri lokálnom čase aj s
+  /// posunom, aby dokument ostal jednoznačný aj pre čitateľa, ktorý nevie,
+  /// kde loď bola.
+  String zoneLabel(DateTime t) =>
+      timeZone == TimeZoneMode.utc ? 'UTC' : 'LT (${offsetLabel(t)})';
+
+  /// Krátky čas v zvolenom pásme, bez označenia pásma — pre stĺpce tabuliek,
+  /// kde označenie stojí v hlavičke.
+  String formatTime(DateTime t, {bool seconds = false}) =>
+      DateFormat(seconds ? 'HH:mm:ss' : 'HH:mm').format(atZone(t));
+
+  /// Čas aj s označením pásma — pre miesta, kde stojí osamote.
+  String formatTimeWithZone(DateTime t, {bool seconds = false}) =>
+      '${formatTime(t, seconds: seconds)} ${zoneLabel(t)}';
 
   // Formátovanie hodnôt
 
@@ -169,6 +227,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
   static const _kDistance = 'units_distance';
   static const _kSpeed = 'units_speed';
   static const _kDateStyle = 'units_date_style';
+  static const _kTimeZone = 'units_time_zone';
 
   @override
   Future<UnitsSettings> build() async {
@@ -180,6 +239,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
       distance: DistanceUnit.values[prefs.getInt(_kDistance) ?? 0],
       speed: SpeedUnit.values[prefs.getInt(_kSpeed) ?? 0],
       dateStyle: DateStyle.values[prefs.getInt(_kDateStyle) ?? 0],
+      timeZone: TimeZoneMode.values[prefs.getInt(_kTimeZone) ?? 0],
     );
   }
 
@@ -217,6 +277,12 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kDateStyle, v.index);
     state = AsyncData(state.value!.copyWith(dateStyle: v));
+  }
+
+  Future<void> setTimeZone(TimeZoneMode v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kTimeZone, v.index);
+    state = AsyncData(state.value!.copyWith(timeZone: v));
   }
 }
 

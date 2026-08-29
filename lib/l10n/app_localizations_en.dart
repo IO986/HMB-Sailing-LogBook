@@ -699,6 +699,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfColTimeUtc => 'Time UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Time $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Time zone';
+
+  @override
+  String get timeZoneLocalShort => 'Local';
+
+  @override
   String get pdfColWind => 'Wind';
 
   @override
@@ -952,6 +963,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logEventSailChange => 'Sail change';
+
+  @override
+  String get logEventCourseChange => 'Course change';
+
+  @override
+  String get pdfNightShort => 'night';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Night sailing $hours h';
+  }
 
   @override
   String logEventSailChangeTo(String direction) {
@@ -1880,6 +1902,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherSourceInstruments => 'Measured by the boat instruments';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Instruments';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Station $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Weather station';
+
+  @override
+  String get pdfWeatherSourceModel => 'Model';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Measured at $name';
   }
@@ -2569,7 +2610,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it\n• The certificate is bilingual (your language + English) and carries the vessel dimensions and registration, the type of waters (tidal/non-tidal) and a line for the passport or ID number; you can share it or save it straight to the phone\n• Sail direction – the boat silhouette from the paper logbook: tap the point of sail on the side the wind comes from (port red, starboard green). Running sits at the bottom, where there is no side to record. Tap the selected position again to clear it – an entry that guesses is worse than an empty box. It goes into the PDF next to the propulsion.\n• During tracking a second quick button (sailing icon, bottom left) records a tack or gybe: pick the new point of sail on the silhouette and the entry is written with position and time. Following automatic entries keep that course until you change it again.\n• Depth from the sounder is stored with automatic entries and prefilled in manual ones (needs connected instruments).\n• Engine hours are counted from the instruments\' RPM, and engine start/stop is written into the log automatically.';
+      'The Logbook is the main tab for managing voyages.\n\n• The big \"Start Voyage\" button at the top starts tracking – it only asks for the automatic log frequency (changeable on every restart), no form to fill in beforehand\n• If a voyage is already open, the app asks whether to continue it or start a new record\n• Missing details (check-in, safety briefing, vessel/crew card) are reminded with coloured chips right on the voyage card – tap a chip to fill it in\n• Each voyage day is shown separately\n• Log entries can be added manually during the day, including engine hours, fuel and water in the \"Engine & tanks\" section\n• While tracking, a camera button (bottom-left) lets you snap a photo of a point of interest and save it as a quick log entry with position and time\n• The logbook can be exported to PDF via the day menu\n• The handshake icon in the voyage detail opens the handover protocol (check-in/check-out)\n• The detailed voyage form (boat icon in the detail) records the vessel and its parameters, cruising area, crew with the skipper\'s licences, and vessel photos (max 3, carried into the PDF)\n• Unfinished cards (Safety Briefing, check-in/out, vessel card) blink red in the voyage detail top bar until completed\n• If the app closes mid-voyage without tracking being stopped (the system kills it, an accidental swipe), the next launch offers to continue the same voyage – including adding the distance covered while the app was not running\n• The first time you start a voyage the app reminds you about the battery settings – without them the system (Honor/Huawei especially) can shut tracking down in the background\n• The route icon in the voyage header (next to the briefing, protocol and vessel card) shows the whole voyage track on the map\n• After a voyage you can export a certificate of miles sailed for each crew member – days at sea, day and night miles, cruising area, the skipper’s skill assessment and a QR code for verification\n• The propulsion (engine/sails) carries into automatic entries too – set it once and the following entries keep it until you change it\n• The certificate is bilingual (your language + English) and carries the vessel dimensions and registration, the type of waters (tidal/non-tidal) and a line for the passport or ID number; you can share it or save it straight to the phone\n• Sail direction – the boat silhouette from the paper logbook: tap the point of sail on the side the wind comes from (port red, starboard green). Running sits at the bottom, where there is no side to record. Tap the selected position again to clear it – an entry that guesses is worse than an empty box. It goes into the PDF next to the propulsion.\n• During tracking a second quick button (sailing icon, bottom left) records a tack or gybe: pick the new point of sail on the silhouette and the entry is written with position and time. Following automatic entries keep that course until you change it again.\n• Depth from the sounder is stored with automatic entries and prefilled in manual ones (needs connected instruments).\n• Engine hours are counted from the instruments\' RPM, and engine start/stop is written into the log automatically.\n• The quick sailboat button (bottom left while under way) now records propulsion as well — Motor / Main / Genoa / Reef. Later automatic entries carry it on until you change it, so the Propulsion column in the PDF no longer stays empty.\n• The app logs a course change by itself: when the heading swings by 30° or more and holds the new direction for at least a minute. Weaving in a swell or a GPS jitter will not trigger it.\n• Automatic entries now carry the state of the sky too — filled in from the model for the entry\'s time and position, like wind and pressure.\n• Night sailing is counted for you, from the real sunset and sunrise for the position the boat was in. An entry after dark carries a moon, and the day and the whole voyage carry the night-hour total, in the logbook and in the PDF.';
 
   @override
   String get guideMilesTitle => 'Mile Logbook';
@@ -2604,7 +2645,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius';
+      'The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius\n• The anchor watch now records a track of its own, so a night at anchor is no longer a hole in the GPX. It is a separate leg — it never counts towards miles, the day\'s distance or the night hours, because swinging on the chain is not a passage.\n• The watch survives an app restart: if the system kills the app in the background, it picks up again on the same anchor when the app comes back.\n• Anchor dropped and anchor raised entries now carry wind, pressure, temperatures, depth under the keel and propulsion — until now they held only the time and the position.';
 
   @override
   String get guideSafetyBriefingTitle => 'Safety Briefing & MAYDAY';
@@ -2632,7 +2673,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n• Time zone – times on screen and in the PDF are shown either local (the phone\'s zone, that is, where you are) or in UTC. Stored records do not change, only the display; the PDF always states which zone applies.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';

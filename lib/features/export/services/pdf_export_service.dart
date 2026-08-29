@@ -21,6 +21,7 @@ import '../../bearing/providers/bearing_provider.dart'
 import '../../bearing/services/bearing_geometry.dart';
 import '../../miles/services/voyage_miles_summary.dart';
 import '../../../core/models/crew_member_ref.dart';
+import '../../../core/services/night_hours.dart';
 import '../../../core/services/units_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
@@ -118,6 +119,9 @@ class PdfExportService {
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
     int pdfRevision = 0,
+    /// Nočné hodiny na deň, spočítané z bodov trasy. Deň, ktorý tu chýba, si
+    /// ich odvodí zo svojich záznamov denníka.
+    Map<int, double> nightHoursByDay = const {},
     HandoverProtocol? checkInProtocol,
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
@@ -143,11 +147,13 @@ class PdfExportService {
       final photos = await _loadPhotos(entries);
       for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos,
           docId, rev, l10n, dutiesByDay[day.id] ?? const [],
-          bearingsByDay[day.id] ?? const [])) {
+          bearings: bearingsByDay[day.id] ?? const [],
+          nightHours: nightHoursByDay[day.id])) {
         pdf.addPage(page);
       }
     }
-    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev, l10n));
+    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev, l10n,
+        nightHoursByDay));
     final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev, l10n);
     pdf.addPage(sbPage);
 
@@ -191,6 +197,7 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    double? nightHours,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -199,7 +206,7 @@ class PdfExportService {
     final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
     for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev,
-        l10n, duties, bearings)) {
+        l10n, duties, bearings: bearings, nightHours: nightHours)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
@@ -227,6 +234,23 @@ class PdfExportService {
   /// jeden naraz a nastavenie je globálne pre appku.
   static UnitsSettings units = const UnitsSettings();
 
+  /// Hlavička časového stĺpca. Označenie pásma je v nej, nie pri každom
+  /// riadku — inak by sa do 34 px široké kolónky nezmestil ani čas.
+  ///
+  /// [sample] je ľubovoľný okamih z tabuľky: posun sa berie k nemu, aby deň
+  /// v lete nedostal zimný posun.
+  static String _timeColHeader(AppLocalizations l, DateTime? sample) =>
+      units.timeZone == TimeZoneMode.utc
+          ? l.pdfColTimeUtc
+          : l.pdfColTimeLocal(units.offsetLabel(sample ?? DateTime.now()));
+
+  /// Čas vyhotovenia dokumentu do pätičky, v zvolenom pásme a s jeho
+  /// označením.
+  static String _exportedNow() {
+    final now = DateTime.now();
+    return '${_date.shortWithTime(units.atZone(now))} ${units.zoneLabel(now)}';
+  }
+
   static Future<File> saveBytesToFile(Uint8List bytes, String name) async {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/${name}_${DateTime.now().millisecondsSinceEpoch}.pdf');
@@ -244,6 +268,7 @@ class PdfExportService {
     Map<int, List<Bearing>> bearingsByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    Map<int, double> nightHoursByDay = const {},
     HandoverProtocol? checkInProtocol,
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
@@ -256,7 +281,7 @@ class PdfExportService {
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
       l10n: l10n, dutiesByDay: dutiesByDay, bearingsByDay: bearingsByDay,
-      skipperProfile: skipperProfile,
+      skipperProfile: skipperProfile, nightHoursByDay: nightHoursByDay,
       checkInProtocol: checkInProtocol, checkInChecklist: checkInChecklist,
       checkOutProtocol: checkOutProtocol, checkOutChecklist: checkOutChecklist,
     );
@@ -273,6 +298,7 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    double? nightHours,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -281,7 +307,7 @@ class PdfExportService {
       charter: charter, day: day, entries: entries,
       l10n: l10n, duties: duties, bearings: bearings,
       mapScreenshot: mapScreenshot, signatureImage: signatureImage,
-      skipperProfile: skipperProfile);
+      skipperProfile: skipperProfile, nightHours: nightHours);
     return saveBytesToFile(bytes, 'day_${day.id}');
   }
 
@@ -537,8 +563,12 @@ class PdfExportService {
   static List<pw.Page> _dayPages(Charter charter, DayLog day,
       List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
       String docId, int revision, AppLocalizations l,
-      List<DutyPeriod> duties, [List<Bearing> bearings = const []]) {
+      List<DutyPeriod> duties,
+      {List<Bearing> bearings = const [], double? nightHours}) {
     final pages = <pw.Page>[];
+    // Volajúci ich vie spočítať z bodov trasy, ktoré má načítané; keď ich
+    // nepodá, ostávajú záznamy denníka — redšie, ale tú istú noc.
+    final night = nightHours ?? _nightHoursFromEntries(entries);
     final dayName = _date.long(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
 
@@ -601,11 +631,18 @@ class PdfExportService {
                 pw.Text(units.formatDistance(day.distanceNm, decimals: 1), style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
               if (voyageStart.isNotEmpty)
-                pw.Text('${l.pdfDeparture.toUpperCase()} ${DateFormat('HH:mm').format(voyageStart.first.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfDeparture.toUpperCase()} ${units.formatTimeWithZone(voyageStart.first.timestamp)}',
                     style: pw.TextStyle(color: PdfColors.green200, fontSize: 8)),
               if (voyageEnd.isNotEmpty)
-                pw.Text('${l.pdfArrival.toUpperCase()} ${DateFormat('HH:mm').format(voyageEnd.last.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfArrival.toUpperCase()} ${units.formatTimeWithZone(voyageEnd.last.timestamp)}',
                     style: pw.TextStyle(color: PdfColors.orange200, fontSize: 8)),
+              // Nočné hodiny patria do hlavičky dňa z rovnakého dôvodu ako
+              // prejdená vzdialenosť: je to výkon dňa, ktorý sa spätne
+              // nedá zistiť odnikiaľ.
+              if (night > 0)
+                pw.Text(
+                    _pdfText(l.nightSailingHours(night.toStringAsFixed(1))),
+                    style: pw.TextStyle(color: PdfColors.grey200, fontSize: 8)),
             ]),
           ]),
         ),
@@ -919,7 +956,7 @@ class PdfExportService {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       columnWidths: {
-        0: const pw.FixedColumnWidth(34), // Čas UTC
+        0: const pw.FixedColumnWidth(38), // Čas v zvolenom pásme
         1: const pw.FlexColumnWidth(1), // Objekt
         2: const pw.FixedColumnWidth(44), // Pravý kurz
         3: const pw.FixedColumnWidth(44), // Magnetický
@@ -931,7 +968,7 @@ class PdfExportService {
           repeat: true,
           decoration: pw.BoxDecoration(color: _lgrey),
           children: [
-            head(l.timeCol),
+            head(_timeColHeader(l, bearings.isEmpty ? null : bearings.first.takenAt)),
             head(l.bearingPdfObject),
             head(l.bearingPdfBearing),
             head(l.bearingMagneticLabel),
@@ -941,7 +978,7 @@ class PdfExportService {
         ),
         for (final b in bearings)
           pw.TableRow(children: [
-            cell(DateFormat('HH:mm').format(b.takenAt.toUtc())),
+            cell(units.formatTime(b.takenAt)),
             // Pri resekcii je podstatné, ČO sa zameriavalo — názov bodu má
             // prednosť pred voľnou poznámkou.
             cell(b.targetName ?? b.label ?? '—'),
@@ -976,6 +1013,17 @@ class PdfExportService {
     );
   }
 
+  /// Nočné hodiny zo záznamov denníka — záloha pre volajúceho, ktorý body
+  /// trasy nemá po ruke. Rovnaké pravidlo noci ako všade inde.
+  static double _nightHoursFromEntries(List<LogbookEntry> entries) =>
+      NightHours.forSamples(entries
+          .where((e) => e.latitude != null && e.longitude != null)
+          .map((e) => NightSample(
+                timeUtc: e.timestamp,
+                latitude: e.latitude!,
+                longitude: e.longitude!,
+              )));
+
   static String _bearingDeg(double value) =>
       '${(value.round() % 360).toString().padLeft(3, '0')}°';
 
@@ -986,17 +1034,23 @@ class PdfExportService {
 
   /// Krátky popis pôvodu hodnôt počasia, alebo `null` pri starých záznamoch
   /// spred schémy v27, kde zdroj nikto nezaznamenal.
+  /// Zdroj hodnôt počasia, skrátený pre 40 px široký stĺpec.
+  ///
+  /// Vetné znenie z obrazovky sa sem nezmestí: „Namerané lodnými prístrojmi"
+  /// sa v tabuľke oreže na „namerané lodnými", čo nie je kratšie, ale
+  /// nezmyselné. V dokumente stačí menovka zdroja — vetu si čitateľ prečíta
+  /// v appke.
   static String? _weatherSourceLabel(LogbookEntry e, AppLocalizations l) {
     final source = e.weatherSource;
     if (source == null) return null;
-    if (source == 'nmea') return l.weatherSourceInstruments;
-    if (source != 'dhmz') return l.weatherSourceModel;
+    if (source == 'nmea') return l.pdfWeatherSourceInstruments;
+    if (source != 'dhmz') return l.pdfWeatherSourceModel;
     final name = e.weatherStation;
-    if (name == null) return l.weatherSourceStationUnknown;
+    if (name == null) return l.pdfWeatherSourceStationUnknown;
     final d = e.weatherStationDistanceM;
     return d == null
-        ? l.weatherSourceStation(name)
-        : l.weatherSourceStationAt(name, (d / 1000).toStringAsFixed(1));
+        ? l.pdfWeatherSourceStation(name)
+        : l.pdfWeatherSourceStationAt(name, (d / 1000).toStringAsFixed(1));
   }
 
   static pw.Widget _entriesTable(List<LogbookEntry> entries,
@@ -1004,7 +1058,7 @@ class PdfExportService {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       columnWidths: {
-        0: const pw.FixedColumnWidth(30),   // Čas UTC
+        0: const pw.FixedColumnWidth(34),   // Čas v zvolenom pásme
         1: const pw.FixedColumnWidth(50),   // GPS lat+lon (2 riadky)
         2: const pw.FixedColumnWidth(28),   // SOG + jednotka v hlavičke
         3: const pw.FixedColumnWidth(22),   // COG °
@@ -1023,7 +1077,7 @@ class PdfExportService {
         pw.TableRow(repeat: true, decoration: pw.BoxDecoration(color: _blue), children:
           // Rýchlosť a teplota nesú jednotku v hlavičke, nie pri každej
           // hodnote — v stĺpci širokom 28 px sa jednotka k číslu nezmestí.
-          [l.pdfColTimeUtc, 'GPS', 'SOG ${units.speedLabel}', 'COG',
+          [_timeColHeader(l, entries.isEmpty ? null : entries.first.timestamp), 'GPS', 'SOG ${units.speedLabel}', 'COG',
               // Hĺbka zo sondy — v papierovom denníku stojí hneď pri polohe
               // a tu tiež: patrí k tomu, kde loď bola, nie k počasiu.
               '${l.depthLabel} m',
@@ -1032,7 +1086,14 @@ class PdfExportService {
               .map((h) => _hcell(h)).toList()),
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
-          final time = DateFormat('HH:mm').format(entry.timestamp.toUtc());
+          final time = units.formatTime(entry.timestamp);
+          // Nočná plavba: rozhoduje skutočný západ slnka pre polohu záznamu,
+          // nie hodiny. Značka stojí pod časom — vlastný stĺpec by v tabuľke
+          // s jedenástimi kolónkami zobral miesto poznámke.
+          final isNight = entry.latitude != null &&
+              entry.longitude != null &&
+              NightHours.isNight(
+                  entry.timestamp, entry.latitude!, entry.longitude!);
           final parsedMode = parseSailMode(entry.sailMode, entry.skipperNote);
           final sailMode = parsedMode.modes.isEmpty
               ? '-'
@@ -1067,8 +1128,20 @@ class PdfExportService {
             decoration: pw.BoxDecoration(
                 color: e.key.isEven ? PdfColor.fromHex('#F7F9FC') : PdfColors.white),
             children: [
-              // Čas
-              _dcell(time, fontSize: 7.5),
+              // Čas + značka nočnej plavby
+              pw.Padding(
+                padding:
+                    const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(time, style: const pw.TextStyle(fontSize: 7.5)),
+                    if (isNight)
+                      pw.Text(_pdfText(l.pdfNightShort),
+                          style: pw.TextStyle(fontSize: 5.5, color: _dgrey)),
+                  ],
+                ),
+              ),
               // GPS lat/lon
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -1193,8 +1266,15 @@ class PdfExportService {
 
   static pw.Page _summaryPage(Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, String docId, int revision,
-      AppLocalizations l) {
+      AppLocalizations l,
+      [Map<int, double> nightHoursByDay = const {}]) {
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
+    final totalNight = days.fold<double>(
+        0,
+        (s, d) =>
+            s +
+            (nightHoursByDay[d.id] ??
+                _nightHoursFromEntries(entriesByDay[d.id] ?? const [])));
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
     final maxBft = days.fold<int>(0, (s, d) {
       final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -1223,6 +1303,11 @@ class PdfExportService {
           pw.SizedBox(width: 6),
           _statBox(l.pdfStatMaxBeaufort.toUpperCase(),
               maxBft > 0 ? 'Bft $maxBft' : '-', _navy),
+          pw.SizedBox(width: 6),
+          // Nočné hodiny stoja vedľa míľ zámerne: pri potvrdení o naplávaných
+          // míľach sa na ne pýtajú ako na druhý údaj hneď po vzdialenosti.
+          _statBox(l.pdfStatNightHours.toUpperCase(),
+              '${totalNight.toStringAsFixed(1)} h', _dgrey),
         ]),
         pw.SizedBox(height: 14),
 
@@ -1269,7 +1354,7 @@ class PdfExportService {
         ),
         pw.Spacer(),
         _footer(
-          '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+          '${l.pdfExportedAt}: ${_exportedNow()}',
           docId: docId, revision: revision,
         ),
       ]),
@@ -1464,7 +1549,8 @@ class PdfExportService {
     String docId = '',
     int revision = 0,
   }) {
-    final timeStr = _date.shortWithSeconds(signedAt);
+    final timeStr = '${_date.shortWithSeconds(units.atZone(signedAt))} '
+        '${units.zoneLabel(signedAt)}';
     final shortHash = hash.substring(0, 12);
     final qrData = 'HMB-LOG:v2'
         '|id:$docId'
@@ -1498,7 +1584,7 @@ class PdfExportService {
         pw.SizedBox(height: 6),
         if (signerName != null)
           pw.Text(_pdfText(signerName), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-        pw.Text('${l.pdfSignedAt}: $timeStr UTC', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+        pw.Text('${l.pdfSignedAt}: $timeStr', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
         pw.SizedBox(height: 20),
         pw.Divider(color: PdfColors.grey300),
         pw.SizedBox(height: 12),
@@ -1529,7 +1615,7 @@ class PdfExportService {
           ]),
         ]),
         pw.Spacer(),
-        _footer('${_pdfText(docTitle)}  |  ${l.pdfSignedAt} $timeStr UTC', docId: docId, revision: revision),
+        _footer('${_pdfText(docTitle)}  |  ${l.pdfSignedAt} $timeStr', docId: docId, revision: revision),
       ]),
     );
   }
@@ -2085,7 +2171,7 @@ class PdfExportService {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_exportedNow()}',
         docId: docId,
         revision: rev,
       ),
@@ -2315,7 +2401,7 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_exportedNow()}',
         docId: docId, revision: 0,
       ),
       build: (ctx) => [
@@ -2460,14 +2546,13 @@ class PdfExportService {
     ];
     final phase = phaseNames[MoonCalculator.phaseIndex(day)];
     final illum = (MoonCalculator.illumination(day) * 100).round();
-    final fmt = DateFormat('HH:mm');
-
-    String utc(DateTime? t) => t == null ? '-' : '${fmt.format(t.toUtc())} UTC';
+    String at(DateTime? t) =>
+        t == null ? '-' : units.formatTimeWithZone(t);
 
     return pw.Row(children: [
-      _wRow('${l.sunriseLabel}:', utc(times.sunrise)),
+      _wRow('${l.sunriseLabel}:', at(times.sunrise)),
       pw.SizedBox(width: 14),
-      _wRow('${l.sunsetLabel}:', utc(times.sunset)),
+      _wRow('${l.sunsetLabel}:', at(times.sunset)),
       pw.SizedBox(width: 14),
       _wRow('${l.moonPhaseLabel}:', '${_pdfText(phase)}  $illum%'),
     ]);
@@ -2482,7 +2567,6 @@ class PdfExportService {
       List<DutyPeriod> duties, DateTime day, AppLocalizations l) {
     final localMidnight = DateTime(day.year, day.month, day.day);
     final now = DateTime.now().toUtc();
-    final fmt = DateFormat('HH:mm');
 
     final rows = duties
         .map((d) => clipToDay(d.toInterval(), localMidnight, now))
@@ -2492,14 +2576,13 @@ class PdfExportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: rows.map((c) {
-        // UTC, matching the entries table on the same page. .toUtc() is not
-        // redundant — drift hands back DateTime objects flagged local, so
-        // formatting them directly would print local time as UTC.
+        // The same zone as the entries table on the same page — the reader
+        // must not have to convert between two clocks inside one document.
         final from = '${c.clippedStart ? '<- ' : ''}'
-            '${fmt.format(c.fromUtc.toUtc())}';
+            '${units.formatTime(c.fromUtc)}';
         final to = c.duty.isRunning
             ? l.logDutyStillRunning
-            : '${fmt.format(c.toUtc.toUtc())}${c.clippedEnd ? ' ->' : ''}';
+            : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
         return pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 1.5),
           child: pw.Row(children: [
@@ -2530,6 +2613,8 @@ class PdfExportService {
         return l.voyageEnd;
       case LogbookEventType.sailChange:
         return l.logEventSailChange;
+      case LogbookEventType.courseChange:
+        return l.logEventCourseChange;
       case LogbookEventType.anchorDropped:
         return l.logEventAnchorDropped;
       case LogbookEventType.anchorRaised:
