@@ -1,0 +1,10 @@
+HMB Sailing Log — build 63 (1.32.0+63)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Times now shown in local time by default; UTC in Settings → Units. The PDF names the zone it prints.
+• Night hours counted from the real sunset for the boat's position — per entry, per day, per voyage.
+• Anchor watch can guard a drawn zone instead of a circle, and survives the app being killed.
+• Mile certificates: pick the recipient and the voyages; the PDF carries skipper, area, tidal waters and your capacity.
+• The PDF no longer cuts off sail plan, tack or notes.
