@@ -588,6 +588,54 @@ class AppLocalizationsSl extends AppLocalizations {
   String get anchorRadiusLabel => 'Polmer sidranja';
 
   @override
+  String get anchorZoneTool => 'Sidrno območje';
+
+  @override
+  String get undoLastPoint => 'Razveljavi zadnjo točko';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Nariši območje na zemljevidu';
+
+  @override
+  String get anchorZoneDrawHint => 'Tapni vogale območja na zemljevidu';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Območje potrebuje vsaj tri vogale';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Območje se seka samo s sabo — popravi vogale';
+
+  @override
+  String get anchorZoneArm => 'Nadzoruj to območje';
+
+  @override
+  String get anchorZoneActive => 'Nadzor območja';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m do roba območja';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m zunaj območja';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Si zunaj narisanega območja';
+
+  @override
+  String get anchorZoneTooTight => 'Območje je tesnejše od natančnosti GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Brez položaja GPS — sidrna točka je vzeta iz območja';
+
+  @override
+  String get anchorNoFix => 'Sidrna straža potrebuje položaj GPS';
+
+  @override
   String get activate => 'Aktiviraj';
 
   @override

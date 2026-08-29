@@ -588,6 +588,56 @@ class AppLocalizationsEs extends AppLocalizations {
   String get anchorRadiusLabel => 'Radio de anclaje';
 
   @override
+  String get anchorZoneTool => 'Zona de fondeo';
+
+  @override
+  String get undoLastPoint => 'Deshacer el último punto';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Dibujar una zona en el mapa';
+
+  @override
+  String get anchorZoneDrawHint => 'Toca las esquinas de la zona en el mapa';
+
+  @override
+  String get anchorZoneNeedsPoints =>
+      'Una zona necesita al menos tres esquinas';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'La zona se cruza consigo misma — corrige las esquinas';
+
+  @override
+  String get anchorZoneArm => 'Vigilar esta zona';
+
+  @override
+  String get anchorZoneActive => 'Vigilancia de zona';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m hasta el borde de la zona';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m fuera de la zona';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Estás fuera de la zona dibujada';
+
+  @override
+  String get anchorZoneTooTight =>
+      'La zona es más ajustada que la precisión del GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Sin posición GPS — el punto de fondeo se tomó de la zona';
+
+  @override
+  String get anchorNoFix => 'La vigilancia de fondeo necesita una posición GPS';
+
+  @override
   String get activate => 'Activar';
 
   @override

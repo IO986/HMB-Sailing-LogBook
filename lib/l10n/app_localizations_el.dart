@@ -593,6 +593,56 @@ class AppLocalizationsEl extends AppLocalizations {
   String get anchorRadiusLabel => 'Ακτίνα άγκυρας';
 
   @override
+  String get anchorZoneTool => 'Ζώνη αγκυροβολίου';
+
+  @override
+  String get undoLastPoint => 'Αναίρεση τελευταίου σημείου';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Σχεδίαση ζώνης στον χάρτη';
+
+  @override
+  String get anchorZoneDrawHint => 'Πάτησε τις γωνίες της ζώνης στον χάρτη';
+
+  @override
+  String get anchorZoneNeedsPoints =>
+      'Η ζώνη χρειάζεται τουλάχιστον τρεις γωνίες';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Η ζώνη τέμνει τον εαυτό της — διόρθωσε τις γωνίες';
+
+  @override
+  String get anchorZoneArm => 'Φύλαξη αυτής της ζώνης';
+
+  @override
+  String get anchorZoneActive => 'Φύλαξη ζώνης';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m ως το όριο της ζώνης';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m έξω από τη ζώνη';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Είσαι έξω από τη σχεδιασμένη ζώνη';
+
+  @override
+  String get anchorZoneTooTight =>
+      'Η ζώνη είναι στενότερη από την ακρίβεια του GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Χωρίς στίγμα GPS — το σημείο άγκυρας πάρθηκε από τη ζώνη';
+
+  @override
+  String get anchorNoFix => 'Η αγκυροφυλακή χρειάζεται στίγμα GPS';
+
+  @override
   String get activate => 'Ενεργοποίηση';
 
   @override

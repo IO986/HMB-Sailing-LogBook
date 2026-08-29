@@ -590,6 +590,54 @@ class AppLocalizationsDe extends AppLocalizations {
   String get anchorRadiusLabel => 'Ankerradius';
 
   @override
+  String get anchorZoneTool => 'Ankerzone';
+
+  @override
+  String get undoLastPoint => 'Letzten Punkt zurücknehmen';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Zone auf der Karte zeichnen';
+
+  @override
+  String get anchorZoneDrawHint => 'Tippe die Ecken der Zone auf der Karte an';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Eine Zone braucht mindestens drei Ecken';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Die Zone kreuzt sich selbst — korrigiere die Ecken';
+
+  @override
+  String get anchorZoneArm => 'Diese Zone überwachen';
+
+  @override
+  String get anchorZoneActive => 'Zonenwache';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m bis zum Zonenrand';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m außerhalb der Zone';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Du bist außerhalb der gezeichneten Zone';
+
+  @override
+  String get anchorZoneTooTight => 'Die Zone ist enger als die GPS-Genauigkeit';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Keine GPS-Position — der Ankerpunkt stammt aus der Zone';
+
+  @override
+  String get anchorNoFix => 'Die Ankerwache braucht eine GPS-Position';
+
+  @override
   String get activate => 'Aktivieren';
 
   @override

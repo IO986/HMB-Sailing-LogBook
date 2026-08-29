@@ -111,6 +111,15 @@ final dayEntryMarkersProvider = StreamProvider<List<LogbookEntry>>((ref) {
   return ref.read(databaseProvider).watchMappableEntriesForDay(dayLogId);
 });
 
+/// Jednorazový pokyn „otvor mapu v režime kreslenia kotevnej plochy".
+///
+/// Spúšťanie kotvy žije v karte Kotva v Bezpečnosti, kreslenie musí byť na
+/// mape. Zámerne to NIE je súčasť [MapState] a neukladá sa: mapa sa
+/// prestavuje pri každom prepnutí záložky, takže uložený pokyn by režim
+/// spúšťal znova a znova, a po reštarte appky by skiper skončil v kreslení
+/// bez toho, aby oň žiadal. Mapa ho pri prvom builde spotrebuje a zhodí.
+final pendingAnchorZoneDrawProvider = StateProvider<bool>((_) => false);
+
 /// Aktuálny viditeľný výrez mapy — map_screen ho aktualizuje (debounced)
 /// pri posune/zoome; POI aj veterná vrstva naň reagujú.
 final mapViewBoundsProvider = StateProvider<LatLngBounds?>((_) => null);

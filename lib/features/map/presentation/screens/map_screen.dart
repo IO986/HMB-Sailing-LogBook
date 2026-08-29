@@ -18,6 +18,7 @@ import '../../../../core/providers/night_mode_provider.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../safety/presentation/screens/safety_screen.dart';
 import '../../../charter/providers/charter_provider.dart';
+import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/marine_poi_service.dart';
 import '../../../../core/services/depth_probe_service.dart';
@@ -32,8 +33,10 @@ import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
 
 // Explicit imports needed for CircleLayer
-import 'package:flutter_map/flutter_map.dart' show CircleLayer, CircleMarker;
+import 'package:flutter_map/flutter_map.dart'
+    show CircleLayer, CircleMarker, Polygon, PolygonLayer;
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/geo_polygon.dart';
 import '../../../../core/utils/localized_date.dart';
 import '../widgets/playback_bar.dart';
 import '../../providers/playback_provider.dart';
@@ -69,6 +72,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// Beží dotaz na hĺbku — druhé ťuknutie sa ignoruje, kým sa nevráti.
   bool _depthProbing = false;
   final List<LatLng> _rulerPoints = [];
+
+  // Kreslenie kotevnej plochy: rohy ťukané na mapu, bez snapu na waypointy
+  // (na rozdiel od pravítka — plocha, kam smie loď zatáčať, nemá dôvod
+  // prichytiť sa na uložený bod o tridsať pixelov vedľa).
+  bool _zoneActive = false;
+  final List<LatLng> _zonePoints = [];
+
+  /// Viac rohov už nie je presnosť, ale neprehľadnosť — a `contains` beží
+  /// pri každom GPS fixe.
+  static const _zoneMaxPoints = 20;
 
   _MapPanel _openPanel = _MapPanel.none;
 
@@ -425,6 +438,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final isTracking = ref.watch(isTrackingProvider);
     final mob = ref.watch(mobProvider);
     final anchor = ref.watch(anchorProvider);
+    // Pokyn z karty Kotva: otvor mapu rovno v kreslení plochy. Spotrebuje sa
+    // hneď, aby prepnutie záložky režim nespustilo druhýkrát.
+    if (ref.watch(pendingAnchorZoneDrawProvider) && !_zoneActive) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(pendingAnchorZoneDrawProvider.notifier).state = false;
+        if (mounted && !_zoneActive) _toggleZoneDrawing();
+      });
+    }
     final dayEntries = ref.watch(dayEntryMarkersProvider).valueOrNull ?? [];
     final showMarinePois = mapState.showMarinePois;
     // marinePois/stationWinds sú NARÁMERNE nie tu, ale vo vlastných
@@ -502,7 +523,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               initialZoom: _initialZoom,
               maxZoom: 19,
               onMapReady: _onMapReady,
-              onLongPress: (_, ll) => _onMapTap(ll),
+              // Uprostred kreslenia plochy by podržanie, ktoré skiper
+              // mienil ako roh, vyskočilo dialóg waypointu cez jeho
+              // rozkreslený tvar.
+              onLongPress: (_, ll) {
+                if (_zoneActive) return;
+                _onMapTap(ll);
+              },
               onTap: (_, ll) => _onMapShortTap(ll),
               // Lock na sever (dlhé podržanie ružice) vypne gesto rotácie —
               // mapa ostane north-up, kým používateľ zámok znova neuvoľní.
@@ -705,6 +732,53 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ]),
               ],
 
+              // ── Rozkreslená kotevná plocha ───────────────────
+              // Bodkovaný obrys je vyhradený návrhu: spustená stráž kreslí
+              // plnou čiarou, takže sa nedá zameniť za nepotvrdený tvar.
+              if (_zonePoints.length >= 3)
+                PolygonLayer(polygons: [
+                  Polygon(
+                    points: _zonePoints,
+                    color: Colors.teal.withValues(alpha: 0.10),
+                    borderColor: Colors.teal.shade600,
+                    borderStrokeWidth: 2,
+                    pattern: const StrokePattern.dotted(),
+                  ),
+                ]),
+              // Dva body ešte nie sú plocha, ale skiperovi nesmú zmiznúť.
+              if (_zonePoints.length == 2)
+                PolylineLayer(polylines: [
+                  Polyline(
+                    points: _zonePoints,
+                    color: Colors.teal.shade600,
+                    strokeWidth: 2,
+                    pattern: const StrokePattern.dotted(),
+                  ),
+                ]),
+              if (_zonePoints.isNotEmpty)
+                MarkerLayer(markers: [
+                  for (var i = 0; i < _zonePoints.length; i++)
+                    Marker(
+                      point: _zonePoints[i],
+                      width: 22,
+                      height: 22,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.teal.shade600,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: Center(
+                          child: Text('${i + 1}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                ]),
+
               // ── GPS track (živý tracking, alebo náhľad zvolenej plavby) ──
               if (trackPoints.isNotEmpty)
                 PolylineLayer(polylines: [
@@ -795,19 +869,32 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               if (anchor.isActive &&
                   anchor.anchorLat != null &&
                   anchor.anchorLon != null) ...[
-                CircleLayer(circles: [
-                  CircleMarker(
-                    point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
-                    radius: anchor.radiusMeters,
-                    useRadiusInMeter: true,
-                    color: (anchor.isDrifting ? Colors.red : Colors.blue)
-                        .withOpacity(0.08),
-                    borderColor: anchor.isDrifting
-                        ? Colors.red.shade700
-                        : Colors.blue.shade600,
-                    borderStrokeWidth: 2,
-                  ),
-                ]),
+                if (anchor.hasZone)
+                  PolygonLayer(polygons: [
+                    Polygon(
+                      points: anchor.zonePolygon,
+                      color: (anchor.isDrifting ? Colors.red : Colors.blue)
+                          .withValues(alpha: 0.08),
+                      borderColor: anchor.isDrifting
+                          ? Colors.red.shade700
+                          : Colors.blue.shade600,
+                      borderStrokeWidth: 2,
+                    ),
+                  ])
+                else
+                  CircleLayer(circles: [
+                    CircleMarker(
+                      point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
+                      radius: anchor.radiusMeters,
+                      useRadiusInMeter: true,
+                      color: (anchor.isDrifting ? Colors.red : Colors.blue)
+                          .withValues(alpha: 0.08),
+                      borderColor: anchor.isDrifting
+                          ? Colors.red.shade700
+                          : Colors.blue.shade600,
+                      borderStrokeWidth: 2,
+                    ),
+                  ]),
                 MarkerLayer(markers: [
                   Marker(
                     point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
@@ -1042,6 +1129,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       : Icons.handyman_outlined,
                   active: _openPanel == _MapPanel.tools ||
                       _rulerActive ||
+                      _zoneActive ||
                       isPreviewing ||
                       !mapState.showBearings,
                   onPressed: () => setState(() => _openPanel =
@@ -1079,6 +1167,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         _rulerActive ? Colors.purple.shade400 : null,
                     child: Icon(Icons.straighten,
                         color: _rulerActive ? Colors.white : null),
+                  ),
+                  const SizedBox(height: 8),
+                  // Kreslenie kotevnej plochy. Zablokované, kým stráž beží:
+                  // activate() neuzatvára predošlú session, takže spustenie
+                  // cez bežiacu stráž by osirelo riadok v databáze.
+                  FloatingActionButton.small(
+                    heroTag: 'anchorZone',
+                    tooltip: l.anchorZoneTool,
+                    onPressed: anchor.isActive ? null : _toggleZoneDrawing,
+                    backgroundColor: _zoneActive ? Colors.teal.shade600 : null,
+                    child: Icon(Icons.pentagon_outlined,
+                        color: _zoneActive ? Colors.white : null),
                   ),
                   const SizedBox(height: 8),
                   // Kružidlo patrí k pravítku, nie medzi vrstvy počasia: oboje sú
@@ -1120,6 +1220,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onClear: _rulerPoints.isEmpty
                     ? null
                     : () => setState(() => _rulerPoints.clear()),
+              ),
+            ),
+
+          // ── Panel kotevnej plochy ─────────────────────────────
+          if (_zoneActive)
+            Positioned(
+              bottom: 280,
+              left: 12,
+              child: _ZonePanel(
+                points: _zonePoints,
+                onUndo: _zonePoints.isEmpty
+                    ? null
+                    : () => setState(() => _zonePoints.removeLast()),
+                onClear: _zonePoints.isEmpty
+                    ? null
+                    : () => setState(() => _zonePoints.clear()),
+                onCancel: _toggleZoneDrawing,
+                onArm: _armZoneWatch,
               ),
             ),
 
@@ -1338,11 +1456,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// (do ~30 px), aby sa dala trasa plánovať presne cez uložené ciele.
   /// Krátke ťuknutie do mapy.
   ///
-  /// Pravítko má prednosť — keď meria, ťuknutie patrí jemu. Inak, a len
+  /// Kreslenie kotevnej plochy má prednosť pred pravítkom, pravítko pred
+  /// meraním hĺbky. Inak, a len
   /// keď má skiper zapnutú vrstvu hĺbok, sa ťuknutím odmeria hĺbka dna.
   /// Bez tej podmienky by každé zablúdené ťuknutie do mapy znamenalo dotaz
   /// do siete, čo je na lodi bez signálu zbytočné a inde len drahé.
   void _onMapShortTap(LatLng ll) {
+    if (_zoneActive) {
+      _onZoneTap(ll);
+      return;
+    }
     if (_rulerActive) {
       _onRulerTap(ll);
       return;
@@ -1388,6 +1511,75 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       }
     }
     setState(() => _rulerPoints.add(snapped));
+  }
+
+  void _onZoneTap(LatLng ll) {
+    if (_zonePoints.length >= _zoneMaxPoints) return;
+    setState(() => _zonePoints.add(ll));
+  }
+
+  /// Zapne alebo vypne kreslenie plochy. Pravítko sa pritom vypína: oba
+  /// panely visia na tom istom mieste a obom by patrilo to isté ťuknutie.
+  void _toggleZoneDrawing() => setState(() {
+        _zoneActive = !_zoneActive;
+        _zonePoints.clear();
+        if (_zoneActive) {
+          _rulerActive = false;
+          _rulerPoints.clear();
+        }
+      });
+
+  /// Spustí kotvovú stráž nad nakreslenou plochou.
+  ///
+  /// Bod kotvy je aktuálny GPS fix, nie ťažisko plochy: tie dve čísla idú do
+  /// záznamu „Kotva spustená" a označujú kotvu na mape, takže musia povedať,
+  /// kde kotva naozaj padla. Bez fixu sa vezme ťažisko — stráž sa spustiť
+  /// musí aj bez signálu — a skiper sa to dozvie.
+  Future<void> _armZoneWatch() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ring = List<LatLng>.of(_zonePoints);
+    if (!GeoPolygon.isUsable(ring)) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(l.anchorZoneNeedsPoints)));
+      return;
+    }
+    if (GeoPolygon.hasSelfIntersection(ring)) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(l.anchorZoneSelfIntersects)));
+      return;
+    }
+
+    final pos =
+        GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    LatLng anchorPoint;
+    if (pos == null) {
+      anchorPoint = GeoPolygon.centroid(ring);
+      messenger.showSnackBar(SnackBar(content: Text(l.anchorZoneNoFix)));
+    } else {
+      anchorPoint = LatLng(pos.latitude, pos.longitude);
+      // Spustiť stráž zvonku plochy znamená alarm v tej istej sekunde.
+      if (!GeoPolygon.contains(ring, anchorPoint)) {
+        messenger
+            .showSnackBar(SnackBar(content: Text(l.anchorZoneNotInside)));
+        return;
+      }
+      // Tesná hrana plus šum GPS = striedavé alarmy celú noc. Povolí sa,
+      // ale skiper má vedieť, do čoho ide.
+      final clearance = GeoPolygon.distanceToEdgeM(ring, anchorPoint);
+      if (pos.accuracy > 0 && clearance < pos.accuracy) {
+        messenger.showSnackBar(SnackBar(content: Text(l.anchorZoneTooTight)));
+      }
+    }
+
+    await ref.read(anchorProvider.notifier).activate(
+        anchorPoint.latitude, anchorPoint.longitude, 50,
+        zone: ring);
+    if (!mounted) return;
+    setState(() {
+      _zoneActive = false;
+      _zonePoints.clear();
+    });
   }
 
   void _showPoiDetail(MarinePoi poi) {
@@ -1685,6 +1877,101 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
 }
 
 // ── Wind arrow ────────────────────────────────────────────────
+
+/// Ovládanie kreslenia kotevnej plochy.
+///
+/// Plocha v m² nie je ozdoba: je to jediná kontrola rozumnosti, ktorú skiper
+/// pri ťukaní rohov má. Nakreslená plocha veľkosti prístavu by znamenala
+/// stráž, ktorá sa neozve nikdy.
+class _ZonePanel extends StatelessWidget {
+  final List<LatLng> points;
+  final VoidCallback? onUndo;
+  final VoidCallback? onClear;
+  final VoidCallback onCancel;
+  final VoidCallback onArm;
+
+  const _ZonePanel({
+    required this.points,
+    required this.onCancel,
+    required this.onArm,
+    this.onUndo,
+    this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final usable = GeoPolygon.isUsable(points);
+    final crosses = GeoPolygon.hasSelfIntersection(points);
+    final areaM2 = GeoPolygon.areaM2(points);
+
+    // Prekrížený tvar sa neopravuje: even-odd by z neho urobil laloky, ktoré
+    // sa striedavo strážia a nestrážia, a skiper by o tom nevedel.
+    final String hint;
+    if (crosses) {
+      hint = l.anchorZoneSelfIntersects;
+    } else if (!usable) {
+      hint = points.isEmpty ? l.anchorZoneDrawHint : l.anchorZoneNeedsPoints;
+    } else {
+      hint = '${areaM2.round()} m²';
+    }
+
+    return Material(
+      elevation: 3,
+      borderRadius: BorderRadius.circular(12),
+      color: Colors.teal.shade600,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.anchorZoneTool,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+            Text(hint,
+                style: const TextStyle(color: Colors.white70, fontSize: 11)),
+            const SizedBox(height: 6),
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              IconButton(
+                onPressed: onUndo,
+                icon: const Icon(Icons.undo, color: Colors.white, size: 20),
+                tooltip: l.undoLastPoint,
+                visualDensity: VisualDensity.compact,
+              ),
+              IconButton(
+                onPressed: onClear,
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.white, size: 20),
+                tooltip: l.delete,
+                visualDensity: VisualDensity.compact,
+              ),
+              IconButton(
+                onPressed: onCancel,
+                icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                tooltip: l.cancel,
+                visualDensity: VisualDensity.compact,
+              ),
+            ]),
+            const SizedBox(height: 2),
+            FilledButton.icon(
+              onPressed: usable && !crosses ? onArm : null,
+              icon: const Icon(Icons.anchor, size: 18),
+              label: Text(l.anchorZoneArm),
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.teal.shade700,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _RulerPanel extends ConsumerWidget {
   final List<LatLng> points;

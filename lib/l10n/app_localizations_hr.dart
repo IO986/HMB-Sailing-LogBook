@@ -589,6 +589,54 @@ class AppLocalizationsHr extends AppLocalizations {
   String get anchorRadiusLabel => 'Radijus sidrenja';
 
   @override
+  String get anchorZoneTool => 'Sidrena zona';
+
+  @override
+  String get undoLastPoint => 'Poništi zadnju točku';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Nacrtaj zonu na karti';
+
+  @override
+  String get anchorZoneDrawHint => 'Dodirni uglove zone na karti';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Zona treba barem tri ugla';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Zona se sama presijeca — ispravi uglove';
+
+  @override
+  String get anchorZoneArm => 'Čuvaj ovu zonu';
+
+  @override
+  String get anchorZoneActive => 'Nadzor zone';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m do ruba zone';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m izvan zone';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Izvan si nacrtane zone';
+
+  @override
+  String get anchorZoneTooTight => 'Zona je uža od točnosti GPS-a';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Bez GPS pozicije — točka sidra uzeta je iz zone';
+
+  @override
+  String get anchorNoFix => 'Sidrena straža treba GPS poziciju';
+
+  @override
   String get activate => 'Aktiviraj';
 
   @override

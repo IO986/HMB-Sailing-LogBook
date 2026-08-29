@@ -588,6 +588,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get anchorRadiusLabel => 'Anchor radius';
 
   @override
+  String get anchorZoneTool => 'Anchor zone';
+
+  @override
+  String get undoLastPoint => 'Undo the last point';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Draw a zone on the map';
+
+  @override
+  String get anchorZoneDrawHint => 'Tap the corners of the zone on the map';
+
+  @override
+  String get anchorZoneNeedsPoints => 'A zone needs at least three corners';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'The zone crosses itself — fix the corners';
+
+  @override
+  String get anchorZoneArm => 'Guard this zone';
+
+  @override
+  String get anchorZoneActive => 'Zone watch';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m to the zone edge';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m outside the zone';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'You are outside the drawn zone';
+
+  @override
+  String get anchorZoneTooTight => 'The zone is tighter than your GPS accuracy';
+
+  @override
+  String get anchorZoneNoFix =>
+      'No GPS fix — the anchor point was taken from the zone';
+
+  @override
+  String get anchorNoFix => 'The anchor watch needs a GPS position';
+
+  @override
   String get activate => 'Activate';
 
   @override

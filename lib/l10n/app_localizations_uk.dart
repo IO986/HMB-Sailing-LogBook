@@ -590,6 +590,53 @@ class AppLocalizationsUk extends AppLocalizations {
   String get anchorRadiusLabel => 'Радіус якірної стоянки';
 
   @override
+  String get anchorZoneTool => 'Якірна зона';
+
+  @override
+  String get undoLastPoint => 'Скасувати останню точку';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Намалювати зону на карті';
+
+  @override
+  String get anchorZoneDrawHint => 'Торкайся кутів зони на карті';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Зоні потрібно щонайменше три кути';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Зона перетинає сама себе — виправ кути';
+
+  @override
+  String get anchorZoneArm => 'Стерегти цю зону';
+
+  @override
+  String get anchorZoneActive => 'Вахта зони';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m м до краю зони';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m м за межами зони';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Ти поза намальованою зоною';
+
+  @override
+  String get anchorZoneTooTight => 'Зона вужча за точність GPS';
+
+  @override
+  String get anchorZoneNoFix => 'Немає позиції GPS — точку якоря взято із зони';
+
+  @override
+  String get anchorNoFix => 'Якірній вахті потрібна позиція GPS';
+
+  @override
   String get activate => 'Активувати';
 
   @override

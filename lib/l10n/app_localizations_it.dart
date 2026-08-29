@@ -589,6 +589,55 @@ class AppLocalizationsIt extends AppLocalizations {
   String get anchorRadiusLabel => 'Raggio di ancoraggio';
 
   @override
+  String get anchorZoneTool => 'Zona di ancoraggio';
+
+  @override
+  String get undoLastPoint => 'Annulla l\'ultimo punto';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Disegna una zona sulla mappa';
+
+  @override
+  String get anchorZoneDrawHint => 'Tocca gli angoli della zona sulla mappa';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Una zona richiede almeno tre angoli';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'La zona si interseca — correggi gli angoli';
+
+  @override
+  String get anchorZoneArm => 'Sorveglia questa zona';
+
+  @override
+  String get anchorZoneActive => 'Guardia di zona';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m dal bordo della zona';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m fuori dalla zona';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Sei fuori dalla zona disegnata';
+
+  @override
+  String get anchorZoneTooTight =>
+      'La zona è più stretta della precisione del GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Nessuna posizione GPS — il punto d\'ancora è preso dalla zona';
+
+  @override
+  String get anchorNoFix => 'La guardia all\'ancora richiede una posizione GPS';
+
+  @override
   String get activate => 'Attiva';
 
   @override

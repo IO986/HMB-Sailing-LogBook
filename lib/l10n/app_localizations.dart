@@ -1172,6 +1172,90 @@ abstract class AppLocalizations {
   /// **'Sledovaný polomer pohybu'**
   String get anchorRadiusLabel;
 
+  /// No description provided for @anchorZoneTool.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotevná plocha'**
+  String get anchorZoneTool;
+
+  /// No description provided for @undoLastPoint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vziať späť posledný bod'**
+  String get undoLastPoint;
+
+  /// No description provided for @anchorZoneDrawFromMap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyznačiť plochu na mape'**
+  String get anchorZoneDrawFromMap;
+
+  /// No description provided for @anchorZoneDrawHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ťukaj rohy plochy na mape'**
+  String get anchorZoneDrawHint;
+
+  /// No description provided for @anchorZoneNeedsPoints.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plocha potrebuje aspoň tri rohy'**
+  String get anchorZoneNeedsPoints;
+
+  /// No description provided for @anchorZoneSelfIntersects.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plocha sa sama prekrížila — oprav rohy'**
+  String get anchorZoneSelfIntersects;
+
+  /// No description provided for @anchorZoneArm.
+  ///
+  /// In sk, this message translates to:
+  /// **'Strážiť túto plochu'**
+  String get anchorZoneArm;
+
+  /// No description provided for @anchorZoneActive.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stráženie plochy'**
+  String get anchorZoneActive;
+
+  /// No description provided for @anchorZoneInside.
+  ///
+  /// In sk, this message translates to:
+  /// **'{m} m k okraju plochy'**
+  String anchorZoneInside(String m);
+
+  /// No description provided for @anchorZoneOutside.
+  ///
+  /// In sk, this message translates to:
+  /// **'{m} m za okrajom plochy'**
+  String anchorZoneOutside(String m);
+
+  /// No description provided for @anchorZoneNotInside.
+  ///
+  /// In sk, this message translates to:
+  /// **'Si mimo nakreslenej plochy'**
+  String get anchorZoneNotInside;
+
+  /// No description provided for @anchorZoneTooTight.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plocha je tesnejšia než presnosť GPS'**
+  String get anchorZoneTooTight;
+
+  /// No description provided for @anchorZoneNoFix.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez GPS polohy — kotva sa vzala zo stredu plochy'**
+  String get anchorZoneNoFix;
+
+  /// No description provided for @anchorNoFix.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez GPS polohy sa kotva nedá spustiť'**
+  String get anchorNoFix;
+
   /// No description provided for @activate.
   ///
   /// In sk, this message translates to:

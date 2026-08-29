@@ -588,6 +588,54 @@ class AppLocalizationsSk extends AppLocalizations {
   String get anchorRadiusLabel => 'Sledovaný polomer pohybu';
 
   @override
+  String get anchorZoneTool => 'Kotevná plocha';
+
+  @override
+  String get undoLastPoint => 'Vziať späť posledný bod';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Vyznačiť plochu na mape';
+
+  @override
+  String get anchorZoneDrawHint => 'Ťukaj rohy plochy na mape';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Plocha potrebuje aspoň tri rohy';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Plocha sa sama prekrížila — oprav rohy';
+
+  @override
+  String get anchorZoneArm => 'Strážiť túto plochu';
+
+  @override
+  String get anchorZoneActive => 'Stráženie plochy';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m k okraju plochy';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m za okrajom plochy';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Si mimo nakreslenej plochy';
+
+  @override
+  String get anchorZoneTooTight => 'Plocha je tesnejšia než presnosť GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Bez GPS polohy — kotva sa vzala zo stredu plochy';
+
+  @override
+  String get anchorNoFix => 'Bez GPS polohy sa kotva nedá spustiť';
+
+  @override
   String get activate => 'Aktivovať';
 
   @override

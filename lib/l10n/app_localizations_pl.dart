@@ -588,6 +588,55 @@ class AppLocalizationsPl extends AppLocalizations {
   String get anchorRadiusLabel => 'Monitorowany promień ruchu';
 
   @override
+  String get anchorZoneTool => 'Strefa kotwiczenia';
+
+  @override
+  String get undoLastPoint => 'Cofnij ostatni punkt';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Narysuj strefę na mapie';
+
+  @override
+  String get anchorZoneDrawHint => 'Stukaj rogi strefy na mapie';
+
+  @override
+  String get anchorZoneNeedsPoints =>
+      'Strefa potrzebuje co najmniej trzech rogów';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Strefa przecina samą siebie — popraw rogi';
+
+  @override
+  String get anchorZoneArm => 'Pilnuj tej strefy';
+
+  @override
+  String get anchorZoneActive => 'Wachta strefowa';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m do krawędzi strefy';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m poza strefą';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Jesteś poza narysowaną strefą';
+
+  @override
+  String get anchorZoneTooTight => 'Strefa jest ciaśniejsza niż dokładność GPS';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Brak pozycji GPS — punkt kotwicy wzięto ze strefy';
+
+  @override
+  String get anchorNoFix => 'Wachta kotwiczna wymaga pozycji GPS';
+
+  @override
   String get activate => 'Aktywuj';
 
   @override
