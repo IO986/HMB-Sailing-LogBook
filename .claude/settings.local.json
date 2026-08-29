@@ -32,7 +32,8 @@
       "PowerShell(Copy-Item *)",
       "Bash(adb *)",
       "Bash(git add *)",
-      "Read(//c/dev/hmb/**)"
+      "Read(//c/dev/hmb/**)",
+      "PowerShell(git *)"
     ]
   }
 }

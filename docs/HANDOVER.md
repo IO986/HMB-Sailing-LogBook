@@ -1,3 +1,146 @@
+# Kde sme skončili — 29. 8. 2026
+
+Veľká dávka. Build **63 je na Google Play** (nahral ho skiper 29. 8.),
+`main` je odvtedy o tri commity ďalej. Ďalší upload **musí byť 64** —
+kód 63 je spotrebovaný.
+
+## Čo je v builde 63 (1.32.0+63, commit `42daac0`)
+
+Schéma **v30 → v32**. Záloha z 63 sa do staršej appky nenaimportuje.
+
+- **Miestny čas** všade, prepínač v Nastavenia → Jednotky (predvolene
+  miestny, UTC na výber). PDF v hlavičke stĺpca aj v pätičke uvádza, ktoré
+  pásmo tlačí. GPX zámerne ostáva v UTC — je to dáta pre iný softvér.
+- **Nočné hodiny** zo skutočného západu slnka pre polohu lode: značka pri
+  zázname, súčet za deň aj za plavbu, v denníku aj v PDF.
+- **Kotevná stráž nad plochou** (polygón) namiesto kruhu, pre úzku zátoku.
+  Kruh ostáva predvolený. Plocha prežije reštart appky, zaniká s kotvou.
+- **Kotvová stráž zapisuje vlastnú trasu** (schéma v31,
+  `sailing_sessions.is_anchor_watch`), takže noc na kotve už nie je diera
+  v GPX. Do míľ, vzdialenosti dňa ani nočných hodín sa neráta.
+- **Kotvová stráž prežije reštart appky** — dovtedy po zabití ticho zmizla,
+  bez alarmu a bez stopy v denníku.
+- **Potvrdenie o míľach** cez formulár (`/miles/export`): pre seba alebo
+  pre člena posádky, výber plavieb, meno a kvalifikácia vystavovateľa
+  z profilu skipera. PDF nesie veliteľa plavby, oblasť, prílivové vody,
+  funkciu a rozpis míľ podľa funkcie; pri plavbách, kde držiteľ nebol
+  veliteľ, ostáva miesto na podpis veliteľa. Schéma v32 pridala
+  `historical_voyages.tidal_waters`.
+- **PDF prestalo rezať údaje**: stĺpec Pohon tlačil `Hlavná+` namiesto
+  `Hlavná+Genoa` a `Bočný` namiesto `Bočný vietor S` — bok, na ktorom loď
+  plávala, z dokladu miznul. Poznámky sa už nerežú, fotky sú 120×90.
+- **Zmena kurzu** má vlastný typ udalosti, pravidlo 30° udržaných minútu.
+- Automatické záznamy konečne zapisujú **stav oblohy** a **pohon**.
+- Záznam **„Kotva spustená"** nesie vietor, tlak, teploty, hĺbku a pohon —
+  dovtedy mal len čas a polohu.
+
+## Čo je na `main` navyše (ešte nie na Play)
+
+- `02c751e` — **automatické pokračovanie plavby** po zabití appky (do troch
+  hodín ticha sa rozbehne samo a len oznámi, koľko chýba; medzeru dopočíta
+  priamkou len na ťuknutie) a **červený pruh** cez vrch každej karty, kým je
+  plavba otvorená a nič sa nezapisuje.
+- `da6638c`, `f1572f0` — opravy CI.
+
+## Nočné hodiny: 1,7 vs 0,9
+
+Skiper našiel, že tá istá importovaná plavba vykázala v PDF 1,7 nočnej
+hodiny a v Knihe míľ 0,9. Boli to **dve kópie prahu medzery** — denník
+rátal medzeru do 2 h, Kniha míľ do 30 min. `NightHours.maxGap` je teraz
+jediná kópia a má **30 minút** (hodnota, ktorá je už vytlačená na vydaných
+potvrdeniach). `nightHoursForDay` už nepadá späť na záznamy denníka:
+sú redšie než prah, takže z nich vychádzalo číslo závislé od intervalu
+zapisovania. Test `night_hours_agreement_test.dart` ženie obe cesty
+z jedných bodov a porovnáva ich.
+
+## Otvorené: appku zabíja systém — a je to SAMSUNG, nie Honor
+
+Vo štvrtok 27. 8. má denník **päť „Začiatkov plavby"** (09:09, 09:33,
+15:29, 18:39, 19:17 UTC) a jediný „Koniec" (19:20). Diera 17:54 → 18:39
+UTC = 45 minút, priamka cez ňu 3,07 NM. Míle dňa sú pritom v poriadku
+(28,3 NM oproti 27,7 NM súčtu priamok po odfiltrovaní GPS skokov).
+
+**Dôležité: dialo sa to na Samsungu S24, nie na Honore.** Prvé kolo rád
+mierilo na Honor („Spustenie aplikácií") a je pre S24 irelevantné. Na
+Samsungu sú tri bežné príčiny a dve nie sú zabitie systémom:
+
+1. **Odswipovanie z prehľadu nedávnych** — Samsung ukončí proces aj
+   s foreground service a obíde tým dialóg „nechať bežať" (ten je len na
+   tlačidle späť). Päť reštartov v rôznych časoch tomu sedí.
+2. Uspávanie nepoužívaných aplikácií (zapnuté z výroby).
+3. Nastavenie batérie appky, ktoré nie je „Neobmedzené".
+
+Skiperovi boli poslané inštrukcie k nastaveniam telefónu. **30. 8. ide na
+ďalšiu plavbu a testuje ďalej.**
+
+### Čo od neho po plavbe chcieť
+
+**Zálohu dát**, nie PDF — obsahuje jednotlivé sessions s časmi a všetky
+body trasy, takže sa z nej priamo prečíta, koľkokrát a na ako dlho sa
+trasovanie prerušilo. Z PDF sa to odvodzuje len nepriamo.
+A jednu vetu: **odswipol appku, alebo zmizla sama?**
+
+### Ďalší krok v kóde (nezačatý)
+
+1. **Diagnostika príčiny.** Pri `AppLifecycleState.detached` zapísať značku:
+   keď je pri ďalšom štarte prítomná, appku niekto zavrel riadne (swipe);
+   keď chýba a session je prerušená, proces zomrel tvrdo. Lacné, bez
+   natívneho kódu, a odstráni dohady.
+2. Výslovné `android:stopWithTask="false"` na službe v manifeste (dnes tam
+   nie je uvedené vôbec, spolieha sa na predvolenú hodnotu).
+3. Obrazovky nastavení **podľa výrobcu** — Samsung má iné než Honor; dnes
+   appka otvára androidovú optimalizáciu batérie, ktorá na oboch
+   nerozhoduje. A overovať stav cez `permission_handler`, nie len otvoriť
+   obrazovku a predpokladať.
+
+**Pozor na omyl, ktorý som v tejto session urobil:** strážca cez
+WorkManager/AlarmManager appku nevzkriesi len tak — od Androidu 12 sa
+foreground service vo všeobecnosti nesmie spustiť z pozadia. Výnimka cez
+presný budík existuje, ale `USE_EXACT_ALARM` / `SCHEDULE_EXACT_ALARM` je
+pre Play rovnako sledovaná ako `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`.
+Presun zápisu do izolátu služby je najväčší zisk nezávislý od výrobcu, ale
+znamená postaviť drift isolate server — dva izoláty nad tou istou SQLite
+priamo sú cesta k poškodeným dátam.
+
+## Nástroje a CI
+
+Lokálny Flutter upgradnutý **3.44.9 → 3.47.2**, tá istá stable, akú beží
+CI. Dôvod: 3.44.9 nehlásil lint na nepoužité importy, ktorý CI hlási, a
+warningy sú tam fatálne — CI kvôli tomu spadlo na `main`.
+
+**Nikdy negatovať cez `flutter analyze | grep -c`.** Výstup má ~500 riadkov
+a nástroj ho reže na 30 000 znakov, takže počet vyjde čistý, kým warning
+sedí pod rezom. Takto prešli na `main` dva warningy za sebou. Gatovať
+presne tak, ako CI, a čítať návratový kód:
+
+```
+flutter analyze --no-fatal-infos > /dev/null 2>&1; echo $?
+flutter test > /dev/null 2>&1; echo $?
+```
+
+3.47 si pri prvom behu samo dopísalo `analyzer: exclude:` do
+`analysis_options.yaml` a pohlo tranzitívnymi pinmi v `pubspec.lock`;
+`intl` ostáva caret, ako musí.
+
+## Stav zariadení
+
+Na **Honore** (REA_NX9) je sideloadnuté APK z vetvy pred uploadom — hlási
+sa ako 1.31.0+62 a **nemá** automatické pokračovanie ani červený pruh.
+Skiperov **Samsung S24** má build 63 z Play.
+
+Archív `release_builds/HMB-Sailing-Log-v1.32.0-build63.aab` JE presne ten
+súbor, ktorý šiel na Play (postavený z `42daac0` na Fluttri 3.44.9).
+Neprepisovať — prestavba na novšom toolchaine dá iný súbor s rovnakým
+kódom verzie, ktorý sa už nahrať nedá.
+
+## Neoverené na vode
+
+Kotevná plocha a jej alarm, detekcia zmeny kurzu (30° / 1 min — na
+štvrtkových dátach vyrobilo staré pravidlo 25°/15 min devätnásť záznamov,
+nové ich spraví viac), a NMEA autopilot s otáčkami motora ešte z buildu 62.
+
+---
+
 # Kde sme skončili — 27. 8. 2026
 
 Krátka poznámka, nie plnohodnotná session — len zápis budúcej úlohy, aby
