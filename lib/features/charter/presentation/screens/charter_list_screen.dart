@@ -45,6 +45,16 @@ class CharterListScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
 
     return Scaffold(
+      // Plavbu sa doteraz dalo založiť jedine tým, že sa spustilo
+      // trasovanie — formulár existoval, ale neviedla k nemu žiadna cesta
+      // okrem importu GPX. Na novej lodi pritom skiper potrebuje vyplniť
+      // kartu lode a oblasť plavby PRED vyplávaním: potvrdenie o míľach ich
+      // tlačí a spätne sa dopĺňajú horšie.
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/logbook/new'),
+        icon: const Icon(Icons.add),
+        label: Text(l.newVoyage),
+      ),
       appBar: AppBar(
         title: const Text('HMB Sailing Log'),
         actions: [
@@ -305,6 +315,15 @@ class _EmptyState extends StatelessWidget {
         Text(l.noVoyages, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.grey)),
         const SizedBox(height: 8),
         Text(l.createFirstCharter, style: const TextStyle(color: Colors.grey)),
+        const SizedBox(height: 20),
+        // Prázdna obrazovka má povedať, čo robiť ďalej, nie len že je
+        // prázdna. Trasovanie sa dá spustiť aj bez toho — tlačidlo Štart je
+        // o kúsok vyššie v tej istej karte.
+        FilledButton.icon(
+          onPressed: () => context.push('/logbook/new'),
+          icon: const Icon(Icons.add),
+          label: Text(AppLocalizations.of(context).newVoyage),
+        ),
       ]),
     );
   }
