@@ -1255,6 +1255,14 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Questo Wi-Fi non ha internet — normale sul Wi-Fi degli strumenti. È mostrata l\'ultima previsione salvata; per una nuova usa i dati mobili.';
+
+  @override
+  String get errorNoConnection =>
+      'Nessuna connessione. È mostrata l\'ultima previsione salvata.';
+
+  @override
   String get liveInstrumentData => 'Dati degli strumenti di bordo in diretta';
 
   @override

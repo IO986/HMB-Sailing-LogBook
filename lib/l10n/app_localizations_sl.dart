@@ -1251,6 +1251,14 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Ta Wi-Fi nima interneta — pogosto pri Wi-Fi ladijskih instrumentov. Prikazana je zadnja shranjena napoved; za novo uporabi mobilne podatke.';
+
+  @override
+  String get errorNoConnection =>
+      'Ni povezave. Prikazana je zadnja shranjena napoved.';
+
+  @override
   String get liveInstrumentData => 'Podatki ladijskih instrumentov v živo';
 
   @override

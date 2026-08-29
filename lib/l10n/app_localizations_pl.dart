@@ -1252,6 +1252,14 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'To Wi-Fi nie ma internetu — częste przy Wi-Fi przyrządów. Pokazana jest ostatnia zapisana prognoza; po nową przełącz się na dane komórkowe.';
+
+  @override
+  String get errorNoConnection =>
+      'Brak połączenia. Pokazana jest ostatnia zapisana prognoza.';
+
+  @override
   String get liveInstrumentData => 'Dane na żywo z przyrządów pokładowych';
 
   @override

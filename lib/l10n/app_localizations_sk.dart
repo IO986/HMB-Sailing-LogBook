@@ -1251,6 +1251,14 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Táto WiFi nemá internet (často WiFi lodných prístrojov). Zobrazená je posledná uložená predpoveď; novú stiahneš na mobilných dátach.';
+
+  @override
+  String get errorNoConnection =>
+      'Bez pripojenia. Zobrazená je posledná uložená predpoveď.';
+
+  @override
   String get liveInstrumentData => 'Živé dáta z lodných inštrumentov';
 
   @override

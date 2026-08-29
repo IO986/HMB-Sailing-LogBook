@@ -431,6 +431,8 @@
   "enableGpsFirst": "Zapnite GPS / tracking najprv",
   "downloadForecast": "Stiahnuť predpoveď",
   "downloadError": "Chyba sťahovania: {error}",
+  "errorNoInternetOnThisNetwork": "Táto WiFi nemá internet (často WiFi lodných prístrojov). Zobrazená je posledná uložená predpoveď; novú stiahneš na mobilných dátach.",
+  "errorNoConnection": "Bez pripojenia. Zobrazená je posledná uložená predpoveď.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Živé dáta z lodných inštrumentov",
   "windRelative": "Vietor (rel.)",

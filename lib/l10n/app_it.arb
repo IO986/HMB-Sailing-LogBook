@@ -420,6 +420,8 @@
   "enableGpsFirst": "Attiva prima il GPS / il tracciamento",
   "downloadForecast": "Scarica le previsioni",
   "downloadError": "Errore di download: {error}",
+  "errorNoInternetOnThisNetwork": "Questo Wi-Fi non ha internet — normale sul Wi-Fi degli strumenti. È mostrata l'ultima previsione salvata; per una nuova usa i dati mobili.",
+  "errorNoConnection": "Nessuna connessione. È mostrata l'ultima previsione salvata.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Dati degli strumenti di bordo in diretta",
   "windRelative": "Vento (rel.)",

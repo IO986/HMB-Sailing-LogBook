@@ -420,6 +420,8 @@
   "enableGpsFirst": "Ενεργοποιήστε πρώτα το GPS / την καταγραφή",
   "downloadForecast": "Λήψη πρόγνωσης",
   "downloadError": "Σφάλμα λήψης: {error}",
+  "errorNoInternetOnThisNetwork": "Αυτό το Wi-Fi δεν έχει διαδίκτυο — συνηθισμένο στο Wi-Fi των οργάνων. Εμφανίζεται η τελευταία αποθηκευμένη πρόγνωση· για νέα χρησιμοποίησε δεδομένα κινητής.",
+  "errorNoConnection": "Χωρίς σύνδεση. Εμφανίζεται η τελευταία αποθηκευμένη πρόγνωση.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Ζωντανά δεδομένα ναυτικών οργάνων",
   "windRelative": "Άνεμος (σχετ.)",

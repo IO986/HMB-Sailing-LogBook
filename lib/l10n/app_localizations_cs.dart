@@ -1249,6 +1249,14 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Tato WiFi nemá internet (často WiFi lodních přístrojů). Zobrazena je poslední uložená předpověď; novou stažneš na mobilních datech.';
+
+  @override
+  String get errorNoConnection =>
+      'Bez připojení. Zobrazena je poslední uložená předpověď.';
+
+  @override
   String get liveInstrumentData => 'Živá data z lodních přístrojů';
 
   @override

@@ -420,6 +420,8 @@
   "enableGpsFirst": "Najprije uključite GPS / praćenje",
   "downloadForecast": "Preuzmi prognozu",
   "downloadError": "Greška pri preuzimanju: {error}",
+  "errorNoInternetOnThisNetwork": "Ovaj WiFi nema internet — uobičajeno kod WiFi-ja brodskih instrumenata. Prikazana je zadnja spremljena prognoza; za novu koristi mobilne podatke.",
+  "errorNoConnection": "Bez veze. Prikazana je zadnja spremljena prognoza.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Podaci brodskih instrumenata uživo",
   "windRelative": "Vjetar (rel.)",

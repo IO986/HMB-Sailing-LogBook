@@ -1252,6 +1252,14 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Ця Wi-Fi не має інтернету — звичайна річ для Wi-Fi суднових приладів. Показано останній збережений прогноз; для нового увімкни мобільні дані.';
+
+  @override
+  String get errorNoConnection =>
+      'Немає з’єднання. Показано останній збережений прогноз.';
+
+  @override
   String get liveInstrumentData =>
       'Дані морських інструментів в реальному часі';
 

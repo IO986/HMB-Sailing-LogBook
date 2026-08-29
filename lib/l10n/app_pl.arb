@@ -420,6 +420,8 @@
   "enableGpsFirst": "Najpierw włącz GPS / śledzenie",
   "downloadForecast": "Pobierz prognozę",
   "downloadError": "Błąd pobierania: {error}",
+  "errorNoInternetOnThisNetwork": "To Wi-Fi nie ma internetu — częste przy Wi-Fi przyrządów. Pokazana jest ostatnia zapisana prognoza; po nową przełącz się na dane komórkowe.",
+  "errorNoConnection": "Brak połączenia. Pokazana jest ostatnia zapisana prognoza.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Dane na żywo z przyrządów pokładowych",
   "windRelative": "Wiatr (wzgl.)",

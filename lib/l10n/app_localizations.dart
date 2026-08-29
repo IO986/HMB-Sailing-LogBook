@@ -2420,6 +2420,18 @@ abstract class AppLocalizations {
   /// **'Chyba sťahovania: {error}'**
   String downloadError(String error);
 
+  /// No description provided for @errorNoInternetOnThisNetwork.
+  ///
+  /// In sk, this message translates to:
+  /// **'Táto WiFi nemá internet (často WiFi lodných prístrojov). Zobrazená je posledná uložená predpoveď; novú stiahneš na mobilných dátach.'**
+  String get errorNoInternetOnThisNetwork;
+
+  /// No description provided for @errorNoConnection.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez pripojenia. Zobrazená je posledná uložená predpoveď.'**
+  String get errorNoConnection;
+
   /// No description provided for @liveInstrumentData.
   ///
   /// In sk, this message translates to:

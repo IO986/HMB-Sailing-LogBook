@@ -22,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../shared/utils/network_error_text.dart';
 
 // Reverse geocoding + fallback na súradnice
 final _locationNameProvider = FutureProvider<String?>((ref) async {
@@ -118,7 +119,9 @@ class WeatherScreen extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(AppLocalizations.of(context).downloadError(e.toString()))),
+                    SnackBar(
+                        content: Text(networkErrorText(
+                            e, AppLocalizations.of(context)))),
                   );
                 }
               }
@@ -207,7 +210,9 @@ class _EmptyWeather extends ConsumerWidget {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(AppLocalizations.of(context).downloadError(e.toString()))),
+                      SnackBar(
+                        content: Text(networkErrorText(
+                            e, AppLocalizations.of(context)))),
                     );
                   }
                 }

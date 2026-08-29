@@ -420,6 +420,8 @@
   "enableGpsFirst": "Najprej vklopite GPS / sledenje",
   "downloadForecast": "Prenesi napoved",
   "downloadError": "Napaka pri prenosu: {error}",
+  "errorNoInternetOnThisNetwork": "Ta Wi-Fi nima interneta — pogosto pri Wi-Fi ladijskih instrumentov. Prikazana je zadnja shranjena napoved; za novo uporabi mobilne podatke.",
+  "errorNoConnection": "Ni povezave. Prikazana je zadnja shranjena napoved.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Podatki ladijskih instrumentov v živo",
   "windRelative": "Veter (rel.)",

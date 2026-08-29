@@ -1261,6 +1261,14 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Αυτό το Wi-Fi δεν έχει διαδίκτυο — συνηθισμένο στο Wi-Fi των οργάνων. Εμφανίζεται η τελευταία αποθηκευμένη πρόγνωση· για νέα χρησιμοποίησε δεδομένα κινητής.';
+
+  @override
+  String get errorNoConnection =>
+      'Χωρίς σύνδεση. Εμφανίζεται η τελευταία αποθηκευμένη πρόγνωση.';
+
+  @override
   String get liveInstrumentData => 'Ζωντανά δεδομένα ναυτικών οργάνων';
 
   @override

@@ -1252,6 +1252,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Esta wifi no tiene internet, algo habitual en la wifi de los instrumentos. Se muestra la última previsión guardada; usa datos móviles para una nueva.';
+
+  @override
+  String get errorNoConnection =>
+      'Sin conexión. Se muestra la última previsión guardada.';
+
+  @override
   String get liveInstrumentData => 'Datos en vivo de instrumentos marinos';
 
   @override

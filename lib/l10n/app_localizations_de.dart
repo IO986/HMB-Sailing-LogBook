@@ -1255,6 +1255,14 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Dieses WLAN hat kein Internet — bei Instrumenten-WLAN üblich. Angezeigt wird die letzte gespeicherte Vorhersage; für eine neue mobile Daten nutzen.';
+
+  @override
+  String get errorNoConnection =>
+      'Keine Verbindung. Angezeigt wird die letzte gespeicherte Vorhersage.';
+
+  @override
   String get liveInstrumentData => 'Live-Marineinstrumentdaten';
 
   @override

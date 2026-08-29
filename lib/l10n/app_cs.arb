@@ -420,6 +420,8 @@
   "enableGpsFirst": "Zapni nejprve GPS / tracking",
   "downloadForecast": "Stáhnout předpověď",
   "downloadError": "Chyba stahování: {error}",
+  "errorNoInternetOnThisNetwork": "Tato WiFi nemá internet (často WiFi lodních přístrojů). Zobrazena je poslední uložená předpověď; novou stažneš na mobilních datech.",
+  "errorNoConnection": "Bez připojení. Zobrazena je poslední uložená předpověď.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Živá data z lodních přístrojů",
   "windRelative": "Vítr (rel.)",

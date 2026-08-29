@@ -420,6 +420,8 @@
   "enableGpsFirst": "Спочатку увімкніть GPS / трекінг",
   "downloadForecast": "Завантажити прогноз",
   "downloadError": "Помилка завантаження: {error}",
+  "errorNoInternetOnThisNetwork": "Ця Wi-Fi не має інтернету — звичайна річ для Wi-Fi суднових приладів. Показано останній збережений прогноз; для нового увімкни мобільні дані.",
+  "errorNoConnection": "Немає з’єднання. Показано останній збережений прогноз.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Дані морських інструментів в реальному часі",
   "windRelative": "Вітер (відн.)",

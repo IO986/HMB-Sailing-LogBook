@@ -1252,6 +1252,14 @@ class AppLocalizationsHr extends AppLocalizations {
   }
 
   @override
+  String get errorNoInternetOnThisNetwork =>
+      'Ovaj WiFi nema internet — uobičajeno kod WiFi-ja brodskih instrumenata. Prikazana je zadnja spremljena prognoza; za novu koristi mobilne podatke.';
+
+  @override
+  String get errorNoConnection =>
+      'Bez veze. Prikazana je zadnja spremljena prognoza.';
+
+  @override
   String get liveInstrumentData => 'Podaci brodskih instrumenata uživo';
 
   @override

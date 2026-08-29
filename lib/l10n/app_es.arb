@@ -420,6 +420,8 @@
   "enableGpsFirst": "Activar GPS / rastreo primero",
   "downloadForecast": "Descargar previsión",
   "downloadError": "Error de descarga: {error}",
+  "errorNoInternetOnThisNetwork": "Esta wifi no tiene internet, algo habitual en la wifi de los instrumentos. Se muestra la última previsión guardada; usa datos móviles para una nueva.",
+  "errorNoConnection": "Sin conexión. Se muestra la última previsión guardada.",
   "@downloadError": { "placeholders": { "error": { "type": "String" } } },
   "liveInstrumentData": "Datos en vivo de instrumentos marinos",
   "windRelative": "Viento (rel.)",
