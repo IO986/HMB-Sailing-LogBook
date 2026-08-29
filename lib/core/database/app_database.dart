@@ -1111,9 +1111,12 @@ class AppDatabase extends _$AppDatabase {
   /// pravidlo ako v Knihe míľ, aby potvrdenie o míľach a denník o tej istej
   /// plavbe nikdy nevykázali dve rôzne čísla.
   ///
-  /// Prednosť majú body trasy: sú husté a ukazujú, kedy loď naozaj išla.
-  /// Keď trasa chýba (deň zapísaný ručne, import bez bodov), počíta sa zo
-  /// záznamov denníka — tie polohu a čas nesú tiež, len redšie.
+  /// Počíta sa **výhradne z bodov trasy**, nikdy zo záznamov denníka.
+  /// Záznamy chodia po pätnástich až šesťdesiatich minútach, teda redšie než
+  /// [NightHours.maxGap] — z nich by nočná plavba vyšla raz tak a raz onak
+  /// a hlavne inak než v Knihe míľ, ktorá body trasy používa vždy. Deň bez
+  /// trasy má nula nočných hodín na oboch dokladoch: bez trasy sa nedá
+  /// povedať, kedy sa loď naozaj hýbala, a hádať to do dokladu netreba.
   Future<double> nightHoursForDay(int dayLogId) async {
     final samples = <NightSample>[];
     for (final session in await getSessionsForDay(dayLogId)) {
@@ -1123,16 +1126,6 @@ class AppDatabase extends _$AppDatabase {
           latitude: p.latitude,
           longitude: p.longitude,
         ));
-      }
-    }
-    if (samples.length < 2) {
-      samples.clear();
-      for (final e in await getEntriesForDay(dayLogId)) {
-        final lat = e.latitude;
-        final lon = e.longitude;
-        if (lat == null || lon == null) continue;
-        samples.add(
-            NightSample(timeUtc: e.timestamp, latitude: lat, longitude: lon));
       }
     }
     return NightHours.forSamples(samples);

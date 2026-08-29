@@ -38,22 +38,29 @@ void main() {
         );
 
     test('a leg counts only when both ends are dark', () {
-      // 21:00 -> 22:00, both after sunset.
-      expect(NightHours.forSamples([at(21, 0), at(22, 0)]), closeTo(1.0, 0.001));
-      // 10:00 -> 11:00, broad daylight.
-      expect(NightHours.forSamples([at(10, 0), at(11, 0)]), 0);
+      // 21:00 -> 21:20, both after sunset.
+      expect(NightHours.forSamples([at(21, 0), at(21, 20)]),
+          closeTo(1 / 3, 0.001));
+      // 10:00 -> 10:20, broad daylight.
+      expect(NightHours.forSamples([at(10, 0), at(10, 20)]), 0);
     });
 
     test('a gap longer than the cap is not sailed time', () {
-      // Tracking off overnight would otherwise invent ten night hours.
+      // Tracking off overnight would otherwise invent ten night hours. The
+      // cap is half an hour, and it is the same half hour the mile
+      // certificate uses — the two documents must never disagree.
+      expect(NightHours.maxGap, const Duration(minutes: 30));
+      expect(NightHours.forSamples([at(21, 0), at(21, 45)]), 0);
       expect(NightHours.forSamples([at(21, 0), at(23, 30)]), 0);
     });
 
     test('unordered samples give the same answer', () {
-      final ordered = NightHours.forSamples([at(21, 0), at(21, 30), at(22, 0)]);
-      final shuffled = NightHours.forSamples([at(22, 0), at(21, 0), at(21, 30)]);
+      final ordered =
+          NightHours.forSamples([at(21, 0), at(21, 20), at(21, 40)]);
+      final shuffled =
+          NightHours.forSamples([at(21, 40), at(21, 0), at(21, 20)]);
       expect(shuffled, closeTo(ordered, 0.0001));
-      expect(ordered, closeTo(1.0, 0.001));
+      expect(ordered, closeTo(2 / 3, 0.001));
     });
 
     test('a single sample is no time at all', () {

@@ -17,7 +17,14 @@ class NightHours {
   /// Medzera medzi dvoma bodmi, ktorá sa už neráta ako plavba. Vypnuté
   /// trasovanie cez noc by inak vyrobilo desať nočných hodín, ktoré nikto
   /// neodplával.
-  static const maxGap = Duration(hours: 2);
+  ///
+  /// Tridsať minút, nie viac, a je to jediná kópia tohto čísla v appke.
+  /// Kým existovala druhá (Kniha míľ počítala s 30 minútami, denník s dvomi
+  /// hodinami), tá istá importovaná plavba vykázala v PDF 1,7 nočnej hodiny
+  /// a v Knihe míľ 0,9 — dva doklady o jednej noci. Hodnota je tá, ktorá je
+  /// už vytlačená v potvrdeniach o naplávaných míľach; meniť ju znamená
+  /// prepisovať aj to, čo skiperi dávno odovzdali.
+  static const maxGap = Duration(minutes: 30);
 
   /// Je v [whenUtc] na pozícii [lat]/[lon] tma?
   ///

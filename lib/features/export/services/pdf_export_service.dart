@@ -566,9 +566,10 @@ class PdfExportService {
       List<DutyPeriod> duties,
       {List<Bearing> bearings = const [], double? nightHours}) {
     final pages = <pw.Page>[];
-    // Volajúci ich vie spočítať z bodov trasy, ktoré má načítané; keď ich
-    // nepodá, ostávajú záznamy denníka — redšie, ale tú istú noc.
-    final night = nightHours ?? _nightHoursFromEntries(entries);
+    // Nočné hodiny podáva volajúci z bodov trasy. Keď ich nepodá, dokument
+    // ich zamlčí — dopočítať ich zo záznamov denníka by dalo iné číslo než
+    // to, ktoré o tej istej plavbe tlačí Kniha míľ.
+    final night = nightHours ?? 0;
     final dayName = _date.long(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
 
@@ -1013,17 +1014,6 @@ class PdfExportService {
     );
   }
 
-  /// Nočné hodiny zo záznamov denníka — záloha pre volajúceho, ktorý body
-  /// trasy nemá po ruke. Rovnaké pravidlo noci ako všade inde.
-  static double _nightHoursFromEntries(List<LogbookEntry> entries) =>
-      NightHours.forSamples(entries
-          .where((e) => e.latitude != null && e.longitude != null)
-          .map((e) => NightSample(
-                timeUtc: e.timestamp,
-                latitude: e.latitude!,
-                longitude: e.longitude!,
-              )));
-
   static String _bearingDeg(double value) =>
       '${(value.round() % 360).toString().padLeft(3, '0')}°';
 
@@ -1282,8 +1272,7 @@ class PdfExportService {
         0,
         (s, d) =>
             s +
-            (nightHoursByDay[d.id] ??
-                _nightHoursFromEntries(entriesByDay[d.id] ?? const [])));
+            (nightHoursByDay[d.id] ?? 0));
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
     final maxBft = days.fold<int>(0, (s, d) {
       final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);

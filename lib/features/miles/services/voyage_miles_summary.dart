@@ -39,7 +39,7 @@ class VoyageMilesSummary {
 
 /// Medzera medzi bodmi, po ktorej sa úsek nepočíta — tracking bol vypnutý
 /// alebo appku zabil systém a o trase medzitým nevieme nič.
-const _maxGap = Duration(minutes: 30);
+const _maxGap = NightHours.maxGap;
 
 /// Skok, ktorý nemôže byť plavba (GPS chyba). Rovnaká hranica ako pri živom
 /// počítaní v GpsTrackingService.

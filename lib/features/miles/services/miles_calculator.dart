@@ -86,11 +86,6 @@ class MilesAggregate {
 /// Čistá agregačná logika Knihy míľ – žiadne DB/Flutter závislosti, ľahko
 /// testovateľná. Vstupom sú už načítané riadky (viď [MilesGatheredData]).
 class MilesCalculator {
-  /// Maximálna medzera medzi po sebe idúcimi bodmi tracku, ktorá sa ešte
-  /// počíta do nočných hodín – väčšia medzera znamená, že tracking bol
-  /// pravdepodobne pozastavený/vypnutý.
-  static const _maxGap = Duration(minutes: 30);
-
   static MilesAggregate aggregate({
     required List<Charter> charters,
     required Map<int, List<DayLog>> dayLogsByCharter,
@@ -119,7 +114,7 @@ class MilesCalculator {
       for (final day in matchingDays) {
         charterNm += day.distanceNm;
         final points = trackPointsByDayLog[day.id] ?? const <TrackPoint>[];
-        charterNightHours += _nightHoursForPoints(points);
+        charterNightHours += nightHoursForPoints(points);
       }
 
       totalNm += charterNm;
@@ -185,24 +180,14 @@ class MilesCalculator {
     );
   }
 
-  static double _nightHoursForPoints(List<TrackPoint> points) {
-    if (points.length < 2) return 0;
-    final sorted = [...points]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-    double hours = 0;
-    for (var i = 1; i < sorted.length; i++) {
-      final prev = sorted[i - 1];
-      final curr = sorted[i];
-      final gap = curr.timestamp.difference(prev.timestamp);
-      if (gap <= Duration.zero || gap > _maxGap) continue;
-
-      if (_isNight(prev) && _isNight(curr)) {
-        hours += gap.inSeconds / 3600.0;
-      }
-    }
-    return hours;
-  }
-
-  static bool _isNight(TrackPoint p) =>
-      NightHours.isNight(p.timestamp, p.latitude, p.longitude);
+  /// Nočné hodiny cez to isté pravidlo, aké používa denník a jeho PDF.
+  /// Vlastná slučka tu kedysi bola a rozišla sa s ním o prah medzery, takže
+  /// tá istá plavba vykázala na dvoch dokladoch dve rôzne čísla. Verejné,
+  /// aby sa tá zhoda dala otestovať.
+  static double nightHoursForPoints(List<TrackPoint> points) =>
+      NightHours.forSamples(points.map((p) => NightSample(
+            timeUtc: p.timestamp,
+            latitude: p.latitude,
+            longitude: p.longitude,
+          )));
 }
