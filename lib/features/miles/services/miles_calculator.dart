@@ -1,5 +1,5 @@
 import '../../../core/database/app_database.dart';
-import 'solar_calculator.dart';
+import '../../../core/services/night_hours.dart';
 
 class MilesFilter {
   final int? year;
@@ -27,7 +27,20 @@ class VoyageRow {
   final double distanceNm;
   final int days;
   final double nightHours;
+
+  /// V akej funkcii som na tejto plavbe plával — `skipper`, `coSkipper`,
+  /// `crew`… Pri uznávaní míľ je to prvá vec, na ktorú sa pozerajú: míle
+  /// odplávané ako posádka sa nerátajú rovnako ako míle veliteľa.
   final String? role;
+
+  /// Kto plavbe velil. Nie to isté ako [role] — na cudzej lodi som mohol
+  /// byť posádka a veliteľom bol niekto iný.
+  final String? skipperName;
+
+  /// Prílivové vody? `null`, keď to o plavbe nikto nezaznamenal — potom sa
+  /// do potvrdenia nepíše nič, lebo hádať sa to nedá.
+  final bool? tidalWaters;
+
   final bool isManualEntry;
 
   /// ID `HistoricalVoyages` riadku – vyplnené len ak [isManualEntry] je true
@@ -48,6 +61,8 @@ class VoyageRow {
     required this.nightHours,
     required this.role,
     required this.isManualEntry,
+    this.skipperName,
+    this.tidalWaters,
     this.historicalVoyageId,
     this.charterId,
   });
@@ -60,6 +75,12 @@ class MilesAggregate {
   final double nightHours;
   final Map<int, double> nmByYear;
   final Map<String, double> nmByVessel;
+
+  /// Míle rozdelené podľa funkcie, v akej boli odplávané. Jeden spoločný
+  /// súčet by čitateľa nechal skírovať riadky ručne — a to je práve to,
+  /// čo pri uznávaní míľ nikto robiť nechce.
+  final Map<String, double> nmByRole;
+
   final List<VoyageRow> voyages;
 
   const MilesAggregate({
@@ -70,6 +91,7 @@ class MilesAggregate {
     required this.nmByYear,
     required this.nmByVessel,
     required this.voyages,
+    this.nmByRole = const {},
   });
 
   static const empty = MilesAggregate(
@@ -86,11 +108,6 @@ class MilesAggregate {
 /// Čistá agregačná logika Knihy míľ – žiadne DB/Flutter závislosti, ľahko
 /// testovateľná. Vstupom sú už načítané riadky (viď [MilesGatheredData]).
 class MilesCalculator {
-  /// Maximálna medzera medzi po sebe idúcimi bodmi tracku, ktorá sa ešte
-  /// počíta do nočných hodín – väčšia medzera znamená, že tracking bol
-  /// pravdepodobne pozastavený/vypnutý.
-  static const _maxGap = Duration(minutes: 30);
-
   static MilesAggregate aggregate({
     required List<Charter> charters,
     required Map<int, List<DayLog>> dayLogsByCharter,
@@ -104,7 +121,13 @@ class MilesCalculator {
     double nightHours = 0;
     final nmByYear = <int, double>{};
     final nmByVessel = <String, double>{};
+    final nmByRole = <String, double>{};
     final voyages = <VoyageRow>[];
+
+    void countRole(String? role, double nm) {
+      final key = (role == null || role.isEmpty) ? 'unknown' : role;
+      nmByRole.update(key, (v) => v + nm, ifAbsent: () => nm);
+    }
 
     for (final charter in charters) {
       final dayLogs = dayLogsByCharter[charter.id] ?? const <DayLog>[];
@@ -119,7 +142,7 @@ class MilesCalculator {
       for (final day in matchingDays) {
         charterNm += day.distanceNm;
         final points = trackPointsByDayLog[day.id] ?? const <TrackPoint>[];
-        charterNightHours += _nightHoursForPoints(points);
+        charterNightHours += nightHoursForPoints(points);
       }
 
       totalNm += charterNm;
@@ -129,12 +152,17 @@ class MilesCalculator {
       nmByYear.update(
           charter.dateFrom.year, (v) => v + charterNm, ifAbsent: () => charterNm);
       nmByVessel.update(vessel, (v) => v + charterNm, ifAbsent: () => charterNm);
+      countRole(charter.myRole, charterNm);
 
       voyages.add(VoyageRow(
         dateFrom: matchingDays.map((d) => d.date).reduce((a, b) => a.isBefore(b) ? a : b),
         dateTo: matchingDays.map((d) => d.date).reduce((a, b) => a.isAfter(b) ? a : b),
         vesselName: vessel,
-        area: charter.homePort,
+        // Oblasť plavby, nie domovský prístav. Do potvrdenia patrí, kde sa
+        // plávalo — „Central Dalmatia", nie marína, z ktorej loď vyplávala.
+        area: charter.cruisingArea ?? charter.homePort,
+        skipperName: charter.skipperName,
+        tidalWaters: charter.tidalWaters,
         distanceNm: charterNm,
         days: matchingDays.length,
         nightHours: charterNightHours,
@@ -157,12 +185,15 @@ class MilesCalculator {
       voyageCount += 1;
       nmByYear.update(v.dateFrom.year, (n) => n + v.distanceNm, ifAbsent: () => v.distanceNm);
       nmByVessel.update(v.vesselName, (n) => n + v.distanceNm, ifAbsent: () => v.distanceNm);
+      countRole(v.role, v.distanceNm);
 
       voyages.add(VoyageRow(
         dateFrom: v.dateFrom,
         dateTo: v.dateTo,
         vesselName: v.vesselName,
         area: v.area,
+        skipperName: _fullName(v.captainFirstName, v.captainLastName),
+        tidalWaters: v.tidalWaters,
         distanceNm: v.distanceNm,
         days: days,
         nightHours: vNightHours,
@@ -179,35 +210,68 @@ class MilesCalculator {
       daysAtSea: daysAtSea,
       voyageCount: voyageCount,
       nightHours: nightHours,
+      nmByRole: nmByRole,
       nmByYear: nmByYear,
       nmByVessel: nmByVessel,
       voyages: voyages,
     );
   }
 
-  static double _nightHoursForPoints(List<TrackPoint> points) {
-    if (points.length < 2) return 0;
-    final sorted = [...points]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  /// Ten istý súhrn, ale len z vybraných plavieb.
+  ///
+  /// Potvrdenie sa nevystavuje vždy na celú knihu — skiper si vyberie plavby,
+  /// ktoré chce doložiť. Súčty sa preto prepočítajú z vybraných riadkov;
+  /// prevziať pôvodné totály a vytlačiť k nim kratšiu tabuľku by dalo doklad,
+  /// v ktorom súčet nesedí so zoznamom pod ním.
+  static MilesAggregate restrictTo(
+      MilesAggregate source, List<VoyageRow> voyages) {
+    final nmByYear = <int, double>{};
+    final nmByVessel = <String, double>{};
+    final nmByRole = <String, double>{};
+    var totalNm = 0.0;
+    var nightHours = 0.0;
+    var daysAtSea = 0;
 
-    double hours = 0;
-    for (var i = 1; i < sorted.length; i++) {
-      final prev = sorted[i - 1];
-      final curr = sorted[i];
-      final gap = curr.timestamp.difference(prev.timestamp);
-      if (gap <= Duration.zero || gap > _maxGap) continue;
-
-      if (_isNight(prev) && _isNight(curr)) {
-        hours += gap.inSeconds / 3600.0;
-      }
+    for (final v in voyages) {
+      totalNm += v.distanceNm;
+      nightHours += v.nightHours;
+      daysAtSea += v.days;
+      nmByYear.update(v.dateFrom.year, (n) => n + v.distanceNm,
+          ifAbsent: () => v.distanceNm);
+      nmByVessel.update(v.vesselName, (n) => n + v.distanceNm,
+          ifAbsent: () => v.distanceNm);
+      final role = (v.role == null || v.role!.isEmpty) ? 'unknown' : v.role!;
+      nmByRole.update(role, (n) => n + v.distanceNm,
+          ifAbsent: () => v.distanceNm);
     }
-    return hours;
+
+    return MilesAggregate(
+      totalNm: totalNm,
+      daysAtSea: daysAtSea,
+      voyageCount: voyages.length,
+      nightHours: nightHours,
+      nmByYear: nmByYear,
+      nmByVessel: nmByVessel,
+      nmByRole: nmByRole,
+      voyages: List.unmodifiable(voyages),
+    );
   }
 
-  static bool _isNight(TrackPoint p) {
-    final utc = p.timestamp.toUtc();
-    final solar = SolarCalculator.sunriseSunsetUtc(
-        DateTime.utc(utc.year, utc.month, utc.day), p.latitude, p.longitude);
-    if (solar.sunrise == null || solar.sunset == null) return false;
-    return utc.isBefore(solar.sunrise!) || utc.isAfter(solar.sunset!);
+  /// Meno veliteľa z dvoch polí, alebo `null`, keď nie je vyplnené ani
+  /// jedno — prázdny reťazec by v potvrdení vyzeral ako vymazaný údaj.
+  static String? _fullName(String? first, String? last) {
+    final joined = '${first ?? ''} ${last ?? ''}'.trim();
+    return joined.isEmpty ? null : joined;
   }
+
+  /// Nočné hodiny cez to isté pravidlo, aké používa denník a jeho PDF.
+  /// Vlastná slučka tu kedysi bola a rozišla sa s ním o prah medzery, takže
+  /// tá istá plavba vykázala na dvoch dokladoch dve rôzne čísla. Verejné,
+  /// aby sa tá zhoda dala otestovať.
+  static double nightHoursForPoints(List<TrackPoint> points) =>
+      NightHours.forSamples(points.map((p) => NightSample(
+            timeUtc: p.timestamp,
+            latitude: p.latitude,
+            longitude: p.longitude,
+          )));
 }

@@ -43,6 +43,9 @@ final _milesRawDataProvider = FutureProvider.autoDispose<_MilesRawData>((ref) as
       final sessions = await db.getSessionsForDay(day.id);
       final points = <TrackPoint>[];
       for (final session in sessions) {
+        // Úseky kotvovej stráže sa do Knihy míľ nerátajú: sú to hodiny na
+        // reťazi, nie odplávaná trasa. V GPX exporte zostávajú.
+        if (session.isAnchorWatch) continue;
         points.addAll(await db.getTrackPointsForSession(session.sessionId));
       }
       trackPointsByDayLog[day.id] = points;

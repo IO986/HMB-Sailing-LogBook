@@ -21,6 +21,7 @@ import '../../bearing/providers/bearing_provider.dart'
 import '../../bearing/services/bearing_geometry.dart';
 import '../../miles/services/voyage_miles_summary.dart';
 import '../../../core/models/crew_member_ref.dart';
+import '../../../core/services/night_hours.dart';
 import '../../../core/services/units_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/models/skipper_profile.dart';
@@ -118,6 +119,9 @@ class PdfExportService {
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
     int pdfRevision = 0,
+    /// Nočné hodiny na deň, spočítané z bodov trasy. Deň, ktorý tu chýba, si
+    /// ich odvodí zo svojich záznamov denníka.
+    Map<int, double> nightHoursByDay = const {},
     HandoverProtocol? checkInProtocol,
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
@@ -143,11 +147,13 @@ class PdfExportService {
       final photos = await _loadPhotos(entries);
       for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos,
           docId, rev, l10n, dutiesByDay[day.id] ?? const [],
-          bearingsByDay[day.id] ?? const [])) {
+          bearings: bearingsByDay[day.id] ?? const [],
+          nightHours: nightHoursByDay[day.id])) {
         pdf.addPage(page);
       }
     }
-    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev, l10n));
+    pdf.addPage(_summaryPage(charter, days, entriesByDay, docId, rev, l10n,
+        nightHoursByDay));
     final sbPage = await _safetyBriefingPage(charter, crewSignatures, docId, rev, l10n);
     pdf.addPage(sbPage);
 
@@ -191,6 +197,7 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    double? nightHours,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -199,7 +206,7 @@ class PdfExportService {
     final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
     for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev,
-        l10n, duties, bearings)) {
+        l10n, duties, bearings: bearings, nightHours: nightHours)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
@@ -227,6 +234,23 @@ class PdfExportService {
   /// jeden naraz a nastavenie je globálne pre appku.
   static UnitsSettings units = const UnitsSettings();
 
+  /// Hlavička časového stĺpca. Označenie pásma je v nej, nie pri každom
+  /// riadku — inak by sa do 34 px široké kolónky nezmestil ani čas.
+  ///
+  /// [sample] je ľubovoľný okamih z tabuľky: posun sa berie k nemu, aby deň
+  /// v lete nedostal zimný posun.
+  static String _timeColHeader(AppLocalizations l, DateTime? sample) =>
+      units.timeZone == TimeZoneMode.utc
+          ? l.pdfColTimeUtc
+          : l.pdfColTimeLocal(units.offsetLabel(sample ?? DateTime.now()));
+
+  /// Čas vyhotovenia dokumentu do pätičky, v zvolenom pásme a s jeho
+  /// označením.
+  static String _exportedNow() {
+    final now = DateTime.now();
+    return '${_date.shortWithTime(units.atZone(now))} ${units.zoneLabel(now)}';
+  }
+
   static Future<File> saveBytesToFile(Uint8List bytes, String name) async {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/${name}_${DateTime.now().millisecondsSinceEpoch}.pdf');
@@ -244,6 +268,7 @@ class PdfExportService {
     Map<int, List<Bearing>> bearingsByDay = const {},
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    Map<int, double> nightHoursByDay = const {},
     HandoverProtocol? checkInProtocol,
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
@@ -256,7 +281,7 @@ class PdfExportService {
       charter: charter, days: days, entriesByDay: entriesByDay,
       mapScreenshots: mapScreenshots, signatureImage: signatureImage,
       l10n: l10n, dutiesByDay: dutiesByDay, bearingsByDay: bearingsByDay,
-      skipperProfile: skipperProfile,
+      skipperProfile: skipperProfile, nightHoursByDay: nightHoursByDay,
       checkInProtocol: checkInProtocol, checkInChecklist: checkInChecklist,
       checkOutProtocol: checkOutProtocol, checkOutChecklist: checkOutChecklist,
     );
@@ -273,6 +298,7 @@ class PdfExportService {
     Uint8List? mapScreenshot,
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
+    double? nightHours,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -281,7 +307,7 @@ class PdfExportService {
       charter: charter, day: day, entries: entries,
       l10n: l10n, duties: duties, bearings: bearings,
       mapScreenshot: mapScreenshot, signatureImage: signatureImage,
-      skipperProfile: skipperProfile);
+      skipperProfile: skipperProfile, nightHours: nightHours);
     return saveBytesToFile(bytes, 'day_${day.id}');
   }
 
@@ -537,8 +563,13 @@ class PdfExportService {
   static List<pw.Page> _dayPages(Charter charter, DayLog day,
       List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
       String docId, int revision, AppLocalizations l,
-      List<DutyPeriod> duties, [List<Bearing> bearings = const []]) {
+      List<DutyPeriod> duties,
+      {List<Bearing> bearings = const [], double? nightHours}) {
     final pages = <pw.Page>[];
+    // Nočné hodiny podáva volajúci z bodov trasy. Keď ich nepodá, dokument
+    // ich zamlčí — dopočítať ich zo záznamov denníka by dalo iné číslo než
+    // to, ktoré o tej istej plavbe tlačí Kniha míľ.
+    final night = nightHours ?? 0;
     final dayName = _date.long(day.date);
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
 
@@ -601,11 +632,18 @@ class PdfExportService {
                 pw.Text(units.formatDistance(day.distanceNm, decimals: 1), style: pw.TextStyle(
                     color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
               if (voyageStart.isNotEmpty)
-                pw.Text('${l.pdfDeparture.toUpperCase()} ${DateFormat('HH:mm').format(voyageStart.first.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfDeparture.toUpperCase()} ${units.formatTimeWithZone(voyageStart.first.timestamp)}',
                     style: pw.TextStyle(color: PdfColors.green200, fontSize: 8)),
               if (voyageEnd.isNotEmpty)
-                pw.Text('${l.pdfArrival.toUpperCase()} ${DateFormat('HH:mm').format(voyageEnd.last.timestamp.toUtc())} UTC',
+                pw.Text('${l.pdfArrival.toUpperCase()} ${units.formatTimeWithZone(voyageEnd.last.timestamp)}',
                     style: pw.TextStyle(color: PdfColors.orange200, fontSize: 8)),
+              // Nočné hodiny patria do hlavičky dňa z rovnakého dôvodu ako
+              // prejdená vzdialenosť: je to výkon dňa, ktorý sa spätne
+              // nedá zistiť odnikiaľ.
+              if (night > 0)
+                pw.Text(
+                    _pdfText(l.nightSailingHours(night.toStringAsFixed(1))),
+                    style: pw.TextStyle(color: PdfColors.grey200, fontSize: 8)),
             ]),
           ]),
         ),
@@ -919,7 +957,7 @@ class PdfExportService {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       columnWidths: {
-        0: const pw.FixedColumnWidth(34), // Čas UTC
+        0: const pw.FixedColumnWidth(38), // Čas v zvolenom pásme
         1: const pw.FlexColumnWidth(1), // Objekt
         2: const pw.FixedColumnWidth(44), // Pravý kurz
         3: const pw.FixedColumnWidth(44), // Magnetický
@@ -931,7 +969,7 @@ class PdfExportService {
           repeat: true,
           decoration: pw.BoxDecoration(color: _lgrey),
           children: [
-            head(l.timeCol),
+            head(_timeColHeader(l, bearings.isEmpty ? null : bearings.first.takenAt)),
             head(l.bearingPdfObject),
             head(l.bearingPdfBearing),
             head(l.bearingMagneticLabel),
@@ -941,7 +979,7 @@ class PdfExportService {
         ),
         for (final b in bearings)
           pw.TableRow(children: [
-            cell(DateFormat('HH:mm').format(b.takenAt.toUtc())),
+            cell(units.formatTime(b.takenAt)),
             // Pri resekcii je podstatné, ČO sa zameriavalo — názov bodu má
             // prednosť pred voľnou poznámkou.
             cell(b.targetName ?? b.label ?? '—'),
@@ -986,17 +1024,23 @@ class PdfExportService {
 
   /// Krátky popis pôvodu hodnôt počasia, alebo `null` pri starých záznamoch
   /// spred schémy v27, kde zdroj nikto nezaznamenal.
+  /// Zdroj hodnôt počasia, skrátený pre 40 px široký stĺpec.
+  ///
+  /// Vetné znenie z obrazovky sa sem nezmestí: „Namerané lodnými prístrojmi"
+  /// sa v tabuľke oreže na „namerané lodnými", čo nie je kratšie, ale
+  /// nezmyselné. V dokumente stačí menovka zdroja — vetu si čitateľ prečíta
+  /// v appke.
   static String? _weatherSourceLabel(LogbookEntry e, AppLocalizations l) {
     final source = e.weatherSource;
     if (source == null) return null;
-    if (source == 'nmea') return l.weatherSourceInstruments;
-    if (source != 'dhmz') return l.weatherSourceModel;
+    if (source == 'nmea') return l.pdfWeatherSourceInstruments;
+    if (source != 'dhmz') return l.pdfWeatherSourceModel;
     final name = e.weatherStation;
-    if (name == null) return l.weatherSourceStationUnknown;
+    if (name == null) return l.pdfWeatherSourceStationUnknown;
     final d = e.weatherStationDistanceM;
     return d == null
-        ? l.weatherSourceStation(name)
-        : l.weatherSourceStationAt(name, (d / 1000).toStringAsFixed(1));
+        ? l.pdfWeatherSourceStation(name)
+        : l.pdfWeatherSourceStationAt(name, (d / 1000).toStringAsFixed(1));
   }
 
   static pw.Widget _entriesTable(List<LogbookEntry> entries,
@@ -1004,7 +1048,7 @@ class PdfExportService {
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       columnWidths: {
-        0: const pw.FixedColumnWidth(30),   // Čas UTC
+        0: const pw.FixedColumnWidth(34),   // Čas v zvolenom pásme
         1: const pw.FixedColumnWidth(50),   // GPS lat+lon (2 riadky)
         2: const pw.FixedColumnWidth(28),   // SOG + jednotka v hlavičke
         3: const pw.FixedColumnWidth(22),   // COG °
@@ -1012,7 +1056,7 @@ class PdfExportService {
         5: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
         6: const pw.FixedColumnWidth(26),   // hPa
         7: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
-        8: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
+        8: const pw.FixedColumnWidth(46),   // Pohon + kurz voči vetru + motor/nádrže
         9: const pw.FixedColumnWidth(40),   // Počasie – plný názov, 2 riadky
         10: const pw.FlexColumnWidth(1),    // Poznámka
       },
@@ -1023,7 +1067,7 @@ class PdfExportService {
         pw.TableRow(repeat: true, decoration: pw.BoxDecoration(color: _blue), children:
           // Rýchlosť a teplota nesú jednotku v hlavičke, nie pri každej
           // hodnote — v stĺpci širokom 28 px sa jednotka k číslu nezmestí.
-          [l.pdfColTimeUtc, 'GPS', 'SOG ${units.speedLabel}', 'COG',
+          [_timeColHeader(l, entries.isEmpty ? null : entries.first.timestamp), 'GPS', 'SOG ${units.speedLabel}', 'COG',
               // Hĺbka zo sondy — v papierovom denníku stojí hneď pri polohe
               // a tu tiež: patrí k tomu, kde loď bola, nie k počasiu.
               '${l.depthLabel} m',
@@ -1032,7 +1076,14 @@ class PdfExportService {
               .map((h) => _hcell(h)).toList()),
         ...entries.asMap().entries.map((e) {
           final entry = e.value;
-          final time = DateFormat('HH:mm').format(entry.timestamp.toUtc());
+          final time = units.formatTime(entry.timestamp);
+          // Nočná plavba: rozhoduje skutočný západ slnka pre polohu záznamu,
+          // nie hodiny. Značka stojí pod časom — vlastný stĺpec by v tabuľke
+          // s jedenástimi kolónkami zobral miesto poznámke.
+          final isNight = entry.latitude != null &&
+              entry.longitude != null &&
+              NightHours.isNight(
+                  entry.timestamp, entry.latitude!, entry.longitude!);
           final parsedMode = parseSailMode(entry.sailMode, entry.skipperNote);
           final sailMode = parsedMode.modes.isEmpty
               ? '-'
@@ -1067,8 +1118,20 @@ class PdfExportService {
             decoration: pw.BoxDecoration(
                 color: e.key.isEven ? PdfColor.fromHex('#F7F9FC') : PdfColors.white),
             children: [
-              // Čas
-              _dcell(time, fontSize: 7.5),
+              // Čas + značka nočnej plavby
+              pw.Padding(
+                padding:
+                    const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(time, style: const pw.TextStyle(fontSize: 7.5)),
+                    if (isNight)
+                      pw.Text(_pdfText(l.pdfNightShort),
+                          style: pw.TextStyle(fontSize: 5.5, color: _dgrey)),
+                  ],
+                ),
+              ),
               // GPS lat/lon
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -1120,11 +1183,15 @@ class PdfExportService {
               // Pohon + motor/nadrze
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  pw.Text(_pdfText(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
+                  // Zalomiť, nie orezať. Na jeden riadok sa „Hlavná+Genova"
+                  // nezmestí a orezané „Hlavná+" tvrdí niečo iné, než sa
+                  // stalo; z „Bočný S" ostalo „Bočný" a bok, na ktorom loď
+                  // plávala, z dokladu úplne zmizol.
+                  pw.Text(_pdfText(sailMode), maxLines: 2,
                       style: const pw.TextStyle(fontSize: 7.5)),
                   if (sailDir != null)
                     pw.Text(_pdfText(sailDirectionShort(sailDir, l)),
-                        maxLines: 1, overflow: pw.TextOverflow.clip,
+                        maxLines: 2,
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
@@ -1165,7 +1232,10 @@ class PdfExportService {
                   children: [
                     if (photos.containsKey(entry.id))
                       pw.Container(
-                        width: 65, height: 52,
+                        // 65 x 52 pt bola pečiatka, na ktorej sa nedalo nič
+                        // rozoznať. Riadok s fotkou je tým vyšší než ostatné
+                        // — v denníku je čitateľnosť prednejšia než mriežka.
+                        width: 120, height: 90,
                         margin: const pw.EdgeInsets.only(bottom: 3),
                         decoration: pw.BoxDecoration(
                           border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
@@ -1175,10 +1245,12 @@ class PdfExportService {
                           child: pw.Image(pw.MemoryImage(photos[entry.id]!),
                               fit: pw.BoxFit.cover)),
                       ),
+                    // Bez stropu: poznámka je text skipera a orezaná po
+                    // troch riadkoch mizla bez akéhokoľvek náznaku, že
+                    // pokračuje. Pretečenie na ďalšiu stranu rieši MultiPage.
                     if (noteText.isNotEmpty)
                       pw.Text(_pdfText(noteText),
-                          style: const pw.TextStyle(fontSize: 7.5),
-                          maxLines: 3, overflow: pw.TextOverflow.clip),
+                          style: const pw.TextStyle(fontSize: 7.5)),
                   ],
                 ),
               ),
@@ -1193,8 +1265,14 @@ class PdfExportService {
 
   static pw.Page _summaryPage(Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, String docId, int revision,
-      AppLocalizations l) {
+      AppLocalizations l,
+      [Map<int, double> nightHoursByDay = const {}]) {
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
+    final totalNight = days.fold<double>(
+        0,
+        (s, d) =>
+            s +
+            (nightHoursByDay[d.id] ?? 0));
     final totalEntries = entriesByDay.values.fold<int>(0, (s, e) => s + e.length);
     final maxBft = days.fold<int>(0, (s, d) {
       final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -1223,6 +1301,11 @@ class PdfExportService {
           pw.SizedBox(width: 6),
           _statBox(l.pdfStatMaxBeaufort.toUpperCase(),
               maxBft > 0 ? 'Bft $maxBft' : '-', _navy),
+          pw.SizedBox(width: 6),
+          // Nočné hodiny stoja vedľa míľ zámerne: pri potvrdení o naplávaných
+          // míľach sa na ne pýtajú ako na druhý údaj hneď po vzdialenosti.
+          _statBox(l.pdfStatNightHours.toUpperCase(),
+              '${totalNight.toStringAsFixed(1)} h', _dgrey),
         ]),
         pw.SizedBox(height: 14),
 
@@ -1269,7 +1352,7 @@ class PdfExportService {
         ),
         pw.Spacer(),
         _footer(
-          '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+          '${l.pdfExportedAt}: ${_exportedNow()}',
           docId: docId, revision: revision,
         ),
       ]),
@@ -1464,7 +1547,8 @@ class PdfExportService {
     String docId = '',
     int revision = 0,
   }) {
-    final timeStr = _date.shortWithSeconds(signedAt);
+    final timeStr = '${_date.shortWithSeconds(units.atZone(signedAt))} '
+        '${units.zoneLabel(signedAt)}';
     final shortHash = hash.substring(0, 12);
     final qrData = 'HMB-LOG:v2'
         '|id:$docId'
@@ -1498,7 +1582,7 @@ class PdfExportService {
         pw.SizedBox(height: 6),
         if (signerName != null)
           pw.Text(_pdfText(signerName), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-        pw.Text('${l.pdfSignedAt}: $timeStr UTC', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
+        pw.Text('${l.pdfSignedAt}: $timeStr', style: pw.TextStyle(color: _dgrey, fontSize: 9)),
         pw.SizedBox(height: 20),
         pw.Divider(color: PdfColors.grey300),
         pw.SizedBox(height: 12),
@@ -1529,7 +1613,7 @@ class PdfExportService {
           ]),
         ]),
         pw.Spacer(),
-        _footer('${_pdfText(docTitle)}  |  ${l.pdfSignedAt} $timeStr UTC', docId: docId, revision: revision),
+        _footer('${_pdfText(docTitle)}  |  ${l.pdfSignedAt} $timeStr', docId: docId, revision: revision),
       ]),
     );
   }
@@ -1667,8 +1751,21 @@ class PdfExportService {
       'motor': 'Motor', 'main': l.sailMain, 'genoa': 'Genoa',
       'reef1': 'Reef1', 'reef2': 'Reef2',
     };
-    return modes.split(',').map((m) => map[m.trim()] ?? m).join('+');
+    // Medzery okolo '+' nie sú ozdoba: v úzkom stĺpci je to jediné miesto,
+    // kde sa dá zalomiť, a bez nich sa „Hlavná+Genoa" zlomí uprostred slova.
+    return modes.split(',').map((m) => map[m.trim()] ?? m).join(' + ');
   }
+
+  /// Funkcia na palube preložená; neznámy kód sa vytlačí tak, ako je
+  /// uložený — vymyslieť si ho by bolo horšie než ukázať surový zápis.
+  static String _roleLabel(String? role, AppLocalizations l) => switch (role) {
+        null || '' => '-',
+        'skipper' => l.roleSkipper,
+        'coSkipper' => l.roleCoSkipper,
+        'crew' => l.roleCrew,
+        'unknown' => '-',
+        _ => role,
+      };
 
   static String _degToCompass(double deg) {
     const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE',
@@ -2085,7 +2182,7 @@ class PdfExportService {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_exportedNow()}',
         docId: docId,
         revision: rev,
       ),
@@ -2288,6 +2385,14 @@ class PdfExportService {
     required AppLocalizations l,
     required MilesAggregate aggregate,
     String? signerName,
+    /// Kvalifikácia vystavovateľa — bez nej je podpis len meno a doklad
+    /// nehovorí, kto ho vystavil.
+    String? issuerQualification,
+    /// Komu sa potvrdenie vystavuje. `null` pri potvrdení pre seba.
+    String? recipientName,
+    /// Pre seba: pridá skiperský súhrn a do hlavičky napíše, že si držiteľ
+    /// potvrdzuje vlastné míle.
+    bool forSelf = true,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -2315,10 +2420,38 @@ class PdfExportService {
             )
           : pw.SizedBox(),
       footer: (ctx) => _footer(
-        '${l.pdfExportedAt}: ${_date.shortWithTime(DateTime.now().toUtc())} UTC',
+        '${l.pdfExportedAt}: ${_exportedNow()}',
         docId: docId, revision: 0,
       ),
       build: (ctx) => [
+        // Komu a od koho. Doklad bez týchto dvoch riadkov je len tabuľka
+        // čísel — nedá sa z neho zistiť, čie míle to sú ani kto za ne ručí.
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(10),
+          margin: const pw.EdgeInsets.only(bottom: 12),
+          decoration: pw.BoxDecoration(
+            color: _lgrey,
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+          ),
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                  _pdfText('${l.pdfMilesIssuedFor}: '
+                      '${(forSelf ? signerName : recipientName) ?? '-'}'),
+                  style: pw.TextStyle(
+                      fontSize: 10, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 2),
+              pw.Text(
+                  _pdfText(forSelf
+                      ? l.pdfMilesOwnRecord
+                      : '${l.pdfMilesIssuedBy}: ${signerName ?? '-'}'
+                          '${(issuerQualification ?? '').isEmpty ? '' : ', $issuerQualification'}'),
+                  style: pw.TextStyle(fontSize: 8.5, color: _dgrey)),
+            ],
+          ),
+        ),
         pw.Row(children: [
           _statBox(
               '${l.pdfTotalLabel.toUpperCase()} ${units.distanceLabel.toUpperCase()}',
@@ -2338,30 +2471,160 @@ class PdfExportService {
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
           columnWidths: {
-            0: const pw.FlexColumnWidth(1.8),
-            1: const pw.FlexColumnWidth(1.6),
-            2: const pw.FlexColumnWidth(1.8),
-            3: const pw.FlexColumnWidth(1),
-            4: const pw.FlexColumnWidth(1.2),
+            0: const pw.FlexColumnWidth(1.6),
+            1: const pw.FlexColumnWidth(1.4),
+            2: const pw.FlexColumnWidth(1.4),
+            3: const pw.FlexColumnWidth(1.4),
+            4: const pw.FlexColumnWidth(0.8),
+            5: const pw.FlexColumnWidth(0.9),
+            6: const pw.FlexColumnWidth(1.1),
           },
           children: [
-            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, units.distanceLabel, l.pdfColRole].map((h) => _hcell(h)).toList()),
+            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children: [
+              l.pdfColDateRange,
+              l.pdfVesselLabel,
+              // Kto plavbe velil — na cudzej lodi to nie je držiteľ dokladu.
+              l.pdfSkipperLabel,
+              l.pdfColArea,
+              l.pdfColTidal,
+              units.distanceLabel,
+              l.pdfColRole,
+            ].map((h) => _hcell(h)).toList()),
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
                 _cell('${v.isManualEntry ? "* " : ""}${fmt.short(v.dateFrom)}-${fmt.short(v.dateTo)}'),
                 _cell(_pdfText(v.vesselName)),
+                _cell(_pdfText(v.skipperName ?? '-')),
                 _cell(_pdfText(v.area ?? '-')),
-                _cell(v.distanceNm.toStringAsFixed(1)),
-                _cell(_pdfText(v.role ?? '-')),
+                // Prázdna kolónka, keď to nikto nezaznamenal: „nie" by bolo
+                // tvrdenie, ktoré sa nemá o čo oprieť.
+                _cell(v.tidalWaters == null
+                    ? '-'
+                    : (v.tidalWaters! ? l.pdfTidal : l.pdfNonTidal)),
+                _cell(units.distanceValue(v.distanceNm).toStringAsFixed(1)),
+                _cell(_pdfText(_roleLabel(v.role, l))),
               ],
             )),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
-              _cell(l.pdfTotalLabel.toUpperCase(), bold: true), _cell(''), _cell(''),
-              _cell(aggregate.totalNm.toStringAsFixed(1), bold: true), _cell(''),
+              _cell(l.pdfTotalLabel.toUpperCase(), bold: true),
+              _cell(''), _cell(''), _cell(''), _cell(''),
+              _cell(units.distanceValue(aggregate.totalNm).toStringAsFixed(1),
+                  bold: true),
+              _cell(''),
             ]),
           ],
         ),
+
+        // Rozpis podľa funkcie. Míle odplávané ako posádka a ako veliteľ sa
+        // pri uznávaní neberú rovnako, takže jeden spoločný súčet by si
+        // čitateľ musel skírovať z riadkov sám.
+        if (aggregate.nmByRole.length > 1) ...[
+          pw.SizedBox(height: 10),
+          pw.Text(l.pdfMilesByRole.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 4),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            children: [
+              for (final entry in aggregate.nmByRole.entries)
+                pw.TableRow(children: [
+                  _cell(_pdfText(_roleLabel(entry.key, l))),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+            ],
+          ),
+        ],
+
+        // Skiperský súhrn: len pri potvrdení pre seba. Na doklade pre člena
+        // posádky by to boli cudzie čísla.
+        if (forSelf && aggregate.voyages.isNotEmpty) ...[
+          pw.SizedBox(height: 14),
+          pw.Text(l.pdfMilesSkipperSummary.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 4),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            children: [
+              for (final entry in (aggregate.nmByVessel.entries.toList()
+                    ..sort((a, b) => b.value.compareTo(a.value))))
+                pw.TableRow(children: [
+                  _cell(_pdfText(entry.key)),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+              for (final entry in (aggregate.nmByYear.entries.toList()
+                    ..sort((a, b) => b.key.compareTo(a.key))))
+                pw.TableRow(children: [
+                  _cell('${entry.key}'),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+              pw.TableRow(children: [
+                _cell(l.pdfStatNightHours),
+                _cell('${aggregate.nightHours.toStringAsFixed(1)} h'),
+              ]),
+            ],
+          ),
+        ],
+
+        // Míle odplávané v inej funkcii než veliteľ potvrdzuje ten, kto
+        // plavbe velil. Doklad preto nechá miesto na jeho podpis — jeden
+        // riadok na každého veliteľa, s vytlačeným menom, aby bolo jasné,
+        // kto sa kam podpisuje. Bez toho by si držiteľ potvrdzoval sám
+        // sebe míle, ktoré neodplával ako veliteľ.
+        if (() {
+          final names = aggregate.voyages
+              .where((v) => v.role != 'skipper')
+              .map((v) => v.skipperName)
+              .whereType<String>()
+              .where((n) => n.trim().isNotEmpty)
+              .toSet();
+          return names.isNotEmpty;
+        }()) ...[
+          pw.SizedBox(height: 18),
+          pw.Text(l.pdfMilesSkipperConfirms.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 8),
+          ...aggregate.voyages
+              .where((v) => v.role != 'skipper')
+              .map((v) => v.skipperName)
+              .whereType<String>()
+              .where((n) => n.trim().isNotEmpty)
+              .toSet()
+              .map((name) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 14),
+                    child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Container(
+                              width: 220,
+                              decoration: const pw.BoxDecoration(
+                                  border: pw.Border(
+                                      bottom: pw.BorderSide(
+                                          color: PdfColors.grey600,
+                                          width: 0.5)))),
+                          pw.SizedBox(height: 3),
+                          pw.Text(_pdfText(name),
+                              style: const pw.TextStyle(fontSize: 8.5)),
+                        ]),
+                  )),
+        ],
 
         if (aggregate.voyages.any((v) => v.isManualEntry)) ...[
           pw.SizedBox(height: 8),
@@ -2375,7 +2638,10 @@ class PdfExportService {
             pw.Container(width: 200, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text(_pdfText('${l.pdfSignatureLabel}: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text(
+                _pdfText('${l.pdfSignatureLabel}: ${signerName ?? ""}'
+                    '${(issuerQualification ?? '').isEmpty ? '' : ', $issuerQualification'}'),
+                style: const pw.TextStyle(fontSize: 8.5)),
           ])),
           pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Container(width: 150, decoration: const pw.BoxDecoration(
@@ -2410,8 +2676,12 @@ class PdfExportService {
     child: pw.Text(text, style: pw.TextStyle(
         color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 7.5)));
 
-  // Bežný cell (kompaktný)
-  static pw.Widget _cell(String text, {bool bold = false, int maxLines = 1}) =>
+  /// Bežná bunka tabuľky.
+  ///
+  /// Dva riadky, nie jeden: stĺpce s názvami prístavov, lodí a položiek
+  /// checklistu sa na jeden riadok nezmestia a orezaný názov je horší než
+  /// zalomený. Čísla sú krátke, tých sa druhý riadok nikdy netýka.
+  static pw.Widget _cell(String text, {bool bold = false, int maxLines = 2}) =>
     pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
       child: pw.Text(text, maxLines: maxLines, overflow: pw.TextOverflow.clip,
           style: pw.TextStyle(fontSize: 8.5,
@@ -2460,14 +2730,13 @@ class PdfExportService {
     ];
     final phase = phaseNames[MoonCalculator.phaseIndex(day)];
     final illum = (MoonCalculator.illumination(day) * 100).round();
-    final fmt = DateFormat('HH:mm');
-
-    String utc(DateTime? t) => t == null ? '-' : '${fmt.format(t.toUtc())} UTC';
+    String at(DateTime? t) =>
+        t == null ? '-' : units.formatTimeWithZone(t);
 
     return pw.Row(children: [
-      _wRow('${l.sunriseLabel}:', utc(times.sunrise)),
+      _wRow('${l.sunriseLabel}:', at(times.sunrise)),
       pw.SizedBox(width: 14),
-      _wRow('${l.sunsetLabel}:', utc(times.sunset)),
+      _wRow('${l.sunsetLabel}:', at(times.sunset)),
       pw.SizedBox(width: 14),
       _wRow('${l.moonPhaseLabel}:', '${_pdfText(phase)}  $illum%'),
     ]);
@@ -2482,7 +2751,6 @@ class PdfExportService {
       List<DutyPeriod> duties, DateTime day, AppLocalizations l) {
     final localMidnight = DateTime(day.year, day.month, day.day);
     final now = DateTime.now().toUtc();
-    final fmt = DateFormat('HH:mm');
 
     final rows = duties
         .map((d) => clipToDay(d.toInterval(), localMidnight, now))
@@ -2492,14 +2760,13 @@ class PdfExportService {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: rows.map((c) {
-        // UTC, matching the entries table on the same page. .toUtc() is not
-        // redundant — drift hands back DateTime objects flagged local, so
-        // formatting them directly would print local time as UTC.
+        // The same zone as the entries table on the same page — the reader
+        // must not have to convert between two clocks inside one document.
         final from = '${c.clippedStart ? '<- ' : ''}'
-            '${fmt.format(c.fromUtc.toUtc())}';
+            '${units.formatTime(c.fromUtc)}';
         final to = c.duty.isRunning
             ? l.logDutyStillRunning
-            : '${fmt.format(c.toUtc.toUtc())}${c.clippedEnd ? ' ->' : ''}';
+            : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
         return pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 1.5),
           child: pw.Row(children: [
@@ -2530,6 +2797,8 @@ class PdfExportService {
         return l.voyageEnd;
       case LogbookEventType.sailChange:
         return l.logEventSailChange;
+      case LogbookEventType.courseChange:
+        return l.logEventCourseChange;
       case LogbookEventType.anchorDropped:
         return l.logEventAnchorDropped;
       case LogbookEventType.anchorRaised:

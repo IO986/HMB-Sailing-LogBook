@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ import '../../core/providers/nav_prefs_provider.dart';
 import '../../core/providers/skipper_profile_provider.dart';
 import '../../core/providers/sync_provider.dart';
 import '../../core/providers/sync_settings_provider.dart';
+import '../../core/services/app_update_service.dart';
 import '../../core/services/background_service.dart';
 import '../../core/services/gps_tracking_service.dart';
 import '../../core/models/marine_instrument_data.dart';
@@ -31,6 +33,7 @@ import '../../features/help/presentation/screens/user_guide_screen.dart';
 import '../../main.dart';
 import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../features/safety/presentation/screens/safety_screen.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -54,7 +57,32 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       await BackgroundService.stopIfOrphaned(
           trackingActive: GpsTrackingService().isTracking);
       if (mounted) await maybePromptInterruptedVoyage(context, ref);
+      // Kotva je stále dole aj vtedy, keď appku medzitým zabil systém.
+      // Stráž sa ticho rozbehne ďalej — inak by skiper spal v presvedčení,
+      // že mu niekto sleduje kotvu, a nesledoval by ju nikto.
+      await ref.read(anchorProvider.notifier).restore();
+      _watchForUpdate();
     });
+  }
+
+  /// Novšia verzia z Google Play sa stiahne na pozadí a keď je hotová,
+  /// ponúkne sa reštart. Až po prompt-och vyššie a nikdy počas plavby —
+  /// pozri [shouldCheckForUpdate].
+  void _watchForUpdate() {
+    final service = AppUpdateService()
+      ..onDownloaded = () {
+        if (!mounted) return;
+        final l = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.updateDownloaded),
+          duration: const Duration(seconds: 10),
+          action: SnackBarAction(
+            label: l.updateRestart,
+            onPressed: AppUpdateService().install,
+          ),
+        ));
+      };
+    unawaited(service.checkAndStart());
   }
 
   /// First-run only: vysvetlí, prečo appka chce notifikácie (upozornenie

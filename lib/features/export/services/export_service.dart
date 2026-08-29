@@ -56,7 +56,7 @@ class ExportService {
 
       for (final day in days) {
         entriesByDay[day.id] = await db.getEntriesForDay(day.id);
-        sessionsByDay[day.id] = await db.getSessionsForDay(day.id);
+        sessionsByDay[day.id] = await db.getSessionsForDay(day.id, includeAnchorWatch: true);
         for (final s in sessionsByDay[day.id]!) {
           pointsBySession[s.sessionId] =
               await db.getTrackPointsForSession(s.sessionId);
@@ -78,6 +78,14 @@ class ExportService {
         bearingsByDay[day.id] = await db.getBearingsForDay(day.id);
       }
 
+      // Nočné hodiny sa počítajú z bodov trasy, teda z toho istého zdroja
+      // ako v Knihe míľ — denník a potvrdenie o míľach nesmú o tej istej
+      // plavbe vykázať dve rôzne čísla.
+      final nightHoursByDay = <int, double>{};
+      for (final day in days) {
+        nightHoursByDay[day.id] = await db.nightHoursForDay(day.id);
+      }
+
       final pdf = await PdfExportService.exportCharter(
         dateFormat: await AppDate.fromPreferences(),
         charter: charter,
@@ -87,6 +95,7 @@ class ExportService {
         l10n: l10n,
         dutiesByDay: dutiesByDay,
         bearingsByDay: bearingsByDay,
+        nightHoursByDay: nightHoursByDay,
         signatureImage: signatureImage,
         checkInProtocol: checkInProtocol,
         checkInChecklist:
@@ -151,7 +160,7 @@ class ExportService {
 
     try {
       final entries = await db.getEntriesForDay(day.id);
-      final sessions = await db.getSessionsForDay(day.id);
+      final sessions = await db.getSessionsForDay(day.id, includeAnchorWatch: true);
       final pointsBySession = <String, List<TrackPoint>>{};
       for (final s in sessions) {
         pointsBySession[s.sessionId] =
@@ -168,6 +177,7 @@ class ExportService {
         charter: charter,
         day: day,
         entries: entries,
+        nightHours: await db.nightHoursForDay(day.id),
         l10n: l10n,
         duties: duties,
         bearings: bearings,
@@ -248,7 +258,7 @@ class ExportService {
           charterTitle: charter.title, dayDate: day.date);
       final shareFiles = <XFile>[XFile(pdfFile.path)];
 
-      final sessions = await db.getSessionsForDay(day.id);
+      final sessions = await db.getSessionsForDay(day.id, includeAnchorWatch: true);
       final tracked = <(SailingSession, List<TrackPoint>)>[];
       for (final s in sessions) {
         final pts = await db.getTrackPointsForSession(s.sessionId);
@@ -318,7 +328,7 @@ class ExportService {
       final sessionsByDay = <int, List<SailingSession>>{};
       final pointsBySession = <String, List<TrackPoint>>{};
       for (final day in allDays) {
-        sessionsByDay[day.id] = await db.getSessionsForDay(day.id);
+        sessionsByDay[day.id] = await db.getSessionsForDay(day.id, includeAnchorWatch: true);
         for (final s in sessionsByDay[day.id]!) {
           pointsBySession[s.sessionId] = await db.getTrackPointsForSession(s.sessionId);
         }

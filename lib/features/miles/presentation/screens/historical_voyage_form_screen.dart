@@ -39,6 +39,11 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
 
   DateTime _dateFrom = DateTime.now();
   DateTime _dateTo = DateTime.now();
+
+  /// Prílivové vody. Tri stavy, nie dva: `null` znamená „nezaznamenané" a do
+  /// potvrdenia sa potom nepíše nič. Vynútené „nie" by bolo tvrdenie, ktoré
+  /// sa nemá o čo oprieť.
+  bool? _tidalWaters;
   String? _signaturePath;
   bool _loading = false;
   int? _existingId;
@@ -84,6 +89,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
       _nmCtrl.text = v.distanceNm.toString();
       _daysCtrl.text = v.daysCount?.toString() ?? '';
       _nightHoursCtrl.text = v.nightHours?.toString() ?? '';
+      _tidalWaters = v.tidalWaters;
       _roleCtrl.text = v.role;
       _captainFirstCtrl.text = v.captainFirstName ?? '';
       _captainLastCtrl.text = v.captainLastName ?? '';
@@ -141,6 +147,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
       distanceNm: Value(double.tryParse(_nmCtrl.text) ?? 0),
       daysCount: Value(int.tryParse(_daysCtrl.text)),
       nightHours: Value(double.tryParse(_nightHoursCtrl.text)),
+      tidalWaters: Value(_tidalWaters),
       role: Value(_roleCtrl.text.trim().isEmpty ? 'skipper' : _roleCtrl.text.trim()),
       captainFirstName:
           Value(_captainFirstCtrl.text.trim().isEmpty ? null : _captainFirstCtrl.text.trim()),
@@ -263,6 +270,20 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
         ),
         const SizedBox(height: 12),
         TextField(controller: _roleCtrl, decoration: InputDecoration(labelText: l.roleLabel)),
+        const SizedBox(height: 12),
+        // Pri uznávaní míľ sa na prílivové vody pýtajú zvlášť.
+        Text(l.milesTidalWaters, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 4),
+        SegmentedButton<int>(
+          segments: [
+            ButtonSegment(value: 0, label: Text(l.notSpecified)),
+            ButtonSegment(value: 1, label: Text(l.crewCertWatersTidal)),
+            ButtonSegment(value: 2, label: Text(l.crewCertWatersNonTidal)),
+          ],
+          selected: {_tidalWaters == null ? 0 : (_tidalWaters! ? 1 : 2)},
+          onSelectionChanged: (sel) => setState(() => _tidalWaters =
+              switch (sel.first) { 1 => true, 2 => false, _ => null }),
+        ),
         const SizedBox(height: 16),
 
         Text(l.logbookSignatureSection, style: Theme.of(context).textTheme.titleSmall),

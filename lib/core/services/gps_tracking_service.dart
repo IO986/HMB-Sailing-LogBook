@@ -62,6 +62,11 @@ class GpsTrackingService {
   // keď sa poloha posunula aspoň o _minCourseDistM, inak GPS šum/duplicitné
   // fixy vygenerujú náhodný/nulový kurz.
   static const double _minCourseDistM = 8;
+
+  /// Odklon, od ktorého sa zmena kurzu považuje za zámernú, a čas, ktorý sa
+  /// v novom smere musí udržať, aby sa zapísala.
+  static const double _courseChangeDeg = 30;
+  static const Duration _courseChangeHold = Duration(minutes: 1);
   double? _lastComputedCourseDeg;
 
   // Zápis trackpointu sa škrtí, súčet míľ nie — pozri TrackPointThrottle.
@@ -130,6 +135,12 @@ class GpsTrackingService {
     double bridgedDistanceNm = 0,
     String? skipperName,
     int logIntervalSeconds = 3600,
+    /// Pokračovanie prerušenej plavby, nie nová plavba. Prvý záznam potom
+    /// nedostane značku „Začiatok plavby": appka spadla, loď neodrazila
+    /// druhýkrát, a v denníku by z toho vznikla plavba, ktorá sa nekonala
+    /// (nahlásené z terénu: „Začiatok plavby 19:17, Koniec plavby 19:20"
+    /// na konci dňa, ktorý bežal od rána).
+    bool isResume = false,
   }) async {
     _logIntervalSeconds = logIntervalSeconds;
     debugPrint('[GPS] startTracking dayLogId=$dayLogId interval=${logIntervalSeconds}s');
@@ -200,7 +211,7 @@ class GpsTrackingService {
     debugPrint('[GPS] Started OK, interval=${_logIntervalSeconds}s');
 
     // _posSub už beží, prvý záznam naplánuj
-    _scheduleFirstEntry();
+    _scheduleFirstEntry(isResume: isResume);
 
     // Počasie
     Timer(const Duration(seconds: 3), _syncWeather);
@@ -221,17 +232,21 @@ class GpsTrackingService {
     );
   }
 
-  /// Počkaj na GPS a urob prvý záznam
-  void _scheduleFirstEntry() async {
+  /// Počkaj na GPS a urob prvý záznam.
+  ///
+  /// Pri pokračovaní prerušenej plavby je to obyčajný automatický záznam —
+  /// plavba už začala a druhý začiatok by bol vymyslený údaj.
+  void _scheduleFirstEntry({bool isResume = false}) async {
+    final event = isResume ? null : LogbookEventType.voyageStart;
+    final note = isResume ? '' : 'Voyage start';
     // Ak máme pozíciu z LocationService, urob záznam okamžite
     final existing = _lastPosition ?? LocationService().lastPosition;
     if (existing != null) {
       _lastPosition = existing;
       debugPrint('[GPS] First entry: using existing position');
       await Future.delayed(const Duration(seconds: 2));
-      await createAutomaticLogbookEntry(
-          note: 'Voyage start', event: LogbookEventType.voyageStart);
-      _geocodeDeparture(existing.latitude, existing.longitude);
+      await createAutomaticLogbookEntry(note: note, event: event);
+      if (!isResume) _geocodeDeparture(existing.latitude, existing.longitude);
       return;
     }
 
@@ -249,9 +264,8 @@ class GpsTrackingService {
         onTimeout: () => throw TimeoutException('GPS timeout'),
       );
       _lastPosition = pos;
-      await createAutomaticLogbookEntry(
-          note: 'Voyage start', event: LogbookEventType.voyageStart);
-      _geocodeDeparture(pos.latitude, pos.longitude);
+      await createAutomaticLogbookEntry(note: note, event: event);
+      if (!isResume) _geocodeDeparture(pos.latitude, pos.longitude);
     } catch (e) {
       debugPrint('[GPS] First entry failed: $e');
     } finally {
@@ -582,6 +596,43 @@ class GpsTrackingService {
   }
 
   /// Vráti aktuálne NMEA dáta z aktívneho zdroja (TCP alebo UDP), ak sú čerstvé.
+  /// Podmienky pre záznam, ktorý nevzniká z bežiacej plavby.
+  ///
+  /// Kotvová stráž zapisuje do denníka aj vtedy, keď plavba už skončila —
+  /// vtedy [createAutomaticLogbookEntry] nezapíše nič, lebo nemá session.
+  /// Aby taký riadok nebol v PDF prázdny (nahlásené z terénu: „Kotva
+  /// spustená" mala len čas a polohu), berie si volajúci podmienky odtiaľto:
+  /// je to ten istý reťazec priorít — prístroje na lodi → stanica → model.
+  Future<EntryConditions> conditionsAt({
+    required double latitude,
+    required double longitude,
+  }) {
+    final nmea = _freshNmea();
+    final windFresh = nmea != null && _isFresh(nmea.windLastUpdate);
+    return _conditions.build(
+      latitude: latitude,
+      longitude: longitude,
+      instrumentWind: windFresh
+          ? (speedKnots: nmea.windSpeedKnots, directionDeg: nmea.windAngleDegrees)
+          : null,
+      instrumentWaterTemp: nmea?.waterTempCelsius,
+    );
+  }
+
+  /// Hĺbka pod kýlom zo sondy, ak je meranie čerstvé. Pri kotvení je to
+  /// údaj, na ktorý sa každý pýta ako prvý.
+  double? get instrumentDepthMeters {
+    final nmea = _freshNmea();
+    return nmea != null && _isFresh(nmea.depthLastUpdate) ? nmea.depthMeters : null;
+  }
+
+  /// Meranie z prístrojov staršie než toto sa neberie — stará hodnota zo
+  /// sondy je horšia než žiadna.
+  static const _fieldStale = Duration(seconds: 10);
+
+  static bool _isFresh(DateTime? t) =>
+      t != null && DateTime.now().difference(t) < _fieldStale;
+
   MarineInstrumentData? _freshNmea() {
     final tcp = RaymarineConnectionService();
     if (tcp.isConnected && tcp.hasFreshData) return tcp.current;
@@ -594,6 +645,9 @@ class GpsTrackingService {
     String? note,
     LogbookEventType? event,
     SailDirection? sailDirection,
+    /// Spôsob pohonu ako čiarkou oddelené kódy (`motor`, `main`, …). Keď ho
+    /// volajúci nepodá, preberie sa posledný zapísaný v ten deň.
+    String? sailMode,
     bool isAutoEntry = true,
   }) async {
     if (_currentSession == null || _db == null) {
@@ -610,10 +664,7 @@ class GpsTrackingService {
 
     final nmea = _freshNmea();
 
-    const fieldStale = Duration(seconds: 10);
-    bool freshField(DateTime? t) =>
-        t != null && DateTime.now().difference(t) < fieldStale;
-    final windFresh = nmea != null && freshField(nmea.windLastUpdate);
+    final windFresh = nmea != null && _isFresh(nmea.windLastUpdate);
 
     // Hĺbka pod kýlom zo sondy. Do denníka patrí z rovnakého dôvodu ako
     // poloha: spätne sa nedá zistiť odnikiaľ a pri nájazde na plytčinu je to
@@ -621,7 +672,7 @@ class GpsTrackingService {
     // v rovnakom zmysle ako vietor — stará hodnota zo sondy je horšia než
     // žiadna.
     final depthMeters =
-        nmea != null && freshField(nmea.depthLastUpdate) ? nmea.depthMeters : null;
+        nmea != null && _isFresh(nmea.depthLastUpdate) ? nmea.depthMeters : null;
 
     final sog = (nmea?.sogKnots) ?? _kts(pos.speed);
     // pos.heading z telefónu je nespoľahlivý (často 0°) — uprednostni kurz
@@ -658,10 +709,12 @@ class GpsTrackingService {
     final entryNote = note ?? '';
 
     // Prevezmi posledný spôsob plavby dňa: skiper prepne motor/plachty raz
-    // a automatické zápisy majú pokračovať v tom, čo zadal.
-    final sailMode = _activeDayLogId != null
-        ? await _db!.lastSailModeForDay(_activeDayLogId!)
-        : null;
+    // a automatické zápisy majú pokračovať v tom, čo zadal. Volajúci ho môže
+    // prebiť — to robí rýchle tlačidlo pohonu na mape.
+    final modes = sailMode ??
+        (_activeDayLogId != null
+            ? await _db!.lastSailModeForDay(_activeDayLogId!)
+            : null);
 
     // Kurz voči vetru sa preberá rovnako ako spôsob plavby: skiper ho zadá
     // pri obrate a dovtedy platí ďalej. Volajúci ho môže prebiť — presne to
@@ -678,7 +731,7 @@ class GpsTrackingService {
       dayLogId: drift.Value(_activeDayLogId),
       sessionId: drift.Value(_currentSession!.sessionId),
       timestamp: entryTimestamp,
-      sailMode: drift.Value(sailMode),
+      sailMode: drift.Value(modes),
       latitude: drift.Value(pos.latitude),
       longitude: drift.Value(pos.longitude),
       sog: drift.Value(sog),
@@ -693,6 +746,10 @@ class GpsTrackingService {
       // Motohodiny narátané z otáčok — v ručnom zázname ich skiper píše sám,
       // tu ich vie appka doplniť sama.
       engineHours: drift.Value(_engineHours > 0 ? _engineHours : null),
+      // Stav oblohy: doteraz ho plnil len ručný formulár, takže stĺpec
+      // Počasie bol pri automatických zápisoch prázdny. Model ho vie ku
+      // každému zápisu, tak nech tam je.
+      weatherCondition: drift.Value(conditions.condition),
       weatherSource: drift.Value(conditions.source.code),
       weatherStation: drift.Value(conditions.station),
       weatherStationDistanceM: drift.Value(conditions.stationDistanceM),
@@ -724,8 +781,10 @@ class GpsTrackingService {
       'waterTemp': conditions.waterTemp,
       'depthMeters': depthMeters,
       'engineHours': _engineHours > 0 ? _engineHours : null,
+      'weatherCondition': conditions.condition,
       'weatherSource': conditions.source.code,
       'weatherStation': conditions.station,
+      'sailMode': modes,
       'skipperNote': entryNote,
       'pointOfSail': direction?.pointOfSail.code,
       'tack': direction?.tack?.code,
@@ -754,6 +813,13 @@ class GpsTrackingService {
     debugPrint('[GPS] Auto entry created OK');
   }
 
+  /// Zapíše zmenu kurzu, ktorá vydržala.
+  ///
+  /// Podmienka je dvojitá a obe polovice sú potrebné: odklon aspoň
+  /// [_courseChangeDeg] od naposledy zapísaného kurzu, ktorý sa udrží aspoň
+  /// [_courseChangeHold]. Samotný odklon by zapísal každý zákmit GPS a každé
+  /// zaváhanie kormidla na vlne; samotný čas by nezapísal nič. Držaný nový
+  /// smer je to, čo do papierového denníka zapíše kormidelník.
   Future<void> _checkCourseChange(Position pos) async {
     if (_kts(pos.speed) < 0.5) return;
     // Bez spoľahlivo dopočítaného kurzu (ešte žiadny predošlý bod, alebo
@@ -761,31 +827,47 @@ class GpsTrackingService {
     // pos.heading z telefónu býva 0°/nespoľahlivý.
     final course = _lastComputedCourseDeg;
     if (course == null) return;
-    if (_lastLoggedCourse == null) { _lastLoggedCourse = course; return; }
-
-    double diff = (course - _lastLoggedCourse!).abs();
-    if (diff > 180) diff = 360 - diff;
-
-    if (diff > 25) {
-      if (_courseChangeStart == null) {
-        _courseChangeStart = DateTime.now();
-        _courseChangeHeading = course;
-      } else {
-        final elapsed = DateTime.now().difference(_courseChangeStart!);
-        if (elapsed.inMinutes >= 15) {
-          double diffFromStart = (course - _courseChangeHeading!).abs();
-          if (diffFromStart > 180) diffFromStart = 360 - diffFromStart;
-          if (diffFromStart > 20) {
-            await createAutomaticLogbookEntry(note: 'Zmena kurzu');
-            _lastLoggedCourse = course;
-          }
-          _courseChangeStart = null;
-          _courseChangeHeading = null;
-        }
-      }
-    } else {
-      if (_courseChangeStart == null) _lastLoggedCourse = course;
+    if (_lastLoggedCourse == null) {
+      _lastLoggedCourse = course;
+      return;
     }
+
+    if (_courseDiff(course, _lastLoggedCourse!) < _courseChangeDeg) {
+      // Loď sa vrátila do pôvodného smeru — odklon bol len výkyv, nie zmena.
+      _courseChangeStart = null;
+      _courseChangeHeading = null;
+      _lastLoggedCourse = course;
+      return;
+    }
+
+    if (_courseChangeStart == null) {
+      _courseChangeStart = DateTime.now();
+      _courseChangeHeading = course;
+      return;
+    }
+
+    // Nový smer sa musí držať aj sám v sebe: keď loď medzitým zatočila
+    // znovu, meria sa čas od tej novšej zmeny, nie od prvej.
+    if (_courseDiff(course, _courseChangeHeading!) >= _courseChangeDeg) {
+      _courseChangeStart = DateTime.now();
+      _courseChangeHeading = course;
+      return;
+    }
+
+    if (DateTime.now().difference(_courseChangeStart!) < _courseChangeHold) {
+      return;
+    }
+
+    await createAutomaticLogbookEntry(event: LogbookEventType.courseChange);
+    _lastLoggedCourse = course;
+    _courseChangeStart = null;
+    _courseChangeHeading = null;
+  }
+
+  /// Uhol medzi dvoma kurzami, vždy 0–180° (359° a 1° sú od seba 2°).
+  static double _courseDiff(double a, double b) {
+    final diff = (a - b).abs() % 360;
+    return diff > 180 ? 360 - diff : diff;
   }
 
   double _kts(double ms) => ms * 1.94384;

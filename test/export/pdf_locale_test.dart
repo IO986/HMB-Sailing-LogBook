@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hmb_sailing_log/core/database/app_database.dart';
@@ -125,6 +126,45 @@ void main() {
 
   test('builds a day PDF in Slovak', () async {
     expect(await buildLength(const Locale('sk')), greaterThan(1000));
+  });
+
+  /// The propulsion column used to print `Hlavná+` for `Hlavná+Genova` and
+  /// `Bočný` for `Bočný S`, because both cells clipped at one line in a 34 pt
+  /// column — the side the boat was sailing on vanished from the document.
+  ///
+  /// A unit test cannot read glyphs off a page, so this asserts the next best
+  /// thing: the row that carries the full propulsion, the point of sail and a
+  /// long note must produce a MEASURABLY larger document than the same row
+  /// without them. Text that never reaches the page adds no bytes.
+  test('a full propulsion, point of sail and a long note reach the page',
+      () async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('sk'));
+
+    Future<int> lengthWith(LogbookEntry e) async {
+      final bytes = await PdfExportService.buildDayPdfBytes(
+        dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
+        charter: charter(),
+        day: dayLog(),
+        l10n: l10n,
+        entries: [e],
+      );
+      return bytes.length;
+    }
+
+    final bare = entry(null, null, 11);
+    final rich = bare.copyWith(
+      sailMode: const Value('main,genoa'),
+      pointOfSail: const Value('beam_reach'),
+      tack: const Value('S'),
+      skipperNote: const Value(
+          'Vietor sa stočil na severozápad a zosilnel, refovali sme hlavnú '
+          'a stiahli genovu na polovicu; posádka v záveternej kajute, '
+          'kurz sme držali na Šoltu.'),
+    );
+
+    expect(await lengthWith(rich), greaterThan(await lengthWith(bare)),
+        reason: 'the propulsion, the tack or the note never made it onto the '
+            'page');
   });
 
   test('builds a day PDF in Ukrainian — Cyrillic must not break rendering',

@@ -1,14 +1,9 @@
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../export/services/pdf_export_service.dart';
 import '../../providers/miles_provider.dart';
 import '../../services/miles_calculator.dart';
 import '../../../../core/services/units_service.dart';
@@ -26,21 +21,14 @@ class MilesBookScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l.milesBookTitle),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save_alt),
-            tooltip: l.saveToDevice,
-            onPressed: aggregateAsync.maybeWhen(
-              data: (agg) => () => _exportPdf(context, agg,
-                  saveLocally: true, dateFormat: AppDate.of(context, ref)),
-              orElse: () => null,
-            ),
-          ),
+          // Jedno tlačidlo, nie dve. Potvrdenie sa vystavuje niekomu
+          // konkrétnemu a z konkrétnych plavieb, a to sa z ikonky vybrať
+          // nedá — ukladanie aj zdieľanie sú až na konci formulára.
           IconButton(
             icon: const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: l.exportPdf,
+            tooltip: l.milesExportTitle,
             onPressed: aggregateAsync.maybeWhen(
-              data: (agg) => () => _exportPdf(context, agg,
-                  saveLocally: false, dateFormat: AppDate.of(context, ref)),
+              data: (_) => () => context.push('/miles/export'),
               orElse: () => null,
             ),
           ),
@@ -57,36 +45,6 @@ class MilesBookScreen extends ConsumerWidget {
         label: Text(l.addHistoricalVoyage),
       ),
     );
-  }
-
-  Future<void> _exportPdf(BuildContext context, MilesAggregate agg,
-      {required bool saveLocally, required AppDate dateFormat}) async {
-    final l = AppLocalizations.of(context);
-    try {
-      final pdfBytes =
-          await PdfExportService.exportMilesCertificate(
-              dateFormat: dateFormat, l: l, aggregate: agg);
-      final fileName = 'HMB_Kniha_Mil_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      if (saveLocally) {
-        await FilePicker.platform.saveFile(
-          dialogTitle: l.saveToDevice,
-          fileName: fileName,
-          bytes: pdfBytes,
-        );
-      } else {
-        final dir = await getTemporaryDirectory();
-        final file = File('${dir.path}/$fileName');
-        await file.writeAsBytes(pdfBytes);
-        await Share.shareXFiles([XFile(file.path)]);
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(l.errorMsg(e.toString())),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
   }
 }
 

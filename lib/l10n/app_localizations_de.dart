@@ -590,6 +590,54 @@ class AppLocalizationsDe extends AppLocalizations {
   String get anchorRadiusLabel => 'Ankerradius';
 
   @override
+  String get anchorZoneTool => 'Ankerzone';
+
+  @override
+  String get undoLastPoint => 'Letzten Punkt zurücknehmen';
+
+  @override
+  String get anchorZoneDrawFromMap => 'Zone auf der Karte zeichnen';
+
+  @override
+  String get anchorZoneDrawHint => 'Tippe die Ecken der Zone auf der Karte an';
+
+  @override
+  String get anchorZoneNeedsPoints => 'Eine Zone braucht mindestens drei Ecken';
+
+  @override
+  String get anchorZoneSelfIntersects =>
+      'Die Zone kreuzt sich selbst — korrigiere die Ecken';
+
+  @override
+  String get anchorZoneArm => 'Diese Zone überwachen';
+
+  @override
+  String get anchorZoneActive => 'Zonenwache';
+
+  @override
+  String anchorZoneInside(String m) {
+    return '$m m bis zum Zonenrand';
+  }
+
+  @override
+  String anchorZoneOutside(String m) {
+    return '$m m außerhalb der Zone';
+  }
+
+  @override
+  String get anchorZoneNotInside => 'Du bist außerhalb der gezeichneten Zone';
+
+  @override
+  String get anchorZoneTooTight => 'Die Zone ist enger als die GPS-Genauigkeit';
+
+  @override
+  String get anchorZoneNoFix =>
+      'Keine GPS-Position — der Ankerpunkt stammt aus der Zone';
+
+  @override
+  String get anchorNoFix => 'Die Ankerwache braucht eine GPS-Position';
+
+  @override
   String get activate => 'Aktivieren';
 
   @override
@@ -701,6 +749,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfColTimeUtc => 'Zeit UTC';
 
   @override
+  String pdfColTimeLocal(String offset) {
+    return 'Zeit $offset';
+  }
+
+  @override
+  String get timeZoneLabel => 'Zeitzone';
+
+  @override
+  String get timeZoneLocalShort => 'Lokal';
+
+  @override
   String get pdfColWind => 'Wind';
 
   @override
@@ -732,6 +791,78 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pdfColArea => 'Gebiet';
+
+  @override
+  String get pdfColTidal => 'Gewässer';
+
+  @override
+  String get pdfTidal => 'Tidengewässer';
+
+  @override
+  String get pdfNonTidal => 'gezeitenfrei';
+
+  @override
+  String get pdfMilesIssuedFor => 'Ausgestellt für';
+
+  @override
+  String get pdfMilesIssuedBy => 'Ausgestellt von';
+
+  @override
+  String get pdfMilesOwnRecord => 'Eigener Nachweis der gesegelten Meilen';
+
+  @override
+  String get pdfMilesByRole => 'Meilen nach Funktion';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Skipper-Übersicht';
+
+  @override
+  String get pdfMilesSkipperConfirms =>
+      'Bestätigt vom verantwortlichen Skipper';
+
+  @override
+  String get milesExportTitle => 'Nachweis ausstellen';
+
+  @override
+  String get milesExportFor => 'Für wen';
+
+  @override
+  String get milesExportForSelf => 'Für mich';
+
+  @override
+  String get milesExportForCrew => 'Für ein Crewmitglied';
+
+  @override
+  String get milesExportRecipient => 'Name des Empfängers';
+
+  @override
+  String get milesExportIssuer => 'Aussteller';
+
+  @override
+  String get milesExportQualification => 'Qualifikation';
+
+  @override
+  String get milesExportVoyages => 'Reisen im Nachweis';
+
+  @override
+  String get milesExportSelectAll => 'Alle auswählen';
+
+  @override
+  String get milesExportSelectNone => 'Auswahl aufheben';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Ausgewählte Reisen: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Keine Reise ausgewählt';
+
+  @override
+  String get milesTidalWaters => 'Tidengewässer';
+
+  @override
+  String get notSpecified => 'Nicht angegeben';
 
   @override
   String get pdfColRole => 'Rolle';
@@ -957,6 +1088,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logEventSailChange => 'Segelwechsel';
 
   @override
+  String get logEventCourseChange => 'Kursänderung';
+
+  @override
+  String get pdfNightShort => 'Nacht';
+
+  @override
+  String nightSailingHours(String hours) {
+    return 'Nachtfahrt $hours h';
+  }
+
+  @override
   String logEventSailChangeTo(String direction) {
     return 'Segelwechsel: $direction';
   }
@@ -986,6 +1128,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get logEventEngineStop => 'Motor gestoppt';
+
+  @override
+  String get updateDownloaded => 'Update heruntergeladen';
+
+  @override
+  String get updateRestart => 'Neu starten';
 
   @override
   String get autopilotLabel => 'Autopilot';
@@ -1886,6 +2034,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get weatherSourceInstruments => 'Von den Bordinstrumenten gemessen';
 
   @override
+  String get pdfWeatherSourceInstruments => 'Instrumente';
+
+  @override
+  String pdfWeatherSourceStation(String name) {
+    return 'Station $name';
+  }
+
+  @override
+  String pdfWeatherSourceStationAt(String name, String km) {
+    return '$name, $km km';
+  }
+
+  @override
+  String get pdfWeatherSourceStationUnknown => 'Wetterstation';
+
+  @override
+  String get pdfWeatherSourceModel => 'Modell';
+
+  @override
   String weatherSourceStation(String name) {
     return 'Gemessen an der Station $name';
   }
@@ -2582,7 +2749,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideLogbookBody =>
-      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei\n• Die Bescheinigung ist zweisprachig (deine Sprache + Englisch) und enthält Schiffsmaße und Registrierung, die Gewässerart (Tidengewässer/tidenfrei) und eine Zeile für die Pass- oder Ausweisnummer; teilen oder direkt aufs Telefon speichern\n• Kurs zum Wind – die Bootssilhouette aus dem Papierlogbuch: Tippe den Kurs auf der Seite an, von der der Wind kommt (Backbord rot, Steuerbord grün). Vor dem Wind steht unten, dort gibt es keine Seite. Nochmal tippen löscht die Auswahl – ein geratener Eintrag ist schlechter als ein leeres Feld. Er erscheint im PDF neben dem Antrieb.\n• Während der Aufzeichnung nimmt eine zweite Schnelltaste (Segelsymbol, unten links) eine Wende oder Halse auf: neuen Kurs auf der Silhouette wählen, der Eintrag entsteht mit Position und Zeit. Folgende automatische Einträge übernehmen diesen Kurs, bis du ihn wieder änderst.\n• Die Tiefe vom Echolot wird bei automatischen Einträgen gespeichert und im manuellen Eintrag vorausgefüllt (benötigt verbundene Instrumente).\n• Die Motorstunden werden aus der Drehzahl der Instrumente gezählt; Start und Stopp des Motors landen automatisch im Logbuch.';
+      'Das Logbuch ist die Hauptregisterkarte für die Reiseverwaltung.\n\n• Die große Schaltfläche \"Reise starten\" oben startet die Aufzeichnung – gefragt wird nur nach der Frequenz der automatischen Einträge (bei jedem Neustart änderbar), kein Formular vorher nötig\n• Ist bereits eine Reise offen, fragt die App, ob sie fortgesetzt oder ein neuer Eintrag begonnen werden soll\n• Fehlende Angaben (Check-in, Sicherheitseinweisung, Schiffs-/Crew-Daten) werden mit farbigen Chips direkt auf der Reisekarte angezeigt – tippe auf einen Chip, um sie nachzutragen\n• Jeder Reisetag wird separat angezeigt\n• Einträge können tagsüber manuell hinzugefügt werden, inklusive Motorstunden, Kraftstoff und Wasser im Bereich \"Motor & Tanks\"\n• Während des Trackings erscheint unten links ein Kamera-Button – fotografiere einen interessanten Punkt und speichere ihn als schnellen Logbucheintrag mit Position und Zeit\n• Export als PDF über das Tagesmenü\n• Das Handschlag-Symbol in der Reisedetailansicht öffnet das Übergabeprotokoll (Check-in/Check-out)\n• Das ausführliche Reiseformular (Schiffssymbol im Detail) erfasst das Schiff samt Parametern, Fahrtgebiet, Crew mit den Scheinen des Skippers und Schiffsfotos (max. 3, erscheinen im PDF)\n• Unvollständige Karten (Sicherheitseinweisung, Check-in/out, Schiffskarte) blinken rot in der oberen Leiste der Reisedetails, bis sie ausgefüllt sind\n• Wird die App während der Fahrt beendet, ohne die Aufzeichnung zu stoppen (System-Kill, versehentliches Wischen), bietet der nächste Start an, dieselbe Fahrt fortzusetzen – inklusive der Distanz, die ohne laufende App zurückgelegt wurde\n• Beim ersten Fahrtstart erinnert die App an die Akkueinstellungen – ohne sie kann das System (vor allem Honor/Huawei) die Aufzeichnung im Hintergrund beenden\n• Das Routensymbol im Kopf der Fahrt (neben Briefing, Protokoll und Schiffskarte) zeigt den gesamten Fahrttrack auf der Karte\n• Nach der Fahrt lässt sich für jedes Crewmitglied eine Meilenbescheinigung exportieren – Seetage, Tag- und Nachtmeilen, Fahrtgebiet, Bewertung durch den Skipper und QR-Code zur Prüfung\n• Der Antrieb (Motor/Segel) wird auch in automatische Einträge übernommen – einmal setzen, die folgenden Einträge behalten ihn bei\n• Die Bescheinigung ist zweisprachig (deine Sprache + Englisch) und enthält Schiffsmaße und Registrierung, die Gewässerart (Tidengewässer/tidenfrei) und eine Zeile für die Pass- oder Ausweisnummer; teilen oder direkt aufs Telefon speichern\n• Kurs zum Wind – die Bootssilhouette aus dem Papierlogbuch: Tippe den Kurs auf der Seite an, von der der Wind kommt (Backbord rot, Steuerbord grün). Vor dem Wind steht unten, dort gibt es keine Seite. Nochmal tippen löscht die Auswahl – ein geratener Eintrag ist schlechter als ein leeres Feld. Er erscheint im PDF neben dem Antrieb.\n• Während der Aufzeichnung nimmt eine zweite Schnelltaste (Segelsymbol, unten links) eine Wende oder Halse auf: neuen Kurs auf der Silhouette wählen, der Eintrag entsteht mit Position und Zeit. Folgende automatische Einträge übernehmen diesen Kurs, bis du ihn wieder änderst.\n• Die Tiefe vom Echolot wird bei automatischen Einträgen gespeichert und im manuellen Eintrag vorausgefüllt (benötigt verbundene Instrumente).\n• Die Motorstunden werden aus der Drehzahl der Instrumente gezählt; Start und Stopp des Motors landen automatisch im Logbuch.\n• Die Schnelltaste mit dem Segelboot (unten links während der Fahrt) schreibt jetzt auch den Antrieb mit — Motor / Groß / Genua / Reff. Spätere automatische Einträge übernehmen ihn, bis du ihn änderst; die Spalte Antrieb im PDF bleibt damit nicht mehr leer.\n• Die App trägt eine Kursänderung selbst ein: wenn der Kurs um 30° oder mehr abweicht und die neue Richtung mindestens eine Minute hält. Kurshalten in der Welle oder ein GPS-Zittern löst nichts aus.\n• Automatische Einträge führen jetzt auch den Himmelszustand — aus dem Modell zu Zeit und Position des Eintrags, wie Wind und Druck.\n• Nachtfahrt wird selbst berechnet, aus dem tatsächlichen Sonnenunter- und -aufgang für die Position des Schiffs. Ein Eintrag nach Einbruch der Dunkelheit trägt einen Mond; Tag und ganze Reise tragen die Summe der Nachtstunden, im Logbuch und im PDF.';
 
   @override
   String get guideMilesTitle => 'Meilenbuch';
@@ -2617,7 +2784,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Die Sicherheits-Registerkarte enthält Notfallfunktionen.\n\nMOB (Mann über Bord):\n• Roten MOB-Knopf gedrückt halten zum Aktivieren\n• App speichert GPS-Position und misst Zeit und Entfernung\n• Navigation zurück zum Fallpunkt\n\nAnkeralarm:\n• Ankerradius einstellen (empfohlen: 2× Kettenlänge)\n• Alarm vibriert, wenn das Boot den erlaubten Radius verlässt';
+      'Die Sicherheits-Registerkarte enthält Notfallfunktionen.\n\nMOB (Mann über Bord):\n• Roten MOB-Knopf gedrückt halten zum Aktivieren\n• App speichert GPS-Position und misst Zeit und Entfernung\n• Navigation zurück zum Fallpunkt\n\nAnkeralarm:\n• Ankerradius einstellen (empfohlen: 2× Kettenlänge)\n• Alarm vibriert, wenn das Boot den erlaubten Radius verlässt\n• Die Ankerwache zeichnet jetzt einen eigenen Track auf, damit eine Nacht vor Anker keine Lücke mehr im GPX ist. Es ist ein eigener Abschnitt — er zählt nie zu Meilen, Tagesdistanz oder Nachtstunden, denn Schwojen an der Kette ist keine Fahrt.\n• Die Wache übersteht einen Neustart der App: Tötet das System die App im Hintergrund, läuft sie nach dem Start am selben Anker weiter.\n• Die Einträge Anker gefallen und Anker auf führen jetzt Wind, Druck, Temperaturen, Tiefe unter dem Kiel und Antrieb — bisher standen dort nur Zeit und Position.';
 
   @override
   String get guideSafetyBriefingTitle => 'Sicherheitseinweisung & MAYDAY';
@@ -2645,7 +2812,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.\n\nGoogle-Konto und Cloud-Export\n\nDie Anmeldung mit einem Google-Konto ist freiwillig. Ohne sie funktioniert die App vollständig und alle Aufzeichnungen bleiben nur auf dem Telefon.\n\nWas hochgeladen wird – nach Abschluss eines Fahrttages das Logbuch-PDF und der GPX-Track dieses Tages. Sonst nichts: keine Fotos, keine Crew-Kontakte, keine Live-Positionen.\n\nWohin – auf deine eigene Google Drive, in HMB_Sailing_Log_DATA / Fahrtname / Day_Datum. Nicht auf einen App-Server – den gibt es nicht.\n\nWas die App auf der Drive sieht – nur die Dateien, die sie dort selbst angelegt hat. Sie nutzt die engste Berechtigung, die Google anbietet (drive.file), der Rest deiner Drive bleibt unerreichbar. Die Berechtigung wird zudem erst beim ersten Upload angefragt, nicht bei der Anmeldung.\n\nWie du es rückgängig machst – in den Einstellungen abmelden. Bereits hochgeladene Dateien bleiben deine – die App löscht sie nicht. Der Zugriff lässt sich jederzeit auch in den Google-Kontoeinstellungen entziehen.';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.\n• Updates – liegt eine neuere Version bei Google Play, lädt die App sie im Hintergrund und bietet einen Neustart an. Während einer laufenden Aufzeichnung fragt sie nie.\n• Zeitzone – Zeiten auf dem Bildschirm und im PDF werden entweder lokal (Zeitzone des Telefons, also dort, wo du bist) oder in UTC angezeigt. Die gespeicherten Einträge ändern sich dadurch nicht, nur die Anzeige; das PDF nennt immer die geltende Zone.\n\nGoogle-Konto und Cloud-Export\n\nDie Anmeldung mit einem Google-Konto ist freiwillig. Ohne sie funktioniert die App vollständig und alle Aufzeichnungen bleiben nur auf dem Telefon.\n\nWas hochgeladen wird – nach Abschluss eines Fahrttages das Logbuch-PDF und der GPX-Track dieses Tages. Sonst nichts: keine Fotos, keine Crew-Kontakte, keine Live-Positionen.\n\nWohin – auf deine eigene Google Drive, in HMB_Sailing_Log_DATA / Fahrtname / Day_Datum. Nicht auf einen App-Server – den gibt es nicht.\n\nWas die App auf der Drive sieht – nur die Dateien, die sie dort selbst angelegt hat. Sie nutzt die engste Berechtigung, die Google anbietet (drive.file), der Rest deiner Drive bleibt unerreichbar. Die Berechtigung wird zudem erst beim ersten Upload angefragt, nicht bei der Anmeldung.\n\nWie du es rückgängig machst – in den Einstellungen abmelden. Bereits hochgeladene Dateien bleiben deine – die App löscht sie nicht. Der Zugriff lässt sich jederzeit auch in den Google-Kontoeinstellungen entziehen.';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';

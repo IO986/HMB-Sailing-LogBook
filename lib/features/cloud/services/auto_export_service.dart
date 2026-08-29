@@ -46,7 +46,8 @@ class AutoExportService {
     if (charter == null) return;
 
     final entries = await db.getEntriesForDay(dayLogId);
-    final sessions = await db.getSessionsForDay(dayLogId);
+    final sessions =
+        await db.getSessionsForDay(dayLogId, includeAnchorWatch: true);
     final pointsBySession = <String, List<TrackPoint>>{};
     for (final s in sessions) {
       pointsBySession[s.sessionId] = await db.getTrackPointsForSession(s.sessionId);
@@ -71,6 +72,7 @@ class AutoExportService {
       bearings: bearings,
       mapScreenshot: mapScreenshot,
       skipperProfile: skipperProfile,
+      nightHours: await db.nightHoursForDay(dayLogId),
     );
     final gpxBytes = await GpxExporter.buildDayGpxBytes(day, sessions, pointsBySession);
 

@@ -38,7 +38,16 @@ enum LogbookEventType {
   /// kedy loď šla na plachty a kedy na motor — a z toho sa počítajú
   /// motohodiny.
   engineStart('engine_start'),
-  engineStop('engine_stop');
+  engineStop('engine_stop'),
+
+  /// Zmena kurzu, ktorú appka rozpoznala sama: kurz sa odklonil o 30° a viac
+  /// a v novom smere vydržal aspoň minútu. Kľučkovanie na vlne ani jeden
+  /// zákmit GPS to teda nezapíše, zmena plánu áno — presne to, čo do
+  /// papierového denníka zapíše kormidelník.
+  ///
+  /// Nezamieňať so [sailChange]: ten hlási prehodenie plachiet a zapisuje ho
+  /// človek, lebo zámerný obrat od zmeny kurzu appka nerozlíši.
+  courseChange('course_change');
 
   final String code;
   const LogbookEventType(this.code);
@@ -63,6 +72,9 @@ enum LogbookEventType {
     if (note.contains('Drift - perimeter exceeded')) return driftOut;
     if (note.contains('Drift - vessel back')) return driftIn;
     if (note.contains('Man overboard')) return mob;
+    // 'Zmena kurzu' sa zapisovalo ako slovenský text v poznámke, kým
+    // zmena kurzu nedostala vlastný typ udalosti.
+    if (note.contains('Zmena kurzu')) return courseChange;
     if (note.contains('MOB cancelled')) return mobCancelled;
     if (note.contains('Voyage start') ||
         note.contains('Začiatok plavby') ||

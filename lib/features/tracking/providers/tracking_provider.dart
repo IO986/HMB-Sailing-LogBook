@@ -43,7 +43,8 @@ class TrackingNotifier extends Notifier<TrackingState> {
       {int? dayLogId,
       String? skipperName,
       int logIntervalSeconds = 3600,
-      double bridgedDistanceNm = 0}) async {
+      double bridgedDistanceNm = 0,
+      bool isResume = false}) async {
     debugPrint('[TRACKING] startTracking name=$name dayLogId=$dayLogId');
     state = state.copyWith(isLoading: true, error: null);
     try {
@@ -52,7 +53,8 @@ class TrackingNotifier extends Notifier<TrackingState> {
           dayLogId: dayLogId,
           skipperName: skipperName,
           logIntervalSeconds: logIntervalSeconds,
-          bridgedDistanceNm: bridgedDistanceNm);
+          bridgedDistanceNm: bridgedDistanceNm,
+          isResume: isResume);
       await BackgroundService.start();
       ref.read(isTrackingProvider.notifier).state = true;
       state = state.copyWith(isLoading: false, isTracking: true);

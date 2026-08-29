@@ -1,10 +1,13 @@
 ﻿import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
@@ -16,6 +19,9 @@ import 'colreg_screen.dart';
 import 'maritime_reference_screen.dart';
 import 'safety_briefing_reference_screen.dart';
 import 'handover_checklist_reference_screen.dart';
+import '../../../../core/services/entry_conditions.dart';
+import '../../../../core/utils/geo_polygon.dart';
+import '../../../map/providers/map_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/anchor_alarm_service.dart';
 import 'package:drift/drift.dart' as drift;
@@ -164,59 +170,377 @@ class AnchorState {
   final double? currentDistanceM;
   final bool isDrifting;
   final List<LatLng> trackPoints;
+
+  /// Úsek trasovania, do ktorého stráž zapisuje body. Drží sa v stave, aby
+  /// ho po reštarte appky bolo do čoho dopísať namiesto založenia nového.
+  final String? sessionId;
+
+  /// Strážená plocha, alebo prázdny zoznam, keď sa stráži kruh.
+  ///
+  /// Dĺžka zoznamu JE režim. Samostatný príznak alebo enum by sa vedel
+  /// rozísť so skutočnosťou — plocha s dvoma bodmi a príznakom „plocha" by
+  /// znamenala trvalý alarm, lebo `contains` na nej vracia false pre každú
+  /// polohu. Takto sa to rozísť nemá ako.
+  final List<LatLng> zonePolygon;
+
+  /// Vzdialenosť k hrane plochy so znamienkom: kladná dnu, záporná von.
+  /// V režime kruhu `null`.
+  final double? zoneClearanceM;
+
+  bool get hasZone => zonePolygon.length >= 3;
+
   const AnchorState({this.isActive = false, this.anchorLat, this.anchorLon,
       this.radiusMeters = 50, this.currentDistanceM, this.isDrifting = false,
-      this.trackPoints = const []});
+      this.trackPoints = const [], this.sessionId,
+      this.zonePolygon = const [], this.zoneClearanceM});
   AnchorState copyWith({bool? isActive, double? anchorLat, double? anchorLon,
       double? radiusMeters, double? currentDistanceM, bool? isDrifting,
-      List<LatLng>? trackPoints}) =>
+      List<LatLng>? trackPoints, String? sessionId,
+      List<LatLng>? zonePolygon, double? zoneClearanceM}) =>
       AnchorState(isActive: isActive ?? this.isActive,
           anchorLat: anchorLat ?? this.anchorLat, anchorLon: anchorLon ?? this.anchorLon,
           radiusMeters: radiusMeters ?? this.radiusMeters,
           currentDistanceM: currentDistanceM, isDrifting: isDrifting ?? this.isDrifting,
-          trackPoints: trackPoints ?? this.trackPoints);
+          trackPoints: trackPoints ?? this.trackPoints,
+          sessionId: sessionId ?? this.sessionId,
+          // Plocha sa dedí: vynechaná znamená „nechaj", výslovné `const []`
+          // znamená „zmaž".
+          zonePolygon: zonePolygon ?? this.zonePolygon,
+          // Odstup sa NEdedí, rovnako ako currentDistanceM vyššie: je to
+          // živé čítanie na jeden tik. Keby sa dedil, tik v režime kruhu by
+          // v stave nechal starú hodnotu z plochy a karta by pri kruhovej
+          // stráži vykreslila údaj o ploche.
+          zoneClearanceM: zoneClearanceM);
+}
+
+/// Driftuje loď? Jedno rozhodnutie pre kruh aj pre plochu.
+///
+/// Vytiahnuté zo [AnchorNotifier._listen], aby sa dalo testovať bez GPS
+/// streamu a bez platformových kanálov — je to jediné miesto, kde sa
+/// rozhoduje, či sa má o tretej ráno rozozvučať siréna.
+///
+/// Prstenec, ktorý sa nedá strážiť (menej než tri rohy), padá späť na kruh.
+/// Nikdy nie na „stále driftuje": `GeoPolygon.contains` na takom prstenci
+/// vracia false pre každú polohu, takže by alarm zvonil bez prestania.
+@visibleForTesting
+bool anchorIsDrifting({
+  required LatLng fix,
+  required LatLng anchor,
+  required double radiusM,
+  required List<LatLng> zone,
+}) {
+  if (zone.length >= 3) return !GeoPolygon.contains(zone, fix);
+  return anchorDistanceM(anchor, fix) > radiusM;
+}
+
+/// Vzdialenosť dvoch polôh v metroch (haversine).
+///
+/// Jeden vzorec pre rozhodnutie o drifte aj pre číslo, ktoré skiper vidí na
+/// karte — inak by sa na hranici o pár centimetrov rozchádzali.
+double anchorDistanceM(LatLng a, LatLng b) {
+  const r = 6371000.0;
+  final dLat = (b.latitude - a.latitude) * pi / 180;
+  final dLon = (b.longitude - a.longitude) * pi / 180;
+  final h = sin(dLat / 2) * sin(dLat / 2) +
+      cos(a.latitude * pi / 180) *
+          cos(b.latitude * pi / 180) *
+          sin(dLon / 2) *
+          sin(dLon / 2);
+  return r * 2 * atan2(sqrt(h), sqrt(1 - h));
 }
 
 class AnchorNotifier extends Notifier<AnchorState> {
   StreamSubscription<Position>? _sub;
+
+  /// Kde stráž stojí. Musí to prežiť reštart appky: systém (najmä Honor a
+  /// Huawei) appku na pozadí zabíja a bez tohto stráž po reštarte ticho
+  /// zmizla — žiadny alarm, a v denníku ani riadok o tom, že prestala
+  /// strážiť. Skiper pritom spal v presvedčení, že kotvu niekto sleduje.
+  static const _kActive = 'anchor_watch_active';
+  static const _kLat = 'anchor_watch_lat';
+  static const _kLon = 'anchor_watch_lon';
+  static const _kRadius = 'anchor_watch_radius';
+  static const _kSession = 'anchor_watch_session';
+  static const _kZone = 'anchor_watch_zone';
+
+  /// Zápis bodu kotvovej stráže: buď sa loď posunula, ALEBO ubehol čas.
+  ///
+  /// Pri plavbe platia obe podmienky naraz (viď [TrackPointThrottle]) — tam
+  /// je cieľom preriediť hustú trasu. Tu je cieľ opačný: dokázať, že appka
+  /// loď sledovala celú noc. Preto sa bod zapíše aj vtedy, keď loď stojí;
+  /// bez toho by v GPX bola jedna bodka a diera do rána.
+  static const _pointEvery = Duration(minutes: 5);
+  static const _pointAfterM = 8.0;
+
+  DateTime? _lastPointAt;
+  LatLng? _lastPoint;
+
   @override
   AnchorState build() => const AnchorState();
 
-  Future<void> activate(double lat, double lon, double radius) async {
+  /// Obnoví stráž po reštarte appky.
+  ///
+  /// Volá sa raz pri štarte. Kotva je stále dole — appka len prestala bežať,
+  /// takže sa stráž ticho rozbehne ďalej a dopisuje do toho istého úseku
+  /// trasy. Do denníka sa nič nezapisuje: nič sa nestalo, appka len ožila.
+  Future<void> restore() async {
+    if (state.isActive) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (!(prefs.getBool(_kActive) ?? false)) return;
+    final lat = prefs.getDouble(_kLat);
+    final lon = prefs.getDouble(_kLon);
+    if (lat == null || lon == null) {
+      await _clearPersisted();
+      return;
+    }
+    final db = ref.read(databaseProvider);
+    final stored = prefs.getString(_kSession);
+    final session = stored != null
+        ? null
+        : await db.getActiveAnchorWatchSession();
+    // Plocha sa načíta EŠTE pred `_listen`. Keby sa stráž rozbehla s prázdnou
+    // plochou a predvoleným polomerom, prvý fix po reštarte by loď stojacu
+    // 60 m od kotvy v dvestometrovej zátoke vyhlásil za driftujúcu.
+    // `decode` preto nikdy nehádže: výnimka by obnovu ticho zabila.
+    final decoded = GeoPolygon.decode(prefs.getString(_kZone));
+    final zone = GeoPolygon.isUsable(decoded) ? decoded : const <LatLng>[];
     state = state.copyWith(
-      isActive: true, anchorLat: lat, anchorLon: lon,
-      radiusMeters: radius, trackPoints: [],
+      isActive: true,
+      anchorLat: lat,
+      anchorLon: lon,
+      radiusMeters: prefs.getDouble(_kRadius) ?? 50,
+      trackPoints: [],
+      sessionId: stored ?? session?.sessionId,
+      zonePolygon: zone,
     );
+    LocationService().requestPrecise(this, survivesBackground: true);
+    _listen(lat, lon);
+    debugPrint('[ANCHOR] Watch restored after restart');
+  }
 
+  Future<void> _persist(double lat, double lon, double radius,
+      String? sessionId, List<LatLng> zone) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kActive, true);
+    await prefs.setDouble(_kLat, lat);
+    await prefs.setDouble(_kLon, lon);
+    // Polomer sa ukladá aj v režime plochy — je to nečinná záloha pre prípad,
+    // že by sa uložená plocha nedala prečítať.
+    await prefs.setDouble(_kRadius, radius);
+    if (sessionId != null) await prefs.setString(_kSession, sessionId);
+    // Prázdnu plochu treba ZMAZAŤ, nie preskočiť zápis. `activate` nevolá
+    // `_clearPersisted` na začiatku, takže po zabití appky s plochou by
+    // nasledujúca kruhová stráž zdedila prstenec z minulého kotvenia a po
+    // reštarte by sa ticho zmenila na plochu, ktorú skiper kreslil inde.
+    if (zone.isEmpty) {
+      await prefs.remove(_kZone);
+    } else {
+      await prefs.setString(_kZone, GeoPolygon.encode(zone));
+    }
+  }
+
+  Future<void> _clearPersisted() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kActive);
+    await prefs.remove(_kLat);
+    await prefs.remove(_kLon);
+    await prefs.remove(_kRadius);
+    await prefs.remove(_kSession);
+    await prefs.remove(_kZone);
+  }
+
+  /// Založí úsek trasovania pre stráž.
+  ///
+  /// Vlastný úsek, nie pokračovanie plavby: hojdanie na reťazi by sa inak
+  /// načítalo do prejdených míľ. Príznak `isAnchorWatch` ho drží mimo míľ,
+  /// vzdialenosti dňa aj nočných hodín — a zároveň ho pustí do GPX, kde
+  /// dovtedy bola cez celú noc diera.
+  Future<String?> _startWatchSession(double lat, double lon) async {
     try {
       final db = ref.read(databaseProvider);
-      final dayLogId = GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
-      final activeSession = await db.getActiveSession();
-      await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
+      final dayLogId =
+          GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
+      final sessionId = const Uuid().v4();
+      await db.upsertSession(SailingSessionsCompanion.insert(
+        sessionId: sessionId,
+        startTime: DateTime.now().toUtc(),
+        name: const drift.Value('Anchor watch'),
+        isActive: const drift.Value(true),
+        isAnchorWatch: const drift.Value(true),
         dayLogId: drift.Value(dayLogId),
-        sessionId: drift.Value(activeSession?.sessionId),
-        timestamp: DateTime.now().toUtc(),
-        latitude: drift.Value(lat),
-        longitude: drift.Value(lon),
-        skipperNote: const drift.Value('Anchor dropped'),
-        eventType: drift.Value(LogbookEventType.anchorDropped.code),
-        isAutoEntry: const drift.Value(true),
       ));
+      return sessionId;
+    } catch (e) {
+      debugPrint('[ANCHOR] Watch session error: $e');
+      return null;
+    }
+  }
+
+  Future<void> _closeWatchSession() async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+    try {
+      await ref.read(databaseProvider).closeSession(sessionId);
+    } catch (e) {
+      debugPrint('[ANCHOR] Watch session close error: $e');
+    }
+  }
+
+  /// Zapíše bod trasy, ak je čo zapísať.
+  Future<void> _maybeWritePoint(Position pos) async {
+    final sessionId = state.sessionId;
+    if (sessionId == null) return;
+    final now = DateTime.now();
+    final last = _lastPoint;
+    final lastAt = _lastPointAt;
+    if (last != null && lastAt != null) {
+      final movedM = _haversine(
+          last.latitude, last.longitude, pos.latitude, pos.longitude);
+      if (movedM < _pointAfterM && now.difference(lastAt) < _pointEvery) return;
+    }
+    _lastPoint = LatLng(pos.latitude, pos.longitude);
+    _lastPointAt = now;
+    try {
+      await ref.read(databaseProvider).insertTrackPoint(TrackPointsCompanion.insert(
+            sessionId: drift.Value(sessionId),
+            timestamp: now.toUtc(),
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+            speed: drift.Value(pos.speed),
+            accuracy: drift.Value(pos.accuracy),
+            accuracyMeters: drift.Value(pos.accuracy > 0 ? pos.accuracy : null),
+            locationSource: drift.Value(LocationService().lastSource?.name),
+            isMocked: drift.Value(LocationService().lastIsMocked),
+          ));
+    } catch (e) {
+      debugPrint('[ANCHOR] Track point error: $e');
+    }
+  }
+
+
+  /// Zapíše udalosť kotvy do denníka — aj s podmienkami, nielen s časom.
+  ///
+  /// Kotvová stráž beží aj vtedy, keď plavba už skončila, a vtedy tento
+  /// riadok nemá kto doplniť: [GpsTrackingService.createAutomaticLogbookEntry]
+  /// bez bežiacej session nezapíše nič. Preto sa počasie, hĺbka a pohon
+  /// dopĺňajú tu, tým istým reťazcom priorít (prístroje → stanica → model).
+  /// Bez toho ostal v PDF riadok „Kotva spustená" prázdny — len čas a
+  /// poloha, hoci appka vietor aj hĺbku v tej chvíli poznala.
+  Future<void> _logAnchorEvent({
+    required LogbookEventType event,
+    required String note,
+    double? latitude,
+    double? longitude,
+  }) async {
+    final db = ref.read(databaseProvider);
+    final dayLogId =
+        GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
+    final session = await db.getActiveSession();
+
+    // Podmienky sú bonus, nie podmienka zápisu (pravidlo offline-first):
+    // keď sa nedajú zistiť, udalosť sa zapíše aj tak.
+    EntryConditions? conditions;
+    if (latitude != null && longitude != null) {
+      try {
+        conditions = await GpsTrackingService()
+            .conditionsAt(latitude: latitude, longitude: longitude);
+      } catch (_) {
+        conditions = null;
+      }
+    }
+    // Pohon sa preberá od posledného záznamu dňa rovnako ako pri
+    // automatickom zápise — kotva pohon nemení.
+    final sailMode = dayLogId == null ? null : await db.lastSailModeForDay(dayLogId);
+
+    await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
+      dayLogId: drift.Value(dayLogId),
+      sessionId: drift.Value(session?.sessionId),
+      timestamp: DateTime.now().toUtc(),
+      latitude: drift.Value(latitude),
+      longitude: drift.Value(longitude),
+      // Hĺbka pod kýlom pri kotvení je prvý údaj, na ktorý sa každý pýta.
+      depthMeters: drift.Value(GpsTrackingService().instrumentDepthMeters),
+      windSpeed: drift.Value(conditions?.windSpeed),
+      windDirection: drift.Value(conditions?.windDirection),
+      waveHeight: drift.Value(conditions?.waveHeight),
+      airPressure: drift.Value(conditions?.airPressure),
+      airTemp: drift.Value(conditions?.airTemp),
+      waterTemp: drift.Value(conditions?.waterTemp),
+      weatherCondition: drift.Value(conditions?.condition),
+      weatherSource: drift.Value(conditions?.source.code),
+      weatherStation: drift.Value(conditions?.station),
+      weatherStationDistanceM: drift.Value(conditions?.stationDistanceM),
+      sailMode: drift.Value(sailMode),
+      skipperNote: drift.Value(note),
+      eventType: drift.Value(event.code),
+      isAutoEntry: const drift.Value(true),
+    ));
+  }
+
+  /// Spustí stráž. Bez [zone] stráži kruh, ako doteraz.
+  ///
+  /// Prstenec sa preveruje aj tu, nielen v UI: je to posledná obrana proti
+  /// tvaru, na ktorom by `contains` vracalo vždy false, teda proti stráži,
+  /// ktorá zvoní bez prestania.
+  Future<void> activate(double lat, double lon, double radius,
+      {List<LatLng> zone = const []}) async {
+    final ring = GeoPolygon.isUsable(zone) && !GeoPolygon.hasSelfIntersection(zone)
+        ? List<LatLng>.unmodifiable(zone)
+        : const <LatLng>[];
+    final sessionId = await _startWatchSession(lat, lon);
+    _lastPoint = null;
+    _lastPointAt = null;
+    state = state.copyWith(
+      isActive: true, anchorLat: lat, anchorLon: lon,
+      radiusMeters: radius, trackPoints: [], sessionId: sessionId,
+      zonePolygon: ring,
+    );
+    await _persist(lat, lon, radius, sessionId, ring);
+
+    try {
+      await _logAnchorEvent(
+        event: LogbookEventType.anchorDropped,
+        note: 'Anchor dropped',
+        latitude: lat,
+        longitude: lon,
+      );
       debugPrint('[ANCHOR] Logged anchor drop');
     } catch (e) { debugPrint('[ANCHOR] Log error: $e'); }
 
     // Kotvová stráž stráca zmysel na idle presnosti — perimeter býva
     // menší než idle distanceFilter, takže by drift nezachytila.
     LocationService().requestPrecise(this, survivesBackground: true);
+    _listen(lat, lon);
+  }
+
+  void _listen(double lat, double lon) {
+    _sub?.cancel();
     _sub = LocationService().stream.listen((pos) {
+      unawaited(_maybeWritePoint(pos));
+      final here = LatLng(pos.latitude, pos.longitude);
+      // Výkyv od kotvy má zmysel v oboch režimoch — pri ploche je to druhý,
+      // doplnkový údaj.
       final dist = _haversine(lat, lon, pos.latitude, pos.longitude);
-      final pts = [...state.trackPoints, LatLng(pos.latitude, pos.longitude)];
+      // Plocha sa číta zo stavu pri každom tiku, rovnako ako polomer.
+      // Zachytiť ju do closure by znamenalo, že po zmene by stráž ďalej
+      // rozhodovala podľa starého tvaru.
+      final zone = state.zonePolygon;
+      final clearance = zone.length >= 3
+          ? GeoPolygon.signedClearanceM(zone, here)
+          : null;
+      final pts = [...state.trackPoints, here];
       // Max 500 bodov
       if (pts.length > 500) pts.removeAt(0);
       final wasDrifting = state.isDrifting;
-      final nowDrifting = dist > state.radiusMeters;
+      final nowDrifting = anchorIsDrifting(
+        fix: here,
+        anchor: LatLng(lat, lon),
+        radiusM: state.radiusMeters,
+        zone: zone,
+      );
       state = state.copyWith(
         currentDistanceM: dist,
+        zoneClearanceM: clearance,
         isDrifting: nowDrifting,
         trackPoints: pts,
       );
@@ -235,18 +559,12 @@ class AnchorNotifier extends Notifier<AnchorState> {
   Future<void> _logDrift(
       Position pos, String note, LogbookEventType event) async {
     try {
-      final db = ref.read(databaseProvider);
-      final session = await db.getActiveSession();
-      await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
-        dayLogId: drift.Value(GpsTrackingService().activeDayLogId),
-        sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now().toUtc(),
-        latitude: drift.Value(pos.latitude),
-        longitude: drift.Value(pos.longitude),
-        skipperNote: drift.Value(note),
-        eventType: drift.Value(event.code),
-        isAutoEntry: const drift.Value(true),
-      ));
+      await _logAnchorEvent(
+        event: event,
+        note: note,
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+      );
     } catch (e) { debugPrint('[ANCHOR] Drift log error: $e'); }
   }
 
@@ -254,34 +572,26 @@ class AnchorNotifier extends Notifier<AnchorState> {
     AnchorAlarmService().stopAlarm();
     if (state.isActive) {
       try {
-        final db = ref.read(databaseProvider);
-        final dayLogId = GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
         final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
-        final session = await db.getActiveSession();
-        await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
-          dayLogId: drift.Value(dayLogId),
-          sessionId: drift.Value(session?.sessionId),
-          timestamp: DateTime.now().toUtc(),
-          latitude: drift.Value(pos?.latitude),
-          longitude: drift.Value(pos?.longitude),
-          skipperNote: const drift.Value('Anchor raised'),
-          eventType: drift.Value(LogbookEventType.anchorRaised.code),
-          isAutoEntry: const drift.Value(true),
-        ));
+        await _logAnchorEvent(
+          event: LogbookEventType.anchorRaised,
+          note: 'Anchor raised',
+          latitude: pos?.latitude,
+          longitude: pos?.longitude,
+        );
       } catch (_) {}
     }
+    await _closeWatchSession();
+    await _clearPersisted();
     LocationService().releasePrecise(this);
     _sub?.cancel();
+    _lastPoint = null;
+    _lastPointAt = null;
     state = const AnchorState();
   }
 
-  double _haversine(double la1, double lo1, double la2, double lo2) {
-    const r = 6371000.0;
-    final dLat = (la2-la1)*pi/180, dLon = (lo2-lo1)*pi/180;
-    final a = sin(dLat/2)*sin(dLat/2) +
-        cos(la1*pi/180)*cos(la2*pi/180)*sin(dLon/2)*sin(dLon/2);
-    return r * 2 * atan2(sqrt(a), sqrt(1-a));
-  }
+  double _haversine(double la1, double lo1, double la2, double lo2) =>
+      anchorDistanceM(LatLng(la1, lo1), LatLng(la2, lo2));
 }
 
 final anchorProvider = NotifierProvider<AnchorNotifier, AnchorState>(AnchorNotifier.new);
@@ -509,7 +819,10 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
                 ),
               ),
           ]),
-          if (s.isActive && s.currentDistanceM != null) ...[
+          // Kruh má menovateľa, plocha nie. Ukazovateľ normalizovaný proti
+          // vymyslenej vzdialenosti by bol falošné číslo, tak ho pri ploche
+          // nahradí odstup od hrany.
+          if (s.isActive && !s.hasZone && s.currentDistanceM != null) ...[
             const SizedBox(height: 12),
             LinearProgressIndicator(
               value: (s.currentDistanceM! / s.radiusMeters).clamp(0.0, 1.2),
@@ -525,6 +838,37 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
                     fontWeight:
                         s.isDrifting ? FontWeight.bold : FontWeight.normal)),
           ],
+          if (s.isActive && s.hasZone) ...[
+            const SizedBox(height: 12),
+            Row(children: [
+              Icon(Icons.pentagon_outlined,
+                  size: 16, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 6),
+              Text(AppLocalizations.of(context).anchorZoneActive,
+                  style: Theme.of(context).textTheme.bodySmall),
+            ]),
+            if (s.zoneClearanceM case final clearance?) ...[
+              const SizedBox(height: 2),
+              Text(
+                clearance >= 0
+                    ? AppLocalizations.of(context)
+                        .anchorZoneInside(clearance.toStringAsFixed(0))
+                    : AppLocalizations.of(context)
+                        .anchorZoneOutside(clearance.abs().toStringAsFixed(0)),
+                style: TextStyle(
+                    color: s.isDrifting ? Colors.red : Colors.green,
+                    fontWeight:
+                        s.isDrifting ? FontWeight.bold : FontWeight.normal),
+              ),
+            ],
+            if (s.currentDistanceM != null) ...[
+              const SizedBox(height: 2),
+              // Výkyv od kotvy má zmysel aj pri ploche — hovorí, koľko
+              // reťaze loď vytiahla.
+              Text('${s.currentDistanceM!.toStringAsFixed(0)} m',
+                  style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ],
           if (!s.isActive) ...[
             const SizedBox(height: 8),
             Text('${AppLocalizations.of(context).anchorRadiusLabel}: '
@@ -536,6 +880,20 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
                 value: _radius, min: 5, max: 70, divisions: 65,
                 label: '${_radius.toStringAsFixed(0)} m',
                 onChanged: (v) => setState(() => _radius = v)),
+            // Úzka zátoka sa kruhom nedá obkresliť. Kreslenie patrí na mapu,
+            // spúšťanie kotvy sem — preto odtiaľto vedie cesta tam.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () {
+                  ref.read(pendingAnchorZoneDrawProvider.notifier).state = true;
+                  context.go('/map');
+                },
+                icon: const Icon(Icons.pentagon_outlined, size: 18),
+                label:
+                    Text(AppLocalizations.of(context).anchorZoneDrawFromMap),
+              ),
+            ),
           ],
           const SizedBox(height: 8),
           SizedBox(
@@ -551,7 +909,14 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
                     onPressed: () {
                       final pos = GpsTrackingService().lastPosition ??
                           LocationService().lastPosition;
-                      if (pos == null) return;
+                      // Predtým sa tu ticho nespravilo nič a tlačidlo
+                      // vyzeralo pokazené.
+                      if (pos == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context).anchorNoFix)));
+                        return;
+                      }
                       ref
                           .read(anchorProvider.notifier)
                           .activate(pos.latitude, pos.longitude, _radius);
