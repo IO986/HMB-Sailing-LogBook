@@ -34,6 +34,7 @@ import '../../main.dart';
 import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../features/safety/presentation/screens/safety_screen.dart';
+import '../../features/tracking/presentation/widgets/tracking_stalled_banner.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -482,6 +483,10 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
             bottom: false,
             child: Column(children: [
               const SyncQueueBadge(),
+              // Na každej karte, nie len tam, kde je ovládanie plavby:
+              // otvorená plavba, ktorá nezapisuje, je najhorší stav appky
+              // a skiper sa o ňom má dozvedieť, nech je kdekoľvek.
+              const TrackingStalledBanner(),
               if (showControlBar) const TrackingControlBar(),
             ]),
           ),

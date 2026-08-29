@@ -3431,6 +3431,28 @@ class AppLocalizationsEl extends AppLocalizations {
   String get interruptedVoyageResume => 'Συνέχεια';
 
   @override
+  String get trackingStalledTitle =>
+      'Πλους σε εξέλιξη, αλλά δεν καταγράφεται τίποτα';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Τελευταίο σημείο πριν από $minutes λεπτά';
+  }
+
+  @override
+  String get trackingResumeAction => 'Συνέχεια';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Η καταγραφή συνεχίζεται. Το σύστημα είχε κλείσει την εφαρμογή — λείπουν $minutes λεπτά.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Προσθήκη $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle =>
       'Άφησε την εφαρμογή να τρέχει σε όλο το ταξίδι';
 

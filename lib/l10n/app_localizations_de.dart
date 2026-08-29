@@ -3423,6 +3423,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get interruptedVoyageResume => 'Fortsetzen';
 
   @override
+  String get trackingStalledTitle =>
+      'Eine Reise läuft, aber es wird nichts aufgezeichnet';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Letzter Punkt vor $minutes Min';
+  }
+
+  @override
+  String get trackingResumeAction => 'Fortsetzen';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Aufzeichnung fortgesetzt. Das System hatte die App beendet — $minutes Min fehlen.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return '$nm NM ergänzen';
+  }
+
+  @override
   String get batteryPromptTitle => 'App während der ganzen Fahrt laufen lassen';
 
   @override

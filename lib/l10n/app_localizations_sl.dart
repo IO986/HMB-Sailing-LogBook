@@ -3408,6 +3408,27 @@ class AppLocalizationsSl extends AppLocalizations {
   String get interruptedVoyageResume => 'Nadaljuj';
 
   @override
+  String get trackingStalledTitle => 'Plovba teče, a se nič ne beleži';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Zadnja točka pred $minutes min';
+  }
+
+  @override
+  String get trackingResumeAction => 'Nadaljuj';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Beleženje se nadaljuje. Sistem je ustavil aplikacijo — manjka $minutes min.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Dodaj $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle => 'Naj aplikacija teče vso plovbo';
 
   @override

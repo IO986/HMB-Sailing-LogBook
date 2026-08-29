@@ -6440,6 +6440,36 @@ abstract class AppLocalizations {
   /// **'Pokračovať'**
   String get interruptedVoyageResume;
 
+  /// No description provided for @trackingStalledTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba beží, ale nič sa nezapisuje'**
+  String get trackingStalledTitle;
+
+  /// No description provided for @trackingStalledSince.
+  ///
+  /// In sk, this message translates to:
+  /// **'Posledný bod pred {minutes} min'**
+  String trackingStalledSince(String minutes);
+
+  /// No description provided for @trackingResumeAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pokračovať'**
+  String get trackingResumeAction;
+
+  /// No description provided for @trackingResumedAuto.
+  ///
+  /// In sk, this message translates to:
+  /// **'Trasovanie pokračuje. Appku medzitým vypol systém — chýba {minutes} min.'**
+  String trackingResumedAuto(String minutes);
+
+  /// No description provided for @trackingResumedAddGap.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dopočítať {nm} NM'**
+  String trackingResumedAddGap(String nm);
+
   /// No description provided for @batteryPromptTitle.
   ///
   /// In sk, this message translates to:

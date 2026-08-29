@@ -3402,6 +3402,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get interruptedVoyageResume => 'Pokračovat';
 
   @override
+  String get trackingStalledTitle => 'Plavba běží, ale nic se nezapisuje';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Poslední bod před $minutes min';
+  }
+
+  @override
+  String get trackingResumeAction => 'Pokračovat';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Trasování pokračuje. Appku mezitím vypnul systém — chybí $minutes min.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Dopočítat $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle => 'Ať aplikace běží celou plavbu';
 
   @override

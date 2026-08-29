@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,20 +74,60 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
 ///
 /// Ak je poloha pri obnovení inde než posledný zaznamenaný bod, ponúkne aj
 /// dopočítanie tejto medzery — po priamke, lebo o trase medzitým nič nevieme.
-Future<void> maybePromptInterruptedVoyage(
-    BuildContext context, WidgetRef ref) async {
-  if (GpsTrackingService().isTracking) return;
+/// Prerušená plavba aj s tým, čo o nej treba vedieť pri obnovení.
+class InterruptedVoyage {
+  const InterruptedVoyage({
+    required this.session,
+    required this.lastPoint,
+    required this.dayLog,
+    required this.charter,
+    required this.gapNm,
+    required this.silentFor,
+  });
 
-  final db = ref.read(databaseProvider);
+  final SailingSession session;
+  final TrackPoint lastPoint;
+  final DayLog dayLog;
+  final Charter charter;
+
+  /// Vzdušná čiara medzi posledným zaznamenaným bodom a polohou teraz.
+  final double gapNm;
+
+  /// Ako dlho sa nič nezapisovalo.
+  final Duration silentFor;
+
+  /// Pod 0,1 NM je to GPS šum, nie prejdená vzdialenosť.
+  bool get offersGap => gapNm >= 0.1;
+}
+
+/// Do akej diery sa plavba obnoví sama.
+///
+/// Za týmto oknom sa appka radšej spýta: plavba, ktorú nikto neukončil a
+/// telefón ju nevidel pol dňa, je pravdepodobne dávno skončená a ticho
+/// rozbehnuté trasovanie by k nej pripísalo cestu autom do hotela.
+const _autoResumeWindow = Duration(hours: 3);
+
+/// Rozbehne sa plavba po tomto tichu sama?
+///
+/// Vytiahnuté zo [maybePromptInterruptedVoyage], ktoré potrebuje
+/// `BuildContext` a testovať sa nedá; samotná hranica áno, a je to tá vec,
+/// ktorá rozhoduje medzi „doplň mi tých 45 minút" a „pripíš mi cestu autom
+/// do hotela".
+@visibleForTesting
+bool shouldAutoResume(Duration silentFor) =>
+    silentFor >= Duration.zero && silentFor <= _autoResumeWindow;
+
+/// Nájde prerušenú plavbu, alebo `null`. Po ceste upratuje session, ktoré sa
+/// obnoviť nedajú — bez bodov alebo bez dňa nie je čo obnovovať.
+Future<InterruptedVoyage?> findInterruptedVoyage(AppDatabase db) async {
   final interrupted = await db.getInterruptedSession();
-  if (interrupted == null) return;
+  if (interrupted == null) return null;
 
   final lastPoint = await db.getLastTrackPoint(interrupted.sessionId);
   final dayLogId = interrupted.dayLogId;
   if (lastPoint == null || dayLogId == null) {
-    // Bez bodov nie je čo obnovovať — session len uprac.
     await db.closeInterruptedSession(interrupted);
-    return;
+    return null;
   }
 
   final dayLog = await db.getDayLogById(dayLogId);
@@ -94,10 +135,9 @@ Future<void> maybePromptInterruptedVoyage(
       dayLog == null ? null : await db.getCharterById(dayLog.charterId);
   if (dayLog == null || charter == null) {
     await db.closeInterruptedSession(interrupted);
-    return;
+    return null;
   }
 
-  // Medzera medzi posledným bodom a polohou pri obnovení.
   final position = await LocationService().currentFix();
   var gapNm = 0.0;
   if (position != null) {
@@ -107,10 +147,76 @@ Future<void> maybePromptInterruptedVoyage(
         ) /
         1852;
   }
-  // Pod 0,1 NM je to GPS šum, nie prejdená vzdialenosť.
-  final offersGap = gapNm >= 0.1;
 
+  return InterruptedVoyage(
+    session: interrupted,
+    lastPoint: lastPoint,
+    dayLog: dayLog,
+    charter: charter,
+    gapNm: gapNm,
+    silentFor: DateTime.now().toUtc().difference(lastPoint.timestamp.toUtc()),
+  );
+}
+
+/// Rozbehne trasovanie prerušenej plavby ďalej.
+///
+/// Medzera sa dopočítava len na výslovné želanie: je to priamka medzi dvoma
+/// bodmi, teda odhad, a odhad sa do denníka nepridáva sám od seba.
+Future<void> resumeInterruptedVoyage(
+    BuildContext context, WidgetRef ref, InterruptedVoyage voyage,
+    {bool bridgeGap = false}) async {
+  final db = ref.read(databaseProvider);
+  await db.closeInterruptedSession(voyage.session);
+  final interval = await _defaultLogInterval();
   if (!context.mounted) return;
+  await _beginTracking(context, ref, voyage.charter, voyage.dayLog, interval,
+      bridgedDistanceNm: bridgeGap ? voyage.gapNm : 0, isResume: true);
+}
+
+/// Po návrate appky: pokračuj v plavbe sám, alebo sa spýtaj.
+///
+/// Dialóg je zlá odpoveď na bežný prípad. Systém (na Honore a Huawei bežne)
+/// zabije appku vo vrecku, na dialóg nemá kto odpovedať a trasovanie stojí,
+/// kým si to niekto nevšimne — nahlásené z terénu: 45 minút plavby, ktoré
+/// v denníku nie sú, a päť „začiatkov plavby" za jeden deň. Preto sa v okne
+/// [_autoResumeWindow] plavba rozbehne ticho ďalej a používateľ sa to len
+/// dozvie; pýtame sa až pri diere, pri ktorej je otázne, či plavba vôbec
+/// ešte trvá.
+Future<void> maybePromptInterruptedVoyage(
+    BuildContext context, WidgetRef ref) async {
+  if (GpsTrackingService().isTracking) return;
+
+  final db = ref.read(databaseProvider);
+  final voyage = await findInterruptedVoyage(db);
+  if (voyage == null) return;
+  if (!context.mounted) return;
+
+  if (shouldAutoResume(voyage.silentFor)) {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final minutes = voyage.silentFor.inMinutes;
+    await resumeInterruptedVoyage(context, ref, voyage);
+    messenger.showSnackBar(SnackBar(
+      duration: const Duration(seconds: 8),
+      content: Text(l.trackingResumedAuto('$minutes')),
+      action: voyage.offersGap
+          ? SnackBarAction(
+              label: l.trackingResumedAddGap(voyage.gapNm.toStringAsFixed(1)),
+              onPressed: () => unawaited(
+                  db.addBridgedDistance(voyage.dayLog.id, voyage.gapNm)),
+            )
+          : null,
+    ));
+    return;
+  }
+
+  final interrupted = voyage.session;
+  final lastPoint = voyage.lastPoint;
+  final dayLog = voyage.dayLog;
+  final charter = voyage.charter;
+  final gapNm = voyage.gapNm;
+  final offersGap = voyage.offersGap;
+
   final l = AppLocalizations.of(context);
   var addGap = offersGap;
 
@@ -152,16 +258,16 @@ Future<void> maybePromptInterruptedVoyage(
     ),
   );
 
-  // Session sa uzatvára tak či tak — plavba pokračuje novou session.
-  await db.closeInterruptedSession(interrupted);
   if (resume != true) {
+    // Plavba pokračuje novou session, takže starú treba uzavrieť tak či tak.
+    await db.closeInterruptedSession(interrupted);
     // Plavba, ktorú prerušilo vypnutie appky, by inak ostala v denníku bez
     // konca — a keď skiper neskôr spustí novú, deň by mal dva začiatky a
     // jeden koniec. Koniec sa zapíše časom a polohou POSLEDNÉHO
     // zaznamenaného bodu: to je pozorovaný údaj, nie dohad o tom, kedy sa
     // loď naozaj zastavila.
     await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
-      dayLogId: Value(dayLogId),
+      dayLogId: Value(dayLog.id),
       sessionId: Value(interrupted.sessionId),
       timestamp: lastPoint.timestamp,
       latitude: Value(lastPoint.latitude),
@@ -173,10 +279,9 @@ Future<void> maybePromptInterruptedVoyage(
     return;
   }
 
-  final interval = await _defaultLogInterval();
   if (!context.mounted) return;
-  await _beginTracking(context, ref, charter, dayLog, interval,
-      bridgedDistanceNm: offersGap && addGap ? gapNm : 0, isResume: true);
+  await resumeInterruptedVoyage(context, ref, voyage,
+      bridgeGap: offersGap && addGap);
 }
 
 /// Popup hneď po ťuknutí na Start: výber frekvencie zápisov do denníka.

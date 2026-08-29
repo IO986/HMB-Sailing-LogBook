@@ -3409,6 +3409,27 @@ class AppLocalizationsPl extends AppLocalizations {
   String get interruptedVoyageResume => 'Kontynuuj';
 
   @override
+  String get trackingStalledTitle => 'Rejs trwa, ale nic się nie zapisuje';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Ostatni punkt $minutes min temu';
+  }
+
+  @override
+  String get trackingResumeAction => 'Wznów';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Zapis wznowiony. System zamknął aplikację — brakuje $minutes min.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Dodaj $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle => 'Niech aplikacja działa przez cały rejs';
 
   @override

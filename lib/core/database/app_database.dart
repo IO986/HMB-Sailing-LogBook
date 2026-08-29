@@ -1117,6 +1117,19 @@ class AppDatabase extends _$AppDatabase {
       (update(sailingSessions)..where((s) => s.id.equals(id)))
           .write(SailingSessionsCompanion(totalDistanceNm: Value(distanceNm)));
 
+  /// Pripíše dňu vzdialenosť, ktorú appka nezaznamenala.
+  ///
+  /// Priamka medzi posledným bodom pred výpadkom a polohou pri obnovení.
+  /// Je to odhad, preto sa pripisuje len na výslovné želanie — denník má
+  /// hovoriť, čo sa zmeralo, a keď doplní odhad, tak preto, že o to niekto
+  /// požiadal.
+  Future<void> addBridgedDistance(int dayLogId, double nm) async {
+    final day = await getDayLogById(dayLogId);
+    if (day == null || nm <= 0) return;
+    await (update(dayLogs)..where((d) => d.id.equals(dayLogId)))
+        .write(DayLogsCompanion(distanceNm: Value(day.distanceNm + nm)));
+  }
+
   /// Nočné hodiny odplávané v daný deň.
   ///
   /// Noc sa berie zo skutočného západu a východu slnka pre polohu, kde loď

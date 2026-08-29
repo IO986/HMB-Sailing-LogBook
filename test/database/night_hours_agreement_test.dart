@@ -105,6 +105,20 @@ void main() {
     expect(await milesBookNightHours(day), 0);
   });
 
+  test('a bridged gap is added to the day, never subtracted', () async {
+    final day = await makeDay();
+    final before = (await db.getDayLogById(day))!.distanceNm;
+
+    await db.addBridgedDistance(day, 3.07);
+    expect((await db.getDayLogById(day))!.distanceNm, closeTo(before + 3.07, 1e-9));
+
+    // A straight-line estimate is only ever added on request, and a
+    // nonsensical one is ignored rather than silently shrinking the day.
+    await db.addBridgedDistance(day, 0);
+    await db.addBridgedDistance(day, -5);
+    expect((await db.getDayLogById(day))!.distanceNm, closeTo(before + 3.07, 1e-9));
+  });
+
   test('the cap itself has exactly one home', () {
     expect(NightHours.maxGap, const Duration(minutes: 30));
   });

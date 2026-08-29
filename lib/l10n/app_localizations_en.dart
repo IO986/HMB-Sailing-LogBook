@@ -3402,6 +3402,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get interruptedVoyageResume => 'Continue';
 
   @override
+  String get trackingStalledTitle =>
+      'A voyage is open but nothing is being recorded';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Last point $minutes min ago';
+  }
+
+  @override
+  String get trackingResumeAction => 'Resume';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Tracking resumed. The system had stopped the app — $minutes min are missing.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Add $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle => 'Keep the app running for the whole voyage';
 
   @override

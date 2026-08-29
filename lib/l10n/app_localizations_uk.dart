@@ -3409,6 +3409,28 @@ class AppLocalizationsUk extends AppLocalizations {
   String get interruptedVoyageResume => 'Продовжити';
 
   @override
+  String get trackingStalledTitle =>
+      'Плавання триває, але нічого не записується';
+
+  @override
+  String trackingStalledSince(String minutes) {
+    return 'Остання точка $minutes хв тому';
+  }
+
+  @override
+  String get trackingResumeAction => 'Продовжити';
+
+  @override
+  String trackingResumedAuto(String minutes) {
+    return 'Запис продовжено. Система зупинила застосунок — бракує $minutes хв.';
+  }
+
+  @override
+  String trackingResumedAddGap(String nm) {
+    return 'Додати $nm NM';
+  }
+
+  @override
   String get batteryPromptTitle => 'Нехай застосунок працює все плавання';
 
   @override
