@@ -1066,7 +1066,7 @@ class PdfExportService {
         5: const pw.FixedColumnWidth(34),   // Vietor spd+dir+vlny
         6: const pw.FixedColumnWidth(26),   // hPa
         7: const pw.FixedColumnWidth(24),   // Teplota vzd/voda
-        8: const pw.FixedColumnWidth(34),   // Pohon + motor/nadrze
+        8: const pw.FixedColumnWidth(46),   // Pohon + kurz voči vetru + motor/nádrže
         9: const pw.FixedColumnWidth(40),   // Počasie – plný názov, 2 riadky
         10: const pw.FlexColumnWidth(1),    // Poznámka
       },
@@ -1193,11 +1193,15 @@ class PdfExportService {
               // Pohon + motor/nadrze
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  pw.Text(_pdfText(sailMode), maxLines: 1, overflow: pw.TextOverflow.clip,
+                  // Zalomiť, nie orezať. Na jeden riadok sa „Hlavná+Genova"
+                  // nezmestí a orezané „Hlavná+" tvrdí niečo iné, než sa
+                  // stalo; z „Bočný S" ostalo „Bočný" a bok, na ktorom loď
+                  // plávala, z dokladu úplne zmizol.
+                  pw.Text(_pdfText(sailMode), maxLines: 2,
                       style: const pw.TextStyle(fontSize: 7.5)),
                   if (sailDir != null)
                     pw.Text(_pdfText(sailDirectionShort(sailDir, l)),
-                        maxLines: 1, overflow: pw.TextOverflow.clip,
+                        maxLines: 2,
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
@@ -1238,7 +1242,10 @@ class PdfExportService {
                   children: [
                     if (photos.containsKey(entry.id))
                       pw.Container(
-                        width: 65, height: 52,
+                        // 65 x 52 pt bola pečiatka, na ktorej sa nedalo nič
+                        // rozoznať. Riadok s fotkou je tým vyšší než ostatné
+                        // — v denníku je čitateľnosť prednejšia než mriežka.
+                        width: 120, height: 90,
                         margin: const pw.EdgeInsets.only(bottom: 3),
                         decoration: pw.BoxDecoration(
                           border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
@@ -1248,10 +1255,12 @@ class PdfExportService {
                           child: pw.Image(pw.MemoryImage(photos[entry.id]!),
                               fit: pw.BoxFit.cover)),
                       ),
+                    // Bez stropu: poznámka je text skipera a orezaná po
+                    // troch riadkoch mizla bez akéhokoľvek náznaku, že
+                    // pokračuje. Pretečenie na ďalšiu stranu rieši MultiPage.
                     if (noteText.isNotEmpty)
                       pw.Text(_pdfText(noteText),
-                          style: const pw.TextStyle(fontSize: 7.5),
-                          maxLines: 3, overflow: pw.TextOverflow.clip),
+                          style: const pw.TextStyle(fontSize: 7.5)),
                   ],
                 ),
               ),
@@ -1753,7 +1762,9 @@ class PdfExportService {
       'motor': 'Motor', 'main': l.sailMain, 'genoa': 'Genoa',
       'reef1': 'Reef1', 'reef2': 'Reef2',
     };
-    return modes.split(',').map((m) => map[m.trim()] ?? m).join('+');
+    // Medzery okolo '+' nie sú ozdoba: v úzkom stĺpci je to jediné miesto,
+    // kde sa dá zalomiť, a bez nich sa „Hlavná+Genoa" zlomí uprostred slova.
+    return modes.split(',').map((m) => map[m.trim()] ?? m).join(' + ');
   }
 
   static String _degToCompass(double deg) {
@@ -2496,8 +2507,12 @@ class PdfExportService {
     child: pw.Text(text, style: pw.TextStyle(
         color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 7.5)));
 
-  // Bežný cell (kompaktný)
-  static pw.Widget _cell(String text, {bool bold = false, int maxLines = 1}) =>
+  /// Bežná bunka tabuľky.
+  ///
+  /// Dva riadky, nie jeden: stĺpce s názvami prístavov, lodí a položiek
+  /// checklistu sa na jeden riadok nezmestia a orezaný názov je horší než
+  /// zalomený. Čísla sú krátke, tých sa druhý riadok nikdy netýka.
+  static pw.Widget _cell(String text, {bool bold = false, int maxLines = 2}) =>
     pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 3),
       child: pw.Text(text, maxLines: maxLines, overflow: pw.TextOverflow.clip,
           style: pw.TextStyle(fontSize: 8.5,
