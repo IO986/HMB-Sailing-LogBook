@@ -20,6 +20,7 @@ import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/export/presentation/export_screen.dart';
 import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
+import 'features/miles/presentation/screens/miles_export_screen.dart';
 import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
 import 'features/bearing/presentation/screens/bearing_session_screen.dart';
@@ -113,6 +114,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: '/miles',
             builder: (c, s) => const MilesBookScreen(),
             routes: [
+              GoRoute(path: 'export',
+                  builder: (c, s) => const MilesExportScreen()),
               GoRoute(path: 'historical/new',
                   builder: (c, s) => const HistoricalVoyageFormScreen()),
               GoRoute(path: 'historical/:voyageId/edit',

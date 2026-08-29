@@ -792,6 +792,77 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pdfColArea => 'Akwen';
 
   @override
+  String get pdfColTidal => 'Wody';
+
+  @override
+  String get pdfTidal => 'pływowe';
+
+  @override
+  String get pdfNonTidal => 'bezpływowe';
+
+  @override
+  String get pdfMilesIssuedFor => 'Wystawiono dla';
+
+  @override
+  String get pdfMilesIssuedBy => 'Wystawił';
+
+  @override
+  String get pdfMilesOwnRecord => 'Własny rejestr przepłyniętych mil';
+
+  @override
+  String get pdfMilesByRole => 'Mile według funkcji';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Podsumowanie skippera';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Potwierdzenie kapitana rejsu';
+
+  @override
+  String get milesExportTitle => 'Wystaw zaświadczenie';
+
+  @override
+  String get milesExportFor => 'Dla kogo';
+
+  @override
+  String get milesExportForSelf => 'Dla siebie';
+
+  @override
+  String get milesExportForCrew => 'Dla członka załogi';
+
+  @override
+  String get milesExportRecipient => 'Imię i nazwisko odbiorcy';
+
+  @override
+  String get milesExportIssuer => 'Wystawiający';
+
+  @override
+  String get milesExportQualification => 'Kwalifikacja';
+
+  @override
+  String get milesExportVoyages => 'Rejsy w zaświadczeniu';
+
+  @override
+  String get milesExportSelectAll => 'Zaznacz wszystkie';
+
+  @override
+  String get milesExportSelectNone => 'Wyczyść zaznaczenie';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Wybranych rejsów: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Nie wybrano żadnego rejsu';
+
+  @override
+  String get milesTidalWaters => 'Wody pływowe';
+
+  @override
+  String get notSpecified => 'Nie podano';
+
+  @override
   String get pdfColRole => 'Rola';
 
   @override
@@ -2671,7 +2742,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis';
+      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.';
 
   @override
   String get guideHandoverTitle => 'Protokół przekazania (check-in/check-out)';

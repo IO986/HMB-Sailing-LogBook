@@ -792,6 +792,77 @@ class AppLocalizationsUk extends AppLocalizations {
   String get pdfColArea => 'Район';
 
   @override
+  String get pdfColTidal => 'Води';
+
+  @override
+  String get pdfTidal => 'припливні';
+
+  @override
+  String get pdfNonTidal => 'без припливів';
+
+  @override
+  String get pdfMilesIssuedFor => 'Видано для';
+
+  @override
+  String get pdfMilesIssuedBy => 'Видав';
+
+  @override
+  String get pdfMilesOwnRecord => 'Власний запис пройдених миль';
+
+  @override
+  String get pdfMilesByRole => 'Милі за функцією';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Підсумок шкіпера';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Підтвердження шкіпера';
+
+  @override
+  String get milesExportTitle => 'Видати підтвердження';
+
+  @override
+  String get milesExportFor => 'Для кого';
+
+  @override
+  String get milesExportForSelf => 'Для себе';
+
+  @override
+  String get milesExportForCrew => 'Для члена екіпажу';
+
+  @override
+  String get milesExportRecipient => 'Ім\'я отримувача';
+
+  @override
+  String get milesExportIssuer => 'Видавець';
+
+  @override
+  String get milesExportQualification => 'Кваліфікація';
+
+  @override
+  String get milesExportVoyages => 'Плавання у підтвердженні';
+
+  @override
+  String get milesExportSelectAll => 'Вибрати всі';
+
+  @override
+  String get milesExportSelectNone => 'Зняти вибір';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Вибрано плавань: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Не вибрано жодного плавання';
+
+  @override
+  String get milesTidalWaters => 'Припливні води';
+
+  @override
+  String get notSpecified => 'Не вказано';
+
+  @override
   String get pdfColRole => 'Роль';
 
   @override
@@ -2671,7 +2742,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Зведення всіх рейсів в одному місці (значок у Журналі).\n\n• Загальна кількість морських миль, дні у морі, кількість рейсів і нічні години\n• Розподіл за роком і за судном\n• Фільтр за роком\n• Натисни на рейс (також трекований/імпортований), щоб заповнити запис книги миль – маршрут, прапор судна, ім\'я та кваліфікацію шкіпера, підпис що підтверджує милі\n• Кнопка + – додай історичне плавання до початку використання додатку (повністю враховується у зведеннях, у списку позначене зірочкою)\n• Експорт PDF підтвердження пройдених миль з місцем для підпису';
+      'Зведення всіх рейсів в одному місці (значок у Журналі).\n\n• Загальна кількість морських миль, дні у морі, кількість рейсів і нічні години\n• Розподіл за роком і за судном\n• Фільтр за роком\n• Натисни на рейс (також трекований/імпортований), щоб заповнити запис книги миль – маршрут, прапор судна, ім\'я та кваліфікацію шкіпера, підпис що підтверджує милі\n• Кнопка + – додай історичне плавання до початку використання додатку (повністю враховується у зведеннях, у списку позначене зірочкою)\n• Експорт PDF підтвердження пройдених миль з місцем для підпису\n• Підтвердження про милі видається через форму (значок PDF угорі): для себе або для члена екіпажу, із іменем отримувача, іменем і кваліфікацією видавця та списком плавань. Документ несе судно, шкіпера, район, припливні чи безприпливні води й функцію, у якій ти йшов, а також розподіл миль за функцією. Для плавань, де ти не був командиром, лишається місце для його підпису з іменем. Підтвердження для себе має ще й підсумок шкіпера. Зберігається також у папку застосунку, не лише через системне вікно.';
 
   @override
   String get guideHandoverTitle => 'Протокол передачі (check-in/check-out)';

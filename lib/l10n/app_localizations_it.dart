@@ -793,6 +793,77 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColArea => 'Zona';
 
   @override
+  String get pdfColTidal => 'Acque';
+
+  @override
+  String get pdfTidal => 'di marea';
+
+  @override
+  String get pdfNonTidal => 'senza marea';
+
+  @override
+  String get pdfMilesIssuedFor => 'Rilasciato a';
+
+  @override
+  String get pdfMilesIssuedBy => 'Rilasciato da';
+
+  @override
+  String get pdfMilesOwnRecord => 'Registro personale delle miglia navigate';
+
+  @override
+  String get pdfMilesByRole => 'Miglia per ruolo';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Riepilogo dello skipper';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Confermato dallo skipper responsabile';
+
+  @override
+  String get milesExportTitle => 'Rilascia un attestato';
+
+  @override
+  String get milesExportFor => 'Per chi';
+
+  @override
+  String get milesExportForSelf => 'Per me';
+
+  @override
+  String get milesExportForCrew => 'Per un membro dell\'equipaggio';
+
+  @override
+  String get milesExportRecipient => 'Nome del destinatario';
+
+  @override
+  String get milesExportIssuer => 'Emittente';
+
+  @override
+  String get milesExportQualification => 'Qualifica';
+
+  @override
+  String get milesExportVoyages => 'Navigazioni nell\'attestato';
+
+  @override
+  String get milesExportSelectAll => 'Seleziona tutto';
+
+  @override
+  String get milesExportSelectNone => 'Annulla selezione';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Navigazioni selezionate: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Nessuna navigazione selezionata';
+
+  @override
+  String get milesTidalWaters => 'Acque di marea';
+
+  @override
+  String get notSpecified => 'Non indicato';
+
+  @override
   String get pdfColRole => 'Ruolo';
 
   @override
@@ -2687,7 +2758,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma';
+      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.';
 
   @override
   String get guideHandoverTitle => 'Verbale di riconsegna (check-in/check-out)';

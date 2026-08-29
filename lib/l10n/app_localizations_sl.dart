@@ -791,6 +791,77 @@ class AppLocalizationsSl extends AppLocalizations {
   String get pdfColArea => 'Območje';
 
   @override
+  String get pdfColTidal => 'Vode';
+
+  @override
+  String get pdfTidal => 'plimske';
+
+  @override
+  String get pdfNonTidal => 'neplimske';
+
+  @override
+  String get pdfMilesIssuedFor => 'Izdano za';
+
+  @override
+  String get pdfMilesIssuedBy => 'Izdal';
+
+  @override
+  String get pdfMilesOwnRecord => 'Lastna evidenca preplutih milj';
+
+  @override
+  String get pdfMilesByRole => 'Milje po vlogi';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Skiperski povzetek';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Potrditev vodje plovbe';
+
+  @override
+  String get milesExportTitle => 'Izdaj potrdilo';
+
+  @override
+  String get milesExportFor => 'Za koga';
+
+  @override
+  String get milesExportForSelf => 'Zase';
+
+  @override
+  String get milesExportForCrew => 'Za člana posadke';
+
+  @override
+  String get milesExportRecipient => 'Ime prejemnika';
+
+  @override
+  String get milesExportIssuer => 'Izdajatelj';
+
+  @override
+  String get milesExportQualification => 'Kvalifikacija';
+
+  @override
+  String get milesExportVoyages => 'Plovbe v potrdilu';
+
+  @override
+  String get milesExportSelectAll => 'Izberi vse';
+
+  @override
+  String get milesExportSelectNone => 'Počisti izbor';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Izbranih plovb: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Izbrana ni nobena plovba';
+
+  @override
+  String get milesTidalWaters => 'Plimske vode';
+
+  @override
+  String get notSpecified => 'Ni navedeno';
+
+  @override
   String get pdfColRole => 'Vloga';
 
   @override
@@ -2668,7 +2739,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis';
+      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis\n• Potrdilo o miljah se izda prek obrazca (ikona PDF zgoraj): zase ali za člana posadke, z imenom prejemnika, imenom in kvalifikacijo izdajatelja (predizpolnjeno iz profila skiperja) in seznamom plovb s potrditvenimi polji. Dokument nosi plovilo, vodjo plovbe, območje, plimske ali neplimske vode in vlogo, v kateri si plul, ter razdelitev milj po vlogi. Pri plovbah, kjer nisi bil vodja, ostane prostor za njegov podpis z imenom. Potrdilo zase nosi tudi skiperski povzetek. Shrani se tudi v mapo aplikacije, ne le prek sistemskega pogovornega okna.';
 
   @override
   String get guideHandoverTitle =>

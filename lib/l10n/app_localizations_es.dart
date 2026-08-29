@@ -793,6 +793,77 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pdfColArea => 'Zona';
 
   @override
+  String get pdfColTidal => 'Aguas';
+
+  @override
+  String get pdfTidal => 'de marea';
+
+  @override
+  String get pdfNonTidal => 'sin marea';
+
+  @override
+  String get pdfMilesIssuedFor => 'Expedido para';
+
+  @override
+  String get pdfMilesIssuedBy => 'Expedido por';
+
+  @override
+  String get pdfMilesOwnRecord => 'Registro propio de millas navegadas';
+
+  @override
+  String get pdfMilesByRole => 'Millas por función';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Resumen del patrón';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Confirmado por el patrón responsable';
+
+  @override
+  String get milesExportTitle => 'Expedir certificado';
+
+  @override
+  String get milesExportFor => 'Para quién';
+
+  @override
+  String get milesExportForSelf => 'Para mí';
+
+  @override
+  String get milesExportForCrew => 'Para un tripulante';
+
+  @override
+  String get milesExportRecipient => 'Nombre del destinatario';
+
+  @override
+  String get milesExportIssuer => 'Expedidor';
+
+  @override
+  String get milesExportQualification => 'Titulación';
+
+  @override
+  String get milesExportVoyages => 'Travesías en el certificado';
+
+  @override
+  String get milesExportSelectAll => 'Seleccionar todo';
+
+  @override
+  String get milesExportSelectNone => 'Quitar selección';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Travesías seleccionadas: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'No hay ninguna travesía seleccionada';
+
+  @override
+  String get milesTidalWaters => 'Aguas de marea';
+
+  @override
+  String get notSpecified => 'Sin indicar';
+
+  @override
   String get pdfColRole => 'Rol';
 
   @override

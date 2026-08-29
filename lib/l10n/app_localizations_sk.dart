@@ -791,6 +791,77 @@ class AppLocalizationsSk extends AppLocalizations {
   String get pdfColArea => 'Oblasť';
 
   @override
+  String get pdfColTidal => 'Vody';
+
+  @override
+  String get pdfTidal => 'prílivové';
+
+  @override
+  String get pdfNonTidal => 'neprílivové';
+
+  @override
+  String get pdfMilesIssuedFor => 'Vystavené pre';
+
+  @override
+  String get pdfMilesIssuedBy => 'Vystavil';
+
+  @override
+  String get pdfMilesOwnRecord => 'Vlastný záznam naplavaných míľ';
+
+  @override
+  String get pdfMilesByRole => 'Míľe podľa funkcie';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Skiperský súhrn';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Potvrdenie veliteľa plavby';
+
+  @override
+  String get milesExportTitle => 'Vystaviť potvrdenie';
+
+  @override
+  String get milesExportFor => 'Pre koho';
+
+  @override
+  String get milesExportForSelf => 'Pre seba';
+
+  @override
+  String get milesExportForCrew => 'Pre člena posádky';
+
+  @override
+  String get milesExportRecipient => 'Meno príjemcu';
+
+  @override
+  String get milesExportIssuer => 'Vystavovateľ';
+
+  @override
+  String get milesExportQualification => 'Kvalifikácia';
+
+  @override
+  String get milesExportVoyages => 'Plavby v potvrdení';
+
+  @override
+  String get milesExportSelectAll => 'Vybrať všetky';
+
+  @override
+  String get milesExportSelectNone => 'Zrušiť výber';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Vybraných plaváb: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Nevybral si žiadnu plavbu';
+
+  @override
+  String get milesTidalWaters => 'Prílivové vody';
+
+  @override
+  String get notSpecified => 'Neuvedené';
+
+  @override
   String get pdfColRole => 'Rola';
 
   @override

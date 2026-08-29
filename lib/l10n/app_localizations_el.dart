@@ -798,6 +798,77 @@ class AppLocalizationsEl extends AppLocalizations {
   String get pdfColArea => 'Περιοχή';
 
   @override
+  String get pdfColTidal => 'Ύδατα';
+
+  @override
+  String get pdfTidal => 'παλιρροικά';
+
+  @override
+  String get pdfNonTidal => 'μη παλιρροικά';
+
+  @override
+  String get pdfMilesIssuedFor => 'Εκδόθηκε για';
+
+  @override
+  String get pdfMilesIssuedBy => 'Εκδόθηκε από';
+
+  @override
+  String get pdfMilesOwnRecord => 'Ιδιωτικό μητρώο μιλίων';
+
+  @override
+  String get pdfMilesByRole => 'Μίλια ανά ιδιότητα';
+
+  @override
+  String get pdfMilesSkipperSummary => 'Σύνοψη κυβερνήτη';
+
+  @override
+  String get pdfMilesSkipperConfirms => 'Επιβεβαίωση από τον κυβερνήτη';
+
+  @override
+  String get milesExportTitle => 'Έκδοση βεβαίωσης';
+
+  @override
+  String get milesExportFor => 'Για ποιον';
+
+  @override
+  String get milesExportForSelf => 'Για μένα';
+
+  @override
+  String get milesExportForCrew => 'Για μέλος πληρώματος';
+
+  @override
+  String get milesExportRecipient => 'Όνομα παραλήπτη';
+
+  @override
+  String get milesExportIssuer => 'Εκδότης';
+
+  @override
+  String get milesExportQualification => 'Προσόντα';
+
+  @override
+  String get milesExportVoyages => 'Πλόες στη βεβαίωση';
+
+  @override
+  String get milesExportSelectAll => 'Επιλογή όλων';
+
+  @override
+  String get milesExportSelectNone => 'Καθαρισμός επιλογής';
+
+  @override
+  String milesExportChosenSummary(String count, String nm) {
+    return 'Επιλεγμένοι πλόες: $count  ·  $nm NM';
+  }
+
+  @override
+  String get milesExportNoVoyages => 'Δεν έχει επιλεγεί πλόος';
+
+  @override
+  String get milesTidalWaters => 'Παλιρροικά ύδατα';
+
+  @override
+  String get notSpecified => 'Δεν δηλώθηκε';
+
+  @override
   String get pdfColRole => 'Ρόλος';
 
   @override
@@ -2689,7 +2760,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Μια σύνοψη όλων των πλόων σας σε ένα μέρος (εικονίδιο στην καρτέλα Ημερολόγιο).\n\n• Συνολικά ναυτικά μίλια, ημέρες στη θάλασσα, αριθμός πλόων και νυχτερινές ώρες\n• Ανάλυση ανά έτος και ανά σκάφος\n• Φίλτρο ανά έτος\n• Πατήστε έναν πλου (ακόμη και καταγεγραμμένο/εισαγόμενο) για να συμπληρώσετε την εγγραφή ημερολογίου του – διαδρομή, σημαία σκάφους, όνομα και πτυχίο κυβερνήτη, υπογραφή επιβεβαίωσης των μιλίων\n• Κουμπί + – προσθέστε ιστορικό πλου από πριν αρχίσετε να χρησιμοποιείτε την εφαρμογή (μετρά πλήρως στις συνόψεις, εμφανίζεται με αστερίσκο στη λίστα)\n• Εξαγωγή PDF πιστοποιητικού διανυθέντων μιλίων με χώρο για υπογραφή';
+      'Μια σύνοψη όλων των πλόων σας σε ένα μέρος (εικονίδιο στην καρτέλα Ημερολόγιο).\n\n• Συνολικά ναυτικά μίλια, ημέρες στη θάλασσα, αριθμός πλόων και νυχτερινές ώρες\n• Ανάλυση ανά έτος και ανά σκάφος\n• Φίλτρο ανά έτος\n• Πατήστε έναν πλου (ακόμη και καταγεγραμμένο/εισαγόμενο) για να συμπληρώσετε την εγγραφή ημερολογίου του – διαδρομή, σημαία σκάφους, όνομα και πτυχίο κυβερνήτη, υπογραφή επιβεβαίωσης των μιλίων\n• Κουμπί + – προσθέστε ιστορικό πλου από πριν αρχίσετε να χρησιμοποιείτε την εφαρμογή (μετρά πλήρως στις συνόψεις, εμφανίζεται με αστερίσκο στη λίστα)\n• Εξαγωγή PDF πιστοποιητικού διανυθέντων μιλίων με χώρο για υπογραφή\n• Η βεβαίωση μιλίων εκδίδεται μέσω φόρμας (εικονίδιο PDF πάνω): για σένα ή για μέλος πληρώματος, με το όνομα του παραλήπτη, το όνομα και τα προσόντα του εκδότη και λίστα πλόων. Το έγγραφο φέρει το σκάφος, τον κυβερνήτη, την περιοχή, παλιρροικά ή μη ύδατα και την ιδιότητα με την οποία έπλευσες, καθώς και ανάλυση μιλίων ανά ιδιότητα. Για πλόες όπου δεν ήσουν κυβερνήτης μένει γραμμή για την υπογραφή του, με το όνομά του. Η βεβαίωση για σένα φέρει και σύνοψη κυβερνήτη. Αποθηκεύεται και στον φάκελο της εφαρμογής, όχι μόνο μέσω του διαλόγου του συστήματος.';
 
   @override
   String get guideHandoverTitle => 'Πρωτόκολλο Παράδοσης (παραλαβή/παράδοση)';

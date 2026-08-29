@@ -1562,6 +1562,144 @@ abstract class AppLocalizations {
   /// **'Oblasť'**
   String get pdfColArea;
 
+  /// No description provided for @pdfColTidal.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vody'**
+  String get pdfColTidal;
+
+  /// No description provided for @pdfTidal.
+  ///
+  /// In sk, this message translates to:
+  /// **'prílivové'**
+  String get pdfTidal;
+
+  /// No description provided for @pdfNonTidal.
+  ///
+  /// In sk, this message translates to:
+  /// **'neprílivové'**
+  String get pdfNonTidal;
+
+  /// No description provided for @pdfMilesIssuedFor.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vystavené pre'**
+  String get pdfMilesIssuedFor;
+
+  /// No description provided for @pdfMilesIssuedBy.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vystavil'**
+  String get pdfMilesIssuedBy;
+
+  /// No description provided for @pdfMilesOwnRecord.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlastný záznam naplavaných míľ'**
+  String get pdfMilesOwnRecord;
+
+  /// No description provided for @pdfMilesByRole.
+  ///
+  /// In sk, this message translates to:
+  /// **'Míľe podľa funkcie'**
+  String get pdfMilesByRole;
+
+  /// No description provided for @pdfMilesSkipperSummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Skiperský súhrn'**
+  String get pdfMilesSkipperSummary;
+
+  /// No description provided for @pdfMilesSkipperConfirms.
+  ///
+  /// In sk, this message translates to:
+  /// **'Potvrdenie veliteľa plavby'**
+  String get pdfMilesSkipperConfirms;
+
+  /// No description provided for @milesExportTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vystaviť potvrdenie'**
+  String get milesExportTitle;
+
+  /// No description provided for @milesExportFor.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre koho'**
+  String get milesExportFor;
+
+  /// No description provided for @milesExportForSelf.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre seba'**
+  String get milesExportForSelf;
+
+  /// No description provided for @milesExportForCrew.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pre člena posádky'**
+  String get milesExportForCrew;
+
+  /// No description provided for @milesExportRecipient.
+  ///
+  /// In sk, this message translates to:
+  /// **'Meno príjemcu'**
+  String get milesExportRecipient;
+
+  /// No description provided for @milesExportIssuer.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vystavovateľ'**
+  String get milesExportIssuer;
+
+  /// No description provided for @milesExportQualification.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kvalifikácia'**
+  String get milesExportQualification;
+
+  /// No description provided for @milesExportVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavby v potvrdení'**
+  String get milesExportVoyages;
+
+  /// No description provided for @milesExportSelectAll.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať všetky'**
+  String get milesExportSelectAll;
+
+  /// No description provided for @milesExportSelectNone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zrušiť výber'**
+  String get milesExportSelectNone;
+
+  /// No description provided for @milesExportChosenSummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybraných plaváb: {count}  ·  {nm} NM'**
+  String milesExportChosenSummary(String count, String nm);
+
+  /// No description provided for @milesExportNoVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nevybral si žiadnu plavbu'**
+  String get milesExportNoVoyages;
+
+  /// No description provided for @milesTidalWaters.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prílivové vody'**
+  String get milesTidalWaters;
+
+  /// No description provided for @notSpecified.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neuvedené'**
+  String get notSpecified;
+
   /// No description provided for @pdfColRole.
   ///
   /// In sk, this message translates to:

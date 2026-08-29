@@ -1756,6 +1756,17 @@ class PdfExportService {
     return modes.split(',').map((m) => map[m.trim()] ?? m).join(' + ');
   }
 
+  /// Funkcia na palube preložená; neznámy kód sa vytlačí tak, ako je
+  /// uložený — vymyslieť si ho by bolo horšie než ukázať surový zápis.
+  static String _roleLabel(String? role, AppLocalizations l) => switch (role) {
+        null || '' => '-',
+        'skipper' => l.roleSkipper,
+        'coSkipper' => l.roleCoSkipper,
+        'crew' => l.roleCrew,
+        'unknown' => '-',
+        _ => role,
+      };
+
   static String _degToCompass(double deg) {
     const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE',
                   'S','SSW','SW','WSW','W','WNW','NW','NNW'];
@@ -2374,6 +2385,14 @@ class PdfExportService {
     required AppLocalizations l,
     required MilesAggregate aggregate,
     String? signerName,
+    /// Kvalifikácia vystavovateľa — bez nej je podpis len meno a doklad
+    /// nehovorí, kto ho vystavil.
+    String? issuerQualification,
+    /// Komu sa potvrdenie vystavuje. `null` pri potvrdení pre seba.
+    String? recipientName,
+    /// Pre seba: pridá skiperský súhrn a do hlavičky napíše, že si držiteľ
+    /// potvrdzuje vlastné míle.
+    bool forSelf = true,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -2405,6 +2424,34 @@ class PdfExportService {
         docId: docId, revision: 0,
       ),
       build: (ctx) => [
+        // Komu a od koho. Doklad bez týchto dvoch riadkov je len tabuľka
+        // čísel — nedá sa z neho zistiť, čie míle to sú ani kto za ne ručí.
+        pw.Container(
+          width: double.infinity,
+          padding: const pw.EdgeInsets.all(10),
+          margin: const pw.EdgeInsets.only(bottom: 12),
+          decoration: pw.BoxDecoration(
+            color: _lgrey,
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+          ),
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                  _pdfText('${l.pdfMilesIssuedFor}: '
+                      '${(forSelf ? signerName : recipientName) ?? '-'}'),
+                  style: pw.TextStyle(
+                      fontSize: 10, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 2),
+              pw.Text(
+                  _pdfText(forSelf
+                      ? l.pdfMilesOwnRecord
+                      : '${l.pdfMilesIssuedBy}: ${signerName ?? '-'}'
+                          '${(issuerQualification ?? '').isEmpty ? '' : ', $issuerQualification'}'),
+                  style: pw.TextStyle(fontSize: 8.5, color: _dgrey)),
+            ],
+          ),
+        ),
         pw.Row(children: [
           _statBox(
               '${l.pdfTotalLabel.toUpperCase()} ${units.distanceLabel.toUpperCase()}',
@@ -2424,30 +2471,160 @@ class PdfExportService {
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
           columnWidths: {
-            0: const pw.FlexColumnWidth(1.8),
-            1: const pw.FlexColumnWidth(1.6),
-            2: const pw.FlexColumnWidth(1.8),
-            3: const pw.FlexColumnWidth(1),
-            4: const pw.FlexColumnWidth(1.2),
+            0: const pw.FlexColumnWidth(1.6),
+            1: const pw.FlexColumnWidth(1.4),
+            2: const pw.FlexColumnWidth(1.4),
+            3: const pw.FlexColumnWidth(1.4),
+            4: const pw.FlexColumnWidth(0.8),
+            5: const pw.FlexColumnWidth(0.9),
+            6: const pw.FlexColumnWidth(1.1),
           },
           children: [
-            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children:
-              [l.pdfColDateRange, l.pdfVesselLabel, l.pdfColArea, units.distanceLabel, l.pdfColRole].map((h) => _hcell(h)).toList()),
+            pw.TableRow(decoration: pw.BoxDecoration(color: _navy), children: [
+              l.pdfColDateRange,
+              l.pdfVesselLabel,
+              // Kto plavbe velil — na cudzej lodi to nie je držiteľ dokladu.
+              l.pdfSkipperLabel,
+              l.pdfColArea,
+              l.pdfColTidal,
+              units.distanceLabel,
+              l.pdfColRole,
+            ].map((h) => _hcell(h)).toList()),
             ...aggregate.voyages.map((v) => pw.TableRow(
               children: [
                 _cell('${v.isManualEntry ? "* " : ""}${fmt.short(v.dateFrom)}-${fmt.short(v.dateTo)}'),
                 _cell(_pdfText(v.vesselName)),
+                _cell(_pdfText(v.skipperName ?? '-')),
                 _cell(_pdfText(v.area ?? '-')),
-                _cell(v.distanceNm.toStringAsFixed(1)),
-                _cell(_pdfText(v.role ?? '-')),
+                // Prázdna kolónka, keď to nikto nezaznamenal: „nie" by bolo
+                // tvrdenie, ktoré sa nemá o čo oprieť.
+                _cell(v.tidalWaters == null
+                    ? '-'
+                    : (v.tidalWaters! ? l.pdfTidal : l.pdfNonTidal)),
+                _cell(units.distanceValue(v.distanceNm).toStringAsFixed(1)),
+                _cell(_pdfText(_roleLabel(v.role, l))),
               ],
             )),
             pw.TableRow(decoration: pw.BoxDecoration(color: _lblue), children: [
-              _cell(l.pdfTotalLabel.toUpperCase(), bold: true), _cell(''), _cell(''),
-              _cell(aggregate.totalNm.toStringAsFixed(1), bold: true), _cell(''),
+              _cell(l.pdfTotalLabel.toUpperCase(), bold: true),
+              _cell(''), _cell(''), _cell(''), _cell(''),
+              _cell(units.distanceValue(aggregate.totalNm).toStringAsFixed(1),
+                  bold: true),
+              _cell(''),
             ]),
           ],
         ),
+
+        // Rozpis podľa funkcie. Míle odplávané ako posádka a ako veliteľ sa
+        // pri uznávaní neberú rovnako, takže jeden spoločný súčet by si
+        // čitateľ musel skírovať z riadkov sám.
+        if (aggregate.nmByRole.length > 1) ...[
+          pw.SizedBox(height: 10),
+          pw.Text(l.pdfMilesByRole.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 4),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            children: [
+              for (final entry in aggregate.nmByRole.entries)
+                pw.TableRow(children: [
+                  _cell(_pdfText(_roleLabel(entry.key, l))),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+            ],
+          ),
+        ],
+
+        // Skiperský súhrn: len pri potvrdení pre seba. Na doklade pre člena
+        // posádky by to boli cudzie čísla.
+        if (forSelf && aggregate.voyages.isNotEmpty) ...[
+          pw.SizedBox(height: 14),
+          pw.Text(l.pdfMilesSkipperSummary.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 4),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            children: [
+              for (final entry in (aggregate.nmByVessel.entries.toList()
+                    ..sort((a, b) => b.value.compareTo(a.value))))
+                pw.TableRow(children: [
+                  _cell(_pdfText(entry.key)),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+              for (final entry in (aggregate.nmByYear.entries.toList()
+                    ..sort((a, b) => b.key.compareTo(a.key))))
+                pw.TableRow(children: [
+                  _cell('${entry.key}'),
+                  _cell(
+                      '${units.distanceValue(entry.value).toStringAsFixed(1)} '
+                      '${units.distanceLabel}'),
+                ]),
+              pw.TableRow(children: [
+                _cell(l.pdfStatNightHours),
+                _cell('${aggregate.nightHours.toStringAsFixed(1)} h'),
+              ]),
+            ],
+          ),
+        ],
+
+        // Míle odplávané v inej funkcii než veliteľ potvrdzuje ten, kto
+        // plavbe velil. Doklad preto nechá miesto na jeho podpis — jeden
+        // riadok na každého veliteľa, s vytlačeným menom, aby bolo jasné,
+        // kto sa kam podpisuje. Bez toho by si držiteľ potvrdzoval sám
+        // sebe míle, ktoré neodplával ako veliteľ.
+        if (() {
+          final names = aggregate.voyages
+              .where((v) => v.role != 'skipper')
+              .map((v) => v.skipperName)
+              .whereType<String>()
+              .where((n) => n.trim().isNotEmpty)
+              .toSet();
+          return names.isNotEmpty;
+        }()) ...[
+          pw.SizedBox(height: 18),
+          pw.Text(l.pdfMilesSkipperConfirms.toUpperCase(),
+              style: pw.TextStyle(
+                  color: _navy,
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 9,
+                  letterSpacing: 1)),
+          pw.SizedBox(height: 8),
+          ...aggregate.voyages
+              .where((v) => v.role != 'skipper')
+              .map((v) => v.skipperName)
+              .whereType<String>()
+              .where((n) => n.trim().isNotEmpty)
+              .toSet()
+              .map((name) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 14),
+                    child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Container(
+                              width: 220,
+                              decoration: const pw.BoxDecoration(
+                                  border: pw.Border(
+                                      bottom: pw.BorderSide(
+                                          color: PdfColors.grey600,
+                                          width: 0.5)))),
+                          pw.SizedBox(height: 3),
+                          pw.Text(_pdfText(name),
+                              style: const pw.TextStyle(fontSize: 8.5)),
+                        ]),
+                  )),
+        ],
 
         if (aggregate.voyages.any((v) => v.isManualEntry)) ...[
           pw.SizedBox(height: 8),
@@ -2461,7 +2638,10 @@ class PdfExportService {
             pw.Container(width: 200, decoration: const pw.BoxDecoration(
                 border: pw.Border(bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.5)))),
             pw.SizedBox(height: 4),
-            pw.Text(_pdfText('${l.pdfSignatureLabel}: ${signerName ?? ""}'), style: const pw.TextStyle(fontSize: 8.5)),
+            pw.Text(
+                _pdfText('${l.pdfSignatureLabel}: ${signerName ?? ""}'
+                    '${(issuerQualification ?? '').isEmpty ? '' : ', $issuerQualification'}'),
+                style: const pw.TextStyle(fontSize: 8.5)),
           ])),
           pw.Expanded(child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Container(width: 150, decoration: const pw.BoxDecoration(

@@ -589,6 +589,11 @@ class HistoricalVoyages extends Table {
   TextColumn get captainLastName => text().nullable()();
   TextColumn get captainQualification => text().nullable()();
   TextColumn get logbookSignaturePath => text().nullable()();
+
+  /// Prílivové vody? Pri uznávaní míľ sa na to pýtajú zvlášť — plavba v
+  /// prílivových vodách má inú váhu. `null` znamená, že to o tejto plavbe
+  /// nikto nezaznamenal; do potvrdenia sa potom nepíše nič.
+  BoolColumn get tidalWaters => boolean().nullable()();
 }
 
 /// Odovzdávací protokol lode (check-in pri prevzatí, check-out pri
@@ -674,7 +679,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 31;
+  int get schemaVersion => 32;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -853,6 +858,14 @@ class AppDatabase extends _$AppDatabase {
 
       if (from < 31) {
         await m.addColumn(sailingSessions, sailingSessions.isAnchorWatch);
+      }
+
+      // Len pre databázy, ktoré tabuľku už mali: pri `from < 9` sa
+      // `historical_voyages` vytvára `createTable` z aktuálnej definície,
+      // takže stĺpec v nej už je a `ADD COLUMN` by spadol na duplicitu.
+      // Rovnaký tvar guardu ako pri v18 a v25 vyššie.
+      if (from >= 9 && from < 32) {
+        await m.addColumn(historicalVoyages, historicalVoyages.tidalWaters);
       }
     },
     beforeOpen: (details) async {
