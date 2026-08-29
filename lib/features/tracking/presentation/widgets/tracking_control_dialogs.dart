@@ -213,7 +213,6 @@ Future<void> maybePromptInterruptedVoyage(
   final interrupted = voyage.session;
   final lastPoint = voyage.lastPoint;
   final dayLog = voyage.dayLog;
-  final charter = voyage.charter;
   final gapNm = voyage.gapNm;
   final offersGap = voyage.offersGap;
 
