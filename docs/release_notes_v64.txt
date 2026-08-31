@@ -1,0 +1,10 @@
+HMB Sailing Log — build 64 (1.33.0+64)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: automatic wind fallback to the forecast model during tracking was silently broken; it now actually refreshes.
+• New helmsman quick-button next to sail-change/photo while tracking.
+• Mayday card now also covers PAN PAN and SÉCURITÉ, with examples.
+• Engine/autopilot always shown on Instruments (green/red), bigger labels.
+• Multiple skipper profiles remembered and offered on a new voyage.
