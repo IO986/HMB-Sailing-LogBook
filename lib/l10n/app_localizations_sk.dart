@@ -1100,6 +1100,17 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Zmena kormidelníka';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Kormidelník: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'Plavba nemá vyplnenú posádku.';
+
+  @override
   String get logEventAnchorDropped => 'Kotva spustená';
 
   @override
@@ -1978,7 +1989,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get pointOfSailCloseHauled => 'Ostro proti vetru';
 
   @override
-  String get pointOfSailCloseReach => 'Ostrý bočný';
+  String get pointOfSailCloseReach => 'Predobočný';
 
   @override
   String get pointOfSailBeamReach => 'Bočný vietor';
@@ -2087,6 +2098,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get waterLevel => 'Hladina vody';
+
+  @override
+  String get helmsmanLabel => 'Kormidelník';
 
   @override
   String get noteSection => 'Poznámka';
@@ -2539,6 +2553,32 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'HLASOVÝ MAYDAY SKRIPT';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'HLASOVÝ SKRIPT · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: len pri vážnom a bezprostrednom ohrození života alebo lode. Napr. „MAYDAY, MAYDAY, MAYDAY, taking on water, sinking“ (naberáme vodu, potápame sa).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: naliehavé hlásenie, ktoré priamo neohrozuje život. Napr. „PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks“ (výpadok motora, unášaní k skalám).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: bezpečnostné hlásenie o plavbe alebo počasí pre ostatné lode. Napr. „SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…“ (nezakreslený vrak nahlásený na polohe…).';
 
   @override
   String get dscStep1 => 'Uistite sa, že rádio je zapnuté.';

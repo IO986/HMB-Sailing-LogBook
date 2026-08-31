@@ -47,7 +47,12 @@ enum LogbookEventType {
   ///
   /// Nezamieňať so [sailChange]: ten hlási prehodenie plachiet a zapisuje ho
   /// človek, lebo zámerný obrat od zmeny kurzu appka nerozlíši.
-  courseChange('course_change');
+  courseChange('course_change'),
+
+  /// Zmena kormidelníka počas plavby — kto v danej chvíli držal kormidlo.
+  /// Zapisuje sa rovnako ako [sailChange]: rýchlym tlačidlom, nie
+  /// automaticky, lebo appka sama nevie, kto sedí za kormidlom.
+  helmsmanChange('helmsman_change');
 
   final String code;
   const LogbookEventType(this.code);

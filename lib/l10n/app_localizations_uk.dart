@@ -1102,6 +1102,17 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Зміна стернового';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Стерновий: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'У рейсі не вказано екіпаж.';
+
+  @override
   String get logEventAnchorDropped => 'Якір віддано';
 
   @override
@@ -2092,6 +2103,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get waterLevel => 'Рівень води';
 
   @override
+  String get helmsmanLabel => 'Стерновий';
+
+  @override
   String get noteSection => 'Нотатка';
 
   @override
@@ -2544,6 +2558,32 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'ГОЛОСОВИЙ СЦЕНАРІЙ MAYDAY';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'ГОЛОСОВИЙ СЦЕНАРІЙ · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: лише за серйозної та безпосередньої загрози життю або судну. Напр. «MAYDAY, MAYDAY, MAYDAY, taking on water, sinking» (набираємо воду, тонемо).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: термінове повідомлення, що не загрожує життю безпосередньо. Напр. «PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks» (відмова двигуна, дрейфуємо на скелі).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: повідомлення безпеки про навігацію чи погоду для інших суден. Напр. «SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…» (повідомлено про незазначений на карті уламок на позиції…).';
 
   @override
   String get dscStep1 => 'Переконайтеся, що рація увімкнена.';

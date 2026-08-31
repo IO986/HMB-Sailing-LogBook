@@ -237,9 +237,45 @@ class _DscProcedureState extends State<_DscProcedure> {
   }
 }
 
+// ── Typ volania ───────────────────────────────────────────────
+
+/// Tri stupne rádiovej komunikácie v tiesni — appka ich rozlišuje len
+/// prefixom skriptu a vysvetľujúcou poznámkou, procedúra DSC (tab vyššie)
+/// ostáva len pre MAYDAY.
+enum DistressCallType {
+  mayday('MAYDAY'),
+  panPan('PAN PAN'),
+  securite('SÉCURITÉ');
+
+  final String word;
+  const DistressCallType(this.word);
+
+  /// Trojité zvolanie, ako sa vysiela na kanáli 16.
+  String get repeated => '$word, $word, $word';
+
+  String label(AppLocalizations l) => switch (this) {
+        DistressCallType.mayday => l.distressCallMayday,
+        DistressCallType.panPan => l.distressCallPanPan,
+        DistressCallType.securite => l.distressCallSecurite,
+      };
+
+  String note(AppLocalizations l) => switch (this) {
+        DistressCallType.mayday => l.distressNoteMayday,
+        DistressCallType.panPan => l.distressNotePanPan,
+        DistressCallType.securite => l.distressNoteSecurite,
+      };
+
+  /// "I REQUIRE IMMEDIATE ASSISTANCE" má zmysel len pri skutočnej tiesni.
+  String? assistanceLine(AppLocalizations l) => switch (this) {
+        DistressCallType.mayday => 'I REQUIRE IMMEDIATE ASSISTANCE',
+        DistressCallType.panPan => 'I REQUIRE ASSISTANCE',
+        DistressCallType.securite => null,
+      };
+}
+
 // ── Hlasový skript ────────────────────────────────────────────
 
-class _VoiceScript extends StatelessWidget {
+class _VoiceScript extends StatefulWidget {
   final TextEditingController vesselName, callSign, mmsi;
   final TextEditingController position, distress, persons, otherInfo;
 
@@ -250,11 +286,39 @@ class _VoiceScript extends StatelessWidget {
   });
 
   @override
+  State<_VoiceScript> createState() => _VoiceScriptState();
+}
+
+class _VoiceScriptState extends State<_VoiceScript> {
+  DistressCallType _type = DistressCallType.mayday;
+
+  TextEditingController get vesselName => widget.vesselName;
+  TextEditingController get callSign => widget.callSign;
+  TextEditingController get mmsi => widget.mmsi;
+  TextEditingController get position => widget.position;
+  TextEditingController get distress => widget.distress;
+  TextEditingController get persons => widget.persons;
+  TextEditingController get otherInfo => widget.otherInfo;
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        SegmentedButton<DistressCallType>(
+          segments: [
+            for (final t in DistressCallType.values)
+              ButtonSegment(value: t, label: Text(t.label(l))),
+          ],
+          selected: {_type},
+          onSelectionChanged: (s) => setState(() => _type = s.first),
+        ),
+        const SizedBox(height: 8),
+        Text(_type.note(l),
+            style: const TextStyle(fontSize: 12, color: Colors.grey, height: 1.3)),
+        const SizedBox(height: 10),
+
         Text(l.fillBeforeSailing,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey)),
         const SizedBox(height: 10),
@@ -288,7 +352,7 @@ class _VoiceScript extends StatelessWidget {
             children: [
               Row(children: [
                 Expanded(
-                  child: Text(l.voiceScriptTitle,
+                  child: Text(l.voiceScriptTitleFor(_type.word),
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,
                           fontSize: 15, letterSpacing: 1)),
                 ),
@@ -304,7 +368,7 @@ class _VoiceScript extends StatelessWidget {
               ]),
               const Divider(color: Colors.white30),
               const SizedBox(height: 8),
-              _ScriptLine('MAYDAY, MAYDAY, MAYDAY'),
+              _ScriptLine(_type.repeated),
               const SizedBox(height: 8),
               _ScriptLine('THIS IS  ·  '
                   '${vesselName.text.isNotEmpty ? vesselName.text.toUpperCase() : "___________"}  ·  '
@@ -314,7 +378,7 @@ class _VoiceScript extends StatelessWidget {
               _ScriptLine('CALL SIGN: ${callSign.text.isNotEmpty ? callSign.text.toUpperCase() : "____________"}  '
                   '·  MMSI: ${mmsi.text.isNotEmpty ? mmsi.text : "___________"}'),
               const SizedBox(height: 8),
-              _ScriptLine('MAYDAY  ·  '
+              _ScriptLine('${_type.word}  ·  '
                   '${vesselName.text.isNotEmpty ? vesselName.text.toUpperCase() : "___________"}'),
               const SizedBox(height: 4),
               _ScriptLine('CALL SIGN: ${callSign.text.isNotEmpty ? callSign.text.toUpperCase() : "____________"}  '
@@ -324,8 +388,10 @@ class _VoiceScript extends StatelessWidget {
               _PositionLine(ctrl: position, enterAbove: l.enterAbove),
               const SizedBox(height: 8),
               _ScriptLine('WE ARE  ${distress.text.isNotEmpty ? distress.text.toUpperCase() : "[DISTRESS]"}'),
-              const SizedBox(height: 4),
-              _ScriptLine('I REQUIRE IMMEDIATE ASSISTANCE'),
+              if (_type.assistanceLine(l) != null) ...[
+                const SizedBox(height: 4),
+                _ScriptLine(_type.assistanceLine(l)!),
+              ],
               const SizedBox(height: 8),
               _ScriptLine('WE HAVE  ${persons.text.isNotEmpty ? persons.text : "___"}  PERSONS ON BOARD'),
               const SizedBox(height: 4),
@@ -347,20 +413,22 @@ class _VoiceScript extends StatelessWidget {
   }
 
   String _buildScript() {
+    final l = AppLocalizations.of(context);
     final v = vesselName.text.isNotEmpty ? vesselName.text.toUpperCase() : '___________';
     final cs = callSign.text.isNotEmpty ? callSign.text.toUpperCase() : '____________';
     final m = mmsi.text.isNotEmpty ? mmsi.text : '___________';
     final pos = position.text.isNotEmpty ? position.text : '[POSITION]';
     final d = distress.text.isNotEmpty ? distress.text.toUpperCase() : '[DISTRESS]';
     final p = persons.text.isNotEmpty ? persons.text : '___';
-    return 'MAYDAY, MAYDAY, MAYDAY\n\n'
+    final assistance = _type.assistanceLine(l);
+    return '${_type.repeated}\n\n'
         'THIS IS $v, $v, $v\n'
         'CALL SIGN: $cs  ·  MMSI: $m\n\n'
-        'MAYDAY $v\n'
+        '${_type.word} $v\n'
         'CALL SIGN: $cs  ·  MMSI: $m\n\n'
         'MY POSITION IS: $pos\n\n'
         'WE ARE $d\n'
-        'I REQUIRE IMMEDIATE ASSISTANCE\n\n'
+        '${assistance != null ? "$assistance\n\n" : ""}'
         'WE HAVE $p PERSONS ON BOARD\n'
         '${otherInfo.text.isNotEmpty ? otherInfo.text.toUpperCase() + "\n" : ""}\n'
         'OVER';

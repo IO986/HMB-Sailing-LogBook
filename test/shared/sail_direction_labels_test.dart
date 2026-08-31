@@ -18,7 +18,7 @@ void main() {
 
     final sk = await AppLocalizations.delegate.load(const Locale('sk'));
     expect(sk.logEventSailChangeTo(sailDirectionPhrase(d, sk)),
-        'Zmena plachiet: Ostrý bočný, Pravobok');
+        'Zmena plachiet: Predobočný, Pravobok');
   });
 
   test('running carries no tack — there is no side to name', () async {

@@ -1102,6 +1102,17 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Zmiana sternika';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Sternik: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'Rejs nie ma wpisanej załogi.';
+
+  @override
   String get logEventAnchorDropped => 'Kotwica rzucona';
 
   @override
@@ -2093,6 +2104,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get waterLevel => 'Poziom wody';
 
   @override
+  String get helmsmanLabel => 'Sternik';
+
+  @override
   String get noteSection => 'Uwaga';
 
   @override
@@ -2543,6 +2557,32 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'GŁOSOWY SKRYPT MAYDAY';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'SKRYPT GŁOSOWY · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: tylko przy poważnym i bezpośrednim zagrożeniu życia lub jednostki. Np. „MAYDAY, MAYDAY, MAYDAY, taking on water, sinking” (nabieramy wody, toniemy).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: pilny komunikat, który bezpośrednio nie zagraża życiu. Np. „PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks” (awaria silnika, znosi nas na skały).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: komunikat bezpieczeństwa o żegludze lub pogodzie dla innych jednostek. Np. „SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…” (zgłoszono nieoznaczony wrak w pozycji…).';
 
   @override
   String get dscStep1 => 'Upewnij się, że radio jest włączone.';

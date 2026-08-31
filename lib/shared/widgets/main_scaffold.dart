@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import '../../features/logbook/presentation/widgets/quick_sail_change_sheet.dart';
+import '../../features/logbook/presentation/widgets/quick_helmsman_sheet.dart';
 import 'main_nav_bar.dart';
 import 'tracking_control_bar.dart';
 import '../../features/tracking/presentation/widgets/tracking_control_dialogs.dart';
@@ -457,6 +458,12 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         builder: (_) => const QuickSailChangeSheet(),
       );
 
+  void _quickHelmsman(BuildContext context) => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => const QuickHelmsmanSheet(),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -502,6 +509,13 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  FloatingActionButton(
+                    heroTag: 'quickHelmsman',
+                    tooltip: l.helmsmanLabel,
+                    onPressed: () => _quickHelmsman(context),
+                    child: const Icon(Icons.badge),
+                  ),
+                  const SizedBox(width: 12),
                   FloatingActionButton(
                     heroTag: 'quickSailChange',
                     tooltip: l.logEventSailChange,

@@ -1099,6 +1099,17 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Změna kormidelníka';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Kormidelník: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'Plavba nemá vyplněnou posádku.';
+
+  @override
   String get logEventAnchorDropped => 'Kotva spuštěna';
 
   @override
@@ -2087,6 +2098,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get waterLevel => 'Hladina vody';
 
   @override
+  String get helmsmanLabel => 'Kormidelník';
+
+  @override
   String get noteSection => 'Poznámka';
 
   @override
@@ -2537,6 +2551,32 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'HLASOVÝ MAYDAY SKRIPT';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'HLASOVÝ SKRIPT · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: pouze při vážném a bezprostředním ohrožení života nebo lodi. Např. „MAYDAY, MAYDAY, MAYDAY, taking on water, sinking“ (nabíráme vodu, potápíme se).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: naléhavé hlášení, které přímo neohrožuje život. Např. „PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks“ (výpadek motoru, unášeni ke skalám).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: bezpečnostní hlášení o plavbě nebo počasí pro ostatní lodě. Např. „SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…“ (nezakreslený vrak nahlášen na poloze…).';
 
   @override
   String get dscStep1 => 'Ujistěte se, že rádio je zapnuté.';

@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/crew_member_ref.dart';
 import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -28,6 +29,7 @@ import '../../../../core/utils/localized_date.dart';
 import '../../../../core/services/dhmz_observation_service.dart';
 import '../../../../core/services/entry_conditions.dart';
 import '../../../../shared/widgets/weather_source_badge.dart';
+import '../../../../shared/widgets/helmsman_picker.dart';
 import '../../../../shared/widgets/sail_mode_picker.dart';
 
 class LogbookEntryScreen extends ConsumerStatefulWidget {
@@ -86,10 +88,39 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   int? _fuelLevel;
   int? _waterLevel;
 
+  /// Posádka danej plavby — zdroj pre výber kormidelníka. Prázdna, kým sa
+  /// nenačíta charter (alebo keď plavba nemá vyplnenú posádku vôbec).
+  List<CrewMemberRef> _crew = [];
+  String? _helmsman;
+
   @override
   void initState() {
     super.initState();
     if (widget.entryId != null) _loadEntry(); else _autoFill();
+    _loadCrew();
+  }
+
+  /// Posádka sa načítava nezávisle od zvyšku formulára — pri novom zázname
+  /// z nej treba len defaultne vybrať skipera, pri edite ju treba na to,
+  /// aby chip so `skipperName` uloženým v zázname mal čo zobraziť.
+  Future<void> _loadCrew() async {
+    final dayLog = await ref.read(databaseProvider).getDayLogById(widget.dayLogId);
+    if (dayLog == null) return;
+    final charter = await ref.read(databaseProvider).getCharterById(dayLog.charterId);
+    if (charter == null || !mounted) return;
+    final crew = CrewMemberRef.parse(
+      charter.crewJson,
+      skipperName: charter.skipperName,
+      crewNames: charter.crewNames,
+    );
+    setState(() {
+      _crew = crew;
+      // Nový záznam bez explicitnej voľby defaultne patrí skiperovi plavby.
+      if (widget.entryId == null && _helmsman == null) {
+        final skipper = crew.where((c) => c.isSkipper).firstOrNull;
+        _helmsman = skipper?.name;
+      }
+    });
   }
 
   Future<void> _loadEntry() async {
@@ -134,6 +165,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _photoPath = e.photoPath;
         _fuelLevel = e.fuelLevel;
         _waterLevel = e.waterLevel;
+        _helmsman = e.skipperName;
       });
     } catch (_) {}
   }
@@ -244,6 +276,16 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           onChanged: (v) => setState(() => _sailDirection = v),
         ),
         const SizedBox(height: 16),
+
+        if (_crew.isNotEmpty) ...[
+          _Sec(l.helmsmanLabel),
+          HelmsmanPicker(
+            crew: _crew,
+            selected: _helmsman,
+            onChanged: (v) => setState(() => _helmsman = v),
+          ),
+          const SizedBox(height: 16),
+        ],
 
         _Sec(l.navigationSection),
         _NavRow(l.latitude, _lat?.toStringAsFixed(6) ?? '-'),
@@ -383,6 +425,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
         waterLevel: Value(_waterLevel),
+        skipperName: Value(_helmsman),
       );
       // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
       // Pri vypnutej synchronizácii sa enqueue vôbec nevolá, inak by outbox
@@ -423,6 +466,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         photoPath: Value(_photoPath),
         fuelLevel: Value(_fuelLevel),
         waterLevel: Value(_waterLevel),
+        skipperName: Value(_helmsman),
         accuracyMeters: Value(_accuracyMeters),
         locationSource: Value(_locationSource),
         isMocked: Value(_isMocked),
@@ -496,6 +540,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         'airPressure': double.tryParse(_pressureCtrl.text),
         'depthMeters': double.tryParse(_depthCtrl.text),
         'skipperNote': note,
+        'skipperName': _helmsman,
         'pointOfSail': _sailDirection?.pointOfSail.code,
         'tack': _sailDirection?.tack?.code,
         'weatherCondition': _weatherCondition,

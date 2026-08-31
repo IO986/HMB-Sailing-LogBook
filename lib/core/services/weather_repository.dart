@@ -64,12 +64,20 @@ class WeatherRepository {
       forecast = await _forecast.fetchForecast(lat: lat, lon: lon);
     }
 
-    final marine = await _marine.fetchMarine(lat: lat, lon: lon);
+    // Vnútrozemské miesta (napr. Zvolen) nemajú morské dáta vôbec —
+    // marine-api na ne odpovie HTTP 400. To nie je dôvod zahodiť predpoveď
+    // počasia, ktorú sme už stiahli, len vlny/teplotu vody vynechať.
+    Map<String, dynamic>? marine;
+    try {
+      marine = await _marine.fetchMarine(lat: lat, lon: lon);
+    } catch (e) {
+      debugPrint('[WEATHER] no marine data here ($e)');
+    }
 
     final fh = forecast['hourly'] as Map<String, dynamic>;
-    final mh = marine['hourly'] as Map<String, dynamic>;
+    final mh = marine?['hourly'] as Map<String, dynamic>?;
     final ft = (fh['time'] as List).cast<String>();
-    final mt = (mh['time'] as List).cast<String>();
+    final mt = (mh?['time'] as List?)?.cast<String>() ?? const <String>[];
 
     final now = DateTime.now();
     final rows = <WeatherSnapshotsCompanion>[];
@@ -88,14 +96,14 @@ class WeatherRepository {
         cloudCover: drift.Value((fh['cloud_cover'][i] as num?)?.toDouble()),
         weatherCode: drift.Value((fh['weather_code'][i] as num?)?.toInt()),
         waveHeight: mi >= 0
-            ? drift.Value((mh['wave_height'][mi] as num?)?.toDouble())
+            ? drift.Value((mh!['wave_height'][mi] as num?)?.toDouble())
             : const drift.Value.absent(),
         wavePeriod: mi >= 0
-            ? drift.Value((mh['wave_period'][mi] as num?)?.toDouble())
+            ? drift.Value((mh!['wave_period'][mi] as num?)?.toDouble())
             : const drift.Value.absent(),
         waterTemp: mi >= 0
             ? drift.Value(
-                (mh['sea_surface_temperature'][mi] as num?)?.toDouble())
+                (mh!['sea_surface_temperature'][mi] as num?)?.toDouble())
             : const drift.Value.absent(),
         precipitationProbability:
             drift.Value((fh['precipitation_probability']?[i] as num?)?.toInt()),
@@ -112,11 +120,22 @@ class WeatherRepository {
   /// Vyzerá chyba na „tento model sem nevidí" a nie na výpadok siete?
   ///
   /// Dio zabalí výnimku z parsera do vlastnej, takže sa musí pozrieť aj
-  /// dovnútra.
+  /// dovnútra. Okrem `nan` odpovede (rieši parser -> FormatException)
+  /// Open-Meteo vie na nepokrytú polohu odpovedať aj rovno HTTP 400 s
+  /// `{"reason":"No data is available for this location"}` — overené na
+  /// ICON-D2 pre Zvolen, ktorý je v hrubom obdĺžniku modelu, ale mimo jeho
+  /// reálneho pokrytia (Nemecko a okolie).
   static bool _looksLikeMissingCoverage(Object e) {
     if (e is FormatException) return true;
     if (e is DioException) {
-      return e.error is FormatException || e.type == DioExceptionType.unknown;
+      if (e.error is FormatException || e.type == DioExceptionType.unknown) {
+        return true;
+      }
+      final data = e.response?.data;
+      final reason = data is Map ? data['reason'] : null;
+      return e.response?.statusCode == 400 &&
+          reason is String &&
+          reason.toLowerCase().contains('no data');
     }
     return false;
   }

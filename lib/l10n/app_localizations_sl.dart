@@ -1100,6 +1100,17 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Zamenjava krmarja';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Krmar: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'Plovba nima vnesene posadke.';
+
+  @override
   String get logEventAnchorDropped => 'Sidro spuščeno';
 
   @override
@@ -2089,6 +2100,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get waterLevel => 'Raven vode';
 
   @override
+  String get helmsmanLabel => 'Krmar';
+
+  @override
   String get noteSection => 'Opomba';
 
   @override
@@ -2541,6 +2555,32 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'GLASOVNA PREDLOGA MAYDAY';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'GLASOVNA PREDLOGA · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: samo ob resni in neposredni nevarnosti za življenje ali plovilo. Npr. „MAYDAY, MAYDAY, MAYDAY, taking on water, sinking“ (nabiramo vodo, tonemo).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: nujno sporočilo, ki neposredno ne ogroža življenja. Npr. „PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks“ (okvara motorja, zanaša nas proti skalam).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: varnostno sporočilo o plovbi ali vremenu za druga plovila. Npr. „SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…“ (na položaju… prijavljena nevrisana razbitina).';
 
   @override
   String get dscStep1 => 'Prepričajte se, da je radijska postaja vklopljena.';

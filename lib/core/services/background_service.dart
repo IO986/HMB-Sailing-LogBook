@@ -4,6 +4,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../database/app_database.dart';
 import 'weather_repository.dart';
 
 @pragma('vm:entry-point')
@@ -50,6 +51,15 @@ class BackgroundService {
     Position? lastWeatherSyncPosition;
     DateTime? lastWeatherSyncTime;
 
+    // Tento callback beží vo vlastnom izolate (flutter_background_service),
+    // kde `WeatherRepository()` je iná inštancia singletonu než tá, ktorú si
+    // `main.dart` naviazal na databázu — bez tohto by `syncWeather()` nižšie
+    // vždy skončila na `if (db == null) return`, potichu a bez chyby. Presne
+    // preto sa vietor z modelu do automatického záznamu nikdy nedostal, keď
+    // anemometer mlčal: keš predpovede sa v skutočnosti nikdy neobnovovala.
+    final db = AppDatabase();
+    WeatherRepository().setDatabase(db);
+
     // Weather sync každých 15 min kontrola
     weatherTimer = Timer.periodic(
       const Duration(minutes: 15),
@@ -93,6 +103,7 @@ class BackgroundService {
 
     service.on('stopService').listen((event) {
       weatherTimer?.cancel();
+      db.close();
       service.stopSelf();
     });
   }

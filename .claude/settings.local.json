@@ -33,7 +33,18 @@
       "Bash(adb *)",
       "Bash(git add *)",
       "Read(//c/dev/hmb/**)",
-      "PowerShell(git *)"
+      "PowerShell(git *)",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 shell uiautomator dump /sdcard/uiv.xml)",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 pull /sdcard/uiv.xml \"C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--dev-hmb-sailing-logbook\\\\ddadfe17-7c16-4923-8617-68d460985456\\\\scratchpad\\\\uiv.xml\")",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 shell screencap -p /sdcard/finalcheck.png)",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 pull /sdcard/finalcheck.png \"C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--dev-hmb-sailing-logbook\\\\ddadfe17-7c16-4923-8617-68d460985456\\\\scratchpad\\\\finalcheck.png\")",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 shell screencap -p /sdcard/shade2.png)",
+      "Bash(MSYS_NO_PATHCONV=1 adb -s OUKITELWP7025418 pull /sdcard/shade2.png \"C:\\\\Users\\\\ladis\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--dev-hmb-sailing-logbook\\\\ddadfe17-7c16-4923-8617-68d460985456\\\\scratchpad\\\\shade2.png\")",
+      "Bash(gh pr *)",
+      "Bash(gh run *)",
+      "Bash(git pull *)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm ls *)"
     ]
   }
 }

@@ -122,43 +122,74 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   /// Pri novej plavbe sa užívateľ rozhodne, či doplniť uložené údaje
   /// skippera (meno, preukazy, certifikácie — ukladajú sa pri každom
   /// uložení plavby), alebo začať s prázdnym skipperom.
+  ///
+  /// Keď má loď striedavo viac skiperov, ponúkne sa výber medzi všetkými
+  /// doteraz uloženými profilmi namiesto jednoduchého áno/nie dialógu.
   Future<void> _prefillSkipperFromProfile() async {
-    final profile = await ref.read(skipperProfileProvider.future);
+    final notifier = ref.read(skipperProfileProvider.notifier);
+    final saved = await notifier.listSaved();
     if (!mounted) return;
-    final hasSaved = profile.fullName.isNotEmpty ||
-        profile.licenseNumber.isNotEmpty ||
-        profile.vhfNumber.isNotEmpty ||
-        profile.otherCerts.isNotEmpty;
-    if (!hasSaved) return;
 
     final l = AppLocalizations.of(context);
-    final fill = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.prefillSkipperTitle),
-        content: Text(profile.fullName),
-        actions: [
-          OutlinedButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l.prefillSkipperNew),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l.prefillSkipperFill),
-          ),
-        ],
-      ),
-    );
-    if (fill != true || !mounted) return;
+    SkipperProfile? chosen;
+
+    if (saved.length > 1) {
+      chosen = await showDialog<SkipperProfile>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: Text(l.prefillSkipperTitle),
+          children: [
+            for (final p in saved)
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(ctx, p),
+                child: Text(p.fullName),
+              ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, null),
+              child: Text(l.prefillSkipperNew),
+            ),
+          ],
+        ),
+      );
+      if (chosen == null || !mounted) return;
+    } else {
+      final profile = await ref.read(skipperProfileProvider.future);
+      if (!mounted) return;
+      final hasSaved = profile.fullName.isNotEmpty ||
+          profile.licenseNumber.isNotEmpty ||
+          profile.vhfNumber.isNotEmpty ||
+          profile.otherCerts.isNotEmpty;
+      if (!hasSaved) return;
+
+      final fill = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l.prefillSkipperTitle),
+          content: Text(profile.fullName),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.prefillSkipperNew),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.prefillSkipperFill),
+            ),
+          ],
+        ),
+      );
+      if (fill != true || !mounted) return;
+      chosen = profile;
+    }
 
     setState(() {
       final skipper = _crew.first;
-      skipper.nameCtrl.text = profile.fullName;
-      skipper.boatLicCtrl.text = [profile.licenseType, profile.licenseNumber]
+      skipper.nameCtrl.text = chosen!.fullName;
+      skipper.boatLicCtrl.text = [chosen.licenseType, chosen.licenseNumber]
           .where((s) => s.isNotEmpty)
           .join(' ');
-      skipper.radioLicCtrl.text = profile.vhfNumber;
-      skipper.otherCertsCtrl.text = profile.otherCerts;
+      skipper.radioLicCtrl.text = chosen.vhfNumber;
+      skipper.otherCertsCtrl.text = chosen.otherCerts;
     });
   }
 

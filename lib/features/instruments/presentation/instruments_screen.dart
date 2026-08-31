@@ -10,6 +10,7 @@ import '../../../core/models/marine_instrument_data.dart';
 import '../../../core/models/weather_data.dart';
 import '../../../core/providers/raymarine_providers.dart';
 import '../../../core/services/location_service.dart';
+import '../../../core/services/weather_repository.dart';
 import '../../../core/services/weather_service.dart';
 import '../../map/providers/map_provider.dart';
 import '../../../l10n/app_localizations.dart';
@@ -28,6 +29,22 @@ final _gpsProvider = StreamProvider.autoDispose<Position>((ref) {
 
 final _weatherProvider = FutureProvider<WeatherData?>(
     (ref) => WeatherService().getCurrentWeather());
+
+/// Best-effort obnova modelovej predpovede pri otvorení obrazovky.
+///
+/// Bez trackingu sa 15-minútový sync z `BackgroundService` vôbec nespustí,
+/// takže keď si niekto pozerá prístroje mimo aktívnej plavby (napr. v prístave
+/// pred štartom), keš vetra môže byť stará. Rovnaký vzor ako
+/// `logbook_entry_screen._autoFill` — nikdy nečaká na výsledok, nikdy
+/// nevyhodí, len skúsi doplniť.
+final _weatherRefreshProvider = FutureProvider.autoDispose<void>((ref) async {
+  final pos = LocationService().lastPosition;
+  if (pos == null) return;
+  try {
+    await WeatherRepository().syncWeather(lat: pos.latitude, lon: pos.longitude);
+    ref.invalidate(_weatherProvider);
+  } catch (_) {}
+});
 
 // Cieľ navigácie žije v map_provider (navTargetIdProvider/navTargetProvider),
 // aby ho vedelo zhodiť aj zmazanie waypointu na mape.
@@ -55,6 +72,7 @@ class InstrumentsScreen extends ConsumerWidget {
     final marine = isUdp ? udpMarine : tcpMarine;
     final rayState = isUdp ? udpState : tcpState;
     final weather = ref.watch(_weatherProvider).valueOrNull;
+    ref.watch(_weatherRefreshProvider);
     final waypoints = ref.watch(waypointsProvider).valueOrNull ?? [];
     final activeWp = ref.watch(navTargetProvider);
 
@@ -194,8 +212,10 @@ class InstrumentsScreen extends ConsumerWidget {
         ),
 
         // ── Autopilot + motor ────────────────────────────────
-        if (autopilotOk || engineOk)
-          Padding(
+        // Vždy viditeľné, nie len keď sú dáta čerstvé: skiper má vidieť
+        // motor/autopilot zapnutý/vypnutý (červená/zelená) aj bez prístrojov,
+        // nie aby dlaždica jednoducho zmizla.
+        Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
             child: Row(children: [
               Expanded(
@@ -207,7 +227,6 @@ class InstrumentsScreen extends ConsumerWidget {
                           ? (marine.autopilotMode ?? 'auto').toUpperCase()
                           : 'STANDBY')
                       : null,
-                  color: const Color(0xFF9B59B6),
                 ),
               ),
               const SizedBox(width: 10),
@@ -218,7 +237,6 @@ class InstrumentsScreen extends ConsumerWidget {
                   detail: engineOk
                       ? '${marine.engineRpm!.toStringAsFixed(0)} RPM'
                       : null,
-                  color: const Color(0xFFE67E22),
                 ),
               ),
             ]),
@@ -377,7 +395,7 @@ class _DigitBox extends StatelessWidget {
         Row(children: [
           Text(label,
               style: TextStyle(
-                  color: color, fontSize: 10, letterSpacing: 2,
+                  color: color, fontSize: 13, letterSpacing: 2,
                   fontWeight: FontWeight.w500)),
           if (source != null) ...[
             const SizedBox(width: 6),
@@ -432,40 +450,41 @@ class _StateBox extends StatelessWidget {
   final String label;
   final bool on;
   final String? detail;
-  final Color color;
 
   const _StateBox({
     required this.label,
     required this.on,
-    required this.color,
     this.detail,
   });
 
+  // Jednotná farba naprieč AUTOPILOT aj ENGINE, nie farba per prístroj:
+  // skiper má na prvý pohľad vidieť zapnuté/vypnuté, nie si pamätať, ktorá
+  // farba patrila ktorej dlaždici.
+  static const _onColor = Color(0xFF27AE60);
+  static const _offColor = Color(0xFFE74C3C);
+
   @override
   Widget build(BuildContext context) {
-    final active = on ? color : Colors.white.withValues(alpha: 0.25);
+    final color = on ? _onColor : _offColor;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xFF0D1B2A),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: on ? color.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.07),
-          width: on ? 1.5 : 0.5,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.8), width: 1.5),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label,
             style: TextStyle(
-                color: active, fontSize: 10, letterSpacing: 2,
+                color: color, fontSize: 13, letterSpacing: 2,
                 fontWeight: FontWeight.w500)),
         const SizedBox(height: 4),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(on ? 'ON' : 'OFF',
               style: TextStyle(
-                  color: on ? Colors.white : Colors.white38,
+                  color: color,
                   fontSize: 22,
-                  fontWeight: FontWeight.w200,
+                  fontWeight: FontWeight.w600,
                   height: 1.0)),
           if (detail != null) ...[
             const SizedBox(width: 8),
@@ -473,7 +492,7 @@ class _StateBox extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(detail!,
                   style: TextStyle(
-                      color: active.withValues(alpha: 0.7),
+                      color: color.withValues(alpha: 0.7),
                       fontSize: 11,
                       fontWeight: FontWeight.w400)),
             ),

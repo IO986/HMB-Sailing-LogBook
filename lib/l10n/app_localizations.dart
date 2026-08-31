@@ -2144,6 +2144,24 @@ abstract class AppLocalizations {
   /// **'Zmena plachiet: {direction}'**
   String logEventSailChangeTo(String direction);
 
+  /// No description provided for @logEventHelmsmanChange.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zmena kormidelníka'**
+  String get logEventHelmsmanChange;
+
+  /// No description provided for @logEventHelmsmanChangeTo.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kormidelník: {name}'**
+  String logEventHelmsmanChangeTo(String name);
+
+  /// No description provided for @crewListEmpty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba nemá vyplnenú posádku.'**
+  String get crewListEmpty;
+
   /// No description provided for @logEventAnchorDropped.
   ///
   /// In sk, this message translates to:
@@ -3797,7 +3815,7 @@ abstract class AppLocalizations {
   /// No description provided for @pointOfSailCloseReach.
   ///
   /// In sk, this message translates to:
-  /// **'Ostrý bočný'**
+  /// **'Predobočný'**
   String get pointOfSailCloseReach;
 
   /// No description provided for @pointOfSailBeamReach.
@@ -3997,6 +4015,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Hladina vody'**
   String get waterLevel;
+
+  /// No description provided for @helmsmanLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kormidelník'**
+  String get helmsmanLabel;
 
   /// No description provided for @noteSection.
   ///
@@ -4861,6 +4885,48 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'HLASOVÝ MAYDAY SKRIPT'**
   String get voiceScriptTitle;
+
+  /// No description provided for @voiceScriptTitleFor.
+  ///
+  /// In sk, this message translates to:
+  /// **'HLASOVÝ SKRIPT · {type}'**
+  String voiceScriptTitleFor(String type);
+
+  /// No description provided for @distressCallMayday.
+  ///
+  /// In sk, this message translates to:
+  /// **'MAYDAY'**
+  String get distressCallMayday;
+
+  /// No description provided for @distressCallPanPan.
+  ///
+  /// In sk, this message translates to:
+  /// **'PAN PAN'**
+  String get distressCallPanPan;
+
+  /// No description provided for @distressCallSecurite.
+  ///
+  /// In sk, this message translates to:
+  /// **'SÉCURITÉ'**
+  String get distressCallSecurite;
+
+  /// No description provided for @distressNoteMayday.
+  ///
+  /// In sk, this message translates to:
+  /// **'MAYDAY: len pri vážnom a bezprostrednom ohrození života alebo lode. Napr. „MAYDAY, MAYDAY, MAYDAY, taking on water, sinking“ (naberáme vodu, potápame sa).'**
+  String get distressNoteMayday;
+
+  /// No description provided for @distressNotePanPan.
+  ///
+  /// In sk, this message translates to:
+  /// **'PAN PAN: naliehavé hlásenie, ktoré priamo neohrozuje život. Napr. „PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks“ (výpadok motora, unášaní k skalám).'**
+  String get distressNotePanPan;
+
+  /// No description provided for @distressNoteSecurite.
+  ///
+  /// In sk, this message translates to:
+  /// **'SÉCURITÉ: bezpečnostné hlásenie o plavbe alebo počasí pre ostatné lode. Napr. „SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…“ (nezakreslený vrak nahlásený na polohe…).'**
+  String get distressNoteSecurite;
 
   /// No description provided for @dscStep1.
   ///

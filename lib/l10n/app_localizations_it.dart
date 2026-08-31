@@ -1104,6 +1104,17 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Cambio timoniere';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Timoniere: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'La navigazione non ha equipaggio inserito.';
+
+  @override
   String get logEventAnchorDropped => 'Ancora data';
 
   @override
@@ -2101,6 +2112,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get waterLevel => 'Livello dell\'acqua';
 
   @override
+  String get helmsmanLabel => 'Timoniere';
+
+  @override
   String get noteSection => 'Nota';
 
   @override
@@ -2557,6 +2571,32 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'TESTO VOCALE MAYDAY';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'TESTO VOCALE · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: solo in caso di pericolo grave e imminente per la vita o l\'imbarcazione. Es. «MAYDAY, MAYDAY, MAYDAY, taking on water, sinking» (stiamo imbarcando acqua, stiamo affondando).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: messaggio urgente che non minaccia direttamente la vita. Es. «PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks» (avaria al motore, in deriva verso gli scogli).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: messaggio di sicurezza su navigazione o meteo per le altre imbarcazioni. Es. «SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…» (relitto non segnalato in carta nautica riportato in posizione…).';
 
   @override
   String get dscStep1 => 'Assicurati che la radio sia accesa.';

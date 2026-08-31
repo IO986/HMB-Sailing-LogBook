@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/skipper_profile.dart';
@@ -20,6 +22,12 @@ const _kLicExpiry  = 'skipper_license_expiry';
 const _kVhfNum     = 'skipper_vhf_number';
 const _kVhfExpiry  = 'skipper_vhf_expiry';
 const _kOtherCerts = 'skipper_other_certs';
+
+/// Zoznam všetkých doteraz uložených profilov (JSON pole), pre loď, kde sa
+/// pri kormidle strieda viac skiperov. Ploché kľúče vyššie ostávajú "posledný
+/// použitý" profil — existujúci konzumenti (export, handover, ...) čítajú
+/// naďalej len ich a o zoznam sa nemusia starať.
+const _kProfilesList = 'skipper_profiles_list';
 
 class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
   @override
@@ -56,6 +64,43 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
     await _storage.write(key: _kVhfNum,     value: profile.vhfNumber);
     await _storage.write(key: _kVhfExpiry,  value: profile.vhfExpiry);
     await _storage.write(key: _kOtherCerts, value: profile.otherCerts);
+    if (profile.fullName.trim().isNotEmpty) await _upsertIntoList(profile);
     state = AsyncData(profile);
+  }
+
+  /// Všetky doteraz uložené profily, najnovšie použitý prvý.
+  ///
+  /// Degraduje na prázdny zoznam pri chybe keystoru alebo poškodenom JSON —
+  /// rovnaká opatrnosť ako pri [_load]: uloženie profilov je pohodlie, nikdy
+  /// nesmie appku zablokovať.
+  Future<List<SkipperProfile>> listSaved() async {
+    try {
+      final raw = await _storage.read(key: _kProfilesList);
+      if (raw == null || raw.isEmpty) return const [];
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return const [];
+      return decoded
+          .whereType<Map>()
+          .map((m) => SkipperProfile.fromJson(m.cast<String, dynamic>()))
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<void> _upsertIntoList(SkipperProfile profile) async {
+    try {
+      final list = await listSaved();
+      list.removeWhere((p) =>
+          p.fullName.trim().toLowerCase() == profile.fullName.trim().toLowerCase());
+      list.insert(0, profile);
+      await _storage.write(
+        key: _kProfilesList,
+        value: jsonEncode(list.map((p) => p.toJson()).toList()),
+      );
+    } catch (_) {
+      // Zoznam je pohodlie navyše — keď zápis zlyhá, "posledný použitý"
+      // profil vyššie sa aj tak uložil.
+    }
   }
 }

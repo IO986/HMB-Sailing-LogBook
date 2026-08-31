@@ -1109,6 +1109,17 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Αλλαγή πηδαλιούχου';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Πηδαλιούχος: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'Το ταξίδι δεν έχει καταχωρημένο πλήρωμα.';
+
+  @override
   String get logEventAnchorDropped => 'Άγκυρα ρίχτηκε';
 
   @override
@@ -2106,6 +2117,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get waterLevel => 'Στάθμη νερού';
 
   @override
+  String get helmsmanLabel => 'Πηδαλιούχος';
+
+  @override
   String get noteSection => 'Σημείωση';
 
   @override
@@ -2559,6 +2573,32 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'ΦΩΝΗΤΙΚΟ ΚΕΙΜΕΝΟ MAYDAY';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'ΦΩΝΗΤΙΚΟ ΚΕΙΜΕΝΟ · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: μόνο σε σοβαρό και άμεσο κίνδυνο ζωής ή σκάφους. Π.χ. «MAYDAY, MAYDAY, MAYDAY, taking on water, sinking» (μπάζουμε νερά, βουλιάζουμε).';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: επείγον μήνυμα χωρίς άμεσο κίνδυνο ζωής. Π.χ. «PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks» (βλάβη μηχανής, παρασυρόμαστε προς βράχια).';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: μήνυμα ασφαλείας για ναυσιπλοΐα ή καιρό προς άλλα σκάφη. Π.χ. «SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…» (αναφέρθηκε μη χαρτογραφημένο ναυάγιο στη θέση…).';
 
   @override
   String get dscStep1 => 'Βεβαιωθείτε ότι ο ασύρματος είναι ενεργοποιημένος.';

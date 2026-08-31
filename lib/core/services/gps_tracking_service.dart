@@ -648,6 +648,9 @@ class GpsTrackingService {
     /// Spôsob pohonu ako čiarkou oddelené kódy (`motor`, `main`, …). Keď ho
     /// volajúci nepodá, preberie sa posledný zapísaný v ten deň.
     String? sailMode,
+    /// Kormidelník v čase záznamu — meno z posádky plavby, nie appkou
+    /// zisťovaný údaj. Viď [LogbookEventType.helmsmanChange].
+    String? skipperName,
     bool isAutoEntry = true,
   }) async {
     if (_currentSession == null || _db == null) {
@@ -754,6 +757,7 @@ class GpsTrackingService {
       weatherStation: drift.Value(conditions.station),
       weatherStationDistanceM: drift.Value(conditions.stationDistanceM),
       skipperNote: drift.Value(entryNote),
+      skipperName: drift.Value(skipperName),
       pointOfSail: drift.Value(direction?.pointOfSail.code),
       tack: drift.Value(direction?.tack?.code),
       eventType: drift.Value(event?.code),

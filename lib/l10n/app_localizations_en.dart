@@ -1100,6 +1100,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get logEventHelmsmanChange => 'Helmsman change';
+
+  @override
+  String logEventHelmsmanChangeTo(String name) {
+    return 'Helmsman: $name';
+  }
+
+  @override
+  String get crewListEmpty => 'This voyage has no crew filled in.';
+
+  @override
   String get logEventAnchorDropped => 'Anchor dropped';
 
   @override
@@ -2088,6 +2099,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waterLevel => 'Water level';
 
   @override
+  String get helmsmanLabel => 'Helmsman';
+
+  @override
   String get noteSection => 'Note';
 
   @override
@@ -2538,6 +2552,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceScriptTitle => 'VOICE MAYDAY SCRIPT';
+
+  @override
+  String voiceScriptTitleFor(String type) {
+    return 'VOICE SCRIPT · $type';
+  }
+
+  @override
+  String get distressCallMayday => 'MAYDAY';
+
+  @override
+  String get distressCallPanPan => 'PAN PAN';
+
+  @override
+  String get distressCallSecurite => 'SÉCURITÉ';
+
+  @override
+  String get distressNoteMayday =>
+      'MAYDAY: only for grave and imminent danger to life or vessel. E.g. \"MAYDAY, MAYDAY, MAYDAY, taking on water, sinking.\"';
+
+  @override
+  String get distressNotePanPan =>
+      'PAN PAN: an urgent message that is not an immediate threat to life. E.g. \"PAN PAN, PAN PAN, PAN PAN, engine failure, drifting toward rocks.\"';
+
+  @override
+  String get distressNoteSecurite =>
+      'SÉCURITÉ: a safety message about navigation or weather for other vessels. E.g. \"SÉCURITÉ, SÉCURITÉ, SÉCURITÉ, uncharted wreck reported at position…\"';
 
   @override
   String get dscStep1 => 'Make sure the radio is switched on.';

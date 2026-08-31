@@ -409,6 +409,8 @@ class _EntryTile extends ConsumerWidget {
         return l.voyageEnd;
       case LogbookEventType.sailChange:
         return l.logEventSailChange;
+      case LogbookEventType.helmsmanChange:
+        return l.logEventHelmsmanChange;
       case LogbookEventType.courseChange:
         return l.logEventCourseChange;
       case LogbookEventType.anchorDropped:
@@ -444,6 +446,8 @@ class _EntryTile extends ConsumerWidget {
         return Colors.red;
       case LogbookEventType.sailChange:
         return Colors.indigo;
+      case LogbookEventType.helmsmanChange:
+        return Colors.teal;
       case LogbookEventType.anchorDropped:
         return Colors.blue;
       case LogbookEventType.anchorRaised:
@@ -512,6 +516,12 @@ class _EntryTile extends ConsumerWidget {
     // stojí rovno v štítku a neopakuje sa o riadok nižšie.
     if (event == LogbookEventType.sailChange && sailDir != null) {
       eventLabel = l.logEventSailChangeTo(sailDirectionPhrase(sailDir, l));
+    }
+    // Pri zmene kormidelníka je meno samotnou udalosťou, rovnako ako smer pri
+    // zmene plachiet vyššie.
+    if (event == LogbookEventType.helmsmanChange &&
+        (entry.skipperName ?? '').isNotEmpty) {
+      eventLabel = l.logEventHelmsmanChangeTo(entry.skipperName!);
     }
     // Poradie: udalosť má vlastný štítok a poznámku nepotrebuje; strojová
     // značka ('Auto [MODEL]' zo starých záznamov, prázdny text z nových) sa
@@ -602,6 +612,8 @@ class _EntryTile extends ConsumerWidget {
                   const _BigIcon(Icons.check_circle_outline, Colors.orange)
                 else if (event == LogbookEventType.sailChange)
                   const _BigIcon(Icons.swap_horiz, Colors.indigo)
+                else if (event == LogbookEventType.helmsmanChange)
+                  const _BigIcon(Icons.badge, Colors.teal)
                 // Spôsob plavby má prednosť pred ikonou "automatický
                 // záznam" — práve tú informáciu skiper v prehľade hľadá.
                 else if (parsed.modes.isNotEmpty)

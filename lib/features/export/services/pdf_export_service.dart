@@ -1107,6 +1107,13 @@ class PdfExportService {
               sailDir != null) {
             noteText = l.logEventSailChangeTo(sailDirectionPhrase(sailDir, l));
           }
+          // Zmena kormidelníka: meno je celá udalosť, rovnako ako smer pri
+          // zmene plachiet vyššie.
+          if (LogbookEventType.resolve(entry.eventType, entry.skipperNote) ==
+                  LogbookEventType.helmsmanChange &&
+              (entry.skipperName ?? '').isNotEmpty) {
+            noteText = l.logEventHelmsmanChangeTo(entry.skipperName!);
+          }
           // Strojová značka ('Auto [MODEL]') sa netlačí. Zdroj počasia stojí
           // preložený vo vlastnom stĺpci vedľa — skratka NMEA/MODEL v
           // poznámke ho len duplikovala, a to po slovensky.
@@ -2797,6 +2804,8 @@ class PdfExportService {
         return l.voyageEnd;
       case LogbookEventType.sailChange:
         return l.logEventSailChange;
+      case LogbookEventType.helmsmanChange:
+        return l.logEventHelmsmanChange;
       case LogbookEventType.courseChange:
         return l.logEventCourseChange;
       case LogbookEventType.anchorDropped:
