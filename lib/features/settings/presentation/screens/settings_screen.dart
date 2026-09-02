@@ -50,77 +50,67 @@ class SettingsScreen extends ConsumerWidget {
 
             _Section(l.measurementUnits),
             Card(child: Column(children: [
-              ListTile(
-                leading: const Icon(Icons.thermostat),
-                title: Text(l.temperature),
-                trailing: SegmentedButton<TempUnit>(
-                  segments: const [
-                    ButtonSegment(value: TempUnit.celsius, label: Text('°C')),
-                    ButtonSegment(value: TempUnit.fahrenheit, label: Text('°F')),
-                  ],
-                  selected: {units.temp},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setTemp(s.first),
-                ),
+              _UnitRow<TempUnit>(
+                icon: Icons.thermostat,
+                label: l.temperature,
+                segments: const [
+                  ButtonSegment(value: TempUnit.celsius, label: Text('°C')),
+                  ButtonSegment(value: TempUnit.fahrenheit, label: Text('°F')),
+                ],
+                selected: {units.temp},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setTemp(s.first),
               ),
               const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.waves),
-                title: Text(l.depthWaves),
-                trailing: SegmentedButton<DepthUnit>(
-                  segments: const [
-                    ButtonSegment(value: DepthUnit.meters, label: Text('m')),
-                    ButtonSegment(value: DepthUnit.feet, label: Text('ft')),
-                  ],
-                  selected: {units.depth},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setDepth(s.first),
-                ),
+              _UnitRow<DepthUnit>(
+                icon: Icons.waves,
+                label: l.depthWaves,
+                segments: const [
+                  ButtonSegment(value: DepthUnit.meters, label: Text('m')),
+                  ButtonSegment(value: DepthUnit.feet, label: Text('ft')),
+                ],
+                selected: {units.depth},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setDepth(s.first),
               ),
               const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.straighten),
-                title: Text(l.distance),
-                trailing: SegmentedButton<DistanceUnit>(
-                  segments: const [
-                    ButtonSegment(
-                        value: DistanceUnit.nauticalMiles, label: Text('NM')),
-                    ButtonSegment(
-                        value: DistanceUnit.kilometers, label: Text('km')),
-                  ],
-                  selected: {units.distance},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setDistance(s.first),
-                ),
+              _UnitRow<DistanceUnit>(
+                icon: Icons.straighten,
+                label: l.distance,
+                segments: const [
+                  ButtonSegment(
+                      value: DistanceUnit.nauticalMiles, label: Text('NM')),
+                  ButtonSegment(
+                      value: DistanceUnit.kilometers, label: Text('km')),
+                ],
+                selected: {units.distance},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setDistance(s.first),
               ),
               const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.speed),
-                title: Text(l.speed),
-                trailing: SegmentedButton<SpeedUnit>(
-                  segments: const [
-                    ButtonSegment(value: SpeedUnit.knots, label: Text('kn')),
-                    ButtonSegment(value: SpeedUnit.kmh, label: Text('km/h')),
-                  ],
-                  selected: {units.speed},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setSpeed(s.first),
-                ),
+              _UnitRow<SpeedUnit>(
+                icon: Icons.speed,
+                label: l.speed,
+                segments: const [
+                  ButtonSegment(value: SpeedUnit.knots, label: Text('kn')),
+                  ButtonSegment(value: SpeedUnit.kmh, label: Text('km/h')),
+                ],
+                selected: {units.speed},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setSpeed(s.first),
               ),
               const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.air),
-                title: Text(l.wind),
-                trailing: SegmentedButton<WindUnit>(
-                  segments: const [
-                    ButtonSegment(value: WindUnit.knots, label: Text('kn')),
-                    ButtonSegment(value: WindUnit.ms, label: Text('m/s')),
-                    ButtonSegment(value: WindUnit.beaufort, label: Text('Bft')),
-                  ],
-                  selected: {units.wind},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setWind(s.first),
-                ),
+              _UnitRow<WindUnit>(
+                icon: Icons.air,
+                label: l.wind,
+                segments: const [
+                  ButtonSegment(value: WindUnit.knots, label: Text('kn')),
+                  ButtonSegment(value: WindUnit.ms, label: Text('m/s')),
+                  ButtonSegment(value: WindUnit.beaufort, label: Text('Bft')),
+                ],
+                selected: {units.wind},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setWind(s.first),
               ),
               const Divider(height: 1),
               // Nie SegmentedButton ako jednotky vyššie: štyri možnosti sa do
@@ -137,22 +127,20 @@ class SettingsScreen extends ConsumerWidget {
               // Neprepisuje uložené časy — tie sú v databáze vždy UTC.
               // Prepína sa len to, na aké hodiny sa prepočítajú na
               // obrazovke a v PDF.
-              ListTile(
-                leading: const Icon(Icons.schedule),
-                title: Text(l.timeZoneLabel),
-                subtitle: Text(units.zoneLabel(DateTime.now())),
-                trailing: SegmentedButton<TimeZoneMode>(
-                  segments: [
-                    ButtonSegment(
-                        value: TimeZoneMode.local,
-                        label: Text(l.timeZoneLocalShort)),
-                    const ButtonSegment(
-                        value: TimeZoneMode.utc, label: Text('UTC')),
-                  ],
-                  selected: {units.timeZone},
-                  onSelectionChanged: (s) =>
-                      ref.read(unitsProvider.notifier).setTimeZone(s.first),
-                ),
+              _UnitRow<TimeZoneMode>(
+                icon: Icons.schedule,
+                label: l.timeZoneLabel,
+                sublabel: units.zoneLabel(DateTime.now()),
+                segments: [
+                  ButtonSegment(
+                      value: TimeZoneMode.local,
+                      label: Text(l.timeZoneLocalShort)),
+                  const ButtonSegment(
+                      value: TimeZoneMode.utc, label: Text('UTC')),
+                ],
+                selected: {units.timeZone},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setTimeZone(s.first),
               ),
             ])),
             const SizedBox(height: 16),
@@ -334,6 +322,56 @@ class _AboutRow extends StatelessWidget {
       Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
       const SizedBox(width: 8),
       Text(text, style: const TextStyle(fontSize: 13)),
+    ]),
+  );
+}
+
+/// Jeden riadok voľby jednotky: názov nad, prepínač pod, nie vedľa seba.
+///
+/// Pôvodne bol prepínač v `trailing` ListTile, teda vedľa nadpisu v jednom
+/// riadku — pri troch segmentoch (vietor: kn/m/s/Bft) aj pri dlhších
+/// prekladoch nadpisu (napr. časové pásmo) sa im spolu nezmestila šírka
+/// karty a nadpis sa zalamoval uprostred slova. Každý na vlastnom riadku sa
+/// nezalomí nikdy, bez ohľadu na jazyk.
+class _UnitRow<T> extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String? sublabel;
+  final List<ButtonSegment<T>> segments;
+  final Set<T> selected;
+  final ValueChanged<Set<T>> onChanged;
+  const _UnitRow({
+    required this.icon,
+    required this.label,
+    this.sublabel,
+    required this.segments,
+    required this.selected,
+    required this.onChanged,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            if (sublabel != null)
+              Text(sublabel!, style: Theme.of(context).textTheme.bodySmall),
+          ]),
+        ),
+      ]),
+      const SizedBox(height: 8),
+      SegmentedButton<T>(
+        segments: segments,
+        selected: selected,
+        onSelectionChanged: onChanged,
+        showSelectedIcon: false,
+      ),
     ]),
   );
 }
