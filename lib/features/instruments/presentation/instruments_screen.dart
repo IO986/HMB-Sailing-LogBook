@@ -40,8 +40,7 @@ final _manualAutopilotProvider =
 
 final _manualEngineProvider =
     StreamProvider.autoDispose.family<LogbookEntry?, int>((ref, dayLogId) =>
-        ref.watch(databaseProvider).watchLastEventOfTypes(
-            dayLogId, const ['engine_start', 'engine_stop']));
+        ref.watch(databaseProvider).watchLastManualEngineSignal(dayLogId));
 
 final _weatherProvider = FutureProvider<WeatherData?>(
     (ref) => WeatherService().getCurrentWeather());
@@ -155,6 +154,16 @@ class InstrumentsScreen extends ConsumerWidget {
     final manualEngine = dayLogId == null
         ? null
         : ref.watch(_manualEngineProvider(dayLogId)).valueOrNull;
+    // Priamy engine_start/stop hovorí sám za seba; zápis pohonu z rýchleho
+    // obratu (sail_change so sailMode) treba rozbaliť — motor beží, len keď
+    // je čip „Motor" v poslednom zapísanom pohone zaškrtnutý.
+    final manualEngineOn = manualEngine == null
+        ? null
+        : manualEngine.eventType == 'engine_start'
+            ? true
+            : manualEngine.eventType == 'engine_stop'
+                ? false
+                : (manualEngine.sailMode ?? '').split(',').contains('motor');
 
     // --- VMG WP ---
     double? vmgWp, distWpNm, brgWp;
@@ -265,9 +274,7 @@ class InstrumentsScreen extends ConsumerWidget {
               Expanded(
                 child: _StateBox(
                   label: 'ENGINE',
-                  on: engineOk
-                      ? marine.isEngineRunning
-                      : manualEngine?.eventType == 'engine_start',
+                  on: engineOk ? marine.isEngineRunning : (manualEngineOn ?? false),
                   detail: engineOk
                       ? '${marine.engineRpm!.toStringAsFixed(0)} RPM'
                       : null,

@@ -1131,6 +1131,22 @@ class AppDatabase extends _$AppDatabase {
             ..limit(1))
           .watchSingleOrNull();
 
+  /// Živo sleduje posledný záznam, z ktorého sa dá vyčítať, či beží motor
+  /// bez NMEA feedu — buď priamy `engine_start`/`engine_stop` (iná loď s
+  /// motorovými prístrojmi, ale bez pilota), alebo posledný zápis pohonu
+  /// z rýchleho obratu (čip „Motor" v spôsobe plavby). Motor sa tam totiž
+  /// nezapisuje ako vlastná udalosť, len ako súčasť `sailMode` pri
+  /// `sail_change` — pozri [QuickSailChangeSheet].
+  Stream<LogbookEntry?> watchLastManualEngineSignal(int dayLogId) =>
+      (select(logbookEntries)
+            ..where((e) =>
+                e.dayLogId.equals(dayLogId) &
+                (e.eventType.isIn(const ['engine_start', 'engine_stop']) |
+                    e.sailMode.isNotNull()))
+            ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+            ..limit(1))
+          .watchSingleOrNull();
+
   /// Posledný známy spôsob plavby v danom dni.
   ///
   /// Automatické záznamy ho preberajú od posledného záznamu — skiper prepne
