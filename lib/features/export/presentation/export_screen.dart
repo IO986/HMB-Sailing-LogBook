@@ -288,7 +288,11 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         );
         previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
-        suggestedFileName = 'saillog_${vessel}_$dateStr';
+        // 'day', nie 'voyage' — bez rozlíšenia mal export jedného dňa presne
+        // to isté meno ako export celej (jednodňovej) plavby a druhý súbor
+        // pri ukladaní dostal od systému duplicitný názov s poškodenou
+        // príponou (nahlásené z terénu: appka na telefóne ho nevedela otvoriť).
+        suggestedFileName = 'saillog_day_${vessel}_$dateStr';
 
         final sessions = _sessionsByDay[_day!.id] ?? [];
         final pointsBySession = <String, List<TrackPoint>>{};
@@ -338,7 +342,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         );
         previewTitle = _charter!.title;
         final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);
-        suggestedFileName = 'saillog_${vessel}_$dateStr';
+        suggestedFileName = 'saillog_voyage_${vessel}_$dateStr';
 
         final sessionsByDay = <int, List<SailingSession>>{};
         final pointsBySession = <String, List<TrackPoint>>{};
