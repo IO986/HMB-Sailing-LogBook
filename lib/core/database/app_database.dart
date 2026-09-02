@@ -870,6 +870,16 @@ class AppDatabase extends _$AppDatabase {
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
+      // WAL, nie predvolený rollback journal: appka otvára túto DB z dvoch
+      // nezávislých izolátov súčasne, kým beží tracking — GpsTrackingService
+      // v hlavnom izoláte a BackgroundService vo vlastnom (kvôli foreground
+      // service pre počasie, pozri background_service.dart). Bez WAL musia
+      // obe pripojenia zdieľať jeden zámok na súbore, takže čítanie z
+      // druhého izolátu počas zápisu (napr. PDF export počas trackingu)
+      // môže dostať SQLITE_BUSY, alebo na niektorých Android úložiskách aj
+      // horšie — nahlásené z terénu: export PDF spoľahlivo fungoval len keď
+      // tracking nebežal. WAL umožňuje čítačom pokračovať počas zápisu.
+      await customStatement('PRAGMA journal_mode = WAL');
     },
   );
 
