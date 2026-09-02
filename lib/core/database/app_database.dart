@@ -1118,6 +1118,25 @@ class AppDatabase extends _$AppDatabase {
     return rows.isNotEmpty && rows.first.eventType == 'autopilot_on';
   }
 
+  /// Beží práve teraz motor — rovnaká logika ako
+  /// [watchLastManualEngineSignal], len jednorazovo (predvyplnenie čipu
+  /// „Motor" v rýchlom obrate, pozri [QuickSailChangeSheet]).
+  Future<bool> isEngineRunningManual(int dayLogId) async {
+    final rows = await (select(logbookEntries)
+          ..where((e) =>
+              e.dayLogId.equals(dayLogId) &
+              (e.eventType.isIn(const ['engine_start', 'engine_stop']) |
+                  e.sailMode.isNotNull()))
+          ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+          ..limit(1))
+        .get();
+    if (rows.isEmpty) return false;
+    final row = rows.first;
+    if (row.eventType == 'engine_start') return true;
+    if (row.eventType == 'engine_stop') return false;
+    return (row.sailMode ?? '').split(',').contains('motor');
+  }
+
   /// Živo sleduje posledný zápis z ktoréhokoľvek z [eventCodes] v danom dni —
   /// napr. Prístroje ukazujú autopilot/motor aj bez NMEA feedu, z ručného
   /// zápisu (rýchly obrat), a musia sa prekresliť hneď, ako taký zápis

@@ -47,13 +47,15 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     _loadLast();
   }
 
-  /// Sheet sa vždy otvorí prázdny — kurz aj pohon (motor/hlavná/genoa/refy)
-  /// sú len pre TENTO zápis, appka si ich nepamätá (nahlásené z terénu:
-  /// predvyplnené hodnoty z minula tam „viseli" aj keď sa nezmenili).
+  /// Sheet sa vždy otvorí prázdny — kurz aj plachtový pohon (hlavná/genoa/
+  /// refy) sú len pre TENTO zápis, appka si ich nepamätá (nahlásené
+  /// z terénu: predvyplnené hodnoty z minula tam „viseli" aj keď sa
+  /// nezmenili).
   ///
-  /// Jedinou výnimkou je Autopilot: to nie je voľba pre tento zápis, ale
-  /// skutočný stav lode — sheet musí vedieť, či je práve zapnutý, aby
-  /// vedelo rozlíšiť ťuknutie ako ZAP od VYP.
+  /// Autopilot a Motor sú výnimka: nie sú voľba pre tento zápis, ale
+  /// skutočný stav lode — sheet musí vedieť, či práve bežia, aby vedelo
+  /// rozlíšiť ťuknutie ako ZAP od VYP (a zapísať ho ako také, nie ako
+  /// všeobecné prehodenie plachiet).
   Future<void> _loadLast() async {
     final dayLogId = GpsTrackingService().activeDayLogId;
     if (dayLogId == null) {
@@ -62,9 +64,13 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     }
     final db = ref.read(databaseProvider);
     final autopilotOn = await db.isAutopilotEngaged(dayLogId);
+    final motorOn = await db.isEngineRunningManual(dayLogId);
     if (!mounted) return;
     setState(() {
-      _modes = autopilotOn ? {'autopilot'} : {};
+      _modes = {
+        if (autopilotOn) 'autopilot',
+        if (motorOn) 'motor',
+      };
       _initialModes = {..._modes};
       _loading = false;
     });
@@ -82,41 +88,59 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       _modes.length != _initialModes.length ||
       !_modes.containsAll(_initialModes);
 
+  /// Autopilot a Motor majú vlastné typy udalostí — rozpozná sa presne
+  /// jeden z nich, keď je to JEDINÁ zmena oproti stavu pri otvorení sheetu
+  /// (kurz aj ostatný pohon ostali rovnaké); akákoľvek iná zmena popri tom,
+  /// alebo obe naraz, sa zapíše ako bežné prehodenie plachiet.
+  static const _statefulModes = {'autopilot', 'motor'};
+
   Future<void> _save() async {
     if (!_canSave) return;
     setState(() => _saving = true);
 
-    // Autopilot nie je prehodenie plachiet — má vlastný typ udalosti, ten
-    // istý ako pri automatickom rozpoznaní z NMEA. Rozpozná sa tak, že je to
-    // JEDINÁ zmena oproti stavu pri otvorení sheetu (kurz aj ostatný pohon
-    // ostali rovnaké); akákoľvek iná zmena popri tom sa naďalej zapíše ako
-    // bežné prehodenie plachiet.
-    final restCurrent = _modes.where((m) => m != 'autopilot').toSet();
-    final restInitial = _initialModes.where((m) => m != 'autopilot').toSet();
-    final onlyAutopilotToggled = _direction == _initialDirection &&
-        restCurrent.length == restInitial.length &&
-        restCurrent.containsAll(restInitial) &&
+    final restCurrent = _modes.difference(_statefulModes);
+    final restInitial = _initialModes.difference(_statefulModes);
+    final baseChanged = _direction != _initialDirection ||
+        restCurrent.length != restInitial.length ||
+        !restCurrent.containsAll(restInitial);
+    final autopilotChanged =
         _modes.contains('autopilot') != _initialModes.contains('autopilot');
+    final motorChanged =
+        _modes.contains('motor') != _initialModes.contains('motor');
+
+    LogbookEventType event;
+    String note = '';
+    if (!baseChanged && autopilotChanged && !motorChanged) {
+      final engaged = _modes.contains('autopilot');
+      event = engaged ? LogbookEventType.autopilotOn : LogbookEventType.autopilotOff;
+      // 'auto' napĺňa režim v texte udalosti ("Autopilot ZAP - Auto"), nie
+      // prázdna poznámka ako pri prehodení plachiet.
+      note = engaged ? 'auto' : '';
+    } else if (!baseChanged && motorChanged && !autopilotChanged) {
+      event = _modes.contains('motor')
+          ? LogbookEventType.engineStart
+          : LogbookEventType.engineStop;
+    } else {
+      event = LogbookEventType.sailChange;
+    }
 
     // sailMode aj kurz sa zapíšu vždy presne také, aké sú zaklikané v tomto
     // sheete — appka si predtým vyplnenú hodnotu nepamätá (pozri _loadLast).
     await GpsTrackingService().createAutomaticLogbookEntry(
-      // Prázdna poznámka pri prehodení plachiet, nie 'Auto [...]' — zápis
-      // urobil človek a text mu v denníku dopĺňa preložený názov udalosti.
-      note: onlyAutopilotToggled && _modes.contains('autopilot') ? 'auto' : '',
-      event: !onlyAutopilotToggled
-          ? LogbookEventType.sailChange
-          : _modes.contains('autopilot')
-              ? LogbookEventType.autopilotOn
-              : LogbookEventType.autopilotOff,
+      note: note,
+      event: event,
       sailDirection: _direction,
       sailMode: _modes.isEmpty ? null : _modes.join(','),
       isAutoEntry: false,
     );
-    if (onlyAutopilotToggled) {
-      // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
-      // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
+    // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
+    // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
+    if (event == LogbookEventType.autopilotOn ||
+        event == LogbookEventType.autopilotOff) {
       GpsTrackingService().syncAutopilotState(_modes.contains('autopilot'));
+    } else if (event == LogbookEventType.engineStart ||
+        event == LogbookEventType.engineStop) {
+      GpsTrackingService().syncEngineState(_modes.contains('motor'));
     }
     if (mounted) Navigator.pop(context);
   }

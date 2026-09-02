@@ -605,6 +605,12 @@ class GpsTrackingService {
     _autopilotPending = null;
   }
 
+  /// To isté pre motor — čip Motor v spôsobe plavby (nie NMEA otáčky).
+  void syncEngineState(bool running) {
+    _engineLogged = running;
+    _enginePending = null;
+  }
+
   /// Sleduje autopilota a motor a zapisuje ich prepnutia do denníka.
   ///
   /// Beží z timeru, nie zo streamu NMEA viet: veta o autopilote chodí aj
