@@ -1190,15 +1190,19 @@ class PdfExportService {
               // Pohon + motor/nadrze
               pw.Padding(padding: const pw.EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  // Zalomiť, nie orezať. Na jeden riadok sa „Hlavná+Genova"
-                  // nezmestí a orezané „Hlavná+" tvrdí niečo iné, než sa
-                  // stalo; z „Bočný S" ostalo „Bočný" a bok, na ktorom loď
-                  // plávala, z dokladu úplne zmizol.
-                  pw.Text(_pdfText(sailMode), maxLines: 2,
+                  // Zalomiť, nie orezať — a bez pevného stropu na počet
+                  // riadkov. Akýkoľvek pevný maxLines je len ďalší strop,
+                  // ktorý raz niečo odreže (predtým 2 stačili, kým pohon
+                  // nosil najviac dve položky; odkedy doňho patrí aj
+                  // Autopilot popri motore a plachtách, to isté odrezanie sa
+                  // ozvalo znova — nahlásené z terénu, „Hlavná + Genoa +"
+                  // bez zvyšku). Výška riadku tabuľky je dynamická (pozri
+                  // day_pdf_pagination_test.dart), takže text môže rásť
+                  // o toľko riadkov, koľko reálne potrebuje.
+                  pw.Text(_pdfText(sailMode),
                       style: const pw.TextStyle(fontSize: 7.5)),
                   if (sailDir != null)
                     pw.Text(_pdfText(sailDirectionShort(sailDir, l)),
-                        maxLines: 2,
                         style: pw.TextStyle(fontSize: 6.5, color: _dgrey)),
                   if (entry.engineHours != null)
                     pw.Text('${entry.engineHours!.toStringAsFixed(1)}h',
