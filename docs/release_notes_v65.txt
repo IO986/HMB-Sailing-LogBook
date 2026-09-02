@@ -1,0 +1,8 @@
+HMB Sailing Log — build 65 (1.33.0+65)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: sailed miles were badly undercounted at low boat speed (a whole day could show a quarter of the real distance).
+• Fixed: quick-log photos could disappear after being saved — they're now kept permanently, not just in a temp cache.
+• Fixed: departure/arrival port names now fill in later if there was no signal at sea, instead of staying blank forever.
