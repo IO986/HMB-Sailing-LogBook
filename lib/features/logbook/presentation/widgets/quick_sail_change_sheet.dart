@@ -88,10 +88,14 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       _modes.length != _initialModes.length ||
       !_modes.containsAll(_initialModes);
 
-  /// Autopilot a Motor majú vlastné typy udalostí — rozpozná sa presne
-  /// jeden z nich, keď je to JEDINÁ zmena oproti stavu pri otvorení sheetu
-  /// (kurz aj ostatný pohon ostali rovnaké); akákoľvek iná zmena popri tom,
-  /// alebo obe naraz, sa zapíše ako bežné prehodenie plachiet.
+  /// Autopilot a Motor majú vlastné typy udalostí — nezávisle od
+  /// prehodenia plachiet. Skiper v jednom ťuknutí bežne urobí viac vecí
+  /// naraz (napr. vytiahne plachty a zároveň vypne autopilota) a chce
+  /// vidieť oboje v denníku samostatne, nie zlúčené do jedného
+  /// „Prehodenie plachiet" pod ktorým autopilot zmizne (nahlásené
+  /// z terénu). Preto sa každá zmenená vec zapíše ako svoj vlastný
+  /// záznam — Autopilot ZAP/VYP, Motor ZAP/VYP, prehodenie plachiet —
+  /// a nie je to výber jedného z nich.
   static const _statefulModes = {'autopilot', 'motor'};
 
   Future<void> _save() async {
@@ -108,39 +112,39 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     final motorChanged =
         _modes.contains('motor') != _initialModes.contains('motor');
 
-    LogbookEventType event;
-    String note = '';
-    if (!baseChanged && autopilotChanged && !motorChanged) {
+    if (autopilotChanged) {
       final engaged = _modes.contains('autopilot');
-      event = engaged ? LogbookEventType.autopilotOn : LogbookEventType.autopilotOff;
-      // 'auto' napĺňa režim v texte udalosti ("Autopilot ZAP - Auto"), nie
-      // prázdna poznámka ako pri prehodení plachiet.
-      note = engaged ? 'auto' : '';
-    } else if (!baseChanged && motorChanged && !autopilotChanged) {
-      event = _modes.contains('motor')
-          ? LogbookEventType.engineStart
-          : LogbookEventType.engineStop;
-    } else {
-      event = LogbookEventType.sailChange;
+      await GpsTrackingService().createAutomaticLogbookEntry(
+        // 'auto' napĺňa režim v texte udalosti ("Autopilot ZAP - Auto").
+        note: engaged ? 'auto' : '',
+        event: engaged ? LogbookEventType.autopilotOn : LogbookEventType.autopilotOff,
+        isAutoEntry: false,
+      );
+      // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
+      // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
+      GpsTrackingService().syncAutopilotState(engaged);
     }
-
-    // sailMode aj kurz sa zapíšu vždy presne také, aké sú zaklikané v tomto
-    // sheete — appka si predtým vyplnenú hodnotu nepamätá (pozri _loadLast).
-    await GpsTrackingService().createAutomaticLogbookEntry(
-      note: note,
-      event: event,
-      sailDirection: _direction,
-      sailMode: _modes.isEmpty ? null : _modes.join(','),
-      isAutoEntry: false,
-    );
-    // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
-    // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
-    if (event == LogbookEventType.autopilotOn ||
-        event == LogbookEventType.autopilotOff) {
-      GpsTrackingService().syncAutopilotState(_modes.contains('autopilot'));
-    } else if (event == LogbookEventType.engineStart ||
-        event == LogbookEventType.engineStop) {
-      GpsTrackingService().syncEngineState(_modes.contains('motor'));
+    if (motorChanged) {
+      final running = _modes.contains('motor');
+      await GpsTrackingService().createAutomaticLogbookEntry(
+        event: running ? LogbookEventType.engineStart : LogbookEventType.engineStop,
+        isAutoEntry: false,
+      );
+      GpsTrackingService().syncEngineState(running);
+    }
+    if (baseChanged) {
+      // sailMode aj kurz sa zapíšu vždy presne také, aké sú zaklikané tu —
+      // appka si predtým vyplnenú hodnotu nepamätá (pozri _loadLast), takže
+      // nesie aj aktuálny stav autopilota/motora pre stĺpec „Pohon" v PDF.
+      await GpsTrackingService().createAutomaticLogbookEntry(
+        // Prázdna poznámka, nie 'Auto [...]' — zápis urobil človek a text
+        // mu v denníku dopĺňa preložený názov udalosti.
+        note: '',
+        event: LogbookEventType.sailChange,
+        sailDirection: _direction,
+        sailMode: _modes.isEmpty ? null : _modes.join(','),
+        isAutoEntry: false,
+      );
     }
     if (mounted) Navigator.pop(context);
   }
