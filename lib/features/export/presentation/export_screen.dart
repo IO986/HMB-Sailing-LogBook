@@ -289,10 +289,16 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
         // 'day', nie 'voyage' — bez rozlíšenia mal export jedného dňa presne
-        // to isté meno ako export celej (jednodňovej) plavby a druhý súbor
-        // pri ukladaní dostal od systému duplicitný názov s poškodenou
-        // príponou (nahlásené z terénu: appka na telefóne ho nevedela otvoriť).
-        suggestedFileName = 'saillog_day_${vessel}_$dateStr';
+        // to isté meno ako export celej (jednodňovej) plavby. Čas (HHmm) je
+        // tu z rovnakého dôvodu ako 'day'/'voyage': opakovaný export toho
+        // istého dňa mal vždy rovnaké meno, a KAŽDÝ ďalší uložený súbor
+        // s tým istým menom dostal na telefóne (Honor file manager) od
+        // systému "(1)"/"(2)" a poškodenú príponu — appka ho nevedela
+        // otvoriť (nahlásené z terénu). Prvé uloženie s daným menom vždy
+        // fungovalo správne, takže chyba je v dedikovaní duplicít systémom,
+        // nie v obsahu PDF — jedinečné meno sa jej celkom vyhne.
+        final timeStr = DateFormat('HHmm').format(DateTime.now());
+        suggestedFileName = 'saillog_day_${vessel}_${dateStr}_$timeStr';
 
         final sessions = _sessionsByDay[_day!.id] ?? [];
         final pointsBySession = <String, List<TrackPoint>>{};
@@ -342,7 +348,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         );
         previewTitle = _charter!.title;
         final dateStr = DateFormat('yyyy-MM-dd').format(_charter!.dateFrom);
-        suggestedFileName = 'saillog_voyage_${vessel}_$dateStr';
+        final timeStr = DateFormat('HHmm').format(DateTime.now());
+        suggestedFileName = 'saillog_voyage_${vessel}_${dateStr}_$timeStr';
 
         final sessionsByDay = <int, List<SailingSession>>{};
         final pointsBySession = <String, List<TrackPoint>>{};
