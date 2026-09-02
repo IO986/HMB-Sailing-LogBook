@@ -83,6 +83,23 @@ void main() {
     expect(f.lastAccepted, north(5000));
   });
 
+  test('pomalá plavba pod minMoveM sa kumuluje, nie zaokrúhľuje na 0', () {
+    // Z terénu 1.9.2026: 18,8 NM skutočne, appka narátala 4,2 NM. Pri hustom
+    // 1 Hz NMEA feede a rýchlosti pod ~6 uzlami je krok medzi dvoma fixmi
+    // pod 3 m (minMoveM) — bez kumulácie voči poslednému NARÁTANÉMU bodu by
+    // sa každý krok zaokrúhlil na 0 a reálny posun by sa nikdy nespočítal.
+    final f = FixQualityFilter()..check(start, accuracyM: 3, at: now);
+    var total = 0.0;
+    // 2 m/s (~3,9 kn) po 1 s, 60 krokov = 120 m skutočne prejdených.
+    for (var i = 1; i <= 60; i++) {
+      final r = f.check(north(2.0 * i), accuracyM: 3,
+          at: now.add(Duration(seconds: i)));
+      expect(r.verdict, FixVerdict.accepted);
+      total += r.distanceM;
+    }
+    expect(total, closeTo(120, 2));
+  });
+
   test('keď presnejšie fixy neprichádzajú, filter sa nezasekne', () {
     final f = FixQualityFilter(maxConsecutiveRejects: 3)
       ..check(start, accuracyM: 3, at: now);

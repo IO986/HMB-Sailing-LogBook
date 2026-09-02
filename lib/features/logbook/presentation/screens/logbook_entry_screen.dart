@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
@@ -652,8 +653,18 @@ class _PhotoPicker extends StatelessWidget {
 
   Future<void> _pick(BuildContext context, ImageSource source) async {
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: source, imageQuality: 85, maxWidth: 1920);
-    if (file != null) onPick(file.path);
+    final picked = await picker.pickImage(source: source, imageQuality: 85, maxWidth: 1920);
+    if (picked == null) return;
+    // image_picker uklada zmenšenú kópiu do CACHE priečinka (súbor
+    // "scaled_..."), ktorý systém smie kedykoľvek vymazať — treba kópiu do
+    // trvalého úložiska appky.
+    final docs = await getApplicationDocumentsDirectory();
+    final dir = Directory('${docs.path}/logbook_photos');
+    await dir.create(recursive: true);
+    final file = File(
+        '${dir.path}/log_${DateTime.now().millisecondsSinceEpoch}.jpg');
+    await File(picked.path).copy(file.path);
+    onPick(file.path);
   }
 
   @override

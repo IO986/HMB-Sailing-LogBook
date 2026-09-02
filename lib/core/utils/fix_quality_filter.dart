@@ -87,12 +87,23 @@ class FixQualityFilter {
   DateTime? _lastAcceptedAt;
   int _consecutiveRejects = 0;
 
+  /// Bod, od ktorého sa meria kumulatívny posun pre [minMoveM] — na rozdiel
+  /// od [_lastAccepted] sa NEPOSÚVA pri každom prijatom fixe, len keď sa
+  /// posun od neho reálne narátal do míľ. Bez tohto rozdielu (pôvodná
+  /// chyba, nájdená z terénu 1.9.: 18,8 NM zredukovaných na 4,2 NM) sa
+  /// vzdialenosť porovnávala vždy len oproti PREDOŠLÉMU fixu — pri hustom
+  /// 1 Hz NMEA feede a plachtení pod ~6 uzlami je krok medzi dvoma po sebe
+  /// idúcimi fixmi takmer vždy pod 3 m, takže sa každý jednotlivý krok
+  /// zaokrúhlil na 0 a reálny, len pomaly rastúci posun sa nikdy nesčítal.
+  LatLng? _distanceBaseline;
+
   /// Posledný prijatý bod, alebo `null` kým sa neprijalo nič.
   LatLng? get lastAccepted => _lastAccepted;
 
   void reset() {
     _lastAccepted = null;
     _lastAcceptedAt = null;
+    _distanceBaseline = null;
     _consecutiveRejects = 0;
   }
 
@@ -136,13 +147,26 @@ class FixQualityFilter {
     _consecutiveRejects = 0;
     _lastAccepted = candidate;
     _lastAcceptedAt = at;
-    return FixCheck(FixVerdict.accepted, distM < minMoveM ? 0 : distM);
+
+    final baseline = _distanceBaseline ??= candidate;
+    final fromBaselineM = DistanceCalculator.distanceM(
+      baseline.latitude, baseline.longitude,
+      candidate.latitude, candidate.longitude);
+    if (fromBaselineM < minMoveM) {
+      // Posun od poslednej NARÁTANEJ polohy je zatiaľ pod prahom — nechaj
+      // baseline na mieste, nech sa ďalší (aj drobný) krok pripočíta k tomu
+      // istému základu, kým sa spolu nenazbiera aspoň minMoveM.
+      return const FixCheck(FixVerdict.accepted, 0);
+    }
+    _distanceBaseline = candidate;
+    return FixCheck(FixVerdict.accepted, fromBaselineM);
   }
 
   FixCheck _resync(LatLng candidate, DateTime at) {
     _consecutiveRejects = 0;
     _lastAccepted = candidate;
     _lastAcceptedAt = at;
+    _distanceBaseline = candidate;
     return const FixCheck(FixVerdict.resynced, 0);
   }
 }

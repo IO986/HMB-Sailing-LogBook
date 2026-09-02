@@ -193,6 +193,8 @@ class GpsTrackingService {
 
     // Tracking je jediný konzument, ktorý potrebuje presnú polohu aj so
     // zhasnutou obrazovkou — drží ju bežiaci foreground service.
+    unawaited(retryMissingPortNames());
+
     LocationService().requestPrecise(this, survivesBackground: true);
 
     // Použi LocationService stream (GPS je už aktívne)
@@ -308,6 +310,64 @@ class GpsTrackingService {
       }
     } catch (e) {
       debugPrint('[GEO] _geocodeArrival: $e');
+    }
+  }
+
+  /// Dopočíta mená prístavov, ktoré `_geocodeDeparture`/`_geocodeArrival`
+  /// nestihli — na mori v čase odchodu/príchodu často niet signálu, a tie
+  /// volania sú jednorazové (nahlásené z terénu: mená prístavov chýbajú
+  /// trvalo, nielen občas). Beriem polohu z prvého/posledného bodu trasy
+  /// daného dňa, takže to funguje aj po reštarte appky — netreba si
+  /// pamätať nič navyše, dáta už v DB sú.
+  ///
+  /// Volá sa pri štarte appky a pri každom začiatku plavby — lacná
+  /// príležitosť, ktorá chytí signál hneď, ako sa objaví (napr. v prístave
+  /// na druhý deň).
+  Future<void> retryMissingPortNames() async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      final dayLogs = await db.getDayLogsMissingPortNames();
+      for (final dayLog in dayLogs) {
+        final sessions = await db.getSessionsForDay(dayLog.id);
+        if (sessions.isEmpty) continue;
+        sessions.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+        final needsFrom = dayLog.portFrom == null || dayLog.portFrom!.isEmpty;
+        final needsTo = dayLog.portTo == null || dayLog.portTo!.isEmpty;
+
+        if (needsFrom) {
+          final first = await db.getTrackPointsForSession(sessions.first.sessionId);
+          if (first.isNotEmpty) {
+            final name = await GeocodingService()
+                .reverseGeocode(first.first.latitude, first.first.longitude);
+            if (name != null) {
+              await db.updateDayLog(DayLogsCompanion(
+                id: drift.Value(dayLog.id),
+                portFrom: drift.Value(name),
+              ));
+              debugPrint('[GEO] Backfilled departure port: $name');
+            }
+          }
+        }
+
+        if (needsTo) {
+          final last = await db.getTrackPointsForSession(sessions.last.sessionId);
+          if (last.isNotEmpty) {
+            final name = await GeocodingService()
+                .reverseGeocode(last.last.latitude, last.last.longitude);
+            if (name != null) {
+              await db.updateDayLog(DayLogsCompanion(
+                id: drift.Value(dayLog.id),
+                portTo: drift.Value(name),
+              ));
+              debugPrint('[GEO] Backfilled arrival port: $name');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('[GEO] retryMissingPortNames failed: $e');
     }
   }
 

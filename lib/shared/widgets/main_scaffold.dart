@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -442,9 +444,20 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   }
 
   Future<void> _quickPhotoLog(BuildContext context) async {
-    final file = await ImagePicker()
+    final picked = await ImagePicker()
         .pickImage(source: ImageSource.camera, imageQuality: 85, maxWidth: 1920);
-    if (file == null || !context.mounted) return;
+    if (picked == null) return;
+    // image_picker uklada zmenšenú kópiu do CACHE priečinka appky (súbor
+    // "scaled_..."), ktorý systém smie kedykoľvek vymazať — bez tejto kópie
+    // do trvalého úložiska fotka z denníka zmizne (nahlásené z terénu:
+    // "nezapisalo ani jednu fotku").
+    final docs = await getApplicationDocumentsDirectory();
+    final dir = Directory('${docs.path}/logbook_photos');
+    await dir.create(recursive: true);
+    final file = File(
+        '${dir.path}/log_${DateTime.now().millisecondsSinceEpoch}.jpg');
+    await File(picked.path).copy(file.path);
+    if (!context.mounted) return;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

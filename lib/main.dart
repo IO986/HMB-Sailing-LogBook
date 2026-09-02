@@ -47,6 +47,10 @@ void replaceCurrentDatabase(AppDatabase db) => _currentDb = db;
 /// Riverpod (nemajú providery). Volané pri štarte aj po obnove zo zálohy.
 void wireDatabaseSingletons(AppDatabase db) {
   GpsTrackingService().setDatabase(db);
+  // Ak appka na mori nestihla dopočítať meno prístavu (žiadny signál), skúsi
+  // to zas tu — pri každom štarte, teda aj vtedy, keď sa medzitým appka
+  // reštartovala a plavba je už dávno uzavretá.
+  unawaited(GpsTrackingService().retryMissingPortNames());
   WeatherService().setDatabase(db);
   WeatherRepository().setDatabase(db);
   TideService().setDatabase(db);

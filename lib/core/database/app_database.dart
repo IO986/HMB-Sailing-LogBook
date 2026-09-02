@@ -960,6 +960,19 @@ class AppDatabase extends _$AppDatabase {
   Future<DayLog?> getDayLogById(int id) =>
       (select(dayLogs)..where((d) => d.id.equals(id))).getSingleOrNull();
 
+  /// Dni z posledných [withinDays] dní, ktorým chýba meno prístavu odkiaľ
+  /// alebo kam — kandidáti na dopočítanie mena, keď sa objaví signál (na
+  /// mori v čase odchodu/príchodu ho reverseGeocode nemal, pozri
+  /// [GpsTrackingService.retryMissingPortNames]).
+  Future<List<DayLog>> getDayLogsMissingPortNames({int withinDays = 14}) {
+    final since = DateTime.now().toUtc().subtract(Duration(days: withinDays));
+    return (select(dayLogs)
+          ..where((d) =>
+              d.date.isBiggerOrEqualValue(since) &
+              (d.portFrom.isNull() | d.portTo.isNull())))
+        .get();
+  }
+
   Future<int?> getLatestDayLogId() async {
     final rows = await (select(dayLogs)
           ..orderBy([(d) => OrderingTerm.desc(d.date)])
