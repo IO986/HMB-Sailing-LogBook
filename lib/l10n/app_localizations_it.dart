@@ -1150,12 +1150,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get autopilotLabel => 'Autopilota';
 
   @override
-  String get quickAutopilotOn => 'Autopilota ON';
-
-  @override
-  String get quickAutopilotOff => 'Autopilota OFF';
-
-  @override
   String get autopilotModeAuto => 'Auto';
 
   @override

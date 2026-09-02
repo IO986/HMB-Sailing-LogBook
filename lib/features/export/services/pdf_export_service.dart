@@ -1756,7 +1756,7 @@ class PdfExportService {
   static String _sailModeLabel(String modes, AppLocalizations l) {
     final map = {
       'motor': 'Motor', 'main': l.sailMain, 'genoa': 'Genoa',
-      'reef1': 'Reef1', 'reef2': 'Reef2',
+      'reef1': 'Reef1', 'reef2': 'Reef2', 'autopilot': 'Autopilot',
     };
     // Medzery okolo '+' nie sú ozdoba: v úzkom stĺpci je to jediné miesto,
     // kde sa dá zalomiť, a bez nich sa „Hlavná+Genoa" zlomí uprostred slova.

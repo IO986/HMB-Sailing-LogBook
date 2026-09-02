@@ -1147,12 +1147,6 @@ class AppLocalizationsHr extends AppLocalizations {
   String get autopilotLabel => 'Autopilot';
 
   @override
-  String get quickAutopilotOn => 'Autopilot UKLJ';
-
-  @override
-  String get quickAutopilotOff => 'Autopilot ISKLJ';
-
-  @override
   String get autopilotModeAuto => 'Auto';
 
   @override

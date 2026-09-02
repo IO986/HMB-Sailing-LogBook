@@ -384,8 +384,6 @@
   "updateDownloaded": "Update downloaded",
   "updateRestart": "Restart",
   "autopilotLabel": "Autopilot",
-  "quickAutopilotOn": "Autopilot ON",
-  "quickAutopilotOff": "Autopilot OFF",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Wind",
   "autopilotModeTrack": "Track",

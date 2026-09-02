@@ -384,8 +384,6 @@
   "updateDownloaded": "Ažuriranje je preuzeto",
   "updateRestart": "Ponovno pokreni",
   "autopilotLabel": "Autopilot",
-  "quickAutopilotOn": "Autopilot UKLJ",
-  "quickAutopilotOff": "Autopilot ISKLJ",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Vjetar",
   "autopilotModeTrack": "Ruta",

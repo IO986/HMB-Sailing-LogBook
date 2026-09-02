@@ -384,8 +384,6 @@
   "updateDownloaded": "Оновлення завантажено",
   "updateRestart": "Перезапустити",
   "autopilotLabel": "Автопілот",
-  "quickAutopilotOn": "Автопілот УВІМК",
-  "quickAutopilotOff": "Автопілот ВИМК",
   "autopilotModeAuto": "Авто",
   "autopilotModeWind": "Вітер",
   "autopilotModeTrack": "Маршрут",

@@ -21,14 +21,15 @@ class SailModePicker extends StatelessWidget {
   final Set<String> value;
   final ValueChanged<Set<String>> onChanged;
 
-  /// Motor, Genoa a Reef sú medzinárodné a neprekladajú sa; preklad má len
-  /// hlavná plachta. Rovnaké kódy idú do stĺpca `sailMode`.
+  /// Motor, Genoa, Reef a Autopilot sú medzinárodné a neprekladajú sa;
+  /// preklad má len hlavná plachta. Rovnaké kódy idú do stĺpca `sailMode`.
   static const options = <({String value, String label, IconData icon})>[
     (value: 'motor', label: 'Motor', icon: Icons.settings),
     (value: 'main', label: 'Main', icon: Icons.sailing),
     (value: 'genoa', label: 'Genoa', icon: Icons.air),
     (value: 'reef1', label: 'Reef 1', icon: Icons.arrow_downward),
     (value: 'reef2', label: 'Reef 2', icon: Icons.arrow_downward),
+    (value: 'autopilot', label: 'Autopilot', icon: Icons.smart_toy),
   ];
 
   static String labelOf(

@@ -677,24 +677,6 @@ class GpsTrackingService {
     await _flushEngineHours();
   }
 
-  /// Manuálny zápis zapnutia/vypnutia autopilota — pre lode bez NMEA dát
-  /// (žiadny SeaTalk/HTC/APB feed) alebo keď skiper prepne pilota rýchlejšie,
-  /// než ho stihne potvrdiť [_pollInstruments] (dve vzorky za sebou).
-  /// Jedno ťuknutie ako pri obrate alebo zmene kormidelníka.
-  Future<void> logAutopilotManual(bool engaged) async {
-    await createAutomaticLogbookEntry(
-      event: engaged
-          ? LogbookEventType.autopilotOn
-          : LogbookEventType.autopilotOff,
-      note: '',
-      isAutoEntry: false,
-    );
-    // Zosúlaď sledovač NMEA — bez toho by rovnaké prepnutie prijaté krátko
-    // nato z prístrojov zapísalo do denníka duplicitný záznam.
-    _autopilotLogged = engaged;
-    _autopilotPending = null;
-  }
-
   /// Zapíše narátané motohodiny do DayLogu. Priebežne, nie až na konci —
   /// z rovnakého dôvodu ako prejdené míle (pozri [_persistDistanceIfGrown]).
   Future<void> _flushEngineHours({bool force = false}) async {
