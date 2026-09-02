@@ -1104,6 +1104,33 @@ class AppDatabase extends _$AppDatabase {
                     : s.isAnchorWatch.equals(false))))
           .get();
 
+  /// Je autopilot práve teraz zapnutý — podľa posledného zapísaného
+  /// `autopilot_on`/`autopilot_off` v danom dni (ručného aj automatického).
+  /// `false`, keď v ten deň ešte nebol žiadny takýto záznam.
+  Future<bool> isAutopilotEngaged(int dayLogId) async {
+    final rows = await (select(logbookEntries)
+          ..where((e) =>
+              e.dayLogId.equals(dayLogId) &
+              e.eventType.isIn(const ['autopilot_on', 'autopilot_off']))
+          ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+          ..limit(1))
+        .get();
+    return rows.isNotEmpty && rows.first.eventType == 'autopilot_on';
+  }
+
+  /// Živo sleduje posledný zápis z ktoréhokoľvek z [eventCodes] v danom dni —
+  /// napr. Prístroje ukazujú autopilot/motor aj bez NMEA feedu, z ručného
+  /// zápisu (rýchly obrat), a musia sa prekresliť hneď, ako taký zápis
+  /// pribudne, nie až pri ďalšom otvorení obrazovky.
+  Stream<LogbookEntry?> watchLastEventOfTypes(
+          int dayLogId, List<String> eventCodes) =>
+      (select(logbookEntries)
+            ..where((e) =>
+                e.dayLogId.equals(dayLogId) & e.eventType.isIn(eventCodes))
+            ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+            ..limit(1))
+          .watchSingleOrNull();
+
   /// Posledný známy spôsob plavby v danom dni.
   ///
   /// Automatické záznamy ho preberajú od posledného záznamu — skiper prepne

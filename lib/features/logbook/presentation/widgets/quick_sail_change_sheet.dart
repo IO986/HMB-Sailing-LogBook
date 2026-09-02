@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/models/point_of_sail.dart';
-import '../../../../core/models/sail_mode.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
@@ -14,8 +13,8 @@ import '../../../../shared/widgets/sail_mode_picker.dart';
 ///
 /// Papierový denník má na prehodenie plachiet ten istý riadok ako na všetko
 /// ostatné — skiper doň zapíše, na čom loď ide a nový kurz voči vetru. Tu je
-/// to jedno ťuknutie: sheet ponúkne pohon aj siluetu s naposledy zapísanými
-/// hodnotami a uloží záznam s GPS a časom, ktoré appka už pozná.
+/// to jedno ťuknutie: sheet sa vždy otvorí prázdny (pozri [_loadLast]) a
+/// uloží záznam s GPS a časom, ktoré appka už pozná.
 ///
 /// Pohon je tu z praktického dôvodu: dovtedy ho vedel zapísať len plný
 /// formulár záznamu, takže pri plavbe zostával stĺpec „Pohon" prázdny a
@@ -48,8 +47,13 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     _loadLast();
   }
 
-  /// Predvyplní posledný zapísaný pohon a kurz dňa — pri obrate sa mení
-  /// spravidla len bok a pohon vôbec, takže skiper má o ťuknutia menej.
+  /// Sheet sa vždy otvorí prázdny — kurz aj pohon (motor/hlavná/genoa/refy)
+  /// sú len pre TENTO zápis, appka si ich nepamätá (nahlásené z terénu:
+  /// predvyplnené hodnoty z minula tam „viseli" aj keď sa nezmenili).
+  ///
+  /// Jedinou výnimkou je Autopilot: to nie je voľba pre tento zápis, ale
+  /// skutočný stav lode — sheet musí vedieť, či je práve zapnutý, aby
+  /// vedelo rozlíšiť ťuknutie ako ZAP od VYP.
   Future<void> _loadLast() async {
     final dayLogId = GpsTrackingService().activeDayLogId;
     if (dayLogId == null) {
@@ -57,23 +61,26 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       return;
     }
     final db = ref.read(databaseProvider);
-    final last = await db.lastSailDirectionForDay(dayLogId);
-    final mode = await db.lastSailModeForDay(dayLogId);
+    final autopilotOn = await db.isAutopilotEngaged(dayLogId);
     if (!mounted) return;
     setState(() {
-      _direction = last == null
-          ? null
-          : SailDirection.fromCodes(last.pointOfSail, last.tack);
-      _modes = parseSailMode(mode, null).modes;
-      _initialDirection = _direction;
+      _modes = autopilotOn ? {'autopilot'} : {};
       _initialModes = {..._modes};
       _loading = false;
     });
   }
 
-  /// Zápis má zmysel, len keď je čo zapísať — prázdny záznam bez pohonu aj
-  /// bez kurzu by v denníku nič nehovoril.
-  bool get _canSave => _direction != null || _modes.isNotEmpty;
+  /// Zápis má zmysel len keď sa oproti otvoreniu sheetu niečo reálne
+  /// zmenilo — nie „je čo zapísať" (to prešlo aj pri opätovnom Uložiť bez
+  /// jedinej zmeny, len preto, že bol vybraný pohon z minula: nahlásené
+  /// z terénu, vytváralo to prázdne "Prehodenie plachiet" pri každom
+  /// znovuotvorení). Vypnutie jediného zapnutého pohonu (napr. autopilota)
+  /// je zmena aj keď skončí na prázdnej množine — preto porovnanie so
+  /// stavom pri otvorení, nie kontrola "je niečo zaškrtnuté".
+  bool get _canSave =>
+      _direction != _initialDirection ||
+      _modes.length != _initialModes.length ||
+      !_modes.containsAll(_initialModes);
 
   Future<void> _save() async {
     if (!_canSave) return;
@@ -91,33 +98,25 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
         restCurrent.containsAll(restInitial) &&
         _modes.contains('autopilot') != _initialModes.contains('autopilot');
 
+    // sailMode aj kurz sa zapíšu vždy presne také, aké sú zaklikané v tomto
+    // sheete — appka si predtým vyplnenú hodnotu nepamätá (pozri _loadLast).
+    await GpsTrackingService().createAutomaticLogbookEntry(
+      // Prázdna poznámka pri prehodení plachiet, nie 'Auto [...]' — zápis
+      // urobil človek a text mu v denníku dopĺňa preložený názov udalosti.
+      note: onlyAutopilotToggled && _modes.contains('autopilot') ? 'auto' : '',
+      event: !onlyAutopilotToggled
+          ? LogbookEventType.sailChange
+          : _modes.contains('autopilot')
+              ? LogbookEventType.autopilotOn
+              : LogbookEventType.autopilotOff,
+      sailDirection: _direction,
+      sailMode: _modes.isEmpty ? null : _modes.join(','),
+      isAutoEntry: false,
+    );
     if (onlyAutopilotToggled) {
-      final engaged = _modes.contains('autopilot');
-      await GpsTrackingService().createAutomaticLogbookEntry(
-        note: engaged ? 'auto' : '',
-        event: engaged
-            ? LogbookEventType.autopilotOn
-            : LogbookEventType.autopilotOff,
-        isAutoEntry: false,
-      );
       // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
       // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
-      GpsTrackingService().syncAutopilotState(engaged);
-    } else {
-      // Autopilot nie je pohon — do stĺpca „Pohon" (sailMode) sa neukladá,
-      // nech tam neostane navždy zaseknutý po jednom kombinovanom zápise
-      // (samotné neskoršie vypnutie autopilota totiž ide vetvou vyššie,
-      // ktorá sailMode vôbec nezapisuje).
-      final propulsion = restCurrent;
-      await GpsTrackingService().createAutomaticLogbookEntry(
-        // Prázdna poznámka, nie 'Auto [...]' — zápis urobil človek a text mu
-        // v denníku dopĺňa preložený názov udalosti.
-        note: '',
-        event: LogbookEventType.sailChange,
-        sailDirection: _direction,
-        sailMode: propulsion.isEmpty ? null : propulsion.join(','),
-        isAutoEntry: false,
-      );
+      GpsTrackingService().syncAutopilotState(_modes.contains('autopilot'));
     }
     if (mounted) Navigator.pop(context);
   }

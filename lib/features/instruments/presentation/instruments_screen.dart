@@ -12,9 +12,11 @@ import '../../../core/providers/raymarine_providers.dart';
 import '../../../core/services/location_service.dart';
 import '../../../core/services/weather_repository.dart';
 import '../../../core/services/weather_service.dart';
+import '../../../core/services/gps_tracking_service.dart';
 import '../../map/providers/map_provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/services/units_service.dart';
+import '../../../main.dart';
 
 // ── Providers ─────────────────────────────────────────────────
 
@@ -26,6 +28,20 @@ final _gpsProvider = StreamProvider.autoDispose<Position>((ref) {
   ref.onDispose(() => LocationService().releasePrecise(ref));
   return LocationService().stream;
 });
+
+/// Posledný ručný zápis autopilota/motora v aktívnom dni — fallback pre
+/// AUTOPILOT/ENGINE dlaždice, keď NMEA feed nič nehlási (nahlásené z
+/// terénu: lode bez SeaTalk/HTC feedu pilota mali dlaždicu navždy prázdnu,
+/// aj keď skiper zapnutie/vypnutie zapísal ručne cez rýchly obrat).
+final _manualAutopilotProvider =
+    StreamProvider.autoDispose.family<LogbookEntry?, int>((ref, dayLogId) =>
+        ref.watch(databaseProvider).watchLastEventOfTypes(
+            dayLogId, const ['autopilot_on', 'autopilot_off']));
+
+final _manualEngineProvider =
+    StreamProvider.autoDispose.family<LogbookEntry?, int>((ref, dayLogId) =>
+        ref.watch(databaseProvider).watchLastEventOfTypes(
+            dayLogId, const ['engine_start', 'engine_stop']));
 
 final _weatherProvider = FutureProvider<WeatherData?>(
     (ref) => WeatherService().getCurrentWeather());
@@ -129,6 +145,17 @@ class InstrumentsScreen extends ConsumerWidget {
         marine.engineRpm != null &&
         _freshField(marine.engineLastUpdate);
 
+    // Bez NMEA feedu (alebo keď pilota/motor nesleduje) padni na posledný
+    // ručný zápis toho istého dňa — inak dlaždica ostáva navždy prázdna na
+    // lodi bez prístrojov, hoci skiper zapnutie/vypnutie zapísal sám.
+    final dayLogId = GpsTrackingService().activeDayLogId;
+    final manualAutopilot = dayLogId == null
+        ? null
+        : ref.watch(_manualAutopilotProvider(dayLogId)).valueOrNull;
+    final manualEngine = dayLogId == null
+        ? null
+        : ref.watch(_manualEngineProvider(dayLogId)).valueOrNull;
+
     // --- VMG WP ---
     double? vmgWp, distWpNm, brgWp;
     if (activeWp != null && pos != null) {
@@ -221,22 +248,32 @@ class InstrumentsScreen extends ConsumerWidget {
               Expanded(
                 child: _StateBox(
                   label: 'AUTOPILOT',
-                  on: autopilotOk && marine.autopilotEngaged == true,
+                  on: autopilotOk
+                      ? marine.autopilotEngaged == true
+                      : manualAutopilot?.eventType == 'autopilot_on',
                   detail: autopilotOk
                       ? (marine.autopilotEngaged == true
                           ? (marine.autopilotMode ?? 'auto').toUpperCase()
                           : 'STANDBY')
                       : null,
+                  source: autopilotOk
+                      ? 'NMEA'
+                      : (manualAutopilot != null ? 'MANUAL' : null),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _StateBox(
                   label: 'ENGINE',
-                  on: engineOk && marine.isEngineRunning,
+                  on: engineOk
+                      ? marine.isEngineRunning
+                      : manualEngine?.eventType == 'engine_start',
                   detail: engineOk
                       ? '${marine.engineRpm!.toStringAsFixed(0)} RPM'
                       : null,
+                  source: engineOk
+                      ? 'NMEA'
+                      : (manualEngine != null ? 'MANUAL' : null),
                 ),
               ),
             ]),
@@ -450,11 +487,13 @@ class _StateBox extends StatelessWidget {
   final String label;
   final bool on;
   final String? detail;
+  final String? source;
 
   const _StateBox({
     required this.label,
     required this.on,
     this.detail,
+    this.source,
   });
 
   // Jednotná farba naprieč AUTOPILOT aj ENGINE, nie farba per prístroj:
@@ -474,10 +513,28 @@ class _StateBox extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.8), width: 1.5),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label,
-            style: TextStyle(
-                color: color, fontSize: 13, letterSpacing: 2,
-                fontWeight: FontWeight.w500)),
+        Row(children: [
+          Text(label,
+              style: TextStyle(
+                  color: color, fontSize: 13, letterSpacing: 2,
+                  fontWeight: FontWeight.w500)),
+          if (source != null) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(source!,
+                  style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.35),
+                      fontSize: 7,
+                      letterSpacing: 0.8,
+                      fontWeight: FontWeight.w500)),
+            ),
+          ],
+        ]),
         const SizedBox(height: 4),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(on ? 'ON' : 'OFF',
