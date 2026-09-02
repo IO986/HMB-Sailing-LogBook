@@ -51,6 +51,9 @@ void wireDatabaseSingletons(AppDatabase db) {
   // to zas tu — pri každom štarte, teda aj vtedy, keď sa medzitým appka
   // reštartovala a plavba je už dávno uzavretá.
   unawaited(GpsTrackingService().retryMissingPortNames());
+  // Jednorazová oprava míľ zapísaných starým (buggy) počítadlom — pozri
+  // recomputeRecentSessionDistances().
+  unawaited(GpsTrackingService().recomputeRecentSessionDistances());
   WeatherService().setDatabase(db);
   WeatherRepository().setDatabase(db);
   TideService().setDatabase(db);

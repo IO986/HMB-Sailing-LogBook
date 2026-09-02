@@ -960,6 +960,15 @@ class AppDatabase extends _$AppDatabase {
   Future<DayLog?> getDayLogById(int id) =>
       (select(dayLogs)..where((d) => d.id.equals(id))).getSingleOrNull();
 
+  /// Dni z posledných [withinDays] dní — kandidáti na jednorazový prepočet
+  /// míľ po oprave [FixQualityFilter] (pozri
+  /// [GpsTrackingService.recomputeRecentSessionDistances]).
+  Future<List<DayLog>> getRecentDayLogs({int withinDays = 14}) {
+    final since = DateTime.now().toUtc().subtract(Duration(days: withinDays));
+    return (select(dayLogs)..where((d) => d.date.isBiggerOrEqualValue(since)))
+        .get();
+  }
+
   /// Dni z posledných [withinDays] dní, ktorým chýba meno prístavu odkiaľ
   /// alebo kam — kandidáti na dopočítanie mena, keď sa objaví signál (na
   /// mori v čase odchodu/príchodu ho reverseGeocode nemal, pozri
@@ -1182,16 +1191,24 @@ class AppDatabase extends _$AppDatabase {
     var total = 0.0;
     for (final session in await getSessionsForDay(dayLogId)) {
       if (session.sessionId == excludeSessionId) continue;
-      final points = await getTrackPointsForSession(session.sessionId);
-      for (var i = 1; i < points.length; i++) {
-        final nm = DistanceCalculator.distanceM(
-              points[i - 1].latitude, points[i - 1].longitude,
-              points[i].latitude, points[i].longitude,
-            ) /
-            1852;
-        // Rovnaký filter ako pri živom počítaní — ignoruj GPS skoky.
-        if (nm < 10) total += nm;
-      }
+      total += await recordedDistanceNmForSession(session.sessionId);
+    }
+    return total;
+  }
+
+  /// Vzdialenosť jednej session prepočítaná z uložených bodov trasy — pozri
+  /// [recordedDistanceNmForDay].
+  Future<double> recordedDistanceNmForSession(String sessionId) async {
+    var total = 0.0;
+    final points = await getTrackPointsForSession(sessionId);
+    for (var i = 1; i < points.length; i++) {
+      final nm = DistanceCalculator.distanceM(
+            points[i - 1].latitude, points[i - 1].longitude,
+            points[i].latitude, points[i].longitude,
+          ) /
+          1852;
+      // Rovnaký filter ako pri živom počítaní — ignoruj GPS skoky.
+      if (nm < 10) total += nm;
     }
     return total;
   }

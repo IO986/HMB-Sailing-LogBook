@@ -275,6 +275,46 @@ class GpsTrackingService {
     }
   }
 
+  /// Prepočíta míle nedávnych, už uzavretých plavieb z uložených bodov trasy
+  /// — jednorazová oprava starých záznamov z buggy [FixQualityFilter]
+  /// (nahlásené z terénu: 18,8 NM sailed, 4,2 NM v denníku). Trasa v DB je
+  /// kompletná, takže prepočet z nej dá správne číslo aj pre plavby
+  /// zaznamenané ešte pred touto opravou; neúčinná od chvíle, keď opravený
+  /// filter začne písať správne hodnoty priebežne.
+  ///
+  /// Nikdy sa nedotkne bežiacej plavby (isActive) — tú si počíta live
+  /// tracking sám a prepisovať mu to spod rúk by pokazilo priebežný zápis.
+  Future<void> recomputeRecentSessionDistances() async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      for (final dayLog in await db.getRecentDayLogs()) {
+        var dayChanged = false;
+        for (final session in await db.getSessionsForDay(dayLog.id)) {
+          if (session.isActive) continue;
+          final recomputed =
+              await db.recordedDistanceNmForSession(session.sessionId);
+          if ((recomputed - session.totalDistanceNm).abs() > 0.05) {
+            await db.updateSessionDistance(session.id, recomputed);
+            dayChanged = true;
+            debugPrint('[GEO] Session ${session.sessionId} distance '
+                '${session.totalDistanceNm.toStringAsFixed(2)} -> '
+                '${recomputed.toStringAsFixed(2)} NM');
+          }
+        }
+        if (dayChanged) {
+          final dayTotal = await db.recordedDistanceNmForDay(dayLog.id);
+          await db.updateDayLog(DayLogsCompanion(
+            id: drift.Value(dayLog.id),
+            distanceNm: drift.Value(dayTotal),
+          ));
+        }
+      }
+    } catch (e) {
+      debugPrint('[GEO] recomputeRecentSessionDistances failed: $e');
+    }
+  }
+
   void _geocodeDeparture(double lat, double lon) async {
     if (_activeDayLogId == null || _db == null) return;
     try {
