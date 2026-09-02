@@ -395,6 +395,8 @@
   "updateDownloaded": "Aktualizácia je stiahnutá",
   "updateRestart": "Reštartovať",
   "autopilotLabel": "Autopilot",
+  "quickAutopilotOn": "Autopilot ZAP",
+  "quickAutopilotOff": "Autopilot VYP",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Vietor",
   "autopilotModeTrack": "Trasa",

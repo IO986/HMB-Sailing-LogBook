@@ -14,6 +14,7 @@ import '../../features/tracking/providers/tracking_provider.dart';
 import '../../features/logbook/presentation/widgets/quick_photo_log_sheet.dart';
 import '../../features/logbook/presentation/widgets/quick_sail_change_sheet.dart';
 import '../../features/logbook/presentation/widgets/quick_helmsman_sheet.dart';
+import '../../features/logbook/presentation/widgets/quick_autopilot_sheet.dart';
 import 'main_nav_bar.dart';
 import 'tracking_control_bar.dart';
 import '../../features/tracking/presentation/widgets/tracking_control_dialogs.dart';
@@ -477,6 +478,12 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         builder: (_) => const QuickHelmsmanSheet(),
       );
 
+  void _quickAutopilot(BuildContext context) => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => const QuickAutopilotSheet(),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -513,10 +520,10 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
           Expanded(child: widget.child),
         ]),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        // Počas plavby dve rýchle akcie vedľa seba: obrat a fotka. Obe
-        // zapisujú do denníka bez otvárania formulára — na kormidle je na
-        // vyplňovanie polí neskoro. Vedľa seba, nie nad sebou: nad sebou
-        // horné tlačidlo prekrývalo obsah.
+        // Počas plavby rýchle akcie vedľa seba: kormidelník, obrat, fotka,
+        // autopilot. Všetky zapisujú do denníka bez otvárania formulára —
+        // na kormidle je na vyplňovanie polí neskoro. Vedľa seba, nie nad
+        // sebou: nad sebou horné tlačidlo prekrývalo obsah.
         floatingActionButton: isTracking
             ? Row(
                 mainAxisSize: MainAxisSize.min,
@@ -541,6 +548,13 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
                     tooltip: l.quickPhotoLogTitle,
                     onPressed: () => _quickPhotoLog(context),
                     child: const Icon(Icons.add_a_photo),
+                  ),
+                  const SizedBox(width: 12),
+                  FloatingActionButton(
+                    heroTag: 'quickAutopilot',
+                    tooltip: l.autopilotLabel,
+                    onPressed: () => _quickAutopilot(context),
+                    child: const Icon(Icons.smart_toy),
                   ),
                 ],
               )

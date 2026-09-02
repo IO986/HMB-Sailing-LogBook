@@ -1155,6 +1155,12 @@ class AppLocalizationsEl extends AppLocalizations {
   String get autopilotLabel => 'Αυτόματος πιλότος';
 
   @override
+  String get quickAutopilotOn => 'Αυτόματος πιλότος ON';
+
+  @override
+  String get quickAutopilotOff => 'Αυτόματος πιλότος OFF';
+
+  @override
   String get autopilotModeAuto => 'Αυτόματο';
 
   @override

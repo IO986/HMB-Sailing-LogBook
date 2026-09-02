@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:drift/drift.dart' show Value;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
@@ -74,16 +75,116 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
         ],
 
       ),
-      body: _EntriesTab(
+      body: Column(children: [
+        _PortsHeader(
+          day: _day!,
+          onSaved: (updated) => setState(() => _day = updated),
+        ),
+        Expanded(
+          child: _EntriesTab(
             dayLogId: widget.dayLogId,
             charterId: widget.charterId,
             isTracking: isTracking,
             activeDayLogId: GpsTrackingService().activeDayLogId,
             date: _day!.date,
           ),
+        ),
+      ]),
     );
   }
 
+}
+
+// ── Prístavy (odkiaľ/kam) ────────────────────────────────────────
+
+/// Zobrazí a umožní upraviť mená prístavov dňa.
+///
+/// Mená sem spravidla napíše appka sama (spätný geocoding polohy pri
+/// začiatku/konci plavby), ale ten nie je vždy presný — trafí najbližšiu
+/// zátoku či mólo, nie nutne miesto, ktoré by skiper napísal do denníka.
+/// Bez úpravy by tam ostalo navždy, čo appka uhádla.
+class _PortsHeader extends ConsumerWidget {
+  final DayLog day;
+  final ValueChanged<DayLog> onSaved;
+  const _PortsHeader({required this.day, required this.onSaved});
+
+  Future<void> _edit(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
+    final fromCtrl = TextEditingController(text: day.portFrom ?? '');
+    final toCtrl = TextEditingController(text: day.portTo ?? '');
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.edit),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextField(
+            controller: fromCtrl,
+            decoration: InputDecoration(labelText: l.fromPort),
+            textCapitalization: TextCapitalization.words,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: toCtrl,
+            decoration: InputDecoration(labelText: l.toPort),
+            textCapitalization: TextCapitalization.words,
+          ),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.save)),
+        ],
+      ),
+    );
+    if (ok != true) return;
+
+    final db = ref.read(databaseProvider);
+    await db.updateDayLog(DayLogsCompanion(
+      id: Value(day.id),
+      portFrom: Value(fromCtrl.text.trim().isEmpty ? null : fromCtrl.text.trim()),
+      portTo: Value(toCtrl.text.trim().isEmpty ? null : toCtrl.text.trim()),
+    ));
+    final updated = await db.getDayLogById(day.id);
+    if (updated != null) onSaved(updated);
+    ref.invalidate(dayLogsProvider(day.charterId));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (day.portFrom == null && day.portTo == null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => _edit(context, ref),
+            icon: const Icon(Icons.anchor, size: 16),
+            label: Text(AppLocalizations.of(context).edit),
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: InkWell(
+        onTap: () => _edit(context, ref),
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(children: [
+            const Icon(Icons.anchor, size: 15, color: Colors.blue),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${day.portFrom ?? "?"} → ${day.portTo ?? "?"}',
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+            ),
+            const Icon(Icons.edit, size: 14, color: Colors.grey),
+          ]),
+        ),
+      ),
+    );
+  }
 }
 
 // ── Zamerania dňa ─────────────────────────────────────────────

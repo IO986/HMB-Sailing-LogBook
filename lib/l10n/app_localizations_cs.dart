@@ -1145,6 +1145,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get autopilotLabel => 'Autopilot';
 
   @override
+  String get quickAutopilotOn => 'Autopilot ZAP';
+
+  @override
+  String get quickAutopilotOff => 'Autopilot VYP';
+
+  @override
   String get autopilotModeAuto => 'Auto';
 
   @override

@@ -384,6 +384,8 @@
   "updateDownloaded": "Aktualizacja pobrana",
   "updateRestart": "Uruchom ponownie",
   "autopilotLabel": "Autopilot",
+  "quickAutopilotOn": "Autopilot WŁ",
+  "quickAutopilotOff": "Autopilot WYŁ",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Wiatr",
   "autopilotModeTrack": "Trasa",

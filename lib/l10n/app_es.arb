@@ -384,6 +384,8 @@
   "updateDownloaded": "Actualización descargada",
   "updateRestart": "Reiniciar",
   "autopilotLabel": "Piloto automático",
+  "quickAutopilotOn": "Piloto automático ON",
+  "quickAutopilotOff": "Piloto automático OFF",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Viento",
   "autopilotModeTrack": "Ruta",

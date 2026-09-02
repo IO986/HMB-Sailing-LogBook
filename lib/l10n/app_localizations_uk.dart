@@ -1148,6 +1148,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get autopilotLabel => 'Автопілот';
 
   @override
+  String get quickAutopilotOn => 'Автопілот УВІМК';
+
+  @override
+  String get quickAutopilotOff => 'Автопілот ВИМК';
+
+  @override
   String get autopilotModeAuto => 'Авто';
 
   @override

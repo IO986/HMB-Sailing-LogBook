@@ -384,6 +384,8 @@
   "updateDownloaded": "Posodobitev je prenesena",
   "updateRestart": "Znova zaženi",
   "autopilotLabel": "Avtopilot",
+  "quickAutopilotOn": "Avtopilot VKLOP",
+  "quickAutopilotOff": "Avtopilot IZKLOP",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Veter",
   "autopilotModeTrack": "Proga",

@@ -1150,6 +1150,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get autopilotLabel => 'Autopilot';
 
   @override
+  String get quickAutopilotOn => 'Autopilot EIN';
+
+  @override
+  String get quickAutopilotOff => 'Autopilot AUS';
+
+  @override
   String get autopilotModeAuto => 'Auto';
 
   @override

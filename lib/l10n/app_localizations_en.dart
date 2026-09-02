@@ -1146,6 +1146,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autopilotLabel => 'Autopilot';
 
   @override
+  String get quickAutopilotOn => 'Autopilot ON';
+
+  @override
+  String get quickAutopilotOff => 'Autopilot OFF';
+
+  @override
   String get autopilotModeAuto => 'Auto';
 
   @override

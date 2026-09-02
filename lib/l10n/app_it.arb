@@ -384,6 +384,8 @@
   "updateDownloaded": "Aggiornamento scaricato",
   "updateRestart": "Riavvia",
   "autopilotLabel": "Autopilota",
+  "quickAutopilotOn": "Autopilota ON",
+  "quickAutopilotOff": "Autopilota OFF",
   "autopilotModeAuto": "Auto",
   "autopilotModeWind": "Vento",
   "autopilotModeTrack": "Rotta",

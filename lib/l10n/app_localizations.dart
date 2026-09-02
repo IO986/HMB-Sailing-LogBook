@@ -2228,6 +2228,18 @@ abstract class AppLocalizations {
   /// **'Autopilot'**
   String get autopilotLabel;
 
+  /// No description provided for @quickAutopilotOn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Autopilot ZAP'**
+  String get quickAutopilotOn;
+
+  /// No description provided for @quickAutopilotOff.
+  ///
+  /// In sk, this message translates to:
+  /// **'Autopilot VYP'**
+  String get quickAutopilotOff;
+
   /// No description provided for @autopilotModeAuto.
   ///
   /// In sk, this message translates to:

@@ -384,6 +384,8 @@
   "updateDownloaded": "Η ενημέρωση κατέβηκε",
   "updateRestart": "Επανεκκίνηση",
   "autopilotLabel": "Αυτόματος πιλότος",
+  "quickAutopilotOn": "Αυτόματος πιλότος ON",
+  "quickAutopilotOff": "Αυτόματος πιλότος OFF",
   "autopilotModeAuto": "Αυτόματο",
   "autopilotModeWind": "Άνεμος",
   "autopilotModeTrack": "Πορεία",
