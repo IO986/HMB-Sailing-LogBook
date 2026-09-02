@@ -1,0 +1,8 @@
+HMB Sailing Log — build 67 (1.33.0+67)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: Autopilot and Motor as their own quick-log buttons — remember on/off state, log independently even when you also change sails in the same tap, and show up in Instruments (with a MANUAL badge) even without NMEA.
+• Fixed: repeated PDF/GPX exports of the same day could land on a phone with a broken file the file manager couldn't open.
+• Fixed: long propulsion text ("Hlavná + Genoa + Autopilot") no longer gets cut off in the PDF.
