@@ -35,6 +35,10 @@ class QuickSailChangeSheet extends ConsumerStatefulWidget {
 class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
   SailDirection? _direction;
   Set<String> _modes = {};
+  // Stav pri otvorení sheetu — na rozoznanie „len autopilot cvakol" od
+  // skutočného prehodenia plachiet, pozri _save().
+  SailDirection? _initialDirection;
+  Set<String> _initialModes = {};
   bool _loading = true;
   bool _saving = false;
 
@@ -61,6 +65,8 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
           ? null
           : SailDirection.fromCodes(last.pointOfSail, last.tack);
       _modes = parseSailMode(mode, null).modes;
+      _initialDirection = _direction;
+      _initialModes = {..._modes};
       _loading = false;
     });
   }
@@ -72,15 +78,47 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
   Future<void> _save() async {
     if (!_canSave) return;
     setState(() => _saving = true);
-    await GpsTrackingService().createAutomaticLogbookEntry(
-      // Prázdna poznámka, nie 'Auto [...]' — zápis urobil človek a text mu
-      // v denníku dopĺňa preložený názov udalosti.
-      note: '',
-      event: LogbookEventType.sailChange,
-      sailDirection: _direction,
-      sailMode: _modes.isEmpty ? null : _modes.join(','),
-      isAutoEntry: false,
-    );
+
+    // Autopilot nie je prehodenie plachiet — má vlastný typ udalosti, ten
+    // istý ako pri automatickom rozpoznaní z NMEA. Rozpozná sa tak, že je to
+    // JEDINÁ zmena oproti stavu pri otvorení sheetu (kurz aj ostatný pohon
+    // ostali rovnaké); akákoľvek iná zmena popri tom sa naďalej zapíše ako
+    // bežné prehodenie plachiet.
+    final restCurrent = _modes.where((m) => m != 'autopilot').toSet();
+    final restInitial = _initialModes.where((m) => m != 'autopilot').toSet();
+    final onlyAutopilotToggled = _direction == _initialDirection &&
+        restCurrent.length == restInitial.length &&
+        restCurrent.containsAll(restInitial) &&
+        _modes.contains('autopilot') != _initialModes.contains('autopilot');
+
+    if (onlyAutopilotToggled) {
+      final engaged = _modes.contains('autopilot');
+      await GpsTrackingService().createAutomaticLogbookEntry(
+        note: engaged ? 'auto' : '',
+        event: engaged
+            ? LogbookEventType.autopilotOn
+            : LogbookEventType.autopilotOff,
+        isAutoEntry: false,
+      );
+      // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
+      // prijatá krátko nato z prístrojov zapísala duplicitný záznam.
+      GpsTrackingService().syncAutopilotState(engaged);
+    } else {
+      // Autopilot nie je pohon — do stĺpca „Pohon" (sailMode) sa neukladá,
+      // nech tam neostane navždy zaseknutý po jednom kombinovanom zápise
+      // (samotné neskoršie vypnutie autopilota totiž ide vetvou vyššie,
+      // ktorá sailMode vôbec nezapisuje).
+      final propulsion = restCurrent;
+      await GpsTrackingService().createAutomaticLogbookEntry(
+        // Prázdna poznámka, nie 'Auto [...]' — zápis urobil človek a text mu
+        // v denníku dopĺňa preložený názov udalosti.
+        note: '',
+        event: LogbookEventType.sailChange,
+        sailDirection: _direction,
+        sailMode: propulsion.isEmpty ? null : propulsion.join(','),
+        isAutoEntry: false,
+      );
+    }
     if (mounted) Navigator.pop(context);
   }
 

@@ -596,6 +596,15 @@ class GpsTrackingService {
     }
   }
 
+  /// Zosúladí sledovač automatického rozpoznania autopilota so zápisom,
+  /// ktorý urobil skiper ručne (čip Autopilot v spôsobe plavby) — bez toho
+  /// by rovnaká zmena prijatá krátko nato z NMEA zapísala do denníka
+  /// duplicitný záznam.
+  void syncAutopilotState(bool engaged) {
+    _autopilotLogged = engaged;
+    _autopilotPending = null;
+  }
+
   /// Sleduje autopilota a motor a zapisuje ich prepnutia do denníka.
   ///
   /// Beží z timeru, nie zo streamu NMEA viet: veta o autopilote chodí aj
