@@ -99,6 +99,10 @@ Záložka **Lodné prístroje** je digitálny navigačný panel – tmavá obraz
 | **DEPTH** | Hĺbka | Hĺbka vody pod loďou v metroch – sčervenie pri menej ako 5 m |
 | **VMG WP** | Velocity Made Good | Rýchlosť približovania sa k vybranému waypointu |
 
+### Autopilot a motor
+
+Dve farebné dlaždice (zelená = zapnuté, červená = vypnuté) ukazujú stav autopilota aj motora. Ak sú pripojené lodné prístroje (NMEA gateway), prepnutie sa zachytí a zapíše do denníka samo. Bez prístrojov appka použije posledný **ručný** zápis (čip Autopilot/Motor v prehodení plachiet, pozri kapitolu [5.2](#52-čo-sa-deje-počas-plavby)) a dlaždicu označí štítkom **MANUAL**.
+
 ### Kompas na paneli
 
 Veľký kruh kompasu v dolnej časti obrazovky ukazuje aktuálny kurz (uprostred, v stupňoch), ružicu (N, E, S, W) a šípku vetra (TWA).
@@ -111,7 +115,7 @@ Klepnite na panel **VMG WP** a vyberte cieľový waypoint. Aplikácia zobrazí v
 
 ### Zdroj dát
 
-Vpravo hore vidíte štítok **GPS** (telefón + internetová predpoveď) alebo **RAYMARINE** (dáta priamo z lodných prístrojov cez WiFi gateway, TCP aj UDP). Nastavenia pripojenia sú v Nastavenia → Prístroje.
+Vpravo hore vidíte štítok **GPS** (telefón + internetová predpoveď) alebo **NMEA** (dáta priamo z lodných prístrojov cez WiFi gateway, TCP aj UDP – Raymarine aj iné značky). Nastavenia pripojenia sú v Nastavenia → Prístroje.
 
 ---
 
@@ -131,7 +135,7 @@ Aplikácia začne zaznamenávať trasu GPS a automaticky pridávať záznamy do 
 
 - GPS nahrávanie beží na pozadí aj keď aplikáciu zatvoríte; v oznamovacej lište telefónu je viditeľné upozornenie o aktívnom trackingu
 - Záznamy sa automaticky pridávajú podľa nastavenej frekvencie
-- Tlačidlo fotoaparátu (vľavo dole) odfotí zaujímavý bod a rýchlo ho uloží ako záznam s polohou a časom
+- Vľavo dole sú rýchle tlačidlá na jedno ťuknutie, bez formulára: **kormidelník** (kto drží kormidlo), **prehodenie plachiet** (pohon a kurz voči vetru – motor, hlavná, genoa, refy) a **fotoaparát**. Čipy **Autopilot** a **Motor** v prehodení plachiet sú výnimka – appka si pamätá, či práve bežia, takže jedno ťuknutie znamená ZAP alebo VYP, a zapíše sa to ako vlastná udalosť (nie prehodenie plachiet), aj keby ste v tom istom ťuknutí zmenili aj plachty
 - Ak sa appka počas plavby vypne bez ukončenia trasovania (systém ju zavrie, nechcený swipe), pri ďalšom spustení ponúkne pokračovanie v tej istej plavbe
 
 > Pri prvom spustení plavby appka pripomenie nastavenie batérie – bez neho vie systém (najmä Honor/Huawei) trasovanie na pozadí vypnúť.
@@ -143,6 +147,8 @@ Klepnite na **Stop**. Aplikácia sa opýta: pokračuje zajtra (pridá ďalší d
 ### 5.4 Zoznam plavieb a detail dňa
 
 Pre každú plavbu vidíte názov, dátumy, plavidlo, počet dní a stav (✓ Brífing, ✓ Check-in, ✓ Check-out). Klepnutím na plavbu otvoríte zoznam dní; klepnutím na deň uvidíte trasu, počasie dňa, denníkový zápis a automatické aj ručné záznamy.
+
+Mená prístavov odkiaľ/kam appka doplní sama (podľa polohy pri začiatku a konci plavby), ale automatické určenie nemusí byť vždy presné – trafí najbližšie pomenované miesto na mape, nie nutne to, čo by ste tam napísali vy. Ťuknutím na riadok s prístavmi v hornej časti dňa ich viete kedykoľvek opraviť ručne.
 
 Okrem automatických záznamov môžete pridať vlastný tlačidlom **Pridať ručne** – polohu, silu a smer vetra, výšku vĺn, motohodiny, palivo, poznámku aj fotografiu.
 
@@ -267,9 +273,9 @@ Aplikácia je dostupná v **11 jazykoch**: slovenčina, čeština, angličtina, 
 
 Zadajte volací znak a MMSI číslo lode – automaticky sa doplnia v MAYDAY karte.
 
-### Lodné prístroje (Raymarine)
+### Lodné prístroje (NMEA)
 
-Ak loď má NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec), pripojte telefón na jeho WiFi a zadajte IP a port (alebo skúste automatické vyhľadanie). Po pripojení sa v Lodných prístrojoch zobrazí štítok **RAYMARINE**.
+Ak loď má NMEA→WiFi gateway (napr. Digital Yacht, Yacht Devices, Actisense, Quark-elec – funguje aj s plottermi ako Raymarine, B&G/Navico a podobne), pripojte telefón na jeho WiFi a zadajte IP a port (alebo skúste automatické vyhľadanie). Po pripojení sa v Lodných prístrojoch zobrazí štítok **NMEA**.
 
 ### Spodné menu
 
