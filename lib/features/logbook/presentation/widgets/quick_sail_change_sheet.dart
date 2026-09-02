@@ -112,12 +112,21 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     final motorChanged =
         _modes.contains('motor') != _initialModes.contains('motor');
 
+    // sailMode nesie aktuálny pohon (motor/autopilot spolu) aj na týchto
+    // dvoch zápisoch, nie len na prehodení plachiet nižšie — inak by stĺpec
+    // „Pohon" v PDF pri zázname „Autopilot ZAP"/„Motor ZAP" ostal prázdny
+    // (nahlásené z terénu). Keď motor vypne, v _modes už nie je, takže
+    // v pohone prestane figurovať aj tu.
+    final currentSailMode = _modes.isEmpty ? null : _modes.join(',');
+
     if (autopilotChanged) {
       final engaged = _modes.contains('autopilot');
       await GpsTrackingService().createAutomaticLogbookEntry(
         // 'auto' napĺňa režim v texte udalosti ("Autopilot ZAP - Auto").
         note: engaged ? 'auto' : '',
         event: engaged ? LogbookEventType.autopilotOn : LogbookEventType.autopilotOff,
+        sailDirection: _direction,
+        sailMode: currentSailMode,
         isAutoEntry: false,
       );
       // Zosúlaď automatické sledovanie z NMEA — bez toho by tá istá zmena
@@ -128,6 +137,8 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       final running = _modes.contains('motor');
       await GpsTrackingService().createAutomaticLogbookEntry(
         event: running ? LogbookEventType.engineStart : LogbookEventType.engineStop,
+        sailDirection: _direction,
+        sailMode: currentSailMode,
         isAutoEntry: false,
       );
       GpsTrackingService().syncEngineState(running);
