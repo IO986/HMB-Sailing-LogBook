@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +6,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/voyage_progress.dart';
+import '../widgets/edit_day_ports_dialog.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
@@ -475,52 +475,8 @@ class _DayCard extends ConsumerWidget {
 
   static String _portText(String? p) => _isEmptyPort(p) ? '?' : p!.trim();
 
-  /// Ručná oprava prístavov dňa.
-  ///
-  /// Automatika ich vie doplniť len vtedy, keď má appka v momente odchodu
-  /// alebo príchodu sieť. Toto je záchranná brzda pre všetky ostatné prípady —
-  /// a zároveň jediná cesta, ako prepísať názov, ktorý geocoding trafil zle
-  /// (zátoka pomenovaná podľa najbližšej obce a podobne).
-  Future<void> _editRoute(BuildContext context, WidgetRef ref) async {
-    final l = AppLocalizations.of(context);
-    final fromCtrl = TextEditingController(text: day.portFrom ?? '');
-    final toCtrl = TextEditingController(text: day.portTo ?? '');
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.editRouteTitle),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(
-            controller: fromCtrl,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(labelText: l.portFromLabel),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: toCtrl,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(labelText: l.portToLabel),
-          ),
-          const SizedBox(height: 10),
-          Text(l.routeAutoFillHint,
-              style: const TextStyle(fontSize: 11, color: Colors.grey)),
-        ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.save)),
-        ],
-      ),
-    ) ?? false;
-    if (!saved) return;
-
-    String? clean(String v) => v.trim().isEmpty ? null : v.trim();
-    await ref.read(databaseProvider).updateDayLog(DayLogsCompanion(
-          id: Value(day.id),
-          portFrom: Value(clean(fromCtrl.text)),
-          portTo: Value(clean(toCtrl.text)),
-        ));
-    ref.invalidate(dayLogsProvider(charterId));
-  }
+  Future<void> _editRoute(BuildContext context, WidgetRef ref) =>
+      showEditDayPortsDialog(context, ref, day);
 }
 
 class _Chip extends StatelessWidget {

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:drift/drift.dart' show Value;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
@@ -11,6 +10,7 @@ import '../../../../main.dart';
 import '../../../../core/models/bearing_kind.dart';
 import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/charter_provider.dart';
+import '../widgets/edit_day_ports_dialog.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
@@ -109,43 +109,8 @@ class _PortsHeader extends ConsumerWidget {
   const _PortsHeader({required this.day, required this.onSaved});
 
   Future<void> _edit(BuildContext context, WidgetRef ref) async {
-    final l = AppLocalizations.of(context);
-    final fromCtrl = TextEditingController(text: day.portFrom ?? '');
-    final toCtrl = TextEditingController(text: day.portTo ?? '');
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.edit),
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(
-            controller: fromCtrl,
-            decoration: InputDecoration(labelText: l.fromPort),
-            textCapitalization: TextCapitalization.words,
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: toCtrl,
-            decoration: InputDecoration(labelText: l.toPort),
-            textCapitalization: TextCapitalization.words,
-          ),
-        ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.save)),
-        ],
-      ),
-    );
-    if (ok != true) return;
-
-    final db = ref.read(databaseProvider);
-    await db.updateDayLog(DayLogsCompanion(
-      id: Value(day.id),
-      portFrom: Value(fromCtrl.text.trim().isEmpty ? null : fromCtrl.text.trim()),
-      portTo: Value(toCtrl.text.trim().isEmpty ? null : toCtrl.text.trim()),
-    ));
-    final updated = await db.getDayLogById(day.id);
+    final updated = await showEditDayPortsDialog(context, ref, day);
     if (updated != null) onSaved(updated);
-    ref.invalidate(dayLogsProvider(day.charterId));
   }
 
   @override

@@ -17,6 +17,7 @@ import '../utils/fix_quality_filter.dart';
 import '../utils/track_point_throttle.dart';
 import 'geocoding_service.dart';
 import 'location_service.dart';
+import 'port_backfill_service.dart';
 import 'raymarine_connection_service.dart';
 import 'udp_receiver_service.dart';
 import 'entry_conditions.dart';
@@ -376,45 +377,14 @@ class GpsTrackingService {
     final db = _db;
     if (db == null) return;
     try {
-      final dayLogs = await db.getDayLogsMissingPortNames();
-      for (final dayLog in dayLogs) {
-        final sessions = await db.getSessionsForDay(dayLog.id);
-        if (sessions.isEmpty) continue;
-        sessions.sort((a, b) => a.startTime.compareTo(b.startTime));
-
-        final needsFrom = dayLog.portFrom == null || dayLog.portFrom!.isEmpty;
-        final needsTo = dayLog.portTo == null || dayLog.portTo!.isEmpty;
-
-        if (needsFrom) {
-          final first = await db.getTrackPointsForSession(sessions.first.sessionId);
-          if (first.isNotEmpty) {
-            final name = await GeocodingService()
-                .reverseGeocode(first.first.latitude, first.first.longitude);
-            if (name != null) {
-              await db.updateDayLog(DayLogsCompanion(
-                id: drift.Value(dayLog.id),
-                portFrom: drift.Value(name),
-              ));
-              debugPrint('[GEO] Backfilled departure port: $name');
-            }
-          }
-        }
-
-        if (needsTo) {
-          final last = await db.getTrackPointsForSession(sessions.last.sessionId);
-          if (last.isNotEmpty) {
-            final name = await GeocodingService()
-                .reverseGeocode(last.last.latitude, last.last.longitude);
-            if (name != null) {
-              await db.updateDayLog(DayLogsCompanion(
-                id: drift.Value(dayLog.id),
-                portTo: drift.Value(name),
-              ));
-              debugPrint('[GEO] Backfilled arrival port: $name');
-            }
-          }
-        }
-      }
+      // Jedna implementácia dopĺňania na štyri príležitosti: štart appky,
+      // začiatok plavby, otvorenie zoznamu dní a otvorenie exportu.
+      // PortBackfillService k tomu pridáva to, čo jednorazové volanie nemá —
+      // pamäť na polohy, ktoré práve zlyhali, a krátke ticho po zlyhaní,
+      // aby sa štrnásť dní bez signálu nedobýjalo do servera jeden deň za
+      // druhým.
+      await PortBackfillService()
+          .backfillDays(db, await db.getDayLogsMissingPortNames());
     } catch (e) {
       debugPrint('[GEO] retryMissingPortNames failed: $e');
     }
