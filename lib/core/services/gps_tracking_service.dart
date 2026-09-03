@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 import '../database/app_database.dart';
 import '../models/logbook_event_type.dart';
 import '../models/point_of_sail.dart';
+import '../models/sail_mode.dart';
 import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
 import '../utils/fix_quality_filter.dart';
@@ -248,7 +249,10 @@ class GpsTrackingService {
       debugPrint('[GPS] First entry: using existing position');
       await Future.delayed(const Duration(seconds: 2));
       await createAutomaticLogbookEntry(note: note, event: event);
-      if (!isResume) _geocodeDeparture(existing.latitude, existing.longitude);
+      // Aj pri pokračovaní: prvý pokus o geocoding mohol padnúť na absencii
+      // siete, alebo appku zabil systém skôr, než sa vôbec spustil. Prepis
+      // toho, čo už je vyplnené, blokuje guard v _geocodeDeparture.
+      _geocodeDeparture(existing.latitude, existing.longitude);
       return;
     }
 
@@ -267,7 +271,7 @@ class GpsTrackingService {
       );
       _lastPosition = pos;
       await createAutomaticLogbookEntry(note: note, event: event);
-      if (!isResume) _geocodeDeparture(pos.latitude, pos.longitude);
+      _geocodeDeparture(pos.latitude, pos.longitude);
     } catch (e) {
       debugPrint('[GPS] First entry failed: $e');
     } finally {
@@ -321,7 +325,12 @@ class GpsTrackingService {
       final dayLog = await _db!.getDayLogById(_activeDayLogId!);
       if (dayLog == null) return;
       if (dayLog.portFrom != null && dayLog.portFrom!.isNotEmpty) return; // user-set, neprepisuj
-      final name = await GeocodingService().reverseGeocode(lat, lon);
+      // Pri pokračovaní prerušenej plavby je aktuálna poloha už kdesi na
+      // trase — prístav odchodu je prvý bod dňa, nie ten, kde sa appka
+      // prebrala.
+      final fix = await _db!.firstFixForDay(dayLog.id);
+      final name = await GeocodingService()
+          .reverseGeocode(fix?.lat ?? lat, fix?.lon ?? lon);
       if (name != null) {
         await _db!.updateDayLog(DayLogsCompanion(
           id: drift.Value(dayLog.id),
@@ -829,10 +838,12 @@ class GpsTrackingService {
     // Prevezmi posledný spôsob plavby dňa: skiper prepne motor/plachty raz
     // a automatické zápisy majú pokračovať v tom, čo zadal. Volajúci ho môže
     // prebiť — to robí rýchle tlačidlo pohonu na mape.
-    final modes = sailMode ??
-        (_activeDayLogId != null
-            ? await _db!.lastSailModeForDay(_activeDayLogId!)
-            : null);
+    final modes = resolveAutoSailMode(
+      explicit: sailMode,
+      lastOfDay: _activeDayLogId != null
+          ? await _db!.lastSailModeForDay(_activeDayLogId!)
+          : null,
+    );
 
     // Kurz voči vetru sa preberá rovnako ako spôsob plavby: skiper ho zadá
     // pri obrate a dovtedy platí ďalej. Volajúci ho môže prebiť — presne to

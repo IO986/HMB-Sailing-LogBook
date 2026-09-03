@@ -107,4 +107,28 @@ void main() {
       expect(await db.lastSailModeForDay(dayTwo), isNull);
     });
   });
+
+  /// Leaving harbour happens under engine, so an automatic entry written
+  /// before the skipper has touched anything says Motor rather than leaving
+  /// the Propulsion column blank — a blank was never truer, only unreadable.
+  group('resolveAutoSailMode', () {
+    test('nothing recorded yet means motor', () {
+      expect(resolveAutoSailMode(), defaultSailMode);
+      expect(resolveAutoSailMode(explicit: null, lastOfDay: null), 'motor');
+    });
+
+    test('what the skipper last recorded that day wins over the default', () {
+      expect(resolveAutoSailMode(lastOfDay: 'main,genoa'), 'main,genoa');
+    });
+
+    test('the caller overrides everything — that is the quick button', () {
+      expect(
+          resolveAutoSailMode(explicit: 'main', lastOfDay: 'motor'), 'main');
+    });
+
+    test('an empty column is not a recorded mode', () {
+      expect(resolveAutoSailMode(lastOfDay: '  '), 'motor');
+    });
+  });
+
 }

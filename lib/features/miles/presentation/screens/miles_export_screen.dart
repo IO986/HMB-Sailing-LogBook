@@ -122,9 +122,46 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
     );
   }
 
+  /// Výber mena zo zoznamu posádok.
+  ///
+  /// Zoznam, nie automatické dopĺňanie: skiper si väčšinou meno presne
+  /// nepamätá tak, ako ho zapísal, a hľadá ho očami.
+  Future<void> _pickRecipient(
+      BuildContext context, AppLocalizations l, List<String> names) async {
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (ctx) => SafeArea(
+        child: ListView(shrinkWrap: true, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(l.milesExportPickCrew,
+                style: Theme.of(ctx).textTheme.titleMedium),
+          ),
+          for (final name in names)
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(name),
+              selected: name.toLowerCase() ==
+                  _recipient.text.trim().toLowerCase(),
+              onTap: () => Navigator.pop(ctx, name),
+            ),
+        ]),
+      ),
+    );
+    if (picked == null) return;
+    setState(() => _recipient.text = picked);
+  }
+
   Widget _form(
       BuildContext context, AppLocalizations l, MilesAggregate aggregate) {
     final dateFmt = AppDate.of(context, ref);
+    // Zoznam posádok zo všetkých plavieb. Kým sa načítava (alebo keď zlyhá),
+    // ostáva prázdny a pole sa správa ako obyčajné textové — formulár sa
+    // kvôli nemu nikdy nezasekne.
+    final crewNames =
+        ref.watch(knownCrewNamesProvider).valueOrNull ?? const <String>[];
     final chosen =
         aggregate.voyages.where(_isSelected).toList(growable: false);
 
@@ -143,12 +180,22 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
         ),
         if (!_forSelf) ...[
           const SizedBox(height: 12),
+          // Meno sa dá napísať, ale hlavne vybrať: ten človek je už v appke
+          // zapísaný ako posádka plavby, na ktorej bol, a ručné prepisovanie
+          // vie preklepom rozdvojiť jednu osobu na dve potvrdenia.
           TextField(
             controller: _recipient,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
               labelText: l.milesExportRecipient,
               border: const OutlineInputBorder(),
+              suffixIcon: crewNames.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: l.milesExportPickCrew,
+                      icon: const Icon(Icons.group),
+                      onPressed: () => _pickRecipient(context, l, crewNames),
+                    ),
             ),
             onChanged: (_) => setState(() {}),
           ),

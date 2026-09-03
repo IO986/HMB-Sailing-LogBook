@@ -540,8 +540,10 @@ class PdfExportService {
               return pw.TableRow(decoration: pw.BoxDecoration(
                   color: e.key.isEven ? _lgrey : PdfColors.white), children: [
                 _cell(_date.shortWithWeekday(d.date)),
-                _cell(_pdfText(d.portFrom ?? '-')),
-                _cell(_pdfText(d.portTo ?? '-')),
+                _cell(_pdfText(_portOrFix(
+                    d.portFrom, entriesByDay[d.id] ?? [], last: false))),
+                _cell(_pdfText(_portOrFix(
+                    d.portTo, entriesByDay[d.id] ?? [], last: true))),
                 _cell(d.distanceNm.toStringAsFixed(1)),
                 _cell(() {
                   final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -624,7 +626,9 @@ class PdfExportService {
               pw.Text(_pdfText(dayName), style: pw.TextStyle(
                   color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 13)),
               pw.SizedBox(height: 2),
-              pw.Text(_pdfText('${day.portFrom ?? "?"} → ${day.portTo ?? "?"}'),
+              pw.Text(
+                  _pdfText('${_portOrFix(day.portFrom, sorted, last: false)}'
+                      ' → ${_portOrFix(day.portTo, sorted, last: true)}'),
                   style: pw.TextStyle(color: PdfColors.grey200, fontSize: 10)),
             ]),
             pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
@@ -1343,8 +1347,10 @@ class PdfExportService {
                 decoration: pw.BoxDecoration(color: e.key.isEven ? _lgrey : PdfColors.white),
                 children: [
                   _cell(_date.shortWithWeekday(d.date)),
-                  _cell(_pdfText(d.portFrom ?? '-')),
-                  _cell(_pdfText(d.portTo ?? '-')),
+                  _cell(_pdfText(_portOrFix(
+                      d.portFrom, entriesByDay[d.id] ?? [], last: false))),
+                  _cell(_pdfText(_portOrFix(
+                      d.portTo, entriesByDay[d.id] ?? [], last: true))),
                   _cell(units.formatDistance(d.distanceNm, decimals: 1)),
                   _cell(() {
                     final bft = _beaufortForDay(d, entriesByDay[d.id] ?? []);
@@ -1711,6 +1717,24 @@ class PdfExportService {
   }
 
   // ── Helpers ───────────────────────────────────────────────────
+
+  /// Prístav, a keď chýba, aspoň súradnice.
+  ///
+  /// Prázdny prístav znamená, že reverzný geocoding nemal v tej chvíli sieť.
+  /// Polohy v denníku sú aj tak, a pre kontrolu je poloha lepší údaj než
+  /// otáznik — dokument sa nesmie čítať ako plavba odnikiaľ nikam.
+  static String _portOrFix(String? port, List<LogbookEntry> entries,
+      {required bool last, String empty = '-'}) {
+    final p = port?.trim();
+    if (p != null && p.isNotEmpty) return p;
+    final fixes = [
+      for (final e in entries)
+        if (e.latitude != null && e.longitude != null) e,
+    ]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    if (fixes.isEmpty) return empty;
+    final fix = last ? fixes.last : fixes.first;
+    return '${_latStr(fix.latitude)} ${_lonStr(fix.longitude)}';
+  }
 
   /// Stupne + decimálne minúty – štandard v námornej navigácii
   static String _latStr(double? lat) {
@@ -2156,6 +2180,7 @@ class PdfExportService {
       ..writeln('nightNm:${summary.nightNm.toStringAsFixed(2)}')
       ..writeln('nightHours:${summary.nightHours.toStringAsFixed(2)}')
       ..writeln('area:${summary.area ?? ''}')
+      ..writeln('route:${summary.routeStops.join('>')}')
       ..writeln('tidal:${charter.tidalWaters ?? ''}')
       ..writeln('vessel:${charter.vesselName ?? ''}')
       ..writeln('vesselSize:${_vesselDimensions(charter) ?? ''}')
@@ -2244,6 +2269,36 @@ class PdfExportService {
                   '${units.distanceLabel}',
               _dgrey),
         ]),
+
+        // ── Trasa plavby ──
+        //
+        // Zastávky po dňoch, nie len oblasť: „Biograd – Žut – Veli Rat –
+        // Zadar – Biograd" povie o plavbe viac než súčet míľ, a presne toto
+        // hľadá škola aj charterová firma. Keď prístavy nikde nie sú
+        // vyplnené, riadok sa neuvedie — prázdny rámik s pomlčkou by na
+        // dokumente vyzeral ako chýbajúci údaj.
+        if (summary.routeStops.isNotEmpty) ...[
+          pw.SizedBox(height: 10),
+          pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: pw.BoxDecoration(
+                color: _lblue,
+                borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4))),
+            child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+              pw.Text(bi((x) => x.crewCertRoute).toUpperCase(),
+                  style: pw.TextStyle(
+                      color: _navy,
+                      fontSize: 8,
+                      fontWeight: pw.FontWeight.bold,
+                      letterSpacing: 1)),
+              pw.SizedBox(height: 3),
+              pw.Text(_pdfText(summary.routeLine),
+                  style: const pw.TextStyle(fontSize: 10)),
+            ]),
+          ),
+        ],
         pw.SizedBox(height: 12),
 
         pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [

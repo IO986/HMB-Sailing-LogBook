@@ -66,7 +66,9 @@ class GpxExporter {
     for (final day in days) {
       final sessions = sessionsByDay[day.id] ?? [];
       final dayName = DateFormat('EEEE d.M.', 'sk').format(day.date);
-      final route = '${day.portFrom ?? "?"} → ${day.portTo ?? "?"}';
+      final route = _dayRoute(day, [
+        for (final s in sessions) ...?pointsBySession[s.sessionId],
+      ]);
 
       for (final session in sessions) {
         final points = pointsBySession[session.sessionId] ?? [];
@@ -108,7 +110,9 @@ class GpxExporter {
     final sb = StringBuffer();
     final fmt = DateFormat('d.M.yyyy', 'sk');
     final dayName = fmt.format(day.date);
-    final route = '${day.portFrom ?? "?"} → ${day.portTo ?? "?"}';
+    final route = _dayRoute(day, [
+      for (final s in sessions) ...?pointsBySession[s.sessionId],
+    ]);
 
     sb.writeln('<?xml version="1.0" encoding="UTF-8"?>');
     sb.writeln('<gpx version="1.1" creator="HMB Sailing Log" '
@@ -162,7 +166,9 @@ class GpxExporter {
     for (final day in days) {
       final sessions = sessionsByDay[day.id] ?? [];
       final dayName = DateFormat('EEEE d.M.', 'sk').format(day.date);
-      final route = '${day.portFrom ?? "?"} → ${day.portTo ?? "?"}';
+      final route = _dayRoute(day, [
+        for (final s in sessions) ...?pointsBySession[s.sessionId],
+      ]);
       for (final s in sessions) {
         final pts = pointsBySession[s.sessionId] ?? [];
         if (pts.isEmpty) continue;
@@ -184,6 +190,26 @@ class GpxExporter {
     }
     sb.writeln('</gpx>');
     return Uint8List.fromList(utf8.encode(sb.toString()));
+  }
+
+  /// Trasa dňa do názvu tracku: prístavy, a keď chýbajú, súradnice.
+  ///
+  /// Prístav ostane prázdny, keď reverzný geocoding nemal sieť. Track s názvom
+  /// „? → ?" sa v cudzej mape nedá rozoznať od ostatných — poloha áno.
+  static String _dayRoute(DayLog day, List<TrackPoint> points) {
+    final sorted = [...points]
+      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    String side(String? port, {required bool last}) {
+      final p = port?.trim();
+      if (p != null && p.isNotEmpty) return p;
+      if (sorted.isEmpty) return '?';
+      final t = last ? sorted.last : sorted.first;
+      return '${t.latitude.toStringAsFixed(4)}, '
+          '${t.longitude.toStringAsFixed(4)}';
+    }
+
+    return '${side(day.portFrom, last: false)} → '
+        '${side(day.portTo, last: true)}';
   }
 
   static String _esc(String s) => s

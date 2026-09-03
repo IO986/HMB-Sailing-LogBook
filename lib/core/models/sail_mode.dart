@@ -23,3 +23,20 @@ Set<String> _split(String value) => value
     .map((s) => s.trim())
     .where((s) => s.isNotEmpty)
     .toSet();
+
+/// Pohon, ktorý platí, kým skiper nepovie inak.
+///
+/// Z prístavu sa vypláva na motor — vždy. Prázdny stĺpec Pohon na prvých
+/// zápisoch dňa nebol pravdivejší než motor, len nečitateľnejší: kto číta
+/// denník, nevie, či motor nešiel, alebo to nikto nezapísal.
+const defaultSailMode = 'motor';
+
+/// Pohon pre nový automatický záznam.
+///
+/// Poradie je zámerné: čo podal volajúci (rýchle tlačidlo pohonu), potom čo
+/// naposledy zapísal skiper v ten deň, a až nakoniec motor. Prvá zmena pohonu
+/// tak prebije predvolbu a ďalšie automatické zápisy pokračujú v nej.
+String resolveAutoSailMode({String? explicit, String? lastOfDay}) {
+  final chosen = explicit ?? lastOfDay;
+  return (chosen == null || chosen.trim().isEmpty) ? defaultSailMode : chosen;
+}

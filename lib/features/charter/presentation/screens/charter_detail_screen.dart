@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -394,12 +395,16 @@ class _DayCard extends ConsumerWidget {
                       ref.invalidate(dayLogsProvider(charterId));
                     }
                   }
+                  if (v == 'route') await _editRoute(context, ref);
                   if (v == 'export')
                     context.go('/logbook/$charterId/day/${day.id}/export');
                 },
                 itemBuilder: (ctx) {
                   final l = AppLocalizations.of(ctx);
                   return [
+                    PopupMenuItem(value: 'route',
+                      child: ListTile(leading: const Icon(Icons.anchor),
+                          title: Text(l.editRouteTitle), contentPadding: EdgeInsets.zero)),
                     PopupMenuItem(value: 'export',
                       child: ListTile(leading: const Icon(Icons.picture_as_pdf),
                           title: Text(l.exportPdf), contentPadding: EdgeInsets.zero)),
@@ -413,23 +418,38 @@ class _DayCard extends ConsumerWidget {
             ]),
 
             // Trasa
-            if (day.portFrom != null || day.portTo != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
+            //
+            // Riadok je tu vždy, aj keď sú prístavy prázdne: prázdna trasa je
+            // chyba, ktorú má skiper vidieť a jedným ťuknutím opraviť, nie
+            // nájsť až v hotovom exporte.
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: InkWell(
+                onTap: () => _editRoute(context, ref),
                 child: Row(children: [
                   const Icon(Icons.anchor, size: 13, color: Colors.blue),
                   const SizedBox(width: 4),
-                  Text('${day.portFrom ?? "?"}',
-                      style: const TextStyle(fontWeight: FontWeight.w500)),
+                  Flexible(child: Text(_portText(day.portFrom),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: _isEmptyPort(day.portFrom) ? Colors.grey : null))),
                   const Padding(padding: EdgeInsets.symmetric(horizontal: 6),
                       child: Icon(Icons.arrow_forward, size: 13)),
-                  Text('${day.portTo ?? "?"}',
-                      style: const TextStyle(fontWeight: FontWeight.w500)),
+                  Flexible(child: Text(_portText(day.portTo),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: _isEmptyPort(day.portTo) ? Colors.grey : null))),
                   if (day.distanceNm > 0)
                     Text('  ·  ${ref.watch(unitsSyncProvider).formatDistance(day.distanceNm, decimals: 1)}',
                         style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                  const SizedBox(width: 4),
+                  if (_isEmptyPort(day.portFrom) || _isEmptyPort(day.portTo))
+                    const Icon(Icons.edit, size: 12, color: Colors.grey),
                 ]),
               ),
+            ),
 
             const SizedBox(height: 6),
             Row(children: [
@@ -449,6 +469,57 @@ class _DayCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  static bool _isEmptyPort(String? p) => (p ?? '').trim().isEmpty;
+
+  static String _portText(String? p) => _isEmptyPort(p) ? '?' : p!.trim();
+
+  /// Ručná oprava prístavov dňa.
+  ///
+  /// Automatika ich vie doplniť len vtedy, keď má appka v momente odchodu
+  /// alebo príchodu sieť. Toto je záchranná brzda pre všetky ostatné prípady —
+  /// a zároveň jediná cesta, ako prepísať názov, ktorý geocoding trafil zle
+  /// (zátoka pomenovaná podľa najbližšej obce a podobne).
+  Future<void> _editRoute(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
+    final fromCtrl = TextEditingController(text: day.portFrom ?? '');
+    final toCtrl = TextEditingController(text: day.portTo ?? '');
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.editRouteTitle),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          TextField(
+            controller: fromCtrl,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(labelText: l.portFromLabel),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: toCtrl,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(labelText: l.portToLabel),
+          ),
+          const SizedBox(height: 10),
+          Text(l.routeAutoFillHint,
+              style: const TextStyle(fontSize: 11, color: Colors.grey)),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
+          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l.save)),
+        ],
+      ),
+    ) ?? false;
+    if (!saved) return;
+
+    String? clean(String v) => v.trim().isEmpty ? null : v.trim();
+    await ref.read(databaseProvider).updateDayLog(DayLogsCompanion(
+          id: Value(day.id),
+          portFrom: Value(clean(fromCtrl.text)),
+          portTo: Value(clean(toCtrl.text)),
+        ));
+    ref.invalidate(dayLogsProvider(charterId));
   }
 }
 

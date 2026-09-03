@@ -1285,6 +1285,49 @@ class AppDatabase extends _$AppDatabase {
     return total;
   }
 
+  /// Prvá, resp. posledná známa poloha dňa — pre spätné doplnenie prístavov.
+  ///
+  /// Prístavy vypĺňa reverzný geocoding v okamihu odchodu/príchodu. Ak vtedy
+  /// nebol signál alebo appku zabil systém, ostanú prázdne a v exporte je
+  /// „? → ?". Polohy sú v DB stále, takže doplniť sa dá kedykoľvek neskôr.
+  /// Prednosť majú body trasy (sú husté); keď žiadne nie sú, siahne sa po
+  /// polohách záznamov denníka.
+  Future<({double lat, double lon})?> firstFixForDay(int dayLogId) =>
+      _edgeFixForDay(dayLogId, last: false);
+
+  Future<({double lat, double lon})?> lastFixForDay(int dayLogId) =>
+      _edgeFixForDay(dayLogId, last: true);
+
+  Future<({double lat, double lon})?> _edgeFixForDay(int dayLogId,
+      {required bool last}) async {
+    final sessionIds = [
+      for (final s in await getSessionsForDay(dayLogId)) s.sessionId,
+    ];
+    if (sessionIds.isNotEmpty) {
+      final tp = await (select(trackPoints)
+            ..where((t) => t.sessionId.isIn(sessionIds))
+            ..orderBy([
+              (t) => OrderingTerm(
+                  expression: t.timestamp,
+                  mode: last ? OrderingMode.desc : OrderingMode.asc)
+            ])
+            ..limit(1))
+          .getSingleOrNull();
+      if (tp != null) return (lat: tp.latitude, lon: tp.longitude);
+    }
+    final entry = await (select(logbookEntries)
+          ..where((e) => e.dayLogId.equals(dayLogId) & e.latitude.isNotNull())
+          ..orderBy([
+            (e) => OrderingTerm(
+                expression: e.timestamp,
+                mode: last ? OrderingMode.desc : OrderingMode.asc)
+          ])
+          ..limit(1))
+        .getSingleOrNull();
+    if (entry?.latitude == null || entry?.longitude == null) return null;
+    return (lat: entry!.latitude!, lon: entry.longitude!);
+  }
+
   /// Session, ktorá sa nikdy neukončila — appku vypol systém alebo užívateľ
   /// uprostred trasovania.
   ///

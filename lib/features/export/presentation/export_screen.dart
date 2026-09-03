@@ -9,6 +9,7 @@ import '../../../core/models/skipper_profile.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/skipper_profile_provider.dart';
 import '../../../core/providers/sync_provider.dart';
+import '../../../core/services/port_backfill_service.dart';
 import '../../../core/providers/sync_settings_provider.dart';
 import '../../../core/utils/distance_calculator.dart';
 import '../../../core/utils/gpx_exporter.dart';
@@ -23,6 +24,15 @@ import 'pdf_preview_screen.dart';
 import 'widgets/day_map_view.dart';
 import '../../../core/services/units_service.dart';
 import '../../../core/utils/localized_date.dart';
+
+/// Prístav pre zobrazenie: prázdny sa ukáže ako otáznik.
+///
+/// Prázdno znamená, že reverzný geocoding nemal internet — na lodi bežný stav.
+/// Doplniť sa dá neskôr sám (PortBackfillService), alebo ručne v karte dňa.
+String _portText(String? port) {
+  final p = port?.trim();
+  return (p == null || p.isEmpty) ? '?' : p;
+}
 
 class ExportScreen extends ConsumerStatefulWidget {
   final int charterId;
@@ -81,6 +91,20 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       _screenshotControllers[day.id] = ScreenshotController();
     }
 
+    // Posledná šanca doplniť prístavy, ktoré geocoding počas plavby nestihol —
+    // na lodi visí telefón na Wi-Fi prístrojov, ktorá nikam nevedie, takže
+    // odchod aj príchod ostanú bez názvu. Bez internetu sa to ticho vzdá:
+    // export sa na sieti nikdy nesmie zaseknúť.
+    if (await PortBackfillService().backfillDays(db, _days)) {
+      final refreshed = <DayLog>[];
+      for (final day in _days) {
+        refreshed.add(await db.getDayLogById(day.id) ?? day);
+      }
+      _days = refreshed;
+      if (widget.dayLogId != null && _days.isNotEmpty) _day = _days.first;
+    }
+
+    if (!mounted) return;
     setState(() => _loading = false);
 
     // Screenshot máp po renderovaní – 4s aby sa stihli načítať dlaždice.
@@ -286,7 +310,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           nightHours:
               await ref.read(databaseProvider).nightHoursForDay(freshDay.id),
         );
-        previewTitle = '${_day!.portFrom ?? "?"} → ${_day!.portTo ?? "?"}';
+        previewTitle = '${_portText(_day!.portFrom)} → ${_portText(_day!.portTo)}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
         // 'day', nie 'voyage' — bez rozlíšenia mal export jedného dňa presne
         // to isté meno ako export celej (jednodňovej) plavby. Čas (HHmm) je
@@ -466,7 +490,7 @@ class _DayMapPreview extends ConsumerWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(AppDate.of(context, ref).longNoYear(day.date),
                   style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text('${day.portFrom ?? "?"} → ${day.portTo ?? "?"}',
+              Text('${_portText(day.portFrom)} → ${_portText(day.portTo)}',
                   style: const TextStyle(color: Colors.grey, fontSize: 13)),
             ])),
             if (day.distanceNm > 0)

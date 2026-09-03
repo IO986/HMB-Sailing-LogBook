@@ -13,6 +13,7 @@ class VoyageMilesSummary {
     required this.area,
     required this.dateFrom,
     required this.dateTo,
+    this.routeStops = const [],
   });
 
   /// Počet dní denníka, nie kalendárny rozdiel — deň bez zápisu sa neráta.
@@ -23,6 +24,17 @@ class VoyageMilesSummary {
   final String? area;
   final DateTime? dateFrom;
   final DateTime? dateTo;
+
+  /// Zastávky plavby v poradí, ako po sebe idú dni: štart, každý nocľah,
+  /// cieľ. Škola aj charterová firma čítajú z potvrdenia hlavne toto — samotné
+  /// číslo míľ nepovie, či posádka obchádzala ostrovy alebo krúžila v zálive.
+  ///
+  /// Prázdny zoznam znamená, že prístavy nie sú vyplnené ani v jednom dni;
+  /// potvrdenie vtedy riadok s trasou vôbec neuvedie.
+  final List<String> routeStops;
+
+  /// Trasa v tvare „Biograd – Žut – Veli Rat – Zadar – Biograd".
+  String get routeLine => routeStops.join(' – ');
 
   double get totalNm => dayNm + nightNm;
 
@@ -91,6 +103,7 @@ VoyageMilesSummary summariseVoyage({
 
   return VoyageMilesSummary(
     daysAtSea: days.length,
+    routeStops: routeStopsOf(days),
     dayNm: dayNm,
     nightNm: nightNm,
     nightHours: nightHours,
@@ -116,3 +129,28 @@ double _rad(double deg) => deg * math.pi / 180.0;
 
 bool _isNight(TrackPoint p) =>
     NightHours.isNight(p.timestamp, p.latitude, p.longitude);
+
+/// Poskladá zastávky plavby z prístavov jednotlivých dní.
+///
+/// Dni idú po dátume a reťaz vznikne z ich `portFrom`/`portTo`. Rovnaké meno
+/// dvakrát po sebe je jedna zastávka: príchod do Zadaru a odchod zo Zadaru
+/// nasledujúce ráno je to isté miesto, nie dve. Prázdne prístavy sa
+/// preskakujú — deň bez signálu pre geokódovanie nesmie reťaz roztrhnúť.
+List<String> routeStopsOf(List<DayLog> days) {
+  final sorted = [...days]..sort((a, b) => a.date.compareTo(b.date));
+  final stops = <String>[];
+  void add(String? port) {
+    final name = port?.trim();
+    if (name == null || name.isEmpty) return;
+    if (stops.isNotEmpty && stops.last.toLowerCase() == name.toLowerCase()) {
+      return;
+    }
+    stops.add(name);
+  }
+
+  for (final day in sorted) {
+    add(day.portFrom);
+    add(day.portTo);
+  }
+  return stops;
+}

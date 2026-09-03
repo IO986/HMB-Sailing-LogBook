@@ -111,6 +111,12 @@ class InstrumentsScreen extends ConsumerWidget {
         ? (marine.headingDegrees ?? marine.cogDegrees ?? pos?.heading ?? 0.0)
         : (pos?.heading ?? 0.0);
 
+    // Kurz nad zemou vedľa smeru, ktorým loď ukazuje. Rozdiel medzi nimi je
+    // znos — prúd a vietor — a je to prvé, čo skiper pri navigácii potrebuje
+    // vidieť; z jedného čísla sa vyčítať nedá. Keď kurz nie je známy (loď
+    // stojí, GPS ho nehlási), riadok sa neukáže — nula by klamala.
+    final cogDeg = rayOk ? (marine.cogDegrees ?? pos?.heading) : pos?.heading;
+
     // TWS – true wind speed
     final twsKn = windOk ? marine.windSpeedKnots : weather?.windSpeed;
 
@@ -306,6 +312,7 @@ class InstrumentsScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(12),
             child: _HeadingCompass(
               heading: hdgDeg,
+              cog: cogDeg,
               twa: twaVal,
               twaStarboard: twaStarboard,
               brgWp: brgWp,
@@ -813,11 +820,13 @@ class _WpStat extends StatelessWidget {
 
 class _HeadingCompass extends StatelessWidget {
   final double heading;
+  final double? cog;
   final double? twa;
   final bool? twaStarboard;
   final double? brgWp;
   const _HeadingCompass({
     required this.heading,
+    this.cog,
     this.twa,
     this.twaStarboard,
     this.brgWp,
@@ -834,6 +843,7 @@ class _HeadingCompass extends StatelessWidget {
           child: CustomPaint(
             painter: _CompassPainter(
               heading: heading,
+              cog: cog,
               twa: twa,
               twaStarboard: twaStarboard,
               brgWp: brgWp,
@@ -847,11 +857,13 @@ class _HeadingCompass extends StatelessWidget {
 
 class _CompassPainter extends CustomPainter {
   final double heading;
+  final double? cog;
   final double? twa;
   final bool? twaStarboard;
   final double? brgWp;
   const _CompassPainter({
     required this.heading,
+    this.cog,
     this.twa,
     this.twaStarboard,
     this.brgWp,
@@ -1058,7 +1070,33 @@ class _CompassPainter extends CustomPainter {
               fontFeatures: const [FontFeature.tabularFigures()])),
       textDirection: ui.TextDirection.ltr,
     )..layout();
-    tp.paint(canvas, Offset(cx - tp.width / 2, cy - tp.height / 2));
+    // Heading sadne o kúsok vyššie, keď je pod ním kurz nad zemou — inak by
+    // dvojica čísel sedela mimo stredu kruhu.
+    final hasCog = cog != null;
+    final hdgDy = hasCog ? -r * 0.045 : 0.0;
+    tp.paint(canvas, Offset(cx - tp.width / 2, cy - tp.height / 2 + hdgDy));
+
+    // --- Kurz nad zemou pod heading ---
+    //
+    // Rozdiel medzi smerom, ktorým loď ukazuje, a smerom, ktorým sa naozaj
+    // pohybuje, je znos od prúdu a vetra. Z jedného čísla sa nevyčíta.
+    if (hasCog) {
+      final cogStr =
+          'COG ${(((cog! % 360) + 360) % 360).toStringAsFixed(0).padLeft(3, '0')}°';
+      final cogTp = TextPainter(
+        text: TextSpan(
+            text: cogStr,
+            style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.55),
+                fontSize: r * 0.075,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.5,
+                fontFeatures: const [FontFeature.tabularFigures()])),
+        textDirection: ui.TextDirection.ltr,
+      )..layout();
+      cogTp.paint(
+          canvas, Offset(cx - cogTp.width / 2, cy + tp.height / 2 + hdgDy));
+    }
 
     // --- Vonkajší dekoratívny kruh ---
     canvas.drawCircle(Offset(cx, cy), r * 0.985,
@@ -1071,6 +1109,7 @@ class _CompassPainter extends CustomPainter {
   @override
   bool shouldRepaint(_CompassPainter old) =>
       old.heading != heading ||
+      old.cog != cog ||
       old.twa != twa ||
       old.twaStarboard != twaStarboard ||
       old.brgWp != brgWp;

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/models/crew_member_ref.dart';
 import '../../../main.dart';
 import '../services/miles_calculator.dart';
 
@@ -12,6 +13,35 @@ final historicalVoyagesProvider =
     FutureProvider.autoDispose<List<HistoricalVoyage>>((ref) async {
   final db = ref.watch(databaseProvider);
   return db.getAllHistoricalVoyages();
+});
+
+/// Mená všetkých ľudí, ktorí niekedy plavili — pre výber pri vystavovaní
+/// potvrdenia.
+///
+/// Potvrdenie sa vystavuje konkrétnemu človeku a jeho meno je už v appke
+/// zapísané pri plavbe, na ktorej bol. Prepisovať ho ručne (a preklepom
+/// rozdvojiť jednu osobu na dve) nemá dôvod.
+///
+/// Zdroj je `crewJson` charterov, so starým `skipperName`/`crewNames` ako
+/// zálohou — presne to, čo číta [CrewMemberRef.parse]. Duplicity sa hádžu
+/// preč bez ohľadu na veľkosť písmen a poradie je abecedné.
+final knownCrewNamesProvider =
+    FutureProvider.autoDispose<List<String>>((ref) async {
+  final db = ref.watch(databaseProvider);
+  final seen = <String, String>{};
+  for (final charter in await db.getAllCharters()) {
+    final crew = CrewMemberRef.parse(
+      charter.crewJson,
+      skipperName: charter.skipperName,
+      crewNames: charter.crewNames,
+    );
+    for (final member in crew) {
+      seen.putIfAbsent(member.name.toLowerCase(), () => member.name);
+    }
+  }
+  final names = seen.values.toList()
+    ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+  return names;
 });
 
 class _MilesRawData {
