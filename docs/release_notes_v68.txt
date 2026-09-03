@@ -1,0 +1,9 @@
+HMB Sailing Log — build 68 (1.33.0+68)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: a day could export as "? → ?". Port names are looked up on departure and arrival — exactly when the phone sits on the instruments' WiFi with no internet. They now fill in later by themselves, can be typed in by hand, and a missing port prints as the position.
+• New: propulsion starts as Motor until you switch it.
+• New: the crew mileage certificate carries the route day by day, and "Issued for" offers your crew.
+• New: COG under the heading on the compass rose.
