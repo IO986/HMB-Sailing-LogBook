@@ -1,6 +1,6 @@
 # Privacy Policy – HMB Sailing Log
 
-**Last updated: 2026-07-22**
+**Last updated: 2026-09-04**
 **App name:** HMB Sailing Log
 **Developer:** LacoSte© / IO986
 **Contact:** steclaco@gmail.com
@@ -28,9 +28,14 @@ HMB Sailing Log ("the App") is a personal sailing logbook for Android. This Priv
 - **Optional:** The online account feature is entirely optional. The App is fully functional without creating an account.
 
 ### 2.3 User Profile Data (Skipper Card, Vessel ID)
-- **What:** Skipper name, sailing license details, VHF/SRC license, vessel call sign, MMSI
-- **Why:** To autofill the Mayday card and PDF voyage export
-- **Storage:** Stored locally on your device using Android SharedPreferences. This data is never transmitted automatically.
+- **What:** Skipper name, sailing license details, VHF/SRC license, passport or ID card number, vessel call sign, MMSI
+- **Why:** To autofill the Mayday card, the PDF voyage export and the certificate of miles sailed, which authorities and sailing schools ask to carry the holder's document number
+- **Storage:** Stored locally on your device in Android's encrypted storage (`flutter_secure_storage`, EncryptedSharedPreferences). This data is never transmitted automatically.
+
+### 2.3a Crew Document Numbers
+- **What:** The passport or ID card number of a crew member, typed when a certificate of miles sailed is issued to them
+- **Why:** So the certificate carries the number the recipient will be asked for
+- **Storage:** **Not stored.** The number is printed on that one certificate and is gone when the screen closes. Only your own number — the phone owner's, see 2.3 — is kept. Leave the field empty and the certificate carries a blank line to fill in by hand.
 
 ### 2.4 Logbook Entries, Photos, Tracks
 - **What:** Text notes, photos attached to logbook entries, GPS track points

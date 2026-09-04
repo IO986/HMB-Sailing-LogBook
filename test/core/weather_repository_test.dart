@@ -91,6 +91,28 @@ Map<String, dynamic> _marineBody() => {
       },
     };
 
+/// Presne to, čo vracia ICON-D2 na `forecast_days=3`: pole je dlhé tri dni,
+/// ale za horizontom modelu (48 h) sú v ňom `null`. Overené stiahnutím pre
+/// polohu z terénneho záberu (48.7557 N, 16.8858 E) — 72 hodín, z toho
+/// posledných 14 prázdnych.
+Map<String, dynamic> _forecastBodyPastHorizon() => {
+      'hourly': {
+        'time': [
+          '2026-08-24T10:00',
+          '2026-08-24T11:00',
+          '2026-08-24T12:00',
+        ],
+        'wind_speed_10m': [12.0, 13.0, null],
+        'wind_direction_10m': [280, 285, null],
+        'surface_pressure': [1016.0, 1015.5, null],
+        'temperature_2m': [24.0, 25.0, null],
+        'cloud_cover': [10.0, 20.0, null],
+        'weather_code': [1, 2, null],
+        'precipitation_probability': [0, 5, null],
+        'precipitation': [0.0, 0.1, null],
+      },
+    };
+
 void main() {
   late AppDatabase db;
 
@@ -255,5 +277,22 @@ void main() {
     expect(rows, hasLength(2));
     expect(rows.first.waveHeight, isNull);
     expect(rows.first.windSpeed, isNotNull);
+  });
+
+  /// Nahlásené z terénu ako „Chyba stahování: _TypeError" pri Břeclavi.
+  /// Sťahovanie prešlo; spadlo pretypovanie vetra na prvej hodine za
+  /// horizontom modelu — a s ním aj tie hodiny, ktoré prišli v poriadku.
+  test('hodiny za horizontom modelu sa preskočia, zvyšok sa uloží', () async {
+    final repo = WeatherRepository.forTesting(
+      db: db,
+      forecast: _StubForecast.returning(_forecastBodyPastHorizon()),
+      marine: _StubMarine(_marineBody()),
+    );
+
+    await repo.syncWeather(lat: 48.7557, lon: 16.8858);
+
+    final rows = await db.getWeatherSnapshots();
+    expect(rows, hasLength(2), reason: 'prázdna hodina sa neukladá');
+    expect(rows.map((r) => r.windSpeed), everyElement(greaterThan(0)));
   });
 }

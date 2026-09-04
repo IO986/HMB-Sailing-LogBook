@@ -22,6 +22,11 @@ import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 String networkErrorText(Object error, AppLocalizations l) {
   if (_isNameResolutionFailure(error)) return l.errorNoInternetOnThisNetwork;
   if (_isConnectionFailure(error)) return l.errorNoConnection;
+  // Čo neprišlo z Dio, neprišlo zo siete: server odpovedal a rozsypalo sa
+  // spracovanie. Skiper videl na displeji „Chyba stahování: _TypeError" —
+  // názov triedy z útrob Dartu, z ktorého sa nedá vyčítať ani to, či má
+  // skúsiť znova.
+  if (error is! DioException) return l.errorBadResponse;
   return l.downloadError(_shortDescription(error));
 }
 

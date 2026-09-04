@@ -564,6 +564,15 @@ class AppLocalizationsHr extends AppLocalizations {
   String get exportsTitle => 'Izvozi';
 
   @override
+  String get exportMapLayer => 'Podloga karte u isječku';
+
+  @override
+  String get exportMapSatellite => 'Satelit';
+
+  @override
+  String get exportMapPlain => 'Karta';
+
+  @override
   String get exportsThisVoyage => 'Ova plovidba';
 
   @override
@@ -1344,6 +1353,10 @@ class AppLocalizationsHr extends AppLocalizations {
   String downloadError(String error) {
     return 'Greška pri preuzimanju: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'Odgovor poslužitelja nije bilo moguće obraditi. Pokušaj kasnije.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2876,7 +2889,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Sažetak svih vaših plovidbi na jednom mjestu (ikona u kartici Dnevnik).\n\n• Ukupno nautičkih milja, dana na moru, broj plovidbi i noćni sati\n• Raščlamba po godini i po plovilu\n• Filtar po godini\n• Dodirnite plovidbu (uključujući praćenu/uvezenu) da ispunite njezin zapis u dnevniku – ruta, zastava plovila, ime i ovlaštenje zapovjednika, potpis kojim se potvrđuju milje\n• Tipka + – dodajte prošlu plovidbu od prije nego što ste počeli koristiti aplikaciju (u potpunosti se uračunava u sažetke, u popisu je označena zvjezdicom)\n• PDF izvoz potvrde o preplovljenim miljama s mjestom za potpis\n• Potvrda o miljama izdaje se kroz obrazac (ikona PDF gore): za sebe ili za člana posade, s imenom primatelja, imenom i kvalifikacijom izdavatelja (popunjeno iz profila skipera) i popisom plovidbi s kvačicama. Dokument nosi brod, zapovjednika plovidbe, područje, plimne ili neplimne vode i funkciju u kojoj si plovio, uz razradu milja po funkciji. Za plovidbe u kojima nisi bio zapovjednik ostaje crta za njegov potpis s imenom. Potvrda za sebe nosi i skiperski sažetak. Sprema se i u mapu aplikacije, ne samo kroz sustavni dijalog.\n• Potvrda nosi i rutu plovidbe po danima — Biograd – Žut – Veli Rat – Zadar – Biograd — složenu od luka pojedinih dana; ista postaja dvaput zaredom spaja se, a dan bez upisane luke preskače.\n• U obrascu potvrde polje „Za koga\" nudi posadu s tvojih plovidbi — ime odaberi umjesto da ga tipkaš, jer bi tipfeler od jedne osobe napravio dvije.';
+      'Sažetak svih vaših plovidbi na jednom mjestu (ikona u kartici Dnevnik).\n\n• Ukupno nautičkih milja, dana na moru, broj plovidbi i noćni sati\n• Raščlamba po godini i po plovilu\n• Filtar po godini\n• Dodirnite plovidbu (uključujući praćenu/uvezenu) da ispunite njezin zapis u dnevniku – ruta, zastava plovila, ime i ovlaštenje zapovjednika, potpis kojim se potvrđuju milje\n• Tipka + – dodajte prošlu plovidbu od prije nego što ste počeli koristiti aplikaciju (u potpunosti se uračunava u sažetke, u popisu je označena zvjezdicom)\n• PDF izvoz potvrde o preplovljenim miljama s mjestom za potpis\n• Potvrda o miljama izdaje se kroz obrazac (ikona PDF gore): za sebe ili za člana posade, s imenom primatelja, imenom i kvalifikacijom izdavatelja (popunjeno iz profila skipera) i popisom plovidbi s kvačicama. Dokument nosi brod, zapovjednika plovidbe, područje, plimne ili neplimne vode i funkciju u kojoj si plovio, uz razradu milja po funkciji. Za plovidbe u kojima nisi bio zapovjednik ostaje crta za njegov potpis s imenom. Potvrda za sebe nosi i skiperski sažetak. Sprema se i u mapu aplikacije, ne samo kroz sustavni dijalog.\n• Potvrda nosi i rutu plovidbe po danima — Biograd – Žut – Veli Rat – Zadar – Biograd — složenu od luka pojedinih dana; ista postaja dvaput zaredom spaja se, a dan bez upisane luke preskače.\n• U obrascu potvrde polje „Za koga\" nudi posadu s tvojih plovidbi — ime odaberi umjesto da ga tipkaš, jer bi tipfeler od jedne osobe napravio dvije.\n• Broj putovnice/osobne upisuje se pri izdavanju potvrde, za svakog člana posade posebno. Ne sprema se, ispisuje se samo na toj jednoj potvrdi; skiperov vlastiti broj stoji u kartici plovidbe i sam se popuni. Bez broja ostaje na potvrdi crta za upis rukom.';
 
   @override
   String get guideHandoverTitle =>
@@ -2947,7 +2960,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. U Dnevniku dodirnite chip Izvozi na vrhu\n2. Odaberite što izvozite — cijelu plovidbu, jedan dan, zapisnik o primopredaji, potvrde posade, milje ili azimute\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama\n• Svi izvozi su na jednom mjestu — pod chipom Izvozi u Dnevniku. Jedina iznimka je sigurnosna kopija cijele baze: ostaje u Postavkama uz vraćanje, jer to nije dokument za nekoga nego preslika podataka.';
+      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. U Dnevniku dodirnite chip Izvozi na vrhu\n2. Odaberite što izvozite — cijelu plovidbu, jedan dan, zapisnik o primopredaji, potvrde posade, milje ili azimute\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama\n• Svi izvozi su na jednom mjestu — pod chipom Izvozi u Dnevniku. Jedina iznimka je sigurnosna kopija cijele baze: ostaje u Postavkama uz vraćanje, jer to nije dokument za nekoga nego preslika podataka.\n• Prije izvoza možeš odabrati podlogu isječka karte — satelit ili običnu kartu. Odabir se pamti. Isječak je uvijek nešto širi od same rute da se vidi okolina; dan proveden na jednom mjestu dobiva prozor od barem kilometra, inače bi na dokumentu bili samo krovovi.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sigurnosna instruktaža';
@@ -3672,6 +3685,10 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Broj putovnice / osobne';
+
+  @override
+  String get crewCertIdNotStored =>
+      'Broj se ne sprema — ispisuje se samo na ovoj potvrdi.';
 
   @override
   String get crewCertDaysAtSea => 'Dani na moru';

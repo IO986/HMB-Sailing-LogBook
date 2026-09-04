@@ -563,6 +563,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportsTitle => 'Exports';
 
   @override
+  String get exportMapLayer => 'Map layer in the excerpt';
+
+  @override
+  String get exportMapSatellite => 'Satellite';
+
+  @override
+  String get exportMapPlain => 'Map';
+
+  @override
   String get exportsThisVoyage => 'This voyage';
 
   @override
@@ -1343,6 +1352,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String downloadError(String error) {
     return 'Download error: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'The server\'s answer could not be read. Try again later.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2868,7 +2881,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.';
+      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.\n• The passport/ID number is entered when the certificate is issued, separately for each crew member. It is not stored — it is printed on that one document only; the skipper\'s own number is kept in the voyage card and fills itself in. Leave it empty and the certificate carries a blank line to write on by hand.';
 
   @override
   String get guideHandoverTitle => 'Handover Protocol (check-in/check-out)';
@@ -2938,7 +2951,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.';
+      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.\n• Before exporting you can choose the map layer for the excerpt — satellite or plain map. The choice is remembered. The excerpt is always a little wider than the track itself so the surroundings show; a day spent in one place gets a window of at least a kilometre, or the document would show nothing but rooftops.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3663,6 +3676,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Passport / ID number';
+
+  @override
+  String get crewCertIdNotStored =>
+      'The number is not stored — it is printed on this certificate only.';
 
   @override
   String get crewCertDaysAtSea => 'Days at sea';

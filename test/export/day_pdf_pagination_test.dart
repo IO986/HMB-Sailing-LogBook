@@ -23,9 +23,10 @@ void main() {
 
   final start = DateTime.utc(2026, 8, 24, 6);
 
-  Charter charter() => Charter(
+  Charter charter({String? crewNames}) => Charter(
         id: 1,
         title: 'Chingi Lingi 2026',
+        crewNames: crewNames,
         dateFrom: start,
         dateTo: start.add(const Duration(days: 5)),
         vesselName: 'Bavaria 46',
@@ -156,10 +157,10 @@ void main() {
     return out.toString();
   }
 
-  Future<Uint8List> dayPdf(int entryCount) async {
+  Future<Uint8List> dayPdf(int entryCount, {String? crewNames}) async {
     return PdfExportService.buildDayPdfBytes(
       dateFormat: const AppDate.raw('sk', DateStyle.appLanguage),
-      charter: charter(),
+      charter: charter(crewNames: crewNames),
       day: day(),
       entries: [for (var i = 1; i <= entryCount; i++) entry(i)],
       l10n: await AppLocalizations.delegate.load(const Locale('sk')),
@@ -198,5 +199,33 @@ void main() {
 
   test('deň s pár záznamami ostane na jednej strane', () async {
     expect(pageContents(await dayPdf(6)).length, 1);
+  });
+
+  /// Z terénu prišiel záber, kde informačný pás dňa končil uprostred mena
+  /// siedmeho člena posádky: bol to jeden pw.Row, ktorý prebytok orezal.
+  test('dlhá posádka sa v pásme dňa zalomí a nikto z nej nevypadne', () async {
+    const crew = [
+      'Martin Plodek',
+      'Jiří Průdek',
+      'Tomáš Tománek',
+      'Milan Dořičák',
+      'Jan Byrtus',
+      'Jakub Kišac',
+      'Lucie Černá',
+      'Petra Malá',
+      'Ondřej Veselý',
+      'Zuzana Nová',
+      'Karel Dvořák',
+      'Eva Sýkorová',
+    ];
+    final bytes = await dayPdf(3, crewNames: crew.join('|'));
+    final text = pageContents(bytes)
+        .map((c) => pageText(bytes, c))
+        .join(' ')
+        .replaceAll(RegExp(r'\s+'), ' ');
+
+    for (final name in crew) {
+      expect(text, contains(name), reason: 'v páse chýba $name');
+    }
   });
 }

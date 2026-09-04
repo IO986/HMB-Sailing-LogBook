@@ -22,6 +22,7 @@ const _kLicExpiry  = 'skipper_license_expiry';
 const _kVhfNum     = 'skipper_vhf_number';
 const _kVhfExpiry  = 'skipper_vhf_expiry';
 const _kOtherCerts = 'skipper_other_certs';
+const _kIdNumber   = 'skipper_id_number';
 
 /// Zoznam všetkých doteraz uložených profilov (JSON pole), pre loď, kde sa
 /// pri kormidle strieda viac skiperov. Ploché kľúče vyššie ostávajú "posledný
@@ -49,6 +50,7 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
         vhfNumber:        await _storage.read(key: _kVhfNum)     ?? '',
         vhfExpiry:        await _storage.read(key: _kVhfExpiry)  ?? '',
         otherCerts:       await _storage.read(key: _kOtherCerts) ?? '',
+        idNumber:         await _storage.read(key: _kIdNumber)   ?? '',
       );
     } catch (_) {
       return const SkipperProfile();
@@ -64,6 +66,7 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
     await _storage.write(key: _kVhfNum,     value: profile.vhfNumber);
     await _storage.write(key: _kVhfExpiry,  value: profile.vhfExpiry);
     await _storage.write(key: _kOtherCerts, value: profile.otherCerts);
+    await _storage.write(key: _kIdNumber,   value: profile.idNumber);
     if (profile.fullName.trim().isNotEmpty) await _upsertIntoList(profile);
     state = AsyncData(profile);
   }

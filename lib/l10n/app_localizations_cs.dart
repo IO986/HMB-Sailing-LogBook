@@ -562,6 +562,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportsTitle => 'Exporty';
 
   @override
+  String get exportMapLayer => 'Podklad mapy ve výřezu';
+
+  @override
+  String get exportMapSatellite => 'Satelit';
+
+  @override
+  String get exportMapPlain => 'Mapa';
+
+  @override
   String get exportsThisVoyage => 'Tato plavba';
 
   @override
@@ -1342,6 +1351,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String downloadError(String error) {
     return 'Chyba stahování: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'Odpověď serveru se nepodařilo zpracovat. Zkus to znovu později.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2867,7 +2880,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o najetých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.';
+      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o najetých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.\n• Číslo pasu/OP se zadává až při vystavování potvrzení — u každého člena posádky zvlášť. Neukládá se, vytiskne se jen na tom jednom dokumentu; své číslo má skipper uložené v kartě plavby a předvyplní se mu. Kdo číslo nezadá, dostane na potvrzení prázdnou linku na dopsání rukou.';
 
   @override
   String get guideHandoverTitle => 'Předávací protokol (check-in/check-out)';
@@ -2937,7 +2950,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.\n• Před exportem lze vybrat podklad výřezu mapy — satelit nebo běžnou mapu. Volba se pamatuje. Výřez je vždy o kus širší než samotná trasa, aby bylo vidět okolí; den strávený na jednom místě dostane okno aspoň kilometr, jinak by v dokladu byly jen střechy.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3662,6 +3675,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Číslo pasu / OP';
+
+  @override
+  String get crewCertIdNotStored =>
+      'Číslo se neukládá — vytiskne se jen na tomto potvrzení.';
 
   @override
   String get crewCertDaysAtSea => 'Dny na moři';

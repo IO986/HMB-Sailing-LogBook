@@ -81,4 +81,14 @@ void main() {
     expect(networkErrorText(Exception('nonsense'), l), isNotEmpty);
     expect(networkErrorText('a bare string', l), isNotEmpty);
   });
+
+  /// Photographed at the helm: "Chyba stahovani: _TypeError". The download had
+  /// worked; parsing the answer had not. A class name out of the Dart runtime
+  /// tells the skipper nothing, not even whether to try again.
+  test('a failure that never touched the network is not a download error', () {
+    final parseFailure = TypeError();
+    final text = networkErrorText(parseFailure, l);
+    expect(text, l.errorBadResponse);
+    expect(text, isNot(contains('TypeError')));
+  });
 }

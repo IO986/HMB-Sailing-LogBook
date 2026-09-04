@@ -659,34 +659,43 @@ class PdfExportService {
           padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: pw.BoxDecoration(color: _lgrey,
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3))),
-          child: pw.Row(children: [
-            if (charter.vesselName != null) ...[
-              pw.Text('${l.pdfVesselLabel}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(_pdfText(charter.vesselName!),
-                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(width: 12),
-            ],
-            if (charter.skipperName != null) ...[
-              pw.Text('${l.pdfSkipperLabel}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(_pdfText(charter.skipperName!),
-                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(width: 12),
-            ],
-            if (crew.isNotEmpty) ...[
-              pw.Text('${l.pdfCrewSection}: ', style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text(crew.map(_pdfText).join(', '),
-                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
-            ],
-            // Motohodiny za deň — charterová firma ich pýta pri odovzdaní
-            // lode a appka ich vie narátať z otáčok, keď ich motor hlási.
-            if (day.engineHours != null) ...[
-              pw.SizedBox(width: 12),
-              pw.Text('${l.engineHours}: ',
-                  style: pw.TextStyle(color: _dgrey, fontSize: 8)),
-              pw.Text('${day.engineHours!.toStringAsFixed(1)} h',
-                  style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
-            ],
-          ]),
+          // Loď, skiper a motohodiny sa vojdú vedľa seba; posádka dostáva
+          // vlastný riadok cez celú šírku. Kým to bol jeden pw.Row, prebytok
+          // sa mlčky orezal — z terénu prišiel záber, kde sa siedmy člen
+          // posádky skončil uprostred mena. pw.Text sa na rozdiel od Row
+          // zalomí sám, takže sa vojde aj dvanásť ľudí.
+          child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Wrap(spacing: 12, runSpacing: 2, children: [
+                  if (charter.vesselName != null)
+                    _infoBarItem(
+                        l.pdfVesselLabel, _pdfText(charter.vesselName!)),
+                  if (charter.skipperName != null)
+                    _infoBarItem(
+                        l.pdfSkipperLabel, _pdfText(charter.skipperName!)),
+                  // Motohodiny za deň — charterová firma ich pýta pri
+                  // odovzdaní lode a appka ich vie narátať z otáčok, keď ich
+                  // motor hlási.
+                  if (day.engineHours != null)
+                    _infoBarItem(l.engineHours,
+                        '${day.engineHours!.toStringAsFixed(1)} h'),
+                ]),
+                if (crew.isNotEmpty) ...[
+                  pw.SizedBox(height: 2),
+                  pw.RichText(
+                    text: pw.TextSpan(children: [
+                      pw.TextSpan(
+                          text: '${l.pdfCrewSection}: ',
+                          style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+                      pw.TextSpan(
+                          text: crew.map(_pdfText).join(', '),
+                          style: pw.TextStyle(
+                              fontSize: 8, fontWeight: pw.FontWeight.bold)),
+                    ]),
+                  ),
+                ],
+              ]),
         ),
         pw.SizedBox(height: 6),
 
@@ -1716,6 +1725,46 @@ class PdfExportService {
     );
   }
 
+  /// Popis a hodnota v informačnom páse dňa.
+  ///
+  /// Drží sa pokope ako jeden kus, aby zalomenie pásu nikdy nerozdelilo
+  /// popisku od údaja.
+  static pw.Widget _infoBarItem(String label, String value) => pw.Row(
+        mainAxisSize: pw.MainAxisSize.min,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text('$label: ',
+              style: pw.TextStyle(color: _dgrey, fontSize: 8)),
+          pw.Text(value,
+              style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
+        ],
+      );
+
+  /// Riadok „Číslo pasu / OP" — s číslom, alebo s linkou naň.
+  ///
+  /// Linka ostáva schválne: potvrdenie sa musí dať vystaviť aj človeku,
+  /// ktorého doklad appka nepozná, a ten si ho dopíše sám.
+  static pw.Widget _idDocumentRow(String label, String? idNumber) {
+    final value = idNumber?.trim() ?? '';
+    return pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
+      pw.Text('$label: ', style: const pw.TextStyle(fontSize: 9)),
+      pw.Expanded(
+        child: value.isEmpty
+            ? pw.Container(
+                height: 14,
+                decoration: const pw.BoxDecoration(
+                  border: pw.Border(
+                      bottom:
+                          pw.BorderSide(color: PdfColors.grey600, width: 0.7)),
+                ),
+              )
+            : pw.Text(_pdfText(value),
+                style: pw.TextStyle(
+                    fontSize: 9, fontWeight: pw.FontWeight.bold)),
+      ),
+    ]);
+  }
+
   // ── Helpers ───────────────────────────────────────────────────
 
   /// Prístav, a keď chýba, aspoň súradnice.
@@ -2142,6 +2191,10 @@ class PdfExportService {
     required VoyageMilesSummary summary,
     CrewAssessment? assessment,
     Uint8List? skipperSignature,
+    /// Číslo pasu/OP držiteľa. Prázdne necháva v dokumente linku na
+    /// dopísanie rukou — appka doklady posádky neuchováva, zadávajú sa až
+    /// pri vystavovaní tohto jedného potvrdenia.
+    String? idNumber,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -2175,6 +2228,7 @@ class PdfExportService {
       ..writeln('charter:${charter.id}')
       ..writeln('crew:${crew.name}')
       ..writeln('role:${crew.role}')
+      ..writeln('id:${idNumber ?? ''}')
       ..writeln('days:${summary.daysAtSea}')
       ..writeln('dayNm:${summary.dayNm.toStringAsFixed(2)}')
       ..writeln('nightNm:${summary.nightNm.toStringAsFixed(2)}')
@@ -2331,21 +2385,10 @@ class PdfExportService {
         ]),
         pw.SizedBox(height: 10),
 
-        // Doklad totožnosti sa v appke neuchováva — číslo dopíše držiteľ
-        // potvrdenia rukou, keď ho niekam predkladá.
-        pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
-          pw.Text('${bi((x) => x.crewCertIdDocument)}: ',
-              style: const pw.TextStyle(fontSize: 9)),
-          pw.Expanded(
-            child: pw.Container(
-              height: 14,
-              decoration: const pw.BoxDecoration(
-                border: pw.Border(
-                    bottom: pw.BorderSide(color: PdfColors.grey600, width: 0.7)),
-              ),
-            ),
-          ),
-        ]),
+        // Doklad totožnosti: buď ho skiper zadal pri vystavovaní, alebo tu
+        // ostáva linka na dopísanie rukou. Uložené je len jeho vlastné
+        // číslo — cudzí doklad appka neuchováva.
+        _idDocumentRow(bi((x) => x.crewCertIdDocument), idNumber),
         pw.SizedBox(height: 14),
 
         // ── Hodnotenie skipera ──
@@ -2456,6 +2499,8 @@ class PdfExportService {
     String? issuerQualification,
     /// Komu sa potvrdenie vystavuje. `null` pri potvrdení pre seba.
     String? recipientName,
+    /// Číslo pasu/OP držiteľa; prázdne necháva linku na dopísanie rukou.
+    String? idNumber,
     /// Pre seba: pridá skiperský súhrn a do hlavičky napíše, že si držiteľ
     /// potvrdzuje vlastné míle.
     bool forSelf = true,
@@ -2518,6 +2563,11 @@ class PdfExportService {
             ],
           ),
         ),
+        // Doklad totožnosti držiteľa — potvrdenie o míľach sa predkladá na
+        // tom istom mieste ako to od posádky, len doteraz naň nebolo kam
+        // číslo napísať.
+        _idDocumentRow(l.crewCertIdDocument, idNumber),
+        pw.SizedBox(height: 8),
         pw.Row(children: [
           _statBox(
               '${l.pdfTotalLabel.toUpperCase()} ${units.distanceLabel.toUpperCase()}',

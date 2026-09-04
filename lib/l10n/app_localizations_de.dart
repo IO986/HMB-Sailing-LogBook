@@ -565,6 +565,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportsTitle => 'Exporte';
 
   @override
+  String get exportMapLayer => 'Kartengrundlage im Ausschnitt';
+
+  @override
+  String get exportMapSatellite => 'Satellit';
+
+  @override
+  String get exportMapPlain => 'Karte';
+
+  @override
   String get exportsThisVoyage => 'Diese Reise';
 
   @override
@@ -1347,6 +1356,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String downloadError(String error) {
     return 'Downloadfehler: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'Die Antwort des Servers war nicht lesbar. Später erneut versuchen.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2887,7 +2900,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.';
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.\n• Die Ausweis-/Passnummer wird beim Ausstellen der Bescheinigung eingegeben, für jedes Crewmitglied einzeln. Sie wird nicht gespeichert und steht nur auf diesem einen Dokument; die eigene Nummer des Skippers liegt in der Reisekarte und wird automatisch eingesetzt. Ohne Nummer bleibt eine Linie zum Eintragen von Hand.';
 
   @override
   String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
@@ -2957,7 +2970,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Im Logbuch oben auf den Chip Exporte tippen\n2. Wählen, was exportiert wird — die ganze Reise, einen Tag, das Übergabeprotokoll, Crew-Bescheinigungen, Meilen oder Peilungen\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen\n• Alle Exporte sitzen an einer Stelle — unter dem Chip Exporte im Logbuch. Einzige Ausnahme ist die Sicherung der ganzen Datenbank: sie bleibt in den Einstellungen neben der Wiederherstellung, denn sie ist kein Dokument für jemanden, sondern ein Abbild der Daten.';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Im Logbuch oben auf den Chip Exporte tippen\n2. Wählen, was exportiert wird — die ganze Reise, einen Tag, das Übergabeprotokoll, Crew-Bescheinigungen, Meilen oder Peilungen\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen\n• Alle Exporte sitzen an einer Stelle — unter dem Chip Exporte im Logbuch. Einzige Ausnahme ist die Sicherung der ganzen Datenbank: sie bleibt in den Einstellungen neben der Wiederherstellung, denn sie ist kein Dokument für jemanden, sondern ein Abbild der Daten.\n• Vor dem Export lässt sich die Kartengrundlage des Ausschnitts wählen — Satellit oder normale Karte. Die Wahl bleibt gespeichert. Der Ausschnitt ist immer etwas weiter als der Track, damit die Umgebung sichtbar wird; ein Tag an einem Ort bekommt mindestens einen Kilometer, sonst zeigt das Dokument nur Dächer.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';
@@ -3683,6 +3696,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Pass- / Ausweisnummer';
+
+  @override
+  String get crewCertIdNotStored =>
+      'Die Nummer wird nicht gespeichert — sie steht nur auf dieser Bescheinigung.';
 
   @override
   String get crewCertDaysAtSea => 'Seetage';

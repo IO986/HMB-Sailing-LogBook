@@ -82,39 +82,61 @@ class WeatherRepository {
     final now = DateTime.now();
     final rows = <WeatherSnapshotsCompanion>[];
     for (var i = 0; i < ft.length; i++) {
+      // Hodiny za horizontom modelu prídu ako `null`, nie ako kratšie pole:
+      // regionálne modely vidia menej než tri dni, ktoré si appka pýta
+      // (ICON-D2 len 48 h), a Open-Meteo zvyšok riadku dopĺňa nulami.
+      // Nahlásené z terénu ako „Chyba stahování: _TypeError" — pretypovanie
+      // vetra spadlo na prvej takej hodine a zahodilo celú predpoveď, aj tie
+      // platné hodiny pred ňou.
+      final windSpeed = (_at(fh['wind_speed_10m'], i) as num?)?.toDouble();
+      final windDirection =
+          (_at(fh['wind_direction_10m'], i) as num?)?.toDouble();
+      if (windSpeed == null || windDirection == null) continue;
+
       final mi = mt.indexOf(ft[i]);
       rows.add(WeatherSnapshotsCompanion.insert(
         latitude: lat,
         longitude: lon,
         forecastTime: DateTime.parse(ft[i]),
         downloadedAt: now,
-        windSpeed: (fh['wind_speed_10m'][i] as num).toDouble(),
-        windDirection: (fh['wind_direction_10m'][i] as num).toDouble(),
+        windSpeed: windSpeed,
+        windDirection: windDirection,
         airPressure:
-            drift.Value((fh['surface_pressure'][i] as num?)?.toDouble()),
-        airTemp: drift.Value((fh['temperature_2m'][i] as num?)?.toDouble()),
-        cloudCover: drift.Value((fh['cloud_cover'][i] as num?)?.toDouble()),
-        weatherCode: drift.Value((fh['weather_code'][i] as num?)?.toInt()),
+            drift.Value((_at(fh['surface_pressure'], i) as num?)?.toDouble()),
+        airTemp: drift.Value((_at(fh['temperature_2m'], i) as num?)?.toDouble()),
+        cloudCover: drift.Value((_at(fh['cloud_cover'], i) as num?)?.toDouble()),
+        weatherCode: drift.Value((_at(fh['weather_code'], i) as num?)?.toInt()),
         waveHeight: mi >= 0
-            ? drift.Value((mh!['wave_height'][mi] as num?)?.toDouble())
+            ? drift.Value((_at(mh!['wave_height'], mi) as num?)?.toDouble())
             : const drift.Value.absent(),
         wavePeriod: mi >= 0
-            ? drift.Value((mh!['wave_period'][mi] as num?)?.toDouble())
+            ? drift.Value((_at(mh!['wave_period'], mi) as num?)?.toDouble())
             : const drift.Value.absent(),
         waterTemp: mi >= 0
             ? drift.Value(
-                (mh!['sea_surface_temperature'][mi] as num?)?.toDouble())
+                (_at(mh!['sea_surface_temperature'], mi) as num?)?.toDouble())
             : const drift.Value.absent(),
         precipitationProbability:
-            drift.Value((fh['precipitation_probability']?[i] as num?)?.toInt()),
+            drift.Value((_at(fh['precipitation_probability'], i) as num?)?.toInt()),
         precipitation:
-            drift.Value((fh['precipitation']?[i] as num?)?.toDouble()),
+            drift.Value((_at(fh['precipitation'], i) as num?)?.toDouble()),
         modelName: drift.Value(used?.attribution),
       ));
     }
 
     if (rows.isEmpty) return;
     await db.replaceWeatherSnapshots(rows);
+  }
+
+  /// Hodnota z hodinového poľa, alebo `null`.
+  ///
+  /// Polia z Open-Meteo nie sú zaručene rovnako dlhé ani plné: chýbajúci kľúč,
+  /// kratšie pole aj `null` v ňom znamenajú to isté — pre túto hodinu údaj nie
+  /// je. Jedno miesto, ktoré to zráža na `null`, je menej rizikové než desať
+  /// pretypovaní v konštruktore.
+  static Object? _at(Object? column, int index) {
+    if (column is! List || index < 0 || index >= column.length) return null;
+    return column[index];
   }
 
   /// Vyzerá chyba na „tento model sem nevidí" a nie na výpadok siete?

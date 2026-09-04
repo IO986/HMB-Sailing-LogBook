@@ -10,6 +10,7 @@ import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/skipper_profile_provider.dart';
 import '../../../core/providers/sync_provider.dart';
 import '../../../core/services/port_backfill_service.dart';
+import '../providers/export_map_provider.dart';
 import '../../../core/providers/sync_settings_provider.dart';
 import '../../../core/utils/distance_calculator.dart';
 import '../../../core/utils/gpx_exporter.dart';
@@ -107,7 +108,12 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     if (!mounted) return;
     setState(() => _loading = false);
 
-    // Screenshot máp po renderovaní – 4s aby sa stihli načítať dlaždice.
+    await _captureMaps();
+  }
+
+  /// Odfotí náhľady máp. 4 s preto, aby sa stihli stiahnuť alebo načítať
+  /// z keše dlaždice — bez toho by v PDF ostal sivý štvorec.
+  Future<void> _captureMaps() async {
     await Future.delayed(const Duration(milliseconds: 4000));
     for (final day in _days) {
       try {
@@ -117,9 +123,20 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     }
   }
 
+  /// Prepnutie podkladu. Staré snímky sa zahodia a odfotia sa znova —
+  /// export by inak niesol satelit, hoci na obrazovke je mapa.
+  Future<void> _setSatellite(bool satellite) async {
+    if (ref.read(exportSatelliteMapProvider) == satellite) return;
+    await ref.read(exportSatelliteMapProvider.notifier).set(satellite);
+    if (!mounted) return;
+    setState(_mapScreenshots.clear);
+    await _captureMaps();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final satellite = ref.watch(exportSatelliteMapProvider);
     if (_loading) return Scaffold(
       body: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
         const CircularProgressIndicator(),
@@ -172,6 +189,40 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           ),
           const SizedBox(height: 12),
 
+          // Podklad výrezu mapy. Stojí pred exportom, nie v nastaveniach:
+          // je to rozhodnutie o tom, ako má vyzerať tento doklad, a vidno
+          // ho hneď na náhľadoch pod tým.
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Row(children: [
+                  const Icon(Icons.map_outlined, size: 18),
+                  const SizedBox(width: 8),
+                  Text(l.exportMapLayer,
+                      style: Theme.of(context).textTheme.titleSmall),
+                ]),
+                const SizedBox(height: 8),
+                SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment(
+                        value: true,
+                        icon: const Icon(Icons.satellite_alt, size: 18),
+                        label: Text(l.exportMapSatellite)),
+                    ButtonSegment(
+                        value: false,
+                        icon: const Icon(Icons.map, size: 18),
+                        label: Text(l.exportMapPlain)),
+                  ],
+                  selected: {satellite},
+                  onSelectionChanged: (v) => _setSatellite(v.first),
+                ),
+              ]),
+            ),
+          ),
+          const SizedBox(height: 12),
+
           Card(
             color: screenshotsDone ? Colors.green.shade50 : Colors.orange.shade50,
             child: Padding(
@@ -196,6 +247,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             trackPoints: _tracksByDay[day.id] ?? [],
             screenshotController: _screenshotControllers[day.id]!,
             screenshot: _mapScreenshots[day.id],
+            satellite: satellite,
           )),
 
           const SizedBox(height: 80),
@@ -473,10 +525,12 @@ class _DayMapPreview extends ConsumerWidget {
   final List<TrackPoint> trackPoints;
   final ScreenshotController screenshotController;
   final Uint8List? screenshot;
+  final bool satellite;
 
   const _DayMapPreview({
     required this.day, required this.entries, required this.trackPoints,
     required this.screenshotController, required this.screenshot,
+    required this.satellite,
   });
 
   @override
@@ -506,7 +560,8 @@ class _DayMapPreview extends ConsumerWidget {
               height: 180,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: DayMapView(trackPoints: trackPoints),
+                child: DayMapView(
+                    trackPoints: trackPoints, satellite: satellite),
               ),
             ),
           ),

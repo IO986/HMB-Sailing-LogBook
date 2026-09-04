@@ -35,6 +35,10 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
   final _issuer = TextEditingController();
   final _qualification = TextEditingController();
 
+  /// Číslo pasu/OP na potvrdenie. Pre seba sa predvyplní z profilu, pre člena
+  /// posádky sa zadá a nikam sa neukladá — cudzí doklad appka neuchováva.
+  final _idNumber = TextEditingController();
+
   /// Kľúče vybraných plavieb. `null` znamená „ešte som sa nedotkol výberu",
   /// takže platí všetko — skiper, ktorý chce celú knihu, nemusí odklikať
   /// dvadsať zaškrtávadiel.
@@ -48,6 +52,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
     _recipient.dispose();
     _issuer.dispose();
     _qualification.dispose();
+    _idNumber.dispose();
     super.dispose();
   }
 
@@ -78,6 +83,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
       _profileLoaded = true;
       _issuer.text = profile.fullName;
       _qualification.text = profile.licenseType;
+      if (_forSelf) _idNumber.text = profile.idNumber;
     });
 
     return aggregateAsync.when(
@@ -120,6 +126,24 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
         ),
       ),
     );
+  }
+
+  /// Prepnutie „pre seba / pre člena posádky".
+  ///
+  /// Číslo dokladu ide s tým: svoje sa predvyplní z profilu, pri posádke sa
+  /// pole vyprázdni, aby sa cudzie potvrdenie nevystavilo s číslom skipera.
+  Future<void> _setForSelf(bool forSelf) async {
+    setState(() => _forSelf = forSelf);
+    if (!forSelf) {
+      setState(() => _idNumber.clear());
+      return;
+    }
+    try {
+      final profile = await ref.read(skipperProfileProvider.future);
+      if (mounted) setState(() => _idNumber.text = profile.idNumber);
+    } catch (_) {
+      // Profil je pohodlie, nie podmienka.
+    }
   }
 
   /// Výber mena zo zoznamu posádok.
@@ -176,7 +200,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
             ButtonSegment(value: false, label: Text(l.milesExportForCrew)),
           ],
           selected: {_forSelf},
-          onSelectionChanged: (s) => setState(() => _forSelf = s.first),
+          onSelectionChanged: (s) => _setForSelf(s.first),
         ),
         if (!_forSelf) ...[
           const SizedBox(height: 12),
@@ -200,6 +224,16 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
             onChanged: (_) => setState(() {}),
           ),
         ],
+        const SizedBox(height: 12),
+        TextField(
+          controller: _idNumber,
+          decoration: InputDecoration(
+            labelText: l.crewCertIdDocument,
+            helperText: _forSelf ? null : l.crewCertIdNotStored,
+            helperMaxLines: 2,
+            border: const OutlineInputBorder(),
+          ),
+        ),
         const SizedBox(height: 20),
         Text(l.milesExportIssuer, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 8),
@@ -289,6 +323,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
             ? null
             : _qualification.text.trim(),
         recipientName: _forSelf ? null : _recipient.text.trim(),
+        idNumber: _idNumber.text.trim(),
         forSelf: _forSelf,
       );
 

@@ -563,6 +563,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportsTitle => 'Eksporty';
 
   @override
+  String get exportMapLayer => 'Podkład mapy w wycinku';
+
+  @override
+  String get exportMapSatellite => 'Satelita';
+
+  @override
+  String get exportMapPlain => 'Mapa';
+
+  @override
   String get exportsThisVoyage => 'Ten rejs';
 
   @override
@@ -1344,6 +1353,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String downloadError(String error) {
     return 'Błąd pobierania: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'Nie udało się odczytać odpowiedzi serwera. Spróbuj później.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2873,7 +2886,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.';
+      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.\n• Numer paszportu/dowodu wpisuje się przy wystawianiu zaświadczenia, osobno dla każdego członka załogi. Nie jest zapisywany — trafia tylko na ten jeden dokument; własny numer skippera stoi w karcie rejsu i uzupełnia się sam. Bez numeru zostaje na zaświadczeniu linia do wpisania ręcznie.';
 
   @override
   String get guideHandoverTitle => 'Protokół przekazania (check-in/check-out)';
@@ -2943,7 +2956,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -3668,6 +3681,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Numer paszportu / dowodu';
+
+  @override
+  String get crewCertIdNotStored =>
+      'Numer nie jest zapisywany — trafi tylko na to zaświadczenie.';
 
   @override
   String get crewCertDaysAtSea => 'Dni na morzu';

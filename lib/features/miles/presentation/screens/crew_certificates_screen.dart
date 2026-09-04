@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../core/models/crew_member_ref.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
@@ -46,10 +47,26 @@ class _CrewCertificatesScreenState
     final db = ref.read(databaseProvider);
     final stored = await db.getCrewAssessments(widget.charterId);
     final byName = {for (final a in stored) a.crewName: a};
+
+    // Vlastné číslo dokladu je uložené v profile — je to telefón držiteľa.
+    // Doklady posádky uložené nie sú a nebudú.
+    var ownIdNumber = '';
+    try {
+      ownIdNumber = (await ref.read(skipperProfileProvider.future)).idNumber;
+    } catch (_) {
+      // Keystore vie na niektorých telefónoch zlyhať; potvrdenie sa preto
+      // vystaviť nedať nesmie.
+    }
+    if (!mounted) return;
+
     setState(() {
       for (final member in crew) {
-        _drafts[member.name] = _Draft.from(byName[member.name]);
-        if (member.isSkipper) _skippers.add(member.name);
+        final draft = _Draft.from(byName[member.name]);
+        if (member.isSkipper) {
+          _skippers.add(member.name);
+          draft.idCtrl.text = ownIdNumber;
+        }
+        _drafts[member.name] = draft;
       }
       _loaded = true;
     });
@@ -112,6 +129,7 @@ class _CrewCertificatesScreenState
               ? null
               : await db.getCrewAssessment(charter.id, member.name),
           skipperSignature: signature,
+          idNumber: _drafts[member.name]?.idCtrl.text.trim(),
         );
         // Kópia v priečinku appky ostáva vždy — potvrdenie sa dá znova
         // nájsť aj keď užívateľ zdieľanie zruší.
@@ -301,6 +319,13 @@ class _Draft {
 
   factory _Draft.empty() => _Draft();
 
+  /// Číslo pasu/OP pre toto jedno potvrdenie.
+  ///
+  /// Zámerne mimo [CrewAssessment] — cudzí doklad totožnosti sa neukladá,
+  /// vytlačí sa a s obrazovkou zmizne. Svoje číslo má skiper v profile
+  /// a predvyplní sa mu.
+  final idCtrl = TextEditingController();
+
   factory _Draft.from(CrewAssessment? a) => _Draft(
         helming: a?.helming,
         navigation: a?.navigation,
@@ -361,6 +386,19 @@ class _CrewCard extends StatelessWidget {
               ]),
             ),
           ]),
+          const SizedBox(height: 8),
+          // Číslo dokladu sa zadáva až tu, pre toto jedno potvrdenie.
+          // U skipera je predvyplnené z jeho profilu.
+          TextField(
+            controller: draft.idCtrl,
+            decoration: InputDecoration(
+              labelText: l.crewCertIdDocument,
+              helperText: member.isSkipper ? null : l.crewCertIdNotStored,
+              helperMaxLines: 2,
+              border: const OutlineInputBorder(),
+              isDense: true,
+            ),
+          ),
           if (member.isSkipper) ...[
             const SizedBox(height: 6),
             // Skiper posádku hodnotí — sám sa nehodnotí. Potvrdenie o

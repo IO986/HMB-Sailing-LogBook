@@ -563,6 +563,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportsTitle => 'Exportaciones';
 
   @override
+  String get exportMapLayer => 'Capa del mapa en el recorte';
+
+  @override
+  String get exportMapSatellite => 'Satélite';
+
+  @override
+  String get exportMapPlain => 'Mapa';
+
+  @override
   String get exportsThisVoyage => 'Esta travesía';
 
   @override
@@ -1345,6 +1354,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String downloadError(String error) {
     return 'Error de descarga: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'No se pudo interpretar la respuesta del servidor. Inténtalo más tarde.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2883,7 +2896,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.';
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.';
 
   @override
   String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
@@ -2953,7 +2966,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. En el Diario, pulsa el chip Exportaciones arriba\n2. Elige qué exportas: la travesía completa, un día, el acta de entrega, los certificados de tripulación, las millas o las demoras\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes\n• Todas las exportaciones están en un solo sitio: el chip Exportaciones del Diario. La única excepción es la copia de seguridad de la base de datos, que sigue en Ajustes junto a la restauración, porque no es un documento para nadie sino una imagen de los datos.';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. En el Diario, pulsa el chip Exportaciones arriba\n2. Elige qué exportas: la travesía completa, un día, el acta de entrega, los certificados de tripulación, las millas o las demoras\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes\n• Todas las exportaciones están en un solo sitio: el chip Exportaciones del Diario. La única excepción es la copia de seguridad de la base de datos, que sigue en Ajustes junto a la restauración, porque no es un documento para nadie sino una imagen de los datos.\n• Antes de exportar puedes elegir la capa del recorte: satélite o mapa normal. La elección se recuerda. El recorte es siempre algo más amplio que la traza para que se vea el entorno; un día en un mismo sitio recibe una ventana de al menos un kilómetro, o el documento solo mostraría tejados.';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';
@@ -3681,6 +3694,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Número de pasaporte / DNI';
+
+  @override
+  String get crewCertIdNotStored =>
+      'El número no se guarda: solo se imprime en este certificado.';
 
   @override
   String get crewCertDaysAtSea => 'Días en el mar';

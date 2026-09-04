@@ -35,6 +35,10 @@ class _CrewEntry {
   final boatLicCtrl = TextEditingController();
   final radioLicCtrl = TextEditingController();
   final otherCertsCtrl = TextEditingController();
+
+  /// Číslo pasu/OP — vyplní sa len skiperovi a putuje do jeho profilu, nie do
+  /// crewJson. Doklady posádky appka neuchováva.
+  final idNumCtrl = TextEditingController();
   bool isSkipper;
   _CrewEntry({this.isSkipper = false});
   void dispose() {
@@ -42,6 +46,7 @@ class _CrewEntry {
     boatLicCtrl.dispose();
     radioLicCtrl.dispose();
     otherCertsCtrl.dispose();
+    idNumCtrl.dispose();
   }
 }
 
@@ -190,6 +195,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           .join(' ');
       skipper.radioLicCtrl.text = chosen.vhfNumber;
       skipper.otherCertsCtrl.text = chosen.otherCerts;
+      skipper.idNumCtrl.text = chosen.idNumber;
     });
   }
 
@@ -199,6 +205,19 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     if (id == null) return;
     final c = await db.getCharterById(id);
     if (c == null || !mounted) return;
+
+    // Číslo dokladu nie je v crewJson — býva len v profile skipera, lebo
+    // doklady posádky sa neukladajú. Bez tohto načítania by otvorenie
+    // a uloženie staršej plavby prepísalo uložené číslo prázdnym.
+    var ownIdNumber = '';
+    try {
+      ownIdNumber = (await ref.read(skipperProfileProvider.future)).idNumber;
+    } catch (_) {
+      // Profil je pohodlie; keystore vie na niektorých telefónoch zlyhať
+      // a formulár plavby sa preto zaseknúť nesmie.
+    }
+    if (!mounted) return;
+
     setState(() {
       _existing = c;
       _titleCtrl.text = c.title;
@@ -265,6 +284,10 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       }
       if (_crew.isEmpty) _crew.add(_CrewEntry(isSkipper: true));
       if (!_crew.any((e) => e.isSkipper)) _crew.first.isSkipper = true;
+      final skipper = _crew.firstWhere((e) => e.isSkipper);
+      if (skipper.idNumCtrl.text.trim().isEmpty) {
+        skipper.idNumCtrl.text = ownIdNumber;
+      }
 
       // Fotky
       _photos
@@ -772,6 +795,17 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
                 alignLabelWithHint: true,
               ),
             ),
+            const SizedBox(height: 8),
+            // Vlastný doklad si telefón pamätá — je to telefón držiteľa.
+            // Doklady posádky nie; tie sa zadávajú až pri vystavovaní
+            // konkrétneho potvrdenia a nikam sa neukladajú.
+            TextField(
+              controller: entry.idNumCtrl,
+              decoration: InputDecoration(
+                labelText: l.crewCertIdDocument,
+                isDense: true,
+              ),
+            ),
           ],
         ]),
       ),
@@ -894,6 +928,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               vhfNumber: skipper.radioLicCtrl.text.trim(),
               vhfExpiry: old.vhfExpiry,
               otherCerts: skipper.otherCertsCtrl.text.trim(),
+              idNumber: skipper.idNumCtrl.text.trim(),
             ))
             .timeout(const Duration(seconds: 5));
       } catch (_) {

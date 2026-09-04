@@ -564,6 +564,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportsTitle => 'Esportazioni';
 
   @override
+  String get exportMapLayer => 'Sfondo della mappa nel riquadro';
+
+  @override
+  String get exportMapSatellite => 'Satellite';
+
+  @override
+  String get exportMapPlain => 'Mappa';
+
+  @override
   String get exportsThisVoyage => 'Questa crociera';
 
   @override
@@ -1347,6 +1356,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String downloadError(String error) {
     return 'Errore di download: $error';
   }
+
+  @override
+  String get errorBadResponse =>
+      'La risposta del server non è stata leggibile. Riprova più tardi.';
 
   @override
   String get errorNoInternetOnThisNetwork =>
@@ -2889,7 +2902,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.';
+      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.\n• Il numero di passaporto/carta d\'identità si inserisce al momento di emettere il certificato, per ogni membro dell\'equipaggio. Non viene salvato: compare solo su quel documento; il numero dello skipper sta nella scheda della crociera e si compila da solo. Senza numero resta una riga da riempire a mano.';
 
   @override
   String get guideHandoverTitle => 'Verbale di riconsegna (check-in/check-out)';
@@ -2959,7 +2972,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Nel Giornale tocca il chip Esportazioni in alto\n2. Scegli cosa esportare: l\'intera crociera, un giorno, il verbale di consegna, i certificati dell\'equipaggio, le miglia o i rilevamenti\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni\n• Tutte le esportazioni stanno in un unico posto: il chip Esportazioni nel Giornale. L\'unica eccezione è il backup dell\'intero database, che resta nelle Impostazioni accanto al ripristino, perché non è un documento per qualcuno ma un\'immagine dei dati.';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Nel Giornale tocca il chip Esportazioni in alto\n2. Scegli cosa esportare: l\'intera crociera, un giorno, il verbale di consegna, i certificati dell\'equipaggio, le miglia o i rilevamenti\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni\n• Tutte le esportazioni stanno in un unico posto: il chip Esportazioni nel Giornale. L\'unica eccezione è il backup dell\'intero database, che resta nelle Impostazioni accanto al ripristino, perché non è un documento per qualcuno ma un\'immagine dei dati.\n• Prima dell\'esportazione puoi scegliere lo sfondo del riquadro: satellite o mappa normale. La scelta viene ricordata. Il riquadro è sempre un po\' più largo della traccia per mostrare i dintorni; una giornata ferma in un punto riceve almeno un chilometro, altrimenti nel documento si vedrebbero solo i tetti.';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';
@@ -3689,6 +3702,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get crewCertIdDocument => 'Numero passaporto / carta d’identità';
+
+  @override
+  String get crewCertIdNotStored =>
+      'Il numero non viene salvato: compare solo su questo certificato.';
 
   @override
   String get crewCertDaysAtSea => 'Giorni in mare';
