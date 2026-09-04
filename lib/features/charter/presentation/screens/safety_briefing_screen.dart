@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,6 +26,13 @@ class SafetyBriefingScreen extends ConsumerStatefulWidget {
 
 class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   final Set<int> _checkedItems = {};
+
+  /// Body brífingu, ktoré si dopísal skiper. Pevných dvanásť je z príručky;
+  /// každá loď má však niečo svoje — plynový ventil na inom mieste, pravidlo
+  /// o vestách po zotmení. Držia sa v nastaveniach appky, nie pri plavbe:
+  /// skiper ich hovorí posádke na každej plavbe rovnaké.
+  List<String> _customItems = [];
+  static const _customItemsKey = 'briefing_custom_items';
   // All maps keyed by member index to handle duplicate names correctly
   final Map<int, List<List<Offset>>> _strokes = {};
   final Map<int, String?> _existingPaths = {};
@@ -54,6 +62,7 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   Future<void> _init(int charterId, List<({String name, String role})> members) async {
     if (_initialized) return;
     _initialized = true;
+    _loadCustomItems();
     final sigs = await ref.read(databaseProvider).getSignaturesForCharter(charterId);
     // Build a fast lookup: crewName stored in DB → signaturePath
     final sigMap = {for (final s in sigs) s.crewName: s.signaturePath};
@@ -66,6 +75,69 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     }
     if (mounted) setState(() {});
   }
+
+  Future<void> _loadCustomItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getStringList(_customItemsKey) ?? const [];
+      if (mounted) setState(() => _customItems = List<String>.from(raw));
+    } catch (_) {
+      // Vlastné body sú doplnok; brífing sa kvôli nim nesmie neotvoriť.
+    }
+  }
+
+  Future<void> _saveCustomItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_customItemsKey, _customItems);
+    } catch (_) {}
+  }
+
+  Future<void> _addCustomItem() async {
+    final l = AppLocalizations.of(context);
+    final ctrl = TextEditingController();
+    final text = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.briefingAddOwnItem),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(hintText: l.briefingOwnItemHint),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+              child: Text(l.add)),
+        ],
+      ),
+    );
+    if (text == null || text.isEmpty) return;
+    setState(() => _customItems = [..._customItems, text]);
+    await _saveCustomItems();
+  }
+
+  Future<void> _removeCustomItem(int index) async {
+    final removedGlobalIndex = _fixedItemCount + index;
+    setState(() {
+      _customItems = [..._customItems]..removeAt(index);
+      // Zaškrtnutia sa posunú spolu s bodmi, inak by ostali visieť na cudzom.
+      final shifted = <int>{};
+      for (final i in _checkedItems) {
+        if (i == removedGlobalIndex) continue;
+        shifted.add(i > removedGlobalIndex ? i - 1 : i);
+      }
+      _checkedItems
+        ..clear()
+        ..addAll(shifted);
+    });
+    await _saveCustomItems();
+  }
+
+  /// Počet pevných bodov z príručky — vlastné idú za nimi.
+  static const _fixedItemCount = 12;
 
   @override
   void dispose() {
@@ -187,10 +259,13 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                 if (!charter.safetyBriefingDone) ...[
                   _ChecklistCard(
                     checked: _checkedItems,
+                    customItems: _customItems,
                     onChanged: (i, v) => setState(() {
                       if (v) _checkedItems.add(i);
                       else _checkedItems.remove(i);
                     }),
+                    onAddItem: _addCustomItem,
+                    onRemoveCustom: _removeCustomItem,
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -365,8 +440,17 @@ class _CharterHeader extends ConsumerWidget {
 
 class _ChecklistCard extends StatelessWidget {
   final Set<int> checked;
+  final List<String> customItems;
   final void Function(int, bool) onChanged;
-  const _ChecklistCard({required this.checked, required this.onChanged});
+  final VoidCallback onAddItem;
+  final void Function(int index) onRemoveCustom;
+  const _ChecklistCard({
+    required this.checked,
+    required this.customItems,
+    required this.onChanged,
+    required this.onAddItem,
+    required this.onRemoveCustom,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -393,6 +477,33 @@ class _ChecklistCard extends StatelessWidget {
           title: Text(e.value, style: const TextStyle(fontSize: 13)),
           controlAffinity: ListTileControlAffinity.leading,
         )),
+        // Vlastné body idú za pevnými a dajú sa zmazať — pevných dvanásť je
+        // z príručky a tie sa nemažú.
+        ...customItems.asMap().entries.map((e) => CheckboxListTile(
+              dense: true,
+              value: checked.contains(items.length + e.key),
+              onChanged: (v) => onChanged(items.length + e.key, v ?? false),
+              title: Text(e.value, style: const TextStyle(fontSize: 13)),
+              controlAffinity: ListTileControlAffinity.leading,
+              secondary: IconButton(
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 20),
+                tooltip: l.delete,
+                visualDensity: VisualDensity.compact,
+                onPressed: () => onRemoveCustom(e.key),
+              ),
+            )),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: onAddItem,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l.briefingAddOwnItem),
+            ),
+          ),
+        ),
       ]),
     ));
   }

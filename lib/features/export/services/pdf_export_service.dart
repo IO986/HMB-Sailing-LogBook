@@ -2073,7 +2073,12 @@ class PdfExportService {
     ];
 
     for (final category in [...checkInCategories, ...checkOutCategories]) {
-      final items = category.items.map((d) => byKey[d.key]).whereType<ChecklistItem>().toList();
+      final items = [
+        ...category.items.map((d) => byKey[d.key]).whereType<ChecklistItem>(),
+        // Vlastné položky, ktoré si skiper dopísal do tejto kategórie —
+        // v doklade musia stáť vedľa pevných, inak by z neho vypadli.
+        ...checklist.where((i) => i.isCustom && i.categoryKey == category.key),
+      ];
       if (items.isEmpty) continue;
 
       rows.add(pw.TableRow(
@@ -2089,7 +2094,7 @@ class PdfExportService {
       ));
 
       for (final item in items) {
-        final label = findItemDef(item.itemKey)?.labelSk ?? item.itemKey;
+        final label = checklistItemLabel('sk', item);
         final noteParts = [
           if (item.note != null && item.note!.isNotEmpty) item.note!,
           if (item.position != null && item.position!.isNotEmpty) '(${item.position})',

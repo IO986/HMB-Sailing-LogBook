@@ -16,13 +16,26 @@ class ChecklistItem {
   final String? photoPath;
   final String? position;
 
+  /// Popis položky, ktorú si dopísal skiper. Pevné položky ho nemajú —
+  /// tie sa prekladajú cez [findItemDef]; vlastná sa preložiť nedá, lebo ju
+  /// nikto nepreložil, a nesie sa presne tak, ako ju niekto napísal.
+  final String? customLabel;
+
+  /// Kategória, do ktorej vlastná položka patrí (kľúč z [HandoverCategoryDef]).
+  /// Bez nej by sa pri vykresľovaní nemala kam zaradiť.
+  final String? categoryKey;
+
   const ChecklistItem({
     required this.itemKey,
     this.status = ChecklistStatus.ok,
     this.note,
     this.photoPath,
     this.position,
+    this.customLabel,
+    this.categoryKey,
   });
+
+  bool get isCustom => customLabel != null && customLabel!.isNotEmpty;
 
   ChecklistItem copyWith({
     ChecklistStatus? status,
@@ -39,6 +52,8 @@ class ChecklistItem {
         note: clearNote ? null : (note ?? this.note),
         photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
         position: clearPosition ? null : (position ?? this.position),
+        customLabel: customLabel,
+        categoryKey: categoryKey,
       );
 
   Map<String, dynamic> toJson() => {
@@ -47,6 +62,8 @@ class ChecklistItem {
         if (note != null) 'note': note,
         if (photoPath != null) 'photoPath': photoPath,
         if (position != null) 'position': position,
+        if (customLabel != null) 'customLabel': customLabel,
+        if (categoryKey != null) 'categoryKey': categoryKey,
       };
 
   factory ChecklistItem.fromJson(Map<String, dynamic> json) => ChecklistItem(
@@ -55,6 +72,8 @@ class ChecklistItem {
         note: json['note'] as String?,
         photoPath: json['photoPath'] as String?,
         position: json['position'] as String?,
+        customLabel: json['customLabel'] as String?,
+        categoryKey: json['categoryKey'] as String?,
       );
 }
 
@@ -491,6 +510,28 @@ String categoryLabel(String localeCode, HandoverCategoryDef c) =>
       'it' => c.labelIt.isEmpty ? c.labelEn : c.labelIt,
       _ => c.labelEn,
     };
+
+/// Popis položky do zoznamu aj do dokladu.
+///
+/// Vlastná položka nesie svoj text so sebou; pevná sa preloží do jazyka
+/// appky. Keď sa nenájde ani jedno (protokol z novšej verzie appky), ostane
+/// aspoň kľúč — prázdny riadok v podpísanom doklade je horší než slug.
+String checklistItemLabel(String localeCode, ChecklistItem item) {
+  if (item.isCustom) return item.customLabel!;
+  final def = findItemDef(item.itemKey);
+  return def == null ? item.itemKey : itemLabel(localeCode, def);
+}
+
+/// Kľúč pre novú vlastnú položku. Prefix drží vlastné položky rozoznateľné
+/// od pevných aj bez pohľadu do [customLabel].
+///
+/// K času sa pripája počítadlo: hodiny majú na Windows aj na niektorých
+/// Androidoch hrubšie rozlíšenie než mikrosekunda, takže dve položky pridané
+/// hneď po sebe by dostali ten istý kľúč a v protokole by sa prepísali.
+int _customKeySeq = 0;
+
+String customChecklistKey() =>
+    'custom_${DateTime.now().microsecondsSinceEpoch}_${_customKeySeq++}';
 
 /// Nájde definíciu položky podľa kľúča (naprieč oboma checklistmi – slugy
 /// sú globálne unikátne).

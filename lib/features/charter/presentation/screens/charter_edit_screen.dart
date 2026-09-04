@@ -73,6 +73,14 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   final _vesselTypeCustomCtrl = TextEditingController();
   final _callsignCtrl = TextEditingController();
   final _mmsiCtrl = TextEditingController();
+
+  /// Vlastná (majiteľská) loď — do zoznamu uložených lodí ide navrch a plavby
+  /// na nej sa opakujú, takže sa oplatí pamätať si jej údaje.
+  bool _isOwnVessel = false;
+
+  /// Loď zo zoznamu, ktorou sa formulár vyplnil. Držíme id, aby sa pri
+  /// uložení aktualizovala tá istá a nevznikla druhá s rovnakým menom.
+  int? _vesselId;
   final _companyCtrl = TextEditingController();
 
   // ── Parametre jachty ──
@@ -197,6 +205,144 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       skipper.otherCertsCtrl.text = chosen.otherCerts;
       skipper.idNumCtrl.text = chosen.idNumber;
     });
+  }
+
+  /// Výber z uložených lodí — vyplní kartu lode a zapamätá si, ktorá to bola.
+  Future<void> _pickVessel() async {
+    final db = ref.read(databaseProvider);
+    final saved = await db.getVessels();
+    if (!mounted) return;
+    final l = AppLocalizations.of(context);
+
+    if (saved.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l.vesselNoneSaved)));
+      return;
+    }
+
+    final chosen = await showModalBottomSheet<Vessel>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (ctx) => SafeArea(
+        child: ListView(shrinkWrap: true, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(l.vesselPickSaved,
+                style: Theme.of(ctx).textTheme.titleMedium),
+          ),
+          for (final v in saved)
+            ListTile(
+              leading: Icon(v.isOwn ? Icons.star : Icons.directions_boat,
+                  color: v.isOwn ? Colors.amber.shade700 : null),
+              title: Text(v.name),
+              subtitle: Text([
+                if ((v.model ?? '').isNotEmpty) v.model!,
+                if (v.lengthM != null) '${_fmtNum(v.lengthM!)} m',
+                if ((v.homePort ?? '').isNotEmpty) v.homePort!,
+              ].join('  ·  ')),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                tooltip: l.delete,
+                onPressed: () async {
+                  await db.deleteVessel(v.id);
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+              ),
+              onTap: () => Navigator.pop(ctx, v),
+            ),
+        ]),
+      ),
+    );
+    if (chosen == null || !mounted) return;
+    _fillFromVessel(chosen);
+  }
+
+  void _fillFromVessel(Vessel v) {
+    setState(() {
+      _vesselId = v.id;
+      _isOwnVessel = v.isOwn;
+      _vesselCtrl.text = v.name;
+      _modelCtrl.text = v.model ?? '';
+      if ((v.vesselType ?? '').isNotEmpty) {
+        final lNow = AppLocalizations.of(context);
+        final standard = {
+          lNow.vesselTypeSailboat,
+          lNow.vesselTypeCatamaran,
+          lNow.vesselTypeMotorBoat,
+        };
+        _typeOther = !standard.contains(v.vesselType);
+        _vesselType = v.vesselType;
+        if (_typeOther) _vesselTypeCustomCtrl.text = v.vesselType!;
+      }
+      _callsignCtrl.text = v.callsign ?? '';
+      _mmsiCtrl.text = v.mmsi ?? '';
+      _lengthCtrl.text = v.lengthM != null ? _fmtNum(v.lengthM!) : '';
+      _beamCtrl.text = v.beamM != null ? _fmtNum(v.beamM!) : '';
+      _draftCtrl.text = v.draftM != null ? _fmtNum(v.draftM!) : '';
+      _berthsCtrl.text = v.berths?.toString() ?? '';
+      _yearCtrl.text = v.yearBuilt?.toString() ?? '';
+      _engineCtrl.text = v.engine ?? '';
+      _waterTankCtrl.text = v.waterTankL != null ? _fmtNum(v.waterTankL!) : '';
+      _fuelTankCtrl.text = v.fuelTankL != null ? _fmtNum(v.fuelTankL!) : '';
+      if ((v.homePort ?? '').isNotEmpty) _homePortCtrl.text = v.homePort!;
+      if ((v.country ?? '').isNotEmpty) _countryCtrl.text = v.country!;
+    });
+  }
+
+  /// Uloží loď z formulára do zoznamu lodí.
+  ///
+  /// Plavba si vlastnú kópiu údajov drží ďalej — táto tabuľka je len zásoba
+  /// na vyplnenie ďalšej plavby, nie zdroj pravdy pre už podpísaný doklad.
+  Future<void> _saveVessel() async {
+    final name = _vesselCtrl.text.trim();
+    if (name.isEmpty) return;
+    final db = ref.read(databaseProvider);
+
+    double? num_(TextEditingController c) =>
+        double.tryParse(c.text.trim().replaceAll(',', '.'));
+    int? int_(TextEditingController c) => int.tryParse(c.text.trim());
+    String? text_(TextEditingController c) =>
+        c.text.trim().isEmpty ? null : c.text.trim();
+
+    final type = _typeOther
+        ? (_vesselTypeCustomCtrl.text.trim().isEmpty
+            ? null
+            : _vesselTypeCustomCtrl.text.trim())
+        : _vesselType;
+
+    final existing = _vesselId != null
+        ? await db.getVesselById(_vesselId!)
+        : await db.findVesselByName(name);
+
+    final data = VesselsCompanion(
+      name: Value(name),
+      model: Value(text_(_modelCtrl)),
+      vesselType: Value(type),
+      callsign: Value(text_(_callsignCtrl)),
+      mmsi: Value(text_(_mmsiCtrl)),
+      lengthM: Value(num_(_lengthCtrl)),
+      beamM: Value(num_(_beamCtrl)),
+      draftM: Value(num_(_draftCtrl)),
+      berths: Value(int_(_berthsCtrl)),
+      yearBuilt: Value(int_(_yearCtrl)),
+      engine: Value(text_(_engineCtrl)),
+      waterTankL: Value(num_(_waterTankCtrl)),
+      fuelTankL: Value(num_(_fuelTankCtrl)),
+      homePort: Value(text_(_homePortCtrl)),
+      country: Value(text_(_countryCtrl)),
+      isOwn: Value(_isOwnVessel),
+      lastUsedAt: Value(DateTime.now()),
+    );
+
+    if (existing == null) {
+      final created = await db.insertVessel(
+          data.copyWith(createdAt: Value(DateTime.now())));
+      _vesselId = created.id;
+    } else {
+      await db.updateVessel(data.copyWith(id: Value(existing.id)));
+      _vesselId = existing.id;
+    }
   }
 
   Future<void> _loadCharter() async {
@@ -359,7 +505,30 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               prefixIcon: const Icon(Icons.directions_boat),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          // Kto pláva stále na tej istej lodi, prepisoval pri každej plavbe
+          // to isté — model, volací znak, MMSI, rozmery, nádrže. Odtiaľto sa
+          // to vyplní jedným ťuknutím.
+          Row(children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _pickVessel,
+                icon: const Icon(Icons.sailing, size: 18),
+                label: Text(l.vesselPickSaved),
+              ),
+            ),
+          ]),
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            controlAffinity: ListTileControlAffinity.leading,
+            value: _isOwnVessel,
+            onChanged: (v) => setState(() => _isOwnVessel = v ?? false),
+            title: Text(l.vesselOwnLabel),
+            subtitle: Text(l.vesselOwnHint,
+                style: const TextStyle(fontSize: 11, color: Colors.grey)),
+          ),
+          const SizedBox(height: 4),
           TextField(
             controller: _modelCtrl,
             decoration: InputDecoration(
@@ -940,6 +1109,14 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         // voyage never saved). This is the same bug the timeout guard was
         // meant to fix, just via a thrown error rather than a hang.
       }
+    }
+
+    // Loď do zoznamu lodí — rovnaká opatrnosť ako pri profile skipera:
+    // zásoba na vyplnenie ďalšej plavby nesmie zhodiť uloženie tejto.
+    try {
+      await _saveVessel();
+    } catch (_) {
+      // Zoznam lodí je pohodlie, nie podmienka uloženia plavby.
     }
 
     final companion = ChartersCompanion(

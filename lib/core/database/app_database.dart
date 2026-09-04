@@ -77,6 +77,45 @@ class Charters extends Table {
   BoolColumn get tidalWaters => boolean().nullable()();
 }
 
+/// Loď, na ktorej sa pláva opakovane.
+///
+/// Karta lode žije v [Charters] — patrí tej jednej plavbe a s ňou aj do jej
+/// dokumentov. Kto však pláva stále na tej istej lodi (vlastnej alebo dlhodobo
+/// prenajatej), prepisoval pri každej novej plavbe to isté: model, volací
+/// znak, MMSI, rozmery, nádrže. Tu sú tie údaje raz a plnia kartu lode jedným
+/// ťuknutím.
+///
+/// Nie je to náhrada karty lode: plavba si ostáva vlastnú kópiu údajov, takže
+/// neskoršia zmena v tejto tabuľke neprepíše doklad, ktorý už niekto podpísal.
+class Vessels extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get model => text().nullable()();
+  TextColumn get vesselType => text().nullable()();
+  TextColumn get callsign => text().nullable()();
+  TextColumn get mmsi => text().nullable()();
+  RealColumn get lengthM => real().nullable()();
+  RealColumn get beamM => real().nullable()();
+  RealColumn get draftM => real().nullable()();
+  IntColumn get berths => integer().nullable()();
+  IntColumn get yearBuilt => integer().nullable()();
+  TextColumn get engine => text().nullable()();
+  RealColumn get waterTankL => real().nullable()();
+  RealColumn get fuelTankL => real().nullable()();
+  TextColumn get homePort => text().nullable()();
+  TextColumn get country => text().nullable()();
+  TextColumn get flag => text().nullable()();
+
+  /// Vlastná loď, nie charterová — vlastnú appka ponúka ako prvú.
+  BoolColumn get isOwn => boolean().withDefault(const Constant(false))();
+
+  DateTimeColumn get createdAt => dateTime()();
+
+  /// Kedy sa z nej naposledy plavilo. Podľa toho sa zoznam radí: loď spred
+  /// týždňa hľadá skiper skôr než tú spred dvoch sezón.
+  DateTimeColumn get lastUsedAt => dateTime().nullable()();
+}
+
 /// Jeden deň plavby
 class DayLogs extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -666,7 +705,8 @@ class OutboxRows extends Table {
 // ─────────────────────────────────────────────────────────────
 
 @DriftDatabase(tables: [
-  Charters, DayLogs, LogbookEntries,
+  Charters,
+  Vessels, DayLogs, LogbookEntries,
   TrackPoints, SailingSessions, Waypoints, WeatherSnapshots, CrewSignatures,
   CrewAssessments,
   HistoricalVoyages, HandoverProtocols, OutboxRows, TideSnapshots,
@@ -679,7 +719,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 32;
+  int get schemaVersion => 33;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -867,6 +907,10 @@ class AppDatabase extends _$AppDatabase {
       if (from >= 9 && from < 32) {
         await m.addColumn(historicalVoyages, historicalVoyages.tidalWaters);
       }
+
+      if (from < 33) {
+        await m.createTable(vessels);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -946,6 +990,55 @@ class AppDatabase extends _$AppDatabase {
     final id = await into(dayLogs).insert(d);
     return (select(dayLogs)..where((t) => t.id.equals(id))).getSingle();
   }
+
+  // ── Lode ─────────────────────────────────────────────────────
+
+  /// Uložené lode, naposledy použitá prvá; vlastné pred charterovými.
+  Future<List<Vessel>> getVessels() => (select(vessels)
+        ..orderBy([
+          (v) => OrderingTerm.desc(v.isOwn),
+          (v) => OrderingTerm.desc(v.lastUsedAt),
+          (v) => OrderingTerm(expression: v.name),
+        ]))
+      .get();
+
+  Stream<List<Vessel>> watchVessels() => (select(vessels)
+        ..orderBy([
+          (v) => OrderingTerm.desc(v.isOwn),
+          (v) => OrderingTerm.desc(v.lastUsedAt),
+          (v) => OrderingTerm(expression: v.name),
+        ]))
+      .watch();
+
+  Future<Vessel?> getVesselById(int id) =>
+      (select(vessels)..where((v) => v.id.equals(id))).getSingleOrNull();
+
+  /// Loď rovnakého mena, bez ohľadu na veľkosť písmen.
+  ///
+  /// Meno je to jediné, čím skiper loď pomenuje sám; dve „Perun" v zozname by
+  /// boli chyba, nie dve lode.
+  Future<Vessel?> findVesselByName(String name) async {
+    final trimmed = name.trim().toLowerCase();
+    if (trimmed.isEmpty) return null;
+    for (final v in await getVessels()) {
+      if (v.name.trim().toLowerCase() == trimmed) return v;
+    }
+    return null;
+  }
+
+  Future<Vessel> insertVessel(VesselsCompanion v) =>
+      into(vessels).insertReturning(v);
+
+  Future<void> updateVessel(VesselsCompanion v) =>
+      (update(vessels)..where((t) => t.id.equals(v.id.value))).write(v);
+
+  Future<void> deleteVessel(int id) =>
+      (delete(vessels)..where((v) => v.id.equals(id))).go();
+
+  /// Poznač, že sa z lode práve pláva — kvôli poradiu v zozname.
+  Future<void> touchVessel(int id) =>
+      (update(vessels)..where((v) => v.id.equals(id)))
+          .write(VesselsCompanion(lastUsedAt: Value(DateTime.now())));
 
   Future<void> updateDayLog(DayLogsCompanion d) =>
       (update(dayLogs)..where((t) => t.id.equals(d.id.value))).write(d);

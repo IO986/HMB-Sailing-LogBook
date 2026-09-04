@@ -362,6 +362,19 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
                     final idx = _checklist.indexWhere((i) => i.itemKey == itemKey);
                     if (idx != -1) _pickPhoto(idx, source);
                   },
+            onAddItem: readOnly
+                ? null
+                : (categoryKey, label) => setState(() => _checklist.add(
+                      ChecklistItem(
+                        itemKey: customChecklistKey(),
+                        customLabel: label,
+                        categoryKey: categoryKey,
+                      ),
+                    )),
+            onRemoveItem: readOnly
+                ? null
+                : (itemKey) => setState(
+                    () => _checklist.removeWhere((i) => i.itemKey == itemKey)),
           ),
         const SizedBox(height: 16),
 
@@ -484,6 +497,8 @@ class _CategorySection extends StatefulWidget {
   final List<ChecklistItem> checklist;
   final void Function(String itemKey, ChecklistItem updated)? onItemChanged;
   final void Function(String itemKey, ImageSource source)? onPickPhoto;
+  final void Function(String categoryKey, String label)? onAddItem;
+  final void Function(String itemKey)? onRemoveItem;
 
   const _CategorySection({
     required this.category,
@@ -493,6 +508,8 @@ class _CategorySection extends StatefulWidget {
     required this.checklist,
     required this.onItemChanged,
     required this.onPickPhoto,
+    this.onAddItem,
+    this.onRemoveItem,
   });
 
   @override
@@ -500,10 +517,42 @@ class _CategorySection extends StatefulWidget {
 }
 
 class _CategorySectionState extends State<_CategorySection> {
+  /// Dialóg na dopísanie vlastnej položky do tejto kategórie.
+  Future<void> _addOwnItem(BuildContext context) async {
+    final ctrl = TextEditingController();
+    final label = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(widget.l.checklistAddOwnItem),
+        content: TextField(
+          controller: ctrl,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(
+              hintText: categoryLabel(widget.localeCode, widget.category)),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: Text(widget.l.cancel)),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()),
+              child: Text(widget.l.add)),
+        ],
+      ),
+    );
+    if (label == null || label.isEmpty) return;
+    widget.onAddItem!(widget.category.key, label);
+  }
+
   @override
   Widget build(BuildContext context) {
     final itemKeys = widget.category.items.map((i) => i.key).toSet();
-    final items = widget.checklist.where((i) => itemKeys.contains(i.itemKey)).toList();
+    final custom = widget.checklist
+        .where((i) => i.isCustom && i.categoryKey == widget.category.key)
+        .toList();
+    final items = widget.checklist
+        .where((i) => itemKeys.contains(i.itemKey) || custom.contains(i))
+        .toList();
     final issues = items.where((i) => i.status != ChecklistStatus.ok).length;
 
     return Card(
@@ -530,6 +579,34 @@ class _CategorySectionState extends State<_CategorySection> {
                   ? null
                   : (source) => widget.onPickPhoto!(itemDef.key, source),
             ),
+          // Vlastné položky tejto kategórie — čo je na lodi navyše alebo čo
+          // charterová firma pýta a v zozname to nie je.
+          for (final item in custom)
+            _ChecklistItemTile(
+              item: item,
+              itemDef: null,
+              localeCode: widget.localeCode,
+              l: widget.l,
+              readOnly: widget.readOnly,
+              onChanged: widget.onItemChanged == null
+                  ? null
+                  : (updated) => widget.onItemChanged!(item.itemKey, updated),
+              onPickPhoto: widget.onPickPhoto == null
+                  ? null
+                  : (source) => widget.onPickPhoto!(item.itemKey, source),
+              onRemove: widget.onRemoveItem == null
+                  ? null
+                  : () => widget.onRemoveItem!(item.itemKey),
+            ),
+          if (!widget.readOnly && widget.onAddItem != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () => _addOwnItem(context),
+                icon: const Icon(Icons.add, size: 18),
+                label: Text(widget.l.checklistAddOwnItem),
+              ),
+            ),
         ],
       ),
     );
@@ -538,12 +615,16 @@ class _CategorySectionState extends State<_CategorySection> {
 
 class _ChecklistItemTile extends StatelessWidget {
   final ChecklistItem item;
-  final HandoverItemDef itemDef;
+
+  /// Pevná definícia položky. Vlastná (dopísaná skiperom) žiadnu nemá — nesie
+  /// si svoj text v [ChecklistItem.customLabel].
+  final HandoverItemDef? itemDef;
   final String localeCode;
   final AppLocalizations l;
   final bool readOnly;
   final ValueChanged<ChecklistItem>? onChanged;
   final ValueChanged<ImageSource>? onPickPhoto;
+  final VoidCallback? onRemove;
 
   const _ChecklistItemTile({
     required this.item,
@@ -553,6 +634,7 @@ class _ChecklistItemTile extends StatelessWidget {
     required this.readOnly,
     required this.onChanged,
     required this.onPickPhoto,
+    this.onRemove,
   });
 
   @override
@@ -563,9 +645,23 @@ class _ChecklistItemTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(itemLabel(localeCode, itemDef), style: const TextStyle(fontWeight: FontWeight.w600)),
-          if (localeCode == 'sk')
-            Text('(${itemDef.labelEn})',
+          Row(children: [
+            Expanded(
+              child: Text(checklistItemLabel(localeCode, item),
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
+            ),
+            // Vlastnú položku vie skiper aj zmazať; pevné sú súčasťou
+            // protokolu a mazať sa nedajú.
+            if (item.isCustom && !readOnly && onRemove != null)
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                tooltip: l.delete,
+                visualDensity: VisualDensity.compact,
+                onPressed: onRemove,
+              ),
+          ]),
+          if (localeCode == 'sk' && itemDef != null)
+            Text('(${itemDef!.labelEn})',
                 style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           SegmentedButton<ChecklistStatus>(
