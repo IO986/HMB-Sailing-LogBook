@@ -22,6 +22,10 @@ enum LocationPowerProfile {
 
   /// Plná presnosť — tracking plavby, zameriavanie, kotvová stráž.
   precise,
+
+  /// Núdza — človek cez palubu. Poloha čo najhustejšie, batéria je vtedy
+  /// posledná vec, na ktorej záleží.
+  emergency,
 }
 
 /// Singleton GPS service - vždy aktívny, nezávislý od trackingu.
@@ -52,6 +56,17 @@ class LocationService {
   static const _preciseConfig = LocationConfig(
     streamDistanceFilterM: 5,
     streamInterval: Duration(seconds: 5),
+  );
+
+  /// Muž cez palubu: každá sekunda a každý meter.
+  ///
+  /// Presný režim má 5 s a filter 5 m — pre trasu a míle správne, pre MOB nie:
+  /// pri pomalom manévrovaní k človeku vo vode sa loď za 5 s často neposunie
+  /// ani o filtrovaných päť metrov, takže vzdialenosť na karte stála a potom
+  /// skočila. Nahlásené z lode ako „po aktivácii MOB to seká".
+  static const _emergencyConfig = LocationConfig(
+    streamDistanceFilterM: 0,
+    streamInterval: Duration(seconds: 1),
   );
 
   /// Bežná obrazovka appky: marker na mape, počasie, prílivy. 50 m a 15 s je
@@ -96,6 +111,9 @@ class LocationService {
   /// Kto práve potrebuje presnú polohu. Kľúčom je token volajúceho, takže
   /// dvakrát pridaný ten istý konzument profil nezasekne.
   final Set<Object> _preciseConsumers = {};
+
+  /// Konzumenti, ktorým presný režim nestačí — dnes jediný: MOB.
+  final Set<Object> _emergencyConsumers = {};
 
   /// Podmnožina [_preciseConsumers], ktorá má nárok na presnú polohu aj keď
   /// je appka na pozadí — pozri [requestPrecise].
@@ -159,16 +177,20 @@ class LocationService {
   /// aby GNSS ostal na plný výkon. Android síce polohu aplikáciám na pozadí
   /// sám potláča (overené na zariadení), ale spoliehať sa na to znamená mať
   /// v kóde invariant, ktorý kód nedodržiava.
-  void requestPrecise(Object token, {bool survivesBackground = false}) {
-    if (!_preciseConsumers.add(token)) return;
+  void requestPrecise(Object token,
+      {bool survivesBackground = false, bool emergency = false}) {
+    final added = _preciseConsumers.add(token);
+    if (emergency) _emergencyConsumers.add(token);
     if (survivesBackground) _backgroundCapableConsumers.add(token);
+    if (!added && !emergency) return;
     _applyProfile();
   }
 
   /// Odhlási konzumenta pridaného cez [requestPrecise].
   void releasePrecise(Object token) {
     _backgroundCapableConsumers.remove(token);
-    if (!_preciseConsumers.remove(token)) return;
+    final wasEmergency = _emergencyConsumers.remove(token);
+    if (!_preciseConsumers.remove(token) && !wasEmergency) return;
     _applyProfile();
   }
 
@@ -182,6 +204,10 @@ class LocationService {
   /// 3. V popredí stačí ktorýkoľvek konzument na plný výkon.
   /// 4. Inak lacný idle režim, aby `lastPosition` neostalo zastarané.
   LocationPowerProfile get _desiredProfile {
+    // Núdza prebíja všetko vrátane inštrumentov: keď je človek vo vode,
+    // druhý zdroj polohy je poistka, nie luxus.
+    if (_emergencyConsumers.isNotEmpty) return LocationPowerProfile.emergency;
+
     if (_instrumentGpsSettled) return LocationPowerProfile.off;
 
     if (!_foreground) {
@@ -215,9 +241,11 @@ class LocationService {
       _stopAndroidStream();
       return;
     }
-    final config = desired == LocationPowerProfile.precise
-        ? _preciseConfig
-        : _idleConfig;
+    final config = switch (desired) {
+      LocationPowerProfile.emergency => _emergencyConfig,
+      LocationPowerProfile.precise => _preciseConfig,
+      _ => _idleConfig,
+    };
     if (_androidSub != null && _activeStreamConfig == config) return;
     _stopAndroidStream();
     unawaited(_startAndroidStream(config));

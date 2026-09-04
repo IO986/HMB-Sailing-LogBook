@@ -76,7 +76,10 @@ class MobState {
       MobState(isActive: isActive ?? this.isActive,
           mobLat: mobLat ?? this.mobLat, mobLon: mobLon ?? this.mobLon,
           activatedAt: activatedAt ?? this.activatedAt,
-          distanceM: distanceM, bearingDeg: bearingDeg);
+          // Vzdialenosť a smer sa držia, kým nepríde nový fix. Predtým ich
+          // každé copyWith bez nich zmazalo na null a karta ukázala „-".
+          distanceM: distanceM ?? this.distanceM,
+          bearingDeg: bearingDeg ?? this.bearingDeg);
 }
 
 class MobNotifier extends Notifier<MobState> {
@@ -103,15 +106,33 @@ class MobNotifier extends Notifier<MobState> {
       debugPrint('[MOB] Logged MOB activation');
     } catch (e) { debugPrint('[MOB] Log error: $e'); }
     // Muž cez palubu: smer a vzdialenosť k bodu pádu sa musia meniť plynulo.
-    LocationService().requestPrecise(this, survivesBackground: true);
-    _sub = (GpsTrackingService().isTracking
-        ? GpsTrackingService().positionStream
-        : LocationService().stream).listen((pos) {
+    LocationService()
+        .requestPrecise(this, survivesBackground: true, emergency: true);
+
+    // Vždy surový stream polohy, nikdy ten z trasovania.
+    //
+    // Trasovanie púšťa ďalej len fixy, ktoré prejdú kontrolou kvality (presnosť
+    // a nemožné skoky) — správne pre trasu a míle, zlé pre MOB: zahodený fix
+    // znamená sekundy, keď sa vzdialenosť k človeku vo vode nehýbe. Navyše sa
+    // zdroj vyberal raz pri aktivácii, takže po neskoršom spustení alebo
+    // zastavení trasovania odber ostal visieť na nesprávnom streame.
+    _sub?.cancel();
+    _sub = LocationService().stream.listen((pos) {
       state = state.copyWith(
         distanceM: _haversine(lat, lon, pos.latitude, pos.longitude),
         bearingDeg: _bearing(pos.latitude, pos.longitude, lat, lon),
       );
     });
+
+    // Prvý údaj hneď, bez čakania na ďalší fix — poloha z poslednej sekundy
+    // je pri páde do vody lepšia než pomlčka.
+    final now = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    if (now != null) {
+      state = state.copyWith(
+        distanceM: _haversine(lat, lon, now.latitude, now.longitude),
+        bearingDeg: _bearing(now.latitude, now.longitude, lat, lon),
+      );
+    }
   }
 
   Future<void> deactivate() async {
@@ -159,6 +180,26 @@ class MobNotifier extends Notifier<MobState> {
 }
 
 final mobProvider = NotifierProvider<MobNotifier, MobState>(MobNotifier.new);
+
+/// Čas od pádu, tikajúci po sekundách.
+///
+/// Karta si ho predtým počítala pri prekreslení, a prekresľovala sa len keď
+/// dorazil nový fix — stopky teda skákali o niekoľko sekúnd naraz a bez
+/// signálu stáli úplne. Nahlásené z lode ako „po aktivácii MOB nepočíta čas".
+///
+/// Vlastný provider, nie pole v [MobState]: stav MOB sleduje aj mapa a tá sa
+/// nemá prekresľovať raz za sekundu.
+final mobElapsedProvider = StreamProvider.autoDispose<Duration>((ref) async* {
+  final mob = ref.watch(mobProvider);
+  final since = mob.activatedAt;
+  if (!mob.isActive || since == null) {
+    yield Duration.zero;
+    return;
+  }
+  yield DateTime.now().difference(since);
+  yield* Stream.periodic(
+      const Duration(seconds: 1), (_) => DateTime.now().difference(since));
+});
 
 // ── Anchor Alarm ──────────────────────────────────────────────
 
@@ -678,10 +719,11 @@ class _MobActiveCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final elapsed = state.activatedAt != null
-        ? DateTime.now().difference(state.activatedAt!) : Duration.zero;
-    final et = '${elapsed.inMinutes.toString().padLeft(2,'0')}:'
-               '${(elapsed.inSeconds%60).toString().padLeft(2,'0')}';
+    final elapsed = ref.watch(mobElapsedProvider).valueOrNull ??
+        (state.activatedAt == null
+            ? Duration.zero
+            : DateTime.now().difference(state.activatedAt!));
+    final et = formatMobElapsed(elapsed);
     return Container(
       decoration: BoxDecoration(
         color: Colors.red.shade900,
@@ -728,6 +770,17 @@ class _MobActiveCard extends ConsumerWidget {
       ]),
     );
   }
+}
+
+/// mm:ss, a po hodine h:mm:ss.
+///
+/// Hľadanie človeka vo vode môže trvať aj cez hodinu a „87:13" sa v takej
+/// chvíli číta zle.
+String formatMobElapsed(Duration d) {
+  final two = (int n) => n.toString().padLeft(2, '0');
+  final seconds = two(d.inSeconds % 60);
+  if (d.inHours > 0) return '${d.inHours}:${two(d.inMinutes % 60)}:$seconds';
+  return '${two(d.inMinutes)}:$seconds';
 }
 
 class _MobStat extends StatelessWidget {
