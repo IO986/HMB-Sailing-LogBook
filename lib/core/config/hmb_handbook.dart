@@ -9,6 +9,12 @@ class BriefingSection {
   const BriefingSection(this.title, this.items);
 }
 
+/// Koľko zaškrtávacích bodov má brífing v danom jazyku.
+///
+/// Vlastné body skipera idú za príručkovými, takže ich index začína práve tu.
+int briefingPointCount(List<BriefingSection> sections) =>
+    sections.fold(0, (sum, s) => sum + s.items.length);
+
 class SafetyBriefingContent {
   static List<BriefingSection> sectionsFor(String locale) => switch (locale) {
         'en' => _en,

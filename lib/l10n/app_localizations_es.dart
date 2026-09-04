@@ -2931,7 +2931,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF de la travesía\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.\n• Los contactos de emergencia siguen tu posición aunque el seguimiento esté apagado: la aplicación pide la posición y cambia los números al pasar a otro país\n• Se puede añadir un punto propio al briefing y a ambos protocolos: lo que este barco tiene de más o lo que pida la empresa de chárter. Los puntos del briefing se recuerdan para las siguientes travesías; un punto del protocolo se queda en ese protocolo y va a su PDF. Los puntos fijos del manual no se borran, los propios sí.';
+      'La pestaña Seguridad también contiene tarjetas de referencia.\n\n• Briefing de seguridad – checklist para la tripulación antes de zarpar\n• Cada miembro firma con su propia firma en pantalla\n• Las firmas se guardan y se incluyen automáticamente en el PDF de la travesía\n• Checklist de entrega – resumen de los puntos de check-in/check-out, disponible incluso sin una travesía abierta\n• Tarjeta MAYDAY – procedimiento para llamada de socorro en canal 16 VHF\n• COLREG – reglamento de abordajes en la mar (disponible en eslovaco e inglés; los demás idiomas muestran el texto en inglés)\n• Contactos de emergencia – números y contactos de emergencia\n\nNota: el rastreo se puede iniciar en cualquier momento, incluso sin completar el briefing – la app solo lo recuerda con un chip \"Falta briefing de seguridad\" en el Diario hasta que lo completes. El briefing requiere tener antes la ficha de barco y tripulación rellenada y solo se guarda cuando todos los tripulantes han firmado.\n• Los contactos de emergencia siguen tu posición aunque el seguimiento esté apagado: la aplicación pide la posición y cambia los números al pasar a otro país\n• Se puede añadir un punto propio al briefing y a ambos protocolos: lo que este barco tiene de más o lo que pida la empresa de chárter. Los puntos propios se recuerdan para las siguientes travesías y para cada protocolo posterior, y se pueden añadir o borrar en ambos sitios: en Seguridad y en la travesía. En el PDF del protocolo se imprimen junto a los puntos fijos. El briefing de la travesía es la misma lista que lees en Seguridad: las secciones del manual, marcadas punto por punto. Los puntos fijos del manual no se borran, los propios sí.';
 
   @override
   String get guideDutyTitle => 'Guardia de la tripulación';
@@ -3109,6 +3109,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Añadir un punto propio';
+
+  @override
+  String get safetyOwnPoints => 'Puntos propios';
 
   @override
   String get briefingOwnItemHint => 'Nuevo punto del briefing';

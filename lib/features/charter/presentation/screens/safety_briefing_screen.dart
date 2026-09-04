@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/config/hmb_handbook.dart';
+import '../../../safety/services/custom_safety_items.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,12 +28,9 @@ class SafetyBriefingScreen extends ConsumerStatefulWidget {
 class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   final Set<int> _checkedItems = {};
 
-  /// Body brífingu, ktoré si dopísal skiper. Pevných dvanásť je z príručky;
-  /// každá loď má však niečo svoje — plynový ventil na inom mieste, pravidlo
-  /// o vestách po zotmení. Držia sa v nastaveniach appky, nie pri plavbe:
-  /// skiper ich hovorí posádke na každej plavbe rovnaké.
+  /// Body brífingu, ktoré si dopísal skiper — spoločné s referenčnou kartou
+  /// v Bezpečnosti, pozri [CustomSafetyItems].
   List<String> _customItems = [];
-  static const _customItemsKey = 'briefing_custom_items';
   // All maps keyed by member index to handle duplicate names correctly
   final Map<int, List<List<Offset>>> _strokes = {};
   final Map<int, String?> _existingPaths = {};
@@ -77,20 +75,8 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   }
 
   Future<void> _loadCustomItems() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getStringList(_customItemsKey) ?? const [];
-      if (mounted) setState(() => _customItems = List<String>.from(raw));
-    } catch (_) {
-      // Vlastné body sú doplnok; brífing sa kvôli nim nesmie neotvoriť.
-    }
-  }
-
-  Future<void> _saveCustomItems() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList(_customItemsKey, _customItems);
-    } catch (_) {}
+    final points = await CustomSafetyItems.briefingPoints();
+    if (mounted) setState(() => _customItems = points);
   }
 
   Future<void> _addCustomItem() async {
@@ -115,14 +101,16 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
       ),
     );
     if (text == null || text.isEmpty) return;
-    setState(() => _customItems = [..._customItems, text]);
-    await _saveCustomItems();
+    final points = await CustomSafetyItems.addBriefingPoint(text);
+    if (mounted) setState(() => _customItems = points);
   }
 
   Future<void> _removeCustomItem(int index) async {
     final removedGlobalIndex = _fixedItemCount + index;
+    final points = await CustomSafetyItems.removeBriefingPoint(index);
+    if (!mounted) return;
     setState(() {
-      _customItems = [..._customItems]..removeAt(index);
+      _customItems = points;
       // Zaškrtnutia sa posunú spolu s bodmi, inak by ostali visieť na cudzom.
       final shifted = <int>{};
       for (final i in _checkedItems) {
@@ -133,11 +121,12 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         ..clear()
         ..addAll(shifted);
     });
-    await _saveCustomItems();
   }
 
-  /// Počet pevných bodov z príručky — vlastné idú za nimi.
-  static const _fixedItemCount = 12;
+  /// Počet príručkových bodov v aktuálnom jazyku — vlastné idú za nimi.
+  int get _fixedItemCount => briefingPointCount(
+      SafetyBriefingContent.sectionsFor(
+          Localizations.localeOf(context).languageCode));
 
   @override
   void dispose() {
@@ -455,11 +444,14 @@ class _ChecklistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final items = [
-      l.briefingItem1, l.briefingItem2, l.briefingItem3, l.briefingItem4,
-      l.briefingItem5, l.briefingItem6, l.briefingItem7, l.briefingItem8,
-      l.briefingItem9, l.briefingItem10, l.briefingItem11, l.briefingItem12,
-    ];
+    final locale = Localizations.localeOf(context).languageCode;
+    // Ten istý text, aký si skiper prečíta v Bezpečnosti → Bezpečnostný
+    // brífing. Predtým tu bolo dvanásť vlastných bodov, ktoré s príručkou
+    // nemali spoločný pôvod — dva rôzne zoznamy pre tú istú vec.
+    final sections = SafetyBriefingContent.sectionsFor(locale);
+    final fixedCount = briefingPointCount(sections);
+
+    var index = 0;
     return Card(child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -470,19 +462,41 @@ class _ChecklistCard extends StatelessWidget {
                   fontWeight: FontWeight.bold, fontSize: 14)),
         ),
         const Divider(height: 8),
-        ...items.asMap().entries.map((e) => CheckboxListTile(
-          dense: true,
-          value: checked.contains(e.key),
-          onChanged: (v) => onChanged(e.key, v ?? false),
-          title: Text(e.value, style: const TextStyle(fontSize: 13)),
-          controlAffinity: ListTileControlAffinity.leading,
-        )),
-        // Vlastné body idú za pevnými a dajú sa zmazať — pevných dvanásť je
-        // z príručky a tie sa nemažú.
+        for (final section in sections) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
+            child: Text(section.title,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Theme.of(context).colorScheme.primary)),
+          ),
+          for (final item in section.items)
+            Builder(builder: (_) {
+              final i = index++;
+              return CheckboxListTile(
+                dense: true,
+                value: checked.contains(i),
+                onChanged: (v) => onChanged(i, v ?? false),
+                title: Text(item, style: const TextStyle(fontSize: 13)),
+                controlAffinity: ListTileControlAffinity.leading,
+              );
+            }),
+        ],
+        // Vlastné body idú za príručkou a dajú sa zmazať — príručkové nie.
+        if (customItems.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
+            child: Text(l.safetyOwnPoints,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Theme.of(context).colorScheme.primary)),
+          ),
         ...customItems.asMap().entries.map((e) => CheckboxListTile(
               dense: true,
-              value: checked.contains(items.length + e.key),
-              onChanged: (v) => onChanged(items.length + e.key, v ?? false),
+              value: checked.contains(fixedCount + e.key),
+              onChanged: (v) => onChanged(fixedCount + e.key, v ?? false),
               title: Text(e.value, style: const TextStyle(fontSize: 13)),
               controlAffinity: ListTileControlAffinity.leading,
               secondary: IconButton(

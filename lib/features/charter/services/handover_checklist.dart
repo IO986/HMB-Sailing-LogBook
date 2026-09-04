@@ -549,6 +549,40 @@ List<ChecklistItem> defaultChecklist(String type) => _categoriesFor(type)
     .map((item) => ChecklistItem(itemKey: item.key))
     .toList();
 
+/// Doplní do checklistu vlastné položky skipera, ktoré v ňom ešte nie sú.
+///
+/// Vlastné položky sú uložené globálne (`CustomSafetyItems`), lebo skiper si
+/// tú istú vec píše do každého protokolu. Volá sa aj na existujúci protokol:
+/// položka pridaná po jeho založení sa tak objaví aj v ňom — pokiaľ ho už
+/// niekto nepodpísal, vtedy je protokol aj tak len na čítanie.
+///
+/// [customs] je (kategória, popis); položky pre kategórie, ktoré tento typ
+/// protokolu nemá, sa ticho preskočia — check-in a check-out majú vlastné
+/// kategórie.
+List<ChecklistItem> withCustomItems(
+  List<ChecklistItem> checklist,
+  String type,
+  List<({String categoryKey, String label})> customs,
+) {
+  final categoryKeys = {for (final c in _categoriesFor(type)) c.key};
+  final existing = {
+    for (final i in checklist)
+      if (i.isCustom) '${i.categoryKey}|${i.customLabel}',
+  };
+
+  return [
+    ...checklist,
+    for (final c in customs)
+      if (categoryKeys.contains(c.categoryKey) &&
+          !existing.contains('${c.categoryKey}|${c.label}'))
+        ChecklistItem(
+          itemKey: customChecklistKey(),
+          customLabel: c.label,
+          categoryKey: c.categoryKey,
+        ),
+  ];
+}
+
 List<ChecklistItem> checklistFromJson(String json) {
   final decoded = jsonDecode(json) as List;
   return decoded

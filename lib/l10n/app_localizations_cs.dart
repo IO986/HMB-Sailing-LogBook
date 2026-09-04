@@ -2915,7 +2915,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu plavby\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.\n• Nouzové kontakty se vybírají podle aktuální polohy i bez zapnutého trasování – aplikace si polohu vyžádá sama a při přechodu do jiné země čísla vymění\n• Do briefingu i do obou protokolů lze dopsat vlastní bod — co má loď navíc nebo co si žádá charterová firma. Body briefingu si aplikace pamatuje pro další plavby, položka protokolu zůstává u toho protokolu a jde s ním do PDF. Pevné body z příručky smazat nelze, vlastní ano.';
+      'V Bezpečnosti najdeš i záložky s referenčními kartami.\n\n• Bezpečnostní briefing – checklist pro posádku před plavbou\n• Každý člen posádky se podepíše vlastním podpisem na obrazovce\n• Podpisy se uloží a automaticky se zahrnou do PDF exportu plavby\n• Předávací checklist – přehled položek pro převzetí/vrácení lodi, dostupný i bez otevřené plavby\n• MAYDAY karta – postup pro tísňové volání na VHF kanál 16\n• COLREG – pravidla pro předcházení srážkám na moři (dostupná slovensky a anglicky; ostatní jazyky zobrazí anglický text)\n• Kontakty – nouzová čísla a kontakty\n\nPozn.: Tracking lze spustit kdykoli, i bez vyplněného briefingu – aplikace to jen připomene chipem \"Chybí SB\" v Deníku, dokud ho nedokončíš. Briefing vyžaduje nejprve vyplněnou kartu lodi a posádky a uloží se až s podpisy všech členů.\n• Nouzové kontakty se vybírají podle aktuální polohy i bez zapnutého trasování – aplikace si polohu vyžádá sama a při přechodu do jiné země čísla vymění\n• Do briefingu i do obou protokolů lze dopsat vlastní bod — co má loď navíc nebo co si žádá charterová firma. Vlastní body si aplikace pamatuje pro další plavby i pro každý další protokol a dají se přidat i smazat na obou místech — v Bezpečnosti i v plavbě. Do PDF protokolu jdou vedle pevných položek. Briefing v plavbě je přitom tentýž seznam, jaký si přečteš v Bezpečnosti: sekce příručky a jejich body se zaškrtávají jeden po druhém. Pevné body z příručky smazat nelze, vlastní ano.';
 
   @override
   String get guideDutyTitle => 'Služba posádky';
@@ -3093,6 +3093,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Přidat vlastní bod';
+
+  @override
+  String get safetyOwnPoints => 'Vlastní body';
 
   @override
   String get briefingOwnItemHint => 'Nový bod briefingu';

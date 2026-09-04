@@ -2935,7 +2935,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Fahrt-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.\n• Die Notfallkontakte richten sich nach der Position, auch ohne laufende Aufzeichnung – die App holt sich die Position selbst und wechselt die Nummern beim Grenzübertritt\n• Ins Briefing und in beide Protokolle lässt sich ein eigener Punkt schreiben — was dieses Boot zusätzlich hat oder was die Charterfirma verlangt. Briefing-Punkte merkt sich die App für die nächsten Reisen; ein Protokollpunkt bleibt bei diesem Protokoll und geht mit ihm ins PDF. Die festen Punkte aus dem Handbuch lassen sich nicht löschen, eigene schon.';
+      'Die Sicherheits-Registerkarte enthält auch Referenzkarten.\n\n• Sicherheitseinweisung – Checkliste für die Crew vor der Abfahrt\n• Jedes Crewmitglied unterschreibt mit einer eigenen Bildschirm-Unterschrift\n• Unterschriften werden gespeichert und automatisch in den PDF-Fahrt-Export aufgenommen\n• Übergabe-Checkliste – Übersicht der Check-in/Check-out-Punkte, auch ohne offene Fahrt verfügbar\n• MAYDAY-Karte – Verfahren für Notrufe auf VHF-Kanal 16\n• COLREG – Kollisionsverhütungsregeln auf See (auf Slowakisch und Englisch verfügbar; andere Sprachen zeigen den englischen Text)\n• Notfallkontakte – Notrufnummern und Kontakte\n\nHinweis: Das Tracking kann jederzeit gestartet werden, auch ohne abgeschlossene Einweisung – die App erinnert nur mit einem Chip \"Sicherheitseinweisung fehlt\" im Logbuch, bis sie erledigt ist. Die Einweisung setzt eine ausgefüllte Schiffs- und Crew-Karte voraus und lässt sich erst speichern, wenn jedes Crew-Mitglied unterschrieben hat.\n• Die Notfallkontakte richten sich nach der Position, auch ohne laufende Aufzeichnung – die App holt sich die Position selbst und wechselt die Nummern beim Grenzübertritt\n• Ins Briefing und in beide Protokolle lässt sich ein eigener Punkt schreiben — was dieses Boot zusätzlich hat oder was die Charterfirma verlangt. Eigene Punkte merkt sich die App für die nächsten Reisen und für jedes weitere Protokoll; hinzufügen und löschen lassen sie sich an beiden Stellen — in Sicherheit und in der Reise. Im PDF des Protokolls stehen sie neben den festen Punkten. Das Briefing in der Reise ist dieselbe Liste, die in Sicherheit steht: die Abschnitte des Handbuchs, Punkt für Punkt abgehakt. Die festen Punkte aus dem Handbuch lassen sich nicht löschen, eigene schon.';
 
   @override
   String get guideDutyTitle => 'Wachdienst';
@@ -3113,6 +3113,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Eigenen Punkt hinzufügen';
+
+  @override
+  String get safetyOwnPoints => 'Eigene Punkte';
 
   @override
   String get briefingOwnItemHint => 'Neuer Briefing-Punkt';

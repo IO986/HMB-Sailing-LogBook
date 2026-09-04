@@ -5561,7 +5561,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyBriefingBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu plavby\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.\n• Núdzové kontakty sa vyberajú podľa aktuálnej polohy aj bez zapnutého trasovania – appka si polohu vypýta sama a pri prechode do inej krajiny čísla vymení\n• Do brífingu aj do oboch protokolov sa dá dopísať vlastný bod — čo má loď navyše alebo čo si pýta charterová firma. Body brífingu si appka pamätá pre ďalšie plavby, položka protokolu ostáva pri tom protokole a ide s ním do PDF. Pevné body z príručky sa zmazať nedajú, vlastné áno.'**
+  /// **'V Bezpečnosti nájdeš aj záložky s referenčnými kartami.\n\n• Bezpečnostný brífing – checklist pre posádku pred plavbou\n• Každý člen posádky podpíše vlastným podpisom na obrazovke\n• Podpisy sa uložia a automaticky sa zahrnú do PDF exportu plavby\n• Odovzdávací checklist – prehľad položiek na prevzatie/vrátenie lode, dostupný aj bez otvorenej plavby\n• MAYDAY karta – postup pre tiesňové volanie na VHF kanál 16\n• COLREG – pravidlá predchádzania zrážkam na mori (dostupné po slovensky a anglicky; ostatné jazyky zobrazia anglický text)\n• Kontakty – núdzové čísla a kontakty\n\nPozn.: Tracking sa dá spustiť kedykoľvek, aj bez vyplneného briefingu – appka to len pripomenie chipom \"Chýba SB\" v Denníku, kým ho nedokončíš. Briefing vyžaduje najprv vyplnenú kartu lode a posádky a uloží sa až s podpismi všetkých členov.\n• Núdzové kontakty sa vyberajú podľa aktuálnej polohy aj bez zapnutého trasovania – appka si polohu vypýta sama a pri prechode do inej krajiny čísla vymení\n• Do brífingu aj do oboch protokolov sa dá dopísať vlastný bod — čo má loď navyše alebo čo si pýta charterová firma. Vlastné body si appka pamätá pre ďalšie plavby aj pre každý ďalší protokol a dajú sa pridať aj zmazať na oboch miestach — v Bezpečnosti aj v plavbe. Do PDF protokolu idú vedľa pevných položiek. Brífing v plavbe je pritom ten istý zoznam, aký si prečítaš v Bezpečnosti: sekcie príručky a ich body sa zaškrtávajú jeden po druhom. Pevné body z príručky sa zmazať nedajú, vlastné áno.'**
   String get guideSafetyBriefingBody;
 
   /// No description provided for @guideDutyTitle.
@@ -5893,6 +5893,12 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Pridať vlastný bod'**
   String get briefingAddOwnItem;
+
+  /// No description provided for @safetyOwnPoints.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vlastné body'**
+  String get safetyOwnPoints;
 
   /// No description provided for @briefingOwnItemHint.
   ///

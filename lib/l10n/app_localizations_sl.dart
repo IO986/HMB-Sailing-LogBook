@@ -2919,7 +2919,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF plovbe\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.\n• Klici v sili sledijo položaju tudi brez vklopljenega sledenja – aplikacija sama zahteva položaj in ob prehodu v drugo državo zamenja številke\n• V brifing in v oba zapisnika lahko dopišeš svojo točko — kar ima plovilo dodatno ali kar zahteva charter podjetje. Točke brifinga si aplikacija zapomni za naslednje plovbe; postavka zapisnika ostane pri tem zapisniku in gre z njim v PDF. Fiksnih točk iz priročnika ni mogoče izbrisati, lastne pa.';
+      'Zavihek Varnost vsebuje tudi referenčne kartice.\n\n• Varnostni brifing – kontrolni seznam za posadko pred izplutjem\n• Vsak član posadke se podpiše z lastnim podpisom na zaslonu\n• Podpisi se shranijo in samodejno vključijo v izvoz PDF plovbe\n• Seznam primopredaje – pregled postavk check-in/check-out, na voljo tudi brez odprte plovbe\n• Kartica MAYDAY – postopek klica v sili na kanalu VHF 16\n• COLREG – pravila za izogibanje trčenju na morju (na voljo v slovaščini in angleščini; drugi jeziki prikazujejo angleško besedilo)\n• Stiki – številke in stiki za klic v sili\n\nOpomba: sledenje lahko začnete kadar koli, tudi brez končanega brifinga – aplikacija vas le opozarja z oznako \"Manjka varnostni brifing\" v Dnevniku, dokler ni končan. Brifing zahteva predhodno izpolnjeno kartico plovila in posadke, shraniti pa ga je mogoče šele, ko se podpiše vsak član posadke.\n• Klici v sili sledijo položaju tudi brez vklopljenega sledenja – aplikacija sama zahteva položaj in ob prehodu v drugo državo zamenja številke\n• V brifing in v oba zapisnika lahko dopišeš svojo točko — kar ima plovilo dodatno ali kar zahteva charter podjetje. Lastne točke si aplikacija zapomni za naslednje plovbe in za vsak nadaljnji zapisnik, dodati in izbrisati pa jih je mogoče na obeh mestih — v Varnosti in v plovbi. V PDF zapisnika gredo ob fiksnih postavkah. Brifing v plovbi je isti seznam, ki ga prebereš v Varnosti: razdelki priročnika, točko za točko. Fiksnih točk iz priročnika ni mogoče izbrisati, lastne pa.';
 
   @override
   String get guideDutyTitle => 'Posadka na straži';
@@ -3097,6 +3097,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Dodaj svojo točko';
+
+  @override
+  String get safetyOwnPoints => 'Lastne točke';
 
   @override
   String get briefingOwnItemHint => 'Nova točka brifinga';

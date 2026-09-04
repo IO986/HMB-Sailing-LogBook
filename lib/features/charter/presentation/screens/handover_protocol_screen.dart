@@ -14,6 +14,7 @@ import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
+import '../../../safety/services/custom_safety_items.dart';
 import '../../../../core/utils/localized_date.dart';
 
 String _statusLabel(AppLocalizations l, ChecklistStatus s) => switch (s) {
@@ -81,6 +82,28 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     }
   }
 
+  /// Vlastná položka sa pridá do tohto protokolu aj medzi uložené — do
+  /// ďalšieho check-inu ju už skiper písať nemusí.
+  Future<void> _addCustomItem(String categoryKey, String label) async {
+    setState(() => _checklist.add(ChecklistItem(
+          itemKey: customChecklistKey(),
+          customLabel: label,
+          categoryKey: categoryKey,
+        )));
+    await CustomSafetyItems.addChecklistItem(categoryKey, label);
+  }
+
+  /// Zmazanie platí rovnako: položka zmizne z tohto protokolu aj zo zoznamu
+  /// uložených, inak by sa do ďalšieho protokolu vrátila sama.
+  Future<void> _removeCustomItem(String itemKey) async {
+    final item = _checklist.where((i) => i.itemKey == itemKey).firstOrNull;
+    setState(() => _checklist.removeWhere((i) => i.itemKey == itemKey));
+    if (item != null && item.isCustom && item.categoryKey != null) {
+      await CustomSafetyItems.removeChecklistItem(
+          item.categoryKey!, item.customLabel!);
+    }
+  }
+
   Future<void> _loadInner() async {
     final db = ref.read(databaseProvider);
     final charters = await db.getAllCharters();
@@ -117,6 +140,15 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         debugPrint('[HANDOVER] skipper profile prefill skipped: $e');
       }
     }
+
+    // Vlastné položky skipera platia pre každý protokol, nielen pre ten, kde
+    // vznikli — pozri CustomSafetyItems.
+    final customs = await CustomSafetyItems.checklistItems();
+    _checklist = withCustomItems(
+      _checklist,
+      widget.type,
+      [for (final c in customs) (categoryKey: c.categoryKey, label: c.label)],
+    );
 
     if (existing == null && _isCheckOut) {
       // Predvyplnenie spoločných metadát z check-in protokolu. Samotný
@@ -362,19 +394,8 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
                     final idx = _checklist.indexWhere((i) => i.itemKey == itemKey);
                     if (idx != -1) _pickPhoto(idx, source);
                   },
-            onAddItem: readOnly
-                ? null
-                : (categoryKey, label) => setState(() => _checklist.add(
-                      ChecklistItem(
-                        itemKey: customChecklistKey(),
-                        customLabel: label,
-                        categoryKey: categoryKey,
-                      ),
-                    )),
-            onRemoveItem: readOnly
-                ? null
-                : (itemKey) => setState(
-                    () => _checklist.removeWhere((i) => i.itemKey == itemKey)),
+            onAddItem: readOnly ? null : _addCustomItem,
+            onRemoveItem: readOnly ? null : _removeCustomItem,
           ),
         const SizedBox(height: 16),
 

@@ -2921,7 +2921,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF rejsu\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.\n• Kontakty alarmowe dobierają się według pozycji nawet przy wyłączonym śledzeniu – aplikacja sama pobiera pozycję i zmienia numery po przekroczeniu granicy\n• Do odprawy i do obu protokołów można dopisać własny punkt — co łódź ma dodatkowo albo czego wymaga firma czarterowa. Punkty odprawy aplikacja pamięta na kolejne rejsy; pozycja protokołu zostaje przy tym protokole i trafia z nim do PDF. Stałych punktów z podręcznika nie da się usunąć, własne tak.';
+      'W Bezpieczeństwie znajdziesz też zakładki z kartami referencyjnymi.\n\n• Odprawa bezpieczeństwa – lista kontrolna dla załogi przed rejsem\n• Każdy członek załogi podpisuje się własnym podpisem na ekranie\n• Podpisy zapisują się i automatycznie trafiają do eksportu PDF rejsu\n• Lista przekazania – przegląd pozycji do odbioru/zwrotu jachtu, dostępny także bez otwartego rejsu\n• Karta MAYDAY – procedura wezwania pomocy na kanale VHF 16\n• COLREG – przepisy o zapobieganiu zderzeniom na morzu (dostępne po słowacku i angielsku; pozostałe języki wyświetlają tekst angielski)\n• Kontakty – numery i kontakty alarmowe\n\nUwaga: Śledzenie można uruchomić kiedykolwiek, także bez wypełnionej odprawy – aplikacja jedynie przypomni chipem \"Brak SB\" w Dzienniku, dopóki jej nie ukończysz. Odprawa wymaga najpierw wypełnionej karty jachtu i załogi i zapisuje się dopiero z podpisami wszystkich członków.\n• Kontakty alarmowe dobierają się według pozycji nawet przy wyłączonym śledzeniu – aplikacja sama pobiera pozycję i zmienia numery po przekroczeniu granicy\n• Do odprawy i do obu protokołów można dopisać własny punkt — co łódź ma dodatkowo albo czego wymaga firma czarterowa. Własne punkty aplikacja pamięta na kolejne rejsy i na każdy następny protokół, a dodać je i usunąć można w obu miejscach — w Bezpieczeństwie i w rejsie. Do PDF protokołu trafiają obok stałych pozycji. Odprawa w rejsie to zaś ta sama lista, którą czytasz w Bezpieczeństwie: sekcje podręcznika, punkt po punkcie. Stałych punktów z podręcznika nie da się usunąć, własne tak.';
 
   @override
   String get guideDutyTitle => 'Wachta załogi';
@@ -3098,6 +3098,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Dodaj własny punkt';
+
+  @override
+  String get safetyOwnPoints => 'Własne punkty';
 
   @override
   String get briefingOwnItemHint => 'Nowy punkt odprawy';

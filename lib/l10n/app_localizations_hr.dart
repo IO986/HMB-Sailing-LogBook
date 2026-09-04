@@ -2925,7 +2925,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'Kartica Sigurnost sadrži i referentne kartice.\n\n• Sigurnosna instruktaža – kontrolna lista za posadu prije isplovljenja\n• Svaki član posade potpisuje se vlastitim potpisom na zaslonu\n• Potpisi se spremaju i automatski uključuju u PDF izvoz plovidbe\n• Lista primopredaje – pregled stavki check-ina/check-outa, dostupna i bez otvorene plovidbe\n• MAYDAY kartica – postupak poziva u pogibli na VHF kanalu 16\n• COLREG – pravila izbjegavanja sudara na moru (dostupna na slovačkom i engleskom; ostali jezici prikazuju engleski tekst)\n• Kontakti – hitni brojevi i kontakti\n\nNapomena: praćenje se može pokrenuti bilo kada, i bez dovršene instruktaže – aplikacija vas samo podsjeća oznakom \"Nedostaje sigurnosna instruktaža\" u Dnevniku dok je ne dovršite. Instruktaža zahtijeva prethodno ispunjenu karticu plovila i posade, a može se spremiti tek kad se potpiše svaki član posade.\n• Kontakti za nuždu prate poziciju i kad praćenje ne radi – aplikacija sama zatraži poziciju i mijenja brojeve pri prelasku u drugu državu\n• U brifing i u oba zapisnika može se dopisati vlastita točka — što brod ima viška ili što traži charter tvrtka. Točke brifinga aplikacija pamti za sljedeće plovidbe; stavka zapisnika ostaje uz taj zapisnik i ide s njim u PDF. Fiksne točke iz priručnika se ne brišu, vlastite da.';
+      'Kartica Sigurnost sadrži i referentne kartice.\n\n• Sigurnosna instruktaža – kontrolna lista za posadu prije isplovljenja\n• Svaki član posade potpisuje se vlastitim potpisom na zaslonu\n• Potpisi se spremaju i automatski uključuju u PDF izvoz plovidbe\n• Lista primopredaje – pregled stavki check-ina/check-outa, dostupna i bez otvorene plovidbe\n• MAYDAY kartica – postupak poziva u pogibli na VHF kanalu 16\n• COLREG – pravila izbjegavanja sudara na moru (dostupna na slovačkom i engleskom; ostali jezici prikazuju engleski tekst)\n• Kontakti – hitni brojevi i kontakti\n\nNapomena: praćenje se može pokrenuti bilo kada, i bez dovršene instruktaže – aplikacija vas samo podsjeća oznakom \"Nedostaje sigurnosna instruktaža\" u Dnevniku dok je ne dovršite. Instruktaža zahtijeva prethodno ispunjenu karticu plovila i posade, a može se spremiti tek kad se potpiše svaki član posade.\n• Kontakti za nuždu prate poziciju i kad praćenje ne radi – aplikacija sama zatraži poziciju i mijenja brojeve pri prelasku u drugu državu\n• U brifing i u oba zapisnika može se dopisati vlastita točka — što brod ima viška ili što traži charter tvrtka. Vlastite točke aplikacija pamti za sljedeće plovidbe i za svaki idući zapisnik, a dodati ih i obrisati možeš na oba mjesta — u Sigurnosti i u plovidbi. U PDF zapisnika idu uz fiksne stavke. Brifing u plovidbi je isti popis koji čitaš u Sigurnosti: odjeljci priručnika, točku po točku. Fiksne točke iz priručnika se ne brišu, vlastite da.';
 
   @override
   String get guideDutyTitle => 'Posada na straži';
@@ -3103,6 +3103,9 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Dodaj vlastitu točku';
+
+  @override
+  String get safetyOwnPoints => 'Vlastite točke';
 
   @override
   String get briefingOwnItemHint => 'Nova točka brifinga';

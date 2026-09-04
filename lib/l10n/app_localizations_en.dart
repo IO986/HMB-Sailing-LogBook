@@ -2916,7 +2916,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyBriefingBody =>
-      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the voyage PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.\n• The emergency contacts follow your position even with tracking off – the app asks for a fix itself and swaps the numbers when you cross into another country\n• Your own point can be added to the briefing and to both protocols — whatever this boat has extra, or whatever the charter company asks for. Briefing points are remembered for the next voyages; a protocol item stays with that protocol and goes into its PDF. The fixed points from the handbook cannot be deleted, your own can.';
+      'The Safety tab also contains reference cards.\n\n• Safety Briefing – crew checklist before departure\n• Each crew member signs with their own on-screen signature\n• Signatures are saved and automatically included in the voyage PDF export\n• Handover Checklist – overview of check-in/check-out items, available even without an open voyage\n• MAYDAY card – procedure for distress call on VHF channel 16\n• COLREG – collision regulations at sea (available in Slovak and English; other languages show the English text)\n• Contacts – emergency numbers and contacts\n\nNote: tracking can be started anytime, even without a completed briefing – the app just reminds you with a \"Missing safety briefing\" chip in the Logbook until it\'s done. The briefing requires the vessel & crew card to be filled in first and can only be saved once every crew member has signed.\n• The emergency contacts follow your position even with tracking off – the app asks for a fix itself and swaps the numbers when you cross into another country\n• Your own point can be added to the briefing and to both protocols — whatever this boat has extra, or whatever the charter company asks for. Your own points are remembered for the next voyages and for every further protocol, and can be added or deleted in both places — in Safety and in the voyage. In the protocol\'s PDF they print beside the fixed items. The briefing in a voyage is the very list you read in Safety: the handbook\'s sections, ticked off point by point. The fixed points from the handbook cannot be deleted, your own can.';
 
   @override
   String get guideDutyTitle => 'Crew on duty';
@@ -3094,6 +3094,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get briefingAddOwnItem => 'Add your own point';
+
+  @override
+  String get safetyOwnPoints => 'Your own points';
 
   @override
   String get briefingOwnItemHint => 'New briefing point';
