@@ -560,6 +560,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportPdf => 'Export PDF';
 
   @override
+  String get exportsTitle => 'Exports';
+
+  @override
+  String get exportsThisVoyage => 'This voyage';
+
+  @override
+  String get exportsAcrossVoyages => 'Across voyages';
+
+  @override
+  String get exportsAutomatic => 'Automatic';
+
+  @override
+  String get exportsWholeVoyage => 'Whole voyage';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Every day with maps, crew and signatures';
+
+  @override
+  String get exportsDay => 'Day';
+
+  @override
+  String get exportsDayDesc => 'One day of the voyage with its track';
+
+  @override
+  String get exportsHandoverDesc => 'Taking the boat over and handing it back';
+
+  @override
+  String get exportsCrewCertsDesc =>
+      'Miles and assessment, one per crew member';
+
+  @override
+  String get exportsMilesCertDesc => 'Miles sailed on the voyages you pick';
+
+  @override
+  String get exportsBearingsDesc => 'Bearings taken outside a voyage';
+
+  @override
+  String get exportsCloudTitle => 'Cloud export to Google Drive';
+
+  @override
+  String get exportsCloudOn => 'On — a finished day leaves by itself';
+
+  @override
+  String get exportsCloudOff => 'Off — everything stays on the phone';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Pick a voyage';
+
+  @override
+  String get exportsNoVoyages => 'No voyage yet';
+
+  @override
+  String get exportsNoDays => 'This voyage has no day recorded';
+
+  @override
+  String get exportsNoBearings => 'No bearings outside a voyage';
+
+  @override
+  String get exportsNotFilledIn => 'Not filled in';
+
+  @override
   String get selectDaysTitle => 'Select days to delete';
 
   @override
@@ -2870,7 +2938,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. Open Logbook → select a voyage\n2. Tap the export icon or three dots → Export PDF\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings';
+      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

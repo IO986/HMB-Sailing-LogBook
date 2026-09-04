@@ -560,6 +560,73 @@ class AppLocalizationsSl extends AppLocalizations {
   String get exportPdf => 'Izvozi PDF';
 
   @override
+  String get exportsTitle => 'Izvozi';
+
+  @override
+  String get exportsThisVoyage => 'Ta plovba';
+
+  @override
+  String get exportsAcrossVoyages => 'Prek plovb';
+
+  @override
+  String get exportsAutomatic => 'Samodejno';
+
+  @override
+  String get exportsWholeVoyage => 'Celotna plovba';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Vsi dnevi s kartami, posadko in podpisi';
+
+  @override
+  String get exportsDay => 'Dan';
+
+  @override
+  String get exportsDayDesc => 'En dan plovbe skupaj s progo';
+
+  @override
+  String get exportsHandoverDesc => 'Zapisnik o prevzemu in vrnitvi plovila';
+
+  @override
+  String get exportsCrewCertsDesc => 'Milje in ocena za vsakega člana posebej';
+
+  @override
+  String get exportsMilesCertDesc => 'Preplute milje iz izbranih plovb';
+
+  @override
+  String get exportsBearingsDesc => 'Azimuti, posneti zunaj plovbe';
+
+  @override
+  String get exportsCloudTitle => 'Izvoz v Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Vklopljen — končan dan odide sam';
+
+  @override
+  String get exportsCloudOff => 'Izklopljen — vse ostane v telefonu';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Izberi plovbo';
+
+  @override
+  String get exportsNoVoyages => 'Zaenkrat nobene plovbe';
+
+  @override
+  String get exportsNoDays => 'Ta plovba nima vpisanega dneva';
+
+  @override
+  String get exportsNoBearings => 'Ni azimutov zunaj plovbe';
+
+  @override
+  String get exportsNotFilledIn => 'Ni izpolnjeno';
+
+  @override
   String get selectDaysTitle => 'Izberite dneve za brisanje';
 
   @override
@@ -2874,7 +2941,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. Odprite Dnevnik → izberite plovbo\n2. Tapnite ikono izvoza ali tri pike → Izvozi PDF\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. V Dnevniku zgoraj tapnite chip Izvozi\n2. Izberite, kaj izvažate — celotno plovbo, en dan, primopredajni zapisnik, potrdila posadke, milje ali azimute\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah\n• Vsi izvozi so na enem mestu — pod chipom Izvozi v Dnevniku. Edina izjema je varnostna kopija celotne zbirke: ostane v Nastavitvah ob obnovitvi, saj to ni dokument za nekoga, ampak slika podatkov.';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';

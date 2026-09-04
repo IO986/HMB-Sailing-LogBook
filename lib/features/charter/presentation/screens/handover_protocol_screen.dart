@@ -5,17 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
-import '../../../export/presentation/pdf_preview_screen.dart';
-import '../../../export/services/pdf_export_service.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -265,41 +261,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     }
   }
 
-  Future<void> _exportPdf() async {
-    final charter = _charter;
-    if (charter == null) return;
-    final db = ref.read(databaseProvider);
-    final protocol = await db.getHandoverProtocol(widget.charterId, widget.type);
-    if (protocol == null) return;
-
-    // Captured before the await — context must not be used across one.
-    final l = AppLocalizations.of(context);
-    final bytes = await PdfExportService.exportHandoverProtocol(
-      dateFormat: AppDate.of(context, ref),
-      l: l,
-      charter: charter,
-      protocol: protocol,
-      checklist: checklistFromJson(protocol.checklistJson),
-    );
-    if (!mounted) return;
-    final title = widget.type == 'checkOut' ? l.checkOutProtocol : l.checkInProtocol;
-    final fileName = 'HMB_Protokol_${widget.type}_${DateFormat('yyyyMMdd_HHmm').format(DateTime.now())}';
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => PdfPreviewScreen(
-        title: title,
-        pdfBytes: bytes,
-        suggestedFileName: fileName,
-        onSave: () async {
-          Navigator.of(context).pop();
-          final dir = await getTemporaryDirectory();
-          final file = File('${dir.path}/$fileName.pdf');
-          await file.writeAsBytes(bytes);
-          await Share.shareXFiles([XFile(file.path)]);
-        },
-      ),
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -317,12 +278,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (readOnly || _existing != null)
-            IconButton(
-              icon: const Icon(Icons.picture_as_pdf_outlined),
-              tooltip: l.exportPdf,
-              onPressed: _exportPdf,
-            ),
           if (!readOnly)
             TextButton(
               onPressed: _saving ? null : _save,

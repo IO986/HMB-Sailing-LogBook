@@ -79,40 +79,6 @@ class CharterDetailScreen extends ConsumerWidget {
                   context.go('/map');
                 },
               ),
-              // Zvyšok pod tri bodky: v hlavičke ostávajú tri stavové ikony,
-              // ktoré blikajú, kým niečo chýba, plus trasa. Šesť ikon zožralo
-              // titulok natoľko, že z dátumu plavby ostali tri bodky.
-              PopupMenuButton<String>(
-                tooltip: l.more,
-                onSelected: (value) {
-                  switch (value) {
-                    case 'crew':
-                      context.go('/logbook/$charterId/crew-certificates');
-                    case 'pdf':
-                      context.go('/logbook/$charterId/export');
-                  }
-                },
-                itemBuilder: (ctx) => [
-                  PopupMenuItem(
-                    value: 'crew',
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.workspace_premium_outlined),
-                      title: Text(l.crewCertTitle),
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'pdf',
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.picture_as_pdf),
-                      title: Text(l.exportPdf),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
           body: dayLogsAsync.when(
@@ -396,8 +362,6 @@ class _DayCard extends ConsumerWidget {
                     }
                   }
                   if (v == 'route') await _editRoute(context, ref);
-                  if (v == 'export')
-                    context.go('/logbook/$charterId/day/${day.id}/export');
                 },
                 itemBuilder: (ctx) {
                   final l = AppLocalizations.of(ctx);
@@ -405,9 +369,6 @@ class _DayCard extends ConsumerWidget {
                     PopupMenuItem(value: 'route',
                       child: ListTile(leading: const Icon(Icons.anchor),
                           title: Text(l.editRouteTitle), contentPadding: EdgeInsets.zero)),
-                    PopupMenuItem(value: 'export',
-                      child: ListTile(leading: const Icon(Icons.picture_as_pdf),
-                          title: Text(l.exportPdf), contentPadding: EdgeInsets.zero)),
                     PopupMenuItem(value: 'delete',
                       child: ListTile(leading: const Icon(Icons.delete, color: Colors.red),
                           title: Text(l.delete, style: const TextStyle(color: Colors.red)),

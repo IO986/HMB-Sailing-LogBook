@@ -561,6 +561,73 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportPdf => 'Esporta PDF';
 
   @override
+  String get exportsTitle => 'Esportazioni';
+
+  @override
+  String get exportsThisVoyage => 'Questa crociera';
+
+  @override
+  String get exportsAcrossVoyages => 'Tra le crociere';
+
+  @override
+  String get exportsAutomatic => 'Automatico';
+
+  @override
+  String get exportsWholeVoyage => 'Crociera intera';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Tutti i giorni con mappe, equipaggio e firme';
+
+  @override
+  String get exportsDay => 'Giorno';
+
+  @override
+  String get exportsDayDesc => 'Un giorno di crociera con la traccia';
+
+  @override
+  String get exportsHandoverDesc => 'Verbale di presa in consegna e riconsegna';
+
+  @override
+  String get exportsCrewCertsDesc => 'Miglia e valutazione, uno per membro';
+
+  @override
+  String get exportsMilesCertDesc => 'Miglia percorse nelle crociere scelte';
+
+  @override
+  String get exportsBearingsDesc => 'Rilevamenti presi fuori da una crociera';
+
+  @override
+  String get exportsCloudTitle => 'Esportazione su Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Attiva — la giornata conclusa parte da sola';
+
+  @override
+  String get exportsCloudOff => 'Disattivata — resta tutto sul telefono';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Scegli la crociera';
+
+  @override
+  String get exportsNoVoyages => 'Nessuna crociera ancora';
+
+  @override
+  String get exportsNoDays => 'Questa crociera non ha giorni registrati';
+
+  @override
+  String get exportsNoBearings => 'Nessun rilevamento fuori crociera';
+
+  @override
+  String get exportsNotFilledIn => 'Non compilato';
+
+  @override
   String get selectDaysTitle => 'Seleziona i giorni da eliminare';
 
   @override
@@ -2892,7 +2959,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Apri Giornale → seleziona una navigazione\n2. Tocca l\'icona di esportazione o i tre puntini → Esporta PDF\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Nel Giornale tocca il chip Esportazioni in alto\n2. Scegli cosa esportare: l\'intera crociera, un giorno, il verbale di consegna, i certificati dell\'equipaggio, le miglia o i rilevamenti\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni\n• Tutte le esportazioni stanno in un unico posto: il chip Esportazioni nel Giornale. L\'unica eccezione è il backup dell\'intero database, che resta nelle Impostazioni accanto al ripristino, perché non è un documento per qualcuno ma un\'immagine dei dati.';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';

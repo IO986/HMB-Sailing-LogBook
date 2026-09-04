@@ -560,6 +560,74 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportPdf => 'Exportar PDF';
 
   @override
+  String get exportsTitle => 'Exportaciones';
+
+  @override
+  String get exportsThisVoyage => 'Esta travesía';
+
+  @override
+  String get exportsAcrossVoyages => 'Entre travesías';
+
+  @override
+  String get exportsAutomatic => 'Automático';
+
+  @override
+  String get exportsWholeVoyage => 'Travesía completa';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Todos los días con mapas, tripulación y firmas';
+
+  @override
+  String get exportsDay => 'Día';
+
+  @override
+  String get exportsDayDesc => 'Un día de la travesía con su traza';
+
+  @override
+  String get exportsHandoverDesc => 'Acta de entrega y devolución del barco';
+
+  @override
+  String get exportsCrewCertsDesc => 'Millas y valoración, una por tripulante';
+
+  @override
+  String get exportsMilesCertDesc =>
+      'Millas navegadas en las travesías elegidas';
+
+  @override
+  String get exportsBearingsDesc => 'Demoras tomadas fuera de una travesía';
+
+  @override
+  String get exportsCloudTitle => 'Exportación a Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Activada — el día terminado sale solo';
+
+  @override
+  String get exportsCloudOff => 'Desactivada — todo se queda en el teléfono';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Elige una travesía';
+
+  @override
+  String get exportsNoVoyages => 'Todavía ninguna travesía';
+
+  @override
+  String get exportsNoDays => 'Esta travesía no tiene ningún día';
+
+  @override
+  String get exportsNoBearings => 'Sin demoras fuera de una travesía';
+
+  @override
+  String get exportsNotFilledIn => 'Sin rellenar';
+
+  @override
   String get selectDaysTitle => 'Seleccionar días a eliminar';
 
   @override
@@ -2885,7 +2953,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. Abrir Diario → seleccionar travesía\n2. Pulsar icono de exportar o tres puntos → Exportar PDF\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. En el Diario, pulsa el chip Exportaciones arriba\n2. Elige qué exportas: la travesía completa, un día, el acta de entrega, los certificados de tripulación, las millas o las demoras\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes\n• Todas las exportaciones están en un solo sitio: el chip Exportaciones del Diario. La única excepción es la copia de seguridad de la base de datos, que sigue en Ajustes junto a la restauración, porque no es un documento para nadie sino una imagen de los datos.';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';

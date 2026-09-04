@@ -20,19 +20,6 @@ class MilesBookScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l.milesBookTitle),
-        actions: [
-          // Jedno tlačidlo, nie dve. Potvrdenie sa vystavuje niekomu
-          // konkrétnemu a z konkrétnych plavieb, a to sa z ikonky vybrať
-          // nedá — ukladanie aj zdieľanie sú až na konci formulára.
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: l.milesExportTitle,
-            onPressed: aggregateAsync.maybeWhen(
-              data: (_) => () => context.push('/miles/export'),
-              orElse: () => null,
-            ),
-          ),
-        ],
       ),
       body: aggregateAsync.when(
         data: (agg) => _MilesBody(aggregate: agg),

@@ -562,6 +562,73 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportPdf => 'PDF exportieren';
 
   @override
+  String get exportsTitle => 'Exporte';
+
+  @override
+  String get exportsThisVoyage => 'Diese Reise';
+
+  @override
+  String get exportsAcrossVoyages => 'Reiseübergreifend';
+
+  @override
+  String get exportsAutomatic => 'Automatisch';
+
+  @override
+  String get exportsWholeVoyage => 'Ganze Reise';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Alle Tage mit Karten, Crew und Unterschriften';
+
+  @override
+  String get exportsDay => 'Tag';
+
+  @override
+  String get exportsDayDesc => 'Ein Reisetag samt Track';
+
+  @override
+  String get exportsHandoverDesc => 'Übernahme- und Rückgabeprotokoll';
+
+  @override
+  String get exportsCrewCertsDesc => 'Meilen und Bewertung, je Crewmitglied';
+
+  @override
+  String get exportsMilesCertDesc => 'Gesegelte Meilen aus gewählten Reisen';
+
+  @override
+  String get exportsBearingsDesc => 'Peilungen außerhalb einer Reise';
+
+  @override
+  String get exportsCloudTitle => 'Cloud-Export zu Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Ein — ein fertiger Tag geht von selbst raus';
+
+  @override
+  String get exportsCloudOff => 'Aus — alles bleibt auf dem Telefon';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Reise wählen';
+
+  @override
+  String get exportsNoVoyages => 'Noch keine Reise';
+
+  @override
+  String get exportsNoDays => 'Diese Reise hat keinen Tag erfasst';
+
+  @override
+  String get exportsNoBearings => 'Keine Peilungen außerhalb einer Reise';
+
+  @override
+  String get exportsNotFilledIn => 'Nicht ausgefüllt';
+
+  @override
   String get selectDaysTitle => 'Tage zum Löschen auswählen';
 
   @override
@@ -2890,7 +2957,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Logbuch öffnen → Fahrt auswählen\n2. Export-Symbol oder drei Punkte tippen → PDF exportieren\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Im Logbuch oben auf den Chip Exporte tippen\n2. Wählen, was exportiert wird — die ganze Reise, einen Tag, das Übergabeprotokoll, Crew-Bescheinigungen, Meilen oder Peilungen\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen\n• Alle Exporte sitzen an einer Stelle — unter dem Chip Exporte im Logbuch. Einzige Ausnahme ist die Sicherung der ganzen Datenbank: sie bleibt in den Einstellungen neben der Wiederherstellung, denn sie ist kein Dokument für jemanden, sondern ein Abbild der Daten.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';

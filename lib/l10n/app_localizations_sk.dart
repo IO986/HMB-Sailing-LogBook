@@ -560,6 +560,74 @@ class AppLocalizationsSk extends AppLocalizations {
   String get exportPdf => 'Export PDF';
 
   @override
+  String get exportsTitle => 'Exporty';
+
+  @override
+  String get exportsThisVoyage => 'Táto plavba';
+
+  @override
+  String get exportsAcrossVoyages => 'Naprieč plavbami';
+
+  @override
+  String get exportsAutomatic => 'Automaticky';
+
+  @override
+  String get exportsWholeVoyage => 'Celá plavba';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Denník všetkých dní s mapami, posádkou a podpismi';
+
+  @override
+  String get exportsDay => 'Deň';
+
+  @override
+  String get exportsDayDesc => 'Jeden deň plavby aj s trasou';
+
+  @override
+  String get exportsHandoverDesc => 'Protokol o prevzatí a odovzdaní lode';
+
+  @override
+  String get exportsCrewCertsDesc =>
+      'Míle a hodnotenie pre každého člena zvlášť';
+
+  @override
+  String get exportsMilesCertDesc => 'Naplávané míle z vybraných plavieb';
+
+  @override
+  String get exportsBearingsDesc => 'Zamerania zapísané bez plavby';
+
+  @override
+  String get exportsCloudTitle => 'Cloud export na Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Zapnutý — hotový deň odchádza sám';
+
+  @override
+  String get exportsCloudOff => 'Vypnutý — všetko ostáva v telefóne';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Vyber plavbu';
+
+  @override
+  String get exportsNoVoyages => 'Zatiaľ žiadna plavba';
+
+  @override
+  String get exportsNoDays => 'Táto plavba nemá zapísaný deň';
+
+  @override
+  String get exportsNoBearings => 'Žiadne zamerania mimo plavby';
+
+  @override
+  String get exportsNotFilledIn => 'Nevyplnené';
+
+  @override
   String get selectDaysTitle => 'Vybrať dni na mazanie';
 
   @override
@@ -2872,7 +2940,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber plavbu\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení';
+      'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

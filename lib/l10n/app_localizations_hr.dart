@@ -561,6 +561,73 @@ class AppLocalizationsHr extends AppLocalizations {
   String get exportPdf => 'Izvezi PDF';
 
   @override
+  String get exportsTitle => 'Izvozi';
+
+  @override
+  String get exportsThisVoyage => 'Ova plovidba';
+
+  @override
+  String get exportsAcrossVoyages => 'Kroz plovidbe';
+
+  @override
+  String get exportsAutomatic => 'Automatski';
+
+  @override
+  String get exportsWholeVoyage => 'Cijela plovidba';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Svi dani s kartama, posadom i potpisima';
+
+  @override
+  String get exportsDay => 'Dan';
+
+  @override
+  String get exportsDayDesc => 'Jedan dan plovidbe s rutom';
+
+  @override
+  String get exportsHandoverDesc => 'Zapisnik o preuzimanju i predaji broda';
+
+  @override
+  String get exportsCrewCertsDesc => 'Milje i ocjena za svakog člana posebno';
+
+  @override
+  String get exportsMilesCertDesc => 'Odjedrene milje iz odabranih plovidbi';
+
+  @override
+  String get exportsBearingsDesc => 'Azimuti snimljeni izvan plovidbe';
+
+  @override
+  String get exportsCloudTitle => 'Izvoz na Google Drive';
+
+  @override
+  String get exportsCloudOn => 'Uključen — gotov dan odlazi sam';
+
+  @override
+  String get exportsCloudOff => 'Isključen — sve ostaje u telefonu';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Odaberi plovidbu';
+
+  @override
+  String get exportsNoVoyages => 'Još nema plovidbe';
+
+  @override
+  String get exportsNoDays => 'Ova plovidba nema upisan dan';
+
+  @override
+  String get exportsNoBearings => 'Nema azimuta izvan plovidbe';
+
+  @override
+  String get exportsNotFilledIn => 'Nije ispunjeno';
+
+  @override
   String get selectDaysTitle => 'Odaberite dane za brisanje';
 
   @override
@@ -2880,7 +2947,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. Otvorite Dnevnik → odaberite plovidbu\n2. Dodirnite ikonu izvoza ili tri točke → Izvezi PDF\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama';
+      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. U Dnevniku dodirnite chip Izvozi na vrhu\n2. Odaberite što izvozite — cijelu plovidbu, jedan dan, zapisnik o primopredaji, potvrde posade, milje ili azimute\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama\n• Svi izvozi su na jednom mjestu — pod chipom Izvozi u Dnevniku. Jedina iznimka je sigurnosna kopija cijele baze: ostaje u Postavkama uz vraćanje, jer to nije dokument za nekoga nego preslika podataka.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sigurnosna instruktaža';

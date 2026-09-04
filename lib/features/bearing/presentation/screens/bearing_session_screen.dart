@@ -29,7 +29,15 @@ import '../../../../core/services/units_service.dart';
 
 class BearingSessionScreen extends ConsumerStatefulWidget {
   final DateTime date;
-  const BearingSessionScreen({super.key, required this.date});
+
+  /// Otvorené z hubu exportov: PDF sa vyrobí samo, hneď ako je snímka mapy
+  /// hotová. Zameranie sa tlačí aj s mapou a odfotiť ju vie len táto
+  /// obrazovka, takže cesta k PDF vedie cezňu aj vtedy, keď skiper klikol
+  /// inde.
+  final bool autoExport;
+
+  const BearingSessionScreen(
+      {super.key, required this.date, this.autoExport = false});
 
   @override
   ConsumerState<BearingSessionScreen> createState() =>
@@ -40,6 +48,7 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
   final _screenshotController = ScreenshotController();
   Uint8List? _mapScreenshot;
   bool _exporting = false;
+  bool _autoExportDone = false;
 
   @override
   void initState() {
@@ -55,7 +64,27 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
       } catch (_) {
         // Náhľad je pomôcka, nie podmienka exportu — PDF vznikne aj bez neho.
       }
+      _maybeAutoExport();
     });
+  }
+
+  /// Export spustený príchodom z hubu. Beží raz — po odfotení mapy, aby PDF
+  /// nevyšlo bez nej.
+  void _maybeAutoExport() {
+    if (!widget.autoExport || _autoExportDone || !mounted) return;
+    final session = ref.read(bearingSessionForDateProvider(widget.date));
+    final bearings = session?.bearings ?? const <Bearing>[];
+    if (bearings.isEmpty) return;
+    _autoExportDone = true;
+
+    final resections = latestResectionCluster(bearings);
+    final resectionLines =
+        resections.map(bearingLineOf).whereType<BearingLine>().toList();
+    final resectionFix = resectionLines.length < 2
+        ? null
+        : BearingGeometry.fix(resectionLines, kind: BearingKind.resection);
+    _export(bearings, resectionFix, sightGroupsFrom(bearings),
+        AppLocalizations.of(context));
   }
 
   @override
@@ -76,17 +105,6 @@ class _BearingSessionScreenState extends ConsumerState<BearingSessionScreen> {
       appBar: AppBar(
         title: Text(AppDate.of(context, ref).long(widget.date)),
         actions: [
-          IconButton(
-            icon: _exporting
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2))
-                : const Icon(Icons.picture_as_pdf),
-            onPressed: bearings.isEmpty || _exporting
-                ? null
-                : () => _export(bearings, resectionFix, objectGroups, l),
-          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: l.delete,

@@ -74,16 +74,46 @@ class CharterListScreen extends ConsumerWidget {
           ]..sort((a, b) => b.sortDate.compareTo(a.sortDate));
           return ListView.builder(
             padding: const EdgeInsets.only(bottom: 100),
-            itemCount: rows.length,
-            itemBuilder: (ctx, i) => switch (rows[i]) {
-              _CharterRow(:final charter) => _CharterCard(charter: charter),
-              _BearingSessionRow(:final session) =>
-                _BearingSessionCard(session: session),
+            // +1 za pás s exportmi, ktorý stojí nad zoznamom.
+            itemCount: rows.length + 1,
+            itemBuilder: (ctx, i) {
+              if (i == 0) return const _ExportsChipBar();
+              return switch (rows[i - 1]) {
+                _CharterRow(:final charter) => _CharterCard(charter: charter),
+                _BearingSessionRow(:final session) =>
+                  _BearingSessionCard(session: session),
+              };
             },
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
+      ),
+    );
+  }
+}
+
+/// Vstup do hubu exportov.
+///
+/// Všetko, čo z appky vychádza ako dokument, bolo roztrúsené po obrazovkách,
+/// kde to vzniklo — kto hľadal „ako to dostanem von", musel vedieť, kde to
+/// vzniklo. Chip stojí nad zoznamom plavieb, lebo denník je miesto, odkiaľ
+/// sa exporty robia najčastejšie.
+class _ExportsChipBar extends StatelessWidget {
+  const _ExportsChipBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ActionChip(
+          avatar: const Icon(Icons.ios_share, size: 18),
+          label: Text(l.exportsTitle),
+          onPressed: () => context.push('/logbook/exports'),
+        ),
       ),
     );
   }

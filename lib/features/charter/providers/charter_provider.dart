@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/database/app_database.dart';
 import '../../../main.dart';
-import '../../../core/services/port_backfill_service.dart';
 
 final chartersProvider = FutureProvider<List<Charter>>((ref) async {
   final db = ref.watch(databaseProvider);
@@ -55,15 +53,11 @@ final activeCharterProvider = FutureProvider<Charter?>((ref) async {
 
 final dayLogsProvider = FutureProvider.family<List<DayLog>, int>((ref, charterId) async {
   final db = ref.watch(databaseProvider);
-  final days = await db.getDayLogs(charterId);
-  // Dni s prázdnym prístavom sa skúsia doplniť pri každom otvorení plavby:
-  // počas plavby na to nebol internet (telefón visí na Wi-Fi prístrojov),
-  // teraz môže byť. Beží to mimo čakania — zoznam dní sa nesmie zdržať ani
-  // o sekundu kvôli sieti; keď sa niečo doplní, zoznam sa prekreslí sám.
-  unawaited(PortBackfillService().backfillDays(db, days).then((changed) {
-    if (changed) ref.invalidateSelf();
-  }));
-  return days;
+  // Bez vedľajších účinkov: čítanie zoznamu dní nesmie chodiť na sieť.
+  // Chýbajúce mená prístavov dopĺňa PortBackfillService z troch miest, kde
+  // to dáva zmysel — štart appky, začiatok plavby a otvorenie exportu
+  // (GpsTrackingService.retryMissingPortNames, ExportScreen._loadData).
+  return db.getDayLogs(charterId);
 });
 
 final logbookEntriesForDayProvider = StreamProvider.family<List<LogbookEntry>, int>((ref, dayLogId) {

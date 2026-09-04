@@ -560,6 +560,73 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportPdf => 'Eksport PDF';
 
   @override
+  String get exportsTitle => 'Eksporty';
+
+  @override
+  String get exportsThisVoyage => 'Ten rejs';
+
+  @override
+  String get exportsAcrossVoyages => 'W wielu rejsach';
+
+  @override
+  String get exportsAutomatic => 'Automatycznie';
+
+  @override
+  String get exportsWholeVoyage => 'Cały rejs';
+
+  @override
+  String get exportsWholeVoyageDesc =>
+      'Wszystkie dni z mapami, załogą i podpisami';
+
+  @override
+  String get exportsDay => 'Dzień';
+
+  @override
+  String get exportsDayDesc => 'Jeden dzień rejsu wraz z trasą';
+
+  @override
+  String get exportsHandoverDesc => 'Protokół zdawczo-odbiorczy jachtu';
+
+  @override
+  String get exportsCrewCertsDesc => 'Mile i ocena, osobno dla każdego';
+
+  @override
+  String get exportsMilesCertDesc => 'Przepłynięte mile z wybranych rejsów';
+
+  @override
+  String get exportsBearingsDesc => 'Namiary wzięte poza rejsem';
+
+  @override
+  String get exportsCloudTitle => 'Eksport na Dysk Google';
+
+  @override
+  String get exportsCloudOn => 'Włączony — gotowy dzień wychodzi sam';
+
+  @override
+  String get exportsCloudOff => 'Wyłączony — wszystko zostaje w telefonie';
+
+  @override
+  String get exportsFormatPdf => 'PDF';
+
+  @override
+  String get exportsFormatPdfGpx => 'PDF + GPX';
+
+  @override
+  String get exportsPickVoyage => 'Wybierz rejs';
+
+  @override
+  String get exportsNoVoyages => 'Jeszcze żaden rejs';
+
+  @override
+  String get exportsNoDays => 'Ten rejs nie ma zapisanego dnia';
+
+  @override
+  String get exportsNoBearings => 'Brak namiarów poza rejsem';
+
+  @override
+  String get exportsNotFilledIn => 'Niewypełnione';
+
+  @override
   String get selectDaysTitle => 'Wybierz dni do usunięcia';
 
   @override
@@ -2876,7 +2943,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. Otwórz Dziennik → wybierz rejs\n2. Dotknij ikony eksportu lub trzech kropek → Eksport PDF\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';

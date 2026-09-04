@@ -17,6 +17,7 @@ import 'features/safety/presentation/screens/safety_screen.dart';
 import 'features/compass/presentation/screens/compass_screen.dart';
 import 'features/safety/presentation/screens/colreg_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
+import 'features/export/presentation/export_hub_screen.dart';
 import 'features/export/presentation/export_screen.dart';
 import 'features/miles/presentation/screens/miles_book_screen.dart';
 import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
@@ -59,11 +60,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               }),
               // Zamerania zapísané bez aktívneho trackingu — vlastný riadok
               // v zozname plavieb, nie viazané na konkrétny charter.
+              //
+              // `?export=1` znamená „prišiel som sem z hubu exportov" —
+              // obrazovka po odfotení mapy rovno vyrobí PDF.
               GoRoute(
                 path: 'bearings/:date',
                 builder: (c, s) => BearingSessionScreen(
-                    date: DateTime.parse(s.pathParameters['date']!)),
+                    date: DateTime.parse(s.pathParameters['date']!),
+                    autoExport: s.uri.queryParameters['export'] == '1'),
               ),
+              // Musí stáť pred ':id', inak by ho pohltil ako číslo plavby.
+              GoRoute(
+                  path: 'exports', builder: (c, s) => const ExportHubScreen()),
               GoRoute(
                 path: ':id',
                 builder: (c, s) => CharterDetailScreen(

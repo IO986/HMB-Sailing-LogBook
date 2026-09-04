@@ -1118,6 +1118,138 @@ abstract class AppLocalizations {
   /// **'Export PDF'**
   String get exportPdf;
 
+  /// No description provided for @exportsTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Exporty'**
+  String get exportsTitle;
+
+  /// No description provided for @exportsThisVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Táto plavba'**
+  String get exportsThisVoyage;
+
+  /// No description provided for @exportsAcrossVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Naprieč plavbami'**
+  String get exportsAcrossVoyages;
+
+  /// No description provided for @exportsAutomatic.
+  ///
+  /// In sk, this message translates to:
+  /// **'Automaticky'**
+  String get exportsAutomatic;
+
+  /// No description provided for @exportsWholeVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Celá plavba'**
+  String get exportsWholeVoyage;
+
+  /// No description provided for @exportsWholeVoyageDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Denník všetkých dní s mapami, posádkou a podpismi'**
+  String get exportsWholeVoyageDesc;
+
+  /// No description provided for @exportsDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Deň'**
+  String get exportsDay;
+
+  /// No description provided for @exportsDayDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Jeden deň plavby aj s trasou'**
+  String get exportsDayDesc;
+
+  /// No description provided for @exportsHandoverDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Protokol o prevzatí a odovzdaní lode'**
+  String get exportsHandoverDesc;
+
+  /// No description provided for @exportsCrewCertsDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Míle a hodnotenie pre každého člena zvlášť'**
+  String get exportsCrewCertsDesc;
+
+  /// No description provided for @exportsMilesCertDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Naplávané míle z vybraných plavieb'**
+  String get exportsMilesCertDesc;
+
+  /// No description provided for @exportsBearingsDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zamerania zapísané bez plavby'**
+  String get exportsBearingsDesc;
+
+  /// No description provided for @exportsCloudTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cloud export na Google Drive'**
+  String get exportsCloudTitle;
+
+  /// No description provided for @exportsCloudOn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zapnutý — hotový deň odchádza sám'**
+  String get exportsCloudOn;
+
+  /// No description provided for @exportsCloudOff.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vypnutý — všetko ostáva v telefóne'**
+  String get exportsCloudOff;
+
+  /// No description provided for @exportsFormatPdf.
+  ///
+  /// In sk, this message translates to:
+  /// **'PDF'**
+  String get exportsFormatPdf;
+
+  /// No description provided for @exportsFormatPdfGpx.
+  ///
+  /// In sk, this message translates to:
+  /// **'PDF + GPX'**
+  String get exportsFormatPdfGpx;
+
+  /// No description provided for @exportsPickVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyber plavbu'**
+  String get exportsPickVoyage;
+
+  /// No description provided for @exportsNoVoyages.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zatiaľ žiadna plavba'**
+  String get exportsNoVoyages;
+
+  /// No description provided for @exportsNoDays.
+  ///
+  /// In sk, this message translates to:
+  /// **'Táto plavba nemá zapísaný deň'**
+  String get exportsNoDays;
+
+  /// No description provided for @exportsNoBearings.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne zamerania mimo plavby'**
+  String get exportsNoBearings;
+
+  /// No description provided for @exportsNotFilledIn.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nevyplnené'**
+  String get exportsNotFilledIn;
+
   /// No description provided for @selectDaysTitle.
   ///
   /// In sk, this message translates to:
@@ -5465,7 +5597,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. Otvor Denník → vyber plavbu\n2. Klepni na ikonu exportu alebo tri bodky → Export PDF\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.
