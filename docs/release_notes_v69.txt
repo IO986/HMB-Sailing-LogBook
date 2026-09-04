@@ -1,0 +1,10 @@
+HMB Sailing Log — build 69 (1.34.0+69)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: every export in one place — the Exports chip in the Logbook: voyage, day, handover protocol, crew certificates, miles, bearings.
+• New: a list of your boats, so the next voyage's vessel card fills in with one tap.
+• New: your own point on the safety briefing and both handover protocols.
+• New: passport/ID number on the mileage certificates.
+• Fixed: forecast refresh failing inland; long crew cut off in the day PDF; map excerpt too tight, now satellite or plain map.
