@@ -70,6 +70,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   // existujúce waypointy), súčet NM, kurz poslednej nohy, ETA pri SOG.
   bool _rulerActive = false;
 
+  /// Ktorému nástroju patria ťuknutia do mapy, keď sú zapnuté oba.
+  ///
+  /// Pravítko aj kreslenie kotevnej plochy môžu bežať súčasne — z lode:
+  /// „mám spustenú kotvu, plochu nakreslenú, a potrebujem niečo odmerať".
+  /// Dovtedy si ťuknutie vždy vzala plocha, takže meranie ticho pridávalo
+  /// body do stráženého polygónu a rozbíjalo ho.
+  MapTapTool _tapTool = MapTapTool.none;
+
   /// Beží dotaz na hĺbku — druhé ťuknutie sa ignoruje, kým sa nevráti.
   bool _depthProbing = false;
   final List<LatLng> _rulerPoints = [];
@@ -1162,7 +1170,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     tooltip: l.mapRuler,
                     onPressed: () => setState(() {
                       _rulerActive = !_rulerActive;
-                      if (!_rulerActive) _rulerPoints.clear();
+                      if (_rulerActive) {
+                        // Zapnutý nástroj si berie ťuknutia — plochu pritom
+                        // nevypína, tá si drží rozkreslené body.
+                        _tapTool = MapTapTool.ruler;
+                      } else {
+                        _rulerPoints.clear();
+                        _tapTool = _zoneActive
+                            ? MapTapTool.zone
+                            : MapTapTool.none;
+                      }
                     }),
                     backgroundColor:
                         _rulerActive ? Colors.purple.shade400 : null,
@@ -1219,6 +1236,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           if (_rulerActive)
             _FloatingPanel(
               storageKey: 'ruler',
+              // Stlmený panel = ťuknutia do mapy patria tomu druhému.
+              // Ťuknutím naň si ich vezme späť.
+              focused: !_zoneActive || _tapTool == MapTapTool.ruler,
+              onFocus: () => setState(() => _tapTool = MapTapTool.ruler),
               child: _RulerPanel(
                 points: _rulerPoints,
                 onUndo: _rulerPoints.isEmpty
@@ -1236,6 +1257,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           if (_zoneActive)
             _FloatingPanel(
               storageKey: 'zone',
+              focused: !_rulerActive || _tapTool == MapTapTool.zone,
+              onFocus: () => setState(() => _tapTool = MapTapTool.zone),
               child: _ZonePanel(
                 points: _zonePoints,
                 onUndo: _zonePoints.isEmpty
@@ -1464,21 +1487,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   /// (do ~30 px), aby sa dala trasa plánovať presne cez uložené ciele.
   /// Krátke ťuknutie do mapy.
   ///
-  /// Kreslenie kotevnej plochy má prednosť pred pravítkom, pravítko pred
-  /// meraním hĺbky. Inak, a len
-  /// keď má skiper zapnutú vrstvu hĺbok, sa ťuknutím odmeria hĺbka dna.
-  /// Bez tej podmienky by každé zablúdené ťuknutie do mapy znamenalo dotaz
-  /// do siete, čo je na lodi bez signálu zbytočné a inde len drahé.
+  /// Ťuknutie patrí nástroju, ktorý bol zapnutý naposledy alebo na ktorého
+  /// panel skiper ťukol ([_tapTool]) — nie natvrdo kotevnej ploche. Keď nebeží
+  /// ani jeden a je zapnutá vrstva hĺbok, ťuknutím sa odmeria hĺbka dna. Bez
+  /// tej podmienky by každé zablúdené ťuknutie znamenalo dotaz do siete, čo je
+  /// na lodi bez signálu zbytočné a inde len drahé.
   void _onMapShortTap(LatLng ll) {
-    if (_zoneActive) {
-      _onZoneTap(ll);
-      return;
+    final bathymetry = ref.read(mapNotifierProvider).showBathymetry;
+    switch (mapTapTarget(
+      rulerActive: _rulerActive,
+      zoneActive: _zoneActive,
+      focus: _tapTool,
+    )) {
+      case MapTapTool.zone:
+        _onZoneTap(ll);
+      case MapTapTool.ruler:
+        _onRulerTap(ll);
+      case MapTapTool.none:
+        if (bathymetry) _probeDepth(ll);
     }
-    if (_rulerActive) {
-      _onRulerTap(ll);
-      return;
-    }
-    if (ref.read(mapNotifierProvider).showBathymetry) _probeDepth(ll);
   }
 
   /// Odmeria hĺbku v bode a ukáže ju. Null sa hlási ako „bez údaja" —
@@ -1526,15 +1553,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() => _zonePoints.add(ll));
   }
 
-  /// Zapne alebo vypne kreslenie plochy. Pravítko sa pritom vypína: oba
-  /// panely visia na tom istom mieste a obom by patrilo to isté ťuknutie.
+  /// Zapne alebo vypne kreslenie plochy.
+  ///
+  /// Pravítko sa pritom NEvypína — obe pomôcky sa na lodi potrebujú naraz.
+  /// Ťuknutia do mapy si berie ten nástroj, ktorý bol zapnutý naposledy, a
+  /// prepnúť sa dá ťuknutím na jeho panel.
   void _toggleZoneDrawing() => setState(() {
         _zoneActive = !_zoneActive;
         _zonePoints.clear();
-        if (_zoneActive) {
-          _rulerActive = false;
-          _rulerPoints.clear();
-        }
+        _tapTool = _zoneActive
+            ? MapTapTool.zone
+            : (_rulerActive ? MapTapTool.ruler : MapTapTool.none);
       });
 
   /// Spustí kotvovú stráž nad nakreslenou plochou.
@@ -1886,6 +1915,38 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
 
 // ── Wind arrow ────────────────────────────────────────────────
 
+/// Nástroj, ktorému patria ťuknutia do mapy.
+enum MapTapTool { none, ruler, zone }
+
+/// Komu patrí ťuknutie do mapy.
+///
+/// Vytiahnuté z obrazovky, lebo to je presne to miesto, kde vznikla chyba
+/// nahlásená z lode: pri zapnutej kotevnej ploche si ťuknutie vzala vždy ona,
+/// takže zapnuté pravítko ticho pridávalo body do stráženého polygónu.
+///
+/// Pravidlo: rozhoduje [focus] (nástroj zapnutý naposledy alebo ten, na
+/// ktorého panel sa ťuklo). Keď beží len jeden nástroj, patrí ťuknutie jemu aj
+/// bez ohľadu na [focus]. Keď nebeží ani jeden, ťuknutie odmeria hĺbku — ale
+/// len so zapnutou vrstvou hĺbok, inak by každé zablúdené ťuknutie znamenalo
+/// dotaz do siete — o tú podmienku sa stará volajúci.
+MapTapTool mapTapTarget({
+  required bool rulerActive,
+  required bool zoneActive,
+  required MapTapTool focus,
+}) {
+  if (zoneActive && (focus == MapTapTool.zone || !rulerActive)) {
+    return MapTapTool.zone;
+  }
+  if (rulerActive && (focus == MapTapTool.ruler || !zoneActive)) {
+    return MapTapTool.ruler;
+  }
+  // Oba zapnuté a focus na nič — stane sa len po odstránení jedného z nich;
+  // ťuknutie vtedy patrí pravítku, ktoré nič nerozbije.
+  if (rulerActive) return MapTapTool.ruler;
+  if (zoneActive) return MapTapTool.zone;
+  return MapTapTool.none;
+}
+
 /// Panel, ktorý sa dá po mape potiahnuť.
 ///
 /// Poloha sa pamätá ako podiel šírky a výšky mapy, nie v pixeloch: telefón sa
@@ -1896,7 +1957,18 @@ class _FloatingPanel extends StatefulWidget {
   final String storageKey;
   final Widget child;
 
-  const _FloatingPanel({required this.storageKey, required this.child});
+  /// Berie si tento nástroj ťuknutia do mapy? Nezaostrený panel je stlmený.
+  final bool focused;
+
+  /// Ťuknutie na panel mu ťuknutia do mapy vráti.
+  final VoidCallback? onFocus;
+
+  const _FloatingPanel({
+    required this.storageKey,
+    required this.child,
+    this.focused = true,
+    this.onFocus,
+  });
 
   @override
   State<_FloatingPanel> createState() => _FloatingPanelState();
@@ -1978,7 +2050,12 @@ class _FloatingPanelState extends State<_FloatingPanel> {
               final f = _fraction;
               if (f != null) _save(f);
             },
-            child: widget.child,
+            onTap: widget.onFocus,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 150),
+              opacity: widget.focused ? 1 : 0.55,
+              child: widget.child,
+            ),
           ),
         ),
       ]);
