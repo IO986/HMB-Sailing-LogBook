@@ -13,12 +13,19 @@ final chartersProvider = FutureProvider<List<Charter>>((ref) async {
 /// GPX-imported voyages are never offered — they're read-only history
 /// (map preview + Kniha míľ), tracking can't continue them.
 final openVoyageProvider = FutureProvider<Charter?>((ref) async {
-  final charters = await ref.watch(chartersProvider.future);
-  final open = charters
-      .where((c) => !c.checkOutDone && c.source != 'gpx')
-      .toList()
-    ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
+  final open = await ref.watch(openVoyagesProvider.future);
   return open.isEmpty ? null : open.first;
+});
+
+/// Všetky rozostavané plavby, najnovšia prvá.
+///
+/// Pri výcviku beží niekoľko plavieb naraz (jedna na žiaka) a skiper sa po
+/// prerušení potrebuje vrátiť do TEJ SPRÁVNEJ — nie nutne do poslednej.
+/// Ponuka pri štarte z toho robí tretiu možnosť vedľa „pokračovať" a „nová".
+final openVoyagesProvider = FutureProvider<List<Charter>>((ref) async {
+  final charters = await ref.watch(chartersProvider.future);
+  return charters.where((c) => !c.checkOutDone && c.source != 'gpx').toList()
+    ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
 });
 
 /// Silently creates a minimal charter for the "Nový záznam" / first-ever-use

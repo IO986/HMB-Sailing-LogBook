@@ -1209,15 +1209,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           // ── Panel pravítka / trasy ────────────────────────────
           //
-          // Dole, nie do stredu mapy. Na `bottom: 280` panel sadol presne na
-          // loď a na miesto, kam skiper ťuká body — nahlásené z lode ako
-          // „bubliny zavadzajú". Medzi ľavým stĺpcom (poloha, +, −) a pravým
-          // stĺpcom ikon je pri spodnom okraji voľno.
+          // Hore, medzi ružicou kompasu a pravým stĺpcom ikon.
+          //
+          // Najprv to bolo v strede mapy (na lodi a na mieste, kam skiper ťuká
+          // body), potom dole — lenže tam počas plavby sedia tri rýchle
+          // tlačidlá (kormidelník, plachty, fotka), ktoré panel prekryli.
+          // Hore je jediné miesto, kde nezavadzia ani jednému.
           if (_rulerActive)
             Positioned(
-              bottom: 12,
+              top: MediaQuery.of(context).padding.top + 8,
               left: 76,
-              right: 76,
+              right: 72,
               child: _RulerPanel(
                 points: _rulerPoints,
                 onUndo: _rulerPoints.isEmpty
@@ -1234,9 +1236,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // vždy len jeden z nich.
           if (_zoneActive)
             Positioned(
-              bottom: 12,
+              top: MediaQuery.of(context).padding.top + 8,
               left: 76,
-              right: 76,
+              right: 72,
               child: _ZonePanel(
                 points: _zonePoints,
                 onUndo: _zonePoints.isEmpty

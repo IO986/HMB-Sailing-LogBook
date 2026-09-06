@@ -36,6 +36,12 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
   }
 
   final fmt = AppDate.of(context, ref);
+  // Rozostavaných plavieb býva pri výcviku viac naraz (jedna na žiaka), takže
+  // ponuka je trojaká: pokračovať v poslednej, vybrať si inú, alebo založiť
+  // novú. Výber sa ponúkne len keď je z čoho vyberať.
+  final openVoyages = await ref.read(openVoyagesProvider.future);
+  if (!context.mounted) return;
+
   final choice = await showDialog<String>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -43,6 +49,11 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
       content: Text('${open.title}  ·  ${fmt.short(open.dateFrom)}'),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
+        if (openVoyages.length > 1)
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'pick'),
+            child: Text(l.pickVoyageAction),
+          ),
         OutlinedButton(
           onPressed: () => Navigator.pop(ctx, 'new'),
           child: Text(l.newRecordAction),
@@ -58,11 +69,49 @@ Future<void> handleStartTap(BuildContext context, WidgetRef ref) async {
   if (!context.mounted || choice == null) return;
   if (choice == 'continue') {
     await _continueVoyage(context, ref, open, interval);
+  } else if (choice == 'pick') {
+    final picked = await _pickVoyage(context, ref, openVoyages);
+    if (picked == null || !context.mounted) return;
+    await _continueVoyage(context, ref, picked, interval);
   } else if (choice == 'new') {
     // `open` is left untouched — checkOutDone stays false, so its
     // "missing check-out" reminder chip surfaces on its own in the Denník.
     await _startNew(context, ref, interval);
   }
+}
+
+/// Výber z rozostavaných plavieb.
+///
+/// Pod menom stojí dátum a loď — pri výcviku sa plavby volajú podobne a meno
+/// samo o sebe ich nerozlíši.
+Future<Charter?> _pickVoyage(
+    BuildContext context, WidgetRef ref, List<Charter> voyages) async {
+  final l = AppLocalizations.of(context);
+  final fmt = AppDate.of(context, ref);
+  return showModalBottomSheet<Charter>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (ctx) => SafeArea(
+      child: ListView(shrinkWrap: true, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(l.exportsPickVoyage,
+              style: Theme.of(ctx).textTheme.titleMedium),
+        ),
+        for (final v in voyages)
+          ListTile(
+            leading: const Icon(Icons.sailing),
+            title: Text(v.title),
+            subtitle: Text([
+              fmt.short(v.dateFrom),
+              if ((v.vesselName ?? '').isNotEmpty) v.vesselName!,
+            ].join('  ·  ')),
+            onTap: () => Navigator.pop(ctx, v),
+          ),
+      ]),
+    ),
+  );
 }
 
 /// Ponuka po neúmyselnom vypnutí appky počas trasovania.

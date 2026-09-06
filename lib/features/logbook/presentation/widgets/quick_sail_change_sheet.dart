@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/sail_direction_picker.dart';
 import '../../../../shared/widgets/sail_mode_picker.dart';
+import 'quick_note_sheet.dart';
 
 /// Rýchly záznam zmeny pohonu, obratu alebo halzy počas plavby.
 ///
@@ -200,8 +201,25 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
           ],
           const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              // Rýchla poznámka býva to isté ťuknutie ako prehodenie plachiet:
+              // skiper má telefón v ruke a chce zapísať vetu. Nemá zmysel
+              // nútiť ho zavrieť tento sheet a hľadať iné tlačidlo.
+              TextButton.icon(
+                onPressed: _saving
+                    ? null
+                    : () {
+                        Navigator.pop(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (_) => const QuickNoteSheet(),
+                        );
+                      },
+                icon: const Icon(Icons.edit_note),
+                label: Text(l.quickNoteTitle),
+              ),
+              const Spacer(),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(l.cancel),
