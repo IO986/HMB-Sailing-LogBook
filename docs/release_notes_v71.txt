@@ -1,0 +1,9 @@
+HMB Sailing Log — build 71 (1.35.1+71)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: the app now remembers the skipper. On some phones (Honor, Huawei) nothing was ever saved, so a new voyage never offered the stored name, licences or document number.
+• Fixed: saving your details is checked — if the phone refuses, the app says so instead of pretending it worked.
+• Fixed: choosing between several saved skippers never appeared.
+• Fixed: a voyage that carried only the boat's name erased her stored MMSI, call sign and dimensions.
