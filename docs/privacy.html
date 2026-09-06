@@ -71,7 +71,7 @@
   <ul>
     <li><strong>What:</strong> Skipper name, sailing license, VHF/SRC license number, passport or ID card number, vessel call sign, MMSI</li>
     <li><strong>Why:</strong> To autofill the Mayday card and PDF voyage export</li>
-    <li><strong>Storage:</strong> Stored locally in Android's encrypted storage (flutter_secure_storage). Never transmitted automatically.</li>
+    <li><strong>Storage:</strong> Stored locally in Android's encrypted storage (flutter_secure_storage); on devices whose keystore rejects it (Honor, Huawei) it falls back to the app's private storage, unreadable by other apps. Never transmitted automatically.</li>
     <li><strong>Crew document numbers:</strong> the passport or ID number of a crew member is typed only when their certificate of miles sailed is issued. It is <strong>not stored</strong> &mdash; it is printed on that one certificate and gone when the screen closes.</li>
   </ul>
 

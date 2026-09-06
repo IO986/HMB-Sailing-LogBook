@@ -171,7 +171,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       final hasSaved = profile.fullName.isNotEmpty ||
           profile.licenseNumber.isNotEmpty ||
           profile.vhfNumber.isNotEmpty ||
-          profile.otherCerts.isNotEmpty;
+          profile.otherCerts.isNotEmpty ||
+          profile.idNumber.isNotEmpty;
       if (!hasSaved) return;
 
       final fill = await showDialog<bool>(

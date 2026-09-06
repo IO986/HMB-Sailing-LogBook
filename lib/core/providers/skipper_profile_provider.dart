@@ -1,18 +1,26 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/skipper_profile.dart';
+import '../services/resilient_key_value_store.dart';
 
 final skipperProfileProvider =
     AsyncNotifierProvider<SkipperProfileNotifier, SkipperProfile>(
   SkipperProfileNotifier.new,
 );
 
-const _storage = FlutterSecureStorage(
-  aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-);
+/// Šifrované úložisko so záložným súkromným úložiskom appky.
+///
+/// Samotné `FlutterSecureStorage` na Honor a Huawei hádže výnimku (vlastný
+/// keystore), takže sa profil skipera na testovacom telefóne nikdy neuložil
+/// ani nenačítal — appka pri novej plavbe nemala čo ponúknuť. Pozri
+/// [ResilientKeyValueStore].
+ResilientKeyValueStore _storage = const ResilientKeyValueStore();
+
+/// Testy si sem podstrčia vlastné úložisko.
+@visibleForTesting
+set skipperProfileStore(ResilientKeyValueStore store) => _storage = store;
 
 const _kFullName   = 'skipper_full_name';
 const _kLicType    = 'skipper_license_type';
@@ -42,15 +50,15 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
     // an error/spinner.
     try {
       return SkipperProfile(
-        fullName:         await _storage.read(key: _kFullName)   ?? '',
-        licenseType:      await _storage.read(key: _kLicType)    ?? '',
-        licenseNumber:    await _storage.read(key: _kLicNum)     ?? '',
-        licenseAuthority: await _storage.read(key: _kLicAuth)    ?? '',
-        licenseExpiry:    await _storage.read(key: _kLicExpiry)  ?? '',
-        vhfNumber:        await _storage.read(key: _kVhfNum)     ?? '',
-        vhfExpiry:        await _storage.read(key: _kVhfExpiry)  ?? '',
-        otherCerts:       await _storage.read(key: _kOtherCerts) ?? '',
-        idNumber:         await _storage.read(key: _kIdNumber)   ?? '',
+        fullName:         await _storage.read(_kFullName)   ?? '',
+        licenseType:      await _storage.read(_kLicType)    ?? '',
+        licenseNumber:    await _storage.read(_kLicNum)     ?? '',
+        licenseAuthority: await _storage.read(_kLicAuth)    ?? '',
+        licenseExpiry:    await _storage.read(_kLicExpiry)  ?? '',
+        vhfNumber:        await _storage.read(_kVhfNum)     ?? '',
+        vhfExpiry:        await _storage.read(_kVhfExpiry)  ?? '',
+        otherCerts:       await _storage.read(_kOtherCerts) ?? '',
+        idNumber:         await _storage.read(_kIdNumber)   ?? '',
       );
     } catch (_) {
       return const SkipperProfile();
@@ -58,17 +66,21 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
   }
 
   Future<void> save(SkipperProfile profile) async {
-    await _storage.write(key: _kFullName,   value: profile.fullName);
-    await _storage.write(key: _kLicType,    value: profile.licenseType);
-    await _storage.write(key: _kLicNum,     value: profile.licenseNumber);
-    await _storage.write(key: _kLicAuth,    value: profile.licenseAuthority);
-    await _storage.write(key: _kLicExpiry,  value: profile.licenseExpiry);
-    await _storage.write(key: _kVhfNum,     value: profile.vhfNumber);
-    await _storage.write(key: _kVhfExpiry,  value: profile.vhfExpiry);
-    await _storage.write(key: _kOtherCerts, value: profile.otherCerts);
-    await _storage.write(key: _kIdNumber,   value: profile.idNumber);
+    await _storage.write(_kFullName,   profile.fullName);
+    await _storage.write(_kLicType,    profile.licenseType);
+    await _storage.write(_kLicNum,     profile.licenseNumber);
+    await _storage.write(_kLicAuth,    profile.licenseAuthority);
+    await _storage.write(_kLicExpiry,  profile.licenseExpiry);
+    await _storage.write(_kVhfNum,     profile.vhfNumber);
+    await _storage.write(_kVhfExpiry,  profile.vhfExpiry);
+    await _storage.write(_kOtherCerts, profile.otherCerts);
+    await _storage.write(_kIdNumber,   profile.idNumber);
     if (profile.fullName.trim().isNotEmpty) await _upsertIntoList(profile);
     state = AsyncData(profile);
+    if (ResilientKeyValueStore.usedFallback) {
+      debugPrint('[PROFILE] saved through the unencrypted fallback — '
+          'secure storage is unavailable on this device');
+    }
   }
 
   /// Všetky doteraz uložené profily, najnovšie použitý prvý.
@@ -78,7 +90,7 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
   /// nesmie appku zablokovať.
   Future<List<SkipperProfile>> listSaved() async {
     try {
-      final raw = await _storage.read(key: _kProfilesList);
+      final raw = await _storage.read(_kProfilesList);
       if (raw == null || raw.isEmpty) return const [];
       final decoded = jsonDecode(raw);
       if (decoded is! List) return const [];
@@ -98,8 +110,8 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
           p.fullName.trim().toLowerCase() == profile.fullName.trim().toLowerCase());
       list.insert(0, profile);
       await _storage.write(
-        key: _kProfilesList,
-        value: jsonEncode(list.map((p) => p.toJson()).toList()),
+        _kProfilesList,
+        jsonEncode(list.map((p) => p.toJson()).toList()),
       );
     } catch (_) {
       // Zoznam je pohodlie navyše — keď zápis zlyhá, "posledný použitý"

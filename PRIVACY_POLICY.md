@@ -30,7 +30,7 @@ HMB Sailing Log ("the App") is a personal sailing logbook for Android. This Priv
 ### 2.3 User Profile Data (Skipper Card, Vessel ID)
 - **What:** Skipper name, sailing license details, VHF/SRC license, passport or ID card number, vessel call sign, MMSI
 - **Why:** To autofill the Mayday card, the PDF voyage export and the certificate of miles sailed, which authorities and sailing schools ask to carry the holder's document number
-- **Storage:** Stored locally on your device in Android's encrypted storage (`flutter_secure_storage`, EncryptedSharedPreferences). This data is never transmitted automatically.
+- **Storage:** Stored locally on your device in Android's encrypted storage (`flutter_secure_storage`, EncryptedSharedPreferences). Some devices (Honor, Huawei) have a keystore that rejects it; there the data falls back to the app's private storage, which other apps cannot read but which is not additionally encrypted. Either way it stays on the device and is never transmitted automatically.
 
 ### 2.3a Crew Document Numbers
 - **What:** The passport or ID card number of a crew member, typed when a certificate of miles sailed is issued to them
