@@ -1,0 +1,10 @@
+HMB Sailing Log — build 70 (1.35.0+70)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: Quick note while sailing — one sentence, saved with position, time, wind, depth and propulsion.
+• New: with several voyages open, Start lets you pick which one to continue.
+• New: ruler and anchor-area panels float where you drag them and stay there.
+• Fixed: with the anchor area open, the ruler added its points to the guarded polygon.
+• Changed: the safety briefing in a voyage is now the handbook itself, and your own points show up in Safety too.
