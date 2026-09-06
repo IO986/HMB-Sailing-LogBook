@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1209,17 +1210,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           // ── Panel pravítka / trasy ────────────────────────────
           //
-          // Hore, medzi ružicou kompasu a pravým stĺpcom ikon.
+          // Plávajúci panel: skiper si ho potiahne, kam mu nezavadzia.
           //
-          // Najprv to bolo v strede mapy (na lodi a na mieste, kam skiper ťuká
-          // body), potom dole — lenže tam počas plavby sedia tri rýchle
-          // tlačidlá (kormidelník, plachty, fotka), ktoré panel prekryli.
-          // Hore je jediné miesto, kde nezavadzia ani jednému.
+          // Pevné miesto sa hľadalo trikrát — stred mapy padol na loď, spodok
+          // sa počas plavby skryl pod tri rýchle tlačidlá, hore je zase ružica
+          // kompasu. Na inej lodi a inom telefóne vyjde ako najlepšie zase iné
+          // miesto, takže ho určuje ten, kto sa na mapu pozerá.
           if (_rulerActive)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
-              left: 76,
-              right: 72,
+            _FloatingPanel(
+              storageKey: 'ruler',
               child: _RulerPanel(
                 points: _rulerPoints,
                 onUndo: _rulerPoints.isEmpty
@@ -1232,13 +1231,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
 
           // ── Panel kotevnej plochy ─────────────────────────────
-          // Rovnaké miesto ako pravítko a z rovnakého dôvodu — naraz beží
-          // vždy len jeden z nich.
+          // Rovnako plávajúci ako pravítko a z rovnakého dôvodu — naraz beží
+          // aj tak vždy len jeden z nich.
           if (_zoneActive)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
-              left: 76,
-              right: 72,
+            _FloatingPanel(
+              storageKey: 'zone',
               child: _ZonePanel(
                 points: _zonePoints,
                 onUndo: _zonePoints.isEmpty
@@ -1888,6 +1885,106 @@ class _OfflineDownloadSheetState extends State<_OfflineDownloadSheet> {
 }
 
 // ── Wind arrow ────────────────────────────────────────────────
+
+/// Panel, ktorý sa dá po mape potiahnuť.
+///
+/// Poloha sa pamätá ako podiel šírky a výšky mapy, nie v pixeloch: telefón sa
+/// otočí, obrazovka je inde veľká, a panel má ostať tam, kam ho skiper dal.
+/// Drží sa v nastaveniach zariadenia pod [storageKey] — pravítko a kotevná
+/// plocha majú vlastné miesto, lebo sa používajú v inej chvíli.
+class _FloatingPanel extends StatefulWidget {
+  final String storageKey;
+  final Widget child;
+
+  const _FloatingPanel({required this.storageKey, required this.child});
+
+  @override
+  State<_FloatingPanel> createState() => _FloatingPanelState();
+}
+
+class _FloatingPanelState extends State<_FloatingPanel> {
+  /// Podiel voľného miesta, nie pixely. `null` = ešte sa nenačítalo.
+  Offset? _fraction;
+
+  /// Predvolene hore vľavo za ružicou kompasu — miesto, kde panel doteraz stál.
+  static const _defaultFraction = Offset(0.18, 0.02);
+
+  String get _key => 'map_panel_${widget.storageKey}';
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final dx = prefs.getDouble('${_key}_dx');
+      final dy = prefs.getDouble('${_key}_dy');
+      if (!mounted) return;
+      setState(() => _fraction = (dx == null || dy == null)
+          ? _defaultFraction
+          : Offset(dx, dy));
+    } catch (_) {
+      if (mounted) setState(() => _fraction = _defaultFraction);
+    }
+  }
+
+  Future<void> _save(Offset fraction) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('${_key}_dx', fraction.dx);
+      await prefs.setDouble('${_key}_dy', fraction.dy);
+    } catch (_) {
+      // Zapamätaná poloha je pohodlie; ťahanie funguje aj bez nej.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fraction = _fraction;
+    if (fraction == null) return const SizedBox.shrink();
+
+    // Positioned.fill + vnorený Stack, nie Positioned priamo: LayoutBuilder
+    // medzi Stackom a Positioned by bol chybné použitie ParentDataWidget.
+    // Vnorený Stack je priehľadný a nič neprekrýva — RenderStack sám na dotyk
+    // nereaguje, takže ťuknutie mimo panela padne na mapu pod ním.
+    return Positioned.fill(
+        child: LayoutBuilder(builder: (context, constraints) {
+      final maxW = constraints.maxWidth;
+      final maxH = constraints.maxHeight;
+      // Šírka panela: dosť na tlačidlá, ale nie cez celú mapu.
+      final width = maxW * 0.62 < 220 ? maxW * 0.9 : maxW * 0.62;
+      final left = (fraction.dx * maxW).clamp(0.0, (maxW - width).clamp(0.0, maxW));
+      final top = (fraction.dy * maxH).clamp(0.0, maxH - 96);
+
+      return Stack(children: [
+        Positioned(
+          left: left,
+          top: top,
+          width: width,
+          child: GestureDetector(
+          // Panel sa ťahá zaň celý — na mape by úchyt veľkosti nechtu nikto
+          // v hojdačke netrafil.
+            onPanUpdate: (d) {
+              final next = Offset(
+                ((left + d.delta.dx) / maxW).clamp(0.0, 1.0),
+                ((top + d.delta.dy) / maxH).clamp(0.0, 1.0),
+              );
+              setState(() => _fraction = next);
+            },
+            onPanEnd: (_) {
+              final f = _fraction;
+              if (f != null) _save(f);
+            },
+            child: widget.child,
+          ),
+        ),
+      ]);
+    }));
+  }
+}
 
 /// Ovládanie kreslenia kotevnej plochy.
 ///
