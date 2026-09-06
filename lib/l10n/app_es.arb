@@ -88,6 +88,8 @@
   "delete": "Eliminar",
   "edit": "Editar",
   "save": "Guardar",
+  "skipperProfileNotSaved": "No se pudieron guardar los datos del patrón: este teléfono no los acepta.",
+  "syncTokenNotSaved": "No se pudo guardar el token: este teléfono no lo acepta en el almacenamiento cifrado.",
   "editRouteTitle": "Editar ruta",
   "portFromLabel": "Puerto de salida",
   "portToLabel": "Puerto de llegada",

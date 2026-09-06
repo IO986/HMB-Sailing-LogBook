@@ -268,6 +268,14 @@ class AppLocalizationsSl extends AppLocalizations {
   String get save => 'Shrani';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Podatkov skiperja ni bilo mogoče shraniti — ta telefon jih ne sprejme.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Žetona ni bilo mogoče shraniti — ta telefon ga ne sprejme v šifrirano shrambo.';
+
+  @override
   String get editRouteTitle => 'Uredi progo';
 
   @override

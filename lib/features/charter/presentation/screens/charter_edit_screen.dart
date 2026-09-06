@@ -16,6 +16,7 @@ import '../../../../core/models/skipper_profile.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../main.dart';
 import '../../providers/charter_provider.dart';
+import '../../services/vessel_upsert.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -293,13 +294,12 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
 
   /// Uloží loď z formulára do zoznamu lodí.
   ///
-  /// Plavba si vlastnú kópiu údajov drží ďalej — táto tabuľka je len zásoba
-  /// na vyplnenie ďalšej plavby, nie zdroj pravdy pre už podpísaný doklad.
+  /// Samotné rozhodnutie „založiť novú alebo prepísať tú istú" žije
+  /// v [upsertVesselFromDraft] — obrazovka sa testovať nedá, tá funkcia áno,
+  /// a je to presne to miesto, kde sa dá pokaziť opakovaná plavba na tej istej
+  /// lodi. Plavba si vlastnú kópiu údajov drží ďalej: tento zoznam je zásoba
+  /// na vyplnenie ďalšej plavby, nie zdroj pravdy pre podpísaný doklad.
   Future<void> _saveVessel() async {
-    final name = _vesselCtrl.text.trim();
-    if (name.isEmpty) return;
-    final db = ref.read(databaseProvider);
-
     double? num_(TextEditingController c) =>
         double.tryParse(c.text.trim().replaceAll(',', '.'));
     int? int_(TextEditingController c) => int.tryParse(c.text.trim());
@@ -312,38 +312,32 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             : _vesselTypeCustomCtrl.text.trim())
         : _vesselType;
 
-    final existing = _vesselId != null
-        ? await db.getVesselById(_vesselId!)
-        : await db.findVesselByName(name);
-
-    final data = VesselsCompanion(
-      name: Value(name),
-      model: Value(text_(_modelCtrl)),
-      vesselType: Value(type),
-      callsign: Value(text_(_callsignCtrl)),
-      mmsi: Value(text_(_mmsiCtrl)),
-      lengthM: Value(num_(_lengthCtrl)),
-      beamM: Value(num_(_beamCtrl)),
-      draftM: Value(num_(_draftCtrl)),
-      berths: Value(int_(_berthsCtrl)),
-      yearBuilt: Value(int_(_yearCtrl)),
-      engine: Value(text_(_engineCtrl)),
-      waterTankL: Value(num_(_waterTankCtrl)),
-      fuelTankL: Value(num_(_fuelTankCtrl)),
-      homePort: Value(text_(_homePortCtrl)),
-      country: Value(text_(_countryCtrl)),
-      isOwn: Value(_isOwnVessel),
-      lastUsedAt: Value(DateTime.now()),
+    // Priradenie len pri úspechu: prázdne meno vráti null a tým by sa stratilo
+    // id lode vybranej zo zoznamu — po doplnení mena by sa potom podľa mena
+    // založila druhá loď, presne to, čomu má zoznam brániť.
+    final vesselId = await upsertVesselFromDraft(
+      ref.read(databaseProvider),
+      VesselDraft(
+        name: _vesselCtrl.text,
+        model: text_(_modelCtrl),
+        vesselType: type,
+        callsign: text_(_callsignCtrl),
+        mmsi: text_(_mmsiCtrl),
+        lengthM: num_(_lengthCtrl),
+        beamM: num_(_beamCtrl),
+        draftM: num_(_draftCtrl),
+        berths: int_(_berthsCtrl),
+        yearBuilt: int_(_yearCtrl),
+        engine: text_(_engineCtrl),
+        waterTankL: num_(_waterTankCtrl),
+        fuelTankL: num_(_fuelTankCtrl),
+        homePort: text_(_homePortCtrl),
+        country: text_(_countryCtrl),
+        isOwn: _isOwnVessel,
+      ),
+      knownId: _vesselId,
     );
-
-    if (existing == null) {
-      final created = await db.insertVessel(
-          data.copyWith(createdAt: Value(DateTime.now())));
-      _vesselId = created.id;
-    } else {
-      await db.updateVessel(data.copyWith(id: Value(existing.id)));
-      _vesselId = existing.id;
-    }
+    if (vesselId != null) _vesselId = vesselId;
   }
 
   Future<void> _loadCharter() async {
@@ -1087,7 +1081,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         final old = await ref
             .read(skipperProfileProvider.future)
             .timeout(const Duration(seconds: 5));
-        await ref
+        final saved = await ref
             .read(skipperProfileProvider.notifier)
             .save(SkipperProfile(
               fullName: skipper.nameCtrl.text.trim(),
@@ -1101,6 +1095,13 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
               idNumber: skipper.idNumCtrl.text.trim(),
             ))
             .timeout(const Duration(seconds: 5));
+        // Zápis mohol „prejsť" a neuložiť nič — na Honore to tak bolo celé
+        // dva buildy. Keď sa profil nedá načítať späť, skiper sa to dozvie
+        // hneď, nie o mesiac pri ďalšej plavbe.
+        if (!saved && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l.skipperProfileNotSaved)));
+        }
       } catch (_) {
         // skipper profile cache is best-effort; voyage data must still save.
         // Catch EVERYTHING, not just TimeoutException — on some devices
@@ -1116,8 +1117,10 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     // zásoba na vyplnenie ďalšej plavby nesmie zhodiť uloženie tejto.
     try {
       await _saveVessel();
-    } catch (_) {
-      // Zoznam lodí je pohodlie, nie podmienka uloženia plavby.
+    } catch (e) {
+      // Zoznam lodí je pohodlie, nie podmienka uloženia plavby — ale nechať
+      // po sebe stopu treba, inak sa taká chyba nájde až z terénu.
+      debugPrint('[VESSELS] save failed: $e');
     }
 
     final companion = ChartersCompanion(

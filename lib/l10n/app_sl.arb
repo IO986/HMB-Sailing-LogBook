@@ -88,6 +88,8 @@
   "delete": "Izbriši",
   "edit": "Uredi",
   "save": "Shrani",
+  "skipperProfileNotSaved": "Podatkov skiperja ni bilo mogoče shraniti — ta telefon jih ne sprejme.",
+  "syncTokenNotSaved": "Žetona ni bilo mogoče shraniti — ta telefon ga ne sprejme v šifrirano shrambo.",
   "editRouteTitle": "Uredi progo",
   "portFromLabel": "Pristanišče odhoda",
   "portToLabel": "Pristanišče prihoda",

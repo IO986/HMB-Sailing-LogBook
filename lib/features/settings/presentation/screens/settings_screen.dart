@@ -927,9 +927,10 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                         isDense: true,
                       ),
                       obscureText: true,
-                      onEditingComplete: () => writeSyncCustomToken(
-                              _tokenCtrl.text)
-                          .then((_) => ref.invalidate(syncCustomTokenProvider)),
+                      // Zápis tokenu ide do šifrovaného úložiska, ktoré na
+                      // Honor/Huawei vie výnimku vyhodiť — a dovtedy odletela
+                      // do prázdna: token sa neuložil a nikto sa to nedozvedel.
+                      onEditingComplete: () => _saveSyncToken(),
                     ),
                   ],
                   const SizedBox(height: 12),
@@ -1084,6 +1085,24 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
         );
       },
     );
+  }
+
+  /// Uloží token synchronizácie a povie, keď sa to nepodarilo.
+  ///
+  /// Token patrí výhradne do šifrovaného úložiska — do nešifrovanej zálohy
+  /// ako profil skipera nejde, prístupový kľúč k serveru tam nemá čo robiť.
+  /// Keď ho teda telefón odmietne uložiť, jediná správna odpoveď je povedať
+  /// to nahlas; dovtedy výnimka odletela do prázdna a token ostal nezapísaný.
+  Future<void> _saveSyncToken() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await writeSyncCustomToken(_tokenCtrl.text);
+      ref.invalidate(syncCustomTokenProvider);
+    } catch (e) {
+      debugPrint('[SYNC] token write failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(l.syncTokenNotSaved)));
+    }
   }
 
   Future<void> _testConnection(AppLocalizations l) async {

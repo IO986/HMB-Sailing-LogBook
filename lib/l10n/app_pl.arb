@@ -88,6 +88,8 @@
   "delete": "Usuń",
   "edit": "Edytuj",
   "save": "Zapisz",
+  "skipperProfileNotSaved": "Nie udało się zapisać danych skippera — ten telefon ich nie przyjmuje.",
+  "syncTokenNotSaved": "Nie udało się zapisać tokenu — ten telefon nie przyjmuje go do zaszyfrowanego magazynu.",
   "editRouteTitle": "Edytuj trasę",
   "portFromLabel": "Port wyjścia",
   "portToLabel": "Port wejścia",

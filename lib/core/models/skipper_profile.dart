@@ -33,6 +33,26 @@ class SkipperProfile {
       vhfNumber.isEmpty &&
       otherCerts.isEmpty;
 
+  /// Hodnotová rovnosť: kontrola po uložení porovnáva celý profil, nie
+  /// vybrané polia — inak by čiastočné zlyhanie úložiska prešlo ako úspech.
+  @override
+  bool operator ==(Object other) =>
+      other is SkipperProfile &&
+      other.fullName == fullName &&
+      other.licenseType == licenseType &&
+      other.licenseNumber == licenseNumber &&
+      other.licenseAuthority == licenseAuthority &&
+      other.licenseExpiry == licenseExpiry &&
+      other.vhfNumber == vhfNumber &&
+      other.vhfExpiry == vhfExpiry &&
+      other.otherCerts == otherCerts &&
+      other.idNumber == idNumber;
+
+  @override
+  int get hashCode => Object.hash(fullName, licenseType, licenseNumber,
+      licenseAuthority, licenseExpiry, vhfNumber, vhfExpiry, otherCerts,
+      idNumber);
+
   Map<String, dynamic> toJson() => {
         'fullName': fullName,
         'licenseType': licenseType,

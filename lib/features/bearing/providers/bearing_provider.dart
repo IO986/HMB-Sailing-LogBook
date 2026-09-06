@@ -14,6 +14,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -871,7 +872,8 @@ class BearingRepository {
           '${dir.path}/bearing_${DateTime.now().millisecondsSinceEpoch}.jpg');
       await source.copy(target.path);
       return target.path;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[BEARING] photo could not be stored: $e');
       // Fotka je doplnok, nie podstata zamerania — keď sa nepodarí uložiť,
       // riadok aj tak vznikne.
       return null;

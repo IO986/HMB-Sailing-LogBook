@@ -65,7 +65,14 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
     }
   }
 
-  Future<void> save(SkipperProfile profile) async {
+  /// Uloží profil a **overí, že sa naozaj uložil**.
+  ///
+  /// Vráti `true`, keď sa dá načítať späť to isté. Presne toto v builde 69
+  /// chýbalo: zápis do šifrovaného úložiska na Honore vyhodil výnimku, tá sa
+  /// ticho zhltla, appka sa tvárila, že je uložené — a pri novej plavbe nemala
+  /// čo ponúknuť. Volajúci má teraz z čoho poznať, že sa to nepodarilo, a
+  /// môže to povedať človeku.
+  Future<bool> save(SkipperProfile profile) async {
     await _storage.write(_kFullName,   profile.fullName);
     await _storage.write(_kLicType,    profile.licenseType);
     await _storage.write(_kLicNum,     profile.licenseNumber);
@@ -76,11 +83,26 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
     await _storage.write(_kOtherCerts, profile.otherCerts);
     await _storage.write(_kIdNumber,   profile.idNumber);
     if (profile.fullName.trim().isNotEmpty) await _upsertIntoList(profile);
+    // Stav sa nastavuje aj keď sa uloženie neskôr ukáže ako neúspešné:
+    // v tomto behu appky sú platné tie údaje, ktoré skiper práve zadal, a
+    // export či protokol majú pracovať s nimi. Že neprežijú reštart, povie
+    // volajúcemu návratová hodnota.
     state = AsyncData(profile);
+
     if (ResilientKeyValueStore.usedFallback) {
       debugPrint('[PROFILE] saved through the unencrypted fallback — '
           'secure storage is unavailable on this device');
     }
+
+    // Kontrola spätným načítaním, a to celého profilu: čiastočné zlyhanie
+    // úložiska (jeden kľúč prejde, druhý nie) by pri kontrole vybraných polí
+    // prešlo ako úspech.
+    final readBack = await _load();
+    final ok = readBack == profile;
+    if (!ok) {
+      debugPrint('[PROFILE] save did not stick — read-back differs');
+    }
+    return ok;
   }
 
   /// Všetky doteraz uložené profily, najnovšie použitý prvý.
@@ -105,7 +127,11 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
 
   Future<void> _upsertIntoList(SkipperProfile profile) async {
     try {
-      final list = await listSaved();
+      // Kópia, nie výsledok priamo: prázdny zoznam sa vracia ako `const []`
+      // a `removeWhere` na ňom vyhodí výnimku. Tá sa dosiaľ zhltla, takže do
+      // zoznamu profilov sa NIKDY nedostal prvý záznam — a ponuka „vyber si
+      // skipera" pri viacerých profiloch tým pádom nemala čo ponúknuť.
+      final list = [...await listSaved()];
       list.removeWhere((p) =>
           p.fullName.trim().toLowerCase() == profile.fullName.trim().toLowerCase());
       list.insert(0, profile);
@@ -113,9 +139,11 @@ class SkipperProfileNotifier extends AsyncNotifier<SkipperProfile> {
         _kProfilesList,
         jsonEncode(list.map((p) => p.toJson()).toList()),
       );
-    } catch (_) {
+    } catch (e) {
       // Zoznam je pohodlie navyše — keď zápis zlyhá, "posledný použitý"
-      // profil vyššie sa aj tak uložil.
+      // profil vyššie sa aj tak uložil. Nezhltnúť ho úplne ticho ale treba:
+      // presne takto sa v builde 69 stratila celá pamäť skipera.
+      debugPrint('[PROFILE] profile list write failed: $e');
     }
   }
 }

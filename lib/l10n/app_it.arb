@@ -88,6 +88,8 @@
   "delete": "Elimina",
   "edit": "Modifica",
   "save": "Salva",
+  "skipperProfileNotSaved": "Non è stato possibile salvare i dati dello skipper: questo telefono non li accetta.",
+  "syncTokenNotSaved": "Non è stato possibile salvare il token: questo telefono non lo accetta nell'archivio cifrato.",
   "editRouteTitle": "Modifica rotta",
   "portFromLabel": "Porto di partenza",
   "portToLabel": "Porto di arrivo",

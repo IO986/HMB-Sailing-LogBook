@@ -269,6 +269,14 @@ class AppLocalizationsHr extends AppLocalizations {
   String get save => 'Spremi';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Podatke skipera nije bilo moguće spremiti — ovaj ih telefon ne prihvaća.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Token nije bilo moguće spremiti — ovaj ga telefon ne prihvaća u šifrirano spremište.';
+
+  @override
   String get editRouteTitle => 'Uredi rutu';
 
   @override

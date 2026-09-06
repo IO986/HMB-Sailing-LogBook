@@ -88,6 +88,8 @@
   "delete": "Obriši",
   "edit": "Uredi",
   "save": "Spremi",
+  "skipperProfileNotSaved": "Podatke skipera nije bilo moguće spremiti — ovaj ih telefon ne prihvaća.",
+  "syncTokenNotSaved": "Token nije bilo moguće spremiti — ovaj ga telefon ne prihvaća u šifrirano spremište.",
   "editRouteTitle": "Uredi rutu",
   "portFromLabel": "Luka isplovljenja",
   "portToLabel": "Luka uplovljenja",

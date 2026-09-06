@@ -268,6 +268,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get save => 'Guardar';
 
   @override
+  String get skipperProfileNotSaved =>
+      'No se pudieron guardar los datos del patrón: este teléfono no los acepta.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'No se pudo guardar el token: este teléfono no lo acepta en el almacenamiento cifrado.';
+
+  @override
   String get editRouteTitle => 'Editar ruta';
 
   @override

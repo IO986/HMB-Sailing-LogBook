@@ -268,6 +268,14 @@ class AppLocalizationsCs extends AppLocalizations {
   String get save => 'Uložit';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Údaje skippera se nepodařilo uložit — tento telefon je nepřijal.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Token se nepodařilo uložit — tento telefon jej nepřijal do šifrovaného úložiště.';
+
+  @override
   String get editRouteTitle => 'Upravit trasu';
 
   @override

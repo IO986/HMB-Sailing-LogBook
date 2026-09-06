@@ -271,6 +271,14 @@ class AppLocalizationsEl extends AppLocalizations {
   String get save => 'Αποθήκευση';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Τα στοιχεία του κυβερνήτη δεν αποθηκεύτηκαν — αυτό το τηλέφωνο δεν τα δέχεται.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Το token δεν αποθηκεύτηκε — αυτό το τηλέφωνο δεν το δέχεται στον κρυπτογραφημένο χώρο.';
+
+  @override
   String get editRouteTitle => 'Επεξεργασία διαδρομής';
 
   @override

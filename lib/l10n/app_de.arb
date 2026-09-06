@@ -88,6 +88,8 @@
   "delete": "Löschen",
   "edit": "Bearbeiten",
   "save": "Speichern",
+  "skipperProfileNotSaved": "Die Skipperdaten konnten nicht gespeichert werden — dieses Telefon nimmt sie nicht an.",
+  "syncTokenNotSaved": "Das Token konnte nicht gespeichert werden — dieses Telefon nimmt es nicht in den verschlüsselten Speicher.",
   "editRouteTitle": "Route bearbeiten",
   "portFromLabel": "Abfahrtshafen",
   "portToLabel": "Ankunftshafen",

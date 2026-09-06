@@ -88,6 +88,8 @@
   "delete": "Smazat",
   "edit": "Upravit",
   "save": "Uložit",
+  "skipperProfileNotSaved": "Údaje skippera se nepodařilo uložit — tento telefon je nepřijal.",
+  "syncTokenNotSaved": "Token se nepodařilo uložit — tento telefon jej nepřijal do šifrovaného úložiště.",
   "editRouteTitle": "Upravit trasu",
   "portFromLabel": "Přístav odjezdu",
   "portToLabel": "Přístav příjezdu",

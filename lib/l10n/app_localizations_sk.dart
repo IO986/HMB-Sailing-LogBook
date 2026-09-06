@@ -269,6 +269,14 @@ class AppLocalizationsSk extends AppLocalizations {
   String get save => 'Uložiť';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Údaje skipera sa nepodarilo uložiť — tento telefón ich neprijal.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Token sa nepodarilo uložiť — tento telefón ho neprijal do šifrovaného úložiska.';
+
+  @override
   String get editRouteTitle => 'Upraviť trasu';
 
   @override

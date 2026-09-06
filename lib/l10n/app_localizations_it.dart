@@ -268,6 +268,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get save => 'Salva';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Non è stato possibile salvare i dati dello skipper: questo telefono non li accetta.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Non è stato possibile salvare il token: questo telefono non lo accetta nell\'archivio cifrato.';
+
+  @override
   String get editRouteTitle => 'Modifica rotta';
 
   @override

@@ -17,22 +17,25 @@ void main() {
   ResilientKeyValueStore broken() => ResilientKeyValueStore(
         secureRead: (_) async => throw Exception('keystore unavailable'),
         secureWrite: (_, __) async => throw Exception('keystore unavailable'),
-        secureDelete: (_) async => throw Exception('keystore unavailable'),
       );
 
   ResilientKeyValueStore working(Map<String, String> box) =>
       ResilientKeyValueStore(
         secureRead: (k) async => box[k],
         secureWrite: (k, v) async => box[k] = v,
-        secureDelete: (k) async => box.remove(k),
       );
+
+  Future<String?> fallbackOf(String key) async =>
+      (await SharedPreferences.getInstance()).getString('fallback_$key');
 
   test('s rozbitým keystorom sa údaj aj tak uloží a prečíta', () async {
     final store = broken();
 
-    await store.write('skipper_full_name', 'Vladimír Plodek');
+    expect(await store.write('skipper_full_name', 'Vladimír Plodek'), isTrue);
 
     expect(await store.read('skipper_full_name'), 'Vladimír Plodek');
+    expect(await fallbackOf('skipper_full_name'), 'Vladimír Plodek',
+        reason: 'hodnota musí ležať v zálohe, inak test nedokazuje nič');
     expect(ResilientKeyValueStore.usedFallback, isTrue);
   });
 
@@ -40,45 +43,53 @@ void main() {
     final box = <String, String>{};
     final store = working(box);
 
-    await store.write('skipper_full_name', 'Ján Novák');
+    expect(await store.write('skipper_full_name', 'Ján Novák'), isTrue);
 
     expect(box['skipper_full_name'], 'Ján Novák');
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getString('fallback_skipper_full_name'), isNull,
+    expect(await fallbackOf('skipper_full_name'), isNull,
         reason: 'nešifrovaná kópia nemá prečo ostať');
+    expect(ResilientKeyValueStore.usedFallback, isFalse);
   });
 
-  /// Keystore sa môže rozbiť aj opraviť (reinštalácia, aktualizácia systému).
-  /// Vtedy sa musí čítať to novšie, nie stará šifrovaná hodnota.
-  test('po oprave keystoru sa záloha zahodí, aby sa nečítalo staré', () async {
+  /// Toto je tá pasca: šifrovaná kópia ostala z čias, keď keystore fungoval,
+  /// a novšia hodnota leží v zálohe. Čítanie musí vrátiť tú novšiu, inak sa
+  /// zmeny urobené na rozbitom telefóne po reštarte ticho vrátia späť.
+  test('záloha je novšia než šifrovaná kópia a vyhráva', () async {
     final box = <String, String>{};
     await working(box).write('skipper_license_number', 'staré číslo');
 
-    // Keystore vypadne, skiper zapíše nové číslo — ide do zálohy.
-    await broken().write('skipper_license_number', 'nové číslo');
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getString('fallback_skipper_license_number'), 'nové číslo');
+    // Keystore vypadol, skiper zapísal nové číslo — ide do zálohy.
+    await ResilientKeyValueStore(
+      secureRead: (k) async => box[k],
+      secureWrite: (_, __) async => throw Exception('keystore'),
+    ).write('skipper_license_number', 'nové číslo');
 
-    // Keystore sa vráti a skiper uloží znova: záloha zmizne.
-    await working(box).write('skipper_license_number', 'nové číslo');
-    expect(prefs.getString('fallback_skipper_license_number'), isNull);
-    expect(box['skipper_license_number'], 'nové číslo');
+    final readWithBrokenWrite = await ResilientKeyValueStore(
+      secureRead: (k) async => box[k],
+      secureWrite: (_, __) async => throw Exception('keystore'),
+    ).read('skipper_license_number');
+
+    expect(readWithBrokenWrite, 'nové číslo');
+    expect(box['skipper_license_number'], 'staré číslo',
+        reason: 'zápis do šifrovaného úložiska stále zlyháva');
+  });
+
+  /// Keystore sa vie aj spamätať (reinštalácia, aktualizácia systému). Vtedy
+  /// sa hodnota zo zálohy vráti späť do šifrovaného úložiska a záloha zmizne.
+  test('po oprave keystoru sa hodnota uzdraví a záloha sa zmaže', () async {
+    final box = <String, String>{};
+    await broken().write('skipper_id_number', 'AB1234567');
+    expect(await fallbackOf('skipper_id_number'), 'AB1234567');
+
+    final healed = await working(box).read('skipper_id_number');
+
+    expect(healed, 'AB1234567');
+    expect(box['skipper_id_number'], 'AB1234567',
+        reason: 'hodnota sa mala vrátiť do šifrovaného úložiska');
+    expect(await fallbackOf('skipper_id_number'), isNull);
   });
 
   test('nezapísaný kľúč vracia null, nie výnimku', () async {
     expect(await broken().read('nikdy_nezapisane'), isNull);
-  });
-
-  test('mazanie vezme šifrovanú hodnotu aj zálohu', () async {
-    final box = <String, String>{};
-    await working(box).write('skipper_vhf_number', 'SRC 123');
-    await broken().write('skipper_id_number', 'AB123456');
-
-    await working(box).delete('skipper_vhf_number');
-    await broken().delete('skipper_id_number');
-
-    expect(box, isEmpty);
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getString('fallback_skipper_id_number'), isNull);
   });
 }

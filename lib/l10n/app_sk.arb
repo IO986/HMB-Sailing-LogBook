@@ -94,6 +94,8 @@
   "delete": "Zmazať",
   "edit": "Upraviť",
   "save": "Uložiť",
+  "skipperProfileNotSaved": "Údaje skipera sa nepodarilo uložiť — tento telefón ich neprijal.",
+  "syncTokenNotSaved": "Token sa nepodarilo uložiť — tento telefón ho neprijal do šifrovaného úložiska.",
   "editRouteTitle": "Upraviť trasu",
   "portFromLabel": "Prístav odchodu",
   "portToLabel": "Prístav príchodu",

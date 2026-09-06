@@ -269,6 +269,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get save => 'Зберегти';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Дані шкіпера не вдалося зберегти — цей телефон їх не приймає.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Токен не вдалося зберегти — цей телефон не приймає його до шифрованого сховища.';
+
+  @override
   String get editRouteTitle => 'Редагувати маршрут';
 
   @override

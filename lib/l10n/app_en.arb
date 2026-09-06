@@ -88,6 +88,8 @@
   "delete": "Delete",
   "edit": "Edit",
   "save": "Save",
+  "skipperProfileNotSaved": "The skipper's details could not be saved — this phone would not take them.",
+  "syncTokenNotSaved": "The token could not be saved — this phone would not take it into encrypted storage.",
   "editRouteTitle": "Edit route",
   "portFromLabel": "Departure port",
   "portToLabel": "Arrival port",

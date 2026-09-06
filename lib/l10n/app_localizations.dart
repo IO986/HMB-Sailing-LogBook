@@ -578,6 +578,18 @@ abstract class AppLocalizations {
   /// **'Uložiť'**
   String get save;
 
+  /// No description provided for @skipperProfileNotSaved.
+  ///
+  /// In sk, this message translates to:
+  /// **'Údaje skipera sa nepodarilo uložiť — tento telefón ich neprijal.'**
+  String get skipperProfileNotSaved;
+
+  /// No description provided for @syncTokenNotSaved.
+  ///
+  /// In sk, this message translates to:
+  /// **'Token sa nepodarilo uložiť — tento telefón ho neprijal do šifrovaného úložiska.'**
+  String get syncTokenNotSaved;
+
   /// No description provided for @editRouteTitle.
   ///
   /// In sk, this message translates to:

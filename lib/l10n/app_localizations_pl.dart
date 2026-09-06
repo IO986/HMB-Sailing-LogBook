@@ -268,6 +268,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get save => 'Zapisz';
 
   @override
+  String get skipperProfileNotSaved =>
+      'Nie udało się zapisać danych skippera — ten telefon ich nie przyjmuje.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'Nie udało się zapisać tokenu — ten telefon nie przyjmuje go do zaszyfrowanego magazynu.';
+
+  @override
   String get editRouteTitle => 'Edytuj trasę';
 
   @override

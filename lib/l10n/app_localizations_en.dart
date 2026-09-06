@@ -268,6 +268,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get skipperProfileNotSaved =>
+      'The skipper\'s details could not be saved — this phone would not take them.';
+
+  @override
+  String get syncTokenNotSaved =>
+      'The token could not be saved — this phone would not take it into encrypted storage.';
+
+  @override
   String get editRouteTitle => 'Edit route';
 
   @override
