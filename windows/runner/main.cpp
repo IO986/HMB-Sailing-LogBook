@@ -31,6 +31,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
+  // Small fixed window is unusable on tablets (e.g. Surface Go) — start
+  // maximized instead of the default 1280x720.
+  ::ShowWindow(window.GetHandle(), SW_MAXIMIZE);
 
   ::MSG msg;
   while (::GetMessage(&msg, nullptr, 0, 0)) {
