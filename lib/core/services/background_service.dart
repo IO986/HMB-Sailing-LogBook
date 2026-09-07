@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +12,12 @@ import 'weather_repository.dart';
 @pragma('vm:entry-point')
 class BackgroundService {
   static Future<void> init() async {
+    // flutter_background_service only supports Android/iOS; on desktop/web
+    // GPS tracking stays foreground-only via LocationService.
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) {
+      return;
+    }
+
     final service = FlutterBackgroundService();
 
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
