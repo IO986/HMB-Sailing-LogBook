@@ -147,6 +147,7 @@ class BackgroundService {
   /// zvonka, aby táto trieda nemusela poznať GPS službu.
   static Future<void> stopIfOrphaned({required bool trackingActive}) async {
     if (trackingActive) return;
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
     final service = FlutterBackgroundService();
     if (!await service.isRunning()) return;
     await stop();
