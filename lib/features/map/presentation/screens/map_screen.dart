@@ -570,19 +570,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // červený filter oslepovala; tmavý podklad zachová kontrast.
               if (baseMap == BaseMap.osm)
                 if (ref.watch(nightModeProvider))
-                  TileLayer(
-                    key: ValueKey('osm_dark_$_tileKey'),
-                    urlTemplate:
-                        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                    subdomains: const ['a', 'b', 'c', 'd'],
-                    userAgentPackageName: 'com.hmb.sailinglog',
-                    maxZoom: 19,
-                    tileProvider: CachingTileProvider('dark'),
-                    // Predsťahuje prstenec dlaždíc okolo výrezu a podrží viac
-                    // mimo neho: pri posune a zoome sa tak ukáže načítaná dlaždica
-                    // namiesto prázdneho miesta.
-                    panBuffer: 2,
-                    keepBuffer: 4,
+                  // CARTO's free dark_all tiles začali vracať watermark
+                  // "API KEY REQUIRED" namiesto dlaždíc (anon tier zrušený),
+                  // preto stmavujeme bežné OSM dlaždice lokálne farebným
+                  // filtrom - žiadna závislosť na cudzom tmavom serveri.
+                  ColorFiltered(
+                    colorFilter: const ColorFilter.matrix([
+                      0.25, 0, 0, 0, 0,
+                      0, 0.25, 0, 0, 0,
+                      0, 0, 0.25, 0, 0,
+                      0, 0, 0, 1, 0,
+                    ]),
+                    child: TileLayer(
+                      key: ValueKey('osm_dark_$_tileKey'),
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.hmb.sailinglog',
+                      maxZoom: 19,
+                      tileProvider: CachingTileProvider('osm'),
+                      panBuffer: 2,
+                      keepBuffer: 4,
+                    ),
                   )
                 else
                   TileLayer(
