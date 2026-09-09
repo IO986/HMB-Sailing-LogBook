@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'core/database/app_database.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/providers/night_mode_provider.dart';
 import 'core/services/background_service.dart';
+import 'core/services/crash_log_service.dart';
 import 'core/services/gps_tracking_service.dart';
 import 'core/services/location_service.dart';
 import 'core/services/raymarine_connection_service.dart';
@@ -74,8 +76,35 @@ final raymarineNeverConfiguredProvider = Provider<bool>((ref) => true);
 String _appVersion = 'unknown';
 final appVersionProvider = Provider<String>((ref) => _appVersion);
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+/// Appka nemá Crashlytics/Sentry, takže bez tohto by neošetrená výnimka
+/// zmizla so zariadením — Play Vitals ju pri jednom-dvoch výskytoch
+/// spravidla vôbec nezobrazí. `runZonedGuarded` chytá, čo unikne z `main`
+/// aj z async medzier mimo widget stromu; `FlutterError.onError` chytá
+/// chyby počas buildu/layoutu/paintu; `PlatformDispatcher.instance.onError`
+/// chytá zvyšok (napr. z platform channels). Zapisuje sa cez
+/// [CrashLogService], ktorý sám nikdy nesmie hodiť ďalej.
+void main() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    FlutterError.onError = (details) {
+      FlutterError.presentError(details);
+      CrashLogService().logError(
+          details.exception, details.stack ?? StackTrace.current,
+          context: 'FlutterError');
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      CrashLogService().logError(error, stack, context: 'PlatformDispatcher');
+      return true;
+    };
+
+    await _run();
+  }, (error, stack) {
+    CrashLogService().logError(error, stack, context: 'zone');
+  });
+}
+
+Future<void> _run() async {
 
   // Celoobrazovkový režim: skryje status bar aj navigačnú lištu telefónu.
   // Sticky = swipe od okraja ich dočasne zobrazí, potom sa samy schovajú.

@@ -1,0 +1,7 @@
+HMB Sailing Log — build 72 (1.35.2+72)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: the app crashed every time when signing the day's PDF before export. Signing and exporting now works reliably.
+• Fixed: a leftover sync setting kept silently queueing and failing hundreds of log entries in the background on some devices, showing a permanent red "failed" badge with no way to clear it.

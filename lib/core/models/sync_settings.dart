@@ -1,3 +1,14 @@
+/// Backend sync (HMB Academy / custom REST) is dead code kept warm for when
+/// `hmba.boats` is ready — see `settings_screen.dart`'s `showBackendSync`.
+/// The UI toggle to turn it off has been hidden since then, so a device
+/// that had `sync_enabled=true` persisted from before that change can never
+/// reach the switch again; without this gate it silently re-queues and
+/// fails every `log_entry` forever (all under a custom URL nobody can
+/// clear either) and the red queue badge nags a user who has no way to
+/// dismiss it. Flip this back on together with `showBackendSync` once
+/// hmba.boats is real.
+const kBackendSyncFeatureEnabled = false;
+
 /// Which backend a sync cycle pushes to.
 enum SyncTarget { hmbAcademy, custom }
 

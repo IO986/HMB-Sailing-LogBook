@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:signature/signature.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/signature_pad.dart';
 
 Future<Uint8List?> showSignaturePadDialog(
     BuildContext context, {String? signerName}) {
@@ -24,19 +24,8 @@ class _SignaturePadSheet extends StatefulWidget {
 }
 
 class _SignaturePadSheetState extends State<_SignaturePadSheet> {
-  late final SignatureController _ctrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = SignatureController(penStrokeWidth: 3, penColor: Colors.black);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
+  final _padKey = GlobalKey<SignaturePadState>();
+  List<List<Offset>> _strokes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +54,7 @@ class _SignaturePadSheetState extends State<_SignaturePadSheet> {
           const SizedBox(height: 12),
           Container(
             width: double.infinity,
+            height: 200,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(8),
@@ -72,10 +62,11 @@ class _SignaturePadSheetState extends State<_SignaturePadSheet> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Signature(
-                controller: _ctrl,
-                height: 200,
-                backgroundColor: Colors.white,
+              child: SignaturePad(
+                key: _padKey,
+                strokes: _strokes,
+                onStrokeAdded: (s) =>
+                    setState(() => _strokes = [..._strokes, s]),
               ),
             ),
           ),
@@ -88,7 +79,7 @@ class _SignaturePadSheetState extends State<_SignaturePadSheet> {
             OutlinedButton.icon(
               icon: const Icon(Icons.clear),
               label: Text(AppLocalizations.of(context).clear),
-              onPressed: () => _ctrl.clear(),
+              onPressed: () => setState(() => _strokes = []),
             ),
             const Spacer(),
             FilledButton.icon(
@@ -103,12 +94,12 @@ class _SignaturePadSheetState extends State<_SignaturePadSheet> {
   }
 
   Future<void> _confirm() async {
-    if (_ctrl.isEmpty) {
+    if (_strokes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).pleaseSign)));
       return;
     }
-    final img = await _ctrl.toPngBytes();
+    final img = await _padKey.currentState?.toBytes();
     if (img != null && mounted) Navigator.of(context).pop(img);
   }
 }

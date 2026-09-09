@@ -860,12 +860,12 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
 
         // Syncing the log to your own server is half-built and reads as a
         // promise the app does not yet keep, so the whole branch is hidden
-        // until it works. The setting itself is untouched — nothing is
-        // silently switched off behind anyone's back, and flipping this one
-        // constant brings the UI back.
+        // until it works. Flipping kBackendSyncFeatureEnabled back to true
+        // brings both this UI and the actual sync attempts back — see its
+        // doc comment for why the two must move together.
         //
         // Cloud export to Google Drive is a separate feature and stays.
-        const showBackendSync = false;
+        const showBackendSync = kBackendSyncFeatureEnabled;
 
         return Card(
           child: Padding(

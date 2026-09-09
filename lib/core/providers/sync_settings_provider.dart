@@ -34,7 +34,11 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
   Future<SyncSettings> build() async {
     final prefs = await SharedPreferences.getInstance();
     return SyncSettings(
-      enabled: prefs.getBool(_kEnabled) ?? false,
+      // Gated by kBackendSyncFeatureEnabled, not just the persisted flag —
+      // see its doc comment: a device with a stale sync_enabled=true from
+      // before the settings toggle was hidden must not keep queueing and
+      // failing log_entry forever with no way to switch it back off.
+      enabled: kBackendSyncFeatureEnabled && (prefs.getBool(_kEnabled) ?? false),
       target: SyncTarget.values.firstWhere(
         (t) => t.name == prefs.getString(_kTarget),
         orElse: () => SyncTarget.hmbAcademy,

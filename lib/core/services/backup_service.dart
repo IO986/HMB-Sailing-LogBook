@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../database/app_database.dart';
+import 'crash_log_service.dart';
 
 class BackupMetadata {
   final int schemaVersion;
@@ -78,6 +79,17 @@ class BackupService {
     final archive = Archive()
       ..addFile(ArchiveFile(_dbFileName, dbBytes.length, dbBytes))
       ..addFile(ArchiveFile(_metaFileName, metaBytes.length, metaBytes));
+
+    // Voliteľné: ak appka niekedy spadla, cestuje záznam so zálohou, aby sa
+    // dal vyžiadať aj od používateľa na mori bez adb/logcat.
+    final crashLog = File(p.join(
+        (await getApplicationDocumentsDirectory()).path, CrashLogService.fileName));
+    if (await crashLog.exists()) {
+      final crashBytes = await crashLog.readAsBytes();
+      archive.addFile(
+          ArchiveFile(CrashLogService.fileName, crashBytes.length, crashBytes));
+    }
+
     final zipBytes = ZipEncoder().encodeBytes(archive);
 
     await snapshotFile.delete();
