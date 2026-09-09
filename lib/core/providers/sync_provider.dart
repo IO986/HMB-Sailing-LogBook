@@ -37,6 +37,25 @@ final outboxRepositoryProvider = Provider<OutboxRepository>((ref) {
   return OutboxRepository(store: DriftOutboxRecordStore(db));
 });
 
+/// One-time cleanup for devices that queued `log_entry` items to the
+/// backend-sync branch before it was hidden (`kBackendSyncFeatureEnabled`
+/// in sync_settings.dart) and are now stuck holding hundreds of them
+/// `failed`/`deferred` forever — nothing will ever retry them, but the
+/// queue snapshot that feeds [SyncQueueBadge] counts every status
+/// regardless of entity type, so the red badge never clears even once
+/// enqueueing itself is gated off. Safe to call on every startup: once the
+/// dead items are gone there is nothing left to find.
+Future<void> purgeDeadBackendSyncItems(AppDatabase db) async {
+  if (kBackendSyncFeatureEnabled) return;
+  final repo = OutboxRepository(store: DriftOutboxRecordStore(db));
+  for (final status in [SyncStatus.failed, SyncStatus.deferred, SyncStatus.pending]) {
+    final items = await repo.byStatus(status);
+    for (final item in items) {
+      if (item.entityType == 'log_entry') await repo.delete(item.id);
+    }
+  }
+}
+
 Future<bool> _isOnWifi() async {
   final results = await Connectivity().checkConnectivity();
   return results.contains(ConnectivityResult.wifi);

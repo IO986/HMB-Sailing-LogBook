@@ -12,6 +12,7 @@ import 'app_router.dart';
 import 'core/database/app_database.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/providers/night_mode_provider.dart';
+import 'core/providers/sync_provider.dart' show purgeDeadBackendSyncItems;
 import 'core/services/background_service.dart';
 import 'core/services/crash_log_service.dart';
 import 'core/services/gps_tracking_service.dart';
@@ -122,6 +123,7 @@ Future<void> _run() async {
 
   final db = _currentDb;
   await db.fixOrphanedSessions();
+  await purgeDeadBackendSyncItems(db);
 
   // Spusti GPS vždy - nezávisle od trackingu.
   // LocationService interne prioritizuje Raymarine dáta (ak sú pripojené

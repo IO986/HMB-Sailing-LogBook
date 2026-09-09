@@ -1,0 +1,7 @@
+HMB Sailing Log — build 73 (1.35.3+73)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: PDF preview could fail with an out-of-memory error on charters with several days logged, especially on high-resolution phone screens.
+• Fixed: the "failed" sync badge stayed stuck forever on devices that had backend sync switched on before it was removed from Settings — those old entries are now cleared automatically.

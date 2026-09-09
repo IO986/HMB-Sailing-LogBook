@@ -117,7 +117,13 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     await Future.delayed(const Duration(milliseconds: 4000));
     for (final day in _days) {
       try {
-        final img = await _screenshotControllers[day.id]?.capture(pixelRatio: 2.0);
+        // 1.0, not 2.0: this bitmap gets embedded in the PDF and then
+        // decoded again for the on-screen preview (printing package
+        // rasterizes each page) — a multi-day charter holding several of
+        // these at once is what pushed devices past their 256MB heap
+        // ceiling (see AndroidManifest's largeHeap). Still sharp enough
+        // for a page-width map on A4.
+        final img = await _screenshotControllers[day.id]?.capture(pixelRatio: 1.0);
         if (mounted) setState(() => _mapScreenshots[day.id] = img);
       } catch (_) {}
     }
