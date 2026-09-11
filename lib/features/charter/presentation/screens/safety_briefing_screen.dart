@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
+import '../../../export/services/safety_briefing_export.dart';
 import '../../../../core/utils/localized_date.dart';
 
 // ── Screen ────────────────────────────────────────────────────
@@ -28,6 +30,10 @@ class SafetyBriefingScreen extends ConsumerStatefulWidget {
 class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   final Set<int> _checkedItems = {};
 
+  /// Texty bodov zaškrtnutých pri poslednom uložení, kým sa nepremietnu na
+  /// indexy (pozri [_applySavedChecks]).
+  Set<String> _savedChecked = {};
+
   /// Body brífingu, ktoré si dopísal skiper — spoločné s referenčnou kartou
   /// v Bezpečnosti, pozri [CustomSafetyItems].
   List<String> _customItems = [];
@@ -39,7 +45,6 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
 
   bool _initialized = false;
   bool _saving = false;
-  bool _scrollLocked = false;
 
   final _scrollCtrl = ScrollController();
 
@@ -57,10 +62,12 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   // DB key that is unique even when two members share the same name
   String _dbKey(int index, String name) => '$index:$name';
 
-  Future<void> _init(int charterId, List<({String name, String role})> members) async {
+  Future<void> _init(int charterId, List<({String name, String role})> members,
+      Charter charter) async {
     if (_initialized) return;
     _initialized = true;
     _loadCustomItems();
+    _restoreCheckedItems(charter);
     final sigs = await ref.read(databaseProvider).getSignaturesForCharter(charterId);
     // Build a fast lookup: crewName stored in DB → signaturePath
     final sigMap = {for (final s in sigs) s.crewName: s.signaturePath};
@@ -74,9 +81,60 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
     if (mounted) setState(() {});
   }
 
+  /// Zaškrtnuté body z posledného uloženia — doklad o brífingu musí vedieť,
+  /// čo sa naozaj preberalo, nielen že sa brífing konal.
+  ///
+  /// V databáze sú uložené texty bodov, nie ich indexy (pozri
+  /// `Charters.briefingCheckedJson`), takže sa tu hľadajú späť podľa textu.
+  /// Bod, ktorý medzitým zmizol alebo je v inom jazyku, sa nenájde a ostane
+  /// nezaškrtnutý — to je správne: appka nemá tvrdiť za skipera, že prebral
+  /// niečo, čo teraz na obrazovke ani nie je.
+  void _restoreCheckedItems(Charter charter) {
+    final raw = charter.briefingCheckedJson;
+    if (raw == null || raw.isEmpty) return;
+    try {
+      _savedChecked = (jsonDecode(raw) as List).cast<String>().toSet();
+      // Texty bodov sú známe až po prvom builde (potrebujú Localizations),
+      // preto sa mapovanie na indexy odloží do ďalšieho rámca.
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _applySavedChecks());
+    } catch (e) {
+      debugPrint('[BRIEFING] checked items unreadable: $e');
+    }
+  }
+
+  /// Premietne uložené texty na indexy v aktuálnom zozname bodov.
+  ///
+  /// Volá sa aj po načítaní vlastných bodov skipera: tie prichádzajú
+  /// asynchrónne a bez druhého prechodu by zaškrtnutia na nich zmizli.
+  void _applySavedChecks() {
+    if (!mounted || _savedChecked.isEmpty) return;
+    final labels = _allPointLabels();
+    setState(() {
+      _checkedItems
+        ..clear()
+        ..addAll([
+          for (var i = 0; i < labels.length; i++)
+            if (_savedChecked.contains(labels[i])) i,
+        ]);
+    });
+  }
+
+  /// Body brífingu v poradí, v akom ich vidí skiper — príručkové a za nimi
+  /// vlastné. Index v tomto zozname je to, čo drží [_checkedItems].
+  List<String> _allPointLabels() => [
+        for (final section in SafetyBriefingContent.sectionsFor(
+            Localizations.localeOf(context).languageCode))
+          ...section.items,
+        ..._customItems,
+      ];
+
   Future<void> _loadCustomItems() async {
     final points = await CustomSafetyItems.briefingPoints();
-    if (mounted) setState(() => _customItems = points);
+    if (!mounted) return;
+    setState(() => _customItems = points);
+    // Vlastné body prišli až teraz — zaškrtnutia na nich treba obnoviť znova.
+    _applySavedChecks();
   }
 
   Future<void> _addCustomItem() async {
@@ -180,12 +238,21 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
           );
         }
 
-        _init(widget.charterId, members);
+        _init(widget.charterId, members, charter);
 
         return Scaffold(
           appBar: AppBar(
             title: Text(l.safetyBriefingScreenTitle),
             actions: [
+              // Export je tam, kde brífing vznikol: kto ho práve podpísal,
+              // ho spravidla hneď aj posiela ďalej.
+              if (charter.safetyBriefingDone && !_saving)
+                IconButton(
+                  icon: const Icon(Icons.picture_as_pdf_outlined),
+                  tooltip: l.briefingExportPdf,
+                  onPressed: () =>
+                      exportSafetyBriefingPdf(context, ref, charter: charter),
+                ),
               if (_saving)
                 const Padding(
                   padding: EdgeInsets.only(right: 16),
@@ -201,14 +268,13 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                 ),
             ],
           ),
-          body: NotificationListener<ScrollNotification>(
-            // Block scroll while drawing
-            onNotification: (_) => _scrollLocked,
-            child: ListView(
+          // No scroll lock here: the signature pad claims the vertical drag
+          // itself (see SignaturePad). Flipping the scroll physics on
+          // pointer down rebuilt the Scrollable mid-gesture, which
+          // cancelled the very stroke the crew member was drawing.
+          body: ListView(
               controller: _scrollCtrl,
-              physics: _scrollLocked
-                  ? const NeverScrollableScrollPhysics()
-                  : const ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.all(16),
               children: [
                 // ── Done banner ───────────────────────────────
@@ -293,15 +359,12 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                         _strokes[i] = [];
                         _editing.add(i);
                       }),
-                      onDrawStart: () => setState(() => _scrollLocked = true),
-                      onDrawEnd: () => setState(() => _scrollLocked = false),
                     );
                   }),
 
                 const SizedBox(height: 80),
               ],
             ),
-          ),
         );
       },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
@@ -367,9 +430,16 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         ));
       }
 
+      final labels = _allPointLabels();
+      final covered = [
+        for (var i = 0; i < labels.length; i++)
+          if (_checkedItems.contains(i)) labels[i],
+      ];
+
       await db.updateCharter(ChartersCompanion(
         id: Value(widget.charterId),
         safetyBriefingDone: const Value(true),
+        briefingCheckedJson: Value(jsonEncode(covered)),
       ));
       ref.invalidate(chartersProvider);
 
@@ -534,8 +604,6 @@ class _SignatureCard extends StatelessWidget {
   final VoidCallback onStartEdit;
   final void Function(List<Offset>) onStrokeAdded;
   final VoidCallback onClear;
-  final VoidCallback onDrawStart;
-  final VoidCallback onDrawEnd;
 
   const _SignatureCard({
     super.key,
@@ -547,8 +615,6 @@ class _SignatureCard extends StatelessWidget {
     required this.onStartEdit,
     required this.onStrokeAdded,
     required this.onClear,
-    required this.onDrawStart,
-    required this.onDrawEnd,
   });
 
   bool get _hasSaved => existingPath != null && File(existingPath!).existsSync();
@@ -617,8 +683,6 @@ class _SignatureCard extends StatelessWidget {
                   key: padKey,
                   strokes: strokes,
                   onStrokeAdded: onStrokeAdded,
-                  onDrawStart: onDrawStart,
-                  onDrawEnd: onDrawEnd,
                 ),
               ),
             ),

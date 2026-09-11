@@ -144,6 +144,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get mapDownloadOffline => 'Prenesi območje brez povezave';
 
   @override
+  String get mapOfflineTilesHint =>
+      'Ni interneta — zemljevid ne bo naložil novih ploščic. Prenesi območje, dokler imaš signal.';
+
+  @override
   String get mapGpsDisabled => 'GPS je izklopljen';
 
   @override
@@ -1635,6 +1639,12 @@ class AppLocalizationsSl extends AppLocalizations {
   String get aboutApp => 'O aplikaciji';
 
   @override
+  String get rateApp => 'Oceni aplikacijo';
+
+  @override
+  String get rateAppDesc => 'Odpre stran aplikacije v Google Play';
+
+  @override
   String get backupSection => 'Varnostna kopija podatkov';
 
   @override
@@ -2879,7 +2889,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran (tap takoj pokliče ali odpre stran), globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran (tap takoj pokliče ali odpre stran), globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje\n• Zemljevid živi od omrežja: brez interneta se nove ploščice ne prenesejo in vidi se le območje iz predpomnilnika. Pred izplutjem prenesi območje z gumbom »Prenesi območje brez povezave« na zemljevidu. Ko je telefon brez povezave, zemljevid na to opozori z oranžnim trakom na vrhu.';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';
@@ -2957,7 +2967,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n• Časovni pas – čas na zaslonu in v PDF se prikaže krajevno (pas telefona, torej tam, kjer si) ali v UTC. Shranjeni zapisi se ne spremenijo, spremeni se le prikaz; PDF vedno navede, kateri pas velja.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n• Časovni pas – čas na zaslonu in v PDF se prikaže krajevno (pas telefona, torej tam, kjer si) ali v UTC. Shranjeni zapisi se ne spremenijo, spremeni se le prikaz; PDF vedno navede, kateri pas velja.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.\n• Oceni aplikacijo — odpre njeno stran v Google Play. Aplikacija občasno vpraša tudi sama, a šele po končani plovbi, nikoli med njo.';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';
@@ -2971,10 +2981,27 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. V Dnevniku zgoraj tapnite chip Izvozi\n2. Izberite, kaj izvažate — celotno plovbo, en dan, primopredajni zapisnik, potrdila posadke, milje ali azimute\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah\n• Vsi izvozi so na enem mestu — pod chipom Izvozi v Dnevniku. Edina izjema je varnostna kopija celotne zbirke: ostane v Nastavitvah ob obnovitvi, saj to ni dokument za nekoga, ampak slika podatkov.\n• Pred izvozom lahko izbereš podlago izreza — satelit ali navadno karto. Izbira se zapomni. Izrez je vedno nekoliko širši od same proge, da se vidi okolica; dan na enem mestu dobi okno vsaj kilometer, sicer bi bile na dokumentu same strehe.';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. V Dnevniku zgoraj tapnite chip Izvozi\n2. Izberite, kaj izvažate — celotno plovbo, en dan, primopredajni zapisnik, potrdila posadke, milje ali azimute\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah\n• Vsi izvozi so na enem mestu — pod chipom Izvozi v Dnevniku. Edina izjema je varnostna kopija celotne zbirke: ostane v Nastavitvah ob obnovitvi, saj to ni dokument za nekoga, ampak slika podatkov.\n• Pred izvozom lahko izbereš podlago izreza — satelit ali navadno karto. Izbira se zapomni. Izrez je vedno nekoliko širši od same proge, da se vidi okolica; dan na enem mestu dobi okno vsaj kilometer, sicer bi bile na dokumentu same strehe.\n• Varnostno usposabljanje lahko izvoziš tudi posebej — svoj PDF s podpisi posadke in seznamom obravnavanih točk. Najdeš ga v Izvozih in na zaslonu usposabljanja; v povzetku plovbe ostane usposabljanje nespremenjeno.';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';
+
+  @override
+  String get pdfBriefingPoints => 'Točke usposabljanja';
+
+  @override
+  String pdfBriefingCovered(int done, int total) {
+    return 'Obravnavano: $done od $total';
+  }
+
+  @override
+  String get pdfBriefingNotCovered => 'Ni obravnavano';
+
+  @override
+  String get exportsBriefingDesc => 'Podpisi posadke in obravnavane točke';
+
+  @override
+  String get briefingExportPdf => 'Izvoz PDF usposabljanja';
 
   @override
   String get briefingCrewSignaturesSection => 'Podpisi posadke';
@@ -3909,4 +3936,13 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get bearingHideFromMap => 'Skrij z zemljevida';
+
+  @override
+  String mapApproximatePosition(String meters) {
+    return 'Približen položaj ±$meters m — iz omrežij Wi-Fi, ne z GPS';
+  }
+
+  @override
+  String get compassUnavailable =>
+      'Ta naprava nima kompasa — smer ni na voljo.';
 }

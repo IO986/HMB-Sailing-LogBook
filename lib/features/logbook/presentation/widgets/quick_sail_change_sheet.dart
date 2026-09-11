@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/models/point_of_sail.dart';
+import '../../../../core/models/sail_mode.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
@@ -14,8 +15,8 @@ import 'quick_note_sheet.dart';
 ///
 /// Papierový denník má na prehodenie plachiet ten istý riadok ako na všetko
 /// ostatné — skiper doň zapíše, na čom loď ide a nový kurz voči vetru. Tu je
-/// to jedno ťuknutie: sheet sa vždy otvorí prázdny (pozri [_loadLast]) a
-/// uloží záznam s GPS a časom, ktoré appka už pozná.
+/// to jedno ťuknutie: sheet sa otvorí v tom, na čom loď práve ide (pozri
+/// [_loadLast]) a uloží záznam s GPS a časom, ktoré appka už pozná.
 ///
 /// Pohon je tu z praktického dôvodu: dovtedy ho vedel zapísať len plný
 /// formulár záznamu, takže pri plavbe zostával stĺpec „Pohon" prázdny a
@@ -48,15 +49,22 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
     _loadLast();
   }
 
-  /// Sheet sa vždy otvorí prázdny — kurz aj plachtový pohon (hlavná/genoa/
-  /// refy) sú len pre TENTO zápis, appka si ich nepamätá (nahlásené
-  /// z terénu: predvyplnené hodnoty z minula tam „viseli" aj keď sa
-  /// nezmenili).
+  /// Sheet sa otvorí v stave, v akom loď práve pláva — nie prázdny.
   ///
-  /// Autopilot a Motor sú výnimka: nie sú voľba pre tento zápis, ale
-  /// skutočný stav lode — sheet musí vedieť, či práve bežia, aby vedelo
-  /// rozlíšiť ťuknutie ako ZAP od VYP (a zapísať ho ako také, nie ako
-  /// všeobecné prehodenie plachiet).
+  /// Plachty sa nemenia každým zápisom: keď skiper raz naklikal hlavnú,
+  /// genou a kurz (napr. ostro proti vetru na pravoboku), platí to ďalej,
+  /// kým to sám neprepne — presne ako to už platilo pre Motor a Autopilot.
+  /// Automatické záznamy to isté preberajú z posledného zápisu dňa (pozri
+  /// [resolveAutoSailMode] a `lastSailModeForDay`), takže keby sa sheet
+  /// otvoril prázdny, prvé Uložiť by plachty z ďalších záznamov zmazalo.
+  ///
+  /// Predvyplnené voľby preto ostávajú aktívne (modré) aj po znovuotvorení.
+  /// Prázdne „Prehodenie plachiet" pri opätovnom Uložiť bez zmeny nehrozí —
+  /// to stráži [_canSave], ktoré porovnáva so stavom pri otvorení.
+  ///
+  /// Autopilot a Motor majú prednosť pred tým, čo je v poslednom `sailMode`:
+  /// ich skutočný stav vie appka aj z NMEA, nielen z toho, čo naposledy
+  /// niekto zaklikal.
   Future<void> _loadLast() async {
     final dayLogId = GpsTrackingService().activeDayLogId;
     if (dayLogId == null) {
@@ -64,15 +72,23 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       return;
     }
     final db = ref.read(databaseProvider);
+    final lastModes =
+        parseSailMode(await db.lastSailModeForDay(dayLogId), null).modes;
+    final lastDirection = await db.lastSailDirectionForDay(dayLogId);
     final autopilotOn = await db.isAutopilotEngaged(dayLogId);
     final motorOn = await db.isEngineRunningManual(dayLogId);
     if (!mounted) return;
     setState(() {
       _modes = {
+        ...lastModes.difference(_statefulModes),
         if (autopilotOn) 'autopilot',
         if (motorOn) 'motor',
       };
       _initialModes = {..._modes};
+      _direction = lastDirection == null
+          ? null
+          : SailDirection.fromCodes(lastDirection.pointOfSail, lastDirection.tack);
+      _initialDirection = _direction;
       _loading = false;
     });
   }
@@ -145,9 +161,9 @@ class _QuickSailChangeSheetState extends ConsumerState<QuickSailChangeSheet> {
       GpsTrackingService().syncEngineState(running);
     }
     if (baseChanged) {
-      // sailMode aj kurz sa zapíšu vždy presne také, aké sú zaklikané tu —
-      // appka si predtým vyplnenú hodnotu nepamätá (pozri _loadLast), takže
-      // nesie aj aktuálny stav autopilota/motora pre stĺpec „Pohon" v PDF.
+      // sailMode aj kurz sa zapíšu presne také, aké sú zaklikané tu —
+      // vrátane hodnôt prevzatých z posledného zápisu dňa (pozri _loadLast),
+      // takže nesú aj stav autopilota/motora pre stĺpec „Pohon" v PDF.
       await GpsTrackingService().createAutomaticLogbookEntry(
         // Prázdna poznámka, nie 'Auto [...]' — zápis urobil človek a text
         // mu v denníku dopĺňa preložený názov udalosti.

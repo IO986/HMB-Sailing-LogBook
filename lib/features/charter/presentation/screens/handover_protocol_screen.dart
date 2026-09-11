@@ -58,7 +58,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
 
   bool _loading = true;
   bool _saving = false;
-  bool _scrollLocked = false;
 
   bool get _isCheckOut => widget.type == 'checkOut';
   bool get _isClosed => _skipperSignedAt != null && _companySignedAt != null;
@@ -317,13 +316,13 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
             ),
         ],
       ),
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (_) => _scrollLocked,
-        child: ListView(
+      // No scroll lock here: the signature pad claims the vertical drag
+      // itself (see SignaturePad). Flipping the scroll physics on pointer
+      // down rebuilt the Scrollable mid-gesture, which cancelled the very
+      // stroke the skipper was drawing.
+      body: ListView(
           padding: const EdgeInsets.all(16),
-          physics: _scrollLocked
-              ? const NeverScrollableScrollPhysics()
-              : const ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           children: [
         if (readOnly)
           Container(
@@ -423,8 +422,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           onStrokeAdded: (s) => setState(() => _skipperStrokes = [..._skipperStrokes, s]),
           onClear: () => setState(() => _skipperStrokes = []),
           clearLabel: l.clear,
-          onDrawStart: () => setState(() => _scrollLocked = true),
-          onDrawEnd: () => setState(() => _scrollLocked = false),
         ),
         const SizedBox(height: 24),
 
@@ -450,13 +447,10 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           onStrokeAdded: (s) => setState(() => _companyStrokes = [..._companyStrokes, s]),
           onClear: () => setState(() => _companyStrokes = []),
           clearLabel: l.clear,
-          onDrawStart: () => setState(() => _scrollLocked = true),
-          onDrawEnd: () => setState(() => _scrollLocked = false),
         ),
         const SizedBox(height: 80),
           ],
         ),
-      ),
     );
   }
 
@@ -744,8 +738,6 @@ class _SignatureBox extends StatelessWidget {
   final ValueChanged<List<Offset>> onStrokeAdded;
   final VoidCallback onClear;
   final String clearLabel;
-  final VoidCallback? onDrawStart;
-  final VoidCallback? onDrawEnd;
 
   const _SignatureBox({
     required this.existingPath,
@@ -755,8 +747,6 @@ class _SignatureBox extends StatelessWidget {
     required this.onStrokeAdded,
     required this.onClear,
     required this.clearLabel,
-    this.onDrawStart,
-    this.onDrawEnd,
   });
 
   @override
@@ -789,8 +779,6 @@ class _SignatureBox extends StatelessWidget {
           key: padKey,
           strokes: strokes,
           onStrokeAdded: onStrokeAdded,
-          onDrawStart: onDrawStart,
-          onDrawEnd: onDrawEnd,
         ),
       ),
       Align(

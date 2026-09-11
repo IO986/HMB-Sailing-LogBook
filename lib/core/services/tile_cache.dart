@@ -73,13 +73,75 @@ class CachingTileProvider extends TileProvider {
         y: coordinates.y,
       );
 
+  /// Koľkokrát skúsiť dlaždicu stiahnuť, kým sa vzdá.
+  ///
+  /// Jeden pokus nestačí. Telefón na lodi stráca sieť neustále — hotspot
+  /// prístrojov bez internetu, prepnutie z Wi-Fi na dáta, výpadok DNS pri
+  /// prebúdzaní. Bez opakovania ostal po takom výpadku na mape biely štvorec
+  /// navždy: dlaždica raz zlyhala, flutter_map si chybu podržal a nič ju už
+  /// nešlo znova (nahlásené z terénu — mapa sa po zapnutí Wi-Fi sama
+  /// nespravila).
+  static const _attempts = 3;
+
   static Future<Uint8List> fetchAndCache(
       String url, String layerId, int z, int x, int y) async {
-    final resp = await _dio.get<List<int>>(url);
-    final bytes = Uint8List.fromList(resp.data!);
-    // fire-and-forget zápis; čítanie dlaždice naň nečaká
-    TileCacheStore.save(layerId, z, x, y, bytes);
-    return bytes;
+    Object? lastError;
+    for (var attempt = 0; attempt < _attempts; attempt++) {
+      if (attempt > 0) {
+        // Krátka pauza medzi pokusmi: keď sa sieť práve zdvíha, druhý pokus
+        // o pol sekundy neskôr už prejde, a keď nie, nemá zmysel držať
+        // dekódovanie dlaždice dlhšie.
+        await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
+      }
+      try {
+        final resp = await _dio.get<List<int>>(url);
+        final bytes = Uint8List.fromList(resp.data!);
+        // fire-and-forget zápis; čítanie dlaždice naň nečaká
+        TileCacheStore.save(layerId, z, x, y, bytes);
+        return bytes;
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    TileCacheStats.failed(layerId);
+    debugPrint('[TILES] $layerId $z/$x/$y failed after $_attempts tries: $lastError');
+    throw lastError!;
+  }
+}
+
+/// Koľko dlaždíc prišlo z disku, koľko zo siete a koľko nedorazilo.
+///
+/// Bez tohto sa cache ladí naslepo: na mape je vidieť len výsledok, nie to,
+/// či dlaždica chýbala v cache, alebo tam bola a nedala sa prečítať. Súčty
+/// sa vypisujú po dávkach, nie po dlaždici — jeden riadok na dlaždicu by
+/// pri posúvaní mapy zaplavil log a spomalil samotné vykresľovanie.
+class TileCacheStats {
+  static final Map<String, int> _hits = {};
+  static final Map<String, int> _net = {};
+  static final Map<String, int> _fails = {};
+  static var _sinceReport = 0;
+
+  /// Po koľkých dlaždiciach sa vypíše súhrn.
+  static const _reportEvery = 50;
+
+  static void hit(String layer) => _bump(_hits, layer);
+  static void fetched(String layer) => _bump(_net, layer);
+  static void failed(String layer) => _bump(_fails, layer);
+
+  static void _bump(Map<String, int> counter, String layer) {
+    counter[layer] = (counter[layer] ?? 0) + 1;
+    if (++_sinceReport < _reportEvery) return;
+    _sinceReport = 0;
+    report();
+  }
+
+  /// Vypíše súhrn za všetky vrstvy — volá sa sám po dávke, dá sa aj ručne.
+  static void report() {
+    final layers = {..._hits.keys, ..._net.keys, ..._fails.keys};
+    for (final layer in layers) {
+      debugPrint('[TILES] $layer cache=${_hits[layer] ?? 0} '
+          'net=${_net[layer] ?? 0} fail=${_fails[layer] ?? 0}');
+    }
   }
 }
 
@@ -109,8 +171,10 @@ class _CachedTileImage extends ImageProvider<_CachedTileImage> {
     final file = await TileCacheStore.fileFor(layerId, z, x, y);
     if (await file.exists()) {
       bytes = await file.readAsBytes();
+      TileCacheStats.hit(layerId);
     } else {
       bytes = await CachingTileProvider.fetchAndCache(url, layerId, z, x, y);
+      TileCacheStats.fetched(layerId);
     }
     final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
     final codec = await decode(buffer);

@@ -29,6 +29,7 @@ import '../../../core/services/moon_calculator.dart';
 import '../../miles/services/miles_calculator.dart';
 import '../../miles/services/solar_calculator.dart';
 import '../../charter/services/handover_checklist.dart';
+import '../../../core/config/hmb_handbook.dart';
 import '../../duty/domain/duty_rules.dart';
 import '../../duty/providers/duty_provider.dart' show DutyPeriodRules;
 import '../../../core/utils/localized_date.dart';
@@ -2155,6 +2156,205 @@ class PdfExportService {
     ]);
   }
 
+  // ── Bezpečnostný brífing (body + podpisy) ────────────────────
+
+  /// Samostatný doklad o bezpečnostnom brífingu.
+  ///
+  /// Kým bol brífing len stranou v súhrne plavby, nedal sa odovzdať nikomu
+  /// samostatne — a práve o to ide: charterová firma alebo škola chce
+  /// papier, ktorý hovorí, kto bol poučený a o čom, nie celý denník plavby.
+  /// Súhrn plavby preto ostáva presne taký, aký bol; toto je dokument navyše.
+  ///
+  /// Prebrané body sa tlačia z toho, čo skiper naozaj zaškrtol (uložené v
+  /// `Charters.briefingCheckedJson`). Neprebrané sa nezamlčia — vytlačia sa
+  /// s prázdnym štvorčekom a poznámkou. Doklad, ktorý tvrdí len to pekné, je
+  /// horší než žiadny.
+  static Future<Uint8List> exportSafetyBriefing({
+    required AppLocalizations l,
+    required AppDate dateFormat,
+    required Charter charter,
+    required List<BriefingSection> sections,
+    required List<String> customPoints,
+    required Set<String> covered,
+    required List<BriefingSignatory> signatories,
+  }) async {
+    _date = dateFormat;
+    final fmt = _date;
+    final docId = 'HMBSL-BRIEFING-${charter.id}';
+
+    final total = sections.fold(0, (sum, sec) => sum + sec.items.length) +
+        customPoints.length;
+    final done = [
+      ...sections.expand((sec) => sec.items),
+      ...customPoints,
+    ].where(covered.contains).length;
+
+    // Dátum brífingu = posledný podpis. Vlastný stĺpec preň neexistuje a
+    // vymyslieť ho z „dnes" by znamenalo na doklade dátum, kedy sa tlačilo,
+    // nie kedy sa školilo.
+    final signedAts = signatories
+        .map((s) => s.signedAt)
+        .whereType<DateTime>()
+        .toList()
+      ..sort();
+    final briefedAt = signedAts.isEmpty ? null : signedAts.last;
+
+    final pdf = pw.Document(
+      theme: await _theme(),
+      title: l.safetyBriefingScreenTitle,
+      creator: 'HMB Sailing Log',
+    );
+
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(36),
+      header: (ctx) => ctx.pageNumber == 1
+          ? pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.all(16),
+              margin: const pw.EdgeInsets.only(bottom: 14),
+              decoration: pw.BoxDecoration(
+                  color: _navy,
+                  borderRadius:
+                      const pw.BorderRadius.all(pw.Radius.circular(6))),
+              child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(_pdfText(l.safetyBriefingScreenTitle.toUpperCase()),
+                        style: pw.TextStyle(
+                            color: PdfColors.white,
+                            fontSize: 14,
+                            fontWeight: pw.FontWeight.bold)),
+                    pw.SizedBox(height: 4),
+                    pw.Text(
+                        _pdfText('${charter.title}  |  '
+                            '${charter.vesselName ?? "-"}'
+                            '${charter.callsign != null ? "  |  ${charter.callsign}" : ""}'),
+                        style: pw.TextStyle(
+                            color: PdfColors.grey200, fontSize: 9)),
+                  ]),
+            )
+          : pw.SizedBox(),
+      footer: (ctx) => _footer(
+        briefedAt == null
+            ? _pdfText(charter.title)
+            : '${l.pdfDatePlaceLabel}: ${fmt.shortWithTime(briefedAt.toLocal())}',
+        docId: docId,
+        revision: 0,
+      ),
+      build: (ctx) => [
+        pw.Row(children: [
+          _statBox(_pdfText(l.pdfBriefingPoints.toUpperCase()),
+              '$done/$total', _navy),
+          pw.SizedBox(width: 6),
+          _statBox(_pdfText(l.briefingCrewSignaturesSection.toUpperCase()),
+              '${signatories.length}', _blue),
+        ]),
+        pw.SizedBox(height: 16),
+
+        pw.Text(_pdfText(l.pdfBriefingPoints.toUpperCase()),
+            style: pw.TextStyle(
+                color: _navy,
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
+                letterSpacing: 1)),
+        pw.SizedBox(height: 2),
+        pw.Text(_pdfText(l.pdfBriefingCovered(done, total)),
+            style: pw.TextStyle(fontSize: 8, color: _dgrey)),
+        pw.SizedBox(height: 6),
+
+        for (final section in sections) ...[
+          pw.SizedBox(height: 6),
+          pw.Text(_pdfText(section.title),
+              style: pw.TextStyle(
+                  color: _blue, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+          pw.SizedBox(height: 3),
+          for (final item in section.items)
+            _briefingPointRow(item, covered.contains(item), l),
+        ],
+
+        if (customPoints.isNotEmpty) ...[
+          pw.SizedBox(height: 10),
+          pw.Text(_pdfText(l.safetyOwnPoints),
+              style: pw.TextStyle(
+                  color: _blue, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+          pw.SizedBox(height: 3),
+          for (final item in customPoints)
+            _briefingPointRow(item, covered.contains(item), l),
+        ],
+
+        pw.SizedBox(height: 24),
+        pw.Text(_pdfText(l.briefingCrewSignaturesSection.toUpperCase()),
+            style: pw.TextStyle(
+                color: _navy,
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
+                letterSpacing: 1)),
+        pw.SizedBox(height: 8),
+        // Dva podpisy na riadok: na A4 sa vedľa seba čítajú a zároveň sa
+        // posádka o šiestich zmestí na jednu stranu.
+        for (var i = 0; i < signatories.length; i += 2)
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 12),
+            child: pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Expanded(child: _briefingSignature(signatories[i], fmt, l)),
+                pw.SizedBox(width: 16),
+                pw.Expanded(
+                  child: i + 1 < signatories.length
+                      ? _briefingSignature(signatories[i + 1], fmt, l)
+                      : pw.SizedBox(),
+                ),
+              ],
+            ),
+          ),
+      ],
+    ));
+
+    return pdf.save();
+  }
+
+  /// Jeden bod brífingu: štvorček, text, a pri neprebranom aj dôvod, prečo
+  /// je štvorček prázdny — bez toho vyzerá ako chyba tlače.
+  static pw.Widget _briefingPointRow(
+          String text, bool isCovered, AppLocalizations l) =>
+      pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 2),
+        child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+          pw.Container(
+            width: 8,
+            height: 8,
+            margin: const pw.EdgeInsets.only(top: 1.5, right: 5),
+            decoration: pw.BoxDecoration(
+              color: isCovered ? _green : PdfColors.white,
+              border: pw.Border.all(
+                  color: isCovered ? _green : PdfColors.grey600, width: 0.6),
+            ),
+          ),
+          pw.Expanded(
+            child: pw.Text(_pdfText(text),
+                style: pw.TextStyle(
+                    fontSize: 8.5,
+                    color: isCovered ? PdfColors.black : _dgrey)),
+          ),
+          if (!isCovered)
+            pw.Text(_pdfText(l.pdfBriefingNotCovered),
+                style: pw.TextStyle(fontSize: 7, color: _dgrey)),
+        ]),
+      );
+
+  static pw.Widget _briefingSignature(
+          BriefingSignatory who, AppDate fmt, AppLocalizations l) =>
+      _handoverSignatureBlock(
+        title: who.role == 'skipper' ? l.pdfSkipperLabel : l.crew,
+        name: who.name,
+        signature: who.signature,
+        signedAt: who.signedAt,
+        fmt: fmt,
+        l: l,
+      );
+
   // ── Kniha míľ – Potvrdenie o najazdených míľach ──────────────
 
   /// "12,4 x 4,0 m, ponor 1,9 m" — vynechá, čo nie je vyplnené.
@@ -2987,4 +3187,25 @@ class PdfExportService {
   /// funnel rather than inlined at 53 call sites.
   static String _pdfText(String s) =>
       s.replaceAll('→', '->').replaceAll('←', '<-');
+}
+
+/// Jeden podpísaný účastník brífingu pre [PdfExportService.exportSafetyBriefing].
+///
+/// Podpis je tu ako bajty, nie ako cesta k súboru: kto dokument stavia, už
+/// vie, ktorý súbor patrí komu (mená sa v posádke opakujú, preto sa podpisy
+/// v databáze kľúčujú indexom), a export nemá tú istú prácu robiť druhýkrát.
+class BriefingSignatory {
+  const BriefingSignatory({
+    required this.name,
+    required this.role,
+    required this.signature,
+    required this.signedAt,
+  });
+
+  final String name;
+
+  /// `skipper` alebo `crew` — rovnaké kódy ako v `CrewSignatures.role`.
+  final String role;
+  final Uint8List? signature;
+  final DateTime? signedAt;
 }

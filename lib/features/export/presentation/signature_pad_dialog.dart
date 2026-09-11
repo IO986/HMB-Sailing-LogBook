@@ -8,6 +8,12 @@ Future<Uint8List?> showSignaturePadDialog(
   return showModalBottomSheet<Uint8List>(
     context: context,
     isScrollControlled: true,
+    // The sheet must not move under the finger. Drag-to-dismiss competes
+    // with the pen stroke: a signature is a long vertical drag, so the
+    // sheet slid down (and sometimes closed) instead of taking the
+    // signature — reported from the field. The sheet still closes by
+    // tapping outside it or with the back gesture, just not by dragging.
+    enableDrag: false,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),

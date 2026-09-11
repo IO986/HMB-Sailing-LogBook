@@ -94,15 +94,31 @@ class SignaturePadState extends State<SignaturePad> {
         _size = constraints.biggest;
         return Container(
           color: widget.backgroundColor,
-          child: Listener(
+          // Claim the vertical drag before the surrounding ListView can.
+          // The signature box lives inside a scrolling form, and a scroll
+          // view that wins the gesture arena turns a signature into a
+          // scroll: the page moves under the finger and the stroke is
+          // cancelled mid-line (reported from the field, twice). This
+          // recognizer sits deeper in the hit-test path, so it enters the
+          // arena first and wins — no scroll-lock state to flip, and
+          // nothing that cancels the pointer half way through a stroke.
+          child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onPointerDown: (e) => _onDown(e.localPosition),
-            onPointerMove: (e) => _onMove(e.localPosition),
-            onPointerUp: (_) => _onUp(),
-            onPointerCancel: (_) => _onUp(),
-            child: CustomPaint(
-              painter: _Painter(widget.strokes, _current, widget.inkColor),
-              child: const SizedBox(width: double.infinity, height: double.infinity),
+            excludeFromSemantics: true,
+            onVerticalDragStart: (_) {},
+            onVerticalDragUpdate: (_) {},
+            onVerticalDragEnd: (_) {},
+            child: Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerDown: (e) => _onDown(e.localPosition),
+              onPointerMove: (e) => _onMove(e.localPosition),
+              onPointerUp: (_) => _onUp(),
+              onPointerCancel: (_) => _onUp(),
+              child: CustomPaint(
+                painter: _Painter(widget.strokes, _current, widget.inkColor),
+                child: const SizedBox(
+                    width: double.infinity, height: double.infinity),
+              ),
             ),
           ),
         );

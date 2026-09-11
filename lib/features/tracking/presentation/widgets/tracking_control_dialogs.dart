@@ -13,6 +13,7 @@ import '../../../../core/utils/distance_calculator.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
 import '../../../../core/services/gps_tracking_service.dart';
+import '../../../../core/services/app_review_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
@@ -485,6 +486,11 @@ Future<void> handleStopTap(BuildContext context, WidgetRef ref) async {
   final dayLogId = GpsTrackingService().activeDayLogId;
   await ref.read(trackingNotifierProvider.notifier).stopTracking();
   if (dayLogId == null || !context.mounted) return;
+
+  // Hodnotenie sa pýta práve tu: plavba je za skiperom a má na appku názor.
+  // Počas plavby by to bolo vyrušovanie, pri štarte by nemal čo hodnotiť.
+  // Služba si sama ustráži, či je vôbec načase (pozri [AppReviewService]).
+  unawaited(AppReviewService().onVoyageFinished());
 
   final day = await ref.read(databaseProvider).getDayLogById(dayLogId);
   if (day == null || !context.mounted) return;

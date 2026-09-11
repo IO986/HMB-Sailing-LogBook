@@ -61,6 +61,9 @@ dependencies:
   extension_google_sign_in_as_googleapis_auth: ^3.0.0
   http: ^1.6.0
   in_app_update: ^5.0.0
+  camera_windows: ^0.2.6+5
+  image_picker_platform_interface: ^2.11.1
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:

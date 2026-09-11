@@ -356,6 +356,12 @@ abstract class AppLocalizations {
   /// **'Stiahnuť oblasť offline'**
   String get mapDownloadOffline;
 
+  /// No description provided for @mapOfflineTilesHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez internetu — mapa nenačíta nové dlaždice. Oblasť si stiahni, kým máš signál.'**
+  String get mapOfflineTilesHint;
+
   /// No description provided for @mapGpsDisabled.
   ///
   /// In sk, this message translates to:
@@ -3146,6 +3152,18 @@ abstract class AppLocalizations {
   /// **'O aplikácii'**
   String get aboutApp;
 
+  /// No description provided for @rateApp.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ohodnotiť aplikáciu'**
+  String get rateApp;
+
+  /// No description provided for @rateAppDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otvorí kartu appky v Google Play'**
+  String get rateAppDesc;
+
   /// No description provided for @backupSection.
   ///
   /// In sk, this message translates to:
@@ -5495,7 +5513,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Hĺbky – hĺbnice z EMODnet s hĺbkou v metroch. Model dna z prieskumov, NIE námorná mapa: na plánovanie prielivu áno, na rozhodnutie „prejdem tadiaľ“ nie. Štandardne vypnuté; prezerané dlaždice sa ukladajú ako ostatné. Keď je vrstva zapnutá, ťuknutím do mapy prečítaš hĺbku v tom bode (treba signál).\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web (ťuknutím rovno zavoláš alebo otvoríš stránku), hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) — stiahne viditeľnú oblasť na použitie bez signálu, od aktuálneho priblíženia o tri úrovne hlbšie. Vždy seamarky; keď máš zapnutý satelit, aj snímky a ich popisky. Navyše sa každá prezretá dlaždica ukladá automaticky.\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, hĺbky, prístavy), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Hĺbky – hĺbnice z EMODnet s hĺbkou v metroch. Model dna z prieskumov, NIE námorná mapa: na plánovanie prielivu áno, na rozhodnutie „prejdem tadiaľ“ nie. Štandardne vypnuté; prezerané dlaždice sa ukladajú ako ostatné. Keď je vrstva zapnutá, ťuknutím do mapy prečítaš hĺbku v tom bode (treba signál).\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web (ťuknutím rovno zavoláš alebo otvoríš stránku), hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) — stiahne viditeľnú oblasť na použitie bez signálu, od aktuálneho priblíženia o tri úrovne hlbšie. Vždy seamarky; keď máš zapnutý satelit, aj snímky a ich popisky. Navyše sa každá prezretá dlaždica ukladá automaticky.\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, hĺbky, prístavy), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš\n• Mapa žije zo siete: bez internetu sa nové dlaždice nestiahnu a zobrazí sa len oblasť z keše. Pred vyplávaním si oblasť stiahni tlačidlom „Stiahnuť oblasť offline“ na mape. Keď je telefón offline, mapa to pripomenie oranžovou lištou navrchu.'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -5627,7 +5645,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n• Aktualizácie – keď je na Google Play novšia verzia, appka ju stiahne na pozadí a ponúkne reštart. Počas záznamu plavby sa nepýta nikdy.\n• Časové pásmo – čas na obrazovke aj v PDF sa zobrazuje buď miestne (pásmo telefónu, teda oblasti, kde práve si), alebo v UTC. Uložené záznamy sa tým nemenia, prepína sa len zobrazenie; PDF vždy uvedie, ktoré pásmo platí.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n• Aktualizácie – keď je na Google Play novšia verzia, appka ju stiahne na pozadí a ponúkne reštart. Počas záznamu plavby sa nepýta nikdy.\n• Časové pásmo – čas na obrazovke aj v PDF sa zobrazuje buď miestne (pásmo telefónu, teda oblasti, kde práve si), alebo v UTC. Uložené záznamy sa tým nemenia, prepína sa len zobrazenie; PDF vždy uvedie, ktoré pásmo platí.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.\n• Ohodnotiť aplikáciu — otvorí kartu appky v Google Play. Appka sa raz za čas spočíta aj sama, a to až po ukončenej plavbe, nikdy počas nej.'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
@@ -5651,7 +5669,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.\n• Pred exportom sa dá vybrať podklad výrezu mapy — satelit alebo bežná mapa. Voľba sa pamätá. Výrez je vždy o kus širší než samotná trasa, aby bolo vidieť okolie; deň strávený na jednom mieste dostane okno aspoň kilometer, inak by v doklade boli len strechy.'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.\n• Pred exportom sa dá vybrať podklad výrezu mapy — satelit alebo bežná mapa. Voľba sa pamätá. Výrez je vždy o kus širší než samotná trasa, aby bolo vidieť okolie; deň strávený na jednom mieste dostane okno aspoň kilometer, inak by v doklade boli len strechy.\n• Bezpečnostný brífing sa dá vyexportovať aj samostatne — vlastné PDF s podpismi posádky a zoznamom bodov, ktoré sa preberali. Nájdeš ho v Exportoch aj priamo na obrazovke brífingu; v súhrne plavby ostal brífing tak, ako bol.'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.
@@ -5659,6 +5677,36 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Safety Briefing'**
   String get safetyBriefingScreenTitle;
+
+  /// No description provided for @pdfBriefingPoints.
+  ///
+  /// In sk, this message translates to:
+  /// **'Body školenia'**
+  String get pdfBriefingPoints;
+
+  /// No description provided for @pdfBriefingCovered.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prebrané: {done} z {total}'**
+  String pdfBriefingCovered(int done, int total);
+
+  /// No description provided for @pdfBriefingNotCovered.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neprebrané'**
+  String get pdfBriefingNotCovered;
+
+  /// No description provided for @exportsBriefingDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpisy posádky a prebrané body školenia'**
+  String get exportsBriefingDesc;
+
+  /// No description provided for @briefingExportPdf.
+  ///
+  /// In sk, this message translates to:
+  /// **'Export PDF brífingu'**
+  String get briefingExportPdf;
 
   /// No description provided for @briefingCrewSignaturesSection.
   ///
@@ -7333,6 +7381,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Skryť z mapy'**
   String get bearingHideFromMap;
+
+  /// No description provided for @mapApproximatePosition.
+  ///
+  /// In sk, this message translates to:
+  /// **'Približná poloha ±{meters} m — z Wi-Fi sietí, nie z GPS'**
+  String mapApproximatePosition(String meters);
+
+  /// No description provided for @compassUnavailable.
+  ///
+  /// In sk, this message translates to:
+  /// **'Toto zariadenie nemá kompas — smerník nie je k dispozícii.'**
+  String get compassUnavailable;
 }
 
 class _AppLocalizationsDelegate

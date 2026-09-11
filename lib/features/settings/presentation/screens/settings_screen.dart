@@ -19,6 +19,7 @@ import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../core/services/app_review_service.dart';
 import '../../../../core/utils/localized_date.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/raymarine_connection_service.dart';
@@ -187,6 +188,18 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(context, MaterialPageRoute(
                     builder: (_) => const UserGuideScreen())),
+              ),
+              const Divider(height: 1),
+              // Trvalá cesta k hodnoteniu. Vstavaný formulár Play sa zobrazí
+              // len párkrát za život appky (kvóta je ich, nie naša), takže
+              // kto chce hodnotiť vtedy, keď to sám uzná, musí mať kam
+              // ťuknúť — tu sa otvorí karta v obchode a tá kvótu nemá.
+              ListTile(
+                leading: const Icon(Icons.star_outline),
+                title: Text(l.rateApp),
+                subtitle: Text(l.rateAppDesc),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => AppReviewService().openStoreListing(),
               ),
               const Divider(height: 1),
               ListTile(

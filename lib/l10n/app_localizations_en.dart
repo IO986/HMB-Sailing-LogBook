@@ -144,6 +144,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapDownloadOffline => 'Download area offline';
 
   @override
+  String get mapOfflineTilesHint =>
+      'No internet — the map cannot load new tiles. Download the area while you still have a signal.';
+
+  @override
   String get mapGpsDisabled => 'GPS is off';
 
   @override
@@ -1634,6 +1638,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'About';
 
   @override
+  String get rateApp => 'Rate the app';
+
+  @override
+  String get rateAppDesc => 'Opens the app\'s page on Google Play';
+
+  @override
   String get backupSection => 'Data backup';
 
   @override
@@ -2877,7 +2887,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website (tap to call or open the site directly), depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website (tap to call or open the site directly), depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it\n• The map lives on the network: with no internet new tiles are not downloaded and only the cached area is drawn. Download the area with the “Download area offline” button on the map before you cast off. When the phone is offline, the map says so in an orange bar at the top.';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -2954,7 +2964,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n• Time zone – times on screen and in the PDF are shown either local (the phone\'s zone, that is, where you are) or in UTC. Stored records do not change, only the display; the PDF always states which zone applies.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n• Time zone – times on screen and in the PDF are shown either local (the phone\'s zone, that is, where you are) or in UTC. Stored records do not change, only the display; the PDF always states which zone applies.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.\n• Rate the app — opens the app\'s page on Google Play. The app also asks on its own once in a while, and only after a finished voyage, never during one.';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';
@@ -2968,10 +2978,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.\n• Before exporting you can choose the map layer for the excerpt — satellite or plain map. The choice is remembered. The excerpt is always a little wider than the track itself so the surroundings show; a day spent in one place gets a window of at least a kilometre, or the document would show nothing but rooftops.';
+      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.\n• Before exporting you can choose the map layer for the excerpt — satellite or plain map. The choice is remembered. The excerpt is always a little wider than the track itself so the surroundings show; a day spent in one place gets a window of at least a kilometre, or the document would show nothing but rooftops.\n• The safety briefing can also be exported on its own — a separate PDF with the crew signatures and the list of points that were covered. It sits in Exports and on the briefing screen itself; the voyage summary keeps the briefing exactly as it was.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
+
+  @override
+  String get pdfBriefingPoints => 'Briefing points';
+
+  @override
+  String pdfBriefingCovered(int done, int total) {
+    return 'Covered: $done of $total';
+  }
+
+  @override
+  String get pdfBriefingNotCovered => 'Not covered';
+
+  @override
+  String get exportsBriefingDesc =>
+      'Crew signatures and the briefing points covered';
+
+  @override
+  String get briefingExportPdf => 'Export briefing PDF';
 
   @override
   String get briefingCrewSignaturesSection => 'Crew Signatures';
@@ -3906,4 +3934,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bearingHideFromMap => 'Hide from map';
+
+  @override
+  String mapApproximatePosition(String meters) {
+    return 'Approximate position ±$meters m — from Wi-Fi, not GPS';
+  }
+
+  @override
+  String get compassUnavailable =>
+      'This device has no compass — heading is unavailable.';
 }

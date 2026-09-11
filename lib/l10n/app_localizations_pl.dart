@@ -144,6 +144,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get mapDownloadOffline => 'Pobierz obszar offline';
 
   @override
+  String get mapOfflineTilesHint =>
+      'Brak internetu — mapa nie pobierze nowych kafelków. Pobierz obszar, póki masz zasięg.';
+
+  @override
   String get mapGpsDisabled => 'GPS jest wyłączony';
 
   @override
@@ -1637,6 +1641,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get aboutApp => 'O aplikacji';
 
   @override
+  String get rateApp => 'Ocen aplikację';
+
+  @override
+  String get rateAppDesc => 'Otwiera stronę aplikacji w Google Play';
+
+  @override
   String get backupSection => 'Kopia zapasowa danych';
 
   @override
@@ -2882,7 +2892,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www (dotknięcie od razu dzwoni lub otwiera stronę), głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz';
+      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www (dotknięcie od razu dzwoni lub otwiera stronę), głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz\n• Mapa żyje z sieci: bez internetu nowe kafelki się nie pobiorą i widać tylko obszar z pamięci. Przed wypłynięciem pobierz obszar przyciskiem „Pobierz obszar offline” na mapie. Gdy telefon jest offline, mapa przypomni o tym pomarańczowym paskiem u góry.';
 
   @override
   String get guideInstrTitle => 'Przyrządy morskie';
@@ -2959,7 +2969,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n• Strefa czasowa – czas na ekranie i w PDF jest pokazywany lokalnie (strefa telefonu, czyli miejsca, w którym jesteś) albo w UTC. Zapisane wpisy się nie zmieniają, zmienia się tylko wyświetlanie; PDF zawsze podaje, która strefa obowiązuje.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n• Strefa czasowa – czas na ekranie i w PDF jest pokazywany lokalnie (strefa telefonu, czyli miejsca, w którym jesteś) albo w UTC. Zapisane wpisy się nie zmieniają, zmienia się tylko wyświetlanie; PDF zawsze podaje, która strefa obowiązuje.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.\n• Ocen aplikację — otwiera stronę aplikacji w Google Play. Aplikacja czasem zapyta też sama, ale dopiero po zakończonym rejsie, nigdy w jego trakcie.';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';
@@ -2973,10 +2983,28 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.\n• Szkolenie bezpieczeństwa można wyeksportować osobno — własny PDF z podpisami załogi i listą omówionych punktów. Znajdziesz go w Eksportach i na ekranie szkolenia; w podsumowaniu rejsu szkolenie pozostaje bez zmian.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
+
+  @override
+  String get pdfBriefingPoints => 'Punkty szkolenia';
+
+  @override
+  String pdfBriefingCovered(int done, int total) {
+    return 'Omówiono: $done z $total';
+  }
+
+  @override
+  String get pdfBriefingNotCovered => 'Nieomówione';
+
+  @override
+  String get exportsBriefingDesc =>
+      'Podpisy załogi i omówione punkty szkolenia';
+
+  @override
+  String get briefingExportPdf => 'Eksport PDF szkolenia';
 
   @override
   String get briefingCrewSignaturesSection => 'Podpisy załogi';
@@ -3910,4 +3938,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get bearingHideFromMap => 'Ukryj z mapy';
+
+  @override
+  String mapApproximatePosition(String meters) {
+    return 'Przybliżona pozycja ±$meters m — z sieci Wi-Fi, nie z GPS';
+  }
+
+  @override
+  String get compassUnavailable =>
+      'To urządzenie nie ma kompasu — kurs jest niedostępny.';
 }

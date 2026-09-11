@@ -75,6 +75,14 @@ class Charters extends Table {
   // Prílivové vs. neprílivové vody — RYA a školy to na potvrdení o míľach
   // rozlišujú. NULL = skiper to pri plavbe neurčil.
   BoolColumn get tidalWaters => boolean().nullable()();
+  /// Body bezpečnostného brífingu, ktoré skiper naozaj prebral — JSON pole
+  /// ich textov tak, ako ich v tej chvíli videl na obrazovke.
+  ///
+  /// Texty, nie indexy: zoznam bodov sa mení s jazykom appky aj s tým, čo si
+  /// skiper dopísal, takže index by o rok ukazoval na iný bod. Doklad
+  /// o brífingu musí povedať, čo sa preberalo, nie čo je na tom mieste
+  /// v zozname dnes. NULL = brífing z čias, keď sa zaškrtnutia neukladali.
+  TextColumn get briefingCheckedJson => text().nullable()();
 }
 
 /// Loď, na ktorej sa pláva opakovane.
@@ -719,7 +727,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 33;
+  int get schemaVersion => 34;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -910,6 +918,9 @@ class AppDatabase extends _$AppDatabase {
 
       if (from < 33) {
         await m.createTable(vessels);
+      }
+      if (from < 34) {
+        await m.addColumn(charters, charters.briefingCheckedJson);
       }
     },
     beforeOpen: (details) async {

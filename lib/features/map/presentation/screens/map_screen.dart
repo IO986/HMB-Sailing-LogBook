@@ -30,6 +30,7 @@ import '../../../../core/models/bearing_kind.dart';
 import '../../../bearing/presentation/widgets/bearing_layers.dart';
 import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/map_provider.dart';
+import '../../../../core/providers/sync_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
 
@@ -590,6 +591,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       tileProvider: CachingTileProvider('osm'),
                       panBuffer: 2,
                       keepBuffer: 4,
+                      // Zlyhaná dlaždica sa nesmie stať trvalou bielou dierou: keď
+                      // vypadne sieť, flutter_map si chybu inak podrží aj potom, čo
+                      // sa sieť vráti. S evikciou sa po odrolovaní vyhodí a pri
+                      // ďalšom pohľade sa načíta znova; dovtedy presvitá
+                      // zväčšená dlaždica z nižšieho zoomu namiesto bieleho poľa.
+                      evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                     ),
                   )
                 else
@@ -605,6 +612,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     // namiesto prázdneho miesta.
                     panBuffer: 2,
                     keepBuffer: 4,
+                    // Chybná dlaždica sa zahodí, nie podrží — pozri vrstvu OSM vyššie.
+                    evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                   ),
 
               if (baseMap == BaseMap.satellite) ...[
@@ -622,6 +631,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   // namiesto prázdneho miesta.
                   panBuffer: 2,
                   keepBuffer: 4,
+                  // Chybná dlaždica sa zahodí, nie podrží — pozri vrstvu OSM vyššie.
+                  evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                 ),
                 // Popisky navrch. Predtým to boli labely z CartoDB, ktoré
                 // nad Zadarom ukázali jediné meno mesta a nič viac — dediny,
@@ -642,6 +653,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   tileProvider: CachingTileProvider('sat_labels'),
                   panBuffer: 2,
                   keepBuffer: 4,
+                  // Chybná dlaždica sa zahodí, nie podrží — pozri vrstvu OSM vyššie.
+                  evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                 ),
               ],
 
@@ -671,6 +684,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   tileProvider: CachingTileProvider('bathymetry'),
                   panBuffer: 2,
                   keepBuffer: 4,
+                  // Chybná dlaždica sa zahodí, nie podrží — pozri vrstvu OSM vyššie.
+                  evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                 ),
 
               // ── OpenSeaMap seamarky (nad satelitom aj OSM) ───
@@ -687,6 +702,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   // namiesto prázdneho miesta.
                   panBuffer: 2,
                   keepBuffer: 4,
+                  // Chybná dlaždica sa zahodí, nie podrží — pozri vrstvu OSM vyššie.
+                  evictErrorTileStrategy: EvictErrorTileStrategy.notVisible,
                 ),
 
               // ── Kotviská / maríny / prístavy (OSM, klikateľné) ──
@@ -1011,6 +1028,33 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 },
               ),
             ],
+          ),
+
+          // ── Varovanie: poloha nie je z GPS ────────────────────
+          // Na strojoch bez GNSS prijímača (napr. Surface Go) určuje polohu
+          // systém z okolných Wi-Fi sietí. Odchýlka býva stovky metrov a nie
+          // je to na mape nijako vidieť — bez tejto lišty by používateľ taký
+          // odhad považoval za GPS fix.
+          //
+          // Pod ňou lišta o chýbajúcom internete: bez siete sa mapa nedoplní
+          // a skiper to má vedieť skôr, než sa zahľadí do prázdneho štvorca
+          // uprostred kanála. Obe sedia v jednom stĺpci, nie nad sebou —
+          // môžu svietiť naraz (telefón bez GPS fixu býva aj bez siete).
+          const Positioned(
+            top: 8,
+            left: 64,
+            right: 64,
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ApproximatePositionBanner(),
+                  SizedBox(height: 6),
+                  _OfflineTilesBanner(),
+                ],
+              ),
+            ),
           ),
 
           // ── Kompas: vždy viditeľný, ihla ukazuje sever ────────
@@ -2490,6 +2534,130 @@ class _CompassRosePainter extends CustomPainter {
 }
 
 // ── Meraná stanica ────────────────────────────────────────────
+
+// ── Upozornenie na chýbajúci internet ─────────────────────────
+
+/// Warns that the map cannot fetch what it has not already stored.
+///
+/// Tiles come from the network. Offline the app draws only what is in the
+/// cache, and the hole in the middle of the screen looks exactly like a bug.
+/// It is not: it is a map that was never downloaded. Saying so out loud —
+/// while there is still a signal to act on it — is the whole point, because
+/// the fix (download the area) is only possible before the signal is gone.
+class _OfflineTilesBanner extends ConsumerWidget {
+  const _OfflineTilesBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final online = ref.watch(isOnlineProvider).value;
+    // Kým sa stav zisťuje (null), nič nehlás — bliknutie „si offline" na
+    // pripojenom telefóne je horšie než upozornenie o sekundu neskôr.
+    if (online == null || online) return const SizedBox.shrink();
+
+    final l = AppLocalizations.of(context);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade800.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.cloud_off, size: 16, color: Colors.white),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                l.mapOfflineTilesHint,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Varovanie o odhadnutej polohe ─────────────────────────────
+
+/// Says out loud that the position on the map is not a GPS fix.
+///
+/// Machines without a GNSS receiver — the Windows tablets this runs on, but
+/// also a phone whose GPS has not caught anything yet — fall back to locating
+/// themselves from surrounding Wi-Fi networks. That estimate can sit hundreds
+/// of metres from the boat and looks exactly like a real fix on the map, so it
+/// has to be labelled. Fixes from marine instruments never show this.
+class _ApproximatePositionBanner extends StatelessWidget {
+  const _ApproximatePositionBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Position>(
+      stream: LocationService().stream,
+      builder: (context, snapshot) {
+        final loc = LocationService();
+        if (loc.isUsingInstrumentGps) return const SizedBox.shrink();
+
+        final source = loc.lastSource;
+        if (source != LocationSource.network &&
+            source != LocationSource.cached) {
+          return const SizedBox.shrink();
+        }
+
+        final pos = snapshot.data ?? loc.lastPosition;
+        if (pos == null) return const SizedBox.shrink();
+
+        // Zdroj sám o sebe nestačí. `LocationSource.network` je v hmb_core
+        // len menovka rýchlej fázy hľadania polohy (LocationAccuracy.medium)
+        // — Android pod ňou pokojne vráti fix zo satelitov, takže na telefóne
+        // s funkčnou GPS by lišta tvrdila „z Wi-Fi", hoci to je GPS
+        // (nahlásené z terénu na Oukiteli WP7). Rozhoduje preto presnosť:
+        // pod týmto prahom už žiadna Wi-Fi triangulácia nie je.
+        if (pos.accuracy > 0 && pos.accuracy <= 100) {
+          return const SizedBox.shrink();
+        }
+
+        final l = AppLocalizations.of(context);
+        final meters = pos.accuracy > 0 ? pos.accuracy.round().toString() : '?';
+
+        return Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade800.withOpacity(0.92),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.wifi_find, size: 16, color: Colors.white),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    l.mapApproximatePosition(meters),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
 // ── GPS Marker ────────────────────────────────────────────────
 

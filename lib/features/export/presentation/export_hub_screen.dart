@@ -11,6 +11,7 @@ import '../../../main.dart';
 import '../../bearing/providers/bearing_provider.dart';
 import '../../charter/providers/charter_provider.dart';
 import '../services/handover_export.dart';
+import '../services/safety_briefing_export.dart';
 
 /// Jedno miesto pre všetko, čo z appky vychádza ako dokument.
 ///
@@ -84,6 +85,22 @@ class _ExportHubScreenState extends ConsumerState<ExportHubScreen> {
                   onTap: () => context.push('/logbook/${charter.id}/export'),
                 ),
                 _DaysTile(charter: charter),
+                // Brífing pred protokolom: na plavbe je prvý a v zozname
+                // exportov sa hľadá v tom istom poradí, v akom sa robil.
+                _ExportRow(
+                  icon: Icons.health_and_safety_outlined,
+                  title: l.safetyBriefingScreenTitle,
+                  subtitle: l.exportsBriefingDesc,
+                  trailing: charter.safetyBriefingDone
+                      ? l.exportsFormatPdf
+                      : l.exportsNotFilledIn,
+                  // Nepodpísaný brífing sa neexportuje — doklad bez podpisov
+                  // netvrdí nič, čo by niekto podpísal.
+                  onTap: charter.safetyBriefingDone
+                      ? () => exportSafetyBriefingPdf(context, ref,
+                          charter: charter)
+                      : null,
+                ),
                 _HandoverTile(charter: charter),
                 _ExportRow(
                   icon: Icons.workspace_premium_outlined,
@@ -353,7 +370,11 @@ class _ExportRow extends StatelessWidget {
   final String title;
   final String subtitle;
   final String trailing;
-  final VoidCallback onTap;
+
+  /// `null` = riadok ostáva v zozname, ale neaktívny. Export, ktorý sa ešte
+  /// nedá urobiť (nevyplnený podklad), nemá zmiznúť — inak ho skiper hľadá
+  /// inde a nevie, že mu len chýbajú dáta.
+  final VoidCallback? onTap;
   const _ExportRow({
     required this.icon,
     required this.title,
@@ -364,6 +385,7 @@ class _ExportRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
+        enabled: onTap != null,
         leading: Icon(icon),
         title: Text(title),
         subtitle: Text(subtitle),
