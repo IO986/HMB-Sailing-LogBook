@@ -1,0 +1,15 @@
+HMB Sailing Log — build 74 (1.36.0+74)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: export the safety briefing as its own PDF — crew signatures plus the list of points covered. The voyage summary is unchanged.
+• New: the quick sail change remembers main, genoa, reefs and the point of sail, like it already did for engine and autopilot.
+• Fixed: signing no longer scrolls the page away mid-stroke.
+• Fixed: map tiles that failed without signal are retried and no longer stay white. A bar warns when there is no internet.
+
+=== Slovenčina (sk) ===
+• Nové: bezpečnostný brífing sa dá vyexportovať ako vlastné PDF — podpisy posádky a zoznam prebraných bodov. Súhrn plavby ostáva bez zmeny.
+• Nové: rýchle prehodenie plachiet si pamätá hlavnú, genou, refy aj kurz voči vetru, tak ako doteraz motor a autopilota.
+• Opravené: podpisovanie už neroluje stránku uprostred ťahu.
+• Opravené: dlaždice mapy, ktoré zlyhali bez signálu, sa dotiahnu a neostanú biele. Bez internetu na to upozorní lišta.
