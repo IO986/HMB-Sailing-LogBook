@@ -12,6 +12,7 @@ import '../../../../core/services/gps_tracking_service.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../core/services/units_service.dart';
 
 /// Jeden riadok zoznamu plavieb: buď plavba, alebo relácia zameraní zapísaná
 /// mimo trackingu. Zámerne v tom istom zozname a zoradené podľa dátumu — pre
@@ -35,6 +36,18 @@ class _BearingSessionRow extends _LogbookRow {
   DateTime get sortDate => session.date;
 }
 
+/// Udalosť zapísaná bez založenej plavby — MOB alebo kotva mimo plavby.
+///
+/// Jeden riadok na jednu udalosť. Zlučovať ich na deň sa ukázalo ako zlé:
+/// spustenie kotvy o šiestej večer a drift o tretej ráno je dvakrát niečo
+/// iné a na papieri to musí byť vidieť zvlášť.
+class _UnassignedRow extends _LogbookRow {
+  final LogbookEntry entry;
+  _UnassignedRow(this.entry);
+  @override
+  DateTime get sortDate => entry.timestamp.toLocal();
+}
+
 class CharterListScreen extends ConsumerWidget {
   const CharterListScreen({super.key});
 
@@ -42,6 +55,9 @@ class CharterListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chartersAsync = ref.watch(chartersProvider);
     final sessions = ref.watch(orphanBearingSessionsProvider);
+    final orphanEvents =
+        ref.watch(unassignedEntriesProvider).valueOrNull ??
+            const <LogbookEntry>[];
     final l = AppLocalizations.of(context);
 
     return Scaffold(
@@ -67,10 +83,13 @@ class CharterListScreen extends ConsumerWidget {
       ),
       body: chartersAsync.when(
         data: (charters) {
-          if (charters.isEmpty && sessions.isEmpty) return const _EmptyState();
+          if (charters.isEmpty && sessions.isEmpty && orphanEvents.isEmpty) {
+            return const _EmptyState();
+          }
           final rows = <_LogbookRow>[
             for (final c in charters) _CharterRow(c),
             for (final s in sessions) _BearingSessionRow(s),
+            for (final e in orphanEvents) _UnassignedRow(e),
           ]..sort((a, b) => b.sortDate.compareTo(a.sortDate));
           return ListView.builder(
             padding: const EdgeInsets.only(bottom: 100),
@@ -82,6 +101,8 @@ class CharterListScreen extends ConsumerWidget {
                 _CharterRow(:final charter) => _CharterCard(charter: charter),
                 _BearingSessionRow(:final session) =>
                   _BearingSessionCard(session: session),
+                _UnassignedRow(:final entry) =>
+                  _UnassignedEventCard(entry: entry),
               };
             },
           );
@@ -166,6 +187,89 @@ class _BearingSessionCard extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Udalosť mimo plavby.
+///
+/// MOB alebo kotva zapísané v čase, keď nebola založená žiadna plavba. Stoja
+/// v tom istom zozname ako plavby a zameranía, zoradené podľa dátumu: pre
+/// skipera je to jeden chronologický záznam toho, čo sa na vode dialo, nie
+/// samostatná sekcia, do ktorej treba vedieť nazrieť.
+class _UnassignedEventCard extends ConsumerWidget {
+  final LogbookEntry entry;
+  const _UnassignedEventCard({required this.entry});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final fmt = AppDate.of(context, ref);
+    final units = ref.watch(unitsSyncProvider);
+    final kind = unassignedKindOf(entry.eventType);
+    final isMob = kind == UnassignedEventKind.mob;
+    final title = switch (kind) {
+      UnassignedEventKind.mob => l.unassignedMobTitle,
+      UnassignedEventKind.anchor => l.unassignedAnchorTitle,
+      UnassignedEventKind.other => l.unassignedEventTitle,
+    };
+    // Čo presne sa stalo: spustenie kotvy a drift sú obe „kotva mimo
+    // plavby", ale znamenajú niečo úplne iné.
+    final what = _eventLabel(entry.eventType, l) ?? entry.skipperNote;
+    final position = (entry.latitude == null || entry.longitude == null)
+        ? null
+        : '${entry.latitude!.toStringAsFixed(4)}, '
+            '${entry.longitude!.toStringAsFixed(4)}';
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: isMob
+          ? Theme.of(context).colorScheme.errorContainer
+          : Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(children: [
+          Icon(isMob ? Icons.person_off : Icons.anchor,
+              size: 28,
+              color: isMob ? Theme.of(context).colorScheme.error : null),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                if (what != null && what.isNotEmpty)
+                  Text(what,
+                      style: const TextStyle(fontSize: 13)),
+                Text(
+                  '${fmt.medium(entry.timestamp.toLocal())}  ·  '
+                  '${units.formatTimeWithZone(entry.timestamp)}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+                ),
+                if (position != null)
+                  Text(position,
+                      style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              ],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  /// Preložený názov udalosti. `null` pre záznam bez rozpoznaného druhu —
+  /// vtedy sa ukáže poznámka.
+  String? _eventLabel(String? code, AppLocalizations l) => switch (code) {
+        'mob' => l.mobFullName,
+        'mob_cancelled' => l.logEventMobCancelled,
+        'anchor_dropped' => l.logEventAnchorDropped,
+        'anchor_raised' => l.logEventAnchorRaised,
+        'drift_out' => l.logEventDriftOut,
+        'drift_in' => l.logEventDriftIn,
+        _ => null,
+      };
 }
 
 // ── Charter Card ──────────────────────────────────────────────

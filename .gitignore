@@ -86,3 +86,12 @@ key.txt
 screenshots/
 *.gpx
 .wrangler/
+
+# Local scratch – test data, backups, screenshots, notes from the skipper
+/*.pdf
+/*.jpg
+/*.jpeg
+/*.png
+*.hmbbackup
+pripomienky/
+realdatafortesting/

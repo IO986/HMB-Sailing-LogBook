@@ -26,6 +26,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:replace="android:maxSdkVersion" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Anchor alarm: raises the alarm stream to the volume the skipper set,
+         so the slider in settings means something below deck. Normal
+         permission, granted at install. -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- Lets the alarm stay audible while Do Not Disturb is on. The user
+         grants it in system settings; without it the alarm still sounds, just
+         at whatever volume the phone is set to. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
         android:label="HMB Sailing Logbook"

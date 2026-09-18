@@ -1104,6 +1104,70 @@ class AppDatabase extends _$AppDatabase {
     return rows.isEmpty ? null : rows.first.id;
   }
 
+  /// Deň, do ktorého sa má zapísať udalosť, ktorá sa deje PRÁVE TERAZ.
+  ///
+  /// Bezpečnostné udalosti — muž cez palubu, spustenie a zdvihnutie kotvy,
+  /// drift — nečakajú na spustenie trasovania. Stanú sa aj na kotve so
+  /// zhasnutou appkou a v tej chvíli nie je čas riešiť, či niekto stlačil
+  /// Štart.
+  ///
+  /// Poradie je zámerné:
+  ///  1. Beží trasovanie — píše sa do jeho dňa, [trackingDayLogId].
+  ///  2. Je založená rozostavaná plavba — píše sa do JEJ dnešného dňa, a keď
+  ///     taký deň ešte nemá, založí sa. Bez toho padla udalosť na
+  ///     [getLatestDayLogId], teda na najnovší deň v celej databáze — čo je
+  ///     pokojne včerajšok alebo deň z minulej plavby, a človek vo vode je
+  ///     potom zapísaný pod nesprávnym dátumom.
+  ///  3. Žiadna plavba — `null`, teda nezaradený záznam. Prilepiť udalosť
+  ///     k poslednému známemu dňu by znamenalo zapísať muža cez palubu pod
+  ///     dátum inej, dávno uzavretej plavby. Nezaradený riadok s časom a
+  ///     polohou je pravdivý; zaradený pod cudzí deň nie je.
+  ///
+  /// Importované plavby (`source == 'gpx'`) sú hotová história, do tej sa
+  /// nedopisuje.
+  Future<int?> dayLogIdForNow({int? trackingDayLogId}) async {
+    if (trackingDayLogId != null) return trackingDayLogId;
+    try {
+      final open = await (select(charters)
+            ..where((c) =>
+                c.checkOutDone.equals(false) & c.source.equals('gpx').not())
+            ..orderBy([(c) => OrderingTerm.desc(c.dateFrom)])
+            ..limit(1))
+          .getSingleOrNull();
+      if (open == null) return null;
+
+      final now = DateTime.now();
+      final days = await getDayLogs(open.id);
+      for (final d in days) {
+        if (d.date.year == now.year &&
+            d.date.month == now.month &&
+            d.date.day == now.day) {
+          return d.id;
+        }
+      }
+      final created = await insertDayLog(
+          DayLogsCompanion.insert(charterId: open.id, date: now));
+      return created.id;
+    } catch (_) {
+      // Zápis udalosti nesmie padnúť na tom, že sa deň nepodarilo nájsť —
+      // radšej nezaradený riadok než žiadny.
+      return null;
+    }
+  }
+
+  /// Záznamy, ktoré nepatria k žiadnemu dňu plavby.
+  ///
+  /// Vznikajú, keď sa niečo stane bez založenej plavby — muž cez palubu pri
+  /// kotvení po skončení plavby, kotva spustená na bóji. Zapísať ich k
+  /// poslednému známemu dňu by znamenalo pripísať udalosť cudzej, dávno
+  /// uzavretej plavbe, tak ostávajú nezaradené (pozri [dayLogIdForNow]) a
+  /// zobrazujú sa v zozname plavieb medzi ostatnými riadkami, podľa dátumu.
+  Stream<List<LogbookEntry>> watchUnassignedEntries() =>
+      (select(logbookEntries)
+            ..where((e) => e.dayLogId.isNull())
+            ..orderBy([(e) => OrderingTerm.desc(e.timestamp)]))
+          .watch();
+
   // ── Logbook Entries ──────────────────────────────────────────
 
   Future<List<LogbookEntry>> getEntriesForDay(int dayLogId) =>

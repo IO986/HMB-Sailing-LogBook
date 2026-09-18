@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,6 +16,7 @@ import '../../../../core/models/crew_member_ref.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../charter/providers/charter_provider.dart';
+import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../../export/services/export_service.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../services/voyage_miles_summary.dart';
@@ -90,11 +93,50 @@ class _CrewCertificatesScreenState
     }
   }
 
+  /// Podpis veliteľa pod potvrdenia.
+  ///
+  /// Doteraz sa bral výhradne z [Charter.logbookSignaturePath] — a ten
+  /// vyplní iba ten, kto prešiel cez záznam plavby v Knihe míľ. Kto tam
+  /// nebol, dostal potvrdenia s prázdnou linkou a nič mu to nepovedalo.
+  /// Teraz sa podpis vypýta a uloží na to isté miesto, takže ďalší export
+  /// tej istej plavby ho už len použije.
+  Future<Uint8List?> _obtainSignature(Charter charter) async {
+    final stored = charter.logbookSignaturePath;
+    if (stored != null && File(stored).existsSync()) {
+      return File(stored).readAsBytes();
+    }
+    final drawn = await showSignaturePadDialog(context,
+        signerName: charter.skipperName);
+    if (drawn == null) return null;
+    try {
+      final docs = await getApplicationDocumentsDirectory();
+      final sigDir = Directory('${docs.path}/signatures');
+      await sigDir.create(recursive: true);
+      final file = File('${sigDir.path}/${widget.charterId}.png');
+      await file.writeAsBytes(drawn);
+      await ref.read(databaseProvider).updateCharter(ChartersCompanion(
+            id: Value(widget.charterId),
+            logbookSignaturePath: Value(file.path),
+          ));
+    } catch (e) {
+      // Uloženie je pohodlie pre budúci export, nie podmienka tohto.
+      debugPrint('[CREWCERT] Signature save error: $e');
+    }
+    return drawn;
+  }
+
   Future<void> _export(Charter charter, List<CrewMemberRef> crew,
       {required bool saveToDevice}) async {
-    setState(() => _busy = true);
     final l = AppLocalizations.of(context);
     final db = ref.read(databaseProvider);
+
+    // Podpis EŠTE pred zaneprázdneným stavom: pad je dialóg a skiper ho môže
+    // zavrieť. Zrušený podpis znamená zrušený export — nepodpísané
+    // potvrdenie o míľach je papier, na ktorom nikto za čísla neručí.
+    final signature = await _obtainSignature(charter);
+    if (signature == null || !mounted) return;
+
+    setState(() => _busy = true);
     try {
       await _save();
 
@@ -110,12 +152,6 @@ class _CrewCertificatesScreenState
         points: points,
         area: charter.cruisingArea ?? charter.homePort,
       );
-
-      Uint8List? signature;
-      final signaturePath = charter.logbookSignaturePath;
-      if (signaturePath != null && File(signaturePath).existsSync()) {
-        signature = await File(signaturePath).readAsBytes();
-      }
 
       final files = <XFile>[];
       for (final member in crew) {

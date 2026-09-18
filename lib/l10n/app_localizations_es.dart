@@ -2902,7 +2902,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF Abajo aparece la reproducción: con el deslizador recorres la travesía en el tiempo y ves posición, velocidad, rumbo, viento y presión en cualquier momento. Las marcas del deslizador son eventos — inicio y fin de la travesía, fondeo, garreo, MOB.\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Profundidades – isóbatas de EMODnet, rotuladas en metros. Un modelo del fondo obtenido de sondeos, NO una carta náutica: sirve para planificar una travesía, nunca para decidir si se puede pasar. Desactivado por defecto; las teselas consultadas se guardan como las demás. Con la capa activada, toca el mapa para leer la profundidad en ese punto (necesita señal).\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web (toca para llamar o abrir la web directamente), profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa sin conexión (icono de descarga) — descarga el área visible para usarla sin cobertura, desde el zoom actual tres niveles más. Siempre las marcas náuticas; con el satélite activado, también las imágenes y sus topónimos. Además, cada tesela que visitas se guarda automáticamente.\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, profundidades, puertos), el seguimiento GPS y el bloqueo al norte se recuerdan entre inicios\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo\n• El mapa vive de la red: sin internet no se descargan teselas nuevas y solo se ve la zona en caché. Descarga la zona con el botón «Descargar zona sin conexión» del mapa antes de zarpar. Cuando el teléfono está sin conexión, el mapa lo avisa con una barra naranja arriba.';
+      'La pestaña Mapa muestra tu posición actual y la ruta de la travesía.\n\n• Punto azul = posición actual\n• Línea azul = ruta que se está grabando ahora\n• Icono de ruta – elige cualquier travesía o día para ver su ruta en el mapa (en naranja), sin exportar a PDF Abajo aparece la reproducción: con el deslizador recorres la travesía en el tiempo y ves posición, velocidad, rumbo, viento y presión en cualquier momento. Las marcas del deslizador son eventos — inicio y fin de la travesía, fondeo, garreo, MOB.\n• Cambiar entre vista satélite y mapa\n• Marcas marinas – activa señales náuticas (naufragios, bajos, boyas)\n• Profundidades – isóbatas de EMODnet, rotuladas en metros. Un modelo del fondo obtenido de sondeos, NO una carta náutica: sirve para planificar una travesía, nunca para decidir si se puede pasar. Desactivado por defecto; las teselas consultadas se guardan como las demás. Con la capa activada, toca el mapa para leer la profundidad en ese punto (necesita señal).\n• Puertos – capa táctil de fondeaderos, marinas y puertos (datos de OpenStreetMap): toca un icono para ver nombre, canal VHF, teléfono, web (toca para llamar o abrir la web directamente), profundidad o capacidad si constan; guarda el lugar como waypoint con un toque; la capa incluye también gasolineras náuticas (surtidor naranja)\n• Regla (icono morado) – toca puntos en el mapa: NM totales, rumbo del último tramo y ETA a la velocidad actual; los puntos se ajustan a los waypoints\n• Mapa sin conexión (icono de descarga) — descarga el área visible para usarla sin cobertura, desde el zoom actual tres niveles más. Siempre las marcas náuticas; con el satélite activado, también las imágenes y sus topónimos. Además, cada tesela que visitas se guarda automáticamente.\n• En modo nocturno el mapa cambia automáticamente a teselas oscuras\n• Icono de ancla = posición de fondeo (solo con alarma de ancla activa)\n• Icono de importar – carga tracks y waypoints desde un archivo .gpx (ver \"Importar GPX\")\n• Bloqueo al norte – mantén pulsada la rosa de la brújula (arriba a la izquierda); el mapa deja de rotar y se mantiene con el norte arriba. Tócala para volver al norte.\n• Las capas elegidas (satélite, marcas náuticas, profundidades, puertos), el seguimiento GPS y el bloqueo al norte se recuerdan entre inicios\n• Mantén pulsado el mapa = añade un waypoint (destino de navegación); toca un waypoint existente para renombrarlo o eliminarlo\n• El mapa vive de la red: sin internet no se descargan teselas nuevas y solo se ve la zona en caché. Descarga la zona con el botón «Descargar zona sin conexión» del mapa antes de zarpar. Cuando el teléfono está sin conexión, el mapa lo avisa con una barra naranja arriba.\n• Durante una travesía el mapa tiene dos botones más. El ancla inicia la guardia de ancla en la posición actual con el radio usado por última vez — un toque, y otro toque pregunta antes de detenerla. El botón rojo MOB hay que mantenerlo pulsado; un toque solo lo recuerda. Mientras la guardia funciona, el mapa dibuja el borneo: la línea que el barco trazó alrededor del ancla.';
 
   @override
   String get guideInstrTitle => 'Instrumentos marinos';
@@ -2923,7 +2923,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.';
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.\n• El certificado se firma antes de exportarlo, igual que el cuaderno: se abre el panel de firma y el PDF recibe una página final con la firma, la hora, una suma de control SHA-256 y un código QR para verificarlo.';
 
   @override
   String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
@@ -2951,7 +2951,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido\n• La guardia de ancla graba ahora su propia traza, así que una noche fondeado ya no es un hueco en el GPX. Es un tramo aparte — nunca cuenta para las millas, la distancia del día ni las horas nocturnas, porque bornear sobre la cadena no es navegar.\n• La guardia sobrevive a un reinicio de la app: si el sistema la mata en segundo plano, al volver continúa sobre el mismo fondeo.\n• Las entradas de fondeo y de levar ancla llevan ahora viento, presión, temperaturas, sonda bajo la quilla y propulsión — hasta ahora solo tenían hora y posición.';
+      'La pestaña Seguridad contiene funciones de emergencia.\n\nMOB (Hombre al agua):\n• Mantener pulsado el botón rojo MOB para activar\n• La app guarda la posición GPS y mide tiempo y distancia\n• Navegar de vuelta al punto de caída\n\nAlarma de ancla:\n• Establecer el radio de fondeo (recomendado: 2× longitud de cadena)\n• La alarma vibra si el barco sale del radio permitido\n• La guardia de ancla graba ahora su propia traza, así que una noche fondeado ya no es un hueco en el GPX. Es un tramo aparte — nunca cuenta para las millas, la distancia del día ni las horas nocturnas, porque bornear sobre la cadena no es navegar.\n• La guardia sobrevive a un reinicio de la app: si el sistema la mata en segundo plano, al volver continúa sobre el mismo fondeo.\n• Las entradas de fondeo y de levar ancla llevan ahora viento, presión, temperaturas, sonda bajo la quilla y propulsión — hasta ahora solo tenían hora y posición.\n• La guardia de ancla sigue registrando la traza aunque no se esté grabando ninguna travesía: tiene su propio tramo, fuera de las millas y de la distancia del día, pero entra en el GPX y la ficha del día muestra cuándo estuvo activa, cuántos puntos escribió y el mayor borneo desde el ancla.';
 
   @override
   String get guideSafetyBriefingTitle => 'Briefing de seguridad y MAYDAY';
@@ -2979,7 +2979,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.\n• Actualizaciones – cuando hay una versión más reciente en Google Play, la app la descarga en segundo plano y ofrece reiniciar. Nunca pregunta mientras se registra una travesía.\n• Zona horaria – las horas en pantalla y en el PDF se muestran en hora local (la zona del teléfono, es decir, donde estás) o en UTC. Los registros guardados no cambian, solo la visualización; el PDF siempre indica qué zona se aplica.\n\nCuenta de Google y exportación a la nube\n\nIniciar sesión con una cuenta de Google es opcional. Sin ella la app funciona por completo y todos los registros se quedan solo en el teléfono.\n\nQué se sube – al cerrar un día de travesía, el PDF del diario y la traza GPX de ese día. Nada más: ni fotos, ni contactos de la tripulación, ni posiciones en tiempo real.\n\nAdónde – a tu propio Google Drive, a la carpeta HMB_Sailing_Log_DATA / nombre de la travesía / Day_fecha. No a un servidor de la app – no existe.\n\nQué ve la app en tu Drive – solo los archivos que ella misma creó allí. Usa el permiso más estrecho que ofrece Google (drive.file), así que el resto de tu Drive queda fuera de su alcance. Además pide ese permiso en la primera subida, no al iniciar sesión.\n\nCómo deshacerlo – cierra la sesión en Ajustes. Los archivos que ya estén en el Drive siguen siendo tuyos – la app no los borra.\n• Valorar la aplicación: abre su página en Google Play. La aplicación también lo pregunta de vez en cuando, pero solo tras terminar un viaje, nunca durante él.';
+      '• Idioma – cambiar el idioma de la app\n• Instrumentos – configurar la dirección IP de la pasarela WiFi Raymarine (TCP o UDP)\n• Fuente GPS – teléfono o Raymarine\n• Unidades – distancia NM/km, velocidad nudos/km/h, además temperatura, profundidad y viento por separado (km + km/h va bien en río)\n• Frecuencia de entradas en el diario\n• Pantalla – modo nocturno (filtro rojo para preservar la visión nocturna)\n• Menú inferior – personalízalo: mantén y arrastra un icono para reordenar, usa el interruptor para ocultar pestañas que no uses y ajusta el tamaño de los iconos (S/M/L). Las pestañas ocultas se abren aquí en Ajustes; Ajustes siempre se muestra. El orden y el tamaño se recuerdan. Las etiquetas bajo los iconos están ocultas para que los iconos queden igual en todos los idiomas; mantén pulsado un icono para ver su nombre.\n• Exportación a la nube (Google Drive) – con sesión iniciada, el PDF y GPX de cada día finalizado se suben automáticamente a tu propio Google Drive. Sin iniciar sesión, todo queda en el dispositivo.\n• Copia de seguridad – ver \"Copia de seguridad y restauración de datos\"\n• Acerca de – versión y contacto\n• Batería – El GPS funciona con precisión máxima solo donde importa la posición exacta (seguimiento de la travesía, carta, compás, instrumentos, guardia de fondeo, MOB); en el resto pasa a un modo de bajo consumo y en segundo plano, sin seguimiento activo, se apaga por completo. Con los instrumentos de a bordo conectados el GPS del teléfono permanece apagado y la posición llega por NMEA.\n• Actualizaciones – cuando hay una versión más reciente en Google Play, la app la descarga en segundo plano y ofrece reiniciar. Nunca pregunta mientras se registra una travesía.\n• Zona horaria – las horas en pantalla y en el PDF se muestran en hora local (la zona del teléfono, es decir, donde estás) o en UTC. Los registros guardados no cambian, solo la visualización; el PDF siempre indica qué zona se aplica.\n\nCuenta de Google y exportación a la nube\n\nIniciar sesión con una cuenta de Google es opcional. Sin ella la app funciona por completo y todos los registros se quedan solo en el teléfono.\n\nQué se sube – al cerrar un día de travesía, el PDF del diario y la traza GPX de ese día. Nada más: ni fotos, ni contactos de la tripulación, ni posiciones en tiempo real.\n\nAdónde – a tu propio Google Drive, a la carpeta HMB_Sailing_Log_DATA / nombre de la travesía / Day_fecha. No a un servidor de la app – no existe.\n\nQué ve la app en tu Drive – solo los archivos que ella misma creó allí. Usa el permiso más estrecho que ofrece Google (drive.file), así que el resto de tu Drive queda fuera de su alcance. Además pide ese permiso en la primera subida, no al iniciar sesión.\n\nCómo deshacerlo – cierra la sesión en Ajustes. Los archivos que ya estén en el Drive siguen siendo tuyos – la app no los borra.\n• Valorar la aplicación: abre su página en Google Play. La aplicación también lo pregunta de vez en cuando, pero solo tras terminar un viaje, nunca durante él.\n• Alarma de ancla: elige el sonido cualquier alarma o tono del teléfono, con el selector del sistema y su volumen, y escucha una muestra antes de necesitarla. El sonido sale por el canal de alarma, así que se oye incluso con el teléfono en silencio; el volumen se puede bajar, no apagar.';
 
   @override
   String get guideBackupTitle => 'Copia de seguridad y restauración de datos';
@@ -3962,4 +3962,67 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'Este dispositivo no tiene brújula: el rumbo no está disponible.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Guardia de ancla activa · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => '¿Detener la guardia de ancla?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'La guardia se detiene y «Ancla levada» pasa al cuaderno.';
+
+  @override
+  String get mobCancelTitle => '¿Cancelar MOB?';
+
+  @override
+  String get mobCancelBody =>
+      'La alarma se detiene y se deja de seguir el punto de caída.';
+
+  @override
+  String get anchorSoundLabel => 'Sonido de alarma';
+
+  @override
+  String get anchorVolumeLabel => 'Volumen de la alarma';
+
+  @override
+  String get anchorSoundPreview => 'Reproducir una muestra';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'Un sonido que nunca has oído no dirá «ancla» a las tres de la madrugada.';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Guardia de ancla $range · $points puntos · borneo máximo $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'El sonido de alarma del teléfono';
+
+  @override
+  String get anchorVolumeDesc =>
+      'Este es el volumen real, no un multiplicador: mientras suena la alarma la aplicación sube el canal de alarma del teléfono a este nivel y luego lo devuelve.';
+
+  @override
+  String get anchorDndTitle => 'No molestar anula el volumen';
+
+  @override
+  String get anchorDndBody =>
+      'Mientras No molestar esté activo, solo tú puedes permitir que se suba el volumen. Sin eso la alarma suena igual, al volumen que tenga el teléfono.';
+
+  @override
+  String get unassignedMobTitle => 'MOB fuera de una travesía';
+
+  @override
+  String get unassignedAnchorTitle => 'Ancla fuera de una travesía';
+
+  @override
+  String get unassignedEventTitle => 'Suceso fuera de una travesía';
+
+  @override
+  String get logEventMobCancelled => 'MOB cancelado';
 }

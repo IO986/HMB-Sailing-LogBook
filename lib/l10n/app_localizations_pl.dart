@@ -2892,7 +2892,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www (dotknięcie od razu dzwoni lub otwiera stronę), głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz\n• Mapa żyje z sieci: bez internetu nowe kafelki się nie pobiorą i widać tylko obszar z pamięci. Przed wypłynięciem pobierz obszar przyciskiem „Pobierz obszar offline” na mapie. Gdy telefon jest offline, mapa przypomni o tym pomarańczowym paskiem u góry.';
+      'Zakładka Mapa pokazuje twoją aktualną pozycję i trasę rejsu.\n\n• Niebieska kropka = aktualna pozycja\n• Niebieska linia = aktualnie śledzona trasa\n• Ikona trasy – wybierz dowolny rejs lub dzień i zobacz jego trasę na mapie (na pomarańczowo), nawet bez eksportu PDF Na dole pojawia się odtwarzanie: suwakiem przechodzisz rejs w czasie i widzisz pozycję, prędkość, kurs, wiatr i ciśnienie w dowolnej chwili. Kreski na suwaku to zdarzenia — początek i koniec rejsu, kotwica, dryf, MOB.\n• Możesz przełączać między warstwą satelitarną a mapową\n• Seamarki – przełącznik dla znaków morskich (wraki, mielizny, boje)\n• Głębokości – izobaty z EMODnet z głębokością w metrach. Model dna z pomiarów, NIE mapa morska: do planowania przejścia tak, do decyzji „czy tędy przepłynę” nie. Domyślnie wyłączone; przeglądane kafelki są zapisywane jak pozostałe. Przy włączonej warstwie dotknij mapy, aby odczytać głębokość w tym punkcie (wymaga zasięgu).\n• Porty – klikalna warstwa kotwicowisk, marin i portów (dane z OpenStreetMap): dotknij ikonki i zobaczysz nazwę, kanał VHF, telefon, stronę www (dotknięcie od razu dzwoni lub otwiera stronę), głębokość czy pojemność, jeśli są znane; miejsce od razu zapiszesz jako waypoint; warstwa obejmuje też stacje paliw dla łodzi (pomarańczowa pompa)\n• Linijka (fioletowa ikona) – dotykaj punkty na mapie: suma NM, kurs ostatniego odcinka i ETA przy aktualnej prędkości; punkty przyciągają się do waypointów, więc zmierzysz trasę przez cele\n• Mapa offline (ikona pobierania) — pobiera widoczny obszar do użycia bez zasięgu, od bieżącego przybliżenia o trzy poziomy głębiej. Zawsze oznakowanie nawigacyjne; przy włączonym satelicie także zdjęcia i ich nazwy miejscowości. Dodatkowo każdy obejrzany kafelek zapisuje się automatycznie.\n• W trybie nocnym mapa automatycznie przełącza się na ciemne kafelki\n• Ikona kotwicy = miejsce kotwiczenia (tylko gdy kotwica aktywna)\n• Ikona importu – wczytuje trasy i waypointy z pliku .gpx (zobacz sekcję \"Import GPX\")\n• Blokada północy – przytrzymaj różę kompasu w lewym górnym rogu; mapa przestanie się obracać i pozostanie na północ. Dotknięciem wrócisz na północ w każdej chwili.\n• Wybrane warstwy (satelita, oznakowanie nawigacyjne, głębokości, porty), śledzenie GPS i blokada północy są pamiętane między uruchomieniami\n• Przytrzymaj palec na mapie = dodaj waypoint (cel nawigacji); dotknięciem istniejącego waypointu zmienisz jego nazwę lub go usuniesz\n• Mapa żyje z sieci: bez internetu nowe kafelki się nie pobiorą i widać tylko obszar z pamięci. Przed wypłynięciem pobierz obszar przyciskiem „Pobierz obszar offline” na mapie. Gdy telefon jest offline, mapa przypomni o tym pomarańczowym paskiem u góry.\n• Podczas rejsu mapa ma dwa dodatkowe przyciski. Kotwica uruchamia wachtę kotwiczną w bieżącej pozycji z ostatnio użytym promieniem — jedno dotknięcie, a kolejne pyta przed zatrzymaniem. Czerwony MOB trzeba przytrzymać; dotknięcie tylko o tym przypomina. Dopóki wachta działa, mapa rysuje wychył: linię, którą jacht zatoczył wokół kotwicy na łańcuchu.';
 
   @override
   String get guideInstrTitle => 'Przyrządy morskie';
@@ -2913,7 +2913,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.\n• Numer paszportu/dowodu wpisuje się przy wystawianiu zaświadczenia, osobno dla każdego członka załogi. Nie jest zapisywany — trafia tylko na ten jeden dokument; własny numer skippera stoi w karcie rejsu i uzupełnia się sam. Bez numeru zostaje na zaświadczeniu linia do wpisania ręcznie.';
+      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.\n• Numer paszportu/dowodu wpisuje się przy wystawianiu zaświadczenia, osobno dla każdego członka załogi. Nie jest zapisywany — trafia tylko na ten jeden dokument; własny numer skippera stoi w karcie rejsu i uzupełnia się sam. Bez numeru zostaje na zaświadczeniu linia do wpisania ręcznie.\n• Zaświadczenie podpisuje się przed wystawieniem tak samo jak dziennik: otwiera się pole podpisu, a PDF dostaje stronę końcową z podpisem, czasem, sumą kontrolną SHA-256 i kodem QR do weryfikacji.';
 
   @override
   String get guideHandoverTitle => 'Protokół przekazania (check-in/check-out)';
@@ -2941,7 +2941,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Zakładka Bezpieczeństwo zawiera funkcje awaryjne.\n\nMOB (Człowiek za burtą):\n• Przytrzymaj czerwony przycisk MOB, aby aktywować\n• Aplikacja zapisze pozycję GPS i mierzy czas oraz odległość\n• Nawigacja z powrotem do miejsca upadku\n\nKotwica:\n• Ustaw promień kotwiczenia (zalecane: 2× długość liny kotwicznej)\n• Alarm zawibruje, jeśli jednostka oddali się z dozwolonego okręgu\n• Wachta kotwiczna zapisuje teraz własny ślad, więc noc na kotwicy nie jest już dziurą w GPX. To osobny odcinek — nigdy nie liczy się do mil, dystansu dnia ani godzin nocnych, bo huśtanie na łańcuchu to nie żegluga.\n• Wachta przeżywa restart aplikacji: gdy system ubije ją w tle, po uruchomieniu wraca na tę samą kotwicę.\n• Wpisy o rzuceniu i podniesieniu kotwicy niosą teraz wiatr, ciśnienie, temperatury, głębokość pod kilem i napęd — dotąd był w nich tylko czas i pozycja.';
+      'Zakładka Bezpieczeństwo zawiera funkcje awaryjne.\n\nMOB (Człowiek za burtą):\n• Przytrzymaj czerwony przycisk MOB, aby aktywować\n• Aplikacja zapisze pozycję GPS i mierzy czas oraz odległość\n• Nawigacja z powrotem do miejsca upadku\n\nKotwica:\n• Ustaw promień kotwiczenia (zalecane: 2× długość liny kotwicznej)\n• Alarm zawibruje, jeśli jednostka oddali się z dozwolonego okręgu\n• Wachta kotwiczna zapisuje teraz własny ślad, więc noc na kotwicy nie jest już dziurą w GPX. To osobny odcinek — nigdy nie liczy się do mil, dystansu dnia ani godzin nocnych, bo huśtanie na łańcuchu to nie żegluga.\n• Wachta przeżywa restart aplikacji: gdy system ubije ją w tle, po uruchomieniu wraca na tę samą kotwicę.\n• Wpisy o rzuceniu i podniesieniu kotwicy niosą teraz wiatr, ciśnienie, temperatury, głębokość pod kilem i napęd — dotąd był w nich tylko czas i pozycja.\n• Wachta kotwiczna zapisuje ślad także wtedy, gdy żaden rejs nie jest śledzony — ma własny odcinek poza milami i poza dystansem dnia, ale trafia do GPX, a karta dnia pokazuje, kiedy działała, ile punktów zapisała i jaki był największy wychył od kotwicy.';
 
   @override
   String get guideSafetyBriefingTitle => 'Odprawa bezpieczeństwa i MAYDAY';
@@ -2969,7 +2969,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n• Strefa czasowa – czas na ekranie i w PDF jest pokazywany lokalnie (strefa telefonu, czyli miejsca, w którym jesteś) albo w UTC. Zapisane wpisy się nie zmieniają, zmienia się tylko wyświetlanie; PDF zawsze podaje, która strefa obowiązuje.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.\n• Ocen aplikację — otwiera stronę aplikacji w Google Play. Aplikacja czasem zapyta też sama, ale dopiero po zakończonym rejsie, nigdy w jego trakcie.';
+      '• Język – zmień język aplikacji\n• Przyrządy – ustaw adres IP Raymarine WiFi gateway (TCP lub UDP)\n• Źródło GPS – telefon lub Raymarine\n• Jednostki – odległość Mm/km, prędkość węzły/km/h, osobno temperatura, głębokość i wiatr (na rzece pasują km + km/h)\n• Częstotliwość zapisów w dzienniku\n• Dolne menu – dostosuj je: przytrzymaj i przeciągnij ikonę, aby zmienić kolejność, przełącznikiem ukryj karty, których nie używasz, i ustaw rozmiar ikon (S/M/L). Ukryte karty otworzysz wprost tutaj w Ustawieniach; Ustawienia są zawsze widoczne. Kolejność i rozmiar są zapamiętywane. Podpisy pod ikonami są ukryte, aby ikony wyglądały tak samo w każdym języku; przytrzymaj ikonę, aby zobaczyć nazwę.\n• Wyświetlanie – tryb nocny (czerwony filtr dla zachowania widzenia nocnego)\n• Cloud export (Google Drive) – po zalogowaniu konta Google, PDF i GPX z zakończonego dnia automatycznie wgrywają się na twój własny Google Drive. Bez logowania wszystko pozostaje tylko w urządzeniu.\n• Kopia zapasowa danych – zobacz sekcję \"Kopia zapasowa i przywracanie danych\"\n• O aplikacji – wersja i kontakt\n• Bateria – GPS pracuje z pełną dokładnością tylko tam, gdzie dokładna pozycja ma znaczenie (śledzenie rejsu, mapa, kompas, przyrządy, wachta kotwiczna, MOB); poza tym przechodzi w tryb oszczędny, a w tle bez włączonego śledzenia wyłącza się całkowicie. Przy podłączonych przyrządach pokładowych GPS telefonu pozostaje wyłączony, a pozycja pochodzi z NMEA.\n• Aktualizacje – gdy w Google Play jest nowsza wersja, aplikacja pobiera ją w tle i proponuje restart. Nigdy nie pyta w trakcie zapisu rejsu.\n• Strefa czasowa – czas na ekranie i w PDF jest pokazywany lokalnie (strefa telefonu, czyli miejsca, w którym jesteś) albo w UTC. Zapisane wpisy się nie zmieniają, zmienia się tylko wyświetlanie; PDF zawsze podaje, która strefa obowiązuje.\n\nKonto Google i eksport do chmury\n\nLogowanie kontem Google jest dobrowolne. Bez niego aplikacja działa w pełni, a wszystkie zapisy zostają wyłącznie w telefonie.\n\nCo jest wysyłane – po zakończeniu dnia rejsu PDF dziennika i ślad GPX z tego dnia. Nic więcej: żadnych zdjęć, żadnych kontaktów załogi, żadnych pozycji na żywo.\n\nDokąd – na twój własny Dysk Google, do folderu HMB_Sailing_Log_DATA / nazwa rejsu / Day_data. Nie na serwer aplikacji – taki nie istnieje.\n\nCo aplikacja widzi na Dysku – tylko pliki, które sama tam utworzyła. Używa najwęższego uprawnienia oferowanego przez Google (drive.file), więc reszta twojego Dysku pozostaje poza zasięgiem. O uprawnienie prosi dopiero przy pierwszym wysłaniu, nie przy logowaniu.\n\nJak to cofnąć – wyloguj konto w Ustawieniach. Pliki, które już są na Dysku, pozostają twoje – aplikacja ich nie usuwa.\n• Ocen aplikację — otwiera stronę aplikacji w Google Play. Aplikacja czasem zapyta też sama, ale dopiero po zakończonym rejsie, nigdy w jego trakcie.\n• Alarm kotwiczny: wybierz dźwięk dowolny budzik lub dzwonek w telefonie przez systemowy wybór i jego głośność oraz odsłuchaj próbkę, zanim będzie potrzebny. Dźwięk idzie kanałem alarmowym, więc słychać go nawet przy wyciszonym telefonie; głośność można ściszyć, nie wyłączyć.';
 
   @override
   String get guideBackupTitle => 'Kopia zapasowa i przywracanie danych';
@@ -3947,4 +3947,68 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'To urządzenie nie ma kompasu — kurs jest niedostępny.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Wachta kotwiczna działa · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => 'Zatrzymać wachtę kotwiczną?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'Wachta się kończy, a do dziennika trafia „Kotwica podniesiona\".';
+
+  @override
+  String get mobCancelTitle => 'Anulować MOB?';
+
+  @override
+  String get mobCancelBody =>
+      'Alarm cichnie, a punkt wypadnięcia przestaje być śledzony.';
+
+  @override
+  String get anchorSoundLabel => 'Dźwięk alarmu';
+
+  @override
+  String get anchorVolumeLabel => 'Głośność alarmu';
+
+  @override
+  String get anchorSoundPreview => 'Odtwórz próbkę';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'Dźwięk, którego nigdy nie słyszałeś, o trzeciej nad ranem nie powie „kotwica\".';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Wachta kotwiczna $range · $points punktów · największy wychył $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'Dźwięk budzika telefonu';
+
+  @override
+  String get anchorVolumeDesc =>
+      'To jest prawdziwa głośność, nie mnożnik: na czas alarmu aplikacja podnosi kanał alarmowy telefonu do tego poziomu, a potem przywraca go z powrotem.';
+
+  @override
+  String get anchorDndTitle =>
+      'Tryb Nie przeszkadzać ma pierwszeństwo przed głośnością';
+
+  @override
+  String get anchorDndBody =>
+      'Dopóki Nie przeszkadzać jest włączone, tylko ty możesz pozwolić na podniesienie głośności. Bez tego alarm i tak zabrzmi, ale tak głośno, jak ustawiony jest telefon.';
+
+  @override
+  String get unassignedMobTitle => 'MOB poza rejsem';
+
+  @override
+  String get unassignedAnchorTitle => 'Kotwica poza rejsem';
+
+  @override
+  String get unassignedEventTitle => 'Zdarzenie poza rejsem';
+
+  @override
+  String get logEventMobCancelled => 'MOB anulowany';
 }

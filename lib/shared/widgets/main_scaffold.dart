@@ -26,6 +26,7 @@ import '../../core/providers/sync_settings_provider.dart';
 import '../../core/services/app_update_service.dart';
 import '../../core/services/background_service.dart';
 import '../../core/services/gps_tracking_service.dart';
+import '../../core/services/location_service.dart';
 import '../../core/models/marine_instrument_data.dart';
 import '../../core/services/raymarine_connection_service.dart';
 import '../../core/services/udp_receiver_service.dart';
@@ -36,6 +37,7 @@ import '../../features/help/presentation/screens/user_guide_screen.dart';
 import '../../main.dart';
 import 'sync_queue_badge.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
+import '../../features/map/providers/map_provider.dart';
 import '../../features/safety/presentation/screens/safety_screen.dart';
 import '../../features/tracking/presentation/widgets/tracking_stalled_banner.dart';
 
@@ -477,6 +479,226 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         builder: (_) => const QuickHelmsmanSheet(),
       );
 
+  /// Rad rýchlych akcií počas plavby.
+  ///
+  /// Rozostup sa pri piatich tlačidlách sťahuje na 8 px — päť 56 px tlačidiel
+  /// s dvanástkovými medzerami sa na 360 px širokú obrazovku (bežný odolný
+  /// telefón) nezmestí.
+  Widget _quickActions(BuildContext context, AppLocalizations l,
+      {required bool isTracking}) {
+    // Len príznaky, nie celý stav: kotvová stráž prepisuje vzdialenosť pri
+    // každom fixe a celý scaffold by sa prekresľoval každú sekundu.
+    final anchorActive =
+        ref.watch(anchorProvider.select((s) => s.isActive));
+    final mobActive = ref.watch(mobProvider.select((s) => s.isActive));
+    // Osem, nie dvanásť: päť 56 px tlačidiel s dvanástkovými medzerami sa na
+    // 360 px širokú obrazovku (bežný odolný telefón) nezmestí.
+    const gap = SizedBox(width: 8);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Kormidelník, obrat a fotka zapisujú do bežiacej plavby — bez nej
+        // nemajú kam, takže sa bez trasovania nezobrazujú.
+        if (isTracking) ...[
+          FloatingActionButton(
+            heroTag: 'quickHelmsman',
+            tooltip: l.helmsmanLabel,
+            onPressed: () => _quickHelmsman(context),
+            child: const Icon(Icons.badge),
+          ),
+          gap,
+          FloatingActionButton(
+            heroTag: 'quickSailChange',
+            tooltip: l.logEventSailChange,
+            onPressed: () => _quickSailChange(context),
+            child: const Icon(Icons.sailing),
+          ),
+          gap,
+          FloatingActionButton(
+            heroTag: 'quickPhotoLog',
+            tooltip: l.quickPhotoLogTitle,
+            onPressed: () => _quickPhotoLog(context),
+            child: const Icon(Icons.add_a_photo),
+          ),
+          gap,
+        ],
+        // Ťuknutie = kruh s naposledy použitým polomerom. Podržanie = plocha:
+        // úzka zátoka, pontón pozdĺž móla ani kotvisko medzi skalami sa
+        // kruhom obkresliť nedá a doteraz k tomu viedla cesta len cez
+        // Bezpečnosť a panel Nástroje.
+        //
+        // Bez tooltipu: FloatingActionButton sa pri ňom zabalí do Tooltip,
+        // ktorý na mobile zožerie práve dlhé podržanie. Tá istá pasca ako
+        // pri MOB nižšie a pri _layerFab v map_screen.dart.
+        GestureDetector(
+          onLongPress: anchorActive ? null : () => _drawAnchorZone(context),
+          child: FloatingActionButton(
+            heroTag: 'quickAnchor',
+            backgroundColor: anchorActive ? Colors.blue.shade700 : null,
+            foregroundColor: anchorActive ? Colors.white : null,
+            onPressed: () => anchorActive
+                ? _confirmStopAnchor(context)
+                : _quickAnchor(context),
+            child: const Icon(Icons.anchor),
+          ),
+        ),
+        gap,
+        // Jediné červené tlačidlo v appke. Za chodu sa nehľadá podľa ikony
+        // ani podľa popisu, ale podľa farby.
+        //
+        // Rovnako ako kotva nezávisí od trasovania: človek padá cez palubu aj
+        // vtedy, keď sa plavba práve nezapisuje, a bod pádu sleduje poloha
+        // z GPS, nie bežiaca plavba.
+        GestureDetector(
+          onLongPress: () =>
+              mobActive ? _confirmCancelMob(context) : _quickMob(context),
+          child: FloatingActionButton(
+            heroTag: 'quickMob',
+            // Bez tooltipu zámerne: FloatingActionButton sa pri zadanom
+            // tooltipe zabalí do Tooltip, a ten má na mobile spúšťač práve
+            // dlhé podržanie — zožral by ho skôr, než sa dostane ku
+            // GestureDetectoru nižšie, a MOB by sa nedal aktivovať.
+            // Rovnaká pasca ako pri _layerFab v map_screen.dart.
+            backgroundColor:
+                mobActive ? Colors.red.shade900 : Colors.red.shade700,
+            foregroundColor: Colors.white,
+            // Ťuknutie MOB nespúšťa — len povie, ako sa spúšťa. Poplach,
+            // ktorý sa dá vyvolať zavadením rukávom, je poplach, ktorému
+            // posádka po treťom raze prestane veriť.
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l.mobHoldToActivate)),
+            ),
+            child: const Icon(Icons.person_off),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Kotva jedným ťuknutím, s naposledy použitým polomerom.
+  ///
+  /// Kotvenie je manéver: kotva ide dole, loď sa ťahá na reťazi a skiper má
+  /// obe ruky plné. Preklikať sa v tej chvíli cez Bezpečnosť a posuvník je
+  /// presne to, čo sa odloží na neskôr a už sa neurobí. Polomer sa dá doladiť
+  /// na karte Bezpečnosť, tu ide o to, aby stráž vôbec začala strážiť.
+  Future<void> _quickAnchor(BuildContext context) async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    if (pos == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l.anchorNoFix)));
+      return;
+    }
+    final radius = await AnchorNotifier.lastRadius();
+    await ref
+        .read(anchorProvider.notifier)
+        .activate(pos.latitude, pos.longitude, radius);
+    // Hláška až podľa skutočného stavu, nie podľa toho, že sme o spustenie
+    // požiadali. Keď sa stráž z akéhokoľvek dôvodu nechytí, nesmie na
+    // obrazovke svietiť, že beží — hlásené z terénu: „kotva neaktívna, ale
+    // vidím Kotvová stráž beží 15 m".
+    if (!ref.read(anchorProvider).isActive) return;
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.anchorQuickStarted(radius.toStringAsFixed(0))),
+      action: SnackBarAction(
+        label: l.cancel,
+        onPressed: () => ref.read(anchorProvider.notifier).deactivate(),
+      ),
+    ));
+  }
+
+  /// Prepne mapu do kreslenia kotevnej plochy.
+  ///
+  /// Ten istý pokyn, aký posiela karta Kotva v Bezpečnosti — mapa si ho
+  /// vyzdvihne a zapne nástroj. Odtiaľ už ide všetko po starom: ťukaním sa
+  /// kladú rohy a panel plochu spustí.
+  void _drawAnchorZone(BuildContext context) {
+    HapticFeedback.selectionClick();
+    ref.read(pendingAnchorZoneDrawProvider.notifier).state = true;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(AppLocalizations.of(context).anchorZoneTool),
+      duration: const Duration(seconds: 2),
+    ));
+  }
+
+  /// Vypnutie stráže vždy cez otázku.
+  ///
+  /// Ťuknutie vedľa pri zdvihnutej kotve je len zbytočný záznam v denníku;
+  /// ťuknutie vedľa o tretej ráno vypne to jediné, čo loď stráži.
+  Future<void> _confirmStopAnchor(BuildContext context) async {
+    final l = AppLocalizations.of(context);
+    final stop = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.anchorQuickStopTitle),
+        content: Text(l.anchorQuickStopBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.deactivate)),
+        ],
+      ),
+    );
+    if (stop ?? false) await ref.read(anchorProvider.notifier).deactivate();
+  }
+
+  /// MOB sa aktivuje podržaním, nie ťuknutím.
+  ///
+  /// Rovnako ako na karte Bezpečnosť: tlačidlo sedí medzi ostatnými rýchlymi
+  /// akciami a náhodné ťuknutie by spustilo poplach aj s vysielaním polohy.
+  /// Podržanie je o sekundu pomalšie a o poplach menej.
+  void _quickMob(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    if (pos == null) {
+      messenger.showSnackBar(SnackBar(
+          content: Text(l.gpsPositionNotAvailable),
+          backgroundColor: Colors.red));
+      return;
+    }
+    ref.read(mobProvider.notifier).activate(pos.latitude, pos.longitude);
+    HapticFeedback.heavyImpact();
+    // Bez prepnutia na Bezpečnosť: kto stlačil MOB, díva sa na mapu a na
+    // vodu okolo lode, nie na kartu s číslami. Mapa v tej chvíli už kreslí
+    // značku bodu pádu a tlačidlo ostáva tmavočervené, takže je z čoho
+    // vidieť, že poplach beží. Na kartu sa dá prejsť spodným menu.
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.mobActive),
+      backgroundColor: Colors.red.shade900,
+      duration: const Duration(seconds: 3),
+    ));
+  }
+
+  /// Zrušenie MOB tiež podržaním — a až po otázke.
+  ///
+  /// Kým sa človek nevytiahne z vody, vypnutý MOB znamená stratený bod pádu.
+  Future<void> _confirmCancelMob(BuildContext context) async {
+    final l = AppLocalizations.of(context);
+    final stop = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.mobCancelTitle),
+        content: Text(l.mobCancelBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.deactivate)),
+        ],
+      ),
+    );
+    if (stop ?? false) await ref.read(mobProvider.notifier).deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -493,6 +715,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     // to nerozbije.
     final showControlBar = const {'/map', '/logbook', '/instruments'}
         .contains(_currentPath(context));
+    final onMap = _currentPath(context) == '/map';
 
     return PopScope(
       canPop: false,
@@ -517,33 +740,20 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
         // Všetky zapisujú do denníka bez otvárania formulára — na kormidle
         // je na vyplňovanie polí neskoro. Vedľa seba, nie nad sebou: nad
         // sebou horné tlačidlo prekrývalo obsah.
-        floatingActionButton: isTracking
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'quickHelmsman',
-                    tooltip: l.helmsmanLabel,
-                    onPressed: () => _quickHelmsman(context),
-                    child: const Icon(Icons.badge),
-                  ),
-                  const SizedBox(width: 12),
-                  FloatingActionButton(
-                    heroTag: 'quickSailChange',
-                    tooltip: l.logEventSailChange,
-                    onPressed: () => _quickSailChange(context),
-                    child: const Icon(Icons.sailing),
-                  ),
-                  const SizedBox(width: 12),
-                  FloatingActionButton(
-                    heroTag: 'quickPhotoLog',
-                    tooltip: l.quickPhotoLogTitle,
-                    onPressed: () => _quickPhotoLog(context),
-                    child: const Icon(Icons.add_a_photo),
-                  ),
-                ],
-              )
+        //
+        // Na mape pribudnú kotva a MOB. Nie na ostatných kartách: päť
+        // tlačidiel je maximum, ktoré sa na úzky telefón zmestí do riadku,
+        // a mapa je jediná karta, kde ich má skiper v ruke v tej chvíli, keď
+        // ich potrebuje — kotva pri vplávaní do zátoky, MOB pri pohľade na
+        // vodu okolo lode.
+        //
+        // Kotva je výnimka z „počas plavby": kotví sa aj vtedy, keď sa žiadna
+        // plavba nezapisuje — zastávka na obed, noc v zátoke po skončení
+        // plavby, loď na bóji. Stráž si na to zakladá vlastný nezávislý úsek,
+        // takže na trasovaní nezávisí a čakať s ňou na spustenie plavby by
+        // bolo presne naopak.
+        floatingActionButton: onMap
+            ? _quickActions(context, l, isTracking: isTracking)
             : null,
         bottomNavigationBar: MainNavBar(
           paths: visiblePaths,

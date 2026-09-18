@@ -364,6 +364,49 @@ class PdfExportService {
     return sb.toString();
   }
 
+  /// Kanonický text potvrdenia o míľach — vstup pre SHA-256 na podpisovej
+  /// strane.
+  ///
+  /// Vlastná funkcia, nie [_buildCanonical]: potvrdenie nie je o jednej
+  /// plavbe a o denníkových záznamoch, ale o zozname plavieb a o tom, komu
+  /// sa vystavuje. Hash musí pokrývať presne to, čo je na papieri — držiteľa,
+  /// vystavovateľa aj každý riadok tabuľky — inak sa dá vymeniť meno alebo
+  /// dopísať plavba a kontrolný súčet ostane sedieť.
+  static String _buildMilesCanonical({
+    required MilesAggregate aggregate,
+    required String docId,
+    String? holderName,
+    String? issuerName,
+    String? issuerQualification,
+    String? idNumber,
+    required bool forSelf,
+  }) {
+    final sb = StringBuffer()
+      ..writeln('HMB-MILES:v1')
+      ..writeln('docId:$docId')
+      ..writeln('forSelf:$forSelf')
+      ..writeln('holder:${holderName ?? ""}')
+      ..writeln('issuer:${issuerName ?? ""}')
+      ..writeln('qualification:${issuerQualification ?? ""}')
+      ..writeln('id:${idNumber ?? ""}')
+      ..writeln('totalNm:${aggregate.totalNm.toStringAsFixed(3)}')
+      ..writeln('days:${aggregate.daysAtSea}')
+      ..writeln('voyages:${aggregate.voyageCount}')
+      ..writeln('nightHours:${aggregate.nightHours.toStringAsFixed(3)}');
+    for (final v in aggregate.voyages) {
+      sb.writeln('voyage:${v.dateFrom.toUtc().toIso8601String()}'
+          '|to:${v.dateTo.toUtc().toIso8601String()}'
+          '|vessel:${v.vesselName}'
+          '|skipper:${v.skipperName ?? ""}'
+          '|area:${v.area ?? ""}'
+          '|tidal:${v.tidalWaters?.toString() ?? ""}'
+          '|nm:${v.distanceNm.toStringAsFixed(3)}'
+          '|role:${v.role ?? ""}'
+          '|manual:${v.isManualEntry}');
+    }
+    return sb.toString();
+  }
+
   // ── Title Page ────────────────────────────────────────────────
 
   /// Všetky fotky lode z karty lode (Charters.photosJson, max 3).
@@ -2709,6 +2752,9 @@ class PdfExportService {
     /// Pre seba: pridá skiperský súhrn a do hlavičky napíše, že si držiteľ
     /// potvrdzuje vlastné míle.
     bool forSelf = true,
+    /// Podpis vystavovateľa. Bez neho ostane na doklade len prázdna linka na
+    /// podpísanie rukou, ako doteraz.
+    Uint8List? signatureImage,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -2974,6 +3020,31 @@ class PdfExportService {
       ],
     ));
 
+    // Podpisová strana, tá istá ako v denníku: obrázok podpisu, čas, hash
+    // obsahu a QR na overenie. Potvrdenie o míľach sa predkladá na úrade
+    // rovnako ako vyexportovaný denník, takže sa má dať rovnako overiť.
+    if (signatureImage != null) {
+      final canonical = _buildMilesCanonical(
+        aggregate: aggregate,
+        docId: docId,
+        holderName: forSelf ? signerName : recipientName,
+        issuerName: signerName,
+        issuerQualification: issuerQualification,
+        idNumber: idNumber,
+        forSelf: forSelf,
+      );
+      final hash = sha256.convert(utf8.encode(canonical)).toString();
+      pdf.addPage(_signaturePage(
+        l: l,
+        signatureImage: signatureImage,
+        signerName: signerName,
+        signedAt: DateTime.now().toUtc(),
+        hash: hash,
+        docTitle: l.pdfMilesTitle,
+        docId: docId,
+      ));
+    }
+
     return pdf.save();
   }
 
@@ -3130,6 +3201,12 @@ class PdfExportService {
         return l.logEventDriftOut;
       case LogbookEventType.driftIn:
         return l.logEventDriftIn;
+      // Muž cez palubu sa dovtedy tlačil surovou anglickou poznámkou
+      // („Man overboard"), nech bol denník v ktoromkoľvek jazyku.
+      case LogbookEventType.mob:
+        return l.mobFullName;
+      case LogbookEventType.mobCancelled:
+        return l.logEventMobCancelled;
       case LogbookEventType.dutyStart:
         return l.logEventDutyStart(_crewFromNote(note));
       case LogbookEventType.dutyEnd:

@@ -804,7 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfHandoverTitle => 'Handover protocol';
 
   @override
-  String get pdfMilesTitle => 'Certificate of sea miles';
+  String get pdfMilesTitle => 'Certificate of miles sailed';
 
   @override
   String get pdfDeparture => 'Departure';
@@ -2887,7 +2887,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website (tap to call or open the site directly), depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it\n• The map lives on the network: with no internet new tiles are not downloaded and only the cached area is drawn. Download the area with the “Download area offline” button on the map before you cast off. When the phone is offline, the map says so in an orange bar at the top.';
+      'The Map tab shows your current position and voyage track.\n\n• Blue dot = current position\n• Blue line = the track currently being recorded\n• Route icon – pick any voyage or day to preview its track on the map (in orange), no PDF export needed A replay bar appears below: drag through the voyage in time and see position, speed, course, wind and pressure at any moment. The ticks on the bar are events — voyage start and end, anchor, drift, MOB.\n• Switch between satellite and map view\n• Seamarks – toggle nautical marks (wrecks, shallows, buoys)\n• Depths – depth contours from EMODnet, labelled in metres. A seabed survey model, NOT a nautical chart: use it to plan a passage, never to decide whether you can pass. Off by default; tiles you browse are cached like any other. With the layer on, tap the map to read the depth at that point (needs a signal).\n• Harbours – tappable layer of anchorages, marinas and harbours (OpenStreetMap data): tap an icon to see name, VHF channel, phone, website (tap to call or open the site directly), depth or capacity where known; save the spot as a waypoint in one tap; the layer also includes boat fuel docks (orange pump)\n• Ruler (purple icon) – tap points on the map: total NM, bearing of the last leg and ETA at current speed; points snap to waypoints so you can measure a route through your targets\n• Offline map (download icon) — downloads the visible area for use without a signal, from the current zoom three levels deeper. Always the seamarks; with satellite switched on, the imagery and its place names too. On top of that, every tile you browse is stored automatically.\n• In night mode the map switches to dark tiles automatically\n• Anchor icon = anchoring position (only when anchor alarm is active)\n• Import icon – load tracks and waypoints from a .gpx file (see \"GPX import\")\n• North lock – long-press the compass rose (top left); the map stops rotating and stays north-up. Tap it anytime to snap back to north.\n• The chosen layers (satellite, seamarks, depths, harbours), GPS follow and the north lock are remembered between launches\n• Long-press the map = add a waypoint (a navigation target); tap an existing waypoint to rename or delete it\n• The map lives on the network: with no internet new tiles are not downloaded and only the cached area is drawn. Download the area with the “Download area offline” button on the map before you cast off. When the phone is offline, the map says so in an orange bar at the top.\n• During a voyage the map carries two more quick buttons. The anchor starts the anchor watch at the current position with the radius you used last — one tap, and a tap on it again asks before stopping. The red MOB button needs a press and hold; a tap only reminds you to hold it. While the watch runs, the map draws the swing: the line the boat traced around the anchor on its chain.';
 
   @override
   String get guideInstrTitle => 'Marine Instruments';
@@ -2908,7 +2908,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.\n• The passport/ID number is entered when the certificate is issued, separately for each crew member. It is not stored — it is printed on that one document only; the skipper\'s own number is kept in the voyage card and fills itself in. Leave it empty and the certificate carries a blank line to write on by hand.';
+      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.\n• The passport/ID number is entered when the certificate is issued, separately for each crew member. It is not stored — it is printed on that one document only; the skipper\'s own number is kept in the voyage card and fills itself in. Leave it empty and the certificate carries a blank line to write on by hand.\n• The certificate is signed before it is exported, the same way the logbook is: the signature pad opens and the PDF gets a closing page with the signature, the time, a SHA-256 checksum of its contents and a QR code for verification.';
 
   @override
   String get guideHandoverTitle => 'Handover Protocol (check-in/check-out)';
@@ -2936,7 +2936,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius\n• The anchor watch now records a track of its own, so a night at anchor is no longer a hole in the GPX. It is a separate leg — it never counts towards miles, the day\'s distance or the night hours, because swinging on the chain is not a passage.\n• The watch survives an app restart: if the system kills the app in the background, it picks up again on the same anchor when the app comes back.\n• Anchor dropped and anchor raised entries now carry wind, pressure, temperatures, depth under the keel and propulsion — until now they held only the time and the position.';
+      'The Safety tab contains emergency functions.\n\nMOB (Man Overboard):\n• Hold the red MOB button to activate\n• The app records GPS position and tracks time and distance\n• Navigate back to the point of entry\n\nAnchor alarm:\n• Set the anchor radius (recommended: 2× chain/rope length)\n• Alarm vibrates if the boat drifts outside the allowed radius\n• The anchor watch now records a track of its own, so a night at anchor is no longer a hole in the GPX. It is a separate leg — it never counts towards miles, the day\'s distance or the night hours, because swinging on the chain is not a passage.\n• The watch survives an app restart: if the system kills the app in the background, it picks up again on the same anchor when the app comes back.\n• Anchor dropped and anchor raised entries now carry wind, pressure, temperatures, depth under the keel and propulsion — until now they held only the time and the position.\n• The anchor watch keeps writing the track even when no voyage is being recorded — it is its own section, kept out of the miles and out of the day distance, but it goes into the GPX and the day card shows when it ran, how many points it wrote and the largest swing from the anchor.';
 
   @override
   String get guideSafetyBriefingTitle => 'Safety Briefing & MAYDAY';
@@ -2964,7 +2964,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n• Time zone – times on screen and in the PDF are shown either local (the phone\'s zone, that is, where you are) or in UTC. Stored records do not change, only the display; the PDF always states which zone applies.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.\n• Rate the app — opens the app\'s page on Google Play. The app also asks on its own once in a while, and only after a finished voyage, never during one.';
+      '• Language – change the app language\n• Instruments – set the Raymarine WiFi gateway IP address (TCP or UDP)\n• GPS source – phone or Raymarine\n• Units – distance NM/km, speed knots/km/h, plus temperature, depth and wind separately (km + km/h suits rivers)\n• Log entry frequency\n• Bottom menu – customize it: press and drag an icon to reorder, use the switch to hide tabs you don\'t use, and set the icon size (S/M/L). Hidden tabs can be opened right here in Settings; Settings is always shown. Order and size are remembered. The labels under the icons are hidden so the icons sit identically in every language; press and hold an icon to see its name.\n• Display – Night mode (red filter to preserve night vision)\n• Cloud export (Google Drive) – once signed in, each finished day\'s PDF and GPX upload automatically to your own Google Drive. Without sign-in everything stays on the device.\n• Data backup – see \"Data backup and restore\"\n• About – version and contact\n• Battery – GPS runs at full accuracy only where an exact position matters (voyage tracking, map, compass, instruments, anchor watch, MOB); elsewhere it drops to a low-power mode, and in the background with nothing being tracked it switches off entirely. With boat instruments connected the phone GPS stays off and the position comes from NMEA.\n• Updates – when a newer version is on Google Play, the app downloads it in the background and offers a restart. It never asks while a voyage is being recorded.\n• Time zone – times on screen and in the PDF are shown either local (the phone\'s zone, that is, where you are) or in UTC. Stored records do not change, only the display; the PDF always states which zone applies.\n\nGoogle account and cloud export\n\nSigning in with a Google account is optional. Without it the app works in full and every record stays on the phone only.\n\nWhat is uploaded – when a sailing day is closed, that day\'s logbook PDF and GPX track. Nothing else: no photos, no crew contacts, no live positions.\n\nWhere – to your own Google Drive, into HMB_Sailing_Log_DATA / voyage name / Day_date. Not to an app server – there isn\'t one.\n\nWhat the app can see on your Drive – only the files it created there itself. It uses the narrowest permission Google offers (drive.file), so the rest of your Drive stays out of reach. It also asks for that permission at the first upload, not at sign-in.\n\nHow to undo it – sign out in Settings. Files already on the Drive stay yours – the app does not delete them. Access can also be revoked at any time in your Google account settings.\n• Rate the app — opens the app\'s page on Google Play. The app also asks on its own once in a while, and only after a finished voyage, never during one.\n• Anchor alarm: choose the sound any alarm or ringtone on the phone, through the system picker and its volume, and play a sample before you need it. The sound goes out on the alarm channel, so it is heard even with the phone silenced; the volume can be turned down but not off.';
 
   @override
   String get guideBackupTitle => 'Data backup and restore';
@@ -3943,4 +3943,67 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'This device has no compass — heading is unavailable.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Anchor watch running · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => 'Stop the anchor watch?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'The watch stops and \"Anchor raised\" goes into the log.';
+
+  @override
+  String get mobCancelTitle => 'Cancel MOB?';
+
+  @override
+  String get mobCancelBody =>
+      'The alarm stops and the position of the fall is no longer tracked.';
+
+  @override
+  String get anchorSoundLabel => 'Alarm sound';
+
+  @override
+  String get anchorVolumeLabel => 'Alarm volume';
+
+  @override
+  String get anchorSoundPreview => 'Play a sample';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'A sound you have never heard will not mean \"anchor\" at three in the morning.';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Anchor watch $range · $points points · max swing $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'The phone’s alarm sound';
+
+  @override
+  String get anchorVolumeDesc =>
+      'This is the real volume, not a multiplier: for the duration of the alarm the app raises the phone’s alarm channel to this level and puts it back afterwards.';
+
+  @override
+  String get anchorDndTitle => 'Do Not Disturb overrides the volume';
+
+  @override
+  String get anchorDndBody =>
+      'While Do Not Disturb is on, only you can allow the app to raise the volume. Without it the alarm still sounds, at whatever the phone is set to.';
+
+  @override
+  String get unassignedMobTitle => 'MOB outside a voyage';
+
+  @override
+  String get unassignedAnchorTitle => 'Anchor outside a voyage';
+
+  @override
+  String get unassignedEventTitle => 'Event outside a voyage';
+
+  @override
+  String get logEventMobCancelled => 'MOB cancelled';
 }

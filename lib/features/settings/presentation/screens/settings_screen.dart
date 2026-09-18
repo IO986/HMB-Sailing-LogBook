@@ -19,6 +19,7 @@ import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../core/services/anchor_alarm_service.dart';
 import '../../../../core/services/app_review_service.dart';
 import '../../../../core/utils/localized_date.dart';
 import '../../../../core/services/gps_tracking_service.dart';
@@ -174,6 +175,10 @@ class SettingsScreen extends ConsumerWidget {
 
             _Section(l.navCustomizeTitle),
             const _BottomNavSection(),
+            const SizedBox(height: 16),
+
+            _Section(l.anchorAlarm),
+            const _AnchorAlarmSection(),
             const SizedBox(height: 16),
 
             _Section(l.backupSection),
@@ -398,6 +403,123 @@ class _Section extends StatelessWidget {
     child: Text(t, style: Theme.of(context).textTheme.titleSmall?.copyWith(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold)));
+}
+
+/// Zvuk a hlasitosť kotevného alarmu.
+///
+/// Patrí do nastavení, nie na kartu Bezpečnosť: vyberá sa raz, v pokoji, a
+/// s ukážkou — počas driftu nie je čas skúšať, ako ktorý zvuk znie.
+class _AnchorAlarmSection extends StatefulWidget {
+  const _AnchorAlarmSection();
+  @override
+  State<_AnchorAlarmSection> createState() => _AnchorAlarmSectionState();
+}
+
+class _AnchorAlarmSectionState extends State<_AnchorAlarmSection> {
+  String? _soundTitle;
+  double _volume = AnchorAlarmService.defaultVolume;
+  bool _dndOk = true;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final title = await AnchorAlarmService.soundTitle();
+    final v = await AnchorAlarmService.volume();
+    final dnd = await AnchorAlarmService.canOverrideDnd();
+    if (!mounted) return;
+    setState(() {
+      _soundTitle = title;
+      _volume = v;
+      _dndOk = dnd;
+      _loaded = true;
+    });
+  }
+
+  Future<void> _pick() async {
+    final title = await AnchorAlarmService.pickSound();
+    if (title == null || !mounted) return;
+    setState(() => _soundTitle = title);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    if (!_loaded) {
+      return const Card(
+        child: ListTile(title: LinearProgressIndicator()),
+      );
+    }
+    return Card(
+      child: Column(children: [
+        ListTile(
+          leading: const Icon(Icons.notifications_active_outlined),
+          title: Text(l.anchorSoundLabel),
+          subtitle: Text(_soundTitle ?? l.anchorSoundSystemDefault),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _pick,
+        ),
+        const Divider(height: 1),
+        ListTile(
+          leading: const Icon(Icons.volume_up_outlined),
+          title: Text(l.anchorVolumeLabel),
+          subtitle: Slider(
+            value: _volume,
+            // Nie od nuly: alarm sa má dať stíšiť, nie umlčať.
+            min: 0.1,
+            max: 1,
+            divisions: 9,
+            label: '${(_volume * 100).round()} %',
+            onChanged: (v) => setState(() => _volume = v),
+            onChangeEnd: AnchorAlarmService.setVolume,
+          ),
+          trailing: Text('${(_volume * 100).round()} %'),
+        ),
+        // Hlasitosť je naozaj hlasitosť, nie násobič: appka na čas alarmu
+        // zdvihne alarmový kanál telefónu a po skončení ho vráti späť.
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l.anchorVolumeDesc,
+                style: Theme.of(context).textTheme.bodySmall),
+          ),
+        ),
+        const Divider(height: 1),
+        ListTile(
+          leading: const Icon(Icons.play_arrow),
+          title: Text(l.anchorSoundPreview),
+          subtitle: Text(l.anchorSoundPreviewDesc),
+          onTap: () => AnchorAlarmService().preview(_volume),
+        ),
+        // Jediná vec, ktorú za skipera nevybavíme: zdvihnutie hlasitosti pri
+        // zapnutom Nerušiť povoľuje iba používateľ v systémových
+        // nastaveniach. Bez toho alarm zaznie, len tak nahlas, ako má
+        // telefón nastavené.
+        if (!_dndOk) ...[
+          const Divider(height: 1),
+          ListTile(
+            leading: Icon(Icons.do_not_disturb_on_outlined,
+                color: Theme.of(context).colorScheme.error),
+            title: Text(l.anchorDndTitle),
+            subtitle: Text(l.anchorDndBody),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              await AnchorAlarmService.openDndSettings();
+              if (!mounted) return;
+              // Po návrate zo systémových nastavení sa stav prečíta znova.
+              final ok = await AnchorAlarmService.canOverrideDnd();
+              if (mounted) setState(() => _dndOk = ok);
+            },
+          ),
+        ],
+      ]),
+    );
+  }
 }
 
 class _RaymarineSection extends ConsumerStatefulWidget {
