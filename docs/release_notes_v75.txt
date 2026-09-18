@@ -1,0 +1,17 @@
+HMB Sailing Log — build 75 (1.37.0+75)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: anchor and MOB on the map. Tap the anchor to start the watch at your position, hold it to guard a drawn area. Hold the red button for man overboard.
+• New: both work without tracking, and the entry lands under the right date.
+• New: anchor alarm takes any sound from your phone, at a volume that no longer depends on the phone's own setting.
+• New: the swing on the chain is drawn on the map and summed up in the day.
+• New: mile certificates are signed before export, with a checksum and QR.
+
+=== Slovenčina (sk) ===
+• Nové: kotva a MOB priamo na mape. Ťuknutím kotvy spustíš stráž na svojej polohe, podržaním strážiš nakreslenú plochu. Červené tlačidlo podrž pri páde cez palubu.
+• Nové: oboje funguje aj bez spustenej plavby a záznam padne pod správny dátum.
+• Nové: kotevný alarm si berie ľubovoľný zvuk telefónu a hlasitosť už nezávisí od jeho nastavenia.
+• Nové: výkyv na reťazi sa kreslí na mape a sčíta v dni.
+• Nové: potvrdenia o míľach sa pred vystavením podpisujú, s kontrolným súčtom a QR.
