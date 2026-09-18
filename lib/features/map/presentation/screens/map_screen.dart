@@ -929,6 +929,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       borderStrokeWidth: 2,
                     ),
                   ]),
+                // Výkyv na reťazi. Tenká čiara, nie trasa plavby: hovorí,
+                // kade sa loď cez noc ťahala okolo kotvy, a je to jediný
+                // spôsob, ako ráno vidieť, či kotva držala alebo sa
+                // postupne orala po dne.
+                if (anchor.trackPoints.length >= 2)
+                  PolylineLayer(polylines: [
+                    Polyline(
+                      points: anchor.trackPoints,
+                      strokeWidth: 1.5,
+                      color: (anchor.isDrifting
+                              ? Colors.red.shade700
+                              : Colors.blue.shade700)
+                          .withValues(alpha: 0.6),
+                    ),
+                  ]),
                 MarkerLayer(markers: [
                   Marker(
                     point: LatLng(anchor.anchorLat!, anchor.anchorLon!),
@@ -1424,8 +1439,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
 
           // ── GPS + zoom (vľavo dole, GPS zarovnané nad +) ──────
+          //
+          // Vyššie než pôvodných 100: v tom istom rohu teraz stojí rad
+          // rýchlych tlačidiel (kotva, MOB a počas plavby aj ďalšie tri) a
+          // kotva prekrývala tlačidlo priblíženia.
           Positioned(
-            bottom: 100,
+            bottom: 150,
             left: 12,
             child: Column(children: [
               _layerFab(
@@ -1661,14 +1680,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       }
     }
 
-    await ref.read(anchorProvider.notifier).activate(
-        anchorPoint.latitude, anchorPoint.longitude, 50,
-        zone: ring);
-    if (!mounted) return;
+    // Panel zmizne HNEĎ, ešte pred spustením stráže.
+    //
+    // `activate` v sebe čaká na zápis „Kotva spustená" do denníka a ten si
+    // doťahuje počasie — na lodi so slabým signálom to trvá sekundy. Kým sa
+    // čakalo, stráž už bežala, ale panel s tlačidlom „Strážiť túto plochu"
+    // ešte stál na obrazovke a vyzeralo to, že sa ťuknutie nechytilo.
     setState(() {
       _zoneActive = false;
       _zonePoints.clear();
+      _tapTool = _rulerActive ? MapTapTool.ruler : MapTapTool.none;
     });
+    unawaited(ref.read(anchorProvider.notifier).activate(
+        anchorPoint.latitude, anchorPoint.longitude, 50,
+        zone: ring));
   }
 
   void _showPoiDetail(MarinePoi poi) {

@@ -89,22 +89,12 @@ class MobNotifier extends Notifier<MobState> {
 
   Future<void> activate(double lat, double lon) async {
     state = MobState(isActive: true, mobLat: lat, mobLon: lon, activatedAt: DateTime.now());
-    try {
-      final db = ref.read(databaseProvider);
-      final dayLogId = GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
-      final session = await db.getActiveSession();
-      await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
-        dayLogId: drift.Value(dayLogId),
-        sessionId: drift.Value(session?.sessionId),
-        timestamp: DateTime.now().toUtc(),
-        latitude: drift.Value(lat),
-        longitude: drift.Value(lon),
-        skipperNote: const drift.Value('Man overboard'),
-        eventType: drift.Value(LogbookEventType.mob.code),
-        isAutoEntry: const drift.Value(true),
-      ));
-      debugPrint('[MOB] Logged MOB activation');
-    } catch (e) { debugPrint('[MOB] Log error: $e'); }
+    unawaited(_logMobEvent(
+      event: LogbookEventType.mob,
+      note: 'Man overboard',
+      latitude: lat,
+      longitude: lon,
+    ));
     // Muž cez palubu: smer a vzdialenosť k bodu pádu sa musia meniť plynulo.
     LocationService()
         .requestPrecise(this, survivesBackground: true, emergency: true);
@@ -141,23 +131,83 @@ class MobNotifier extends Notifier<MobState> {
     final lat = state.mobLat;
     final lon = state.mobLon;
     state = const MobState();
+    final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    await _logMobEvent(
+      event: LogbookEventType.mobCancelled,
+      note: 'MOB cancelled',
+      latitude: pos?.latitude ?? lat,
+      longitude: pos?.longitude ?? lon,
+    );
+  }
+
+  /// Zapíše udalosť MOB so všetkým, čo appka v tej chvíli vie.
+  ///
+  /// Doteraz sa zapisoval len čas, poloha a poznámka. Muž cez palubu je
+  /// pritom jediný riadok denníka, ktorý sa ide čítať po nehode: vietor,
+  /// vlna, rýchlosť a kurz v tej sekunde hovoria, ako ďaleko loď dobehla a
+  /// kadiaľ človeka niesol prúd. Dopĺňajú sa rovnakým reťazcom priorít ako
+  /// pri kotve (prístroje → stanica → model) a sú bonus, nie podmienka —
+  /// bez signálu sa záznam zapíše aj tak.
+  ///
+  /// Zapisuje sa aj bez plavby a bez trasovania. Keď nie je do čoho zaradiť,
+  /// riadok ostane nezaradený (pozri [AppDatabase.dayLogIdForNow]) — človek
+  /// vo vode sa nezapisuje pod dátum cudzej plavby.
+  Future<void> _logMobEvent({
+    required LogbookEventType event,
+    required String note,
+    double? latitude,
+    double? longitude,
+  }) async {
     try {
       final db = ref.read(databaseProvider);
-      final dayLogId = GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
-      final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+      final dayLogId = await db.dayLogIdForNow(
+          trackingDayLogId: GpsTrackingService().activeDayLogId);
       final session = await db.getActiveSession();
+
+      EntryConditions? conditions;
+      if (latitude != null && longitude != null) {
+        try {
+          conditions = await GpsTrackingService()
+              .conditionsAt(latitude: latitude, longitude: longitude);
+        } catch (_) {
+          conditions = null;
+        }
+      }
+      final fix =
+          GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+      final sailMode =
+          dayLogId == null ? null : await db.lastSailModeForDay(dayLogId);
+
       await db.insertLogbookEntry(LogbookEntriesCompanion.insert(
         dayLogId: drift.Value(dayLogId),
         sessionId: drift.Value(session?.sessionId),
         timestamp: DateTime.now().toUtc(),
-        latitude: drift.Value(pos?.latitude ?? lat),
-        longitude: drift.Value(pos?.longitude ?? lon),
-        skipperNote: const drift.Value('MOB cancelled'),
-        eventType: drift.Value(LogbookEventType.mobCancelled.code),
+        latitude: drift.Value(latitude),
+        longitude: drift.Value(longitude),
+        // Rýchlosť a kurz lode v okamihu pádu: podľa nich sa dopočíta, kde
+        // človek ostal, kým loď stihla zastaviť.
+        sog: drift.Value(fix?.speed),
+        cog: drift.Value(fix?.heading),
+        depthMeters: drift.Value(GpsTrackingService().instrumentDepthMeters),
+        windSpeed: drift.Value(conditions?.windSpeed),
+        windDirection: drift.Value(conditions?.windDirection),
+        waveHeight: drift.Value(conditions?.waveHeight),
+        airPressure: drift.Value(conditions?.airPressure),
+        airTemp: drift.Value(conditions?.airTemp),
+        waterTemp: drift.Value(conditions?.waterTemp),
+        weatherCondition: drift.Value(conditions?.condition),
+        weatherSource: drift.Value(conditions?.source.code),
+        weatherStation: drift.Value(conditions?.station),
+        weatherStationDistanceM: drift.Value(conditions?.stationDistanceM),
+        sailMode: drift.Value(sailMode),
+        skipperNote: drift.Value(note),
+        eventType: drift.Value(event.code),
         isAutoEntry: const drift.Value(true),
       ));
-      debugPrint('[MOB] Logged MOB deactivation');
-    } catch (e) { debugPrint('[MOB] Deactivate log error: $e'); }
+      debugPrint('[MOB] Logged ${event.code}');
+    } catch (e) {
+      debugPrint('[MOB] Log error: $e');
+    }
   }
 
   double _haversine(double la1, double lo1, double la2, double lo2) {
@@ -303,6 +353,27 @@ class AnchorNotifier extends Notifier<AnchorState> {
   static const _kSession = 'anchor_watch_session';
   static const _kZone = 'anchor_watch_zone';
 
+  /// Naposledy použitý polomer. Na rozdiel od [_kRadius] sa pri zdvihnutí
+  /// kotvy NEmaže: rýchle spustenie stráže z mapy nemá posuvník, na ktorom
+  /// by sa polomer nastavil, a predvolených 15 m je na hlbšej kotvisku málo.
+  /// Skiper si ho raz doladí na karte Bezpečnosť a ďalšie kotvenie ho zdedí.
+  static const _kLastRadius = 'anchor_last_radius';
+
+  /// Predvolený polomer kruhovej stráže, keď si ho skiper ešte nedoladil.
+  static const double defaultRadius = 15;
+
+  /// Polomer, s ktorým sa stráž spúšťala naposledy.
+  static Future<double> lastRadius() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      return p.getDouble(_kLastRadius) ?? defaultRadius;
+    } catch (_) {
+      // Polomer je pohodlie, nie podmienka — stráž sa musí dať spustiť aj
+      // vtedy, keď sa nastavenia nedajú prečítať (hlásené z Honoru).
+      return defaultRadius;
+    }
+  }
+
   /// Zápis bodu kotvovej stráže: buď sa loď posunula, ALEBO ubehol čas.
   ///
   /// Pri plavbe platia obe podmienky naraz (viď [TrackPointThrottle]) — tam
@@ -344,13 +415,31 @@ class AnchorNotifier extends Notifier<AnchorState> {
     // `decode` preto nikdy nehádže: výnimka by obnovu ticho zabila.
     final decoded = GeoPolygon.decode(prefs.getString(_kZone));
     final zone = GeoPolygon.isUsable(decoded) ? decoded : const <LatLng>[];
+    final sessionId = stored ?? session?.sessionId;
+    // Body doterajšieho výkyvu sa načítajú z databázy, nie sa zahodia.
+    // Appka sa cez noc reštartuje bežne (systém ju zabije) a bez tohto by
+    // ráno bola mapa prázdna, hoci stráž celú noc zapisovala.
+    var points = <LatLng>[];
+    if (sessionId != null) {
+      try {
+        points = [
+          for (final p in await db.getTrackPointsForSession(sessionId))
+            LatLng(p.latitude, p.longitude),
+        ];
+        if (points.length > 500) {
+          points = points.sublist(points.length - 500);
+        }
+      } catch (e) {
+        debugPrint('[ANCHOR] Swing reload error: $e');
+      }
+    }
     state = state.copyWith(
       isActive: true,
       anchorLat: lat,
       anchorLon: lon,
       radiusMeters: prefs.getDouble(_kRadius) ?? 50,
-      trackPoints: [],
-      sessionId: stored ?? session?.sessionId,
+      trackPoints: points,
+      sessionId: sessionId,
       zonePolygon: zone,
     );
     LocationService().requestPrecise(this, survivesBackground: true);
@@ -367,6 +456,11 @@ class AnchorNotifier extends Notifier<AnchorState> {
     // Polomer sa ukladá aj v režime plochy — je to nečinná záloha pre prípad,
     // že by sa uložená plocha nedala prečítať.
     await prefs.setDouble(_kRadius, radius);
+    // Prežije aj zdvihnutie kotvy: ďalšie rýchle spustenie z mapy z neho
+    // vychádza. Pri stráži nad plochou sa NEzapisuje — polomer je tam len
+    // nečinná záloha a zapamätať si ho ako „naposledy použitý" by rýchlemu
+    // spusteniu podsunulo číslo, ktoré si skiper nikdy nenastavil.
+    if (zone.isEmpty) await prefs.setDouble(_kLastRadius, radius);
     if (sessionId != null) await prefs.setString(_kSession, sessionId);
     // Prázdnu plochu treba ZMAZAŤ, nie preskočiť zápis. `activate` nevolá
     // `_clearPersisted` na začiatku, takže po zabití appky s plochou by
@@ -399,7 +493,8 @@ class AnchorNotifier extends Notifier<AnchorState> {
     try {
       final db = ref.read(databaseProvider);
       final dayLogId =
-          GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
+          await db.dayLogIdForNow(
+              trackingDayLogId: GpsTrackingService().activeDayLogId);
       final sessionId = const Uuid().v4();
       await db.upsertSession(SailingSessionsCompanion.insert(
         sessionId: sessionId,
@@ -474,7 +569,8 @@ class AnchorNotifier extends Notifier<AnchorState> {
   }) async {
     final db = ref.read(databaseProvider);
     final dayLogId =
-        GpsTrackingService().activeDayLogId ?? await db.getLatestDayLogId();
+        await db.dayLogIdForNow(
+            trackingDayLogId: GpsTrackingService().activeDayLogId);
     final session = await db.getActiveSession();
 
     // Podmienky sú bonus, nie podmienka zápisu (pravidlo offline-first):
@@ -537,15 +633,15 @@ class AnchorNotifier extends Notifier<AnchorState> {
     );
     await _persist(lat, lon, radius, sessionId, ring);
 
-    try {
-      await _logAnchorEvent(
-        event: LogbookEventType.anchorDropped,
-        note: 'Anchor dropped',
-        latitude: lat,
-        longitude: lon,
-      );
-      debugPrint('[ANCHOR] Logged anchor drop');
-    } catch (e) { debugPrint('[ANCHOR] Log error: $e'); }
+    // Zápis do denníka NEblokuje spustenie stráže: doťahuje si počasie a na
+    // slabom signáli to trvá sekundy, počas ktorých volajúci nevie, či sa
+    // stráž chytila. Vlastné chyby si rieši sám.
+    unawaited(_logAnchorEvent(
+      event: LogbookEventType.anchorDropped,
+      note: 'Anchor dropped',
+      latitude: lat,
+      longitude: lon,
+    ));
 
     // Kotvová stráž stráca zmysel na idle presnosti — perimeter býva
     // menší než idle distanceFilter, takže by drift nezachytila.
@@ -805,13 +901,19 @@ class _AnchorCard extends ConsumerStatefulWidget {
 
 class _AnchorCardState extends ConsumerState<_AnchorCard>
     with SingleTickerProviderStateMixin {
-  double _radius = 15.0;
+  double _radius = AnchorNotifier.defaultRadius;
   late AnimationController _blinkCtrl;
   late Animation<double> _blinkAnim;
 
   @override
   void initState() {
     super.initState();
+    // Posuvník začína tam, kde skiper skončil naposledy. Rovnaké kotvisko
+    // sa väčšinou stráži rovnakým polomerom a doťahovať ho pri každom
+    // kotvení znovu je práca, ktorú si appka vie zapamätať.
+    AnchorNotifier.lastRadius().then((r) {
+      if (mounted) setState(() => _radius = r);
+    });
     _blinkCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),

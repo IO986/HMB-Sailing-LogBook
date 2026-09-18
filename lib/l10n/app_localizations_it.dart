@@ -805,7 +805,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfHandoverTitle => 'Verbale di riconsegna';
 
   @override
-  String get pdfMilesTitle => 'Certificato delle miglia percorse';
+  String get pdfMilesTitle => 'Attestato delle miglia navigate';
 
   @override
   String get pdfDeparture => 'Partenza';
@@ -1754,7 +1754,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get daysCountLabel => 'Numero di giorni';
 
   @override
-  String get milesCertificateTitle => 'Certificato delle miglia percorse';
+  String get milesCertificateTitle => 'Attestato delle miglia navigate';
 
   @override
   String get logbookRecordTitle => 'Annotazione di bordo';
@@ -2908,7 +2908,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Profondità – isobate da EMODnet, con la quota in metri. Un modello del fondale ricavato da rilievi, NON una carta nautica: per pianificare una traversata sì, per decidere se si passa no. Disattivato di default; le tessere consultate vengono salvate come le altre. Con il livello attivo, tocca la mappa per leggere la profondità in quel punto (serve segnale).\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web (tocca per chiamare o aprire il sito direttamente), profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, profondità, porti), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo\n• La mappa vive della rete: senza internet non si scaricano nuove tessere e si vede solo l\'area in cache. Scarica l\'area con il pulsante «Scarica l\'area offline» sulla mappa prima di salpare. Quando il telefono è offline, la mappa lo segnala con una barra arancione in alto.';
+      'La scheda Mappa mostra la tua posizione attuale e la traccia della navigazione.\n\n• Punto blu = posizione attuale\n• Linea blu = traccia in registrazione\n• Icona della rotta – scegli una navigazione o un giorno qualsiasi per vederne la traccia sulla mappa (in arancione), senza esportare il PDF In basso compare la riproduzione: con il cursore attraversi la navigazione nel tempo e vedi posizione, velocità, rotta, vento e pressione in qualsiasi momento. Le tacche sul cursore sono eventi — inizio e fine della navigazione, ancora, deriva, MOB.\n• Passa dalla vista satellitare a quella cartografica\n• Segnalamenti marittimi – attiva i segnali nautici (relitti, bassi fondali, boe)\n• Profondità – isobate da EMODnet, con la quota in metri. Un modello del fondale ricavato da rilievi, NON una carta nautica: per pianificare una traversata sì, per decidere se si passa no. Disattivato di default; le tessere consultate vengono salvate come le altre. Con il livello attivo, tocca la mappa per leggere la profondità in quel punto (serve segnale).\n• Porti – livello toccabile di ancoraggi, marine e porti (dati OpenStreetMap): tocca un\'icona per vedere nome, canale VHF, telefono, sito web (tocca per chiamare o aprire il sito direttamente), profondità o capienza dove noti; salva il punto come waypoint con un tocco; il livello comprende anche i distributori di carburante (pompa arancione)\n• Righello (icona viola) – tocca i punti sulla mappa: NM totali, rilevamento dell\'ultima tratta ed ETA alla velocità attuale; i punti si agganciano ai waypoint, così puoi misurare una rotta che passa per le tue destinazioni\n• Mappa offline (icona di download) — scarica l’area visibile per l’uso senza segnale, dallo zoom attuale tre livelli più in profondità. Sempre segnali nautici; con il satellite attivo, anche le immagini e i loro nomi di località. In più, ogni tassello visitato viene salvato automaticamente.\n• In modalità notturna la mappa passa automaticamente alle tessere scure\n• Icona dell\'ancora = posizione di ancoraggio (solo quando l\'allarme ancora è attivo)\n• Icona di importazione – carica tracce e waypoint da un file .gpx (vedi \"Importazione GPX\")\n• Blocco del nord – tieni premuta la rosa dei venti (in alto a sinistra); la mappa smette di ruotare e resta con il nord in alto. Toccala in qualsiasi momento per tornare al nord.\n• Gli strati scelti (satellite, segnali nautici, profondità, porti), il segui-GPS e il blocco a nord vengono ricordati tra un avvio e l’altro\n• Pressione prolungata sulla mappa = aggiungi un waypoint (una destinazione di navigazione); tocca un waypoint esistente per rinominarlo o eliminarlo\n• La mappa vive della rete: senza internet non si scaricano nuove tessere e si vede solo l\'area in cache. Scarica l\'area con il pulsante «Scarica l\'area offline» sulla mappa prima di salpare. Quando il telefono è offline, la mappa lo segnala con una barra arancione in alto.\n• Durante una navigazione la mappa ha due pulsanti in più. L’ancora avvia la guardia all’ancora nella posizione attuale con il raggio usato l’ultima volta — un tocco, e un altro tocco chiede conferma prima di fermarla. Il pulsante rosso MOB va tenuto premuto; un tocco lo ricorda soltanto. Mentre la guardia è attiva, la mappa disegna il giro: la linea tracciata dalla barca attorno all’ancora.';
 
   @override
   String get guideInstrTitle => 'Strumenti di bordo';
@@ -2929,7 +2929,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.\n• Il numero di passaporto/carta d\'identità si inserisce al momento di emettere il certificato, per ogni membro dell\'equipaggio. Non viene salvato: compare solo su quel documento; il numero dello skipper sta nella scheda della crociera e si compila da solo. Senza numero resta una riga da riempire a mano.';
+      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.\n• Il numero di passaporto/carta d\'identità si inserisce al momento di emettere il certificato, per ogni membro dell\'equipaggio. Non viene salvato: compare solo su quel documento; il numero dello skipper sta nella scheda della crociera e si compila da solo. Senza numero resta una riga da riempire a mano.\n• Il certificato si firma prima di esportarlo, come il giornale: si apre il riquadro della firma e il PDF riceve una pagina finale con firma, orario, checksum SHA-256 e un codice QR per la verifica.';
 
   @override
   String get guideHandoverTitle => 'Verbale di riconsegna (check-in/check-out)';
@@ -2957,7 +2957,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'La scheda Sicurezza contiene le funzioni di emergenza.\n\nMOB (uomo in mare):\n• Tieni premuto il pulsante rosso MOB per attivarlo\n• L\'app registra la posizione GPS e tiene traccia di tempo e distanza\n• Naviga di nuovo verso il punto di caduta\n\nAllarme ancora:\n• Imposta il raggio di ancoraggio (consigliato: 2× la lunghezza di catena/cima)\n• L\'allarme vibra se la barca esce dal raggio consentito\n• La guardia all\'ancora registra ora una propria traccia, così una notte all\'ancora non è più un buco nel GPX. È un tratto a sé — non conta mai per le miglia, la distanza del giorno o le ore notturne, perché girare sulla catena non è navigare.\n• La guardia sopravvive al riavvio dell\'app: se il sistema la chiude in background, alla riapertura riprende sullo stesso ancoraggio.\n• Le voci ancora data e ancora salpata portano ora vento, pressione, temperature, profondità sotto la chiglia e propulsione — finora avevano solo ora e posizione.';
+      'La scheda Sicurezza contiene le funzioni di emergenza.\n\nMOB (uomo in mare):\n• Tieni premuto il pulsante rosso MOB per attivarlo\n• L\'app registra la posizione GPS e tiene traccia di tempo e distanza\n• Naviga di nuovo verso il punto di caduta\n\nAllarme ancora:\n• Imposta il raggio di ancoraggio (consigliato: 2× la lunghezza di catena/cima)\n• L\'allarme vibra se la barca esce dal raggio consentito\n• La guardia all\'ancora registra ora una propria traccia, così una notte all\'ancora non è più un buco nel GPX. È un tratto a sé — non conta mai per le miglia, la distanza del giorno o le ore notturne, perché girare sulla catena non è navigare.\n• La guardia sopravvive al riavvio dell\'app: se il sistema la chiude in background, alla riapertura riprende sullo stesso ancoraggio.\n• Le voci ancora data e ancora salpata portano ora vento, pressione, temperature, profondità sotto la chiglia e propulsione — finora avevano solo ora e posizione.\n• La guardia all’ancora continua a registrare la traccia anche quando non si sta registrando alcuna navigazione: ha un proprio tratto, fuori dalle miglia e dalla distanza del giorno, ma finisce nel GPX e la scheda del giorno mostra quando è stata attiva, quanti punti ha scritto e il giro massimo dall’ancora.';
 
   @override
   String get guideSafetyBriefingTitle => 'Briefing di sicurezza e MAYDAY';
@@ -2985,7 +2985,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.\n• Aggiornamenti – quando su Google Play c\'è una versione più recente, l\'app la scarica in background e propone il riavvio. Non chiede mai durante la registrazione di una navigazione.\n• Fuso orario – gli orari a schermo e nel PDF sono mostrati in ora locale (il fuso del telefono, cioè dove ti trovi) oppure in UTC. I dati salvati non cambiano, cambia solo la visualizzazione; il PDF indica sempre quale fuso vale.\n\nAccount Google ed esportazione nel cloud\n\nAccedere con un account Google è facoltativo. Senza, l\'app funziona per intero e tutte le registrazioni restano solo sul telefono.\n\nChe cosa viene caricato – alla chiusura di una giornata di navigazione, il PDF del giornale e la traccia GPX di quel giorno. Nient\'altro: né foto, né contatti dell\'equipaggio, né posizioni in tempo reale.\n\nDove – sul tuo Google Drive, nella cartella HMB_Sailing_Log_DATA / nome della navigazione / Day_data. Non su un server dell\'app – non esiste.\n\nChe cosa vede l\'app sul Drive – solo i file che ha creato lei stessa. Usa il permesso più ristretto offerto da Google (drive.file), quindi il resto del tuo Drive resta fuori portata. Il permesso viene chiesto al primo caricamento, non all\'accesso.\n\nCome annullare – disconnetti l\'account nelle Impostazioni. I file già presenti sul Drive restano tuoi – l\'app non li elimina.\n• Valuta l\'app: apre la sua pagina su Google Play. Ogni tanto l\'app lo chiede anche da sola, ma solo dopo una navigazione conclusa, mai durante.';
+      '• Lingua – cambia la lingua dell\'app\n• Strumenti – imposta l\'indirizzo IP del gateway WiFi Raymarine (TCP o UDP)\n• Origine GPS – telefono o Raymarine\n• Unità – distanza NM/km, velocità nodi/km/h, più temperatura, profondità e vento separatamente (in fiume vanno bene km + km/h)\n• Frequenza delle annotazioni\n• Menu inferiore – personalizzalo: premi e trascina un\'icona per riordinare, usa l\'interruttore per nascondere le schede che non usi e imposta la dimensione delle icone (S/M/L). Le schede nascoste si possono aprire proprio qui nelle Impostazioni; Impostazioni è sempre visibile. Ordine e dimensione vengono ricordati. Le etichette sotto le icone sono nascoste così le icone restano identiche in ogni lingua; tieni premuta un’icona per vederne il nome.\n• Visualizzazione – Modalità notturna (filtro rosso per preservare la visione notturna)\n• Esportazione nel cloud (Google Drive) – una volta effettuato l\'accesso, il PDF e il GPX di ogni giornata conclusa vengono caricati automaticamente sul tuo Google Drive. Senza accesso tutto resta sul dispositivo.\n• Backup dei dati – vedi \"Backup e ripristino dei dati\"\n• Informazioni – versione e contatti\n• Batteria – Il GPS lavora alla massima precisione solo dove conta la posizione esatta (tracciamento, carta, bussola, strumenti, guardia all’ancora, MOB); altrove passa a una modalità a basso consumo e in background, senza tracciamento attivo, si spegne del tutto. Con gli strumenti di bordo collegati il GPS del telefono resta spento e la posizione arriva dai dati NMEA.\n• Aggiornamenti – quando su Google Play c\'è una versione più recente, l\'app la scarica in background e propone il riavvio. Non chiede mai durante la registrazione di una navigazione.\n• Fuso orario – gli orari a schermo e nel PDF sono mostrati in ora locale (il fuso del telefono, cioè dove ti trovi) oppure in UTC. I dati salvati non cambiano, cambia solo la visualizzazione; il PDF indica sempre quale fuso vale.\n\nAccount Google ed esportazione nel cloud\n\nAccedere con un account Google è facoltativo. Senza, l\'app funziona per intero e tutte le registrazioni restano solo sul telefono.\n\nChe cosa viene caricato – alla chiusura di una giornata di navigazione, il PDF del giornale e la traccia GPX di quel giorno. Nient\'altro: né foto, né contatti dell\'equipaggio, né posizioni in tempo reale.\n\nDove – sul tuo Google Drive, nella cartella HMB_Sailing_Log_DATA / nome della navigazione / Day_data. Non su un server dell\'app – non esiste.\n\nChe cosa vede l\'app sul Drive – solo i file che ha creato lei stessa. Usa il permesso più ristretto offerto da Google (drive.file), quindi il resto del tuo Drive resta fuori portata. Il permesso viene chiesto al primo caricamento, non all\'accesso.\n\nCome annullare – disconnetti l\'account nelle Impostazioni. I file già presenti sul Drive restano tuoi – l\'app non li elimina.\n• Valuta l\'app: apre la sua pagina su Google Play. Ogni tanto l\'app lo chiede anche da sola, ma solo dopo una navigazione conclusa, mai durante.\n• Allarme dell’ancora: scegli il suono qualsiasi sveglia o suoneria del telefono, con il selettore di sistema e il volume, e ascolta un esempio prima di averne bisogno. Il suono passa dal canale allarme, quindi si sente anche col telefono silenzioso; il volume si abbassa, non si spegne.';
 
   @override
   String get guideBackupTitle => 'Backup e ripristino dei dati';
@@ -3967,4 +3967,67 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'Questo dispositivo non ha una bussola: la prua non è disponibile.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Guardia all’ancora attiva · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => 'Interrompere la guardia all’ancora?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'La guardia si ferma e «Ancora salpata» finisce nel giornale.';
+
+  @override
+  String get mobCancelTitle => 'Annullare il MOB?';
+
+  @override
+  String get mobCancelBody =>
+      'L’allarme si spegne e il punto di caduta non viene più seguito.';
+
+  @override
+  String get anchorSoundLabel => 'Suono dell’allarme';
+
+  @override
+  String get anchorVolumeLabel => 'Volume dell’allarme';
+
+  @override
+  String get anchorSoundPreview => 'Riproduci un esempio';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'Un suono mai sentito non dirà «ancora» alle tre di notte.';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Guardia all’ancora $range · $points punti · giro massimo $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'La sveglia del telefono';
+
+  @override
+  String get anchorVolumeDesc =>
+      'Questo è il volume vero, non un moltiplicatore: per la durata dell’allarme l’app alza il canale allarme del telefono a questo livello e poi lo rimette com’era.';
+
+  @override
+  String get anchorDndTitle => 'Non disturbare ha la meglio sul volume';
+
+  @override
+  String get anchorDndBody =>
+      'Finché Non disturbare è attivo, solo tu puoi permettere di alzare il volume. Senza, l’allarme suona comunque, al volume impostato sul telefono.';
+
+  @override
+  String get unassignedMobTitle => 'MOB fuori navigazione';
+
+  @override
+  String get unassignedAnchorTitle => 'Ancora fuori navigazione';
+
+  @override
+  String get unassignedEventTitle => 'Evento fuori navigazione';
+
+  @override
+  String get logEventMobCancelled => 'MOB annullato';
 }

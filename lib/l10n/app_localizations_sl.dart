@@ -2889,7 +2889,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran (tap takoj pokliče ali odpre stran), globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje\n• Zemljevid živi od omrežja: brez interneta se nove ploščice ne prenesejo in vidi se le območje iz predpomnilnika. Pred izplutjem prenesi območje z gumbom »Prenesi območje brez povezave« na zemljevidu. Ko je telefon brez povezave, zemljevid na to opozori z oranžnim trakom na vrhu.';
+      'Zavihek Zemljevid prikazuje vaš trenutni položaj in sled plovbe.\n\n• Modra pika = trenutni položaj\n• Modra črta = sled, ki se trenutno beleži\n• Ikona poti – izberite katero koli plovbo ali dan za predogled sledi na zemljevidu (oranžno), brez izvoza PDF Spodaj se pojavi predvajanje: z drsnikom se premikaš skozi plovbo v času in vidiš položaj, hitrost, smer, veter in tlak v katerem koli trenutku. Črtice na drsniku so dogodki — začetek in konec plovbe, sidro, zanos, MOB.\n• Preklop med satelitskim in kartografskim prikazom\n• Pomorske oznake – vklopite navtične oznake (razbitine, plitvine, boje)\n• Globine – izobate iz EMODnet z globino v metrih. Model dna iz meritev, NI pomorska karta: za načrtovanje plovbe da, za odločitev, ali lahko prečkate, ne. Privzeto izklopljeno; ogledane ploščice se shranijo kot druge. Ko je sloj vklopljen, se z dotikom zemljevida izpiše globina v tej točki (potreben je signal).\n• Pristanišča – tapljiv sloj sidrišč, marin in pristanišč (podatki OpenStreetMap): tapnite ikono za ime, kanal VHF, telefon, spletno stran (tap takoj pokliče ali odpre stran), globino ali zmogljivost, kjer so znani; kraj shranite kot točko poti z enim tapom; sloj vključuje tudi črpalke za gorivo (oranžna črpalka)\n• Ravnilo (vijolična ikona) – tapkajte točke na zemljevidu: skupaj NM, azimut zadnjega odseka in ETA pri trenutni hitrosti; točke se pripnejo na točke poti, tako da lahko merite pot skozi svoje cilje\n• Zemljevid brez povezave (ikona prenosa) — prenese vidno območje za uporabo brez signala, od trenutne povečave tri ravni globlje. Vedno pomorske oznake; ob vklopljenem satelitu tudi posnetke in njihova krajevna imena. Poleg tega se vsaka ogledana ploščica shrani samodejno.\n• V nočnem načinu zemljevid samodejno preklopi na temne ploščice\n• Ikona sidra = položaj sidranja (samo ko je alarm sidra aktiven)\n• Ikona uvoza – naložite sledi in točke poti iz datoteke .gpx (glejte \"Uvoz GPX\")\n• Zaklep severa – dolgo pritisnite vetrovnico (zgoraj levo); zemljevid se preneha vrteti in ostane s severom navzgor. Tapnite jo kadar koli za vrnitev na sever.\n• Izbrani sloji (satelit, pomorske oznake, globine, pristanišča), sledenje GPS in zaklep severa se ohranijo med zagoni\n• Dolg pritisk na zemljevid = dodajanje točke poti (navigacijskega cilja); tapnite obstoječo točko za preimenovanje ali brisanje\n• Zemljevid živi od omrežja: brez interneta se nove ploščice ne prenesejo in vidi se le območje iz predpomnilnika. Pred izplutjem prenesi območje z gumbom »Prenesi območje brez povezave« na zemljevidu. Ko je telefon brez povezave, zemljevid na to opozori z oranžnim trakom na vrhu.\n• Med plovbo ima zemljevid dva dodatna gumba. Sidro zažene sidrno stražo na trenutnem položaju z nazadnje uporabljenim polmerom — en dotik, naslednji dotik pa pred ustavitvijo vpraša. Rdeči MOB je treba držati; dotik le opomni, da ga je treba držati. Dokler straža teče, zemljevid riše zamah: črto, ki jo je ladja na verigi opisala okoli sidra.';
 
   @override
   String get guideInstrTitle => 'Ladijski instrumenti';
@@ -2910,7 +2910,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis\n• Potrdilo o miljah se izda prek obrazca (ikona PDF zgoraj): zase ali za člana posadke, z imenom prejemnika, imenom in kvalifikacijo izdajatelja (predizpolnjeno iz profila skiperja) in seznamom plovb s potrditvenimi polji. Dokument nosi plovilo, vodjo plovbe, območje, plimske ali neplimske vode in vlogo, v kateri si plul, ter razdelitev milj po vlogi. Pri plovbah, kjer nisi bil vodja, ostane prostor za njegov podpis z imenom. Potrdilo zase nosi tudi skiperski povzetek. Shrani se tudi v mapo aplikacije, ne le prek sistemskega pogovornega okna.\n• Potrdilo vsebuje tudi progo plovbe po dnevih — Biograd – Žut – Veli Rat – Zadar – Biograd — sestavljeno iz pristanišč posameznih dni; enaka postaja dvakrat zapored se združi, dan brez vpisanega pristanišča pa se preskoči.\n• V obrazcu potrdila polje „Za koga\" ponudi posadko s tvojih plovb — ime izberi, namesto da ga tipkaš; tipkarska napaka bi iz ene osebe naredila dve.\n• Številka potnega lista/osebne se vpiše ob izdaji potrdila, za vsakega člana posadke posebej. Ne shrani se, natisne se le na tem enem dokumentu; skiperjeva lastna številka je v kartici plovbe in se izpolni sama. Brez številke ostane na potrdilu črta za ročni vpis.';
+      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis\n• Potrdilo o miljah se izda prek obrazca (ikona PDF zgoraj): zase ali za člana posadke, z imenom prejemnika, imenom in kvalifikacijo izdajatelja (predizpolnjeno iz profila skiperja) in seznamom plovb s potrditvenimi polji. Dokument nosi plovilo, vodjo plovbe, območje, plimske ali neplimske vode in vlogo, v kateri si plul, ter razdelitev milj po vlogi. Pri plovbah, kjer nisi bil vodja, ostane prostor za njegov podpis z imenom. Potrdilo zase nosi tudi skiperski povzetek. Shrani se tudi v mapo aplikacije, ne le prek sistemskega pogovornega okna.\n• Potrdilo vsebuje tudi progo plovbe po dnevih — Biograd – Žut – Veli Rat – Zadar – Biograd — sestavljeno iz pristanišč posameznih dni; enaka postaja dvakrat zapored se združi, dan brez vpisanega pristanišča pa se preskoči.\n• V obrazcu potrdila polje „Za koga\" ponudi posadko s tvojih plovb — ime izberi, namesto da ga tipkaš; tipkarska napaka bi iz ene osebe naredila dve.\n• Številka potnega lista/osebne se vpiše ob izdaji potrdila, za vsakega člana posadke posebej. Ne shrani se, natisne se le na tem enem dokumentu; skiperjeva lastna številka je v kartici plovbe in se izpolni sama. Brez številke ostane na potrdilu črta za ročni vpis.\n• Potrdilo se pred izvozom podpiše enako kot dnevnik: odpre se podpisna površina, PDF pa dobi zaključno stran s podpisom, časom, kontrolno vsoto SHA-256 in kodo QR za preverjanje.';
 
   @override
   String get guideHandoverTitle =>
@@ -2939,7 +2939,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Zavihek Varnost vsebuje funkcije za primer sile.\n\nMOB (človek v morju):\n• Držite rdeči gumb MOB za aktivacijo\n• Aplikacija zabeleži položaj GPS ter spremlja čas in razdaljo\n• Navigirajte nazaj do mesta padca\n\nAlarm sidra:\n• Nastavite polmer sidranja (priporočilo: 2× dolžina verige/vrvi)\n• Alarm zavibrira, če plovilo zaide izven dovoljenega polmera\n• Sidrna straža zdaj beleži lastno sled, zato noč na sidru ni več luknja v GPX. To je samostojen odsek — nikoli se ne šteje v milje, dnevno razdaljo ali nočne ure, saj zibanje na verigi ni plovba.\n• Straža preživi ponovni zagon aplikacije: če jo sistem v ozadju ubije, po zagonu nadaljuje na istem sidru.\n• Zapisa o spustu in dvigu sidra zdaj nosita tudi veter, tlak, temperature, globino pod gredljem in pogon — doslej sta imela le čas in položaj.';
+      'Zavihek Varnost vsebuje funkcije za primer sile.\n\nMOB (človek v morju):\n• Držite rdeči gumb MOB za aktivacijo\n• Aplikacija zabeleži položaj GPS ter spremlja čas in razdaljo\n• Navigirajte nazaj do mesta padca\n\nAlarm sidra:\n• Nastavite polmer sidranja (priporočilo: 2× dolžina verige/vrvi)\n• Alarm zavibrira, če plovilo zaide izven dovoljenega polmera\n• Sidrna straža zdaj beleži lastno sled, zato noč na sidru ni več luknja v GPX. To je samostojen odsek — nikoli se ne šteje v milje, dnevno razdaljo ali nočne ure, saj zibanje na verigi ni plovba.\n• Straža preživi ponovni zagon aplikacije: če jo sistem v ozadju ubije, po zagonu nadaljuje na istem sidru.\n• Zapisa o spustu in dvigu sidra zdaj nosita tudi veter, tlak, temperature, globino pod gredljem in pogon — doslej sta imela le čas in položaj.\n• Sidrna straža zapisuje sled tudi takrat, ko nobena plovba ni v teku — ima svoj odsek zunaj milj in zunaj dnevne razdalje, a gre v GPX, dnevna kartica pa pokaže, kdaj je stražila, koliko točk je zapisala in kolikšen je bil največji zamah od sidra.';
 
   @override
   String get guideSafetyBriefingTitle => 'Varnostni brifing in MAYDAY';
@@ -2967,7 +2967,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n• Časovni pas – čas na zaslonu in v PDF se prikaže krajevno (pas telefona, torej tam, kjer si) ali v UTC. Shranjeni zapisi se ne spremenijo, spremeni se le prikaz; PDF vedno navede, kateri pas velja.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.\n• Oceni aplikacijo — odpre njeno stran v Google Play. Aplikacija občasno vpraša tudi sama, a šele po končani plovbi, nikoli med njo.';
+      '• Jezik – sprememba jezika aplikacije\n• Instrumenti – nastavite naslov IP prehoda Raymarine WiFi (TCP ali UDP)\n• Vir GPS – telefon ali Raymarine\n• Enote – razdalja NM/km, hitrost vozli/km/h, posebej temperatura, globina in veter (na reki ustrezata km + km/h)\n• Pogostost zapisov v dnevnik\n• Spodnji meni – prilagodite ga: pritisnite in povlecite ikono za spremembo vrstnega reda, s stikalom skrijte zavihke, ki jih ne uporabljate, in nastavite velikost ikon (S/M/L). Skrite zavihke lahko odprete prav tu v Nastavitvah; Nastavitve so vedno prikazane. Vrstni red in velikost se ohranita. Napisi pod ikonami so skriti, da ikone stojijo enako v vseh jezikih; z dolgim pritiskom se pokaže ime.\n• Prikaz – Nočni način (rdeči filter za ohranjanje nočnega vida)\n• Izvoz v oblak (Google Drive) – po prijavi se PDF in GPX vsakega končanega dne samodejno naložita na vaš Google Drive. Brez prijave vse ostane v napravi.\n• Varnostna kopija podatkov – glejte \"Varnostna kopija in obnovitev podatkov\"\n• O aplikaciji – različica in stik\n• Baterija – GPS deluje s polno natančnostjo le tam, kjer je natančen položaj pomemben (sledenje plovbi, zemljevid, kompas, instrumenti, sidrna straža, MOB); drugod preklopi v varčni način, v ozadju brez vklopljenega sledenja pa se povsem izklopi. Ob povezanih ladijskih instrumentih GPS telefona ostane izklopljen, položaj pa prihaja z NMEA.\n• Posodobitve – ko je v Google Play novejša različica, jo aplikacija prenese v ozadju in ponudi ponovni zagon. Med snemanjem plovbe ne vpraša nikoli.\n• Časovni pas – čas na zaslonu in v PDF se prikaže krajevno (pas telefona, torej tam, kjer si) ali v UTC. Shranjeni zapisi se ne spremenijo, spremeni se le prikaz; PDF vedno navede, kateri pas velja.\n\nGoogle račun in izvoz v oblak\n\nPrijava z Google računom je prostovoljna. Brez nje aplikacija deluje v celoti in vsi zapisi ostanejo samo v telefonu.\n\nKaj se naloži – ob zaključku dneva plovbe PDF dnevnika in sled GPX tistega dne. Nič drugega: ne fotografije, ne stiki posadke, ne položaji v živo.\n\nKam – na tvoj lastni Google Drive, v mapo HMB_Sailing_Log_DATA / ime plovbe / Day_datum. Ne na strežnik aplikacije – ta ne obstaja.\n\nKaj aplikacija vidi na Drivu – samo datoteke, ki jih je tam ustvarila sama. Uporablja najožje dovoljenje, ki ga Google ponuja (drive.file), zato ostane preostanek tvojega Driva nedosegljiv. Dovoljenje zahteva šele ob prvem nalaganju, ne ob prijavi.\n\nKako to razveljaviš – odjavi račun v Nastavitvah. Datoteke, ki so že na Drivu, ostanejo tvoje – aplikacija jih ne briše.\n• Oceni aplikacijo — odpre njeno stran v Google Play. Aplikacija občasno vpraša tudi sama, a šele po končani plovbi, nikoli med njo.\n• Sidrni alarm: izberi zvok katero koli budilko ali zvonjenje v telefonu prek sistemskega izbirnika in glasnost ter poslušaj vzorec, preden ga boš potreboval. Zvok gre po alarmnem kanalu, zato se sliši tudi pri utišanem telefonu; glasnost lahko znižaš, ne pa izklopiš.';
 
   @override
   String get guideBackupTitle => 'Varnostna kopija in obnovitev podatkov';
@@ -3945,4 +3945,66 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'Ta naprava nima kompasa — smer ni na voljo.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Sidrna straža teče · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => 'Ustaviti sidrno stražo?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'Straža se ustavi, v dnevnik pa gre „Sidro dvignjeno\".';
+
+  @override
+  String get mobCancelTitle => 'Preklicati MOB?';
+
+  @override
+  String get mobCancelBody => 'Alarm utihne in točka padca se neha slediti.';
+
+  @override
+  String get anchorSoundLabel => 'Zvok alarma';
+
+  @override
+  String get anchorVolumeLabel => 'Glasnost alarma';
+
+  @override
+  String get anchorSoundPreview => 'Predvajaj vzorec';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'Zvok, ki ga nisi nikoli slišal, ob treh zjutraj ne pomeni „sidro\".';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Sidrna straža $range · $points točk · največji zamah $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'Zvok budilke telefona';
+
+  @override
+  String get anchorVolumeDesc =>
+      'To je prava glasnost, ne množitelj: za čas alarma aplikacija dvigne alarmni kanal telefona na to raven in ga nato vrne nazaj.';
+
+  @override
+  String get anchorDndTitle => 'Način Ne moti prevlada nad glasnostjo';
+
+  @override
+  String get anchorDndBody =>
+      'Dokler je Ne moti vklopljen, lahko dvig glasnosti dovoliš samo ti. Brez tega bo alarm vseeno zazvonil, a tako glasno, kot je nastavljen telefon.';
+
+  @override
+  String get unassignedMobTitle => 'MOB zunaj plovbe';
+
+  @override
+  String get unassignedAnchorTitle => 'Sidro zunaj plovbe';
+
+  @override
+  String get unassignedEventTitle => 'Dogodek zunaj plovbe';
+
+  @override
+  String get logEventMobCancelled => 'MOB preklican';
 }

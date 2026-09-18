@@ -487,6 +487,12 @@ class _EntryTile extends ConsumerWidget {
         return l.logEventDriftOut;
       case LogbookEventType.driftIn:
         return l.logEventDriftIn;
+      // Muž cez palubu sa dovtedy tlačil surovou anglickou poznámkou
+      // („Man overboard"), nech bol denník v ktoromkoľvek jazyku.
+      case LogbookEventType.mob:
+        return l.mobFullName;
+      case LogbookEventType.mobCancelled:
+        return l.logEventMobCancelled;
       case LogbookEventType.dutyStart:
         return l.logEventDutyStart(_crewFromNote(note));
       case LogbookEventType.dutyEnd:

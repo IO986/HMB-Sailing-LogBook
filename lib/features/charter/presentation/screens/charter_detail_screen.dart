@@ -426,6 +426,23 @@ class _DayCard extends ConsumerWidget {
                 error: (_, __) => const SizedBox(),
               ),
             ]),
+
+            // Kotvová stráž. Hodiny na reťazi sa nerátajú do míľ ani do
+            // vzdialenosti dňa, takže by o nich v denníku nebolo vidieť nič —
+            // hoci appka celú noc zapisovala, kde loď stála.
+            ref.watch(anchorWatchForDayProvider(day.id)).when(
+                  data: (watches) => watches.isEmpty
+                      ? const SizedBox()
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (final w in watches)
+                              _AnchorWatchRow(summary: w),
+                          ],
+                        ),
+                  loading: () => const SizedBox(),
+                  error: (_, __) => const SizedBox(),
+                ),
           ]),
         ),
       ),
@@ -438,6 +455,43 @@ class _DayCard extends ConsumerWidget {
 
   Future<void> _editRoute(BuildContext context, WidgetRef ref) =>
       showEditDayPortsDialog(context, ref, day);
+}
+
+/// Jeden úsek kotvovej stráže v karte dňa.
+///
+/// Čas od-do, počet zapísaných bodov a najväčší výkyv od kotvy. Výkyv je to
+/// jediné číslo, ktoré ráno niečo hovorí: keď je väčší než dĺžka vypustenej
+/// reťaze, kotva sa v noci ťahala.
+class _AnchorWatchRow extends ConsumerWidget {
+  final AnchorWatchSummary summary;
+  const _AnchorWatchRow({required this.summary});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final units = ref.watch(unitsSyncProvider);
+    final from = units.formatTime(summary.from);
+    final to = summary.to == null ? '…' : units.formatTime(summary.to!);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(children: [
+        Icon(Icons.anchor,
+            size: 13,
+            color: summary.to == null ? Colors.blue : Colors.grey),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            l.anchorWatchDaySummary(
+                '$from–$to',
+                '${summary.pointCount}',
+                summary.maxSwingM.toStringAsFixed(0)),
+            style: const TextStyle(fontSize: 11, color: Colors.grey),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ]),
+    );
+  }
 }
 
 class _Chip extends StatelessWidget {

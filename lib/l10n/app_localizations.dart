@@ -1583,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfMilesTitle.
   ///
   /// In sk, this message translates to:
-  /// **'Potvrdenie o najazdených míľach'**
+  /// **'Potvrdenie o naplávaných míľach'**
   String get pdfMilesTitle;
 
   /// No description provided for @pdfDeparture.
@@ -1787,7 +1787,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfMilesOwnRecord.
   ///
   /// In sk, this message translates to:
-  /// **'Vlastný záznam naplavaných míľ'**
+  /// **'Vlastný záznam naplávaných míľ'**
   String get pdfMilesOwnRecord;
 
   /// No description provided for @pdfMilesByRole.
@@ -3353,7 +3353,7 @@ abstract class AppLocalizations {
   /// No description provided for @milesCertificateTitle.
   ///
   /// In sk, this message translates to:
-  /// **'Potvrdenie o najazdených míľach'**
+  /// **'Potvrdenie o naplávaných míľach'**
   String get milesCertificateTitle;
 
   /// No description provided for @logbookRecordTitle.
@@ -5513,7 +5513,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMapBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Hĺbky – hĺbnice z EMODnet s hĺbkou v metroch. Model dna z prieskumov, NIE námorná mapa: na plánovanie prielivu áno, na rozhodnutie „prejdem tadiaľ“ nie. Štandardne vypnuté; prezerané dlaždice sa ukladajú ako ostatné. Keď je vrstva zapnutá, ťuknutím do mapy prečítaš hĺbku v tom bode (treba signál).\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web (ťuknutím rovno zavoláš alebo otvoríš stránku), hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) — stiahne viditeľnú oblasť na použitie bez signálu, od aktuálneho priblíženia o tri úrovne hlbšie. Vždy seamarky; keď máš zapnutý satelit, aj snímky a ich popisky. Navyše sa každá prezretá dlaždica ukladá automaticky.\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, hĺbky, prístavy), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš\n• Mapa žije zo siete: bez internetu sa nové dlaždice nestiahnu a zobrazí sa len oblasť z keše. Pred vyplávaním si oblasť stiahni tlačidlom „Stiahnuť oblasť offline“ na mape. Keď je telefón offline, mapa to pripomenie oranžovou lištou navrchu.'**
+  /// **'Záložka Mapa zobrazuje tvoju aktuálnu polohu a trasu plavby.\n\n• Modrá bodka = aktuálna poloha\n• Modrá čiara = práve trackovaná trasa\n• Ikona trasy – vyber ľubovoľnú plavbu alebo deň a pozri jej trasu na mape (oranžovo), aj bez PDF exportu Dole sa objaví prehrávanie: posuvníkom prejdeš plavbu v čase a vidíš polohu, rýchlosť, kurz, vietor aj tlak v ktoromkoľvek okamihu. Zvislé čiarky na posuvníku sú udalosti — začiatok a koniec plavby, kotva, drift, MOB.\n• Môžeš prepínať medzi satelitnou a mapovou vrstvou\n• Seamarky – prepínač pre námorné značky (vraky, plytčiny, bóje)\n• Hĺbky – hĺbnice z EMODnet s hĺbkou v metroch. Model dna z prieskumov, NIE námorná mapa: na plánovanie prielivu áno, na rozhodnutie „prejdem tadiaľ“ nie. Štandardne vypnuté; prezerané dlaždice sa ukladajú ako ostatné. Keď je vrstva zapnutá, ťuknutím do mapy prečítaš hĺbku v tom bode (treba signál).\n• Prístavy – klikateľná vrstva kotvísk, marín a prístavov (dáta z OpenStreetMap): ťukni na ikonku a uvidíš názov, VHF kanál, telefón, web (ťuknutím rovno zavoláš alebo otvoríš stránku), hĺbku či kapacitu, ak sú známe; miesto si vieš rovno uložiť ako waypoint; vrstva zahŕňa aj tankovacie stanice pre lode (oranžová pumpa)\n• Pravítko (fialová ikona) – ťukaj body na mape: súčet NM, kurz poslednej nohy a ETA pri aktuálnej rýchlosti; body sa prichytávajú na waypointy, takže si vieš zmerať trasu cez ciele\n• Offline mapa (ikona sťahovania) — stiahne viditeľnú oblasť na použitie bez signálu, od aktuálneho priblíženia o tri úrovne hlbšie. Vždy seamarky; keď máš zapnutý satelit, aj snímky a ich popisky. Navyše sa každá prezretá dlaždica ukladá automaticky.\n• V nočnom režime sa mapa automaticky prepne na tmavé dlaždice\n• Ikona kotvy = miesto kotvenia (len keď je kotva aktívna)\n• Ikona importu – načíta trasy a waypointy z .gpx súboru (pozri sekciu \"Import GPX\")\n• Zámok severu – podrž ružicu kompasu vľavo hore; mapa sa prestane otáčať a ostane na sever. Ťuknutím ju kedykoľvek vrátiš na sever.\n• Zvolené vrstvy (satelit, seamarky, hĺbky, prístavy), sledovanie GPS aj zámok severu sa pamätajú medzi spusteniami\n• Podrž prst na mape = pridaj waypoint (navigačný cieľ); ťuknutím na existujúci waypoint ho premenuješ alebo zmažeš\n• Mapa žije zo siete: bez internetu sa nové dlaždice nestiahnu a zobrazí sa len oblasť z keše. Pred vyplávaním si oblasť stiahni tlačidlom „Stiahnuť oblasť offline“ na mape. Keď je telefón offline, mapa to pripomenie oranžovou lištou navrchu.\n• Počas plavby má mapa dve tlačidlá navyše. Kotva spustí kotvovú stráž na aktuálnej polohe s naposledy použitým polomerom — jedno ťuknutie, a ďalšie ťuknutie sa pred vypnutím spýta. Červené MOB treba podržať; ťuknutie len pripomenie, že sa má podržať. Kým stráž beží, mapa kreslí výkyv: čiaru, ktorú loď opísala okolo kotvy na reťazi.'**
   String get guideMapBody;
 
   /// No description provided for @guideInstrTitle.
@@ -5549,7 +5549,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMilesBody.
   ///
   /// In sk, this message translates to:
-  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o najazdených míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.'**
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.'**
   String get guideMilesBody;
 
   /// No description provided for @guideHandoverTitle.
@@ -5597,7 +5597,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSafetyMobBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záložka Bezpečnosť obsahuje núdzové funkcie.\n\nMOB (Človek cez palubu):\n• Podržte červené tlačidlo MOB pre aktiváciu\n• Aplikácia zaznamená GPS polohu a meria čas a vzdialenosť\n• Navigácia späť k miestu pádu\n\nKotva:\n• Nastav polomer kotvenia (odporúčané: 2× dĺžka kotevného lana)\n• Alarm zavibruje, ak sa loď vzdiali z povoleného okruhu\n• Kotvová stráž si zapisuje vlastnú trasu, takže noč na kotve už nie je v GPX diera. Je to samostatný úsek — do najazdených míľ, vzdialenosti dňa ani nočných hodín sa nepočíta, hojdanie na reťazi nie je plavba.\n• Stráž prežije aj reštart appky: keď ju systém na pozadí zabije, po spustení sa sama rozbehne ďalej na tej istej kotve.\n• Záznam o spustení a vytiahnutí kotvy už nesú aj vietor, tlak, teploty, hĺbku pod kýľom a pohon — dovtedy v ňom bol len čas a poloha.'**
+  /// **'Záložka Bezpečnosť obsahuje núdzové funkcie.\n\nMOB (Človek cez palubu):\n• Podržte červené tlačidlo MOB pre aktiváciu\n• Aplikácia zaznamená GPS polohu a meria čas a vzdialenosť\n• Navigácia späť k miestu pádu\n\nKotva:\n• Nastav polomer kotvenia (odporúčané: 2× dĺžka kotevného lana)\n• Alarm zavibruje, ak sa loď vzdiali z povoleného okruhu\n• Kotvová stráž si zapisuje vlastnú trasu, takže noč na kotve už nie je v GPX diera. Je to samostatný úsek — do naplávaných míľ, vzdialenosti dňa ani nočných hodín sa nepočíta, hojdanie na reťazi nie je plavba.\n• Stráž prežije aj reštart appky: keď ju systém na pozadí zabije, po spustení sa sama rozbehne ďalej na tej istej kotve.\n• Záznam o spustení a vytiahnutí kotvy už nesú aj vietor, tlak, teploty, hĺbku pod kýľom a pohon — dovtedy v ňom bol len čas a poloha.\n• Kotvová stráž zapisuje trasu aj vtedy, keď sa žiadna plavba netrasuje — má vlastný úsek, ktorý je mimo míľ aj mimo vzdialenosti dňa, ale ide do GPX a karta dňa ukáže, odkedy dokedy strážila, koľko bodov zapísala a aký bol najväčší výkyv od kotvy.'**
   String get guideSafetyMobBody;
 
   /// No description provided for @guideSafetyBriefingTitle.
@@ -5645,7 +5645,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSettingsBody.
   ///
   /// In sk, this message translates to:
-  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n• Aktualizácie – keď je na Google Play novšia verzia, appka ju stiahne na pozadí a ponúkne reštart. Počas záznamu plavby sa nepýta nikdy.\n• Časové pásmo – čas na obrazovke aj v PDF sa zobrazuje buď miestne (pásmo telefónu, teda oblasti, kde práve si), alebo v UTC. Uložené záznamy sa tým nemenia, prepína sa len zobrazenie; PDF vždy uvedie, ktoré pásmo platí.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.\n• Ohodnotiť aplikáciu — otvorí kartu appky v Google Play. Appka sa raz za čas spočíta aj sama, a to až po ukončenej plavbe, nikdy počas nej.'**
+  /// **'• Jazyk – zmeň jazyk aplikácie\n• Prístroje – nastav IP adresu Raymarine WiFi gateway (TCP alebo UDP)\n• GPS zdroj – telefón alebo Raymarine\n• Jednotky – vzdialenosť NM/km, rýchlosť uzly/km/h, teplota, hĺbka a vietor zvlášť (na rieke sa hodí km + km/h)\n• Frekvencia zápisov do denníka\n• Spodné menu – prispôsob si ho: podrž a potiahni ikonu pre zmenu poradia, prepínačom skry karty ktoré nepoužívaš, a nastav veľkosť ikon (S/M/L). Skryté karty otvoríš priamo tu v Nastaveniach; Nastavenia sú vždy zobrazené. Poradie aj veľkosť sa pamätajú. Popisky pod ikonami sú skryté, aby ikony sedeli rovnako vo všetkých jazykoch; podržaním ikony sa názov zobrazí.\n• Zobrazenie – nočný režim (červený filter pre zachovanie nočného videnia)\n• Cloud export (Google Drive) – po prihlásení Google účtu sa PDF a GPX z ukončeného dňa automaticky nahrajú na tvoj vlastný Google Drive. Bez prihlásenia zostáva všetko len v zariadení.\n• Záloha dát – pozri sekciu \"Záloha a obnova dát\"\n• O aplikácii – verzia a kontakt\n• Batéria – GPS beží na plnú presnosť len tam, kde na presnej polohe záleží (sledovanie plavby, mapa, kompas, prístroje, kotvová stráž, MOB); inde prepne do úsporného režimu a na pozadí bez zapnutého sledovania sa vypne úplne. Pri pripojených lodných prístrojoch ostáva GPS telefónu vypnuté a poloha ide z NMEA.\n• Aktualizácie – keď je na Google Play novšia verzia, appka ju stiahne na pozadí a ponúkne reštart. Počas záznamu plavby sa nepýta nikdy.\n• Časové pásmo – čas na obrazovke aj v PDF sa zobrazuje buď miestne (pásmo telefónu, teda oblasti, kde práve si), alebo v UTC. Uložené záznamy sa tým nemenia, prepína sa len zobrazenie; PDF vždy uvedie, ktoré pásmo platí.\n\nGoogle konto a cloudový export\n\nPrihlásenie Google konta je dobrovoľné. Bez neho appka funguje celá a všetky záznamy zostávajú iba v telefóne.\n\nČo sa nahráva – po ukončení dňa plavby PDF denníka a GPX trasa toho dňa. Nič iné: žiadne fotky, žiadne kontakty posádky, žiadne polohy v reálnom čase.\n\nKam – na tvoj vlastný Google Disk, do priečinka HMB_Sailing_Log_DATA / názov plavby / Day_dátum. Nie na server appky – ten neexistuje.\n\nČo appka na Disku vidí – iba súbory, ktoré tam sama vytvorila. Používa najužšie oprávnenie, aké Google ponúka (drive.file), takže k ostatnému obsahu tvojho Disku sa nedostane. Oprávnenie si navyše pýta až pri prvom nahrávaní, nie pri prihlásení.\n\nAko to zrušíš – odhlás konto v Nastaveniach. Súbory, ktoré už na Disku sú, zostanú tvoje – appka ich nemaže. Prístup sa dá kedykoľvek odobrať aj v nastaveniach Google konta.\n• Ohodnotiť aplikáciu — otvorí kartu appky v Google Play. Appka sa raz za čas spočíta aj sama, a to až po ukončenej plavbe, nikdy počas nej.\n• Kotevný alarm: vyber zvuk ktorýkoľvek budík alebo zvonenie v telefóne cez systémový výber a jeho hlasitosť a vypočuj si ukážku skôr, než ho budeš potrebovať. Zvuk ide cez alarmový kanál, takže ho počuť aj pri stíšenom telefóne; hlasitosť sa dá stíšiť, nie vypnúť.'**
   String get guideSettingsBody;
 
   /// No description provided for @guideBackupTitle.
@@ -7393,6 +7393,114 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Toto zariadenie nemá kompas — smerník nie je k dispozícii.'**
   String get compassUnavailable;
+
+  /// No description provided for @anchorQuickStarted.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotvová stráž beží · {radius} m'**
+  String anchorQuickStarted(String radius);
+
+  /// No description provided for @anchorQuickStopTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vypnúť kotvovú stráž?'**
+  String get anchorQuickStopTitle;
+
+  /// No description provided for @anchorQuickStopBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stráž prestane strážiť a do denníka pribudne „Kotva zdvihnutá\".'**
+  String get anchorQuickStopBody;
+
+  /// No description provided for @mobCancelTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zrušiť MOB?'**
+  String get mobCancelTitle;
+
+  /// No description provided for @mobCancelBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poplach stíchne a bod pádu sa prestane sledovať.'**
+  String get mobCancelBody;
+
+  /// No description provided for @anchorSoundLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zvuk alarmu'**
+  String get anchorSoundLabel;
+
+  /// No description provided for @anchorVolumeLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Hlasitosť alarmu'**
+  String get anchorVolumeLabel;
+
+  /// No description provided for @anchorSoundPreview.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prehrať ukážku'**
+  String get anchorSoundPreview;
+
+  /// No description provided for @anchorSoundPreviewDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Zvuk, ktorý si nikdy nepočul, ti o tretej ráno nepovie „kotva\".'**
+  String get anchorSoundPreviewDesc;
+
+  /// No description provided for @anchorWatchDaySummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotvová stráž {range} · {points} bodov · najväčší výkyv {swing} m'**
+  String anchorWatchDaySummary(String range, String points, String swing);
+
+  /// No description provided for @anchorSoundSystemDefault.
+  ///
+  /// In sk, this message translates to:
+  /// **'Budík telefónu'**
+  String get anchorSoundSystemDefault;
+
+  /// No description provided for @anchorVolumeDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Toto je skutočná hlasitosť, nie násobič: appka na čas alarmu zdvihne alarmový kanál telefónu na túto úroveň a potom ho vráti späť.'**
+  String get anchorVolumeDesc;
+
+  /// No description provided for @anchorDndTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Režim Nerušiť prebíja hlasitosť'**
+  String get anchorDndTitle;
+
+  /// No description provided for @anchorDndBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kým je zapnuté Nerušiť, zdvihnutie hlasitosti môžeš povoliť len ty. Bez toho alarm zaznie, len tak nahlas, ako má telefón nastavené.'**
+  String get anchorDndBody;
+
+  /// No description provided for @unassignedMobTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'MOB mimo plavby'**
+  String get unassignedMobTitle;
+
+  /// No description provided for @unassignedAnchorTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Kotva mimo plavby'**
+  String get unassignedAnchorTitle;
+
+  /// No description provided for @unassignedEventTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Udalosť mimo plavby'**
+  String get unassignedEventTitle;
+
+  /// No description provided for @logEventMobCancelled.
+  ///
+  /// In sk, this message translates to:
+  /// **'MOB zrušený'**
+  String get logEventMobCancelled;
 }
 
 class _AppLocalizationsDelegate

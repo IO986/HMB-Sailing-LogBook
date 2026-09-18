@@ -805,7 +805,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pdfHandoverTitle => 'Übergabeprotokoll';
 
   @override
-  String get pdfMilesTitle => 'Bestätigung der Seemeilen';
+  String get pdfMilesTitle => 'Bescheinigung der gesegelten Meilen';
 
   @override
   String get pdfDeparture => 'Abfahrt';
@@ -2906,7 +2906,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMapBody =>
-      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Tiefen – Tiefenlinien von EMODnet, in Metern beschriftet. Ein Vermessungsmodell des Meeresbodens, KEINE Seekarte: zur Törnplanung ja, zur Entscheidung „komme ich hier durch“ nein. Standardmäßig aus; betrachtete Kacheln werden wie alle anderen gespeichert. Bei eingeschalteter Ebene tippen Sie auf die Karte, um die Tiefe an diesem Punkt abzulesen (benötigt Empfang).\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website (antippen ruft direkt an oder öffnet die Seite), Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Tiefen, Häfen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen\n• Die Karte lebt vom Netz: ohne Internet werden keine neuen Kacheln geladen, sichtbar ist nur der zwischengespeicherte Bereich. Lade das Gebiet vor dem Ablegen mit der Schaltfläche „Bereich offline herunterladen“ auf der Karte herunter. Ist das Telefon offline, weist die Karte oben mit einem orangen Balken darauf hin.';
+      'Die Karte zeigt deine aktuelle Position und die Fahrtroute.\n\n• Blauer Punkt = aktuelle Position\n• Blaue Linie = gerade aufgezeichnete Route\n• Routen-Symbol – wähle eine Fahrt oder einen Tag, um die Route auf der Karte anzuzeigen (orange), ohne PDF-Export Unten erscheint die Wiedergabe: Mit dem Schieberegler fährst du durch die Fahrt und siehst Position, Geschwindigkeit, Kurs, Wind und Druck zu jedem Zeitpunkt. Die Striche auf dem Regler sind Ereignisse — Fahrtbeginn und -ende, Anker, Drift, MOB.\n• Zwischen Satelliten- und Kartenansicht wechseln\n• Seezeichen – Schalter für nautische Markierungen (Wracks, Untiefen, Bojen)\n• Tiefen – Tiefenlinien von EMODnet, in Metern beschriftet. Ein Vermessungsmodell des Meeresbodens, KEINE Seekarte: zur Törnplanung ja, zur Entscheidung „komme ich hier durch“ nein. Standardmäßig aus; betrachtete Kacheln werden wie alle anderen gespeichert. Bei eingeschalteter Ebene tippen Sie auf die Karte, um die Tiefe an diesem Punkt abzulesen (benötigt Empfang).\n• Häfen – antippbare Ebene mit Ankerplätzen, Marinas und Häfen (OpenStreetMap-Daten): tippe auf ein Symbol für Name, VHF-Kanal, Telefon, Website (antippen ruft direkt an oder öffnet die Seite), Tiefe oder Kapazität (sofern bekannt); der Ort lässt sich direkt als Wegpunkt speichern; die Ebene enthält auch Boots-Tankstellen (orange Zapfsäule)\n• Lineal (lila Symbol) – tippe Punkte auf die Karte: Gesamt-NM, Kurs der letzten Etappe und ETA bei aktueller Geschwindigkeit; Punkte rasten an Wegpunkten ein\n• Offline-Karte (Download-Symbol) — lädt den sichtbaren Bereich für die Nutzung ohne Signal, vom aktuellen Zoom drei Stufen tiefer. Immer Seezeichen; bei eingeschaltetem Satellit auch die Bilder und ihre Ortsnamen. Zusätzlich wird jede angesehene Kachel automatisch gespeichert.\n• Im Nachtmodus wechselt die Karte automatisch zu dunklen Kacheln\n• Ankersymbol = Ankerposition (nur bei aktivem Ankeralarm)\n• Import-Symbol – lädt Tracks und Wegpunkte aus einer .gpx-Datei (siehe \"GPX-Import\")\n• Nordsperre – die Kompassrose (oben links) lange drücken; die Karte dreht sich nicht mehr und bleibt nach Norden ausgerichtet. Zum Zurücksetzen antippen.\n• Die gewählten Ebenen (Satellit, Seezeichen, Tiefen, Häfen), GPS-Folgen und die Nordsperre bleiben zwischen Starts erhalten\n• Lange auf die Karte drücken = Wegpunkt hinzufügen (Navigationsziel); auf einen vorhandenen Wegpunkt tippen, um ihn umzubenennen oder zu löschen\n• Die Karte lebt vom Netz: ohne Internet werden keine neuen Kacheln geladen, sichtbar ist nur der zwischengespeicherte Bereich. Lade das Gebiet vor dem Ablegen mit der Schaltfläche „Bereich offline herunterladen“ auf der Karte herunter. Ist das Telefon offline, weist die Karte oben mit einem orangen Balken darauf hin.\n• Während einer Fahrt hat die Karte zwei zusätzliche Tasten. Der Anker startet die Ankerwache an der aktuellen Position mit dem zuletzt genutzten Radius — ein Tippen, ein weiteres fragt vor dem Beenden. Die rote MOB-Taste muss gedrückt gehalten werden; ein Tippen erinnert nur daran. Solange die Wache läuft, zeichnet die Karte den Schwoikreis: die Linie, die das Boot an der Kette um den Anker gezogen hat.';
 
   @override
   String get guideInstrTitle => 'Marine-Instrumente';
@@ -2927,7 +2927,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.\n• Die Ausweis-/Passnummer wird beim Ausstellen der Bescheinigung eingegeben, für jedes Crewmitglied einzeln. Sie wird nicht gespeichert und steht nur auf diesem einen Dokument; die eigene Nummer des Skippers liegt in der Reisekarte und wird automatisch eingesetzt. Ohne Nummer bleibt eine Linie zum Eintragen von Hand.';
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.\n• Die Ausweis-/Passnummer wird beim Ausstellen der Bescheinigung eingegeben, für jedes Crewmitglied einzeln. Sie wird nicht gespeichert und steht nur auf diesem einen Dokument; die eigene Nummer des Skippers liegt in der Reisekarte und wird automatisch eingesetzt. Ohne Nummer bleibt eine Linie zum Eintragen von Hand.\n• Die Bescheinigung wird vor dem Export unterschrieben wie das Logbuch: Das Unterschriftfeld öffnet sich und das PDF bekommt eine Schlussseite mit Unterschrift, Zeit, SHA-256-Prüfsumme und QR-Code zur Überprüfung.';
 
   @override
   String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
@@ -2955,7 +2955,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSafetyMobBody =>
-      'Die Sicherheits-Registerkarte enthält Notfallfunktionen.\n\nMOB (Mann über Bord):\n• Roten MOB-Knopf gedrückt halten zum Aktivieren\n• App speichert GPS-Position und misst Zeit und Entfernung\n• Navigation zurück zum Fallpunkt\n\nAnkeralarm:\n• Ankerradius einstellen (empfohlen: 2× Kettenlänge)\n• Alarm vibriert, wenn das Boot den erlaubten Radius verlässt\n• Die Ankerwache zeichnet jetzt einen eigenen Track auf, damit eine Nacht vor Anker keine Lücke mehr im GPX ist. Es ist ein eigener Abschnitt — er zählt nie zu Meilen, Tagesdistanz oder Nachtstunden, denn Schwojen an der Kette ist keine Fahrt.\n• Die Wache übersteht einen Neustart der App: Tötet das System die App im Hintergrund, läuft sie nach dem Start am selben Anker weiter.\n• Die Einträge Anker gefallen und Anker auf führen jetzt Wind, Druck, Temperaturen, Tiefe unter dem Kiel und Antrieb — bisher standen dort nur Zeit und Position.';
+      'Die Sicherheits-Registerkarte enthält Notfallfunktionen.\n\nMOB (Mann über Bord):\n• Roten MOB-Knopf gedrückt halten zum Aktivieren\n• App speichert GPS-Position und misst Zeit und Entfernung\n• Navigation zurück zum Fallpunkt\n\nAnkeralarm:\n• Ankerradius einstellen (empfohlen: 2× Kettenlänge)\n• Alarm vibriert, wenn das Boot den erlaubten Radius verlässt\n• Die Ankerwache zeichnet jetzt einen eigenen Track auf, damit eine Nacht vor Anker keine Lücke mehr im GPX ist. Es ist ein eigener Abschnitt — er zählt nie zu Meilen, Tagesdistanz oder Nachtstunden, denn Schwojen an der Kette ist keine Fahrt.\n• Die Wache übersteht einen Neustart der App: Tötet das System die App im Hintergrund, läuft sie nach dem Start am selben Anker weiter.\n• Die Einträge Anker gefallen und Anker auf führen jetzt Wind, Druck, Temperaturen, Tiefe unter dem Kiel und Antrieb — bisher standen dort nur Zeit und Position.\n• Die Ankerwache schreibt den Track auch dann, wenn keine Fahrt aufgezeichnet wird — sie hat einen eigenen Abschnitt außerhalb der Meilen und der Tagesdistanz, kommt aber ins GPX, und die Tageskarte zeigt, wann sie lief, wie viele Punkte sie schrieb und den größten Ausschlag vom Anker.';
 
   @override
   String get guideSafetyBriefingTitle => 'Sicherheitseinweisung & MAYDAY';
@@ -2983,7 +2983,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideSettingsBody =>
-      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.\n• Updates – liegt eine neuere Version bei Google Play, lädt die App sie im Hintergrund und bietet einen Neustart an. Während einer laufenden Aufzeichnung fragt sie nie.\n• Zeitzone – Zeiten auf dem Bildschirm und im PDF werden entweder lokal (Zeitzone des Telefons, also dort, wo du bist) oder in UTC angezeigt. Die gespeicherten Einträge ändern sich dadurch nicht, nur die Anzeige; das PDF nennt immer die geltende Zone.\n\nGoogle-Konto und Cloud-Export\n\nDie Anmeldung mit einem Google-Konto ist freiwillig. Ohne sie funktioniert die App vollständig und alle Aufzeichnungen bleiben nur auf dem Telefon.\n\nWas hochgeladen wird – nach Abschluss eines Fahrttages das Logbuch-PDF und der GPX-Track dieses Tages. Sonst nichts: keine Fotos, keine Crew-Kontakte, keine Live-Positionen.\n\nWohin – auf deine eigene Google Drive, in HMB_Sailing_Log_DATA / Fahrtname / Day_Datum. Nicht auf einen App-Server – den gibt es nicht.\n\nWas die App auf der Drive sieht – nur die Dateien, die sie dort selbst angelegt hat. Sie nutzt die engste Berechtigung, die Google anbietet (drive.file), der Rest deiner Drive bleibt unerreichbar. Die Berechtigung wird zudem erst beim ersten Upload angefragt, nicht bei der Anmeldung.\n\nWie du es rückgängig machst – in den Einstellungen abmelden. Bereits hochgeladene Dateien bleiben deine – die App löscht sie nicht. Der Zugriff lässt sich jederzeit auch in den Google-Kontoeinstellungen entziehen.\n• App bewerten — öffnet die App-Seite bei Google Play. Die App fragt gelegentlich auch von selbst, aber erst nach einer beendeten Reise, nie während einer.';
+      '• Sprache – App-Sprache ändern\n• Instrumente – Raymarine WiFi-Gateway IP-Adresse einstellen (TCP oder UDP)\n• GPS-Quelle – Telefon oder Raymarine\n• Einheiten – Distanz sm/km, Geschwindigkeit Knoten/km/h, dazu Temperatur, Tiefe und Wind separat (km + km/h passt auf Flüssen)\n• Häufigkeit der Logbucheinträge\n• Anzeige – Nachtmodus (Rotfilter für Nachtvisionsschutz)\n• Untere Leiste – anpassbar: Symbol halten und ziehen zum Umsortieren, mit dem Schalter nicht genutzte Tabs ausblenden, Symbolgröße wählen (S/M/L). Ausgeblendete Tabs lassen sich hier in den Einstellungen öffnen; Einstellungen sind immer sichtbar. Reihenfolge und Größe werden gespeichert. Die Beschriftungen unter den Symbolen sind ausgeblendet, damit die Symbole in jeder Sprache gleich sitzen; langes Drücken zeigt den Namen.\n• Cloud-Export (Google Drive) – nach der Anmeldung werden PDF und GPX jedes beendeten Tages automatisch auf dein eigenes Google Drive hochgeladen. Ohne Anmeldung bleibt alles auf dem Gerät.\n• Datensicherung – siehe \"Datensicherung und Wiederherstellung\"\n• Über die App – Version und Kontakt\n• Akku – GPS läuft nur dort mit voller Genauigkeit, wo es auf die genaue Position ankommt (Törnaufzeichnung, Karte, Kompass, Instrumente, Ankerwache, MOB); sonst schaltet es in einen sparsamen Modus und im Hintergrund ohne laufende Aufzeichnung ganz ab. Bei verbundenen Bordinstrumenten bleibt das Telefon-GPS aus und die Position kommt über NMEA.\n• Updates – liegt eine neuere Version bei Google Play, lädt die App sie im Hintergrund und bietet einen Neustart an. Während einer laufenden Aufzeichnung fragt sie nie.\n• Zeitzone – Zeiten auf dem Bildschirm und im PDF werden entweder lokal (Zeitzone des Telefons, also dort, wo du bist) oder in UTC angezeigt. Die gespeicherten Einträge ändern sich dadurch nicht, nur die Anzeige; das PDF nennt immer die geltende Zone.\n\nGoogle-Konto und Cloud-Export\n\nDie Anmeldung mit einem Google-Konto ist freiwillig. Ohne sie funktioniert die App vollständig und alle Aufzeichnungen bleiben nur auf dem Telefon.\n\nWas hochgeladen wird – nach Abschluss eines Fahrttages das Logbuch-PDF und der GPX-Track dieses Tages. Sonst nichts: keine Fotos, keine Crew-Kontakte, keine Live-Positionen.\n\nWohin – auf deine eigene Google Drive, in HMB_Sailing_Log_DATA / Fahrtname / Day_Datum. Nicht auf einen App-Server – den gibt es nicht.\n\nWas die App auf der Drive sieht – nur die Dateien, die sie dort selbst angelegt hat. Sie nutzt die engste Berechtigung, die Google anbietet (drive.file), der Rest deiner Drive bleibt unerreichbar. Die Berechtigung wird zudem erst beim ersten Upload angefragt, nicht bei der Anmeldung.\n\nWie du es rückgängig machst – in den Einstellungen abmelden. Bereits hochgeladene Dateien bleiben deine – die App löscht sie nicht. Der Zugriff lässt sich jederzeit auch in den Google-Kontoeinstellungen entziehen.\n• App bewerten — öffnet die App-Seite bei Google Play. Die App fragt gelegentlich auch von selbst, aber erst nach einer beendeten Reise, nie während einer.\n• Ankeralarm: Ton jeden Wecker- oder Klingelton des Telefons über die Systemauswahl und Lautstärke wählen und eine Probe hören, bevor du ihn brauchst. Der Ton läuft über den Alarmkanal und ist auch bei stummem Telefon hörbar; leiser ja, aus nicht.';
 
   @override
   String get guideBackupTitle => 'Datensicherung und Wiederherstellung';
@@ -3679,7 +3679,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dateFormatByLanguage => 'Nach App-Sprache';
 
   @override
-  String get crewCertTitle => 'Bescheinigung über gesegelte Seemeilen';
+  String get crewCertTitle => 'Bescheinigung der gesegelten Meilen';
 
   @override
   String get crewCertVoyage => 'Fahrt';
@@ -3963,4 +3963,67 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get compassUnavailable =>
       'Dieses Gerät hat keinen Kompass — kein Kurs verfügbar.';
+
+  @override
+  String anchorQuickStarted(String radius) {
+    return 'Ankerwache läuft · $radius m';
+  }
+
+  @override
+  String get anchorQuickStopTitle => 'Ankerwache beenden?';
+
+  @override
+  String get anchorQuickStopBody =>
+      'Die Wache endet und „Anker gelichtet\" kommt ins Logbuch.';
+
+  @override
+  String get mobCancelTitle => 'MOB abbrechen?';
+
+  @override
+  String get mobCancelBody =>
+      'Der Alarm verstummt und die Position des Sturzes wird nicht weiter verfolgt.';
+
+  @override
+  String get anchorSoundLabel => 'Alarmton';
+
+  @override
+  String get anchorVolumeLabel => 'Alarmlautstärke';
+
+  @override
+  String get anchorSoundPreview => 'Probe abspielen';
+
+  @override
+  String get anchorSoundPreviewDesc =>
+      'Ein Ton, den du nie gehört hast, bedeutet um drei Uhr nachts nicht „Anker\".';
+
+  @override
+  String anchorWatchDaySummary(String range, String points, String swing) {
+    return 'Ankerwache $range · $points Punkte · größter Schwoiradius $swing m';
+  }
+
+  @override
+  String get anchorSoundSystemDefault => 'Weckton des Telefons';
+
+  @override
+  String get anchorVolumeDesc =>
+      'Das ist die echte Lautstärke, kein Faktor: Für die Dauer des Alarms hebt die App den Alarmkanal des Telefons auf diesen Wert und setzt ihn danach zurück.';
+
+  @override
+  String get anchorDndTitle => '„Nicht stören\" überschreibt die Lautstärke';
+
+  @override
+  String get anchorDndBody =>
+      'Solange „Nicht stören\" an ist, kannst nur du das Anheben der Lautstärke erlauben. Ohne das ertönt der Alarm trotzdem, nur so laut, wie das Telefon eingestellt ist.';
+
+  @override
+  String get unassignedMobTitle => 'MOB außerhalb einer Fahrt';
+
+  @override
+  String get unassignedAnchorTitle => 'Anker außerhalb einer Fahrt';
+
+  @override
+  String get unassignedEventTitle => 'Ereignis außerhalb einer Fahrt';
+
+  @override
+  String get logEventMobCancelled => 'MOB abgebrochen';
 }

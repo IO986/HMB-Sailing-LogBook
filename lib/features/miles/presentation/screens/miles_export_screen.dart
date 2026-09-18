@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../../export/services/export_service.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../providers/miles_provider.dart';
@@ -307,13 +308,26 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final dateFormat = AppDate.of(context, ref);
+
+    // Výber plavieb sa kontroluje EŠTE pred podpisom: nechať skipera
+    // podpísať sa a až potom mu povedať, že nevybral ani jednu plavbu, by
+    // bol podpis nazmar.
+    final chosen = aggregate.voyages.where(_isSelected).toList();
+    if (chosen.isEmpty) {
+      messenger.showSnackBar(SnackBar(content: Text(l.milesExportNoVoyages)));
+      return;
+    }
+
+    // Podpis vystavovateľa, rovnako ako pri exporte denníka. Zrušený pad
+    // znamená zrušený export — nepodpísané potvrdenie o míľach je papier,
+    // na ktorom nikto za čísla neručí.
+    final issuer = _issuer.text.trim();
+    final signatureImage =
+        await showSignaturePadDialog(context, signerName: issuer.isEmpty ? null : issuer);
+    if (signatureImage == null || !mounted) return;
+
     setState(() => _busy = true);
     try {
-      final chosen = aggregate.voyages.where(_isSelected).toList();
-      if (chosen.isEmpty) {
-        messenger.showSnackBar(SnackBar(content: Text(l.milesExportNoVoyages)));
-        return;
-      }
       final bytes = await PdfExportService.exportMilesCertificate(
         dateFormat: dateFormat,
         l: l,
@@ -325,6 +339,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
         recipientName: _forSelf ? null : _recipient.text.trim(),
         idNumber: _idNumber.text.trim(),
         forSelf: _forSelf,
+        signatureImage: signatureImage,
       );
 
       final docName = 'HMB Kniha mil '
