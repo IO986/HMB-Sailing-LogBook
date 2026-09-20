@@ -56,6 +56,24 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   final Map<int, ScreenshotController> _screenshotControllers = {};
   final Map<int, Uint8List?> _mapScreenshots = {};
 
+  /// Náhľad celej plavby — jedna mapa so všetkými bodmi trasy dokopy.
+  ///
+  /// Denné výrezy ukazujú, kade sa v ktorý deň išlo, ale prvá strana z nich
+  /// celok neposkladá. Skiper aj ten, komu doklad predkladá, chcú vidieť
+  /// jednu čiaru od začiatku po koniec.
+  final ScreenshotController _voyageMapController = ScreenshotController();
+  Uint8List? _voyageMapShot;
+
+  /// Body všetkých dní v chronologickom poradí.
+  List<TrackPoint> get _allTrackPoints {
+    final pts = <TrackPoint>[];
+    for (final day in _days) {
+      pts.addAll(_tracksByDay[day.id] ?? const []);
+    }
+    pts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    return pts;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -127,6 +145,14 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         if (mounted) setState(() => _mapScreenshots[day.id] = img);
       } catch (_) {}
     }
+    // Celá plavba až nakoniec: jej dlaždice sú z iného zoomu a nech sa
+    // najprv dokreslia tie denné, ktoré blokujú tlačidlo exportu.
+    if (_days.length > 1) {
+      try {
+        final img = await _voyageMapController.capture(pixelRatio: 1.0);
+        if (mounted) setState(() => _voyageMapShot = img);
+      } catch (_) {}
+    }
   }
 
   /// Prepnutie podkladu. Staré snímky sa zahodia a odfotia sa znova —
@@ -135,7 +161,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     if (ref.read(exportSatelliteMapProvider) == satellite) return;
     await ref.read(exportSatelliteMapProvider.notifier).set(satellite);
     if (!mounted) return;
-    setState(_mapScreenshots.clear);
+    setState(() {
+      _mapScreenshots.clear();
+      _voyageMapShot = null;
+    });
     await _captureMaps();
   }
 
@@ -246,6 +275,16 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             ),
           ),
           const SizedBox(height: 12),
+
+          // Celá plavba nad dennými výrezmi — v tom poradí ide aj do PDF.
+          // Pri jednodňovej plavbe by to bola tá istá mapa dvakrát.
+          if (_days.length > 1)
+            _VoyageMapPreview(
+              trackPoints: _allTrackPoints,
+              screenshotController: _voyageMapController,
+              screenshot: _voyageMapShot,
+              satellite: satellite,
+            ),
 
           ..._days.map((day) => _DayMapPreview(
             day: day,
@@ -419,6 +458,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           days: freshDays,
           entriesByDay: _entriesByDay,
           mapScreenshots: _mapScreenshots,
+          voyageMapScreenshot: _voyageMapShot,
           l10n: l10n,
           dutiesByDay: dutiesByDay,
           bearingsByDay: bearingsByDay,
@@ -524,6 +564,62 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 }
 
 // ── Náhľad mapy pre deň ──────────────────────────────────────
+
+/// Náhľad mapy celej plavby, zdroj obrázka pre prvú stranu PDF.
+class _VoyageMapPreview extends ConsumerWidget {
+  final List<TrackPoint> trackPoints;
+  final ScreenshotController screenshotController;
+  final Uint8List? screenshot;
+  final bool satellite;
+
+  const _VoyageMapPreview({
+    required this.trackPoints,
+    required this.screenshotController,
+    required this.screenshot,
+    required this.satellite,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Icon(Icons.route, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(l.mapVoyageOverview,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            screenshot != null
+                ? const Icon(Icons.check_circle, color: Colors.green, size: 18)
+                : const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(strokeWidth: 2)),
+          ]),
+          const SizedBox(height: 10),
+          Screenshot(
+            controller: screenshotController,
+            child: SizedBox(
+              // Vyššia než denný výrez: celá plavba je väčšie územie a na
+              // 180 px by z nej bola čiara cez prázdnotu.
+              height: 220,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: DayMapView(
+                    trackPoints: trackPoints, satellite: satellite),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
 
 class _DayMapPreview extends ConsumerWidget {
   final DayLog day;

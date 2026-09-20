@@ -117,6 +117,9 @@ class PdfExportService {
     Map<int, List<DutyPeriod>> dutiesByDay = const {},
     Map<int, List<Bearing>> bearingsByDay = const {},
     Uint8List? signatureImage,
+    /// Mapa celej plavby na prvú stranu. Denné výrezy z nej celok
+    /// neposkladajú — čitateľ chce jednu čiaru od začiatku po koniec.
+    Uint8List? voyageMapScreenshot,
     SkipperProfile? skipperProfile,
     List<CrewSignature> crewSignatures = const [],
     int pdfRevision = 0,
@@ -142,7 +145,8 @@ class PdfExportService {
     final vesselPhotos = await _loadVesselPhotos(charter);
     pdf.addPage(_titlePage(
       l10n,
-        charter, days, entriesByDay, skipperProfile, docId, rev, vesselPhotos));
+        charter, days, entriesByDay, skipperProfile, docId, rev, vesselPhotos,
+        voyageMapScreenshot));
     for (final day in days) {
       final entries = entriesByDay[day.id] ?? [];
       final photos = await _loadPhotos(entries);
@@ -431,15 +435,23 @@ class PdfExportService {
 
   static pw.Page _titlePage(AppLocalizations l, Charter charter, List<DayLog> days,
       Map<int, List<LogbookEntry>> entriesByDay, SkipperProfile? skipper,
-      String docId, int revision, List<pw.MemoryImage> vesselPhotos) {
+      String docId, int revision, List<pw.MemoryImage> vesselPhotos,
+      [Uint8List? voyageMap]) {
     final fmt = _date;
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
 
-    return pw.Page(
+    // MultiPage, nie Page: obsah prvej strany rastie s počtom dní, s posádkou
+    // aj s fotkami lode, a odkedy je na nej mapa celej plavby, sa na jednu A4
+    // zmestiť nemusí. Pevná strana nemá kam pretiecť — obsah by sa orezal.
+    // Takto sa to, čo sa nezmestí, presunie na ďalšiu stranu v pôvodnej
+    // veľkosti. Pätička ide cez `footer`, preto na konci nie je Spacer.
+    return pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(36),
-      build: (ctx) => pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+      footer: (ctx) =>
+          _footer(_pdfText(charter.title), docId: docId, revision: revision),
+      build: (ctx) => [
         // Header: vľavo názov + dátum, vpravo fotka lode (ak je nahratá)
         pw.Container(
           width: double.infinity,
@@ -562,6 +574,36 @@ class PdfExportService {
           pw.SizedBox(height: 10),
         ],
 
+        // Mapa celej plavby.
+        //
+        // Stojí nad zoznamom dní: čitateľ najprv chce vidieť, kade sa
+        // plávalo, a až potom rozpis po dňoch.
+        if (voyageMap != null) ...[
+          pw.Text(l.mapVoyageOverview.toUpperCase(), style: pw.TextStyle(
+              color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10,
+              letterSpacing: 1)),
+          pw.SizedBox(height: 6),
+          pw.Container(
+            width: double.infinity,
+            // Pevná výška, nie zvyšok strany. Stlačiť mapu podľa toho, koľko
+            // miesta zvýšilo, znamená pri dvojtýždňovej plavbe prúžok, z
+            // ktorého sa nedá nič prečítať — a v krajnom prípade nič. Keď sa
+            // sem nezmestí, MultiPage ju posunie na ďalšiu stranu celú.
+            height: 260,
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+            ),
+            child: pw.ClipRRect(
+              horizontalRadius: 4,
+              verticalRadius: 4,
+              child:
+                  pw.Image(pw.MemoryImage(voyageMap), fit: pw.BoxFit.cover),
+            ),
+          ),
+          pw.SizedBox(height: 12),
+        ],
+
         pw.Text(l.pdfDaysOverview.toUpperCase(), style: pw.TextStyle(color: _navy,
             fontWeight: pw.FontWeight.bold, fontSize: 10, letterSpacing: 1)),
         pw.SizedBox(height: 6),
@@ -598,9 +640,7 @@ class PdfExportService {
             }),
           ],
         ),
-        pw.Spacer(),
-        _footer(_pdfText(charter.title), docId: docId, revision: revision),
-      ]),
+      ],
     );
   }
 

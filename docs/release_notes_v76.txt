@@ -1,0 +1,11 @@
+HMB Sailing Log — build 76 (1.38.0+76)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: the anchor asks for the radius before it starts the watch. The last one you used is offered, but how much chain the boat lies to is a different number in the next bay.
+• New: the voyage export carries a map of the whole voyage on the first page, above the day list — the one line from start to finish that the per-day maps could never add up to.
+
+=== Slovenčina (sk) ===
+• Nové: kotva sa pred spustením stráže spýta na polomer. Ponúkne naposledy použitý, ale koľko reťaze loď vytiahne, je v inej zátoke iné číslo.
+• Nové: export plavby nesie na prvej strane mapu celej plavby, nad zoznamom dní — tú jednu čiaru od začiatku po koniec, ktorú z denných výrezov poskladať nešlo.
