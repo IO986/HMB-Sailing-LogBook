@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Vrijeme {offset}",
   "timeZoneLabel": "Vremenska zona",
   "timeZoneLocalShort": "Lokalno",
+  "coordFormatLabel": "Format koordinata",
   "pdfColWind": "Vjetar",
   "pdfColPropulsion": "Pogon",
   "pdfColWeatherShort": "Vrij.",

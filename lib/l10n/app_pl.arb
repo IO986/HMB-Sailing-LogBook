@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Czas {offset}",
   "timeZoneLabel": "Strefa czasowa",
   "timeZoneLocalShort": "Lokalny",
+  "coordFormatLabel": "Format współrzędnych",
   "pdfColWind": "Wiatr",
   "pdfColPropulsion": "Napęd",
   "pdfColWeatherShort": "Pog.",

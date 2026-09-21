@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Time {offset}",
   "timeZoneLabel": "Time zone",
   "timeZoneLocalShort": "Local",
+  "coordFormatLabel": "Coordinate format",
   "pdfColWind": "Wind",
   "pdfColPropulsion": "Propulsion",
   "pdfColWeatherShort": "Wx",

@@ -860,6 +860,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get timeZoneLocalShort => 'Miestny';
 
   @override
+  String get coordFormatLabel => 'Formát súradníc';
+
+  @override
   String get pdfColWind => 'Vietor';
 
   @override

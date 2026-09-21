@@ -867,6 +867,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get timeZoneLocalShort => 'Τοπική';
 
   @override
+  String get coordFormatLabel => 'Μορφή συντεταγμένων';
+
+  @override
   String get pdfColWind => 'Άνεμος';
 
   @override

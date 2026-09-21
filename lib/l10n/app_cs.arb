@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Čas {offset}",
   "timeZoneLabel": "Časové pásmo",
   "timeZoneLocalShort": "Místní",
+  "coordFormatLabel": "Formát souřadnic",
   "pdfColWind": "Vítr",
   "pdfColPropulsion": "Pohon",
   "pdfColWeatherShort": "Poč.",

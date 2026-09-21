@@ -144,6 +144,23 @@ class SettingsScreen extends ConsumerWidget {
                 onChanged: (s) =>
                     ref.read(unitsProvider.notifier).setTimeZone(s.first),
               ),
+              const Divider(height: 1),
+              // Rovnaké číslo predtým vyzeralo inak na prístrojoch (stupne a
+              // minúty) a inak pri MOB či waypointoch (stupne s desatinnou
+              // čiarkou) — táto voľba to zjednocuje, vrátane exportov.
+              _UnitRow<CoordFormat>(
+                icon: Icons.explore_outlined,
+                label: l.coordFormatLabel,
+                segments: const [
+                  ButtonSegment(
+                      value: CoordFormat.dmm, label: Text("D° M.mmm'")),
+                  ButtonSegment(
+                      value: CoordFormat.decimal, label: Text('D.ddddd°')),
+                ],
+                selected: {units.coordFormat},
+                onChanged: (s) =>
+                    ref.read(unitsProvider.notifier).setCoordFormat(s.first),
+              ),
             ])),
             const SizedBox(height: 16),
 

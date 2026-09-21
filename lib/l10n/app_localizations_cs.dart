@@ -859,6 +859,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get timeZoneLocalShort => 'Místní';
 
   @override
+  String get coordFormatLabel => 'Formát souřadnic';
+
+  @override
   String get pdfColWind => 'Vítr';
 
   @override

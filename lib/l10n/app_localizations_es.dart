@@ -862,6 +862,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get timeZoneLocalShort => 'Local';
 
   @override
+  String get coordFormatLabel => 'Formato de coordenadas';
+
+  @override
   String get pdfColWind => 'Viento';
 
   @override

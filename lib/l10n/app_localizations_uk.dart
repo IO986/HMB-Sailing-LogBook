@@ -860,6 +860,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get timeZoneLocalShort => 'Місцевий';
 
   @override
+  String get coordFormatLabel => 'Формат координат';
+
+  @override
   String get pdfColWind => 'Вітер';
 
   @override

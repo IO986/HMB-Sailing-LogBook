@@ -289,8 +289,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         ],
 
         _Sec(l.navigationSection),
-        _NavRow(l.latitude, _lat?.toStringAsFixed(6) ?? '-'),
-        _NavRow(l.longitude, _lon?.toStringAsFixed(6) ?? '-'),
+        _NavRow(l.latitude, ref.watch(unitsSyncProvider).formatLat(_lat)),
+        _NavRow(l.longitude, ref.watch(unitsSyncProvider).formatLon(_lon)),
         _NavRow('SOG', ref.watch(unitsSyncProvider).formatSpeed(_sog)),
         _NavRow('COG', _cog != null ? '${_cog!.toStringAsFixed(0)}°' : '-'),
         if (_lat != null && _lon != null) ...[

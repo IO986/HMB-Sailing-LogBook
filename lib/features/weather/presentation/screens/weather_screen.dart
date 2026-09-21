@@ -31,7 +31,7 @@ final _locationNameProvider = FutureProvider<String?>((ref) async {
 
   final lat = pos.latitude;
   final lon = pos.longitude;
-  final coordStr = '${lat.toStringAsFixed(4)}°N, ${lon.toStringAsFixed(4)}°E';
+  final coordStr = ref.watch(unitsSyncProvider).formatCoords(lat, lon);
 
   try {
     final response = await dio.Dio().get(

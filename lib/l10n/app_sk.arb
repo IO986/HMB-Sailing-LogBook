@@ -295,6 +295,7 @@
   "@pdfColTimeLocal": { "placeholders": { "offset": { "type": "String" } } },
   "timeZoneLabel": "Časové pásmo",
   "timeZoneLocalShort": "Miestny",
+  "coordFormatLabel": "Formát súradníc",
   "pdfColWind": "Vietor",
   "pdfColPropulsion": "Pohon",
   "pdfColWeatherShort": "Poč.",

@@ -860,6 +860,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get timeZoneLocalShort => 'Lokalno';
 
   @override
+  String get coordFormatLabel => 'Format koordinata';
+
+  @override
   String get pdfColWind => 'Vjetar';
 
   @override

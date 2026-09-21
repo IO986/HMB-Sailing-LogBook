@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
 import '../../../../core/config/emergency_contacts.dart';
+import '../../../../core/services/units_service.dart';
 import '../../../charter/providers/charter_provider.dart';
 import 'mayday_card_screen.dart';
 import 'gear_list_screen.dart';
@@ -845,7 +846,7 @@ class _MobActiveCard extends ConsumerWidget {
         }),
         if (state.mobLat != null) ...[
           const SizedBox(height: 8),
-          Text('${state.mobLat!.toStringAsFixed(5)}°N  ${state.mobLon!.toStringAsFixed(5)}°E',
+          Text(ref.watch(unitsSyncProvider).formatCoords(state.mobLat, state.mobLon),
               style: const TextStyle(color: Colors.white70, fontSize: 13)),
         ],
         const SizedBox(height: 16),

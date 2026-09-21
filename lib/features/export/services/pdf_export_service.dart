@@ -1869,9 +1869,13 @@ class PdfExportService {
     return '${_latStr(fix.latitude)} ${_lonStr(fix.longitude)}';
   }
 
-  /// Stupne + decimálne minúty – štandard v námornej navigácii
+  /// Súradnice v PDF idú vo formáte, ktorý si skiper zvolil v nastaveniach
+  /// (rovnaký prepínač ako na prístrojoch) — nie natvrdo stupne a minúty.
   static String _latStr(double? lat) {
     if (lat == null) return '-';
+    if (units.coordFormat == CoordFormat.decimal) {
+      return '${lat.abs().toStringAsFixed(5)}°${lat >= 0 ? 'N' : 'S'}';
+    }
     final dir = lat >= 0 ? 'N' : 'S';
     final abs = lat.abs();
     final deg = abs.truncate();
@@ -1881,6 +1885,9 @@ class PdfExportService {
 
   static String _lonStr(double? lon) {
     if (lon == null) return '-';
+    if (units.coordFormat == CoordFormat.decimal) {
+      return '${lon.abs().toStringAsFixed(5)}°${lon >= 0 ? 'E' : 'W'}';
+    }
     final dir = lon >= 0 ? 'E' : 'W';
     final abs = lon.abs();
     final deg = abs.truncate();
@@ -2795,6 +2802,12 @@ class PdfExportService {
     /// Podpis vystavovateľa. Bez neho ostane na doklade len prázdna linka na
     /// podpísanie rukou, ako doteraz.
     Uint8List? signatureImage,
+    /// Mapa celej trasy naprieč všetkými zarátanými plavbami — rovnaký
+    /// náhľad ako na prvej strane exportu jednej plavby, len s bodmi zo
+    /// všetkých vybraných plavieb dokopy. `null`, keď žiadna z nich nemá
+    /// GPS trasu (ručne dopísané historické plavby) alebo sa mapu
+    /// nepodarilo odfotiť.
+    Uint8List? routeMap,
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -2874,6 +2887,30 @@ class PdfExportService {
               aggregate.nightHours.toStringAsFixed(1), _navy),
         ]),
         pw.SizedBox(height: 16),
+
+        // Mapa celej trasy, nad tabuľkou plavieb — rovnaké miesto a rovnaký
+        // dôvod ako pri exporte jednej plavby: skiper aj ten, kto potvrdenie
+        // prijíma, chce najprv vidieť kade sa plávalo.
+        if (routeMap != null) ...[
+          pw.Text(l.mapVoyageOverview.toUpperCase(), style: pw.TextStyle(
+              color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 10,
+              letterSpacing: 1)),
+          pw.SizedBox(height: 6),
+          pw.Container(
+            width: double.infinity,
+            height: 220,
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+            ),
+            child: pw.ClipRRect(
+              horizontalRadius: 4,
+              verticalRadius: 4,
+              child: pw.Image(pw.MemoryImage(routeMap), fit: pw.BoxFit.cover),
+            ),
+          ),
+          pw.SizedBox(height: 12),
+        ],
 
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),

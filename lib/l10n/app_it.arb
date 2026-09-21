@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Ora {offset}",
   "timeZoneLabel": "Fuso orario",
   "timeZoneLocalShort": "Locale",
+  "coordFormatLabel": "Formato coordinate",
   "pdfColWind": "Vento",
   "pdfColPropulsion": "Propulsione",
   "pdfColWeatherShort": "Meteo",

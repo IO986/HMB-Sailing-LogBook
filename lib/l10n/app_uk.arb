@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Час {offset}",
   "timeZoneLabel": "Часовий пояс",
   "timeZoneLocalShort": "Місцевий",
+  "coordFormatLabel": "Формат координат",
   "pdfColWind": "Вітер",
   "pdfColPropulsion": "Рушій",
   "pdfColWeatherShort": "Пог.",

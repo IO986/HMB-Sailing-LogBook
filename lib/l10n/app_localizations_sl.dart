@@ -859,6 +859,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get timeZoneLocalShort => 'Lokalni';
 
   @override
+  String get coordFormatLabel => 'Oblika koordinat';
+
+  @override
   String get pdfColWind => 'Veter';
 
   @override

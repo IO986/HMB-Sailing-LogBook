@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Čas {offset}",
   "timeZoneLabel": "Časovni pas",
   "timeZoneLocalShort": "Lokalni",
+  "coordFormatLabel": "Oblika koordinat",
   "pdfColWind": "Veter",
   "pdfColPropulsion": "Pogon",
   "pdfColWeatherShort": "Vrem.",

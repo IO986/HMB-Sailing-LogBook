@@ -1688,6 +1688,12 @@ abstract class AppLocalizations {
   /// **'Miestny'**
   String get timeZoneLocalShort;
 
+  /// No description provided for @coordFormatLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Formát súradníc'**
+  String get coordFormatLabel;
+
   /// No description provided for @pdfColWind.
   ///
   /// In sk, this message translates to:

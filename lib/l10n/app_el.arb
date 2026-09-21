@@ -286,6 +286,7 @@
   "pdfColTimeLocal": "Ώρα {offset}",
   "timeZoneLabel": "Ζώνη ώρας",
   "timeZoneLocalShort": "Τοπική",
+  "coordFormatLabel": "Μορφή συντεταγμένων",
   "pdfColWind": "Άνεμος",
   "pdfColPropulsion": "Πρόωση",
   "pdfColWeatherShort": "Καιρ.",

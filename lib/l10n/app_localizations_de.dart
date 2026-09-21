@@ -861,6 +861,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeZoneLocalShort => 'Lokal';
 
   @override
+  String get coordFormatLabel => 'Koordinatenformat';
+
+  @override
   String get pdfColWind => 'Wind';
 
   @override
