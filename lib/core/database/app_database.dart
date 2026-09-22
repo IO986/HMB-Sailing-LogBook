@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../services/night_hours.dart';
 import '../utils/distance_calculator.dart';
@@ -83,6 +84,17 @@ class Charters extends Table {
   /// o brífingu musí povedať, čo sa preberalo, nie čo je na tom mieste
   /// v zozname dnes. NULL = brífing z čias, keď sa zaškrtnutia neukladali.
   TextColumn get briefingCheckedJson => text().nullable()();
+
+  /// Stabilná identita naprieč zariadeniami — na rozdiel od [id]
+  /// (autoincrement, lokálne pre túto DB) sa generuje raz pri vzniku riadku
+  /// a nemení sa, takže sync vie ten istý záznam spoznať aj po stiahnutí
+  /// z iného zariadenia. NULL u riadkov spred syncu, doplní sa pri migrácii.
+  TextColumn get syncUuid => text().nullable()();
+
+  /// Kedy bol riadok naposledy zmenený. Sync podľa tohto rozhoduje, ktorá
+  /// verzia je novšia — nie podľa toho, kedy prišla, lebo zariadenie s horším
+  /// pripojením by inak vždy prehrávalo to s lepším.
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 /// Loď, na ktorej sa pláva opakovane.
@@ -157,6 +169,11 @@ class DayLogs extends Table {
   /// vie ich appka narátať sama a skiper už nemusí strážiť hodinky —
   /// charterová firma pýta motohodiny pri odovzdaní lode.
   RealColumn get engineHours => real().nullable()();
+
+  /// Pozri [Charters.syncUuid].
+  TextColumn get syncUuid => text().nullable()();
+  /// Pozri [Charters.updatedAt].
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 /// Hodinový záznam počas dňa
@@ -244,6 +261,11 @@ class LogbookEntries extends Table {
   /// polovičná informácia — vietor spoza kopca 20 km ďaleko je niečo iné
   /// než vietor z majáka, pri ktorom loď práve stojí.
   RealColumn get weatherStationDistanceM => real().nullable()();
+
+  /// Pozri [Charters.syncUuid].
+  TextColumn get syncUuid => text().nullable()();
+  /// Pozri [Charters.updatedAt].
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 /// GPS track pointy
@@ -284,6 +306,10 @@ class SailingSessions extends Table {
   /// mlčal. Ale hojdanie na reťazi nie je plavba: bez tohto príznaku by sa
   /// načítalo do prejdených míľ, do vzdialenosti dňa aj do nočných hodín.
   BoolColumn get isAnchorWatch => boolean().withDefault(const Constant(false))();
+
+  /// Pozri [Charters.updatedAt]. Vlastné [syncUuid] netreba — [sessionId] je
+  /// už stabilná identita naprieč zariadeniami.
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 /// Waypoints
@@ -296,6 +322,11 @@ class Waypoints extends Table {
   TextColumn get type => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
+
+  /// Pozri [Charters.syncUuid].
+  TextColumn get syncUuid => text().nullable()();
+  /// Pozri [Charters.updatedAt].
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 /// Vizuálne zameranie námerovým kompasom.
@@ -727,7 +758,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 34;
+  int get schemaVersion => 35;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -922,6 +953,18 @@ class AppDatabase extends _$AppDatabase {
       if (from < 34) {
         await m.addColumn(charters, charters.briefingCheckedJson);
       }
+      if (from < 35) {
+        await m.addColumn(charters, charters.syncUuid);
+        await m.addColumn(charters, charters.updatedAt);
+        await m.addColumn(dayLogs, dayLogs.syncUuid);
+        await m.addColumn(dayLogs, dayLogs.updatedAt);
+        await m.addColumn(logbookEntries, logbookEntries.syncUuid);
+        await m.addColumn(logbookEntries, logbookEntries.updatedAt);
+        await m.addColumn(waypoints, waypoints.syncUuid);
+        await m.addColumn(waypoints, waypoints.updatedAt);
+        await m.addColumn(sailingSessions, sailingSessions.updatedAt);
+        await _backfillSyncColumns();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -937,6 +980,64 @@ class AppDatabase extends _$AppDatabase {
       await customStatement('PRAGMA journal_mode = WAL');
     },
   );
+
+  /// Doplní `syncUuid`/`updatedAt` na riadky, ktoré appka mala ešte pred
+  /// syncom (v35). Bez stabilnej identity by ich sync po prvom zapnutí videl
+  /// ako nové na každom zariadení a vložil ich znova ako duplicity.
+  ///
+  /// `updatedAt` sa nastaví na existujúci časový údaj riadku (najlepší odhad,
+  /// presný čas poslednej zmeny sa spätne nezistí) — pre sync stačí, aby staré
+  /// dáta nevyhrávali nad novšími zmenami po zapnutí syncu.
+  Future<void> _backfillSyncColumns() async {
+    const uuid = Uuid();
+
+    final allCharters = await select(charters).get();
+    for (final c in allCharters) {
+      await (update(charters)..where((t) => t.id.equals(c.id))).write(
+        ChartersCompanion(
+          syncUuid: Value(uuid.v4()),
+          updatedAt: Value(c.createdAt),
+        ),
+      );
+    }
+
+    final allDayLogs = await select(dayLogs).get();
+    for (final d in allDayLogs) {
+      await (update(dayLogs)..where((t) => t.id.equals(d.id))).write(
+        DayLogsCompanion(
+          syncUuid: Value(uuid.v4()),
+          updatedAt: Value(d.date),
+        ),
+      );
+    }
+
+    final allEntries = await select(logbookEntries).get();
+    for (final e in allEntries) {
+      await (update(logbookEntries)..where((t) => t.id.equals(e.id))).write(
+        LogbookEntriesCompanion(
+          syncUuid: Value(uuid.v4()),
+          updatedAt: Value(e.timestamp),
+        ),
+      );
+    }
+
+    final allWaypoints = await select(waypoints).get();
+    for (final w in allWaypoints) {
+      await (update(waypoints)..where((t) => t.id.equals(w.id))).write(
+        WaypointsCompanion(
+          syncUuid: Value(uuid.v4()),
+          updatedAt: Value(w.createdAt),
+        ),
+      );
+    }
+
+    final allSessions = await select(sailingSessions).get();
+    for (final s in allSessions) {
+      await (update(sailingSessions)..where((t) => t.id.equals(s.id))).write(
+        SailingSessionsCompanion(updatedAt: Value(s.startTime)),
+      );
+    }
+  }
 
   // ── Charters ────────────────────────────────────────────────
 
