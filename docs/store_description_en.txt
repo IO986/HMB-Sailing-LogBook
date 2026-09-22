@@ -44,7 +44,7 @@ BACKUP AND CLOUD
 
 DISPLAY
 • Night mode — a red filter that keeps your night vision on watch
-• Date format and units are yours to set, and apply everywhere, PDF exports included
+• Date format, units and how GPS coordinates are written are yours to set, and apply everywhere, PDF exports included
 
 LANGUAGES
 English, German, Italian, Spanish, Croatian, Czech, Slovak, Polish, Slovenian, Greek and Ukrainian.
