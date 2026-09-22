@@ -45,6 +45,13 @@ class _FakeCloudStorageProvider implements CloudStorageProvider {
     uploadedFolderPaths.add(folderPath);
     return 'uploaded-${uploadedFileNames.length}';
   }
+
+  @override
+  Future<List<CloudFile>> listFiles(List<String> folderPath) async => const [];
+
+  @override
+  Future<List<int>> downloadFile(String fileId) async =>
+      throw UnimplementedError('not used by these tests');
 }
 
 void main() {

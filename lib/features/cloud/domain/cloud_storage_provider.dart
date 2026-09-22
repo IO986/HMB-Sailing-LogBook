@@ -9,6 +9,18 @@ class CloudAccount {
   final String? displayName;
 }
 
+/// A file found while listing a folder — enough for the sync pull loop to
+/// decide what's worth downloading, without a second round-trip.
+class CloudFile {
+  const CloudFile({required this.id, required this.name, this.modifiedTime});
+
+  /// Provider-specific id, opaque outside this layer — pass it straight to
+  /// [CloudStorageProvider.downloadFile].
+  final String id;
+  final String name;
+  final DateTime? modifiedTime;
+}
+
 /// Uploads day exports to a cloud backend, decoupled from any specific
 /// vendor. `google_drive` is the first implementation; the shape exists so
 /// a WebDAV or Proton Drive provider can be added later without touching
@@ -56,4 +68,14 @@ abstract class CloudStorageProvider {
     required List<String> folderPath,
     required String mimeType,
   });
+
+  /// Lists files directly under [folderPath] (not recursive). Read-only —
+  /// unlike [upload], never creates the folder, so a device that has never
+  /// uploaded anything there sees an empty list rather than an empty folder
+  /// springing into existence just from checking for updates.
+  Future<List<CloudFile>> listFiles(List<String> folderPath);
+
+  /// Downloads the raw bytes of a file by the id a prior [listFiles] call
+  /// returned.
+  Future<List<int>> downloadFile(String fileId);
 }

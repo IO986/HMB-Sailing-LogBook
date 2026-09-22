@@ -113,6 +113,18 @@ class GoogleDriveStorage implements CloudStorageProvider {
       mimeType: mimeType,
     );
   }
+
+  @override
+  Future<List<CloudFile>> listFiles(List<String> folderPath) async {
+    final api = await _driveApi();
+    return listDriveFiles(api: api, folderPath: folderPath);
+  }
+
+  @override
+  Future<List<int>> downloadFile(String fileId) async {
+    final api = await _driveApi();
+    return downloadFromDrive(api: api, fileId: fileId);
+  }
 }
 
 /// Folder-ensure-then-upload logic, split out from [GoogleDriveStorage] so it
@@ -148,13 +160,7 @@ Future<String> uploadToDrive({
 /// folders this app itself created, so a stale id from a deleted folder
 /// isn't a concern here — a fresh search always runs.
 Future<String> _ensureFolder(drive.DriveApi api, String name, String? parentId) async {
-  final escapedName = name.replaceAll(r"'", r"\'");
-  final parentClause = parentId != null ? "'$parentId' in parents" : "'root' in parents";
-  final query = "mimeType = 'application/vnd.google-apps.folder' "
-      "and name = '$escapedName' and trashed = false and $parentClause";
-
-  final result = await api.files.list(q: query, spaces: 'drive', $fields: 'files(id, name)');
-  final existingId = result.files?.firstOrNull?.id;
+  final existingId = await _findFolder(api, name, parentId);
   if (existingId != null) return existingId;
 
   final folder = drive.File()
@@ -167,6 +173,70 @@ Future<String> _ensureFolder(drive.DriveApi api, String name, String? parentId) 
     throw StateError('Google Drive: folder creation for "$name" returned no id');
   }
   return createdId;
+}
+
+/// Same search as [_ensureFolder], without the create-if-missing side
+/// effect — [listDriveFiles] must not conjure a folder into existence just
+/// by checking whether anyone has ever synced to it.
+Future<String?> _findFolder(drive.DriveApi api, String name, String? parentId) async {
+  final escapedName = name.replaceAll(r"'", r"\'");
+  final parentClause = parentId != null ? "'$parentId' in parents" : "'root' in parents";
+  final query = "mimeType = 'application/vnd.google-apps.folder' "
+      "and name = '$escapedName' and trashed = false and $parentClause";
+
+  final result = await api.files.list(q: query, spaces: 'drive', $fields: 'files(id, name)');
+  return result.files?.firstOrNull?.id;
+}
+
+/// Lists files directly under [folderPath], split out from
+/// [GoogleDriveStorage] so it can be unit tested against a fake
+/// [drive.DriveApi] without any real sign-in, like [uploadToDrive].
+///
+/// Walks the path with [_findFolder] (never creates): a folder that doesn't
+/// exist yet means nothing has synced there, which is an empty list, not an
+/// error.
+Future<List<CloudFile>> listDriveFiles({
+  required drive.DriveApi api,
+  required List<String> folderPath,
+}) async {
+  String? parentId;
+  for (final segment in folderPath) {
+    final id = await _findFolder(api, segment, parentId);
+    if (id == null) return const [];
+    parentId = id;
+  }
+
+  final parentClause = parentId != null ? "'$parentId' in parents" : "'root' in parents";
+  final query = "mimeType != 'application/vnd.google-apps.folder' "
+      "and trashed = false and $parentClause";
+  final result = await api.files.list(
+    q: query,
+    spaces: 'drive',
+    $fields: 'files(id, name, modifiedTime)',
+  );
+
+  return [
+    for (final f in result.files ?? const <drive.File>[])
+      if (f.id != null && f.name != null)
+        CloudFile(id: f.id!, name: f.name!, modifiedTime: f.modifiedTime),
+  ];
+}
+
+/// Downloads the raw bytes of Drive file [fileId], split out from
+/// [GoogleDriveStorage] for the same testability reason as [uploadToDrive].
+Future<List<int>> downloadFromDrive({
+  required drive.DriveApi api,
+  required String fileId,
+}) async {
+  final media = await api.files.get(
+    fileId,
+    downloadOptions: drive.DownloadOptions.fullMedia,
+  ) as drive.Media;
+  final bytes = <int>[];
+  await for (final chunk in media.stream) {
+    bytes.addAll(chunk);
+  }
+  return bytes;
 }
 
 extension _FirstOrNull<T> on List<T> {
