@@ -1,0 +1,15 @@
+HMB Sailing Log — build 77 (1.39.0+77)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: pick how GPS coordinates are written — degrees/minutes or decimal degrees — once in Settings, and it applies everywhere: instruments, MOB, waypoints, the log and every PDF export.
+• New: mile certificates now carry a map of the whole route, the same one the voyage export already shows.
+• Fixed: a stuck "anchor dragging" notification could survive an app restart and never clear.
+• Fixed: the anchor watch now only switches off with a confirmation — a stray tap no longer disarms it.
+
+=== Slovenčina (sk) ===
+• Nové: formát GPS súradníc (stupne/minúty alebo desatinné stupne) sa nastaví raz v Nastaveniach a platí všade — prístroje, MOB, waypointy, denník aj všetky PDF exporty.
+• Nové: potvrdenie o naplávaných míľach teraz nesie mapu celej spojenej trasy, rovnakú ako export plavby.
+• Opravené: hláška „kotva driftuje" mohla po reštarte appky ostať navždy zaseknutá v notifikáciách.
+• Opravené: kotvovú stráž teraz vypneš len s potvrdením — omylom stlačené tlačidlo ju už nevypne.
