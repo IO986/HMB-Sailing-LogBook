@@ -369,8 +369,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 12),
               _bearingDetailRow(
                   l.gpsPosition,
-                  '${fix.position.latitude.toStringAsFixed(5)}, '
-                  '${fix.position.longitude.toStringAsFixed(5)}'),
+                  ref
+                      .read(unitsSyncProvider)
+                      .formatCoords(fix.position.latitude, fix.position.longitude)),
               _bearingDetailRow(l.bearingSightCount(group.bearings.length),
                   '±${fix.errorRadiusMeters.round()} m'),
               if (fix.isWeak)

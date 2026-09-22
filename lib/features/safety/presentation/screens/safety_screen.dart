@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
 import '../../../../core/config/emergency_contacts.dart';
+import '../../../../core/services/units_service.dart';
 import '../../../charter/providers/charter_provider.dart';
 import 'mayday_card_screen.dart';
 import 'gear_list_screen.dart';
@@ -845,7 +846,7 @@ class _MobActiveCard extends ConsumerWidget {
         }),
         if (state.mobLat != null) ...[
           const SizedBox(height: 8),
-          Text('${state.mobLat!.toStringAsFixed(5)}°N  ${state.mobLon!.toStringAsFixed(5)}°E',
+          Text(ref.watch(unitsSyncProvider).formatCoords(state.mobLat, state.mobLon),
               style: const TextStyle(color: Colors.white70, fontSize: 13)),
         ],
         const SizedBox(height: 16),
@@ -1054,8 +1055,7 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
             width: double.infinity,
             child: s.isActive
                 ? OutlinedButton.icon(
-                    onPressed: () =>
-                        ref.read(anchorProvider.notifier).deactivate(),
+                    onPressed: () => _confirmDeactivate(context),
                     icon: const Icon(Icons.stop),
                     label: Text(AppLocalizations.of(context).deactivate),
                     style: OutlinedButton.styleFrom(foregroundColor: Colors.red))
@@ -1083,6 +1083,29 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
         ]),
       ),
     );
+  }
+
+  /// Vypnutie stráže si vypýta potvrdenie — omylom stlačené tlačidlo tu má
+  /// vážnejšie následky než väčšinu iných: loď zostane bez stráže nad kotvou.
+  /// Rovnaký dialóg ako pri rýchlom vypnutí z mapy (`main_scaffold.dart`).
+  Future<void> _confirmDeactivate(BuildContext context) async {
+    final l = AppLocalizations.of(context);
+    final stop = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.anchorQuickStopTitle),
+        content: Text(l.anchorQuickStopBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.deactivate)),
+        ],
+      ),
+    );
+    if (stop ?? false) await ref.read(anchorProvider.notifier).deactivate();
   }
 
   void _showDriftAlarmDialog(BuildContext context) {

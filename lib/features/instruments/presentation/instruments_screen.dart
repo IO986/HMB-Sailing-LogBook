@@ -348,21 +348,15 @@ class InstrumentsScreen extends ConsumerWidget {
 // GPS pozícia — riadok na vrchu
 // ─────────────────────────────────────────────────────────────
 
-class _GpsPositionRow extends StatelessWidget {
+class _GpsPositionRow extends ConsumerWidget {
   final Position? pos;
   final bool fromNmea;
 
   const _GpsPositionRow({required this.pos, required this.fromNmea});
 
-  String _fmt(double deg, bool isLat) {
-    final d = deg.abs().floor();
-    final m = (deg.abs() - d) * 60;
-    final hem = isLat ? (deg >= 0 ? 'N' : 'S') : (deg >= 0 ? 'E' : 'W');
-    return '$d° ${m.toStringAsFixed(3)}\' $hem';
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final units = ref.watch(unitsSyncProvider);
     final lat = pos?.latitude;
     final lon = pos?.longitude;
     final src = fromNmea ? 'NMEA' : 'GPS';
@@ -381,7 +375,7 @@ class _GpsPositionRow extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             lat != null && lon != null
-                ? '${_fmt(lat, true)}   ${_fmt(lon, false)}'
+                ? units.formatCoords(lat, lon)
                 : '--° --\' -   --° --\' -',
             style: TextStyle(
               color: lat != null ? Colors.white70 : Colors.white24,
@@ -597,7 +591,7 @@ class _VmgWpTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hasData = wp != null;
     return GestureDetector(
-      onTap: () => _showWpPicker(context),
+      onTap: () => _showWpPicker(context, ref),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
@@ -718,7 +712,7 @@ class _VmgWpTile extends ConsumerWidget {
     );
   }
 
-  void _showWpPicker(BuildContext context) {
+  void _showWpPicker(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF0D1B2A),
@@ -785,7 +779,7 @@ class _VmgWpTile extends ConsumerWidget {
                     color: w.id == wp?.id ? const Color(0xFFFFAA00) : Colors.white,
                     fontSize: 14)),
             subtitle: Text(
-                '${w.latitude.toStringAsFixed(4)}°  ${w.longitude.toStringAsFixed(4)}°',
+                ref.read(unitsSyncProvider).formatCoords(w.latitude, w.longitude),
                 style: const TextStyle(color: Colors.white38, fontSize: 11)),
             onTap: () { onSelect(w); Navigator.pop(context); },
           )),

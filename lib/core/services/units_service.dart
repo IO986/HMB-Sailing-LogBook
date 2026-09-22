@@ -52,6 +52,20 @@ enum TimeZoneMode {
 
 const _kmPerNm = 1.852;
 
+/// Ako sa píšu GPS súradnice všade, kde ich skiper vidí — na prístrojoch, pri
+/// MOB, vo waypointoch aj v exportoch.
+///
+/// Predtým to bolo naprieč appkou nejednotné: prístroje ukazovali stupne a
+/// desatinné minúty, MOB a waypointy stupne s desatinnou čiarkou. Rovnaký bod
+/// tak v appke vyzeral na dvoch miestach inak, hoci to bolo to isté číslo.
+enum CoordFormat {
+  /// D° M.mmm' — stupne a desatinné minúty, zvyk z papierovej navigácie.
+  dmm,
+
+  /// D.ddddd° — stupne s desatinnou čiarkou, priamo z GPS.
+  decimal,
+}
+
 class UnitsSettings {
   final TempUnit temp;
   final DepthUnit depth;
@@ -60,6 +74,7 @@ class UnitsSettings {
   final SpeedUnit speed;
   final DateStyle dateStyle;
   final TimeZoneMode timeZone;
+  final CoordFormat coordFormat;
 
   const UnitsSettings({
     this.temp = TempUnit.celsius,
@@ -69,6 +84,7 @@ class UnitsSettings {
     this.speed = SpeedUnit.knots,
     this.dateStyle = DateStyle.appLanguage,
     this.timeZone = TimeZoneMode.local,
+    this.coordFormat = CoordFormat.dmm,
   });
 
   UnitsSettings copyWith({
@@ -79,6 +95,7 @@ class UnitsSettings {
     SpeedUnit? speed,
     DateStyle? dateStyle,
     TimeZoneMode? timeZone,
+    CoordFormat? coordFormat,
   }) =>
       UnitsSettings(
         temp: temp ?? this.temp,
@@ -88,6 +105,7 @@ class UnitsSettings {
         speed: speed ?? this.speed,
         dateStyle: dateStyle ?? this.dateStyle,
         timeZone: timeZone ?? this.timeZone,
+        coordFormat: coordFormat ?? this.coordFormat,
       );
 
   // ── Čas ─────────────────────────────────────────────────────────
@@ -206,6 +224,25 @@ class UnitsSettings {
   String formatCourse(double? deg) => deg == null ? '-' : '${deg.toStringAsFixed(0)}°';
   String formatPressure(double? hpa) => hpa == null ? '-' : '${hpa.toStringAsFixed(0)} hPa';
 
+  // ── Súradnice ───────────────────────────────────────────────────
+
+  String formatLat(double? deg) => deg == null ? '-' : _formatCoord(deg, true);
+  String formatLon(double? deg) => deg == null ? '-' : _formatCoord(deg, false);
+
+  String formatCoords(double? lat, double? lon) =>
+      lat == null || lon == null ? '-' : '${formatLat(lat)}  ${formatLon(lon)}';
+
+  String _formatCoord(double deg, bool isLat) {
+    final hem = isLat ? (deg >= 0 ? 'N' : 'S') : (deg >= 0 ? 'E' : 'W');
+    final abs = deg.abs();
+    if (coordFormat == CoordFormat.decimal) {
+      return '${abs.toStringAsFixed(5)}° $hem';
+    }
+    final d = abs.floor();
+    final m = (abs - d) * 60;
+    return '$d° ${m.toStringAsFixed(3)}\' $hem';
+  }
+
   /// Beaufort z rýchlosti vetra **v uzloch** (WMO tabuľka).
   ///
   /// Predtým tu boli prahy km/h (1-5-11-19-28...) aplikované na uzly, takže
@@ -228,6 +265,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
   static const _kSpeed = 'units_speed';
   static const _kDateStyle = 'units_date_style';
   static const _kTimeZone = 'units_time_zone';
+  static const _kCoordFormat = 'units_coord_format';
 
   @override
   Future<UnitsSettings> build() async {
@@ -240,6 +278,7 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
       speed: SpeedUnit.values[prefs.getInt(_kSpeed) ?? 0],
       dateStyle: DateStyle.values[prefs.getInt(_kDateStyle) ?? 0],
       timeZone: TimeZoneMode.values[prefs.getInt(_kTimeZone) ?? 0],
+      coordFormat: CoordFormat.values[prefs.getInt(_kCoordFormat) ?? 0],
     );
   }
 
@@ -283,6 +322,12 @@ class UnitsNotifier extends AsyncNotifier<UnitsSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_kTimeZone, v.index);
     state = AsyncData(state.value!.copyWith(timeZone: v));
+  }
+
+  Future<void> setCoordFormat(CoordFormat v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kCoordFormat, v.index);
+    state = AsyncData(state.value!.copyWith(coordFormat: v));
   }
 }
 

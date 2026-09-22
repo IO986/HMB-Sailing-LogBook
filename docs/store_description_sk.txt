@@ -44,7 +44,7 @@ ZÁLOHA A CLOUD
 
 ZOBRAZENIE
 • Nočný režim — červený filter, aby ti počas hliadky ostalo prispôsobené videnie
-• Nastaviteľný formát dátumu a jednotky, platia všade vrátane exportu do PDF
+• Nastaviteľný formát dátumu, jednotky aj zápis GPS súradníc, platia všade vrátane exportu do PDF
 
 JAZYKY
 Slovenčina, čeština, angličtina, nemčina, chorvátčina, taliančina, španielčina, poľština, slovinčina, gréčtina a ukrajinčina.

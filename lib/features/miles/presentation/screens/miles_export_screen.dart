@@ -1,16 +1,22 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
+import '../../../export/presentation/widgets/day_map_view.dart';
+import '../../../export/providers/export_map_provider.dart';
 import '../../../export/services/export_service.dart';
 import '../../../export/services/pdf_export_service.dart';
 import '../../providers/miles_provider.dart';
@@ -48,6 +54,16 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
   bool _busy = false;
   bool _profileLoaded = false;
 
+  /// Mapa celej trasy naprieč vybranými plavbami — rovnaký princíp ako
+  /// mapa celej plavby v exporte jedného charteru, len so súradnicami zo
+  /// všetkých vybraných plavieb dokopy. Ručne dopísané historické plavby do
+  /// nej neprispejú nič, GPS trasu nemajú.
+  final ScreenshotController _routeMapController = ScreenshotController();
+  List<TrackPoint> _routeTrackPoints = [];
+  Uint8List? _routeMapShot;
+  Set<int> _routeCharterIds = {};
+  bool _loadingRouteMap = false;
+
   @override
   void dispose() {
     _recipient.dispose();
@@ -55,6 +71,52 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
     _qualification.dispose();
     _idNumber.dispose();
     super.dispose();
+  }
+
+  /// Dotiahne body trasy pre práve vybrané plavby, len keď sa výber
+  /// naozaj zmenil — inak by každý rebuild formulára znova sťahoval dáta
+  /// a znova fotil mapu.
+  void _syncRouteMap(List<VoyageRow> chosen) {
+    final charterIds = chosen
+        .where((v) => !v.isManualEntry && v.charterId != null)
+        .map((v) => v.charterId!)
+        .toSet();
+    if (charterIds.length == _routeCharterIds.length &&
+        charterIds.containsAll(_routeCharterIds)) {
+      return;
+    }
+    _routeCharterIds = charterIds;
+    // Nie priamo: toto sa volá z buildu a _loadRouteMap by setState-om
+    // spustil rebuild ešte počas prebiehajúceho buildu.
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _loadRouteMap(charterIds));
+  }
+
+  Future<void> _loadRouteMap(Set<int> charterIds) async {
+    setState(() {
+      _loadingRouteMap = true;
+      _routeMapShot = null;
+      _routeTrackPoints = [];
+    });
+    final db = ref.read(databaseProvider);
+    final pts = <TrackPoint>[];
+    for (final id in charterIds) {
+      pts.addAll(await db.getTrackPointsForCharter(id));
+    }
+    pts.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    if (!mounted) return;
+    setState(() {
+      _routeTrackPoints = pts;
+      _loadingRouteMap = false;
+    });
+    if (pts.isEmpty) return;
+    // Čas na stiahnutie/načítanie dlaždíc z keše, inak by v PDF ostal
+    // sivý štvorec — rovnaká lehota ako pri mape jednej plavby.
+    await Future.delayed(const Duration(milliseconds: 2000));
+    try {
+      final img = await _routeMapController.capture(pixelRatio: 1.0);
+      if (mounted) setState(() => _routeMapShot = img);
+    } catch (_) {}
   }
 
   static String _keyOf(VoyageRow v) =>
@@ -189,6 +251,8 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
         ref.watch(knownCrewNamesProvider).valueOrNull ?? const <String>[];
     final chosen =
         aggregate.voyages.where(_isSelected).toList(growable: false);
+    _syncRouteMap(chosen);
+    final satellite = ref.watch(exportSatelliteMapProvider);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
@@ -270,6 +334,44 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
                 : l.milesExportSelectAll),
           ),
         ]),
+        if (_routeTrackPoints.isNotEmpty || _loadingRouteMap)
+          Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  const Icon(Icons.route, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(l.mapVoyageOverview,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  _routeMapShot != null
+                      ? const Icon(Icons.check_circle,
+                          color: Colors.green, size: 18)
+                      : const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2)),
+                ]),
+                const SizedBox(height: 10),
+                Screenshot(
+                  controller: _routeMapController,
+                  child: SizedBox(
+                    height: 200,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: DayMapView(
+                        trackPoints: _routeTrackPoints,
+                        satellite: satellite,
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ),
         for (final v in aggregate.voyages)
           CheckboxListTile(
             dense: true,
@@ -340,6 +442,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
         idNumber: _idNumber.text.trim(),
         forSelf: _forSelf,
         signatureImage: signatureImage,
+        routeMap: _routeMapShot,
       );
 
       final docName = 'HMB Kniha mil '

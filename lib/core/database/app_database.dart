@@ -1233,6 +1233,18 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(t) => OrderingTerm(expression: t.timestamp)]))
           .get();
 
+  /// Všetky body trasy celej plavby, deň po dni — pre mapu na prvej strane
+  /// exportu a pre mapu celej trasy na potvrdení o míľach.
+  Future<List<TrackPoint>> getTrackPointsForCharter(int charterId) async {
+    final pts = <TrackPoint>[];
+    for (final day in await getDayLogs(charterId)) {
+      for (final s in await getSessionsForDay(day.id)) {
+        pts.addAll(await getTrackPointsForSession(s.sessionId));
+      }
+    }
+    return pts;
+  }
+
   // ── Sessions ─────────────────────────────────────────────────
 
   /// Uzavrie úsek trasovania: prestane byť aktívny a dostane čas konca.

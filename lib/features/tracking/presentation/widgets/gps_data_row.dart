@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
 
-class GpsDataRow extends StatelessWidget {
+class GpsDataRow extends ConsumerWidget {
   final Position position;
   const GpsDataRow({super.key, required this.position});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final lat = position.latitude;
     final lon = position.longitude;
     final course = position.heading;
@@ -23,7 +25,7 @@ class GpsDataRow extends StatelessWidget {
             _DataRow(
               icon: Icons.location_on,
               label: AppLocalizations.of(context).gpsPosition,
-              value: '${_formatDeg(lat, true)}  ${_formatDeg(lon, false)}',
+              value: ref.watch(unitsSyncProvider).formatCoords(lat, lon),
             ),
             _DataRow(
               icon: Icons.explore,
@@ -44,14 +46,6 @@ class GpsDataRow extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDeg(double deg, bool isLat) {
-    final dir = isLat ? (deg >= 0 ? 'N' : 'S') : (deg >= 0 ? 'E' : 'W');
-    final abs = deg.abs();
-    final d = abs.floor();
-    final m = ((abs - d) * 60).toStringAsFixed(3);
-    return '$d° ${m}\'$dir';
   }
 }
 

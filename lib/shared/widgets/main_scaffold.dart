@@ -591,7 +591,16 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       messenger.showSnackBar(SnackBar(content: Text(l.anchorNoFix)));
       return;
     }
-    final radius = await AnchorNotifier.lastRadius();
+
+    // Polomer sa potvrdzuje, nepredpokladá.
+    //
+    // Naposledy použitá hodnota je dobrý odhad, nie správna odpoveď: koľko
+    // reťaze loď vytiahne, závisí od hĺbky, dna a vetra a v inej zátoke je
+    // to iné číslo. Predtým sa stráž spúšťala rovno s 15 m a doladiť sa to
+    // dalo len na karte Bezpečnosť — čiže až potom, čo už raz zazvonila.
+    final radius = await _askAnchorRadius(context, await AnchorNotifier.lastRadius());
+    if (radius == null || !mounted) return;
+
     await ref
         .read(anchorProvider.notifier)
         .activate(pos.latitude, pos.longitude, radius);
@@ -600,13 +609,70 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     // obrazovke svietiť, že beží — hlásené z terénu: „kotva neaktívna, ale
     // vidím Kotvová stráž beží 15 m".
     if (!ref.read(anchorProvider).isActive) return;
+    // Bez akcie na vypnutie: stráž sa vypína len cez kotvu na mape alebo
+    // kartu Bezpečnosť, obe s potvrdzovacou otázkou. Táto hláška je len
+    // potvrdenie, že stráž beží, nie ďalšia cesta k jej zrušeniu.
     messenger.showSnackBar(SnackBar(
       content: Text(l.anchorQuickStarted(radius.toStringAsFixed(0))),
-      action: SnackBarAction(
-        label: l.cancel,
-        onPressed: () => ref.read(anchorProvider.notifier).deactivate(),
-      ),
     ));
+  }
+
+  /// Posuvník polomeru pred spustením stráže.
+  ///
+  /// Vracia `null`, keď skiper výber zruší — vtedy sa stráž nespúšťa.
+  /// Rozsah 5–70 m je ten istý ako na karte Bezpečnosť: tridsiatka pokryla
+  /// v plytkom len krátku reťaz a pomer 5:1 v ôsmich metroch plus dĺžka lode
+  /// sa vykýve ďalej.
+  Future<double?> _askAnchorRadius(BuildContext context, double initial) {
+    final l = AppLocalizations.of(context);
+    var radius = initial.clamp(5.0, 70.0);
+    return showModalBottomSheet<double>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Row(children: [
+                const Icon(Icons.anchor),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(l.anchorAlarm,
+                      style: Theme.of(ctx).textTheme.titleMedium),
+                ),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(child: Text(l.anchorRadiusLabel)),
+                Text('${radius.toStringAsFixed(0)} m',
+                    style: Theme.of(ctx)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+              ]),
+              Slider(
+                value: radius,
+                min: 5,
+                max: 70,
+                divisions: 65,
+                label: '${radius.toStringAsFixed(0)} m',
+                onChanged: (v) => setSheetState(() => radius = v),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => Navigator.pop(ctx, radius),
+                  icon: const Icon(Icons.anchor),
+                  label: Text('${l.activate} ${l.anchorAlarm}'),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 
   /// Prepne mapu do kreslenia kotevnej plochy.

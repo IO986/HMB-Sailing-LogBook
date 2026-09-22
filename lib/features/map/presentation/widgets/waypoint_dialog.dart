@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../core/database/app_database.dart';
 import '../../providers/map_provider.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/services/units_service.dart';
 
 class WaypointDialog extends ConsumerStatefulWidget {
   final LatLng latLng;
@@ -40,7 +41,9 @@ class _WaypointDialogState extends ConsumerState<WaypointDialog> {
               style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
-            '${widget.latLng.latitude.toStringAsFixed(5)}°, ${widget.latLng.longitude.toStringAsFixed(5)}°',
+            ref
+                .watch(unitsSyncProvider)
+                .formatCoords(widget.latLng.latitude, widget.latLng.longitude),
             style: const TextStyle(color: Colors.grey, fontSize: 13),
           ),
           const SizedBox(height: 16),

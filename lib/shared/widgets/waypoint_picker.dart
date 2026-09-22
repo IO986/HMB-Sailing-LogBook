@@ -18,6 +18,7 @@ import 'package:latlong2/latlong.dart';
 import '../../core/database/app_database.dart';
 import '../../features/map/providers/map_provider.dart' show waypointsProvider;
 import '../../l10n/app_localizations.dart';
+import '../../core/services/units_service.dart';
 
 /// Nechá používateľa vybrať waypoint. Vracia vybraný bod, alebo null pri
 /// zrušení.
@@ -139,8 +140,7 @@ class _WaypointPickerSheet extends ConsumerWidget {
                       ),
                       title: Text(w.name, style: TextStyle(color: onDark)),
                       subtitle: Text(
-                        '${w.latitude.toStringAsFixed(4)}, '
-                        '${w.longitude.toStringAsFixed(4)}',
+                        ref.watch(unitsSyncProvider).formatCoords(w.latitude, w.longitude),
                         style: TextStyle(
                             fontSize: 11,
                             color: dark ? Colors.white38 : Colors.grey),

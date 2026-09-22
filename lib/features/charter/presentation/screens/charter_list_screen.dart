@@ -216,8 +216,7 @@ class _UnassignedEventCard extends ConsumerWidget {
     final what = _eventLabel(entry.eventType, l) ?? entry.skipperNote;
     final position = (entry.latitude == null || entry.longitude == null)
         ? null
-        : '${entry.latitude!.toStringAsFixed(4)}, '
-            '${entry.longitude!.toStringAsFixed(4)}';
+        : units.formatCoords(entry.latitude, entry.longitude);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
