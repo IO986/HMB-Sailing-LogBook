@@ -240,11 +240,16 @@ class AnchorAlarmService {
   }
 
   Future<void> stopAlarm() async {
-    if (!_alarmActive) return;
+    // Nie skorý návrat na `!_alarmActive`: keď systém appku medzi driftom a
+    // zdvihnutím kotvy zabije (Honor, Huawei), tento flag sa v pamäti
+    // vynuluje, ale notifikácia z predošlého driftu ostáva v shade —
+    // `deactivate()` by ju bez zrušenia guardu nikdy nezmazal.
+    final wasActive = _alarmActive;
     _alarmActive = false;
     _vibrationTimer?.cancel();
     _vibrationTimer = null;
-    await _stopSound();
+    if (wasActive) await _stopSound();
+    await _ensureInit();
     await _plugin.cancel(999);
   }
 }
