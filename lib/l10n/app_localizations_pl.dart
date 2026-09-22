@@ -3529,6 +3529,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Niezalogowany';
 
   @override
+  String get syncLogbookEnableToggle =>
+      'Synchronizuj dziennik między urządzeniami';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Nowe wpisy, dni i rejsy są na bieżąco wysyłane i pobierane przez to samo konto Google — dla więcej niż jednego własnego telefonu na tej samej łodzi.';
+
+  @override
   String get waypointNameHint => 'np. Kotwicowisko, Port...';
 
   @override

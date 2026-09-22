@@ -33,6 +33,7 @@ import '../../core/services/udp_receiver_service.dart';
 import '../../core/providers/raymarine_providers.dart';
 import '../../features/cloud/providers/cloud_provider.dart';
 import '../../features/cloud/services/auto_export_service.dart';
+import '../../features/cloud/services/logbook_sync_service.dart';
 import '../../features/help/presentation/screens/user_guide_screen.dart';
 import '../../main.dart';
 import 'sync_queue_badge.dart';
@@ -53,6 +54,14 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   DateTime? _lastBackPress;
   bool _checkedRaymarinePrompt = false;
 
+  /// Beží len na popredí, nikdy z `background_service.dart`-ovho izolátu —
+  /// Google Sign-In tam by začínalo od nuly a podľa `cloud_storage_provider
+  /// .dart` môže aj "tiché" prihlásenie bez existujúcej relácie vyskočiť s
+  /// výberom účtu, presne bug, ktorý appka už raz riešila pre cloud export.
+  /// Popredie navyše sedí s reálnym použitím: telefón pri prístrojoch beží
+  /// otvorený celú plavbu.
+  Timer? _syncTimer;
+
   @override
   void initState() {
     super.initState();
@@ -67,8 +76,44 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       // Stráž sa ticho rozbehne ďalej — inak by skiper spal v presvedčení,
       // že mu niekto sleduje kotvu, a nesledoval by ju nikto.
       await ref.read(anchorProvider.notifier).restore();
+      // Jednorazovo pri štarte, bez ohľadu na to, či práve beží plavba —
+      // zachytí zmeny z iného zariadenia, ktoré prišli, kým bola táto appka
+      // zavretá.
+      unawaited(_triggerSync());
       _watchForUpdate();
     });
+  }
+
+  @override
+  void dispose() {
+    _syncTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Zapína/vypína periodický sync podľa toho, či beží plavba alebo kotvová
+  /// stráž — presne scenár dvoch telefónov na jednej lodi (jeden pri
+  /// prístrojoch, druhý na fotky), kde obe zariadenia musia vidieť záznamy
+  /// toho druhého v rozumnom čase, nie až pri ďalšom štarte appky.
+  void _setActiveSession(bool active) {
+    if (active) {
+      _syncTimer ??= Timer.periodic(const Duration(minutes: 3), (_) => _triggerSync());
+    } else {
+      _syncTimer?.cancel();
+      _syncTimer = null;
+    }
+  }
+
+  Future<void> _triggerSync() async {
+    final settings = ref.read(syncSettingsProvider).valueOrNull;
+    if (settings == null || !settings.logbookSyncEnabled) return;
+    final provider = ref.read(cloudStorageProviderProvider);
+    if (!provider.isSignedInNow) return;
+    try {
+      await const LogbookSyncService()
+          .syncNow(db: ref.read(databaseProvider), provider: provider);
+    } catch (_) {
+      // Best-effort — ďalší tik (alebo ďalší štart appky) skúsi znova.
+    }
   }
 
   /// Novšia verzia z Google Play sa stiahne na pozadí a keď je hotová,
@@ -769,6 +814,12 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final isTracking = ref.watch(isTrackingProvider);
+    final anchorWatching = ref.watch(anchorProvider.select((s) => s.isActive));
+    // Not `ref.listen`: `build()` already re-runs on either change (both are
+    // `watch`ed above), and starting/stopping the timer is itself idempotent
+    // (`_syncTimer ??=` / cancel-then-null), so calling it every build is
+    // harmless and needs no separate provider identity to track "changed".
+    _setActiveSession(isTracking || anchorWatching);
     final navPrefs = ref.watch(navPrefsProvider);
     // Viditeľné karty: user-usporiadané a neskryté presúvateľné + fixné
     // Nastavenia vždy posledné. Nastavenia sa nedajú skryť ani presunúť,

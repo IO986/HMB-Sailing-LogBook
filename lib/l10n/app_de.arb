@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Angemeldet als {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Nicht angemeldet",
+  "syncLogbookEnableToggle": "Logbuch zwischen Geräten synchronisieren",
+  "syncLogbookEnableToggleDesc": "Neue Einträge, Tage und Reisen werden laufend über dasselbe Google-Konto gesendet und abgerufen — für mehrere eigene Telefone auf demselben Boot.",
 
   "waypointNameHint": "z. B. Ankerplatz, Hafen...",
   "waypointDefaultName": "Wegpunkt {time}",

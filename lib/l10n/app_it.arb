@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Connesso come {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Non hai effettuato l'accesso",
+  "syncLogbookEnableToggle": "Sincronizza il diario tra i dispositivi",
+  "syncLogbookEnableToggleDesc": "Nuove voci, giorni e viaggi vengono inviati e ricevuti in continuo con lo stesso account Google — per più telefoni propri sulla stessa barca.",
 
   "waypointNameHint": "ad es. Ancoraggio, Porto...",
   "waypointDefaultName": "Waypoint {time}",

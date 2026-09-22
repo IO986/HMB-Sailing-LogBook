@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Přihlášen jako {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Nepřihlášen",
+  "syncLogbookEnableToggle": "Synchronizovat deník mezi zařízeními",
+  "syncLogbookEnableToggleDesc": "Nové záznamy, dny a plavby se průběžně posílají a přebírají přes stejný Google účet — pro víc vlastních telefonů na stejné lodi.",
 
   "waypointNameHint": "např. Kotviště, Přístav...",
   "waypointDefaultName": "Bod {time}",

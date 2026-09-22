@@ -3531,6 +3531,13 @@ class AppLocalizationsHr extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Niste prijavljeni';
 
   @override
+  String get syncLogbookEnableToggle => 'Sinkroniziraj dnevnik između uređaja';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Novi unosi, dani i plovidbe kontinuirano se šalju i preuzimaju putem istog Google računa — za više vlastitih telefona na istom brodu.';
+
+  @override
   String get waypointNameHint => 'npr. Sidrište, Luka...';
 
   @override

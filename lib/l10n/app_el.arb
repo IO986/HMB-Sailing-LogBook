@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Συνδεδεμένος ως {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Δεν είστε συνδεδεμένος",
+  "syncLogbookEnableToggle": "Συγχρονισμός ημερολογίου μεταξύ συσκευών",
+  "syncLogbookEnableToggleDesc": "Νέες καταχωρήσεις, ημέρες και ταξίδια αποστέλλονται και λαμβάνονται συνεχώς μέσω του ίδιου λογαριασμού Google — για περισσότερα δικά σας τηλέφωνα στο ίδιο σκάφος.",
 
   "waypointNameHint": "π.χ. Αγκυροβόλιο, Λιμάνι...",
   "waypointDefaultName": "Σημείο {time}",

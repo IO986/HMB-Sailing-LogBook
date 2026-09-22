@@ -6674,6 +6674,18 @@ abstract class AppLocalizations {
   /// **'Neprihlásený'**
   String get syncCloudNotSignedIn;
 
+  /// No description provided for @syncLogbookEnableToggle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Synchronizovať denník medzi zariadeniami'**
+  String get syncLogbookEnableToggle;
+
+  /// No description provided for @syncLogbookEnableToggleDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nové záznamy, dni a plavby sa priebežne posielajú a preberajú cez rovnaký Google účet — pre viac vlastných telefónov na tej istej lodi.'**
+  String get syncLogbookEnableToggleDesc;
+
   /// No description provided for @waypointNameHint.
   ///
   /// In sk, this message translates to:

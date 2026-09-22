@@ -1218,6 +1218,20 @@ class _AccountSectionState extends ConsumerState<_AccountSection> {
                           : l.syncCloudSignOutAction),
                     ),
                   ),
+                  // Vlastný prepínač, nie súčasť exportu vyššie: export
+                  // posiela hotové PDF/GPX jedným smerom, toto zapisuje
+                  // priamo do databázy oboma smermi — chce vlastné, výslovné
+                  // súhlasenie (pozri SyncSettings.logbookSyncEnabled).
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(Icons.sync_alt),
+                    title: Text(l.syncLogbookEnableToggle),
+                    subtitle: Text(l.syncLogbookEnableToggleDesc),
+                    value: settings.logbookSyncEnabled,
+                    onChanged: (v) => ref
+                        .read(syncSettingsProvider.notifier)
+                        .setLogbookSyncEnabled(v),
+                  ),
                   const Divider(height: 24),
                 ],
                 // The queue only ever holds items put there by the two

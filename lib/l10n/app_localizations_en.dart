@@ -3523,6 +3523,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Not signed in';
 
   @override
+  String get syncLogbookEnableToggle => 'Sync the logbook between devices';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'New entries, days and voyages are continuously sent and pulled through the same Google account — for more than one of your own phones on the same boat.';
+
+  @override
   String get waypointNameHint => 'e.g. Anchorage, Port...';
 
   @override

@@ -17,6 +17,7 @@ const _kIntervalMinutes = 'sync_interval_minutes';
 const _kAttachmentPolicy = 'sync_attachment_policy';
 const _kCloudEnabled = 'sync_cloud_enabled';
 const _kCloudProvider = 'sync_cloud_provider';
+const _kLogbookSyncEnabled = 'sync_logbook_enabled';
 
 // Custom-server token — secure storage only, never SharedPreferences,
 // never logged.
@@ -54,6 +55,7 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
         (p) => p.name == prefs.getString(_kCloudProvider),
         orElse: () => CloudProvider.googleDrive,
       ),
+      logbookSyncEnabled: prefs.getBool(_kLogbookSyncEnabled) ?? false,
     );
   }
 
@@ -66,6 +68,7 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
     await prefs.setString(_kAttachmentPolicy, settings.attachmentPolicy.name);
     await prefs.setBool(_kCloudEnabled, settings.cloudEnabled);
     await prefs.setString(_kCloudProvider, settings.cloudProvider.name);
+    await prefs.setBool(_kLogbookSyncEnabled, settings.logbookSyncEnabled);
     state = AsyncData(settings);
   }
 
@@ -102,6 +105,11 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
   Future<void> setCloudProvider(CloudProvider provider) async {
     final current = state.valueOrNull ?? const SyncSettings();
     await _persist(current.copyWith(cloudProvider: provider));
+  }
+
+  Future<void> setLogbookSyncEnabled(bool value) async {
+    final current = state.valueOrNull ?? const SyncSettings();
+    await _persist(current.copyWith(logbookSyncEnabled: value));
   }
 }
 

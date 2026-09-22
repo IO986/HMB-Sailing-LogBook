@@ -3545,6 +3545,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Non hai effettuato l\'accesso';
 
   @override
+  String get syncLogbookEnableToggle =>
+      'Sincronizza il diario tra i dispositivi';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Nuove voci, giorni e viaggi vengono inviati e ricevuti in continuo con lo stesso account Google — per più telefoni propri sulla stessa barca.';
+
+  @override
   String get waypointNameHint => 'ad es. Ancoraggio, Porto...';
 
   @override

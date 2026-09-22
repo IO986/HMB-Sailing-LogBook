@@ -3525,6 +3525,14 @@ class AppLocalizationsSk extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Neprihlásený';
 
   @override
+  String get syncLogbookEnableToggle =>
+      'Synchronizovať denník medzi zariadeniami';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Nové záznamy, dni a plavby sa priebežne posielajú a preberajú cez rovnaký Google účet — pre viac vlastných telefónov na tej istej lodi.';
+
+  @override
   String get waypointNameHint => 'napr. Kotvisko, Prístav...';
 
   @override

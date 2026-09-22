@@ -3543,6 +3543,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Nicht angemeldet';
 
   @override
+  String get syncLogbookEnableToggle =>
+      'Logbuch zwischen Geräten synchronisieren';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Neue Einträge, Tage und Reisen werden laufend über dasselbe Google-Konto gesendet und abgerufen — für mehrere eigene Telefone auf demselben Boot.';
+
+  @override
   String get waypointNameHint => 'z. B. Ankerplatz, Hafen...';
 
   @override

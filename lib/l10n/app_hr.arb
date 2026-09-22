@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Prijavljeni kao {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Niste prijavljeni",
+  "syncLogbookEnableToggle": "Sinkroniziraj dnevnik između uređaja",
+  "syncLogbookEnableToggleDesc": "Novi unosi, dani i plovidbe kontinuirano se šalju i preuzimaju putem istog Google računa — za više vlastitih telefona na istom brodu.",
 
   "waypointNameHint": "npr. Sidrište, Luka...",
   "waypointDefaultName": "Točka {time}",

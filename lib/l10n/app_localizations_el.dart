@@ -3551,6 +3551,14 @@ class AppLocalizationsEl extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Δεν είστε συνδεδεμένος';
 
   @override
+  String get syncLogbookEnableToggle =>
+      'Συγχρονισμός ημερολογίου μεταξύ συσκευών';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Νέες καταχωρήσεις, ημέρες και ταξίδια αποστέλλονται και λαμβάνονται συνεχώς μέσω του ίδιου λογαριασμού Google — για περισσότερα δικά σας τηλέφωνα στο ίδιο σκάφος.';
+
+  @override
   String get waypointNameHint => 'π.χ. Αγκυροβόλιο, Λιμάνι...';
 
   @override

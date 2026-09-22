@@ -1205,6 +1205,8 @@
   "syncCloudSignedInAs": "Prihlásený ako {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Neprihlásený",
+  "syncLogbookEnableToggle": "Synchronizovať denník medzi zariadeniami",
+  "syncLogbookEnableToggleDesc": "Nové záznamy, dni a plavby sa priebežne posielajú a preberajú cez rovnaký Google účet — pre viac vlastných telefónov na tej istej lodi.",
 
   "waypointNameHint": "napr. Kotvisko, Prístav...",
   "waypointDefaultName": "Bod {time}",

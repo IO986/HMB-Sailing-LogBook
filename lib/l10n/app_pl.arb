@@ -1187,6 +1187,8 @@
   "syncCloudSignedInAs": "Zalogowano jako {email}",
   "@syncCloudSignedInAs": { "placeholders": { "email": { "type": "String" } } },
   "syncCloudNotSignedIn": "Niezalogowany",
+  "syncLogbookEnableToggle": "Synchronizuj dziennik między urządzeniami",
+  "syncLogbookEnableToggleDesc": "Nowe wpisy, dni i rejsy są na bieżąco wysyłane i pobierane przez to samo konto Google — dla więcej niż jednego własnego telefonu na tej samej łodzi.",
 
   "waypointNameHint": "np. Kotwicowisko, Port...",
   "waypointDefaultName": "Punkt {time}",

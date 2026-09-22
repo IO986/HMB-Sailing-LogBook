@@ -31,6 +31,7 @@ class SyncSettings {
     this.attachmentPolicy = AttachmentSyncPolicy.wifiOnly,
     this.cloudEnabled = false,
     this.cloudProvider = CloudProvider.googleDrive,
+    this.logbookSyncEnabled = false,
   });
 
   final bool enabled;
@@ -41,6 +42,13 @@ class SyncSettings {
   final bool cloudEnabled;
   final CloudProvider cloudProvider;
 
+  /// Real two-way sync of the logbook itself between this account's own
+  /// devices (`LogbookSyncService`) — separate from [cloudEnabled], which
+  /// only ever uploads finished PDF/GPX files one way. Off by default even
+  /// when [cloudEnabled] is on: it needs its own explicit opt-in since it
+  /// writes into the database, not just a Drive folder.
+  final bool logbookSyncEnabled;
+
   SyncSettings copyWith({
     bool? enabled,
     SyncTarget? target,
@@ -49,6 +57,7 @@ class SyncSettings {
     AttachmentSyncPolicy? attachmentPolicy,
     bool? cloudEnabled,
     CloudProvider? cloudProvider,
+    bool? logbookSyncEnabled,
   }) =>
       SyncSettings(
         enabled: enabled ?? this.enabled,
@@ -58,6 +67,7 @@ class SyncSettings {
         attachmentPolicy: attachmentPolicy ?? this.attachmentPolicy,
         cloudEnabled: cloudEnabled ?? this.cloudEnabled,
         cloudProvider: cloudProvider ?? this.cloudProvider,
+        logbookSyncEnabled: logbookSyncEnabled ?? this.logbookSyncEnabled,
       );
 }
 

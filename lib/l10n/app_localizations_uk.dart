@@ -3528,6 +3528,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get syncCloudNotSignedIn => 'Не увійшли';
 
   @override
+  String get syncLogbookEnableToggle => 'Синхронізувати журнал між пристроями';
+
+  @override
+  String get syncLogbookEnableToggleDesc =>
+      'Нові записи, дні та плавання постійно надсилаються й отримуються через той самий обліковий запис Google — для кількох ваших телефонів на одному судні.';
+
+  @override
   String get waypointNameHint => 'напр. Якірна стоянка, Порт...';
 
   @override
