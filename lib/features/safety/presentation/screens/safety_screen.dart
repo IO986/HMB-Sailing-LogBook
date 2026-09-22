@@ -1055,8 +1055,7 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
             width: double.infinity,
             child: s.isActive
                 ? OutlinedButton.icon(
-                    onPressed: () =>
-                        ref.read(anchorProvider.notifier).deactivate(),
+                    onPressed: () => _confirmDeactivate(context),
                     icon: const Icon(Icons.stop),
                     label: Text(AppLocalizations.of(context).deactivate),
                     style: OutlinedButton.styleFrom(foregroundColor: Colors.red))
@@ -1084,6 +1083,29 @@ class _AnchorCardState extends ConsumerState<_AnchorCard>
         ]),
       ),
     );
+  }
+
+  /// Vypnutie stráže si vypýta potvrdenie — omylom stlačené tlačidlo tu má
+  /// vážnejšie následky než väčšinu iných: loď zostane bez stráže nad kotvou.
+  /// Rovnaký dialóg ako pri rýchlom vypnutí z mapy (`main_scaffold.dart`).
+  Future<void> _confirmDeactivate(BuildContext context) async {
+    final l = AppLocalizations.of(context);
+    final stop = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.anchorQuickStopTitle),
+        content: Text(l.anchorQuickStopBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.deactivate)),
+        ],
+      ),
+    );
+    if (stop ?? false) await ref.read(anchorProvider.notifier).deactivate();
   }
 
   void _showDriftAlarmDialog(BuildContext context) {

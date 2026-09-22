@@ -609,12 +609,11 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     // obrazovke svietiť, že beží — hlásené z terénu: „kotva neaktívna, ale
     // vidím Kotvová stráž beží 15 m".
     if (!ref.read(anchorProvider).isActive) return;
+    // Bez akcie na vypnutie: stráž sa vypína len cez kotvu na mape alebo
+    // kartu Bezpečnosť, obe s potvrdzovacou otázkou. Táto hláška je len
+    // potvrdenie, že stráž beží, nie ďalšia cesta k jej zrušeniu.
     messenger.showSnackBar(SnackBar(
       content: Text(l.anchorQuickStarted(radius.toStringAsFixed(0))),
-      action: SnackBarAction(
-        label: l.cancel,
-        onPressed: () => ref.read(anchorProvider.notifier).deactivate(),
-      ),
     ));
   }
 
