@@ -1,0 +1,15 @@
+HMB Sailing Log — build 78 (1.39.0+78)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: Voyage archive — move finished voyages out of the main list (Denník → archive icon), restore them any time, nothing is deleted.
+• New: unassigned MOB/anchor log entries can now be swipe-deleted from the Denník list.
+• Changed: MOB quick-button removed from the map (stays hold-to-activate on Safety); anchor quick-start moved so it no longer hides under the GPX playback bar.
+• Fixed: check-in/check-out could stay stuck on "incomplete" after both signatures were captured.
+
+=== Slovenčina (sk) ===
+• Nové: Archív plavieb — presuň dokončené plavby z hlavného zoznamu (Denník → ikona archívu), kedykoľvek obnoviteľné, nič sa nemaže.
+• Nové: nezaradené záznamy MOB/kotva sa dajú zmazať potiahnutím v zozname Denníka.
+• Zmena: MOB tlačidlo preč z mapy (ostáva podržaním na karte Bezpečnosť); kotva presunutá, aby nezavadzala pod GPX prehrávaním.
+• Opravené: check-in/check-out mohol ostať „incomplete" aj po oboch podpisoch.
