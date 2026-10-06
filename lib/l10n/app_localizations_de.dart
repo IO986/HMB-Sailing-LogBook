@@ -521,6 +521,22 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fahrt kann während aktivem Tracking nicht gelöscht werden.';
 
   @override
+  String get voyageArchiveTitle => 'Törn-Archiv';
+
+  @override
+  String get voyageArchiveEmpty => 'Keine archivierten Törns';
+
+  @override
+  String get archiveVoyageTitle => 'Törn archivieren';
+
+  @override
+  String get archiveVoyageContent =>
+      'Der Törn wird ins Archiv verschoben und verschwindet aus der Hauptliste. Er kann jederzeit wiederhergestellt werden, nichts wird gelöscht.';
+
+  @override
+  String get unarchiveVoyage => 'Wiederherstellen';
+
+  @override
   String get noVoyages => 'Keine Fahrten';
 
   @override

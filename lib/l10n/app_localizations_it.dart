@@ -520,6 +520,22 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non è possibile eliminare una navigazione mentre il tracciamento è attivo.';
 
   @override
+  String get voyageArchiveTitle => 'Archivio delle traversate';
+
+  @override
+  String get voyageArchiveEmpty => 'Nessuna traversata archiviata';
+
+  @override
+  String get archiveVoyageTitle => 'Archivia traversata';
+
+  @override
+  String get archiveVoyageContent =>
+      'La traversata viene spostata nell\'archivio e scompare dall\'elenco principale. Può essere ripristinata in qualsiasi momento, non viene eliminato nulla.';
+
+  @override
+  String get unarchiveVoyage => 'Ripristina';
+
+  @override
   String get noVoyages => 'Nessuna navigazione';
 
   @override

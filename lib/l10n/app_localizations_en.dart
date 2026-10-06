@@ -519,6 +519,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Cannot delete a voyage while tracking is active.';
 
   @override
+  String get voyageArchiveTitle => 'Voyage archive';
+
+  @override
+  String get voyageArchiveEmpty => 'No archived voyages';
+
+  @override
+  String get archiveVoyageTitle => 'Archive voyage';
+
+  @override
+  String get archiveVoyageContent =>
+      'The voyage moves to the archive and disappears from the main list. It can be restored any time — nothing is deleted.';
+
+  @override
+  String get unarchiveVoyage => 'Restore';
+
+  @override
   String get noVoyages => 'No voyages';
 
   @override

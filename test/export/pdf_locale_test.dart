@@ -32,6 +32,7 @@ void main() {
         safetyBriefingDone: true,
         checkInDone: true,
         checkOutDone: false,
+        archived: false,
         createdAt: day,
         pdfRevision: 0,
         source: 'live',

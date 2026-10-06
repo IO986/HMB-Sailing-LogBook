@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -1448,6 +1449,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             bottom: 150,
             left: 12,
             child: Column(children: [
+              // Kotva žila v spodnej lište rýchlych akcií (main_scaffold.dart),
+              // kde ju pri prehrávaní GPX zakrývalo ovládanie PlaybackBar
+              // (obe na spodnom okraji). Tu, nad GPS/zoom stĺpcom, je mimo
+              // jeho dosahu nech sa prehráva čokoľvek.
+              _layerFab(
+                heroTag: 'quickAnchor',
+                tooltip: l.anchorAlarm,
+                icon: Icons.anchor,
+                active: anchor.isActive,
+                onPressed: () =>
+                    anchor.isActive ? _confirmStopAnchor() : _quickAnchor(),
+                onLongPress:
+                    anchor.isActive ? null : _startAnchorZoneDrawing,
+              ),
+              const SizedBox(height: 8),
               _layerFab(
                 heroTag: 'cp',
                 tooltip: l.mapFollowGps,
@@ -1623,6 +1639,134 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void _onZoneTap(LatLng ll) {
     if (_zonePoints.length >= _zoneMaxPoints) return;
     setState(() => _zonePoints.add(ll));
+  }
+
+  /// Kotva jedným ťuknutím, s naposledy použitým polomerom.
+  ///
+  /// Kotvenie je manéver: kotva ide dole, loď sa ťahá na reťazi a skiper má
+  /// obe ruky plné. Preklikať sa v tej chvíli cez Bezpečnosť a posuvník je
+  /// presne to, čo sa odloží na neskôr a už sa neurobí. Polomer sa dá doladiť
+  /// na karte Bezpečnosť, tu ide o to, aby stráž vôbec začala strážiť.
+  Future<void> _quickAnchor() async {
+    final l = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final pos = GpsTrackingService().lastPosition ?? LocationService().lastPosition;
+    if (pos == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l.anchorNoFix)));
+      return;
+    }
+
+    // Polomer sa potvrdzuje, nepredpokladá.
+    //
+    // Naposledy použitá hodnota je dobrý odhad, nie správna odpoveď: koľko
+    // reťaze loď vytiahne, závisí od hĺbky, dna a vetra a v inej zátoke je
+    // to iné číslo. Predtým sa stráž spúšťala rovno s 15 m a doladiť sa to
+    // dalo len na karte Bezpečnosť — čiže až potom, čo už raz zazvonila.
+    final radius = await _askAnchorRadius(await AnchorNotifier.lastRadius());
+    if (radius == null || !mounted) return;
+
+    await ref
+        .read(anchorProvider.notifier)
+        .activate(pos.latitude, pos.longitude, radius);
+    // Hláška až podľa skutočného stavu, nie podľa toho, že sme o spustenie
+    // požiadali. Keď sa stráž z akéhokoľvek dôvodu nechytí, nesmie na
+    // obrazovke svietiť, že beží.
+    if (!ref.read(anchorProvider).isActive) return;
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.anchorQuickStarted(radius.toStringAsFixed(0))),
+      action: SnackBarAction(
+        label: l.cancel,
+        onPressed: () => ref.read(anchorProvider.notifier).deactivate(),
+      ),
+    ));
+  }
+
+  /// Posuvník polomeru pred spustením stráže.
+  ///
+  /// Vracia `null`, keď skiper výber zruší — vtedy sa stráž nespúšťa.
+  /// Rozsah 5–70 m je ten istý ako na karte Bezpečnosť.
+  Future<double?> _askAnchorRadius(double initial) {
+    final l = AppLocalizations.of(context);
+    var radius = initial.clamp(5.0, 70.0);
+    return showModalBottomSheet<double>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Row(children: [
+                const Icon(Icons.anchor),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(l.anchorAlarm,
+                      style: Theme.of(ctx).textTheme.titleMedium),
+                ),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(child: Text(l.anchorRadiusLabel)),
+                Text('${radius.toStringAsFixed(0)} m',
+                    style: Theme.of(ctx)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+              ]),
+              Slider(
+                value: radius,
+                min: 5,
+                max: 70,
+                divisions: 65,
+                label: '${radius.toStringAsFixed(0)} m',
+                onChanged: (v) => setSheetState(() => radius = v),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => Navigator.pop(ctx, radius),
+                  icon: const Icon(Icons.anchor),
+                  label: Text('${l.activate} ${l.anchorAlarm}'),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Vypnutie stráže vždy cez otázku.
+  ///
+  /// Ťuknutie vedľa pri zdvihnutej kotve je len zbytočný záznam v denníku;
+  /// ťuknutie vedľa o tretej ráno vypne to jediné, čo loď stráži.
+  Future<void> _confirmStopAnchor() async {
+    final l = AppLocalizations.of(context);
+    final stop = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.anchorQuickStopTitle),
+        content: Text(l.anchorQuickStopBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.deactivate)),
+        ],
+      ),
+    );
+    if (stop ?? false) await ref.read(anchorProvider.notifier).deactivate();
+  }
+
+  /// Dlhé podržanie kotvy odtiaľto rovno zapína kreslenie kotevnej plochy —
+  /// panel sa ukáže hneď (pozri `if (_zoneActive)` nižšie), bez okľaky cez
+  /// Bezpečnosť ako mala pôvodná verzia v spodnej lište.
+  void _startAnchorZoneDrawing() {
+    HapticFeedback.selectionClick();
+    _toggleZoneDrawing();
   }
 
   /// Zapne alebo vypne kreslenie plochy.

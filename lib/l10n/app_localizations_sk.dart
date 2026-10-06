@@ -519,6 +519,22 @@ class AppLocalizationsSk extends AppLocalizations {
       'Nemožno zmazať plavbu počas aktívneho trackingu.';
 
   @override
+  String get voyageArchiveTitle => 'Archív plavieb';
+
+  @override
+  String get voyageArchiveEmpty => 'Žiadne archivované plavby';
+
+  @override
+  String get archiveVoyageTitle => 'Archivovať plavbu';
+
+  @override
+  String get archiveVoyageContent =>
+      'Plavba sa presunie do archívu a zmizne z hlavného zoznamu. Dá sa kedykoľvek obnoviť, nič sa nezmaže.';
+
+  @override
+  String get unarchiveVoyage => 'Obnoviť';
+
+  @override
   String get noVoyages => 'Žiadne plavby';
 
   @override

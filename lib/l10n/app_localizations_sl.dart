@@ -519,6 +519,22 @@ class AppLocalizationsSl extends AppLocalizations {
       'Plovbe ni mogoče izbrisati, dokler je sledenje aktivno.';
 
   @override
+  String get voyageArchiveTitle => 'Arhiv plovb';
+
+  @override
+  String get voyageArchiveEmpty => 'Ni arhiviranih plovb';
+
+  @override
+  String get archiveVoyageTitle => 'Arhiviraj plovbo';
+
+  @override
+  String get archiveVoyageContent =>
+      'Plovba se premakne v arhiv in izgine s glavnega seznama. Kadar koli jo je mogoče obnoviti, nič se ne izbriše.';
+
+  @override
+  String get unarchiveVoyage => 'Obnovi';
+
+  @override
   String get noVoyages => 'Ni plovb';
 
   @override

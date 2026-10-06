@@ -17,6 +17,7 @@ Charter _charter({
       safetyBriefingDone: false,
       checkInDone: false,
       checkOutDone: false,
+      archived: false,
       createdAt: DateTime.utc(year, 5, 1),
       pdfRevision: 0,
       myRole: myRole,

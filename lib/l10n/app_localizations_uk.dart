@@ -521,6 +521,22 @@ class AppLocalizationsUk extends AppLocalizations {
       'Неможливо видалити плавання під час активного трекінгу.';
 
   @override
+  String get voyageArchiveTitle => 'Архів плавань';
+
+  @override
+  String get voyageArchiveEmpty => 'Немає архівованих плавань';
+
+  @override
+  String get archiveVoyageTitle => 'Архівувати плавання';
+
+  @override
+  String get archiveVoyageContent =>
+      'Плавання переміститься в архів і зникне з основного списку. Його можна відновити будь-коли, нічого не видаляється.';
+
+  @override
+  String get unarchiveVoyage => 'Відновити';
+
+  @override
   String get noVoyages => 'Немає плавань';
 
   @override

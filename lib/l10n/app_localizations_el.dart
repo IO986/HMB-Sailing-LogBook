@@ -524,6 +524,22 @@ class AppLocalizationsEl extends AppLocalizations {
       'Δεν μπορείτε να διαγράψετε πλου όσο η καταγραφή είναι ενεργή.';
 
   @override
+  String get voyageArchiveTitle => 'Αρχείο ταξιδιών';
+
+  @override
+  String get voyageArchiveEmpty => 'Δεν υπάρχουν αρχειοθετημένα ταξίδια';
+
+  @override
+  String get archiveVoyageTitle => 'Αρχειοθέτηση ταξιδιού';
+
+  @override
+  String get archiveVoyageContent =>
+      'Το ταξίδι μετακινείται στο αρχείο και εξαφανίζεται από την κύρια λίστα. Μπορεί να επανέλθει οποιαδήποτε στιγμή, τίποτα δεν διαγράφεται.';
+
+  @override
+  String get unarchiveVoyage => 'Επαναφορά';
+
+  @override
   String get noVoyages => 'Κανένας πλους';
 
   @override

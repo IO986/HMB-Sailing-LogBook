@@ -5,9 +5,28 @@ import '../../../core/database/app_database.dart';
 import '../../safety/presentation/screens/safety_screen.dart';
 import '../../../main.dart';
 
+/// VŠETKY plavby vrátane archivovaných — mapa, Kniha míľ, export, detail aj
+/// handover protokol si z nej dopytujú konkrétnu plavbu podľa id a tá musí
+/// byť nájdená aj po archivácii. Filtrovanie aktívne/archív je vecou
+/// zoznamu (pozri [activeChartersProvider]/[archivedChartersProvider]),
+/// nie tohto zdroja.
 final chartersProvider = FutureProvider<List<Charter>>((ref) async {
   final db = ref.watch(databaseProvider);
   return db.getAllCharters();
+});
+
+/// Plavby pre hlavný zoznam Denníka — bez tých, čo skiper ručne odložil do
+/// archívu (pozri [archivedChartersProvider] pre samostatnú obrazovku).
+final activeChartersProvider = FutureProvider<List<Charter>>((ref) async {
+  final charters = await ref.watch(chartersProvider.future);
+  return charters.where((c) => !c.archived).toList();
+});
+
+/// Len archivované plavby, najnovšia prvá.
+final archivedChartersProvider = FutureProvider<List<Charter>>((ref) async {
+  final charters = await ref.watch(chartersProvider.future);
+  return charters.where((c) => c.archived).toList()
+    ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
 });
 
 /// Most recent charter still awaiting checkout, or null if none / first-ever use.
@@ -26,7 +45,9 @@ final openVoyageProvider = FutureProvider<Charter?>((ref) async {
 /// Ponuka pri štarte z toho robí tretiu možnosť vedľa „pokračovať" a „nová".
 final openVoyagesProvider = FutureProvider<List<Charter>>((ref) async {
   final charters = await ref.watch(chartersProvider.future);
-  return charters.where((c) => !c.checkOutDone && c.source != 'gpx').toList()
+  return charters
+      .where((c) => !c.checkOutDone && !c.archived && c.source != 'gpx')
+      .toList()
     ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
 });
 

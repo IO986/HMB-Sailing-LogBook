@@ -95,6 +95,12 @@ class Charters extends Table {
   /// verzia je novšia — nie podľa toho, kedy prišla, lebo zariadenie s horším
   /// pripojením by inak vždy prehrávalo to s lepším.
   DateTimeColumn get updatedAt => dateTime().nullable()();
+
+  /// Skiper plavbu ručne odložil do archívu — mimo aktívneho zoznamu, ale
+  /// stále v DB (mapa, Kniha míľ a exporty na ňu bežia ďalej). Nikdy sa
+  /// nenastavuje automaticky podľa dátumu ani checkOut: kedy je plavba
+  /// "hotová" vie len skiper.
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
 }
 
 /// Loď, na ktorej sa pláva opakovane.
@@ -758,7 +764,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 35;
+  int get schemaVersion => 36;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -965,6 +971,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(sailingSessions, sailingSessions.updatedAt);
         await _backfillSyncColumns();
       }
+      if (from < 36) {
+        await m.addColumn(charters, charters.archived);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -1054,6 +1063,11 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> updateCharter(ChartersCompanion c) =>
       (update(charters)..where((t) => t.id.equals(c.id.value))).write(c);
+
+  /// Ručné presunutie do/z archívu (pozri `Charters.archived`).
+  Future<void> setCharterArchived(int id, bool archived) =>
+      (update(charters)..where((t) => t.id.equals(id)))
+          .write(ChartersCompanion(archived: Value(archived)));
 
   Future<void> updateCharterSync(int id,
       {required String remoteId, required DateTime syncedAt}) =>

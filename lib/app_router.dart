@@ -8,6 +8,7 @@ import 'features/charter/presentation/screens/charter_detail_screen.dart';
 import 'features/charter/presentation/screens/day_log_screen.dart';
 import 'features/charter/presentation/screens/safety_briefing_screen.dart';
 import 'features/charter/presentation/screens/handover_protocol_screen.dart';
+import 'features/charter/presentation/screens/voyage_archive_screen.dart';
 import 'features/logbook/presentation/screens/logbook_entry_screen.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/map/presentation/screens/ocean_currents_screen.dart';
@@ -72,6 +73,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               // Musí stáť pred ':id', inak by ho pohltil ako číslo plavby.
               GoRoute(
                   path: 'exports', builder: (c, s) => const ExportHubScreen()),
+              // Musí stáť pred ':id' z rovnakého dôvodu ako 'exports' vyššie.
+              GoRoute(
+                  path: 'archive',
+                  builder: (c, s) => const VoyageArchiveScreen()),
               GoRoute(
                 path: ':id',
                 builder: (c, s) => CharterDetailScreen(

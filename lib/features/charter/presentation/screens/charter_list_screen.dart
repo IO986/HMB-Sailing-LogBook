@@ -53,7 +53,7 @@ class CharterListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chartersAsync = ref.watch(chartersProvider);
+    final chartersAsync = ref.watch(activeChartersProvider);
     final sessions = ref.watch(orphanBearingSessionsProvider);
     final orphanEvents =
         ref.watch(unassignedEntriesProvider).valueOrNull ??
@@ -74,6 +74,11 @@ class CharterListScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('HMB Sailing Log'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.archive_outlined),
+            tooltip: l.voyageArchiveTitle,
+            onPressed: () => context.push('/logbook/archive'),
+          ),
           IconButton(
             icon: const Icon(Icons.military_tech_outlined),
             tooltip: l.milesBookTitle,
@@ -218,42 +223,78 @@ class _UnassignedEventCard extends ConsumerWidget {
         ? null
         : units.formatCoords(entry.latitude, entry.longitude);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      color: isMob
-          ? Theme.of(context).colorScheme.errorContainer
-          : Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(children: [
-          Icon(isMob ? Icons.person_off : Icons.anchor,
-              size: 28,
-              color: isMob ? Theme.of(context).colorScheme.error : null),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
-                if (what != null && what.isNotEmpty)
-                  Text(what,
-                      style: const TextStyle(fontSize: 13)),
-                Text(
-                  '${fmt.medium(entry.timestamp.toLocal())}  ·  '
-                  '${units.formatTimeWithZone(entry.timestamp)}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                ),
-                if (position != null)
-                  Text(position,
-                      style: const TextStyle(color: Colors.grey, fontSize: 12)),
-              ],
+    // Zmazateľné potiahnutím, rovnaký vzor ako riadok v Dni (day_log_screen.dart):
+    // tieto záznamy vznikajú aj omylom (náhodné podržanie MOB, testovacie
+    // spustenie kotvy mimo plavby) a doteraz sa nedali z denníka odstrániť.
+    return Dismissible(
+      key: Key('unassigned_${entry.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        color: Colors.red,
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      confirmDismiss: (_) async {
+        final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(l.deleteEntryTitle),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(l.no)),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: Text(l.delete),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
+        if (!confirmed) return false;
+        await ref.read(databaseProvider).deleteLogbookEntry(entry.id);
+        return true;
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        color: isMob
+            ? Theme.of(context).colorScheme.errorContainer
+            : Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(children: [
+            Icon(isMob ? Icons.person_off : Icons.anchor,
+                size: 28,
+                color: isMob ? Theme.of(context).colorScheme.error : null),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  if (what != null && what.isNotEmpty)
+                    Text(what,
+                        style: const TextStyle(fontSize: 13)),
+                  Text(
+                    '${fmt.medium(entry.timestamp.toLocal())}  ·  '
+                    '${units.formatTimeWithZone(entry.timestamp)}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  if (position != null)
+                    Text(position,
+                        style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                ],
+              ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
     );
   }
@@ -312,6 +353,33 @@ class _CharterCard extends ConsumerWidget {
                 PopupMenuButton<String>(
                   onSelected: (v) async {
                     if (v == 'edit') context.go('/logbook/${charter.id}/edit');
+                    if (v == 'archive') {
+                      final l = AppLocalizations.of(context);
+                      final ok = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(l.archiveVoyageTitle),
+                              content: Text(l.archiveVoyageContent),
+                              actions: [
+                                TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: Text(l.no)),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: Text(l.archiveVoyageTitle),
+                                ),
+                              ],
+                            ),
+                          ) ??
+                          false;
+                      if (!ok) return;
+                      await ref
+                          .read(databaseProvider)
+                          .setCharterArchived(charter.id, true);
+                      ref.invalidate(chartersProvider);
+                      ref.invalidate(activeChartersProvider);
+                      ref.invalidate(archivedChartersProvider);
+                    }
                     if (v == 'delete') {
                       final l = AppLocalizations.of(context);
                       // Block delete only when this charter is actively being tracked
@@ -352,6 +420,7 @@ class _CharterCard extends ConsumerWidget {
                           await ref.read(databaseProvider).deleteCharter(charter.id);
                           debugPrint('[DELETE] Úspech');
                           ref.invalidate(chartersProvider);
+                          ref.invalidate(activeChartersProvider);
                         } catch (e, st) {
                           debugPrint('[DELETE] Chyba: $e\n$st');
                           if (context.mounted) {
@@ -368,6 +437,8 @@ class _CharterCard extends ConsumerWidget {
                     return [
                       PopupMenuItem(value: 'edit',
                           child: ListTile(leading: const Icon(Icons.edit), title: Text(l.edit), contentPadding: EdgeInsets.zero)),
+                      PopupMenuItem(value: 'archive',
+                          child: ListTile(leading: const Icon(Icons.archive_outlined), title: Text(l.archiveVoyageTitle), contentPadding: EdgeInsets.zero)),
                       PopupMenuItem(value: 'delete',
                           child: ListTile(leading: const Icon(Icons.delete, color: Colors.red), title: Text(l.delete, style: const TextStyle(color: Colors.red)), contentPadding: EdgeInsets.zero)),
                     ];

@@ -519,6 +519,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se puede eliminar una travesía mientras el seguimiento está activo.';
 
   @override
+  String get voyageArchiveTitle => 'Archivo de travesías';
+
+  @override
+  String get voyageArchiveEmpty => 'No hay travesías archivadas';
+
+  @override
+  String get archiveVoyageTitle => 'Archivar travesía';
+
+  @override
+  String get archiveVoyageContent =>
+      'La travesía se mueve al archivo y desaparece de la lista principal. Se puede restaurar en cualquier momento, no se borra nada.';
+
+  @override
+  String get unarchiveVoyage => 'Restaurar';
+
+  @override
   String get noVoyages => 'Sin travesías';
 
   @override

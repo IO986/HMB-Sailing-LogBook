@@ -520,6 +520,22 @@ class AppLocalizationsHr extends AppLocalizations {
       'Plovidbu nije moguće obrisati dok je praćenje aktivno.';
 
   @override
+  String get voyageArchiveTitle => 'Arhiv plovidbi';
+
+  @override
+  String get voyageArchiveEmpty => 'Nema arhiviranih plovidbi';
+
+  @override
+  String get archiveVoyageTitle => 'Arhiviraj plovidbu';
+
+  @override
+  String get archiveVoyageContent =>
+      'Plovidba se premješta u arhiv i nestaje s glavnog popisa. Može se vratiti u bilo kojem trenutku, ništa se ne briše.';
+
+  @override
+  String get unarchiveVoyage => 'Vrati';
+
+  @override
   String get noVoyages => 'Nema plovidbi';
 
   @override

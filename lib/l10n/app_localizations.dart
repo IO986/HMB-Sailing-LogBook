@@ -1040,6 +1040,36 @@ abstract class AppLocalizations {
   /// **'Nemožno zmazať plavbu počas aktívneho trackingu.'**
   String get cannotDeleteWhileTracking;
 
+  /// No description provided for @voyageArchiveTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Archív plavieb'**
+  String get voyageArchiveTitle;
+
+  /// No description provided for @voyageArchiveEmpty.
+  ///
+  /// In sk, this message translates to:
+  /// **'Žiadne archivované plavby'**
+  String get voyageArchiveEmpty;
+
+  /// No description provided for @archiveVoyageTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Archivovať plavbu'**
+  String get archiveVoyageTitle;
+
+  /// No description provided for @archiveVoyageContent.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba sa presunie do archívu a zmizne z hlavného zoznamu. Dá sa kedykoľvek obnoviť, nič sa nezmaže.'**
+  String get archiveVoyageContent;
+
+  /// No description provided for @unarchiveVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Obnoviť'**
+  String get unarchiveVoyage;
+
   /// No description provided for @noVoyages.
   ///
   /// In sk, this message translates to:

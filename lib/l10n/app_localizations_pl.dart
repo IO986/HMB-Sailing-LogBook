@@ -519,6 +519,22 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie można usunąć rejsu podczas aktywnego śledzenia.';
 
   @override
+  String get voyageArchiveTitle => 'Archiwum rejsów';
+
+  @override
+  String get voyageArchiveEmpty => 'Brak zarchiwizowanych rejsów';
+
+  @override
+  String get archiveVoyageTitle => 'Archiwizuj rejs';
+
+  @override
+  String get archiveVoyageContent =>
+      'Rejs zostanie przeniesiony do archiwum i zniknie z głównej listy. Można go przywrócić w każdej chwili, nic nie zostanie usunięte.';
+
+  @override
+  String get unarchiveVoyage => 'Przywróć';
+
+  @override
   String get noVoyages => 'Brak rejsów';
 
   @override
