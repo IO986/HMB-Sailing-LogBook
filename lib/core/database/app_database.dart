@@ -1000,52 +1000,59 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _backfillSyncColumns() async {
     const uuid = Uuid();
 
-    final allCharters = await select(charters).get();
-    for (final c in allCharters) {
-      await (update(charters)..where((t) => t.id.equals(c.id))).write(
-        ChartersCompanion(
-          syncUuid: Value(uuid.v4()),
-          updatedAt: Value(c.createdAt),
-        ),
-      );
-    }
+    // Jedna transakcia, nie stovky/tisícky samostatných commitov: pri
+    // mesiacoch denníka (tisícky logbookEntries) bez transaction() každý
+    // UPDATE fsyncoval zvlášť na mobilnom úložisku bez WAL (ten sa zapína až
+    // v beforeOpen, po migrácii) — appka pri aktualizácii na v35 vyzerala
+    // zaseknutá na splash screene, v skutočnosti len dobiehala migráciu.
+    await transaction(() async {
+      final allCharters = await select(charters).get();
+      for (final c in allCharters) {
+        await (update(charters)..where((t) => t.id.equals(c.id))).write(
+          ChartersCompanion(
+            syncUuid: Value(uuid.v4()),
+            updatedAt: Value(c.createdAt),
+          ),
+        );
+      }
 
-    final allDayLogs = await select(dayLogs).get();
-    for (final d in allDayLogs) {
-      await (update(dayLogs)..where((t) => t.id.equals(d.id))).write(
-        DayLogsCompanion(
-          syncUuid: Value(uuid.v4()),
-          updatedAt: Value(d.date),
-        ),
-      );
-    }
+      final allDayLogs = await select(dayLogs).get();
+      for (final d in allDayLogs) {
+        await (update(dayLogs)..where((t) => t.id.equals(d.id))).write(
+          DayLogsCompanion(
+            syncUuid: Value(uuid.v4()),
+            updatedAt: Value(d.date),
+          ),
+        );
+      }
 
-    final allEntries = await select(logbookEntries).get();
-    for (final e in allEntries) {
-      await (update(logbookEntries)..where((t) => t.id.equals(e.id))).write(
-        LogbookEntriesCompanion(
-          syncUuid: Value(uuid.v4()),
-          updatedAt: Value(e.timestamp),
-        ),
-      );
-    }
+      final allEntries = await select(logbookEntries).get();
+      for (final e in allEntries) {
+        await (update(logbookEntries)..where((t) => t.id.equals(e.id))).write(
+          LogbookEntriesCompanion(
+            syncUuid: Value(uuid.v4()),
+            updatedAt: Value(e.timestamp),
+          ),
+        );
+      }
 
-    final allWaypoints = await select(waypoints).get();
-    for (final w in allWaypoints) {
-      await (update(waypoints)..where((t) => t.id.equals(w.id))).write(
-        WaypointsCompanion(
-          syncUuid: Value(uuid.v4()),
-          updatedAt: Value(w.createdAt),
-        ),
-      );
-    }
+      final allWaypoints = await select(waypoints).get();
+      for (final w in allWaypoints) {
+        await (update(waypoints)..where((t) => t.id.equals(w.id))).write(
+          WaypointsCompanion(
+            syncUuid: Value(uuid.v4()),
+            updatedAt: Value(w.createdAt),
+          ),
+        );
+      }
 
-    final allSessions = await select(sailingSessions).get();
-    for (final s in allSessions) {
-      await (update(sailingSessions)..where((t) => t.id.equals(s.id))).write(
-        SailingSessionsCompanion(updatedAt: Value(s.startTime)),
-      );
-    }
+      final allSessions = await select(sailingSessions).get();
+      for (final s in allSessions) {
+        await (update(sailingSessions)..where((t) => t.id.equals(s.id))).write(
+          SailingSessionsCompanion(updatedAt: Value(s.startTime)),
+        );
+      }
+    });
   }
 
   // ── Charters ────────────────────────────────────────────────
