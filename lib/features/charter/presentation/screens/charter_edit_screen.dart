@@ -140,20 +140,19 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
   /// Keď má loď striedavo viac skiperov, ponúkne sa výber medzi všetkými
   /// doteraz uloženými profilmi namiesto jednoduchého áno/nie dialógu.
   Future<void> _prefillSkipperFromProfile() async {
-    final notifier = ref.read(skipperProfileProvider.notifier);
-    final saved = await notifier.listSaved();
-    if (!mounted) return;
+    final candidates = await _skipperCandidates();
+    if (!mounted || candidates.isEmpty) return;
 
     final l = AppLocalizations.of(context);
     SkipperProfile? chosen;
 
-    if (saved.length > 1) {
+    if (candidates.length > 1) {
       chosen = await showDialog<SkipperProfile>(
         context: context,
         builder: (ctx) => SimpleDialog(
           title: Text(l.prefillSkipperTitle),
           children: [
-            for (final p in saved)
+            for (final p in candidates)
               SimpleDialogOption(
                 onPressed: () => Navigator.pop(ctx, p),
                 child: Text(p.fullName),
@@ -167,15 +166,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       );
       if (chosen == null || !mounted) return;
     } else {
-      final profile = await ref.read(skipperProfileProvider.future);
-      if (!mounted) return;
-      final hasSaved = profile.fullName.isNotEmpty ||
-          profile.licenseNumber.isNotEmpty ||
-          profile.vhfNumber.isNotEmpty ||
-          profile.otherCerts.isNotEmpty ||
-          profile.idNumber.isNotEmpty;
-      if (!hasSaved) return;
-
+      final profile = candidates.single;
       final fill = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -207,6 +198,49 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       skipper.otherCertsCtrl.text = chosen.otherCerts;
       skipper.idNumCtrl.text = chosen.idNumber;
     });
+  }
+
+  /// Koho ponúknuť ako skipera: uložené profily, a k nim ľudia s preukazmi
+  /// z doterajších plavieb (najnovšie prvé).
+  ///
+  /// Profily ležia v zabezpečenom úložisku telefónu, ktoré záloha neprenáša
+  /// — po preinštalovaní a obnove zálohy bola ponuka prázdna, hoci každá
+  /// plavba v databáze nesie skipera aj s preukazmi v crewJson.
+  Future<List<SkipperProfile>> _skipperCandidates() async {
+    final result = <SkipperProfile>[];
+    final seen = <String>{};
+    void add(SkipperProfile p) {
+      final key = p.fullName.trim().toLowerCase();
+      if (key.isEmpty || !seen.add(key)) return;
+      result.add(p);
+    }
+
+    for (final p in await ref.read(skipperProfileProvider.notifier).listSaved()) {
+      add(p);
+    }
+    try {
+      add(await ref.read(skipperProfileProvider.future));
+    } catch (_) {}
+
+    final charters = [...await ref.read(databaseProvider).getAllCharters()]
+      ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
+    for (final c in charters) {
+      if (c.id == widget.charterId) continue;
+      for (final m in _decodeMapList(c.crewJson)) {
+        String field(String k) => (m[k] as String? ?? '').trim();
+        final hasPapers = field('boatLicence').isNotEmpty ||
+            field('radioLicence').isNotEmpty ||
+            field('otherCerts').isNotEmpty;
+        if (!hasPapers) continue;
+        add(SkipperProfile(
+          fullName: field('name'),
+          licenseNumber: field('boatLicence'),
+          vhfNumber: field('radioLicence'),
+          otherCerts: field('otherCerts'),
+        ));
+      }
+    }
+    return result;
   }
 
   /// Výber z uložených lodí — vyplní kartu lode a zapamätá si, ktorá to bola.
@@ -428,6 +462,15 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       final skipper = _crew.firstWhere((e) => e.isSkipper);
       if (skipper.idNumCtrl.text.trim().isEmpty) {
         skipper.idNumCtrl.text = ownIdNumber;
+      }
+      // Plavba založená tlačidlom Štart (createQuickCharter) posádku nemá —
+      // a kartu lode skiper otvára až potom, už ako existujúcu plavbu.
+      // Ponuka uložených skiperov sa preto ukazovala len pri „Nová plavba"
+      // a na štarte z mapy chýbala (nahlásené z októbrovej plavby).
+      if (_crew.every((e) => e.nameCtrl.text.trim().isEmpty)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _prefillSkipperFromProfile();
+        });
       }
 
       // Fotky

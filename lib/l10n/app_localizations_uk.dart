@@ -1847,10 +1847,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get companyNameLabel => 'Назва компанії';
 
   @override
-  String get protocolClosedNotice =>
-      'Протокол закрито (обидві сторони підписали) – лише перегляд.';
-
-  @override
   String get handoverCertTitle => 'Протокол передачі судна';
 
   @override
@@ -2923,7 +2919,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Формальний запис прийому і повернення судна при чартері – значок рукостискання в деталях рейсу.\n\n• Чекліст обладнання (вітрила, такелаж, якір, навігація, жилети, пліт, аптечка, тузик, освітлення, бімін...) – ОК / пошкоджено / відсутнє, з приміткою, розташуванням на судні та фото\n• Стан палива, води та мотогодин\n• Підпис шкіпера і представника чартерної компанії\n• Протокол стає доступним лише для читання, коли підписали обидві сторони\n• Check-out підставляє дані з check-in протоколу і виділяє нові пошкодження\n• Експорт PDF з обома підписами поруч';
+      'Формальний запис прийому і повернення судна при чартері – значок рукостискання в деталях рейсу.\n\n• Чекліст обладнання (вітрила, такелаж, якір, навігація, жилети, пліт, аптечка, тузик, освітлення, бімін...) – ОК / пошкоджено / відсутнє, з приміткою, розташуванням на судні та фото\n• Стан палива, води та мотогодин\n• Збережений протокол відкривається лише для читання; кнопка «Редагувати» його розблоковує\n• Check-out підставляє дані з check-in протоколу і виділяє нові пошкодження\n• Мотогодини при check-out заповнюються з останнього запису плавання\n• Експорт у PDF';
 
   @override
   String get guideGpxImportTitle => 'Імпорт GPX';
@@ -3663,6 +3659,31 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Відкрити налаштування';
+
+  @override
+  String get saveMissingTitle => 'Для збереження ще бракує';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Підпис: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Протокол збережено. Щоб змінити, торкніться «Редагувати».';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Позицію не записано: $spans. Милі на цих ділянках — лише оцінка по прямій.';
+  }
+
+  @override
+  String get trackGapTitle => 'Трек перервано';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Телефон $minutes хв не передавав позицію, хоча судно рухалося. Ця ділянка треку відсутня, а милі — лише оцінка по прямій.';
+  }
 
   @override
   String get speed => 'Швидкість';

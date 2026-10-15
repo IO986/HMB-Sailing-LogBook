@@ -1843,10 +1843,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get companyNameLabel => 'Company name';
 
   @override
-  String get protocolClosedNotice =>
-      'The protocol is closed (both parties signed) – read only.';
-
-  @override
   String get handoverCertTitle => 'Vessel handover protocol';
 
   @override
@@ -2918,7 +2914,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'A formal record of taking over and returning the boat on a charter – handshake icon in the voyage detail.\n\n• Equipment checklist (sails, rigging, anchor, navigation, life jackets, raft, first aid kit, dinghy, lights, bimini...) – OK / damaged / missing, with a note, position on board and a photo\n• Fuel, water and engine hours state\n• Signature of both the skipper and the charter company representative\n• The protocol becomes read-only once both have signed\n• Check-out pre-fills data from the check-in protocol and highlights new damage\n• PDF export with both signatures side by side';
+      'A formal record of taking over and returning the boat on a charter – handshake icon in the voyage detail.\n\n• Equipment checklist (sails, rigging, anchor, navigation, life jackets, raft, first aid kit, dinghy, lights, bimini...) – OK / damaged / missing, with a note, position on board and a photo\n• Fuel, water and engine hours state\n• A saved protocol opens read-only; the Edit button unlocks it\n• Check-out pre-fills data from the check-in protocol and highlights new damage\n• Check-out engine hours are pre-filled from the voyage\'s last entry\n• PDF export';
 
   @override
   String get guideGpxImportTitle => 'GPX Import';
@@ -3658,6 +3654,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Open settings';
+
+  @override
+  String get saveMissingTitle => 'Still needed before saving';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Signature: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'The protocol is saved. Tap Edit to change it.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'No position recorded: $spans. Miles in these stretches are a straight-line estimate only.';
+  }
+
+  @override
+  String get trackGapTitle => 'Track interrupted';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'The phone stopped delivering positions for $minutes min while the boat kept moving. That part of the track is missing and the miles are a straight-line estimate.';
+  }
 
   @override
   String get speed => 'Speed';

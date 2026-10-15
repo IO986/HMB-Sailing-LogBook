@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart' hide DistanceCalculator;
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/services/tile_cache.dart';
+import '../../../../core/utils/track_segments.dart';
 
 /// Ohraničenie výrezu s okolím, nie tesne cez trasu.
 ///
@@ -77,13 +78,9 @@ class DayMapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Grouped by session to avoid a phantom line joining two separate
-    // sailing sessions on the same day.
-    final bySession = <String, List<LatLng>>{};
-    for (final tp in trackPoints) {
-      final sid = tp.sessionId ?? '_';
-      bySession.putIfAbsent(sid, () => []).add(LatLng(tp.latitude, tp.longitude));
-    }
+    // Po session (dve plavby v ten istý deň sa nespájajú) a po dierach
+    // v zázname — tie idú prerušovanou čiarou, nie plnou cez ostrov.
+    final track = TrackSegments.of(trackPoints);
 
     final allPoints = trackPoints.map((p) => LatLng(p.latitude, p.longitude)).toList();
 
@@ -134,10 +131,17 @@ class DayMapView extends StatelessWidget {
           tileProvider: tileProviderBuilder('seamark'),
           tileDisplay: const TileDisplay.instantaneous(),
         ),
-        if (bySession.isNotEmpty)
+        if (trackPoints.isNotEmpty)
           PolylineLayer(polylines: [
-            for (final pts in bySession.values)
-              if (pts.length >= 2) Polyline(points: pts, color: Colors.yellow, strokeWidth: 3),
+            for (final pts in track.solidLines)
+              Polyline(points: pts, color: Colors.yellow, strokeWidth: 3),
+            for (final pts in track.gapLines)
+              Polyline(
+                points: pts,
+                color: Colors.yellow.withValues(alpha: 0.8),
+                strokeWidth: 2,
+                pattern: StrokePattern.dashed(segments: const [8, 8]),
+              ),
           ]),
         if (allPoints.isNotEmpty)
           MarkerLayer(markers: [

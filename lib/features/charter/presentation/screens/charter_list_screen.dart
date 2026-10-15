@@ -253,9 +253,38 @@ class _UnassignedEventCard extends ConsumerWidget {
               ],
             ),
           ),
+          // Zastaraná alebo omylom vytvorená udalosť (testovací drift, kotva
+          // spustená pri skúšaní) inak visela v zozname navždy — karta
+          // nemala žiadnu akciu.
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: l.delete,
+            onPressed: () => _confirmDelete(context, ref),
+          ),
         ]),
       ),
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.deleteEntryTitle),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.delete)),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await ref.read(databaseProvider).deleteLogbookEntry(entry.id);
   }
 
   /// Preložený názov udalosti. `null` pre záznam bez rozpoznaného druhu —

@@ -1847,10 +1847,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get companyNameLabel => 'Nazwa firmy';
 
   @override
-  String get protocolClosedNotice =>
-      'Protokół jest zamknięty (podpisały obie strony) – tylko do odczytu.';
-
-  @override
   String get handoverCertTitle => 'Protokół przekazania jachtu';
 
   @override
@@ -2923,7 +2919,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formalny zapis odbioru i zwrotu jachtu w czarterze – ikona uścisku dłoni w szczegółach rejsu.\n\n• Lista kontrolna wyposażenia (żagle, olinowanie, kotwica, nawigacja, kamizelki, tratwa, apteczka, dinghy, światła, bimini...) – OK / uszkodzone / brak, z uwagą, pozycją na jachcie i zdjęciem\n• Stan paliwa, wody i motogodzin\n• Podpis skippera oraz przedstawiciela firmy czarterowej\n• Protokół zamyka się (tylko do odczytu) dopiero gdy podpiszą obaj\n• Check-out wstępnie wypełnia dane z protokołu check-in i podkreśla nowe uszkodzenia\n• Eksport PDF z obydwoma podpisami obok siebie';
+      'Formalny zapis odbioru i zwrotu jachtu w czarterze – ikona uścisku dłoni w szczegółach rejsu.\n\n• Lista kontrolna wyposażenia (żagle, olinowanie, kotwica, nawigacja, kamizelki, tratwa, apteczka, dinghy, światła, bimini...) – OK / uszkodzone / brak, z uwagą, pozycją na jachcie i zdjęciem\n• Stan paliwa, wody i motogodzin\n• Zapisany protokół otwiera się tylko do odczytu; przycisk Edytuj go odblokowuje\n• Check-out wstępnie wypełnia dane z protokołu check-in i podkreśla nowe uszkodzenia\n• Motogodziny przy check-oucie wypełniają się z ostatniego wpisu rejsu\n• Eksport do PDF';
 
   @override
   String get guideGpxImportTitle => 'Import GPX';
@@ -3664,6 +3660,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Otwórz ustawienia';
+
+  @override
+  String get saveMissingTitle => 'Do zapisania brakuje jeszcze';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Podpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Protokół jest zapisany. Aby go zmienić, stuknij Edytuj.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Brak zapisu pozycji: $spans. Mile na tych odcinkach to tylko szacunek w linii prostej.';
+  }
+
+  @override
+  String get trackGapTitle => 'Ślad przerwany';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefon przez $minutes min nie dostarczał pozycji, choć jacht płynął. Tego odcinka brakuje w śladzie, a mile są tylko szacunkiem w linii prostej.';
+  }
 
   @override
   String get speed => 'Prędkość';

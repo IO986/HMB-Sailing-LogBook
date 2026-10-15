@@ -1855,10 +1855,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get companyNameLabel => 'Firmenname';
 
   @override
-  String get protocolClosedNotice =>
-      'Das Protokoll ist abgeschlossen (beide Parteien haben unterschrieben) – nur lesbar.';
-
-  @override
   String get handoverCertTitle => 'Schiffsübergabeprotokoll';
 
   @override
@@ -2937,7 +2933,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formelle Aufzeichnung der Übernahme und Rückgabe des Bootes bei einem Charter – Handschlag-Symbol in der Reisedetailansicht.\n\n• Ausrüstungs-Checkliste (Segel, Takelage, Anker, Navigation, Rettungswesten, Rettungsinsel, Erste-Hilfe-Kasten, Beiboot, Beleuchtung, Bimini...) – OK / beschädigt / fehlt, mit Notiz, Position am Boot und Foto\n• Zustand von Kraftstoff, Wasser und Motorstunden\n• Unterschrift des Skippers und des Vertreters der Charterfirma\n• Das Protokoll wird schreibgeschützt, sobald beide unterschrieben haben\n• Check-out übernimmt die Daten aus dem Check-in-Protokoll und hebt neue Schäden hervor\n• PDF-Export mit beiden Unterschriften nebeneinander';
+      'Formelle Aufzeichnung der Übernahme und Rückgabe des Bootes bei einem Charter – Handschlag-Symbol in der Reisedetailansicht.\n\n• Ausrüstungs-Checkliste (Segel, Takelage, Anker, Navigation, Rettungswesten, Rettungsinsel, Erste-Hilfe-Kasten, Beiboot, Beleuchtung, Bimini...) – OK / beschädigt / fehlt, mit Notiz, Position am Boot und Foto\n• Zustand von Kraftstoff, Wasser und Motorstunden\n• Ein gespeichertes Protokoll öffnet schreibgeschützt; Bearbeiten entsperrt es\n• Check-out übernimmt die Daten aus dem Check-in-Protokoll und hebt neue Schäden hervor\n• Die Motorstunden beim Check-out stammen aus dem letzten Eintrag des Törns\n• PDF-Export';
 
   @override
   String get guideGpxImportTitle => 'GPX-Import';
@@ -3679,6 +3675,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Einstellungen öffnen';
+
+  @override
+  String get saveMissingTitle => 'Zum Speichern fehlt noch';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Unterschrift: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Das Protokoll ist gespeichert. Zum Ändern auf Bearbeiten tippen.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Keine Position aufgezeichnet: $spans. Die Meilen in diesen Abschnitten sind nur eine Luftlinien-Schätzung.';
+  }
+
+  @override
+  String get trackGapTitle => 'Track unterbrochen';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Das Telefon hat $minutes Min. lang keine Position geliefert, obwohl sich das Boot bewegt hat. Dieser Abschnitt fehlt im Track, die Meilen sind nur eine Luftlinien-Schätzung.';
+  }
 
   @override
   String get speed => 'Geschwindigkeit';

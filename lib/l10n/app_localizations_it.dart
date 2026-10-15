@@ -1854,10 +1854,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get companyNameLabel => 'Nome della società';
 
   @override
-  String get protocolClosedNotice =>
-      'Il verbale è chiuso (entrambe le parti hanno firmato) – sola lettura.';
-
-  @override
   String get handoverCertTitle => 'Verbale di riconsegna dell\'imbarcazione';
 
   @override
@@ -2939,7 +2935,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Una registrazione formale della presa in consegna e della restituzione della barca a noleggio – icona della stretta di mano nel dettaglio della navigazione.\n\n• Lista di controllo dell\'attrezzatura (vele, manovre, ancora, navigazione, giubbotti di salvataggio, zattera, cassetta di pronto soccorso, tender, luci, bimini...) – OK / danneggiato / mancante, con nota, posizione a bordo e foto\n• Stato di carburante, acqua e ore motore\n• Firma dello skipper e del rappresentante della società di charter\n• Il verbale diventa di sola lettura una volta firmato da entrambi\n• Il check-out precompila i dati dal verbale di check-in ed evidenzia i nuovi danni\n• Esportazione in PDF con entrambe le firme affiancate';
+      'Una registrazione formale della presa in consegna e della restituzione della barca a noleggio – icona della stretta di mano nel dettaglio della navigazione.\n\n• Lista di controllo dell\'attrezzatura (vele, manovre, ancora, navigazione, giubbotti di salvataggio, zattera, cassetta di pronto soccorso, tender, luci, bimini...) – OK / danneggiato / mancante, con nota, posizione a bordo e foto\n• Stato di carburante, acqua e ore motore\n• Un verbale salvato si apre in sola lettura; il pulsante Modifica lo sblocca\n• Il check-out precompila i dati dal verbale di check-in ed evidenzia i nuovi danni\n• Le ore motore al check-out vengono prese dall\'ultima voce della navigazione\n• Esportazione PDF';
 
   @override
   String get guideGpxImportTitle => 'Importazione GPX';
@@ -3684,6 +3680,31 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Apri impostazioni';
+
+  @override
+  String get saveMissingTitle => 'Manca ancora per salvare';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Firma: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Il verbale è salvato. Tocca Modifica per cambiarlo.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Nessuna posizione registrata: $spans. Le miglia in questi tratti sono solo una stima in linea retta.';
+  }
+
+  @override
+  String get trackGapTitle => 'Traccia interrotta';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Il telefono non ha fornito la posizione per $minutes min mentre la barca si muoveva. Quel tratto manca e le miglia sono una stima in linea retta.';
+  }
 
   @override
   String get speed => 'Velocità';

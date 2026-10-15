@@ -1845,10 +1845,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get companyNameLabel => 'Názov spoločnosti';
 
   @override
-  String get protocolClosedNotice =>
-      'Protokol je uzavretý (podpísali obe strany) – len na čítanie.';
-
-  @override
   String get handoverCertTitle => 'Odovzdávací protokol lode';
 
   @override
@@ -2920,7 +2916,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Podpis skippera aj zástupcu charterovej spoločnosti\n• Protokol sa uzavrie (len na čítanie) až keď podpíšu obaja\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Export PDF s oboma podpismi vedľa seba';
+      'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Uložený protokol sa otvorí len na čítanie; tlačidlo Upraviť ho odomkne\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Motohodiny pri check-oute sa predvyplnia z posledného záznamu plavby\n• Export PDF';
 
   @override
   String get guideGpxImportTitle => 'Import GPX';
@@ -3660,6 +3656,31 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Otvoriť nastavenia';
+
+  @override
+  String get saveMissingTitle => 'Na uloženie ešte chýba';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Podpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Protokol je uložený. Na zmenu ťuknite na Upraviť.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Bez záznamu polohy: $spans. Míle v týchto úsekoch sú len odhad po priamke.';
+  }
+
+  @override
+  String get trackGapTitle => 'Trasa sa prerušila';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefón aplikácii $minutes min nedoručoval polohu, hoci sa loď pohla. Trasa v tom úseku chýba a míle sú len odhad po priamke.';
+  }
 
   @override
   String get speed => 'Rýchlosť';

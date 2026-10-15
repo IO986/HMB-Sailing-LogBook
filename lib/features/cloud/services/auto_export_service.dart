@@ -73,6 +73,7 @@ class AutoExportService {
       mapScreenshot: mapScreenshot,
       skipperProfile: skipperProfile,
       nightHours: await db.nightHoursForDay(dayLogId),
+      trackGaps: await db.trackGapsForDay(dayLogId),
     );
     final gpxBytes = await GpxExporter.buildDayGpxBytes(day, sessions, pointsBySession);
 

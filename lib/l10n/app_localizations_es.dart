@@ -1851,10 +1851,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get companyNameLabel => 'Nombre de la empresa';
 
   @override
-  String get protocolClosedNotice =>
-      'El protocolo está cerrado (ambas partes firmaron) – solo lectura.';
-
-  @override
   String get handoverCertTitle => 'Protocolo de entrega de la embarcación';
 
   @override
@@ -2933,7 +2929,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Registro formal de la entrega y devolución del barco en un charter – icono de manos en el detalle de la travesía.\n\n• Checklist de equipamiento (velas, jarcia, ancla, navegación, chalecos, balsa, botiquín, bote auxiliar, luces, bimini...) – OK / dañado / falta, con nota, posición en el barco y foto\n• Estado de combustible, agua y horas de motor\n• Firma del patrón y del representante de la empresa de charter\n• El protocolo pasa a ser de solo lectura cuando ambos han firmado\n• El check-out se rellena con los datos del check-in y resalta los daños nuevos\n• Exportación PDF con ambas firmas una junto a la otra';
+      'Registro formal de la entrega y devolución del barco en un charter – icono de manos en el detalle de la travesía.\n\n• Checklist de equipamiento (velas, jarcia, ancla, navegación, chalecos, balsa, botiquín, bote auxiliar, luces, bimini...) – OK / dañado / falta, con nota, posición en el barco y foto\n• Estado de combustible, agua y horas de motor\n• Un protocolo guardado se abre en solo lectura; el botón Editar lo desbloquea\n• El check-out se rellena con los datos del check-in y resalta los daños nuevos\n• Las horas de motor del check-out se rellenan con la última entrada de la travesía\n• Exportación a PDF';
 
   @override
   String get guideGpxImportTitle => 'Importar GPX';
@@ -3677,6 +3673,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Abrir ajustes';
+
+  @override
+  String get saveMissingTitle => 'Falta para guardar';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Firma: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'El protocolo está guardado. Toca Editar para cambiarlo.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Sin posición registrada: $spans. Las millas de estos tramos son solo una estimación en línea recta.';
+  }
+
+  @override
+  String get trackGapTitle => 'Track interrumpido';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'El teléfono dejó de entregar posiciones durante $minutes min mientras el barco se movía. Falta ese tramo del track y las millas son una estimación en línea recta.';
+  }
 
   @override
   String get speed => 'Velocidad';

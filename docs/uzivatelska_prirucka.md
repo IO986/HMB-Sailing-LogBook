@@ -155,7 +155,7 @@ Okrem automatických záznamov môžete pridať vlastný tlačidlom **Pridať ru
 ### 5.5 Podrobný formulár plavby a odovzdávací protokol
 
 - **Ikona lode** v detaile plavby otvorí kartu s parametrami lode, oblasťou plavby a posádkou (vrátane preukazov skippera a fotiek lode).
-- **Ikona podania rúk** otvorí odovzdávací protokol (check-in/check-out) pri charteri: kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft...) s poznámkou, polohou a fotkou pre každú položku, stav paliva/vody/motohodín a podpisy oboch strán. Check-out si predvyplní údaje z check-in a zvýrazní nové poškodenia.
+- **Ikona podania rúk** otvorí odovzdávací protokol (check-in/check-out) pri charteri: kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft...) s poznámkou, polohou a fotkou pre každú položku, stav paliva/vody/motohodín a mená skippera a zástupcu charterovej spoločnosti. Uložený protokol sa otvorí len na čítanie, tlačidlo **Upraviť** ho odomkne. Check-out si predvyplní údaje z check-in, motohodiny vezme z posledného záznamu plavby a zvýrazní nové poškodenia.
 
 ---
 
@@ -209,7 +209,7 @@ Po ukotvení nastavte polomer (odporúčané aspoň 2× dĺžka kotevného lana)
 
 ### 7.3 Bezpečnostný brífing
 
-Kontrolný zoznam bodov (kde sú vesty, ako použiť VHF, kde je lekárnička) pred plavbou. Každý člen posádky sa podpíše priamo na obrazovke; podpisy sa automaticky zahrnú do PDF exportu. Tracking sa dá spustiť aj bez vyplneného brífingu – appka to len pripomenie štítkom v Denníku. Brífing vyžaduje najprv vyplnenú kartu lode a posádky.
+Kontrolný zoznam bodov (kde sú vesty, ako použiť VHF, kde je lekárnička) pred plavbou. Každý člen posádky sa podpíše priamo na obrazovke; podpisy sa automaticky zahrnú do PDF exportu. Tracking sa dá spustiť aj bez vyplneného brífingu – appka to len pripomenie štítkom v Denníku. Brífing vyžaduje najprv vyplnenú kartu lode a posádky. Ak pri uložení chýba podpis, appka vypíše, koho. Hotový brífing sa dá znovu otvoriť tlačidlom **Upraviť** a doplniť body.
 
 ### 7.4 Služba posádky
 

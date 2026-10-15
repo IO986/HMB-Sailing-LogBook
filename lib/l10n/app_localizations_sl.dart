@@ -1845,10 +1845,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get companyNameLabel => 'Naziv podjetja';
 
   @override
-  String get protocolClosedNotice =>
-      'Zapisnik je zaključen (obe strani sta podpisali) – samo za branje.';
-
-  @override
   String get handoverCertTitle => 'Zapisnik o primopredaji plovila';
 
   @override
@@ -2921,7 +2917,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Uradni zapis o prevzemu in vrnitvi plovila na čarterju – ikona rokovanja v podrobnostih plovbe.\n\n• Kontrolni seznam opreme (jadra, oprema jadrovja, sidro, navigacija, rešilni jopiči, splav, komplet prve pomoči, gumenjak, luči, bimini...) – v redu / poškodovano / manjka, z opombo, položajem na krovu in fotografijo\n• Stanje goriva, vode in ur motorja\n• Podpis skiperja in predstavnika čarter podjetja\n• Zapisnik postane samo za branje, ko podpišeta obe strani\n• Check-out vnaprej izpolni podatke iz zapisnika check-in in izpostavi nove poškodbe\n• Izvoz PDF z obema podpisoma drug ob drugem';
+      'Uradni zapis o prevzemu in vrnitvi plovila na čarterju – ikona rokovanja v podrobnostih plovbe.\n\n• Kontrolni seznam opreme (jadra, oprema jadrovja, sidro, navigacija, rešilni jopiči, splav, komplet prve pomoči, gumenjak, luči, bimini...) – v redu / poškodovano / manjka, z opombo, položajem na krovu in fotografijo\n• Stanje goriva, vode in ur motorja\n• Shranjen zapisnik se odpre samo za branje; gumb Uredi ga odklene\n• Check-out vnaprej izpolni podatke iz zapisnika check-in in izpostavi nove poškodbe\n• Motorne ure pri check-outu se izpolnijo iz zadnjega vnosa plovbe\n• Izvoz v PDF';
 
   @override
   String get guideGpxImportTitle => 'Uvoz GPX';
@@ -3661,6 +3657,31 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Odpri nastavitve';
+
+  @override
+  String get saveMissingTitle => 'Za shranjevanje še manjka';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Podpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Zapisnik je shranjen. Za spremembo tapnite Uredi.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Brez zapisa položaja: $spans. Milje na teh odsekih so le ocena po ravni črti.';
+  }
+
+  @override
+  String get trackGapTitle => 'Sled je prekinjena';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefon $minutes min ni dajal položaja, čeprav se je plovilo premikalo. Ta del sledi manjka, milje pa so le ocena po ravni črti.';
+  }
 
   @override
   String get speed => 'Hitrost';

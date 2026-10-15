@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/night_hours.dart';
+import '../utils/track_segments.dart';
 import '../utils/distance_calculator.dart';
 
 part 'app_database.g.dart';
@@ -978,6 +979,13 @@ class AppDatabase extends _$AppDatabase {
       // horšie — nahlásené z terénu: export PDF spoľahlivo fungoval len keď
       // tracking nebežal. WAL umožňuje čítačom pokračovať počas zápisu.
       await customStatement('PRAGMA journal_mode = WAL');
+      // WAL pustí čitateľov, ale dvaja zapisovatelia sa stále striedajú
+      // o jeden zámok. Bez busy_timeout zápis, ktorý narazí na zápis z
+      // druhého izolátu (počasie z foreground service každých 15 min),
+      // okamžite padne na SQLITE_BUSY namiesto toho, aby chvíľu počkal —
+      // pravdepodobná príčina hlásenia „check-in sa nedal uložiť, neskôr
+      // to zbehlo".
+      await customStatement('PRAGMA busy_timeout = 5000');
     },
   );
 
@@ -1161,11 +1169,50 @@ class AppDatabase extends _$AppDatabase {
     await (update(dutyPeriods)..where((w) => w.dayLogId.equals(id)))
         .write(const DutyPeriodsCompanion(dayLogId: Value(null)));
     await (delete(logbookEntries)..where((e) => e.dayLogId.equals(id))).go();
+    // Body trasy nemajú FK na session, takže ich mazanie session nestrhne
+    // so sebou — bez tohto ostávali v DB navždy (záloha z 9. 10.: 25 759
+    // bodov, viac ako polovica tabuľky, zo zmazaných plavieb).
+    final sessionIds = selectOnly(sailingSessions)
+      ..addColumns([sailingSessions.sessionId])
+      ..where(sailingSessions.dayLogId.equals(id));
+    await (delete(trackPoints)..where((t) => t.sessionId.isInQuery(sessionIds)))
+        .go();
     await (delete(sailingSessions)..where((s) => s.dayLogId.equals(id))).go();
     // Zamerania patria dňu rovnako ako denníkové záznamy, takže idú s ním —
     // a bez tohto by ich FK odkaz mazanie dňa zhodil.
     await (delete(bearings)..where((b) => b.dayLogId.equals(id))).go();
     await (delete(dayLogs)..where((d) => d.id.equals(id))).go();
+  }
+
+  /// Zmaže body trasy, ktorých session už neexistuje — pozostatky plavieb
+  /// zmazaných skôr, než [deleteDayLog] mazal aj body. Len staršie ako
+  /// [olderThan]: synchronizácia z druhého telefónu môže doručiť body skôr
+  /// než ich session a tie sa mazať nesmú.
+  Future<int> deleteOrphanTrackPoints(
+      {Duration olderThan = const Duration(days: 7)}) {
+    final cutoff = DateTime.now().toUtc().subtract(olderThan);
+    final known = selectOnly(sailingSessions)
+      ..addColumns([sailingSessions.sessionId]);
+    return (delete(trackPoints)
+          ..where((t) =>
+              t.timestamp.isSmallerThanValue(cutoff) &
+              (t.sessionId.isNull() | t.sessionId.isNotInQuery(known))))
+        .go();
+  }
+
+  /// Posledné motohodiny zapísané počas plavby — najlepší návrh pre
+  /// check-out. Check-in ich má zo začiatku a za týždeň motor nabehá desiatky
+  /// hodín (plavba 9: check-in 4510.5, posledný záznam 4529.8).
+  Future<double?> latestEngineHoursForCharter(int charterId) async {
+    final days = selectOnly(dayLogs)
+      ..addColumns([dayLogs.id])
+      ..where(dayLogs.charterId.equals(charterId));
+    final row = await (select(logbookEntries)
+          ..where((e) => e.dayLogId.isInQuery(days) & e.engineHours.isNotNull())
+          ..orderBy([(e) => OrderingTerm.desc(e.timestamp)])
+          ..limit(1))
+        .getSingleOrNull();
+    return row?.engineHours;
   }
 
   Future<void> deleteDayLogs(List<int> ids) async {
@@ -1518,6 +1565,17 @@ class AppDatabase extends _$AppDatabase {
   /// a hlavne inak než v Knihe míľ, ktorá body trasy používa vždy. Deň bez
   /// trasy má nula nočných hodín na oboch dokladoch: bez trasy sa nedá
   /// povedať, kedy sa loď naozaj hýbala, a hádať to do dokladu netreba.
+  /// Diery v zázname trasy dňa — úseky, kde telefón nedoručil polohu, hoci
+  /// sa loď pohla (pozri [TrackSegments]). Ide do PDF, aby bolo z dokladu
+  /// vidieť, ktoré míle sú zmerané a ktoré len odhad po priamke.
+  Future<List<TrackGapSpan>> trackGapsForDay(int dayLogId) async {
+    final points = <TrackPoint>[];
+    for (final session in await getSessionsForDay(dayLogId)) {
+      points.addAll(await getTrackPointsForSession(session.sessionId));
+    }
+    return points.isEmpty ? const [] : TrackSegments.of(points).gaps;
+  }
+
   Future<double> nightHoursForDay(int dayLogId) async {
     final samples = <NightSample>[];
     for (final session in await getSessionsForDay(dayLogId)) {

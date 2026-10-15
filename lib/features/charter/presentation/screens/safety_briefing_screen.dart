@@ -34,6 +34,10 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
   /// indexy (pozri [_applySavedChecks]).
   Set<String> _savedChecked = {};
 
+  /// Hotový brífing skrýva checklist. Upraviť ho znovu otvorí — doteraz sa
+  /// po uložení nedalo doplniť bod, na ktorý sa pri brífingu zabudlo.
+  bool _reopened = false;
+
   /// Body brífingu, ktoré si dopísal skiper — spoločné s referenčnou kartou
   /// v Bezpečnosti, pozri [CustomSafetyItems].
   List<String> _customItems = [];
@@ -303,6 +307,14 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                                   color: Colors.white70, fontSize: 12)),
                         ],
                       )),
+                      if (!_reopened)
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white),
+                          onPressed: () => setState(() => _reopened = true),
+                          icon: const Icon(Icons.edit_outlined),
+                          label: Text(l.edit),
+                        ),
                     ]),
                   ),
 
@@ -311,7 +323,7 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
                 const SizedBox(height: 16),
 
                 // ── Checklist (only when not yet completed) ───
-                if (!charter.safetyBriefingDone) ...[
+                if (!charter.safetyBriefingDone || _reopened) ...[
                   _ChecklistCard(
                     checked: _checkedItems,
                     customItems: _customItems,
@@ -385,13 +397,24 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
       if (!hasDrawn && !hasSaved) unsigned.add(members[i].name);
     }
     if (members.isEmpty || unsigned.isNotEmpty) {
+      // Dialóg, nie snackbar: krátky pruh dole sa pri uložení ľahko
+      // prehliadol a skiper mal dojem, že brífing sa uložiť nedá
+      // (nahlásené z októbrovej plavby).
       final l = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(members.isEmpty
-            ? l.briefingNoCrew
-            : '${l.briefingSignHere}: ${unsigned.join(", ")}'),
-        backgroundColor: Colors.orange.shade800,
-      ));
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          icon: Icon(Icons.edit_note, color: Colors.orange.shade800, size: 32),
+          title: Text(l.saveMissingTitle),
+          content: Text(members.isEmpty
+              ? l.briefingNoCrew
+              : l.briefingMissingSignatures(unsigned.join(', '))),
+          actions: [
+            FilledButton(
+                onPressed: () => Navigator.pop(ctx), child: Text(l.ok)),
+          ],
+        ),
+      );
       return;
     }
 
@@ -442,6 +465,7 @@ class _SafetyBriefingScreenState extends ConsumerState<SafetyBriefingScreen> {
         briefingCheckedJson: Value(jsonEncode(covered)),
       ));
       ref.invalidate(chartersProvider);
+      if (mounted) setState(() => _reopened = false);
 
       if (context.mounted) {
         final l = AppLocalizations.of(context);
