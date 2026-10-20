@@ -19,6 +19,7 @@ import '../../../../core/services/app_review_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
+import '../../../duty/providers/duty_provider.dart';
 import '../../providers/tracking_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -327,6 +328,10 @@ Future<void> maybePromptInterruptedVoyage(
       eventType: Value(LogbookEventType.voyageEnd.code),
       isAutoEntry: const Value(true),
     ));
+    // Služby skončili s plavbou — tým istým časom posledného bodu.
+    await ref
+        .read(dutyControllerProvider)
+        .endWithTracking(dayLog.charterId, at: lastPoint.timestamp);
     return;
   }
 

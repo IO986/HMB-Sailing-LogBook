@@ -2150,24 +2150,6 @@ abstract class AppLocalizations {
   /// **'Služba posádky'**
   String get dutyRoster;
 
-  /// No description provided for @dutyStartAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Nastúpiť do služby'**
-  String get dutyStartAction;
-
-  /// No description provided for @dutyEndAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Ukončiť'**
-  String get dutyEndAction;
-
-  /// No description provided for @dutyStartTitle.
-  ///
-  /// In sk, this message translates to:
-  /// **'Kto nastupuje do služby?'**
-  String get dutyStartTitle;
-
   /// No description provided for @dutyRunningChip.
   ///
   /// In sk, this message translates to:
@@ -2191,6 +2173,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Momentálne nikto neslúži'**
   String get dutyNobodyOnDuty;
+
+  /// No description provided for @dutyAutoHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'So spustením trackingu nastupuje do služby celá posádka, so zastavením služba končí. Prepínačom postavíš člena posádky mimo službu.'**
+  String get dutyAutoHint;
+
+  /// No description provided for @dutyOffDuty.
+  ///
+  /// In sk, this message translates to:
+  /// **'mimo služby'**
+  String get dutyOffDuty;
 
   /// No description provided for @dutyInspectionView.
   ///
@@ -2263,12 +2257,6 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Poznámka'**
   String get dutyNoteLabel;
-
-  /// No description provided for @dutyLongRunningWarning.
-  ///
-  /// In sk, this message translates to:
-  /// **'Služba beží {hours} h — nezabudol si ju ukončiť?'**
-  String dutyLongRunningWarning(int hours);
 
   /// No description provided for @dutyFrom.
   ///
@@ -5621,7 +5609,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDutyBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Nastúpiť do služby — vyber jedného alebo viacerých ľudí naraz; každý sa potom ukončuje samostatne\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Čas nástupu sa dá opraviť, ak si tlačidlo stlačil neskôr\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu\n\nPozn.: appka službu nikdy neukončí sama. Po 12 hodinách len upozorní — koniec, ktorý si nevidel, by bol vymyslený údaj.'**
+  /// **'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Po spustení trackingu je celá posádka automaticky v službe (vyplýva to z námorného práva), až kým tracking nezastavíš\n• Prepínačom pri mene postavíš člena posádky mimo službu a rovnako ho vrátiš späť. Ručné zmeny sa zapíšu do denníka\n• Obnovenie prerušenej plavby stav služby nemení — kto bol mimo službu, ostane mimo\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• V PDF má každý člen posádky jeden riadok so všetkými úsekmi služby za deň'**
   String get guideDutyBody;
 
   /// No description provided for @guideCompassTitle.

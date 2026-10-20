@@ -215,10 +215,12 @@ Kontrolný zoznam bodov (kde sú vesty, ako použiť VHF, kde je lekárnička) p
 
 Záznam o tom, kto mal kedy službu na palube.
 
-- **Nastúpiť do služby** – vyber jedného alebo viacerých ľudí naraz, mená sa berú z posádky plavby
+- Po spustení trackingu je celá posádka automaticky v službe (vyplýva to z námorného práva), až kým tracking nezastavíš
+- **Prepínač pri mene** – postaví člena posádky mimo službu a rovnako ho vráti späť; ručné zmeny sa zapíšu do denníka
+- Obnovenie prerušenej plavby stav služby nemení – kto bol mimo službu, ostane mimo
 - **Zobraziť pre kontrolu** – celoobrazovková karta pre kontrolu na palube (kto slúži, od kedy, čas lokálne aj UTC)
 - **Rozpis služieb** – spätné doplnenie aj úprava; nočná služba cez polnoc je jeden záznam, v PDF sa objaví na oboch dňoch
-- Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu; appka službu nikdy neukončí sama, po 12 hodinách len upozorní
+- V PDF má každý člen posádky jeden riadok so všetkými úsekmi služby za deň
 
 ### 7.5 MAYDAY karta a tiesňové kontakty
 

@@ -1094,15 +1094,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get dutyRoster => 'Posadka na straži';
 
   @override
-  String get dutyStartAction => 'Prevzemi stražo';
-
-  @override
-  String get dutyEndAction => 'Končaj';
-
-  @override
-  String get dutyStartTitle => 'Kdo prevzema stražo?';
-
-  @override
   String get dutyRunningChip => 'NA STRAŽI';
 
   @override
@@ -1117,6 +1108,13 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nihče ni na straži';
+
+  @override
+  String get dutyAutoHint =>
+      'Z zagonom sledenja celotna posadka prevzame stražo, z ustavitvijo se straža konča. S stikalom člana posadke postavite izven straže.';
+
+  @override
+  String get dutyOffDuty => 'izven straže';
 
   @override
   String get dutyInspectionView => 'Prikaži za inšpekcijo';
@@ -1157,11 +1155,6 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Opomba';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Na straži že $hours h — je bila morda pozabljena?';
-  }
 
   @override
   String get dutyFrom => 'Od';
@@ -2952,7 +2945,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Zapis o tem, kdo in kdaj je bil na straži — v Varnosti, nad alarmom sidra.\n\n• Prevzemi stražo — izberite eno ali več oseb hkrati; vsaka nato posebej preda stražo\n• Imena prihajajo iz posadke plovbe. Če posadka ni določena, vas gumb popelje na kartico plovbe\n• Čas začetka je mogoče popraviti, če ste gumb pritisnili z zamudo\n• Prikaži za inšpekcijo — kartica čez cel zaslon za predložitev na krovu: kdo je na straži, od kdaj, lokalni in čas UTC. Iz nje ni mogoče ničesar spremeniti\n• Razpored straž — vnesite preteklo stražo ali jo uredite. Pustite čas \"do\" prazen in straža ostane v teku\n• Nočna straža čez polnoč je en zapis, ne dva. V PDF se pojavi na obeh dneh, označena s puščico\n• Prevzem in predaja straže se zapišeta v dnevnik in v izvoz PDF\n\nOpomba: aplikacija nikoli sama ne konča straže. Po 12 urah vas le opozori — čas konca, ki ga niste videli, bi bil izmišljen podatek.';
+      'Zapis o tem, kdo in kdaj je bil na straži — v Varnosti, nad alarmom sidra.\n\n• Po zagonu sledenja je celotna posadka samodejno na straži (tako zahteva pomorsko pravo), dokler sledenja ne ustavite\n• S stikalom ob imenu člana posadke postavite izven straže in ga na enak način vrnete. Ročne spremembe se zapišejo v dnevnik\n• Nadaljevanje prekinjene plovbe stanja straže ne spremeni — kdor je bil izven straže, ostane izven\n• Imena prihajajo iz posadke plovbe. Če posadka ni določena, vas gumb popelje na kartico plovbe\n• Prikaži za inšpekcijo — celozaslonska kartica za pregled na krovu: kdo je na straži, od kdaj, lokalni in UTC čas. Na njej ni mogoče ničesar spremeniti\n• Razpored straž — naknadni vnos ali urejanje straže. Če čas »do« pustite prazen, straža teče naprej\n• Nočna straža čez polnoč je en zapis, ne dva. V PDF-ju se pojavi na obeh dneh, označena s puščico\n• V PDF-ju ima vsak član posadke eno vrstico z vsemi deli straže tistega dne';
 
   @override
   String get guideCompassTitle => 'Kompas za merjenje azimuta';

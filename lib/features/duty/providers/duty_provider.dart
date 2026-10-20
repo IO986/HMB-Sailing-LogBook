@@ -106,6 +106,53 @@ class DutyController {
     }
   }
 
+  /// Puts the whole crew on duty when tracking starts.
+  ///
+  /// By maritime law the crew is on duty for the whole time the vessel is
+  /// under way, so this is the default rather than something the skipper has
+  /// to remember; taking someone off duty is the manual exception. Members
+  /// already on duty are left alone, so calling this twice is harmless.
+  ///
+  /// No logbook entries: the voyage-start entry already marks the moment, and
+  /// one "duty start" line per person per leg buried the log in noise.
+  Future<void> startWithTracking(int charterId, {DateTime? at}) async {
+    final charter = await _db.getCharterById(charterId);
+    if (charter == null) return;
+    final crew = CrewMember.decode(
+      crewJson: charter.crewJson,
+      skipperName: charter.skipperName,
+      crewNames: charter.crewNames,
+    );
+    final running =
+        (await _db.getRunningDuties(charterId)).map((d) => d.crewName).toSet();
+    final fromUtc = (at ?? DateTime.now()).toUtc();
+    final dayLogId = await _resolveDayLogId();
+    for (final m in crew.where((m) => !running.contains(m.name))) {
+      await _db.insertDutyPeriod(DutyPeriodsCompanion.insert(
+        charterId: charterId,
+        dayLogId: drift.Value(dayLogId),
+        crewName: m.name,
+        role: drift.Value(m.role),
+        fromUtc: fromUtc,
+        createdAt: DateTime.now(),
+      ));
+    }
+  }
+
+  /// Ends every running duty when tracking stops — the counterpart of
+  /// [startWithTracking]. Rows are marked isAutoClosed.
+  ///
+  /// [at] is clamped to each duty's start: an interrupted voyage is closed at
+  /// its last track point, which may precede a duty started by hand later.
+  Future<void> endWithTracking(int charterId, {DateTime? at}) async {
+    final toUtc = (at ?? DateTime.now()).toUtc();
+    for (final d in await _db.getRunningDuties(charterId)) {
+      final from = d.fromUtc.toUtc();
+      await _db.closeDutyPeriod(d.id, toUtc.isAfter(from) ? toUtc : from,
+          isAutoClosed: true);
+    }
+  }
+
   /// Ends one person's duty. Independent per row by construction.
   Future<void> endDuty(DutyPeriod duty, {DateTime? at}) async {
     final toUtc = (at ?? DateTime.now()).toUtc();
@@ -162,13 +209,6 @@ class DutyController {
       );
 
   Future<void> deleteDuty(int id) => _db.deleteDutyPeriod(id);
-
-  /// Closes everything still running — for check-out or end of voyage.
-  ///
-  /// Never call this from a timer: a duty end the skipper never observed is a
-  /// fabricated record. Rows closed this way carry isAutoClosed.
-  Future<void> closeAll(int charterId, {DateTime? at}) =>
-      _db.closeAllRunningDuties(charterId, (at ?? DateTime.now()).toUtc());
 
   /// Checks a duty against the ones already recorded for the charter.
   Future<DutyValidationError?> validate({

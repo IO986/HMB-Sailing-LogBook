@@ -1097,15 +1097,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dutyRoster => 'Wachdienst';
 
   @override
-  String get dutyStartAction => 'Wache übernehmen';
-
-  @override
-  String get dutyEndAction => 'Beenden';
-
-  @override
-  String get dutyStartTitle => 'Wer übernimmt die Wache?';
-
-  @override
   String get dutyRunningChip => 'IM DIENST';
 
   @override
@@ -1120,6 +1111,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Derzeit hat niemand Wache';
+
+  @override
+  String get dutyAutoHint =>
+      'Mit dem Start des Trackings tritt die ganze Crew die Wache an, mit dem Stopp endet sie. Mit dem Schalter nimmst du ein Crewmitglied aus der Wache.';
+
+  @override
+  String get dutyOffDuty => 'nicht im Dienst';
 
   @override
   String get dutyInspectionView => 'Für Kontrolle anzeigen';
@@ -1161,11 +1159,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Anmerkung';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Seit $hours Std. im Dienst — vergessen zu beenden?';
-  }
 
   @override
   String get dutyFrom => 'Von';
@@ -2968,7 +2961,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Ein Nachweis darüber, wer wann Wache hatte — unter Sicherheit, über dem Ankeralarm.\n\n• Wache übernehmen — eine oder mehrere Personen gleichzeitig wählen; jede beendet ihre Wache dann einzeln\n• Die Namen stammen aus der Crew der Fahrt. Ist keine Crew erfasst, führt die Schaltfläche zur Fahrtkarte\n• Die Anfangszeit lässt sich korrigieren, wenn du zu spät gedrückt hast\n• Für Kontrolle anzeigen — eine bildschirmfüllende Karte zum Vorzeigen an Bord: wer Wache hat, seit wann, Orts- und UTC-Zeit. Von dort ist nichts änderbar\n• Wachplan — Wache nachtragen oder bearbeiten. Ohne Endzeit läuft die Wache weiter\n• Eine Nachtwache über Mitternacht ist ein Eintrag, nicht zwei. Im PDF erscheint sie an beiden Tagen, mit Pfeil markiert\n• Beginn und Ende werden ins Logbuch und in den PDF-Export geschrieben\n\nHinweis: Die App beendet eine Wache nie von selbst. Nach 12 Stunden warnt sie nur — eine Endzeit, die du nicht beobachtet hast, wäre erfunden.';
+      'Ein Nachweis darüber, wer wann Wache hatte — unter Sicherheit, über dem Ankeralarm.\n\n• Sobald das Tracking läuft, ist die ganze Crew automatisch im Dienst (so verlangt es das Seerecht), bis du das Tracking stoppst\n• Mit dem Schalter neben einem Namen nimmst du das Crewmitglied aus dem Dienst und holst es genauso zurück. Manuelle Änderungen werden ins Logbuch geschrieben\n• Das Fortsetzen einer unterbrochenen Fahrt ändert den Dienst nicht — wer aus dem Dienst genommen wurde, bleibt draußen\n• Die Namen stammen aus der Crew der Fahrt. Ist keine Crew erfasst, führt die Schaltfläche zur Fahrtkarte\n• Für Kontrolle anzeigen — eine Vollbildkarte für Kontrollen an Bord: wer Wache hat, seit wann, Ortszeit und UTC. Daran lässt sich nichts ändern\n• Wachplan — eine vergangene Wache nachtragen oder bearbeiten. Bleibt die „bis\"-Zeit leer, läuft die Wache weiter\n• Eine Nachtwache über Mitternacht ist ein Eintrag, nicht zwei. Im PDF erscheint sie an beiden Tagen, mit einem Pfeil markiert\n• Im PDF hat jedes Crewmitglied eine Zeile mit allen Wachabschnitten des Tages';
 
   @override
   String get guideCompassTitle => 'Peilkompass';

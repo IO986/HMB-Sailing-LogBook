@@ -3265,37 +3265,52 @@ class PdfExportService {
   /// Periods are clipped to the day and marked with arrows when they run past
   /// it, because a duty is stored as a single row even when it crosses
   /// midnight — splitting it would turn one real event into two records.
+  /// Crew comes on duty with every tracking start, so a day with a lunch stop
+  /// has several periods per person; they share that person's line.
   static pw.Widget _dutyBand(
       List<DutyPeriod> duties, DateTime day, AppLocalizations l) {
     final localMidnight = DateTime(day.year, day.month, day.day);
     final now = DateTime.now().toUtc();
 
-    final rows = duties
+    final clipped = duties
         .map((d) => clipToDay(d.toInterval(), localMidnight, now))
         .toList()
       ..sort((a, b) => a.fromUtc.compareTo(b.fromUtc));
+    // Insertion order of the map = order of each person's first duty.
+    final byName = <String, List<ClippedDuty>>{};
+    for (final c in clipped) {
+      byName.putIfAbsent(c.duty.crewName, () => []).add(c);
+    }
+
+    // The same zone as the entries table on the same page — the reader
+    // must not have to convert between two clocks inside one document.
+    String range(ClippedDuty c) {
+      final from = '${c.clippedStart ? '<- ' : ''}'
+          '${units.formatTime(c.fromUtc)}';
+      final to = c.duty.isRunning
+          ? l.logDutyStillRunning
+          : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
+      return '$from - $to';
+    }
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: rows.map((c) {
-        // The same zone as the entries table on the same page — the reader
-        // must not have to convert between two clocks inside one document.
-        final from = '${c.clippedStart ? '<- ' : ''}'
-            '${units.formatTime(c.fromUtc)}';
-        final to = c.duty.isRunning
-            ? l.logDutyStillRunning
-            : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
+      children: byName.entries.map((e) {
         return pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 1.5),
-          child: pw.Row(children: [
-            pw.SizedBox(
-              width: 120,
-              child: pw.Text(_pdfText(c.duty.crewName),
-                  style: const pw.TextStyle(fontSize: 8)),
-            ),
-            pw.Text('$from - $to',
-                style: pw.TextStyle(fontSize: 8, color: _dgrey)),
-          ]),
+          child: pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.SizedBox(
+                  width: 120,
+                  child: pw.Text(_pdfText(e.key),
+                      style: const pw.TextStyle(fontSize: 8)),
+                ),
+                pw.Expanded(
+                  child: pw.Text(e.value.map(range).join(', '),
+                      style: pw.TextStyle(fontSize: 8, color: _dgrey)),
+                ),
+              ]),
         );
       }).toList(),
     );

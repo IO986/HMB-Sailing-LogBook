@@ -1095,15 +1095,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get dutyRoster => 'Služba posádky';
 
   @override
-  String get dutyStartAction => 'Nastúpiť do služby';
-
-  @override
-  String get dutyEndAction => 'Ukončiť';
-
-  @override
-  String get dutyStartTitle => 'Kto nastupuje do služby?';
-
-  @override
   String get dutyRunningChip => 'SLÚŽI';
 
   @override
@@ -1118,6 +1109,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Momentálne nikto neslúži';
+
+  @override
+  String get dutyAutoHint =>
+      'So spustením trackingu nastupuje do služby celá posádka, so zastavením služba končí. Prepínačom postavíš člena posádky mimo službu.';
+
+  @override
+  String get dutyOffDuty => 'mimo služby';
 
   @override
   String get dutyInspectionView => 'Zobraziť pre kontrolu';
@@ -1158,11 +1156,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Poznámka';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Služba beží $hours h — nezabudol si ju ukončiť?';
-  }
 
   @override
   String get dutyFrom => 'Od';
@@ -2951,7 +2944,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Nastúpiť do služby — vyber jedného alebo viacerých ľudí naraz; každý sa potom ukončuje samostatne\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Čas nástupu sa dá opraviť, ak si tlačidlo stlačil neskôr\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu\n\nPozn.: appka službu nikdy neukončí sama. Po 12 hodinách len upozorní — koniec, ktorý si nevidel, by bol vymyslený údaj.';
+      'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Po spustení trackingu je celá posádka automaticky v službe (vyplýva to z námorného práva), až kým tracking nezastavíš\n• Prepínačom pri mene postavíš člena posádky mimo službu a rovnako ho vrátiš späť. Ručné zmeny sa zapíšu do denníka\n• Obnovenie prerušenej plavby stav služby nemení — kto bol mimo službu, ostane mimo\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• V PDF má každý člen posádky jeden riadok so všetkými úsekmi služby za deň';
 
   @override
   String get guideCompassTitle => 'Námerový kompas';

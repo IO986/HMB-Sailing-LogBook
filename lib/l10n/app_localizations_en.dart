@@ -1095,15 +1095,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dutyRoster => 'Crew on duty';
 
   @override
-  String get dutyStartAction => 'Come on duty';
-
-  @override
-  String get dutyEndAction => 'End';
-
-  @override
-  String get dutyStartTitle => 'Who is coming on duty?';
-
-  @override
   String get dutyRunningChip => 'ON DUTY';
 
   @override
@@ -1118,6 +1109,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nobody is on duty';
+
+  @override
+  String get dutyAutoHint =>
+      'The whole crew comes on duty when tracking starts and goes off duty when it stops. Use the switch to take a crew member off duty.';
+
+  @override
+  String get dutyOffDuty => 'off duty';
 
   @override
   String get dutyInspectionView => 'Show for inspection';
@@ -1158,11 +1156,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Note';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'On duty for $hours h — was it left open?';
-  }
 
   @override
   String get dutyFrom => 'From';
@@ -2949,7 +2942,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'A record of who was on watch and when — in Safety, above the anchor alarm.\n\n• Come on duty — pick one or several people at once; each then goes off duty separately\n• Names come from the voyage crew. If no crew is set, the button takes you to the voyage card\n• The start time can be corrected if you pressed the button late\n• Show for inspection — a full-screen card to hand over on board: who is on duty, since when, local and UTC time. Nothing can be changed from it\n• Duty roster — fill in a past duty or edit one. Leave the \"to\" time empty and the duty keeps running\n• A night watch across midnight is one record, not two. It appears on both days in the PDF, marked with an arrow\n• Coming on and going off duty are both written to the logbook and the PDF export\n\nNote: the app never ends a duty by itself. After 12 hours it only warns you — an end time you did not observe would be invented data.';
+      'A record of who was on watch and when — in Safety, above the anchor alarm.\n\n• Once tracking starts, the whole crew is on duty automatically (as maritime law requires) until you stop tracking\n• The switch next to a name takes that crew member off duty, and puts them back on the same way. Manual changes are written to the logbook\n• Resuming an interrupted voyage does not change who is on duty — anyone taken off duty stays off\n• Names come from the voyage crew. If no crew is set, the button takes you to the voyage card\n• Show for inspection — a full-screen card to hand over on board: who is on duty, since when, local and UTC time. Nothing can be changed from it\n• Duty roster — fill in a past duty or edit one. Leave the \"to\" time empty and the duty keeps running\n• A night watch across midnight is one record, not two. It appears on both days in the PDF, marked with an arrow\n• In the PDF each crew member gets one line with all of that day\'s duty periods';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';

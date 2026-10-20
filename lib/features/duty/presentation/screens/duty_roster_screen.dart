@@ -81,8 +81,7 @@ class _DutyTile extends ConsumerWidget {
       title: Text(duty.crewName),
       subtitle: Text(
         '${fmtDay.shortWithWeekday(from)}  ${units.formatTime(from)} – '
-        '${to == null ? l.dutyToOngoing : units.formatTime(to)}'
-        '${duty.isAutoClosed ? '  ·  auto' : ''}',
+        '${to == null ? l.dutyToOngoing : units.formatTime(to)}',
       ),
       trailing: PopupMenuButton<String>(
         onSelected: (v) async {

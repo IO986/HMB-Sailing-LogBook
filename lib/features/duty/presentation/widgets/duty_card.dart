@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,12 +8,7 @@ import '../../../charter/providers/charter_provider.dart';
 import '../../providers/duty_provider.dart';
 import '../screens/duty_inspection_screen.dart';
 import '../screens/duty_roster_screen.dart';
-import 'duty_start_sheet.dart';
-
-/// A duty running for longer than this is probably one somebody forgot to end.
-/// Warning only — the app never closes a duty on a timer, because an end time
-/// the skipper did not observe is a fabricated record.
-const _longDuty = Duration(hours: 12);
+import '../../domain/crew_member.dart';
 
 /// Crew-on-duty card in the Safety tab.
 class DutyCard extends ConsumerWidget {
@@ -31,17 +26,34 @@ class DutyCard extends ConsumerWidget {
   }
 }
 
-class _Card extends ConsumerWidget {
+class _Card extends ConsumerStatefulWidget {
   final Charter charter;
   const _Card({required this.charter});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_Card> createState() => _CardState();
+}
+
+class _CardState extends ConsumerState<_Card> {
+  /// Names with a toggle in flight. A second tap before the write lands would
+  /// otherwise start (or end) the same duty twice.
+  final _busy = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
+    final charter = widget.charter;
     final crew = ref.watch(dutyCrewProvider(charter));
     final running = ref.watch(runningDutiesProvider(charter.id)).valueOrNull ??
         const <DutyPeriod>[];
+    final runningByName = {for (final d in running) d.crewName: d};
+    // Someone renamed in the crew list after coming on duty still has a
+    // running row; without this it could never be ended from here.
+    final orphans = running
+        .where((d) => !crew.any((m) => m.name == d.crewName))
+        .map((d) => CrewMember(name: d.crewName, role: d.role))
+        .toList();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -64,34 +76,29 @@ class _Card extends ConsumerWidget {
                   color: Colors.green.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(l.dutyRunningChip,
+                child: Text('${l.dutyRunningChip} ${running.length}',
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         color: Colors.green.shade700)),
               ),
           ]),
-          const SizedBox(height: 10),
+          const SizedBox(height: 4),
 
-          if (crew.isEmpty)
+          if (crew.isEmpty && orphans.isEmpty)
             _NoCrew(charterId: charter.id)
           else ...[
-            if (running.isEmpty)
-              Text(l.dutyNobodyOnDuty,
-                  style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant))
-            else
-              ...running.map((d) => _RunningRow(duty: d)),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: () => showDutyStartSheet(context, ref, charter),
-                  icon: const Icon(Icons.login, size: 18),
-                  label: Text(l.dutyStartAction),
-                ),
+            Text(l.dutyAutoHint,
+                style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+            const SizedBox(height: 4),
+            for (final m in [...crew, ...orphans])
+              _CrewRow(
+                member: m,
+                duty: runningByName[m.name],
+                busy: _busy.contains(m.name),
+                onChanged: (on) => _toggle(m, runningByName[m.name], on),
               ),
-            ]),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Row(children: [
               Expanded(
                 child: OutlinedButton.icon(
@@ -123,58 +130,68 @@ class _Card extends ConsumerWidget {
       ),
     );
   }
+
+  /// Manual on/off for one person. Unlike the automatic start and end with
+  /// tracking, these are exceptions worth a line in the logbook, so they go
+  /// through the controller methods that write one.
+  Future<void> _toggle(CrewMember m, DutyPeriod? duty, bool on) async {
+    if (_busy.contains(m.name)) return;
+    setState(() => _busy.add(m.name));
+    final messenger = ScaffoldMessenger.of(context);
+    final controller = ref.read(dutyControllerProvider);
+    try {
+      if (on && duty == null) {
+        await controller.startDuties(
+            charterId: widget.charter.id, members: [m]);
+      } else if (!on && duty != null) {
+        await controller.endDuty(duty);
+      }
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('$e')));
+    } finally {
+      if (mounted) setState(() => _busy.remove(m.name));
+    }
+  }
 }
 
-class _RunningRow extends ConsumerWidget {
-  final DutyPeriod duty;
-  const _RunningRow({required this.duty});
+class _CrewRow extends StatelessWidget {
+  final CrewMember member;
+  final DutyPeriod? duty;
+  final bool busy;
+  final ValueChanged<bool> onChanged;
+
+  const _CrewRow({
+    required this.member,
+    required this.duty,
+    required this.busy,
+    required this.onChanged,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    // No ticking clock here: the card is a record of when someone came on
-    // duty, not a stopwatch. The long-duty warning is evaluated whenever the
-    // card rebuilds, which is often enough for a 12-hour threshold and costs
-    // no timer at all.
-    final elapsed = DateTime.now().toUtc().difference(duty.fromUtc.toUtc());
-    final tooLong = elapsed > _longDuty;
+    final cs = Theme.of(context).colorScheme;
+    final d = duty;
+    final status = d == null
+        ? l.dutyOffDuty
+        : l.dutySince(
+            TimeOfDay.fromDateTime(d.fromUtc.toLocal()).format(context));
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(children: [
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(duty.crewName,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-            Text(
-              l.dutySince(TimeOfDay.fromDateTime(duty.fromUtc.toLocal())
-                  .format(context)),
-              style: TextStyle(
-                  fontSize: 12,
-                  color: tooLong
-                      ? Colors.orange.shade800
-                      : Theme.of(context).colorScheme.onSurfaceVariant),
-            ),
-            if (tooLong)
-              Text(l.dutyLongRunningWarning(elapsed.inHours),
-                  style: TextStyle(
-                      fontSize: 11, color: Colors.orange.shade800)),
-          ]),
-        ),
-        TextButton(
-          // Awaited and caught: an un-awaited future here failed into nothing,
-          // so a duty that would not end looked like a dead button.
-          onPressed: () async {
-            final messenger = ScaffoldMessenger.of(context);
-            try {
-              await ref.read(dutyControllerProvider).endDuty(duty);
-            } catch (e) {
-              messenger.showSnackBar(SnackBar(content: Text('$e')));
-            }
-          },
-          child: Text(l.dutyEndAction),
-        ),
-      ]),
+    return SwitchListTile(
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+      value: d != null,
+      onChanged: busy ? null : onChanged,
+      title: Text(member.name,
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: d == null ? cs.onSurfaceVariant : null)),
+      subtitle: Text(
+        member.isSkipper ? 'Skipper · $status' : status,
+        style: TextStyle(
+            fontSize: 12,
+            color: d == null ? cs.onSurfaceVariant : Colors.green.shade700),
+      ),
     );
   }
 }

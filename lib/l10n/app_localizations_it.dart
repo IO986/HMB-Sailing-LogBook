@@ -1096,15 +1096,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dutyRoster => 'Equipaggio di guardia';
 
   @override
-  String get dutyStartAction => 'Monta di guardia';
-
-  @override
-  String get dutyEndAction => 'Termina';
-
-  @override
-  String get dutyStartTitle => 'Chi monta di guardia?';
-
-  @override
   String get dutyRunningChip => 'DI GUARDIA';
 
   @override
@@ -1119,6 +1110,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nessuno è di guardia';
+
+  @override
+  String get dutyAutoHint =>
+      'Con l\'avvio del tracking tutto l\'equipaggio monta di guardia, con l\'arresto la guardia finisce. Con l\'interruttore metti un membro dell\'equipaggio fuori guardia.';
+
+  @override
+  String get dutyOffDuty => 'fuori guardia';
 
   @override
   String get dutyInspectionView => 'Mostra per il controllo';
@@ -1161,11 +1159,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Nota';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Di guardia da $hours h — è rimasta aperta?';
-  }
 
   @override
   String get dutyFrom => 'Da';
@@ -2970,7 +2963,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Una registrazione di chi era di guardia e quando — in Sicurezza, sopra l\'allarme ancora.\n\n• Monta di guardia — scegli una o più persone insieme; ciascuna smonta poi separatamente\n• I nomi provengono dall\'equipaggio della navigazione. Se non è impostato alcun equipaggio, il pulsante ti porta alla scheda della navigazione\n• L\'ora di inizio si può correggere se hai premuto il pulsante in ritardo\n• Mostra per il controllo — una scheda a schermo intero da presentare a bordo: chi è di guardia, da quando, ora locale e UTC. Da lì non si può modificare nulla\n• Turni di guardia — inserisci una guardia passata o modificane una. Lascia vuota l\'ora \"a\" e la guardia resta in corso\n• Una guardia notturna a cavallo della mezzanotte è una sola registrazione, non due. Nel PDF compare in entrambi i giorni, contrassegnata con una freccia\n• Montare e smontare di guardia vengono scritti sia nel giornale sia nell\'esportazione PDF\n\nNota: l\'app non termina mai una guardia da sola. Dopo 12 ore si limita ad avvisarti — un\'ora di fine che non hai osservato sarebbe un dato inventato.';
+      'Una registrazione di chi era di guardia e quando — in Sicurezza, sopra l\'allarme ancora.\n\n• Avviato il tracking, tutto l\'equipaggio è automaticamente di guardia (come richiede il diritto della navigazione) finché non fermi il tracking\n• L\'interruttore accanto a un nome mette quel membro dell\'equipaggio fuori guardia e lo rimette di guardia allo stesso modo. Le modifiche manuali vengono scritte nel giornale\n• Riprendere una navigazione interrotta non cambia le guardie — chi era fuori guardia resta fuori\n• I nomi provengono dall\'equipaggio della navigazione. Se non è impostato alcun equipaggio, il pulsante ti porta alla scheda della navigazione\n• Mostra per il controllo — una scheda a schermo intero per i controlli a bordo: chi è di guardia, da quando, ora locale e UTC. Non vi si può modificare nulla\n• Turni di guardia — aggiungi una guardia passata o modificala. Se lasci vuota l\'ora \"a\", la guardia continua\n• Una guardia notturna a cavallo della mezzanotte è un solo record, non due. Nel PDF compare in entrambi i giorni, segnata con una freccia\n• Nel PDF ogni membro dell\'equipaggio ha una riga con tutti i periodi di guardia della giornata';
 
   @override
   String get guideCompassTitle => 'Bussola da rilevamento';
