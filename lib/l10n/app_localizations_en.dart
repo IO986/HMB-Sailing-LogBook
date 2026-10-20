@@ -1666,6 +1666,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'Saves the whole logbook (voyages, entries, settings) into a single file';
 
   @override
+  String get mapTilesBackupTitle => 'Map tiles';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Saves the downloaded map cache (satellite, seamarks) into its own file — can be large, not restored automatically';
+
+  @override
+  String get mapTilesCloudUpload => 'Upload to cloud';
+
+  @override
+  String get mapTilesCloudDownload => 'Download from cloud';
+
+  @override
+  String get mapTilesCloudUploadDone => 'Map tile cache uploaded to Drive';
+
+  @override
+  String get mapTilesCloudDownloadDone => 'Map tile cache restored from Drive';
+
+  @override
+  String get cloudBackupOfferTitle => 'No cloud backup made';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'You\'re not signed in to a cloud account, so today\'s logbook wasn\'t backed up automatically. Save a backup now?';
+
+  @override
   String get restoreBackup => 'Restore from backup';
 
   @override
@@ -2979,7 +3005,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation';
+      'In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation\n• After stopping voyage tracking, if signed in to a Google account with logbook sync turned on, a full backup uploads automatically to your Drive (HMB_Sailing_Log_DATA/backups); without that sign-in, the app offers to save or share a backup there and then instead';
 
   @override
   String get guideExportTitle => 'Logbook Export';

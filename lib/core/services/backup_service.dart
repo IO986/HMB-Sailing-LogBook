@@ -7,8 +7,21 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../../features/cloud/domain/cloud_storage_provider.dart';
 import '../database/app_database.dart';
 import 'crash_log_service.dart';
+import 'tile_cache.dart';
+
+/// Separate from `LogbookSyncService`'s `['HMB_Sailing_Log_DATA', 'sync']` —
+/// that folder holds row-level JSON changesets meant to be merged; this one
+/// holds whole-database snapshots meant to be restored wholesale via
+/// [BackupService.applyRestore].
+const _cloudBackupFolder = ['HMB_Sailing_Log_DATA', 'backups'];
+
+/// Separate folder from [_cloudBackupFolder] — tile cache zips can be much
+/// larger than a DB snapshot and are never part of the restore flow that
+/// folder serves ([BackupService.applyRestore] never reads from here).
+const _cloudTileCacheFolder = ['HMB_Sailing_Log_DATA', 'map_tiles_backup'];
 
 class BackupMetadata {
   final int schemaVersion;
@@ -99,6 +112,102 @@ class BackupService {
         File(p.join(tempDir.path, 'HMBSaillog_backup_$dateStamp.hmbbackup'));
     await zipFile.writeAsBytes(zipBytes);
     return zipFile;
+  }
+
+  /// Zabalí celú stiahnutú mapovú cache (`map_tiles/`) do samostatného zipu
+  /// pre ručné uloženie/zdieľanie v Nastaveniach. Zámerne oddelené od
+  /// [createSnapshotZip]: je to len cache (dá sa znova stiahnuť), môže byť
+  /// rádovo väčšia než samotný denník a [applyRestore] ju nikdy
+  /// nerozbaľuje späť — ale raz stiahnuté dlaždice z oblasti, kam sa loď už
+  /// nevráti, sú jediná kópia, ktorá na mori ešte bude k dispozícii.
+  Future<File> createTileCacheZip() async {
+    final tilesDir = await TileCacheStore.directory();
+    final archive = Archive();
+    if (await tilesDir.exists()) {
+      await for (final entity
+          in tilesDir.list(recursive: true, followLinks: false)) {
+        if (entity is! File) continue;
+        final rel = p
+            .relative(entity.path, from: tilesDir.path)
+            .replaceAll(Platform.pathSeparator, '/');
+        final bytes = await entity.readAsBytes();
+        archive.addFile(ArchiveFile(rel, bytes.length, bytes));
+      }
+    }
+    final zipBytes = ZipEncoder().encodeBytes(archive);
+
+    final tempDir = await getTemporaryDirectory();
+    final dateStamp = DateFormat('ddMMyyHHmm').format(DateTime.now());
+    final zipFile =
+        File(p.join(tempDir.path, 'HMBSaillog_maptiles_$dateStamp.zip'));
+    await zipFile.writeAsBytes(zipBytes);
+    return zipFile;
+  }
+
+  /// Ručný upload mapovej cache na Drive (`map_tiles_backup`) — volané len
+  /// z tlačidla v Nastaveniach, nie automaticky po Stope ako [uploadSnapshot]:
+  /// súbor môže byť rádovo väčší a skiper má rozhodnúť, kedy ho poslať.
+  Future<void> uploadTileCacheToCloud({
+    required CloudStorageProvider provider,
+    required String deviceId,
+  }) async {
+    final zipFile = await createTileCacheZip();
+    try {
+      await provider.upload(
+        file: zipFile,
+        fileName: '$deviceId-${DateTime.now().millisecondsSinceEpoch}.zip',
+        folderPath: _cloudTileCacheFolder,
+        mimeType: 'application/zip',
+      );
+    } finally {
+      if (await zipFile.exists()) await zipFile.delete();
+    }
+  }
+
+  /// Stiahne najnovší nahraný tile-cache zip (z ktoréhokoľvek zariadenia) a
+  /// rozbalí ho do živej `map_tiles/` cache — presne scenár po
+  /// preinštalovaní appky alebo výmene telefónu, kde sú dlaždice inak preč.
+  /// Existujúce súbory sa prepíšu; nové (stiahnuté medzičasom na tomto
+  /// zariadení) sa nemažú, zip ich jednoducho neobsahuje.
+  Future<void> restoreTileCacheFromCloud(CloudStorageProvider provider) async {
+    final files = await provider.listFiles(_cloudTileCacheFolder);
+    if (files.isEmpty) {
+      throw const FormatException('Žiadna záloha mapových dlaždíc na cloude');
+    }
+    files.sort((a, b) =>
+        (b.modifiedTime ?? DateTime(0)).compareTo(a.modifiedTime ?? DateTime(0)));
+    final bytes = await provider.downloadFile(files.first.id);
+    final archive = ZipDecoder().decodeBytes(bytes);
+
+    final tilesDir = await TileCacheStore.directory();
+    for (final entry in archive.files) {
+      if (!entry.isFile) continue;
+      final out = File(p.join(tilesDir.path, entry.name));
+      await out.parent.create(recursive: true);
+      await out.writeAsBytes(entry.content as List<int>);
+    }
+  }
+
+  /// Snapshot celej DB nahraný do `backups` priečinka na cloude, volané po
+  /// každom zastavení trackingu (viď `TrackingNotifier.stopTracking`) —
+  /// nezávislá poistka pre obnovu zo zariadenia, nie cross-device sync
+  /// (to rieši `LogbookSyncService`, ktorý ide prírastkovo).
+  Future<void> uploadSnapshot({
+    required AppDatabase db,
+    required CloudStorageProvider provider,
+    required String deviceId,
+  }) async {
+    final zipFile = await createSnapshotZip(db);
+    try {
+      await provider.upload(
+        file: zipFile,
+        fileName: '$deviceId-${DateTime.now().millisecondsSinceEpoch}.hmbbackup',
+        folderPath: _cloudBackupFolder,
+        mimeType: 'application/zip',
+      );
+    } finally {
+      if (await zipFile.exists()) await zipFile.delete();
+    }
   }
 
   /// Prečíta iba metadáta zálohy (bez extrakcie DB) – na validáciu pred

@@ -1667,6 +1667,35 @@ class AppLocalizationsSl extends AppLocalizations {
       'Shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko';
 
   @override
+  String get mapTilesBackupTitle => 'Zemljevidne ploščice';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Shrani preneseni predpomnilnik zemljevida (satelit, pomorske oznake) v svojo datoteko — je lahko velika, se ne obnovi samodejno';
+
+  @override
+  String get mapTilesCloudUpload => 'Naloži v oblak';
+
+  @override
+  String get mapTilesCloudDownload => 'Prenesi iz oblaka';
+
+  @override
+  String get mapTilesCloudUploadDone =>
+      'Predpomnilnik zemljevidnih ploščic naložen na Drive';
+
+  @override
+  String get mapTilesCloudDownloadDone =>
+      'Predpomnilnik zemljevidnih ploščic obnovljen iz Drivea';
+
+  @override
+  String get cloudBackupOfferTitle =>
+      'Varnostna kopija v oblaku ni bila ustvarjena';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'Niste prijavljeni v račun v oblaku, zato se današnji dnevnik ni samodejno varnostno kopiral. Želite zdaj shraniti varnostno kopijo?';
+
+  @override
   String get restoreBackup => 'Obnovi iz varnostne kopije';
 
   @override
@@ -2982,7 +3011,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'V Nastavitve → Varnostna kopija podatkov.\n\n• Izvozi varnostno kopijo – shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko (.hmbbackup), ki jo lahko delite po e-pošti, v oblak ali shranite lokalno\n• Obnovi iz varnostne kopije – zamenja trenutne podatke z vsebino izbrane kopije; varnostna kopija trenutnega stanja se pred tem ustvari samodejno\n• Obnovitev je onemogočena, dokler je aktivno sledenje plovbi prek GPS\n• Kopija z novejšo shemo, kot jo aplikacija podpira, je zavrnjena z razlago';
+      'V Nastavitve → Varnostna kopija podatkov.\n\n• Izvozi varnostno kopijo – shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko (.hmbbackup), ki jo lahko delite po e-pošti, v oblak ali shranite lokalno\n• Obnovi iz varnostne kopije – zamenja trenutne podatke z vsebino izbrane kopije; varnostna kopija trenutnega stanja se pred tem ustvari samodejno\n• Obnovitev je onemogočena, dokler je aktivno sledenje plovbi prek GPS\n• Kopija z novejšo shemo, kot jo aplikacija podpira, je zavrnjena z razlago\n• Po zaustavitvi sledenja plovbi: če ste prijavljeni v Google račun z vklopljeno sinhronizacijo dnevnika, se samodejno naloži polna varnostna kopija na vaš Drive (HMB_Sailing_Log_DATA/backups); brez prijave aplikacija takoj ponudi shranjevanje ali deljenje kopije';
 
   @override
   String get guideExportTitle => 'Izvoz dnevnika';

@@ -19,6 +19,8 @@ import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../core/services/device_identity.dart';
+import '../../../../core/services/tile_cache.dart';
 import '../../../../core/services/anchor_alarm_service.dart';
 import '../../../../core/services/app_review_service.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -1389,6 +1391,71 @@ class _BackupSection extends ConsumerStatefulWidget {
 
 class _BackupSectionState extends ConsumerState<_BackupSection> {
   bool _busy = false;
+  bool _tilesBusy = false;
+  int? _tileCacheBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    TileCacheStore.cacheSizeBytes().then((v) {
+      if (mounted) setState(() => _tileCacheBytes = v);
+    });
+  }
+
+  static String _formatBytes(int bytes) {
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).round()} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
+
+  Future<void> _exportTiles(_TileAction action) async {
+    final l = AppLocalizations.of(context);
+    setState(() => _tilesBusy = true);
+    try {
+      switch (action) {
+        case _TileAction.save:
+        case _TileAction.share:
+          final zip = await BackupService().createTileCacheZip();
+          if (action == _TileAction.save) {
+            await FilePicker.platform.saveFile(
+              dialogTitle: l.saveToDevice,
+              fileName: zip.path.split(Platform.pathSeparator).last,
+              bytes: await zip.readAsBytes(),
+            );
+          } else {
+            await Share.shareXFiles([XFile(zip.path)],
+                subject: l.mapTilesBackupTitle);
+          }
+        case _TileAction.uploadCloud:
+          final provider = ref.read(cloudStorageProviderProvider);
+          await BackupService().uploadTileCacheToCloud(
+            provider: provider,
+            deviceId: await DeviceIdentity.id(),
+          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l.mapTilesCloudUploadDone)));
+          }
+        case _TileAction.downloadCloud:
+          final provider = ref.read(cloudStorageProviderProvider);
+          await BackupService().restoreTileCacheFromCloud(provider);
+          final newSize = await TileCacheStore.cacheSizeBytes();
+          if (mounted) {
+            setState(() => _tileCacheBytes = newSize);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l.mapTilesCloudDownloadDone)));
+          }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(l.errorMsg(e.toString())),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _tilesBusy = false);
+    }
+  }
 
   Future<void> _export({required bool saveLocally}) async {
     final l = AppLocalizations.of(context);
@@ -1555,9 +1622,50 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
             child: CircularProgressIndicator(strokeWidth: 2)) : null,
         onTap: _busy ? null : _restore,
       ),
+      const Divider(height: 1),
+      ListTile(
+        leading: const Icon(Icons.map_outlined),
+        title: Text(l.mapTilesBackupTitle),
+        subtitle: Text(_tileCacheBytes == null
+            ? l.mapTilesBackupDesc
+            : '${l.mapTilesBackupDesc} · ${_formatBytes(_tileCacheBytes!)}'),
+        trailing: _tilesBusy
+            ? const SizedBox(width: 20, height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2))
+            : PopupMenuButton<_TileAction>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: _exportTiles,
+                itemBuilder: (ctx) {
+                  final cloudReady = ref.read(cloudStorageProviderProvider)
+                      .isSignedInNow;
+                  return [
+                    PopupMenuItem(
+                      value: _TileAction.save,
+                      child: Text(l.saveToDevice),
+                    ),
+                    PopupMenuItem(
+                      value: _TileAction.share,
+                      child: Text(l.exportBackup),
+                    ),
+                    PopupMenuItem(
+                      value: _TileAction.uploadCloud,
+                      enabled: cloudReady,
+                      child: Text(l.mapTilesCloudUpload),
+                    ),
+                    PopupMenuItem(
+                      value: _TileAction.downloadCloud,
+                      enabled: cloudReady,
+                      child: Text(l.mapTilesCloudDownload),
+                    ),
+                  ];
+                },
+              ),
+      ),
     ]));
   }
 }
+
+enum _TileAction { save, share, uploadCloud, downloadCloud }
 
 // ── Prispôsobenie spodného menu ────────────────────────────────
 

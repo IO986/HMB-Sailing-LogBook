@@ -1669,6 +1669,34 @@ class AppLocalizationsPl extends AppLocalizations {
       'Zapisuje cały dziennik (rejsy, wpisy, ustawienia) do jednego pliku';
 
   @override
+  String get mapTilesBackupTitle => 'Kafelki mapy';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Zapisuje pobraną pamięć podręczną mapy (satelita, znaki nawigacyjne) do osobnego pliku — może być duży, nie jest przywracany automatycznie';
+
+  @override
+  String get mapTilesCloudUpload => 'Prześlij do chmury';
+
+  @override
+  String get mapTilesCloudDownload => 'Pobierz z chmury';
+
+  @override
+  String get mapTilesCloudUploadDone =>
+      'Pamięć podręczna kafelków mapy przesłana na Dysk';
+
+  @override
+  String get mapTilesCloudDownloadDone =>
+      'Pamięć podręczna kafelków mapy przywrócona z Dysku';
+
+  @override
+  String get cloudBackupOfferTitle => 'Nie utworzono kopii w chmurze';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'Nie jesteś zalogowany na konto w chmurze, więc dzisiejszy dziennik nie został automatycznie zapisany w kopii zapasowej. Zapisać kopię teraz?';
+
+  @override
   String get restoreBackup => 'Przywróć z kopii';
 
   @override
@@ -2984,7 +3012,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'W Ustawienia → Kopia zapasowa danych.\n\n• Eksportuj kopię – zapisuje cały dziennik (rejsy, wpisy, ustawienia) do jednego pliku (.hmbbackup), który możesz udostępnić e-mailem, do chmury lub zapisać lokalnie\n• Przywróć z kopii – zastępuje aktualne dane zawartością wybranej kopii; przed nadpisaniem automatycznie powstaje kopia bezpieczeństwa bieżącego stanu\n• Przywracanie jest zablokowane podczas aktywnego śledzenia GPS rejsu\n• Kopię z nowszym schematem niż obsługuje aplikacja, aplikacja odrzuci z wyjaśnieniem';
+      'W Ustawienia → Kopia zapasowa danych.\n\n• Eksportuj kopię – zapisuje cały dziennik (rejsy, wpisy, ustawienia) do jednego pliku (.hmbbackup), który możesz udostępnić e-mailem, do chmury lub zapisać lokalnie\n• Przywróć z kopii – zastępuje aktualne dane zawartością wybranej kopii; przed nadpisaniem automatycznie powstaje kopia bezpieczeństwa bieżącego stanu\n• Przywracanie jest zablokowane podczas aktywnego śledzenia GPS rejsu\n• Kopię z nowszym schematem niż obsługuje aplikacja, aplikacja odrzuci z wyjaśnieniem\n• Po zatrzymaniu śledzenia rejsu: jeśli jesteś zalogowany na konto Google z włączoną synchronizacją dziennika, pełna kopia zapasowa automatycznie trafia na Twój Dysk (HMB_Sailing_Log_DATA/backups); bez zalogowania aplikacja od razu proponuje zapisanie lub udostępnienie kopii';
 
   @override
   String get guideExportTitle => 'Eksport dziennika';

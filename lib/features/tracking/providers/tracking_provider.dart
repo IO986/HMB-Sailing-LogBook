@@ -4,7 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/background_service.dart';
+import '../../../core/services/backup_service.dart';
+import '../../../core/services/device_identity.dart';
+import '../../../core/providers/sync_settings_provider.dart';
 import '../../../main.dart';
+import '../../cloud/providers/cloud_provider.dart';
+import '../../cloud/services/logbook_sync_service.dart';
 import '../../duty/providers/duty_provider.dart';
 
 final isTrackingProvider = StateProvider<bool>((ref) => false);
@@ -82,6 +87,33 @@ class TrackingNotifier extends Notifier<TrackingState> {
     if (dayLogId != null) await _syncDuties(dayLogId, start: false);
     ref.read(isTrackingProvider.notifier).state = false;
     state = state.copyWith(isLoading: false, isTracking: false);
+    unawaited(_cloudBackupAfterStop());
+  }
+
+  /// Best-effort cloud safety net, fired on every Stop: pushes the logbook
+  /// changeset immediately (same incremental sync the 3-min timer runs,
+  /// `main_scaffold.dart`'s `_triggerSync`) so the day's entries don't wait
+  /// for the next tick, then uploads a full `.hmbbackup` snapshot — a
+  /// restorable copy independent of the row-level sync format, in case that
+  /// ever needs to change. Gated on `logbookSyncEnabled`, the same explicit
+  /// opt-in the settings screen already requires for writing to the cloud
+  /// both ways (see `SyncSettings.logbookSyncEnabled`'s own doc).
+  Future<void> _cloudBackupAfterStop() async {
+    try {
+      final settings = await ref.read(syncSettingsProvider.future);
+      if (!settings.cloudEnabled || !settings.logbookSyncEnabled) return;
+      final provider = ref.read(cloudStorageProviderProvider);
+      if (!provider.isSignedInNow) return;
+
+      final db = ref.read(databaseProvider);
+      final deviceId = await DeviceIdentity.id();
+      await const LogbookSyncService()
+          .syncNow(db: db, provider: provider, deviceId: deviceId);
+      await BackupService()
+          .uploadSnapshot(db: db, provider: provider, deviceId: deviceId);
+    } catch (e, st) {
+      debugPrint('[TRACKING] cloud backup after stop failed: $e\n$st');
+    }
   }
 
   /// Crew comes on duty with tracking and goes off with it. Failure is

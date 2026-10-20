@@ -1667,6 +1667,34 @@ class AppLocalizationsSk extends AppLocalizations {
       'Uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru';
 
   @override
+  String get mapTilesBackupTitle => 'Mapové dlaždice';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Uloží stiahnutú mapovú cache (satelit, seamarky) do vlastného súboru — môže byť veľký, naspäť sa automaticky neobnovuje';
+
+  @override
+  String get mapTilesCloudUpload => 'Nahrať na cloud';
+
+  @override
+  String get mapTilesCloudDownload => 'Stiahnuť z cloudu';
+
+  @override
+  String get mapTilesCloudUploadDone =>
+      'Cache mapových dlaždíc nahraná na Drive';
+
+  @override
+  String get mapTilesCloudDownloadDone =>
+      'Cache mapových dlaždíc obnovená z Drive';
+
+  @override
+  String get cloudBackupOfferTitle => 'Cloudová záloha sa nevytvorila';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'Nie si prihlásený do cloudového účtu, takže dnešný denník sa automaticky nezálohoval. Chceš zálohu uložiť teraz?';
+
+  @override
   String get restoreBackup => 'Obnoviť zo zálohy';
 
   @override
@@ -2981,7 +3009,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'V Nastavenia → Záloha dát.\n\n• Exportovať zálohu – uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru (.hmbbackup), ktorý môžeš zdieľať emailom, do cloudu alebo si ho uložiť lokálne\n• Obnoviť zo zálohy – nahradí aktuálne dáta obsahom vybranej zálohy; pred prepísaním sa automaticky vytvorí bezpečnostná záloha súčasného stavu\n• Obnova je zablokovaná počas aktívneho GPS trackingu plavby\n• Zálohu s novšou schémou, než akú appka podporuje, appka odmietne s vysvetlením';
+      'V Nastavenia → Záloha dát.\n\n• Exportovať zálohu – uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru (.hmbbackup), ktorý môžeš zdieľať emailom, do cloudu alebo si ho uložiť lokálne\n• Obnoviť zo zálohy – nahradí aktuálne dáta obsahom vybranej zálohy; pred prepísaním sa automaticky vytvorí bezpečnostná záloha súčasného stavu\n• Obnova je zablokovaná počas aktívneho GPS trackingu plavby\n• Zálohu s novšou schémou, než akú appka podporuje, appka odmietne s vysvetlením\n• Po zastavení trackingu plavby: ak si prihlásený do Google konta a máš zapnutú synchronizáciu denníka, na Drive (HMB_Sailing_Log_DATA/backups) sa automaticky nahrá plná záloha; bez prihlásenia appka ponúkne hneď uloženie alebo zdieľanie zálohy namiesto toho';
 
   @override
   String get guideExportTitle => 'Export denníka';

@@ -3206,6 +3206,54 @@ abstract class AppLocalizations {
   /// **'Uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru'**
   String get exportBackupDesc;
 
+  /// No description provided for @mapTilesBackupTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Mapové dlaždice'**
+  String get mapTilesBackupTitle;
+
+  /// No description provided for @mapTilesBackupDesc.
+  ///
+  /// In sk, this message translates to:
+  /// **'Uloží stiahnutú mapovú cache (satelit, seamarky) do vlastného súboru — môže byť veľký, naspäť sa automaticky neobnovuje'**
+  String get mapTilesBackupDesc;
+
+  /// No description provided for @mapTilesCloudUpload.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nahrať na cloud'**
+  String get mapTilesCloudUpload;
+
+  /// No description provided for @mapTilesCloudDownload.
+  ///
+  /// In sk, this message translates to:
+  /// **'Stiahnuť z cloudu'**
+  String get mapTilesCloudDownload;
+
+  /// No description provided for @mapTilesCloudUploadDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cache mapových dlaždíc nahraná na Drive'**
+  String get mapTilesCloudUploadDone;
+
+  /// No description provided for @mapTilesCloudDownloadDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cache mapových dlaždíc obnovená z Drive'**
+  String get mapTilesCloudDownloadDone;
+
+  /// No description provided for @cloudBackupOfferTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Cloudová záloha sa nevytvorila'**
+  String get cloudBackupOfferTitle;
+
+  /// No description provided for @cloudBackupOfferBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nie si prihlásený do cloudového účtu, takže dnešný denník sa automaticky nezálohoval. Chceš zálohu uložiť teraz?'**
+  String get cloudBackupOfferBody;
+
   /// No description provided for @restoreBackup.
   ///
   /// In sk, this message translates to:
@@ -5675,7 +5723,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideBackupBody.
   ///
   /// In sk, this message translates to:
-  /// **'V Nastavenia → Záloha dát.\n\n• Exportovať zálohu – uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru (.hmbbackup), ktorý môžeš zdieľať emailom, do cloudu alebo si ho uložiť lokálne\n• Obnoviť zo zálohy – nahradí aktuálne dáta obsahom vybranej zálohy; pred prepísaním sa automaticky vytvorí bezpečnostná záloha súčasného stavu\n• Obnova je zablokovaná počas aktívneho GPS trackingu plavby\n• Zálohu s novšou schémou, než akú appka podporuje, appka odmietne s vysvetlením'**
+  /// **'V Nastavenia → Záloha dát.\n\n• Exportovať zálohu – uloží celý denník (plavby, záznamy, nastavenia) do jedného súboru (.hmbbackup), ktorý môžeš zdieľať emailom, do cloudu alebo si ho uložiť lokálne\n• Obnoviť zo zálohy – nahradí aktuálne dáta obsahom vybranej zálohy; pred prepísaním sa automaticky vytvorí bezpečnostná záloha súčasného stavu\n• Obnova je zablokovaná počas aktívneho GPS trackingu plavby\n• Zálohu s novšou schémou, než akú appka podporuje, appka odmietne s vysvetlením\n• Po zastavení trackingu plavby: ak si prihlásený do Google konta a máš zapnutú synchronizáciu denníka, na Drive (HMB_Sailing_Log_DATA/backups) sa automaticky nahrá plná záloha; bez prihlásenia appka ponúkne hneď uloženie alebo zdieľanie zálohy namiesto toho'**
   String get guideBackupBody;
 
   /// No description provided for @guideExportTitle.

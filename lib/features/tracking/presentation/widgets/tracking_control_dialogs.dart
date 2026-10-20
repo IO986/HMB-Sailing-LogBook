@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/services/location_service.dart';
@@ -14,9 +16,12 @@ import '../../../../core/utils/distance_calculator.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/logbook_event_type.dart';
+import '../../../../core/providers/sync_settings_provider.dart';
+import '../../../../core/services/backup_service.dart';
 import '../../../../core/services/gps_tracking_service.dart';
 import '../../../../core/services/app_review_service.dart';
 import '../../../../main.dart';
+import '../../../cloud/providers/cloud_provider.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
 import '../../../duty/providers/duty_provider.dart';
@@ -524,6 +529,19 @@ Future<void> handleStopTap(BuildContext context, WidgetRef ref) async {
   await ref.read(trackingNotifierProvider.notifier).stopTracking();
   if (dayLogId == null || !context.mounted) return;
 
+  // Rovnaká poistka ako TrackingNotifier._cloudBackupAfterStop (ide na
+  // pozadí, bez UI) — ak cloud záloha vôbec nemohla ísť (nie je prihlásené
+  // konto / vypnutý sync), ponúkni aspoň lokálnu/zdieľanú alternatívu, nech
+  // deň neostane bez akejkoľvek kópie.
+  final settings = await ref.read(syncSettingsProvider.future);
+  final cloudReady = settings.cloudEnabled &&
+      settings.logbookSyncEnabled &&
+      ref.read(cloudStorageProviderProvider).isSignedInNow;
+  if (!cloudReady && context.mounted) {
+    await _offerLocalBackup(context, ref);
+  }
+  if (!context.mounted) return;
+
   // Hodnotenie sa pýta práve tu: plavba je za skiperom a má na appku názor.
   // Počas plavby by to bolo vyrušovanie, pri štarte by nemal čo hodnotiť.
   // Služba si sama ustráži, či je vôbec načase (pozri [AppReviewService]).
@@ -533,3 +551,51 @@ Future<void> handleStopTap(BuildContext context, WidgetRef ref) async {
   if (day == null || !context.mounted) return;
   context.go('/logbook/${day.charterId}/day/$dayLogId');
 }
+
+/// Dialóg s dvoma rovnocennými cestami von — uloženie priamo na zariadenie
+/// alebo odovzdanie súboru systémovému share sheetu (mail, WhatsApp,
+/// Signal, čokoľvek má skiper nainštalované). Tichý skip pri chybe/zrušení:
+/// toto je bonusová poistka, nie povinný krok, nesmie blokovať Denník.
+Future<void> _offerLocalBackup(BuildContext context, WidgetRef ref) async {
+  final l = AppLocalizations.of(context);
+  final choice = await showDialog<_LocalBackupChoice>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(l.cloudBackupOfferTitle),
+      content: Text(l.cloudBackupOfferBody),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx, _LocalBackupChoice.skip),
+          child: Text(l.cancel),
+        ),
+        OutlinedButton(
+          onPressed: () => Navigator.pop(ctx, _LocalBackupChoice.save),
+          child: Text(l.saveToDevice),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(ctx, _LocalBackupChoice.share),
+          child: Text(l.exportBackup),
+        ),
+      ],
+    ),
+  );
+  if (choice == null || choice == _LocalBackupChoice.skip) return;
+
+  try {
+    final db = ref.read(databaseProvider);
+    final zip = await BackupService().createSnapshotZip(db);
+    if (choice == _LocalBackupChoice.save) {
+      await FilePicker.platform.saveFile(
+        dialogTitle: l.saveToDevice,
+        fileName: zip.path.split(Platform.pathSeparator).last,
+        bytes: await zip.readAsBytes(),
+      );
+    } else {
+      await Share.shareXFiles([XFile(zip.path)], subject: l.exportBackup);
+    }
+  } catch (_) {
+    // Best-effort, pozri doc vyššie.
+  }
+}
+
+enum _LocalBackupChoice { skip, save, share }

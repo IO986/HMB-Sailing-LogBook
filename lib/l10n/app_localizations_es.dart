@@ -1672,6 +1672,34 @@ class AppLocalizationsEs extends AppLocalizations {
       'Guarda todo el diario (travesías, registros, ajustes) en un solo archivo';
 
   @override
+  String get mapTilesBackupTitle => 'Teselas del mapa';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Guarda la caché de mapa descargada (satélite, marcas marítimas) en su propio archivo — puede ser grande, no se restaura automáticamente';
+
+  @override
+  String get mapTilesCloudUpload => 'Subir a la nube';
+
+  @override
+  String get mapTilesCloudDownload => 'Descargar de la nube';
+
+  @override
+  String get mapTilesCloudUploadDone =>
+      'Caché de teselas del mapa subida a Drive';
+
+  @override
+  String get mapTilesCloudDownloadDone =>
+      'Caché de teselas del mapa restaurada desde Drive';
+
+  @override
+  String get cloudBackupOfferTitle => 'No se hizo copia en la nube';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'No has iniciado sesión en una cuenta en la nube, así que el diario de hoy no se respaldó automáticamente. ¿Guardar una copia de seguridad ahora?';
+
+  @override
   String get restoreBackup => 'Restaurar desde copia de seguridad';
 
   @override
@@ -2994,7 +3022,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'En Ajustes → Copia de seguridad.\n\n• Exportar copia de seguridad – guarda todo el diario (travesías, registros, ajustes) en un solo archivo (.hmbbackup) que puedes compartir por email, en la nube o guardar localmente\n• Restaurar desde copia de seguridad – reemplaza los datos actuales con el contenido de la copia seleccionada; antes se crea automáticamente una copia de seguridad del estado actual\n• La restauración está bloqueada mientras el seguimiento GPS de una travesía está activo\n• Una copia con un esquema más nuevo del que soporta la app se rechaza con una explicación';
+      'En Ajustes → Copia de seguridad.\n\n• Exportar copia de seguridad – guarda todo el diario (travesías, registros, ajustes) en un solo archivo (.hmbbackup) que puedes compartir por email, en la nube o guardar localmente\n• Restaurar desde copia de seguridad – reemplaza los datos actuales con el contenido de la copia seleccionada; antes se crea automáticamente una copia de seguridad del estado actual\n• La restauración está bloqueada mientras el seguimiento GPS de una travesía está activo\n• Una copia con un esquema más nuevo del que soporta la app se rechaza con una explicación\n• Al detener el seguimiento de la travesía: si has iniciado sesión con una cuenta de Google y tienes activada la sincronización del diario, se sube automáticamente una copia completa a tu Drive (HMB_Sailing_Log_DATA/backups); sin sesión iniciada, la app ofrece guardar o compartir una copia en ese momento';
 
   @override
   String get guideExportTitle => 'Exportar diario';

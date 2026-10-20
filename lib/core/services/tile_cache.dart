@@ -42,6 +42,11 @@ class TileCacheStore {
   @visibleForTesting
   static set rootForTesting(Directory? dir) => _root = dir;
 
+  /// Koreňový adresár cache, pre volajúcich mimo tohto súboru (napr. ručný
+  /// export dlaždíc v `BackupService`) — nech cestu k `map_tiles` pozná
+  /// len toto miesto.
+  static Future<Directory> directory() => _rootDir();
+
   static Future<void> save(
     String layerId,
     int z,

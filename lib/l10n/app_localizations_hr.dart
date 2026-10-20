@@ -1670,6 +1670,35 @@ class AppLocalizationsHr extends AppLocalizations {
       'Sprema cijeli dnevnik (plovidbe, zapise, postavke) u jednu datoteku';
 
   @override
+  String get mapTilesBackupTitle => 'Kartice karte';
+
+  @override
+  String get mapTilesBackupDesc =>
+      'Sprema preuzetu predmemoriju karte (satelit, pomorske oznake) u zasebnu datoteku — može biti velika, ne vraća se automatski';
+
+  @override
+  String get mapTilesCloudUpload => 'Učitaj u oblak';
+
+  @override
+  String get mapTilesCloudDownload => 'Preuzmi iz oblaka';
+
+  @override
+  String get mapTilesCloudUploadDone =>
+      'Predmemorija kartica karte učitana na Drive';
+
+  @override
+  String get mapTilesCloudDownloadDone =>
+      'Predmemorija kartica karte vraćena s Drivea';
+
+  @override
+  String get cloudBackupOfferTitle =>
+      'Sigurnosna kopija u oblaku nije napravljena';
+
+  @override
+  String get cloudBackupOfferBody =>
+      'Niste prijavljeni na račun u oblaku, pa se današnji dnevnik nije automatski sigurnosno kopirao. Spremiti sigurnosnu kopiju sada?';
+
+  @override
   String get restoreBackup => 'Vrati iz sigurnosne kopije';
 
   @override
@@ -2988,7 +3017,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'U Postavke → Sigurnosna kopija podataka.\n\n• Izvezi sigurnosnu kopiju – sprema cijeli dnevnik (plovidbe, zapise, postavke) u jednu datoteku (.hmbbackup) koju možete podijeliti e-poštom, u oblak ili spremiti lokalno\n• Vrati iz sigurnosne kopije – zamjenjuje trenutne podatke sadržajem odabrane kopije; sigurnosna kopija trenutnog stanja stvara se automatski prije toga\n• Vraćanje je onemogućeno dok je aktivno GPS praćenje plovidbe\n• Kopija s novijom shemom od one koju aplikacija podržava odbija se uz objašnjenje';
+      'U Postavke → Sigurnosna kopija podataka.\n\n• Izvezi sigurnosnu kopiju – sprema cijeli dnevnik (plovidbe, zapise, postavke) u jednu datoteku (.hmbbackup) koju možete podijeliti e-poštom, u oblak ili spremiti lokalno\n• Vrati iz sigurnosne kopije – zamjenjuje trenutne podatke sadržajem odabrane kopije; sigurnosna kopija trenutnog stanja stvara se automatski prije toga\n• Vraćanje je onemogućeno dok je aktivno GPS praćenje plovidbe\n• Kopija s novijom shemom od one koju aplikacija podržava odbija se uz objašnjenje\n• Nakon zaustavljanja praćenja plovidbe: ako ste prijavljeni na Google račun s uključenom sinkronizacijom dnevnika, potpuna sigurnosna kopija automatski se učitava na vaš Drive (HMB_Sailing_Log_DATA/backups); bez prijave aplikacija odmah nudi spremanje ili dijeljenje kopije';
 
   @override
   String get guideExportTitle => 'Izvoz dnevnika';
