@@ -204,14 +204,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void _onMapReady() {
     _mapReady = true;
-    // Force a fresh TileLayer (all layers, not just the active base map) so
-    // tiles load with the final, correct viewport size after the GoRouter
-    // enter animation settles. A single fixed delay proved unreliable on
-    // slower devices (500ms then 800ms both still left blank tiles on some
-    // phones) – retry twice instead of tuning one magic number forever.
+    // Prvé rozloženie na pomalom telefóne môže skončiť až po onMapReady a
+    // mapa ostane prázdna. Vtedy — a LEN vtedy — vynútime jeden čerstvý
+    // TileLayer. Akonáhle je nejaká dlaždica nakreslená, kľúč vrstvy sa už
+    // nemení: zmena kľúča zruší každú vrstvu a uložené dlaždice by vyzerali,
+    // akoby sa načítavali znova. Dvojitý pokus (800 ms, 2 s) ostáva, lebo
+    // jedno pevné oneskorenie sa na pomalších zariadeniach ukázalo
+    // nespoľahlivé.
     for (final delayMs in [800, 2000]) {
       _tileReloadTimers.add(Timer(Duration(milliseconds: delayMs), () {
-        if (!mounted) return;
+        if (!mounted || !_firstLayoutLooksBlank()) return;
         setState(() => _tileKey++);
         // Force a camera move so flutter_map actually fires tile requests
         // on devices where the initial layout finishes after onMapReady.
@@ -227,6 +229,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         _centerIfFollowing();
       }));
     }
+  }
+
+  /// Prvé rozloženie ešte nedoběhlo: kamera nemá veľkosť, alebo sa zatiaľ
+  /// nenačítala (nenakreslila) ani jedna dlaždica.
+  bool _firstLayoutLooksBlank() {
+    try {
+      final size = _mapController.camera.nonRotatedSize;
+      if (size.isEmpty || size == MapCamera.kImpossibleSize) return true;
+    } catch (_) {
+      return true;
+    }
+    return TileCacheStats.loadedCount == 0;
   }
 
   void _centerIfFollowing() {
