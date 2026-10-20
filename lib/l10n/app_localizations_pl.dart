@@ -1112,15 +1112,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dutyRoster => 'Wachta załogi';
 
   @override
-  String get dutyStartAction => 'Objąć wachtę';
-
-  @override
-  String get dutyEndAction => 'Zakończ';
-
-  @override
-  String get dutyStartTitle => 'Kto obejmuje wachtę?';
-
-  @override
   String get dutyRunningChip => 'NA WACHCIE';
 
   @override
@@ -1135,6 +1126,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Obecnie nikt nie pełni wachty';
+
+  @override
+  String get dutyAutoHint =>
+      'Po uruchomieniu trackingu cała załoga obejmuje wachtę, po zatrzymaniu wachta się kończy. Przełącznikiem zwalniasz członka załogi z wachty.';
+
+  @override
+  String get dutyOffDuty => 'poza wachtą';
 
   @override
   String get dutyInspectionView => 'Pokaż do kontroli';
@@ -1175,11 +1173,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Uwaga';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Wachta trwa $hours h — nie zapomniałeś jej zakończyć?';
-  }
 
   @override
   String get dutyFrom => 'Od';
@@ -1861,10 +1854,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get companyNameLabel => 'Nazwa firmy';
-
-  @override
-  String get protocolClosedNotice =>
-      'Protokół jest zamknięty (podpisały obie strony) – tylko do odczytu.';
 
   @override
   String get handoverCertTitle => 'Protokół przekazania jachtu';
@@ -2939,7 +2928,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formalny zapis odbioru i zwrotu jachtu w czarterze – ikona uścisku dłoni w szczegółach rejsu.\n\n• Lista kontrolna wyposażenia (żagle, olinowanie, kotwica, nawigacja, kamizelki, tratwa, apteczka, dinghy, światła, bimini...) – OK / uszkodzone / brak, z uwagą, pozycją na jachcie i zdjęciem\n• Stan paliwa, wody i motogodzin\n• Podpis skippera oraz przedstawiciela firmy czarterowej\n• Protokół zamyka się (tylko do odczytu) dopiero gdy podpiszą obaj\n• Check-out wstępnie wypełnia dane z protokołu check-in i podkreśla nowe uszkodzenia\n• Eksport PDF z obydwoma podpisami obok siebie';
+      'Formalny zapis odbioru i zwrotu jachtu w czarterze – ikona uścisku dłoni w szczegółach rejsu.\n\n• Lista kontrolna wyposażenia (żagle, olinowanie, kotwica, nawigacja, kamizelki, tratwa, apteczka, dinghy, światła, bimini...) – OK / uszkodzone / brak, z uwagą, pozycją na jachcie i zdjęciem\n• Stan paliwa, wody i motogodzin\n• Zapisany protokół otwiera się tylko do odczytu; przycisk Edytuj go odblokowuje\n• Check-out wstępnie wypełnia dane z protokołu check-in i podkreśla nowe uszkodzenia\n• Motogodziny przy check-oucie wypełniają się z ostatniego wpisu rejsu\n• Eksport do PDF';
 
   @override
   String get guideGpxImportTitle => 'Import GPX';
@@ -2974,7 +2963,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Zapis o tym, kto kiedy pełnił wachtę — w Bezpieczeństwie, nad kotwicą.\n\n• Objąć wachtę — wybierz jedną lub więcej osób naraz; każda kończy potem osobno\n• Imiona pobierane są z załogi rejsu. Jeśli załoga nie jest wypełniona, przycisk przeniesie cię do karty rejsu\n• Czas objęcia można poprawić, jeśli nacisnąłeś przycisk później\n• Pokaż do kontroli — pełnoekranowa karta do kontroli na pokładzie: kto pełni, od kiedy, czas lokalnie i UTC. Nic z niej nie można zmienić\n• Harmonogram wacht — dodanie wachty wstecz oraz edycja. Jeśli nie wypełnisz czasu „do\", wachta trwa dalej\n• Wachta nocna przez północ to jeden zapis, nie dwa. W PDF pojawia się w obu dniach, oznaczona strzałką\n• Objęcie i zakończenie zapisują się do dziennika i do eksportu PDF\n\nUwaga: aplikacja nigdy nie kończy wachty sama. Po 12 godzinach jedynie ostrzega — koniec, którego nie widziałeś, byłby zmyślonym zapisem.';
+      'Zapis o tym, kto kiedy pełnił wachtę — w Bezpieczeństwie, nad kotwicą.\n\n• Po uruchomieniu trackingu cała załoga automatycznie pełni wachtę (tak wymaga prawo morskie), dopóki nie zatrzymasz trackingu\n• Przełącznikiem przy imieniu zwalniasz członka załogi z wachty i w ten sam sposób przywracasz go na wachtę. Zmiany ręczne zapisują się w dzienniku\n• Wznowienie przerwanego rejsu nie zmienia wacht — kto był poza wachtą, pozostaje poza nią\n• Imiona pobierane są z załogi rejsu. Jeśli załoga nie jest wypełniona, przycisk przeniesie cię do karty rejsu\n• Pokaż do kontroli — pełnoekranowa karta do kontroli na pokładzie: kto pełni wachtę, od kiedy, czas lokalny i UTC. Nic nie da się w niej zmienić\n• Grafik wacht — uzupełnienie wachty wstecz i edycja. Jeśli nie wpiszesz czasu „do\", wachta trwa dalej\n• Nocna wachta przez północ to jeden zapis, nie dwa. W PDF pojawia się w obu dniach, oznaczona strzałką\n• W PDF każdy członek załogi ma jeden wiersz ze wszystkimi odcinkami wachty z danego dnia';
 
   @override
   String get guideCompassTitle => 'Kompas namiarowy';
@@ -3680,6 +3669,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Otwórz ustawienia';
+
+  @override
+  String get saveMissingTitle => 'Do zapisania brakuje jeszcze';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Podpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Protokół jest zapisany. Aby go zmienić, stuknij Edytuj.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Brak zapisu pozycji: $spans. Mile na tych odcinkach to tylko szacunek w linii prostej.';
+  }
+
+  @override
+  String get trackGapTitle => 'Ślad przerwany';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefon przez $minutes min nie dostarczał pozycji, choć jacht płynął. Tego odcinka brakuje w śladzie, a mile są tylko szacunkiem w linii prostej.';
+  }
 
   @override
   String get speed => 'Prędkość';

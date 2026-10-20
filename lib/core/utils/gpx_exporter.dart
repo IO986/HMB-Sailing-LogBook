@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import '../database/app_database.dart';
+import 'track_segments.dart';
 
 class GpxExporter {
   /// Export GPS trasy jednej session
@@ -22,18 +23,7 @@ class GpxExporter {
     sb.writeln('  </metadata>');
     sb.writeln('  <trk>');
     sb.writeln('    <name>${_esc(session.name ?? "Track")}</name>');
-    sb.writeln('    <trkseg>');
-    for (final p in points) {
-      sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
-      if (p.altitude != null)
-        sb.write('<ele>${p.altitude!.toStringAsFixed(1)}</ele>');
-      sb.write('<time>${p.timestamp.toUtc().toIso8601String()}</time>');
-      if (p.speed != null)
-        sb.write('<extensions><speed>${(p.speed! * 0.514444).toStringAsFixed(2)}'
-            '</speed></extensions>');
-      sb.writeln('</trkpt>');
-    }
-    sb.writeln('    </trkseg>');
+    _writeSegments(sb, points);
     sb.writeln('  </trk>');
     sb.writeln('</gpx>');
 
@@ -76,18 +66,7 @@ class GpxExporter {
 
         sb.writeln('  <trk>');
         sb.writeln('    <name>${_esc("$dayName: $route")}</name>');
-        sb.writeln('    <trkseg>');
-        for (final p in points) {
-          sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
-          if (p.altitude != null)
-            sb.write('<ele>${p.altitude!.toStringAsFixed(1)}</ele>');
-          sb.write('<time>${p.timestamp.toUtc().toIso8601String()}</time>');
-          if (p.speed != null)
-            sb.write('<extensions><speed>${(p.speed! * 0.514444).toStringAsFixed(2)}'
-                '</speed></extensions>');
-          sb.writeln('</trkpt>');
-        }
-        sb.writeln('    </trkseg>');
+        _writeSegments(sb, points);
         sb.writeln('  </trk>');
       }
     }
@@ -127,17 +106,7 @@ class GpxExporter {
       if (pts.isEmpty) continue;
       sb.writeln('  <trk>');
       sb.writeln('    <name>${_esc(s.name ?? "Track")}</name>');
-      sb.writeln('    <trkseg>');
-      for (final p in pts) {
-        sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
-        if (p.altitude != null)
-          sb.write('<ele>${p.altitude!.toStringAsFixed(1)}</ele>');
-        sb.write('<time>${p.timestamp.toUtc().toIso8601String()}</time>');
-        if (p.speed != null)
-          sb.write('<extensions><speed>${(p.speed! * 0.514444).toStringAsFixed(2)}</speed></extensions>');
-        sb.writeln('</trkpt>');
-      }
-      sb.writeln('    </trkseg>');
+      _writeSegments(sb, pts);
       sb.writeln('  </trk>');
     }
     sb.writeln('</gpx>');
@@ -174,22 +143,34 @@ class GpxExporter {
         if (pts.isEmpty) continue;
         sb.writeln('  <trk>');
         sb.writeln('    <name>${_esc("$dayName: $route")}</name>');
-        sb.writeln('    <trkseg>');
-        for (final p in pts) {
-          sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
-          if (p.altitude != null)
-            sb.write('<ele>${p.altitude!.toStringAsFixed(1)}</ele>');
-          sb.write('<time>${p.timestamp.toUtc().toIso8601String()}</time>');
-          if (p.speed != null)
-            sb.write('<extensions><speed>${(p.speed! * 0.514444).toStringAsFixed(2)}</speed></extensions>');
-          sb.writeln('</trkpt>');
-        }
-        sb.writeln('    </trkseg>');
+        _writeSegments(sb, pts);
         sb.writeln('  </trk>');
       }
     }
     sb.writeln('</gpx>');
     return Uint8List.fromList(utf8.encode(sb.toString()));
+  }
+
+  /// Body trasy ako `<trkseg>` úseky — nový úsek po každej diere v zázname
+  /// (pozri [TrackSegments]). Jeden úsek cez dieru by v každom prehliadači
+  /// GPX nakreslil priamku, ktorá loď previezla aj cez ostrov.
+  static void _writeSegments(StringBuffer sb, List<TrackPoint> points) {
+    for (final seg in TrackSegments.of(points).segments) {
+      sb.writeln('    <trkseg>');
+      for (final p in seg) {
+        sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
+        if (p.altitude != null) {
+          sb.write('<ele>${p.altitude!.toStringAsFixed(1)}</ele>');
+        }
+        sb.write('<time>${p.timestamp.toUtc().toIso8601String()}</time>');
+        if (p.speed != null) {
+          sb.write('<extensions><speed>${(p.speed! * 0.514444).toStringAsFixed(2)}'
+              '</speed></extensions>');
+        }
+        sb.writeln('</trkpt>');
+      }
+      sb.writeln('    </trkseg>');
+    }
   }
 
   /// Trasa dňa do názvu tracku: prístavy, a keď chýbajú, súradnice.

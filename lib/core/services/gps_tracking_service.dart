@@ -15,6 +15,8 @@ import '../models/marine_instrument_data.dart';
 import '../utils/distance_calculator.dart';
 import '../utils/fix_quality_filter.dart';
 import '../utils/track_point_throttle.dart';
+import '../utils/track_segments.dart';
+import 'crash_log_service.dart';
 import 'geocoding_service.dart';
 import 'location_service.dart';
 import 'port_backfill_service.dart';
@@ -70,6 +72,27 @@ class GpsTrackingService {
   static const double _courseChangeDeg = 30;
   static const Duration _courseChangeHold = Duration(minutes: 1);
   double? _lastComputedCourseDeg;
+
+  /// Polohy sa spracúvajú jedna po druhej. `_onPosition` je async a stream
+  /// na ňu nečaká, takže dávka polôh doručená naraz (systém appku na pozadí
+  /// pridusil a potom pustil, čo sa nahromadilo) bežala súbežne: všetky
+  /// prešli kontrolou zmeny kurzu skôr, než ju prvá stihla vynulovať.
+  /// Záloha z 7. 10.: 50 záznamov „zmena kurzu" v tej istej sekunde.
+  Future<void> _positionQueue = Future.value();
+
+  /// Kedy prišiel posledný prijatý fix a kde bol — na odhalenie diery
+  /// v trase, pozri [_checkTrackGap].
+  DateTime? _lastAcceptedAt;
+  LatLng? _lastAcceptedAtPos;
+
+  /// Diera v trase, od ktorej sa hlási — rovnaké prahy ako pri kreslení
+  /// a exporte trasy, pozri [TrackSegments].
+  static const _gapMinDuration = TrackSegments.gapMinDuration;
+  static const _gapMinDistanceM = TrackSegments.gapMinDistanceM;
+
+  /// Posledná zistená diera v trase. UI ju ukáže skiperovi raz a s návodom,
+  /// čo v telefóne nastaviť — inak sa o nej dozvie až z exportu.
+  final trackGap = ValueNotifier<TrackGap?>(null);
 
   // Zápis trackpointu sa škrtí, súčet míľ nie — pozri TrackPointThrottle.
   final _trackPointThrottle = TrackPointThrottle();
@@ -178,6 +201,8 @@ class GpsTrackingService {
         : bridgedDistanceNm;
     _lastPersistedNm = _totalDistanceNm;
     _lastTrackPoint = null;
+    _lastAcceptedAt = null;
+    _lastAcceptedAtPos = null;
     _trackPointThrottle.reset();
     _fixFilter.reset();
     _lastComputedCourseDeg = null;
@@ -201,7 +226,11 @@ class GpsTrackingService {
 
     // Použi LocationService stream (GPS je už aktívne)
     _posSub = LocationService().stream.listen(
-      _onPosition,
+      (pos) => _positionQueue = _positionQueue
+          .then((_) => _onPosition(pos))
+          .catchError((Object e, StackTrace st) {
+        debugPrint('[GPS] Position handling failed: $e');
+      }),
       onError: (e) => debugPrint('[GPS] Stream err: $e'),
     );
 
@@ -499,6 +528,7 @@ class GpsTrackingService {
 
     _lastPosition = pos;
     _posCtrl.add(pos);
+    _checkTrackGap(latLng);
 
     // Bearing k aktuálnemu fixu z predošlého bodu — kým je _lastTrackPoint
     // ešte "predošlý" bod (prepíše sa až nižšie). Pri zanedbateľnom posune
@@ -964,6 +994,37 @@ class GpsTrackingService {
     _courseChangeHeading = null;
   }
 
+  /// Zapíše a ohlási dieru v trase: telefón polohu dlho nedoručil, hoci sa
+  /// loď medzitým pohla. Presne toto sa stalo 7.–9. 10. na Honore — systém
+  /// appke na pozadí polohu nedával a trasa mala hodinové medzery, ktoré na
+  /// mape viedli priamo cez ostrov.
+  void _checkTrackGap(LatLng pos) {
+    final now = DateTime.now();
+    final prevAt = _lastAcceptedAt;
+    final prevPos = _lastAcceptedAtPos;
+    _lastAcceptedAt = now;
+    _lastAcceptedAtPos = pos;
+    if (prevAt == null || prevPos == null) return;
+
+    final gap = now.difference(prevAt);
+    if (gap < _gapMinDuration) return;
+    final movedM = DistanceCalculator.distanceM(
+        prevPos.latitude, prevPos.longitude, pos.latitude, pos.longitude);
+    if (movedM < _gapMinDistanceM) return;
+
+    final loc = LocationService();
+    final info = TrackGap(from: prevAt, to: now, movedM: movedM);
+    trackGap.value = info;
+    debugPrint('[GPS] Track gap ${gap.inMinutes} min, ${movedM.round()} m');
+    unawaited(CrashLogService().logEvent(
+      'Track gap ${gap.inMinutes} min ${gap.inSeconds % 60} s, moved '
+      '${movedM.round()} m, from ${prevAt.toIso8601String()}; '
+      'power profile ${loc.powerProfile.name}, '
+      'source ${loc.lastSource?.name ?? '-'}',
+      context: 'tracking',
+    ));
+  }
+
   /// Uhol medzi dvoma kurzami, vždy 0–180° (359° a 1° sú od seba 2°).
   static double _courseDiff(double a, double b) {
     final diff = (a - b).abs() % 360;
@@ -979,4 +1040,17 @@ class GpsTrackingService {
     _instrumentWatchTimer?.cancel();
     _posCtrl.close();
   }
+}
+
+/// Úsek plavby, počas ktorého telefón nedoručil polohu.
+class TrackGap {
+  const TrackGap({required this.from, required this.to, required this.movedM});
+
+  final DateTime from;
+  final DateTime to;
+
+  /// Vzdušná vzdialenosť medzi fixom pred dierou a po nej.
+  final double movedM;
+
+  Duration get duration => to.difference(from);
 }

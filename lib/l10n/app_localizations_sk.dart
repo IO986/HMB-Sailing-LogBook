@@ -1111,15 +1111,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get dutyRoster => 'Služba posádky';
 
   @override
-  String get dutyStartAction => 'Nastúpiť do služby';
-
-  @override
-  String get dutyEndAction => 'Ukončiť';
-
-  @override
-  String get dutyStartTitle => 'Kto nastupuje do služby?';
-
-  @override
   String get dutyRunningChip => 'SLÚŽI';
 
   @override
@@ -1134,6 +1125,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Momentálne nikto neslúži';
+
+  @override
+  String get dutyAutoHint =>
+      'So spustením trackingu nastupuje do služby celá posádka, so zastavením služba končí. Prepínačom postavíš člena posádky mimo službu.';
+
+  @override
+  String get dutyOffDuty => 'mimo služby';
 
   @override
   String get dutyInspectionView => 'Zobraziť pre kontrolu';
@@ -1174,11 +1172,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Poznámka';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Služba beží $hours h — nezabudol si ju ukončiť?';
-  }
 
   @override
   String get dutyFrom => 'Od';
@@ -1859,10 +1852,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get companyNameLabel => 'Názov spoločnosti';
-
-  @override
-  String get protocolClosedNotice =>
-      'Protokol je uzavretý (podpísali obe strany) – len na čítanie.';
 
   @override
   String get handoverCertTitle => 'Odovzdávací protokol lode';
@@ -2936,7 +2925,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Podpis skippera aj zástupcu charterovej spoločnosti\n• Protokol sa uzavrie (len na čítanie) až keď podpíšu obaja\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Export PDF s oboma podpismi vedľa seba';
+      'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Uložený protokol sa otvorí len na čítanie; tlačidlo Upraviť ho odomkne\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Motohodiny pri check-oute sa predvyplnia z posledného záznamu plavby\n• Export PDF';
 
   @override
   String get guideGpxImportTitle => 'Import GPX';
@@ -2971,7 +2960,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Nastúpiť do služby — vyber jedného alebo viacerých ľudí naraz; každý sa potom ukončuje samostatne\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Čas nástupu sa dá opraviť, ak si tlačidlo stlačil neskôr\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu\n\nPozn.: appka službu nikdy neukončí sama. Po 12 hodinách len upozorní — koniec, ktorý si nevidel, by bol vymyslený údaj.';
+      'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Po spustení trackingu je celá posádka automaticky v službe (vyplýva to z námorného práva), až kým tracking nezastavíš\n• Prepínačom pri mene postavíš člena posádky mimo službu a rovnako ho vrátiš späť. Ručné zmeny sa zapíšu do denníka\n• Obnovenie prerušenej plavby stav služby nemení — kto bol mimo službu, ostane mimo\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• V PDF má každý člen posádky jeden riadok so všetkými úsekmi služby za deň';
 
   @override
   String get guideCompassTitle => 'Námerový kompas';
@@ -3676,6 +3665,31 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Otvoriť nastavenia';
+
+  @override
+  String get saveMissingTitle => 'Na uloženie ešte chýba';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Podpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Protokol je uložený. Na zmenu ťuknite na Upraviť.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Bez záznamu polohy: $spans. Míle v týchto úsekoch sú len odhad po priamke.';
+  }
+
+  @override
+  String get trackGapTitle => 'Trasa sa prerušila';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefón aplikácii $minutes min nedoručoval polohu, hoci sa loď pohla. Trasa v tom úseku chýba a míle sú len odhad po priamke.';
+  }
 
   @override
   String get speed => 'Rýchlosť';

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/gps_tracking_service.dart';
+import '../../../core/utils/track_segments.dart';
 import '../../../core/services/marine_poi_service.dart';
 import '../../../features/tracking/providers/tracking_provider.dart';
 import '../../../main.dart';
@@ -100,6 +101,21 @@ final charterTrackPreviewProvider =
   final points = await ref.watch(charterTrackPointsProvider(charterId).future);
   return [for (final p in points) LatLng(p.latitude, p.longitude)];
 });
+
+/// Trasa dňa rozdelená na súvislé úseky a diery — na kreslenie. Spojitý
+/// zoznam bodov vyššie ostáva pre výrez mapy a prázdnosť.
+final dayTrackSegmentsProvider =
+    FutureProvider.family<TrackSegments, int>((ref, dayLogId) async =>
+        TrackSegments.of(
+            await ref.watch(dayTrackPointsProvider(dayLogId).future)));
+
+/// To isté pre celú plavbu: dni sú samostatné session, takže sa medzi sebou
+/// nespájajú — doteraz ich náhľad celej plavby spájal čiarou z prístavu do
+/// prístavu cez noc.
+final charterTrackSegmentsProvider =
+    FutureProvider.family<TrackSegments, int>((ref, charterId) async =>
+        TrackSegments.of(
+            await ref.watch(charterTrackPointsProvider(charterId).future)));
 
 /// Denníkové záznamy s polohou pre aktuálny deň (s fotkou aj bez) —
 /// reaktívne sleduje DB zmeny, na vykreslenie značiek na mape počas trackingu.

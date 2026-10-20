@@ -42,8 +42,9 @@ class VoyageProgress {
       ];
 }
 
+/// Uložený protokol je hotový — podpisy sa už nezbierajú.
 bool _isProtocolClosed(HandoverProtocol? p) =>
-    p != null && p.skipperSignedAt != null && p.companySignedAt != null;
+    p != null;
 
 /// Single source of truth for "what's next / what's missing" for a charter,
 /// derived from the real handover-protocol signature state (not the legacy

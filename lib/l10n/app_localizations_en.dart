@@ -1111,15 +1111,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dutyRoster => 'Crew on duty';
 
   @override
-  String get dutyStartAction => 'Come on duty';
-
-  @override
-  String get dutyEndAction => 'End';
-
-  @override
-  String get dutyStartTitle => 'Who is coming on duty?';
-
-  @override
   String get dutyRunningChip => 'ON DUTY';
 
   @override
@@ -1134,6 +1125,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nobody is on duty';
+
+  @override
+  String get dutyAutoHint =>
+      'The whole crew comes on duty when tracking starts and goes off duty when it stops. Use the switch to take a crew member off duty.';
+
+  @override
+  String get dutyOffDuty => 'off duty';
 
   @override
   String get dutyInspectionView => 'Show for inspection';
@@ -1174,11 +1172,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Note';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'On duty for $hours h — was it left open?';
-  }
 
   @override
   String get dutyFrom => 'From';
@@ -1857,10 +1850,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companyNameLabel => 'Company name';
-
-  @override
-  String get protocolClosedNotice =>
-      'The protocol is closed (both parties signed) – read only.';
 
   @override
   String get handoverCertTitle => 'Vessel handover protocol';
@@ -2934,7 +2923,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'A formal record of taking over and returning the boat on a charter – handshake icon in the voyage detail.\n\n• Equipment checklist (sails, rigging, anchor, navigation, life jackets, raft, first aid kit, dinghy, lights, bimini...) – OK / damaged / missing, with a note, position on board and a photo\n• Fuel, water and engine hours state\n• Signature of both the skipper and the charter company representative\n• The protocol becomes read-only once both have signed\n• Check-out pre-fills data from the check-in protocol and highlights new damage\n• PDF export with both signatures side by side';
+      'A formal record of taking over and returning the boat on a charter – handshake icon in the voyage detail.\n\n• Equipment checklist (sails, rigging, anchor, navigation, life jackets, raft, first aid kit, dinghy, lights, bimini...) – OK / damaged / missing, with a note, position on board and a photo\n• Fuel, water and engine hours state\n• A saved protocol opens read-only; the Edit button unlocks it\n• Check-out pre-fills data from the check-in protocol and highlights new damage\n• Check-out engine hours are pre-filled from the voyage\'s last entry\n• PDF export';
 
   @override
   String get guideGpxImportTitle => 'GPX Import';
@@ -2969,7 +2958,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'A record of who was on watch and when — in Safety, above the anchor alarm.\n\n• Come on duty — pick one or several people at once; each then goes off duty separately\n• Names come from the voyage crew. If no crew is set, the button takes you to the voyage card\n• The start time can be corrected if you pressed the button late\n• Show for inspection — a full-screen card to hand over on board: who is on duty, since when, local and UTC time. Nothing can be changed from it\n• Duty roster — fill in a past duty or edit one. Leave the \"to\" time empty and the duty keeps running\n• A night watch across midnight is one record, not two. It appears on both days in the PDF, marked with an arrow\n• Coming on and going off duty are both written to the logbook and the PDF export\n\nNote: the app never ends a duty by itself. After 12 hours it only warns you — an end time you did not observe would be invented data.';
+      'A record of who was on watch and when — in Safety, above the anchor alarm.\n\n• Once tracking starts, the whole crew is on duty automatically (as maritime law requires) until you stop tracking\n• The switch next to a name takes that crew member off duty, and puts them back on the same way. Manual changes are written to the logbook\n• Resuming an interrupted voyage does not change who is on duty — anyone taken off duty stays off\n• Names come from the voyage crew. If no crew is set, the button takes you to the voyage card\n• Show for inspection — a full-screen card to hand over on board: who is on duty, since when, local and UTC time. Nothing can be changed from it\n• Duty roster — fill in a past duty or edit one. Leave the \"to\" time empty and the duty keeps running\n• A night watch across midnight is one record, not two. It appears on both days in the PDF, marked with an arrow\n• In the PDF each crew member gets one line with all of that day\'s duty periods';
 
   @override
   String get guideCompassTitle => 'Sighting Compass';
@@ -3674,6 +3663,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Open settings';
+
+  @override
+  String get saveMissingTitle => 'Still needed before saving';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Signature: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'The protocol is saved. Tap Edit to change it.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'No position recorded: $spans. Miles in these stretches are a straight-line estimate only.';
+  }
+
+  @override
+  String get trackGapTitle => 'Track interrupted';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'The phone stopped delivering positions for $minutes min while the boat kept moving. That part of the track is missing and the miles are a straight-line estimate.';
+  }
 
   @override
   String get speed => 'Speed';

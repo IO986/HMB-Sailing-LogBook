@@ -2180,24 +2180,6 @@ abstract class AppLocalizations {
   /// **'Služba posádky'**
   String get dutyRoster;
 
-  /// No description provided for @dutyStartAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Nastúpiť do služby'**
-  String get dutyStartAction;
-
-  /// No description provided for @dutyEndAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Ukončiť'**
-  String get dutyEndAction;
-
-  /// No description provided for @dutyStartTitle.
-  ///
-  /// In sk, this message translates to:
-  /// **'Kto nastupuje do služby?'**
-  String get dutyStartTitle;
-
   /// No description provided for @dutyRunningChip.
   ///
   /// In sk, this message translates to:
@@ -2221,6 +2203,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Momentálne nikto neslúži'**
   String get dutyNobodyOnDuty;
+
+  /// No description provided for @dutyAutoHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'So spustením trackingu nastupuje do služby celá posádka, so zastavením služba končí. Prepínačom postavíš člena posádky mimo službu.'**
+  String get dutyAutoHint;
+
+  /// No description provided for @dutyOffDuty.
+  ///
+  /// In sk, this message translates to:
+  /// **'mimo služby'**
+  String get dutyOffDuty;
 
   /// No description provided for @dutyInspectionView.
   ///
@@ -2293,12 +2287,6 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Poznámka'**
   String get dutyNoteLabel;
-
-  /// No description provided for @dutyLongRunningWarning.
-  ///
-  /// In sk, this message translates to:
-  /// **'Služba beží {hours} h — nezabudol si ju ukončiť?'**
-  String dutyLongRunningWarning(int hours);
 
   /// No description provided for @dutyFrom.
   ///
@@ -3571,12 +3559,6 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Názov spoločnosti'**
   String get companyNameLabel;
-
-  /// No description provided for @protocolClosedNotice.
-  ///
-  /// In sk, this message translates to:
-  /// **'Protokol je uzavretý (podpísali obe strany) – len na čítanie.'**
-  String get protocolClosedNotice;
 
   /// No description provided for @handoverCertTitle.
   ///
@@ -5597,7 +5579,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideHandoverBody.
   ///
   /// In sk, this message translates to:
-  /// **'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Podpis skippera aj zástupcu charterovej spoločnosti\n• Protokol sa uzavrie (len na čítanie) až keď podpíšu obaja\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Export PDF s oboma podpismi vedľa seba'**
+  /// **'Formálny záznam o prevzatí a vrátení lode pri chartri – ikona podania rúk v detaile plavby.\n\n• Kontrolný zoznam výbavy (plachty, lanovie, kotva, navigácia, vesty, raft, lekárnička, dinghy, svetlá, bimini...) – OK / poškodené / chýba, s poznámkou, polohou na lodi a fotkou\n• Stav paliva, vody a motohodín\n• Uložený protokol sa otvorí len na čítanie; tlačidlo Upraviť ho odomkne\n• Check-out si predvyplní údaje z check-in protokolu a zvýrazní nové poškodenia\n• Motohodiny pri check-oute sa predvyplnia z posledného záznamu plavby\n• Export PDF'**
   String get guideHandoverBody;
 
   /// No description provided for @guideGpxImportTitle.
@@ -5657,7 +5639,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDutyBody.
   ///
   /// In sk, this message translates to:
-  /// **'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Nastúpiť do služby — vyber jedného alebo viacerých ľudí naraz; každý sa potom ukončuje samostatne\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Čas nástupu sa dá opraviť, ak si tlačidlo stlačil neskôr\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• Nástup aj ukončenie sa zapíšu do denníka a do PDF exportu\n\nPozn.: appka službu nikdy neukončí sama. Po 12 hodinách len upozorní — koniec, ktorý si nevidel, by bol vymyslený údaj.'**
+  /// **'Záznam o tom, kto mal kedy službu — v Bezpečnosti, nad kotvou.\n\n• Po spustení trackingu je celá posádka automaticky v službe (vyplýva to z námorného práva), až kým tracking nezastavíš\n• Prepínačom pri mene postavíš člena posádky mimo službu a rovnako ho vrátiš späť. Ručné zmeny sa zapíšu do denníka\n• Obnovenie prerušenej plavby stav služby nemení — kto bol mimo službu, ostane mimo\n• Mená sa berú z posádky plavby. Ak posádka nie je vyplnená, tlačidlo ťa pošle do karty plavby\n• Zobraziť pre kontrolu — celoobrazovková karta pre kontrolu na palube: kto slúži, od kedy, čas lokálne aj UTC. Nedá sa z nej nič meniť\n• Rozpis služieb — doplnenie služby spätne aj úprava. Ak nevyplníš čas „do\", služba beží ďalej\n• Nočná služba cez polnoc je jeden záznam, nie dva. V PDF sa objaví na oboch dňoch, označená šípkou\n• V PDF má každý člen posádky jeden riadok so všetkými úsekmi služby za deň'**
   String get guideDutyBody;
 
   /// No description provided for @guideCompassTitle.
@@ -6925,6 +6907,42 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Otvoriť nastavenia'**
   String get batteryPromptAction;
+
+  /// No description provided for @saveMissingTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Na uloženie ešte chýba'**
+  String get saveMissingTitle;
+
+  /// No description provided for @briefingMissingSignatures.
+  ///
+  /// In sk, this message translates to:
+  /// **'Podpis: {names}'**
+  String briefingMissingSignatures(String names);
+
+  /// No description provided for @protocolSavedNotice.
+  ///
+  /// In sk, this message translates to:
+  /// **'Protokol je uložený. Na zmenu ťuknite na Upraviť.'**
+  String get protocolSavedNotice;
+
+  /// No description provided for @pdfTrackGapsNote.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez záznamu polohy: {spans}. Míle v týchto úsekoch sú len odhad po priamke.'**
+  String pdfTrackGapsNote(String spans);
+
+  /// No description provided for @trackGapTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Trasa sa prerušila'**
+  String get trackGapTitle;
+
+  /// No description provided for @trackGapBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Telefón aplikácii {minutes} min nedoručoval polohu, hoci sa loď pohla. Trasa v tom úseku chýba a míle sú len odhad po priamke.'**
+  String trackGapBody(String minutes);
 
   /// No description provided for @speed.
   ///

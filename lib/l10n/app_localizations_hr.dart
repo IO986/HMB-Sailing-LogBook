@@ -1111,15 +1111,6 @@ class AppLocalizationsHr extends AppLocalizations {
   String get dutyRoster => 'Posada na straži';
 
   @override
-  String get dutyStartAction => 'Preuzmi stražu';
-
-  @override
-  String get dutyEndAction => 'Završi';
-
-  @override
-  String get dutyStartTitle => 'Tko preuzima stražu?';
-
-  @override
   String get dutyRunningChip => 'NA STRAŽI';
 
   @override
@@ -1134,6 +1125,13 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nitko nije na straži';
+
+  @override
+  String get dutyAutoHint =>
+      'Pokretanjem praćenja cijela posada preuzima stražu, a zaustavljanjem straža završava. Prekidačem člana posade stavljaš izvan straže.';
+
+  @override
+  String get dutyOffDuty => 'izvan straže';
 
   @override
   String get dutyInspectionView => 'Prikaži za inspekciju';
@@ -1174,11 +1172,6 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Napomena';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'Na straži $hours h — je li ostala otvorena?';
-  }
 
   @override
   String get dutyFrom => 'Od';
@@ -1862,10 +1855,6 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get companyNameLabel => 'Naziv tvrtke';
-
-  @override
-  String get protocolClosedNotice =>
-      'Zapisnik je zaključen (obje strane potpisale) – samo za čitanje.';
 
   @override
   String get handoverCertTitle => 'Zapisnik o primopredaji plovila';
@@ -2943,7 +2932,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Formalni zapis o preuzimanju i vraćanju broda na charteru – ikona rukovanja u detalju plovidbe.\n\n• Kontrolna lista opreme (jedra, oputa, sidro, navigacija, prsluci za spašavanje, splav, kutija prve pomoći, gumenjak, svjetla, bimini...) – u redu / oštećeno / nedostaje, s napomenom, pozicijom na brodu i fotografijom\n• Stanje goriva, vode i sati motora\n• Potpis skipera i predstavnika charter tvrtke\n• Zapisnik postaje samo za čitanje čim obje strane potpišu\n• Check-out unaprijed popunjava podatke iz check-in zapisnika i ističe nova oštećenja\n• PDF izvoz s oba potpisa jedan uz drugi';
+      'Formalni zapis o preuzimanju i vraćanju broda na charteru – ikona rukovanja u detalju plovidbe.\n\n• Kontrolna lista opreme (jedra, oputa, sidro, navigacija, prsluci za spašavanje, splav, kutija prve pomoći, gumenjak, svjetla, bimini...) – u redu / oštećeno / nedostaje, s napomenom, pozicijom na brodu i fotografijom\n• Stanje goriva, vode i sati motora\n• Spremljeni zapisnik otvara se samo za čitanje; gumb Uredi ga otključava\n• Check-out unaprijed popunjava podatke iz check-in zapisnika i ističe nova oštećenja\n• Radni sati motora pri check-outu preuzimaju se iz zadnjeg zapisa plovidbe\n• Izvoz u PDF';
 
   @override
   String get guideGpxImportTitle => 'GPX uvoz';
@@ -2978,7 +2967,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Zapis o tome tko je i kada bio na straži — u Sigurnosti, iznad alarma sidra.\n\n• Preuzmi stražu — odaberite jednu ili više osoba odjednom; svaka zatim zasebno predaje stražu\n• Imena dolaze iz posade plovidbe. Ako posada nije postavljena, tipka vas vodi na karticu plovidbe\n• Vrijeme početka može se ispraviti ako ste tipku pritisnuli sa zakašnjenjem\n• Prikaži za inspekciju — kartica preko cijelog zaslona za predočenje na brodu: tko je na straži, od kada, lokalno i UTC vrijeme. Iz nje se ništa ne može mijenjati\n• Raspored straža — unesite prošlu stražu ili je uredite. Ostavite vrijeme \"do\" prazno i straža ostaje u tijeku\n• Noćna straža preko ponoći je jedan zapis, ne dva. U PDF-u se pojavljuje na oba dana, označena strelicom\n• Preuzimanje i predaja straže upisuju se u dnevnik i u PDF izvoz\n\nNapomena: aplikacija nikada sama ne završava stražu. Nakon 12 sati vas samo upozorava — vrijeme završetka koje niste vidjeli bio bi izmišljen podatak.';
+      'Zapis o tome tko je i kada bio na straži — u Sigurnosti, iznad alarma sidra.\n\n• Nakon pokretanja praćenja cijela je posada automatski na straži (to zahtijeva pomorsko pravo), sve dok praćenje ne zaustavite\n• Prekidačem uz ime člana posade stavljate izvan straže i na isti ga način vraćate. Ručne promjene upisuju se u dnevnik\n• Nastavak prekinute plovidbe ne mijenja stanje straže — tko je bio izvan straže, ostaje izvan\n• Imena dolaze iz posade plovidbe. Ako posada nije postavljena, tipka vas vodi na karticu plovidbe\n• Prikaži za inspekciju — kartica preko cijelog zaslona za kontrolu na brodu: tko je na straži, od kada, lokalno i UTC vrijeme. Na njoj se ništa ne može mijenjati\n• Raspored straža — naknadni unos ili izmjena straže. Ako vrijeme „do\" ostavite prazno, straža traje dalje\n• Noćna straža preko ponoći jedan je zapis, a ne dva. U PDF-u se pojavljuje na oba dana, označena strelicom\n• U PDF-u svaki član posade ima jedan redak sa svim dijelovima straže tog dana';
 
   @override
   String get guideCompassTitle => 'Kompas za azimutiranje';
@@ -3682,6 +3671,31 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Otvori postavke';
+
+  @override
+  String get saveMissingTitle => 'Za spremanje još nedostaje';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Potpis: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'Zapisnik je spremljen. Za promjenu dodirnite Uredi.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Bez zapisa pozicije: $spans. Milje u tim dionicama samo su procjena po ravnoj crti.';
+  }
+
+  @override
+  String get trackGapTitle => 'Trag je prekinut';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'Telefon $minutes min nije davao poziciju iako se brod kretao. Taj dio traga nedostaje, a milje su samo procjena po ravnoj crti.';
+  }
 
   @override
   String get speed => 'Brzina';

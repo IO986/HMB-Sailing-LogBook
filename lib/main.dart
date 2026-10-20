@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dio/dio.dart' show DioException;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -57,6 +58,10 @@ void wireDatabaseSingletons(AppDatabase db) {
   // Jednorazová oprava míľ zapísaných starým (buggy) počítadlom — pozri
   // recomputeRecentSessionDistances().
   unawaited(GpsTrackingService().recomputeRecentSessionDistances());
+  // Body trasy zo zmazaných plavieb — viď deleteOrphanTrackPoints.
+  unawaited(db.deleteOrphanTrackPoints().then(
+      (n) => n > 0 ? debugPrint('[DB] Deleted $n orphan track points') : null,
+      onError: (Object e) => debugPrint('[DB] Orphan cleanup failed: $e')));
   WeatherService().setDatabase(db);
   WeatherRepository().setDatabase(db);
   TideService().setDatabase(db);
@@ -90,6 +95,11 @@ void main() {
 
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
+      // Dlaždica mapy, ktorá nedorazila zo siete, nie je pád: na mori bez
+      // signálu je to bežný stav a mapa ju dotiahne neskôr. Takéto chyby
+      // vytlačili z logu všetko užitočné (záloha z 9. 10.: celý log boli
+      // len timeouty dlaždíc).
+      if (details.exception is DioException) return;
       CrashLogService().logError(
           details.exception, details.stack ?? StackTrace.current,
           context: 'FlutterError');

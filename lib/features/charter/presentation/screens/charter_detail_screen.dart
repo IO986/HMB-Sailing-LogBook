@@ -174,7 +174,7 @@ void _showHandoverMenu(BuildContext context, WidgetRef ref, int charterId) async
   final db = ref.read(databaseProvider);
   final checkIn = await db.getHandoverProtocol(charterId, 'checkIn');
   final checkOut = await db.getHandoverProtocol(charterId, 'checkOut');
-  bool isClosed(HandoverProtocol? p) => p != null && p.skipperSignedAt != null && p.companySignedAt != null;
+  bool isClosed(HandoverProtocol? p) => p != null;
 
   if (!context.mounted) return;
   showModalBottomSheet(

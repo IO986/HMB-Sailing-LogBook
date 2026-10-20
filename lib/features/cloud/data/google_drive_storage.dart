@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/api_constants.dart';
 import '../domain/cloud_storage_provider.dart';
@@ -18,13 +20,63 @@ const _scopes = [drive.DriveApi.driveFileScope];
 /// (`account.authorizationClient.authorizeScopes(...)`) steps — Drive access
 /// is an authorization, requested only when actually needed (first upload),
 /// not at sign-in time.
+///
+/// Prihlásený účet sa pamätá v SharedPreferences. Session z `authenticate()`
+/// žije len v pamäti procesu a jej obnova (`attemptLightweightAuthentication`)
+/// na Honore ukazuje výber účtu, takže sa po reštarte appky nedala robiť na
+/// pozadí — a po každom reštarte (na mori takmer denne) appka ticho prestala
+/// nahrávať, kým skiper neotvoril Nastavenia (nahlásené z októbrovej plavby:
+/// „tvári sa, že ma prihlásilo, no nič sa nedeje"). Token pre Drive sa preto
+/// berie cez autorizáciu bez účtu (`authorizationForScopes`), ktorá na
+/// Androide nikdy neukazuje UI: buď vráti token, alebo null.
 class GoogleDriveStorage implements CloudStorageProvider {
   GoogleDriveStorage({GoogleSignIn? googleSignIn})
-      : _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+      : _googleSignIn = googleSignIn ?? GoogleSignIn.instance {
+    _rememberedLoad = _loadRemembered();
+  }
+
+  static const _kEmail = 'cloud_account_email';
+  static const _kName = 'cloud_account_name';
 
   final GoogleSignIn _googleSignIn;
   Future<void>? _initialized;
   GoogleSignInAccount? _account;
+
+  /// Účet z minulého prihlásenia — platí, kým sa skiper neodhlási.
+  CloudAccount? _remembered;
+  late final Future<void> _rememberedLoad;
+
+  Future<void> _loadRemembered() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString(_kEmail);
+      if (email != null && email.isNotEmpty) {
+        _remembered =
+            CloudAccount(email: email, displayName: prefs.getString(_kName));
+      }
+    } catch (e) {
+      debugPrint('[Cloud] remembered account load failed: $e');
+    }
+  }
+
+  Future<void> _remember(GoogleSignInAccount? account) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (account == null) {
+      _remembered = null;
+      await prefs.remove(_kEmail);
+      await prefs.remove(_kName);
+      return;
+    }
+    _remembered =
+        CloudAccount(email: account.email, displayName: account.displayName);
+    await prefs.setString(_kEmail, account.email);
+    final name = account.displayName;
+    if (name == null) {
+      await prefs.remove(_kName);
+    } else {
+      await prefs.setString(_kName, name);
+    }
+  }
 
   /// `initialize()` may only be called once per process and must complete
   /// before any other method — cache the same future so concurrent callers
@@ -41,16 +93,25 @@ class GoogleDriveStorage implements CloudStorageProvider {
   @override
   String get displayName => 'Google Drive';
 
+  /// Bez volania SDK, kým je účet zapamätaný — obnova session cez SDK
+  /// ukazovala na Honore výber účtu pri každom otvorení Nastavení.
   @override
   Future<CloudAccount?> get currentAccount async {
-    _account ??= await _attemptSilentSignIn();
     final account = _account;
-    if (account == null) return null;
-    return CloudAccount(email: account.email, displayName: account.displayName);
+    if (account != null) {
+      return CloudAccount(email: account.email, displayName: account.displayName);
+    }
+    await _rememberedLoad;
+    if (_remembered != null) return _remembered;
+    _account = await _attemptSilentSignIn();
+    final restored = _account;
+    if (restored == null) return null;
+    await _remember(restored);
+    return CloudAccount(email: restored.email, displayName: restored.displayName);
   }
 
   @override
-  bool get isSignedInNow => _account != null;
+  bool get isSignedInNow => _account != null || _remembered != null;
 
   Future<GoogleSignInAccount?> _attemptSilentSignIn() async {
     await _ensureInitialized();
@@ -71,6 +132,19 @@ class GoogleDriveStorage implements CloudStorageProvider {
       rethrow;
     }
     final account = _account!;
+    // Drive povolenie hneď pri prihlásení, kým je skiper pri telefóne —
+    // inak by si ho prvý upload vypýtal až zo synchronizácie, kde sa pýtať
+    // nesmie, a uploady by ticho čakali.
+    try {
+      await account.authorizationClient.authorizeScopes(_scopes);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        _account = null;
+        return null;
+      }
+      rethrow;
+    }
+    await _remember(account);
     return CloudAccount(email: account.email, displayName: account.displayName);
   }
 
@@ -79,21 +153,25 @@ class GoogleDriveStorage implements CloudStorageProvider {
     await _ensureInitialized();
     await _googleSignIn.signOut();
     _account = null;
+    await _remember(null);
   }
 
+  /// Nikdy neukáže UI — volá sa zo synchronizácie na pozadí. Keď povolenie
+  /// bez skipera získať nejde, hodí [StateError] a položka vo fronte počká
+  /// (CloudUploadTransport ju odloží, nezahodí).
   Future<drive.DriveApi> _driveApi() async {
     await _ensureInitialized();
-    final account = _account ?? await _attemptSilentSignIn();
-    if (account == null) {
+    await _rememberedLoad;
+    final account = _account;
+    if (account == null && _remembered == null) {
       throw StateError('Google Drive: not signed in');
     }
-    _account = account;
-
-    final authClient = account.authorizationClient;
-    // Silent first — only prompts if the user hasn't already granted
-    // drive.file (typically the first upload ever, or after revoking access).
-    final authorization = await authClient.authorizationForScopes(_scopes) ??
-        await authClient.authorizeScopes(_scopes);
+    final authClient =
+        account?.authorizationClient ?? _googleSignIn.authorizationClient;
+    final authorization = await authClient.authorizationForScopes(_scopes);
+    if (authorization == null) {
+      throw StateError('Google Drive: authorization needs the user');
+    }
     return drive.DriveApi(authorization.authClient(scopes: _scopes));
   }
 

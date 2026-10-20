@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
@@ -8,10 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/services/crash_log_service.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
-import '../../../../shared/widgets/signature_pad.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/handover_checklist.dart';
 import '../../../safety/services/custom_safety_items.dart';
@@ -47,10 +48,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
   final _skipperNameCtrl = TextEditingController();
   final _companyRepCtrl = TextEditingController();
   final _companyNameCtrl = TextEditingController();
-  List<List<Offset>> _skipperStrokes = [];
-  List<List<Offset>> _companyStrokes = [];
-  final _skipperPadKey = GlobalKey<SignaturePadState>();
-  final _companyPadKey = GlobalKey<SignaturePadState>();
   String? _skipperSignaturePath;
   DateTime? _skipperSignedAt;
   String? _companySignaturePath;
@@ -59,8 +56,13 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
   bool _loading = true;
   bool _saving = false;
 
+  /// Uložený protokol sa otvára len na čítanie a odomkne sa tlačidlom
+  /// Upraviť. Predtým ho zamkli podpisy oboch strán natrvalo — skiper, ktorý
+  /// po podpise našiel ďalšiu chybu na lodi, ju už nemal kam zapísať.
+  bool _editing = false;
+
   bool get _isCheckOut => widget.type == 'checkOut';
-  bool get _isClosed => _skipperSignedAt != null && _companySignedAt != null;
+  bool get _isLocked => _existing != null && !_editing;
 
   @override
   void initState() {
@@ -159,8 +161,12 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         _locationCtrl.text = checkIn.location ?? '';
         _fuelLevel = checkIn.fuelLevel;
         _waterLevel = checkIn.waterLevel;
-        _engineHoursCtrl.text = checkIn.engineHours?.toString() ?? '';
       }
+      // Motohodiny nie z check-inu — tie sú zo začiatku plavby. Posledný
+      // záznam z plavby je to, čo je na počítadle pri odovzdaní lode.
+      final hours = await db.latestEngineHoursForCharter(widget.charterId) ??
+          checkIn?.engineHours;
+      if (hours != null) _engineHoursCtrl.text = hours.toString();
     }
 
     // Rovnaké údaje sa nepýtajú dvakrát: motohodiny a charterová spoločnosť
@@ -208,34 +214,9 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
     setState(() => _saving = true);
     try {
       final db = ref.read(databaseProvider);
-      final docsDir = await getApplicationDocumentsDirectory();
-      final sigDir = Directory('${docsDir.path}/handover_signatures/charter_${widget.charterId}');
-      await sigDir.create(recursive: true);
-
-      var skipperPath = _skipperSignaturePath;
-      var skipperSignedAt = _skipperSignedAt;
-      if (_skipperStrokes.isNotEmpty) {
-        final bytes = await _skipperPadKey.currentState?.toBytes();
-        if (bytes != null) {
-          final file = File('${sigDir.path}/${widget.type}_skipper.png');
-          await file.writeAsBytes(bytes);
-          skipperPath = file.path;
-          skipperSignedAt = DateTime.now().toUtc();
-        }
-      }
-
-      var companyPath = _companySignaturePath;
-      var companySignedAt = _companySignedAt;
-      if (_companyStrokes.isNotEmpty) {
-        final bytes = await _companyPadKey.currentState?.toBytes();
-        if (bytes != null) {
-          final file = File('${sigDir.path}/${widget.type}_company.png');
-          await file.writeAsBytes(bytes);
-          companyPath = file.path;
-          companySignedAt = DateTime.now().toUtc();
-        }
-      }
-
+      // Podpisy sa v protokole už nezbierajú — skiper ich nepotreboval
+      // a podpisové pole bolo jediné miesto, kde sa ukladanie mohlo zaseknúť
+      // na vykresľovaní obrázka. Staré podpisy ostávajú, kým ich nič neprepíše.
       await db.upsertHandoverProtocol(HandoverProtocolsCompanion(
         charterId: Value(widget.charterId),
         type: Value(widget.type),
@@ -246,17 +227,18 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         engineHours: Value(double.tryParse(_engineHoursCtrl.text)),
         checklistJson: Value(checklistToJson(_checklist)),
         skipperName: Value(_skipperNameCtrl.text.trim().isEmpty ? null : _skipperNameCtrl.text.trim()),
-        skipperSignaturePath: Value(skipperPath),
-        skipperSignedAt: Value(skipperSignedAt),
+        skipperSignaturePath: Value(_skipperSignaturePath),
+        skipperSignedAt: Value(_skipperSignedAt),
         companyRepName: Value(_companyRepCtrl.text.trim().isEmpty ? null : _companyRepCtrl.text.trim()),
         companyName: Value(_companyNameCtrl.text.trim().isEmpty ? null : _companyNameCtrl.text.trim()),
-        companySignaturePath: Value(companyPath),
-        companySignedAt: Value(companySignedAt),
+        companySignaturePath: Value(_companySignaturePath),
+        companySignedAt: Value(_companySignedAt),
         extraNotes: Value(_extraNotesCtrl.text.trim().isEmpty ? null : _extraNotesCtrl.text.trim()),
         createdAt: Value(_existing?.createdAt ?? DateTime.now().toUtc()),
       ));
 
-      final closed = skipperSignedAt != null && companySignedAt != null;
+      // Uložený protokol = hotový. Bez podpisov niet na čo iné čakať.
+      const closed = true;
       // Spätný zápis zdieľaných údajov do karty lode: motohodiny z check-in
       // = začiatok, z check-out = koniec; názov charterovej spoločnosti.
       final engineHours = double.tryParse(_engineHoursCtrl.text);
@@ -283,9 +265,15 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
       // Safety Briefing sa NEspúšťa automaticky — užívateľ ho otvorí sám
       // (blikajúca ikona v detaile plavby pripomína).
       context.pop();
-    } catch (e) {
+    } catch (e, st) {
+      // Do crash logu, nie len do snackbaru: hlásenie „nešlo to uložiť"
+      // z októbrovej plavby sa bez neho nedalo dohľadať.
+      unawaited(CrashLogService().logError(e, st, context: 'handover save'));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context).saveError('$e')),
+          duration: const Duration(seconds: 8),
+        ));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -302,24 +290,26 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
 
     final title = _isCheckOut ? l.checkOutProtocol : l.checkInProtocol;
     final fmt = AppDate.of(context, ref);
-    final readOnly = _isClosed;
+    final readOnly = _isLocked;
     final categories = _isCheckOut ? checkOutCategories : checkInCategories;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (!readOnly)
+          if (readOnly)
+            TextButton.icon(
+              onPressed: () => setState(() => _editing = true),
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(l.edit),
+            )
+          else
             TextButton(
               onPressed: _saving ? null : _save,
               child: Text(l.save, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
         ],
       ),
-      // No scroll lock here: the signature pad claims the vertical drag
-      // itself (see SignaturePad). Flipping the scroll physics on pointer
-      // down rebuilt the Scrollable mid-gesture, which cancelled the very
-      // stroke the skipper was drawing.
       body: ListView(
           padding: const EdgeInsets.all(16),
           physics: const ClampingScrollPhysics(),
@@ -335,7 +325,7 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
             child: Row(children: [
               const Icon(Icons.lock_outline, color: Colors.green),
               const SizedBox(width: 8),
-              Expanded(child: Text(l.protocolClosedNotice)),
+              Expanded(child: Text(l.protocolSavedNotice)),
             ]),
           ),
 
@@ -406,27 +396,12 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
         ),
         const SizedBox(height: 24),
 
-        Text(l.skipperSignature, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-        const SizedBox(height: 8),
         TextField(
           controller: _skipperNameCtrl,
           enabled: !readOnly,
           decoration: InputDecoration(labelText: l.skipperNameLabel),
         ),
-        const SizedBox(height: 8),
-        _SignatureBox(
-          existingPath: _skipperSignaturePath,
-          strokes: _skipperStrokes,
-          padKey: _skipperPadKey,
-          readOnly: readOnly,
-          onStrokeAdded: (s) => setState(() => _skipperStrokes = [..._skipperStrokes, s]),
-          onClear: () => setState(() => _skipperStrokes = []),
-          clearLabel: l.clear,
-        ),
-        const SizedBox(height: 24),
-
-        Text(l.companySignatureSection, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         TextField(
           controller: _companyRepCtrl,
           enabled: !readOnly,
@@ -437,16 +412,6 @@ class _HandoverProtocolScreenState extends ConsumerState<HandoverProtocolScreen>
           controller: _companyNameCtrl,
           enabled: !readOnly,
           decoration: InputDecoration(labelText: l.companyNameLabel),
-        ),
-        const SizedBox(height: 8),
-        _SignatureBox(
-          existingPath: _companySignaturePath,
-          strokes: _companyStrokes,
-          padKey: _companyPadKey,
-          readOnly: readOnly,
-          onStrokeAdded: (s) => setState(() => _companyStrokes = [..._companyStrokes, s]),
-          onClear: () => setState(() => _companyStrokes = []),
-          clearLabel: l.clear,
         ),
         const SizedBox(height: 80),
           ],
@@ -727,68 +692,5 @@ class _ChecklistItemTile extends StatelessWidget {
         ]),
       ),
     );
-  }
-}
-
-class _SignatureBox extends StatelessWidget {
-  final String? existingPath;
-  final List<List<Offset>> strokes;
-  final GlobalKey<SignaturePadState> padKey;
-  final bool readOnly;
-  final ValueChanged<List<Offset>> onStrokeAdded;
-  final VoidCallback onClear;
-  final String clearLabel;
-
-  const _SignatureBox({
-    required this.existingPath,
-    required this.strokes,
-    required this.padKey,
-    required this.readOnly,
-    required this.onStrokeAdded,
-    required this.onClear,
-    required this.clearLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hasSaved = existingPath != null && File(existingPath!).existsSync();
-    if (hasSaved && strokes.isEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Container(
-          color: Colors.white,
-          height: 100,
-          alignment: Alignment.centerLeft,
-          child: Image.file(File(existingPath!), height: 90, fit: BoxFit.contain),
-        ),
-      );
-    }
-    if (readOnly) {
-      return Container(
-        height: 100,
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
-        alignment: Alignment.center,
-        child: const Icon(Icons.edit_off, color: Colors.grey),
-      );
-    }
-    return Column(children: [
-      Container(
-        height: 120,
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
-        child: SignaturePad(
-          key: padKey,
-          strokes: strokes,
-          onStrokeAdded: onStrokeAdded,
-        ),
-      ),
-      Align(
-        alignment: Alignment.centerRight,
-        child: TextButton.icon(
-          onPressed: onClear,
-          icon: const Icon(Icons.clear, size: 14),
-          label: Text(clearLabel, style: const TextStyle(fontSize: 12)),
-        ),
-      ),
-    ]);
   }
 }

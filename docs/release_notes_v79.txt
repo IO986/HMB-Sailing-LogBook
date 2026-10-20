@@ -1,0 +1,17 @@
+HMB Sailing Log — build 79 (1.40.0+79)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: the crew is on duty automatically while tracking runs; a switch per name takes someone off duty.
+• New: gaps in the track show dashed on maps, as separate GPX segments and noted in the PDF.
+• Fixed: tracking stopped when the phone saved battery — the app now warns and helps you set the exception.
+• Fixed: Google Drive stays signed in; handover protocol saves reliably and takes engine hours from the voyage.
+• Fixed: duplicate course changes in the log.
+
+=== Slovenčina (sk) ===
+• Nové: posádka je počas trackingu automaticky v službe, prepínačom pri mene ju postavíš mimo službu.
+• Nové: diery v trase sú na mapách prerušované, v GPX ako samostatné úseky a v PDF s poznámkou.
+• Opravené: tracking zastavovalo šetrenie batérie — appka teraz upozorní a pomôže nastaviť výnimku.
+• Opravené: Google Drive ostane prihlásený; protokol sa spoľahlivo uloží a motohodiny berie z plavby.
+• Opravené: duplicitné zmeny kurzu v denníku.

@@ -32,6 +32,7 @@ import '../../charter/services/handover_checklist.dart';
 import '../../../core/config/hmb_handbook.dart';
 import '../../duty/domain/duty_rules.dart';
 import '../../duty/providers/duty_provider.dart' show DutyPeriodRules;
+import '../../../core/utils/track_segments.dart';
 import '../../../core/utils/localized_date.dart';
 
 class PdfExportService {
@@ -126,6 +127,8 @@ class PdfExportService {
     /// Nočné hodiny na deň, spočítané z bodov trasy. Deň, ktorý tu chýba, si
     /// ich odvodí zo svojich záznamov denníka.
     Map<int, double> nightHoursByDay = const {},
+    /// Diery v zázname trasy na deň — pozri [AppDatabase.trackGapsForDay].
+    Map<int, List<TrackGapSpan>> trackGapsByDay = const {},
     HandoverProtocol? checkInProtocol,
     List<ChecklistItem>? checkInChecklist,
     HandoverProtocol? checkOutProtocol,
@@ -153,7 +156,8 @@ class PdfExportService {
       for (final page in _dayPages(charter, day, entries, mapScreenshots[day.id], photos,
           docId, rev, l10n, dutiesByDay[day.id] ?? const [],
           bearings: bearingsByDay[day.id] ?? const [],
-          nightHours: nightHoursByDay[day.id])) {
+          nightHours: nightHoursByDay[day.id],
+          trackGaps: trackGapsByDay[day.id] ?? const [])) {
         pdf.addPage(page);
       }
     }
@@ -203,6 +207,7 @@ class PdfExportService {
     Uint8List? signatureImage,
     SkipperProfile? skipperProfile,
     double? nightHours,
+    List<TrackGapSpan> trackGaps = const [],
     required AppDate dateFormat,
   }) async {
     _date = dateFormat;
@@ -211,7 +216,8 @@ class PdfExportService {
     final pdf = pw.Document(theme: await _theme());
     final photos = await _loadPhotos(entries);
     for (final page in _dayPages(charter, day, entries, mapScreenshot, photos, docId, rev,
-        l10n, duties, bearings: bearings, nightHours: nightHours)) {
+        l10n, duties, bearings: bearings, nightHours: nightHours,
+        trackGaps: trackGaps)) {
       pdf.addPage(page);
     }
     if (signatureImage != null) {
@@ -229,6 +235,25 @@ class PdfExportService {
       ));
     }
     return pdf.save();
+  }
+
+  /// Diery v zázname do poznámky na dennej strane. Pri pár dierach každá
+  /// s časom; keď ich je veľa (7. 10. 2026: 24), len súhrn — zoznam by
+  /// zabral pol strany a nič by nepovedal.
+  static String _trackGapSpans(List<TrackGapSpan> gaps) {
+    if (gaps.length > 4) {
+      final minutes =
+          gaps.fold<int>(0, (s, g) => s + g.duration.inMinutes);
+      final nm = gaps.fold<double>(0, (s, g) => s + g.straightNm);
+      return '${gaps.length}× · $minutes min · '
+          '${units.formatDistance(nm, decimals: 1)}';
+    }
+    return gaps
+        .map((g) => '${units.formatTime(g.before.timestamp)}–'
+            '${units.formatTime(g.after.timestamp)} '
+            '(${g.duration.inMinutes} min, '
+            '${units.formatDistance(g.straightNm, decimals: 1)})')
+        .join(', ');
   }
 
   /// Jednotky pre celý dokument.
@@ -650,7 +675,9 @@ class PdfExportService {
       List<LogbookEntry> entries, Uint8List? screenshot, Map<int, Uint8List> photos,
       String docId, int revision, AppLocalizations l,
       List<DutyPeriod> duties,
-      {List<Bearing> bearings = const [], double? nightHours}) {
+      {List<Bearing> bearings = const [],
+      double? nightHours,
+      List<TrackGapSpan> trackGaps = const []}) {
     final pages = <pw.Page>[];
     // Nočné hodiny podáva volajúci z bodov trasy. Keď ich nepodá, dokument
     // ich zamlčí — dopočítať ich zo záznamov denníka by dalo iné číslo než
@@ -736,6 +763,28 @@ class PdfExportService {
           ]),
         ),
         pw.SizedBox(height: 4),
+
+        // ── Diery v zázname trasy ──
+        // Míle za ne sú len priamka medzi bodmi pred dierou a po nej, teda
+        // dolný odhad. Doklad to má povedať sám — inak by čísla v hlavičke
+        // vyzerali ako zmerané.
+        if (trackGaps.isNotEmpty) ...[
+          pw.Container(
+            width: double.infinity,
+            padding:
+                const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: pw.BoxDecoration(
+                color: PdfColors.orange50,
+                border: pw.Border.all(color: PdfColors.orange300, width: 0.5),
+                borderRadius:
+                    const pw.BorderRadius.all(pw.Radius.circular(3))),
+            child: pw.Text(
+                _pdfText(l.pdfTrackGapsNote(_trackGapSpans(trackGaps))),
+                style: const pw.TextStyle(
+                    fontSize: 7.5, color: PdfColors.orange900)),
+          ),
+          pw.SizedBox(height: 4),
+        ],
 
         // ── Info bar ──
         pw.Container(
@@ -3216,37 +3265,52 @@ class PdfExportService {
   /// Periods are clipped to the day and marked with arrows when they run past
   /// it, because a duty is stored as a single row even when it crosses
   /// midnight — splitting it would turn one real event into two records.
+  /// Crew comes on duty with every tracking start, so a day with a lunch stop
+  /// has several periods per person; they share that person's line.
   static pw.Widget _dutyBand(
       List<DutyPeriod> duties, DateTime day, AppLocalizations l) {
     final localMidnight = DateTime(day.year, day.month, day.day);
     final now = DateTime.now().toUtc();
 
-    final rows = duties
+    final clipped = duties
         .map((d) => clipToDay(d.toInterval(), localMidnight, now))
         .toList()
       ..sort((a, b) => a.fromUtc.compareTo(b.fromUtc));
+    // Insertion order of the map = order of each person's first duty.
+    final byName = <String, List<ClippedDuty>>{};
+    for (final c in clipped) {
+      byName.putIfAbsent(c.duty.crewName, () => []).add(c);
+    }
+
+    // The same zone as the entries table on the same page — the reader
+    // must not have to convert between two clocks inside one document.
+    String range(ClippedDuty c) {
+      final from = '${c.clippedStart ? '<- ' : ''}'
+          '${units.formatTime(c.fromUtc)}';
+      final to = c.duty.isRunning
+          ? l.logDutyStillRunning
+          : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
+      return '$from - $to';
+    }
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: rows.map((c) {
-        // The same zone as the entries table on the same page — the reader
-        // must not have to convert between two clocks inside one document.
-        final from = '${c.clippedStart ? '<- ' : ''}'
-            '${units.formatTime(c.fromUtc)}';
-        final to = c.duty.isRunning
-            ? l.logDutyStillRunning
-            : '${units.formatTime(c.toUtc)}${c.clippedEnd ? ' ->' : ''}';
+      children: byName.entries.map((e) {
         return pw.Padding(
           padding: const pw.EdgeInsets.only(bottom: 1.5),
-          child: pw.Row(children: [
-            pw.SizedBox(
-              width: 120,
-              child: pw.Text(_pdfText(c.duty.crewName),
-                  style: const pw.TextStyle(fontSize: 8)),
-            ),
-            pw.Text('$from - $to',
-                style: pw.TextStyle(fontSize: 8, color: _dgrey)),
-          ]),
+          child: pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.SizedBox(
+                  width: 120,
+                  child: pw.Text(_pdfText(e.key),
+                      style: const pw.TextStyle(fontSize: 8)),
+                ),
+                pw.Expanded(
+                  child: pw.Text(e.value.map(range).join(', '),
+                      style: pw.TextStyle(fontSize: 8, color: _dgrey)),
+                ),
+              ]),
         );
       }).toList(),
     );

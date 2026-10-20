@@ -60,9 +60,14 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   /// otvorený celú plavbu.
   Timer? _syncTimer;
 
+  /// Plavba, pre ktorú sa už dieru v trase hlásilo — jedno upozornenie na
+  /// plavbu stačí, ďalšie diery sú len v crash logu.
+  String? _trackGapShownFor;
+
   @override
   void initState() {
     super.initState();
+    GpsTrackingService().trackGap.addListener(_onTrackGap);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _maybePromptUserGuide();
       await _maybePromptNotifications();
@@ -85,6 +90,7 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
   @override
   void dispose() {
     _syncTimer?.cancel();
+    GpsTrackingService().trackGap.removeListener(_onTrackGap);
     super.dispose();
   }
 
@@ -425,6 +431,27 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     } catch (e) {
       debugPrint('[BACK] error: $e');
     }
+  }
+
+  /// Telefón počas plavby nedoručil polohu, hoci sa loď pohla. Skiper sa to
+  /// má dozvedieť hneď, keď sa k appke vráti — nie až z exportu, kde trasa
+  /// vedie cez ostrov.
+  void _onTrackGap() {
+    final gap = GpsTrackingService().trackGap.value;
+    final sessionId = GpsTrackingService().currentSession?.sessionId;
+    if (gap == null || sessionId == null || _trackGapShownFor == sessionId) {
+      return;
+    }
+    _trackGapShownFor = sessionId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final l = AppLocalizations.of(context);
+      showBatterySettingsDialog(
+        context,
+        title: l.trackGapTitle,
+        body: l.trackGapBody('${gap.duration.inMinutes}'),
+      );
+    });
   }
 
   void _showExitDialog(BuildContext context) {

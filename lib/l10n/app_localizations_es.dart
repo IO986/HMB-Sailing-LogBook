@@ -1113,15 +1113,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dutyRoster => 'Guardia';
 
   @override
-  String get dutyStartAction => 'Entrar de guardia';
-
-  @override
-  String get dutyEndAction => 'Terminar';
-
-  @override
-  String get dutyStartTitle => '¿Quién entra de guardia?';
-
-  @override
   String get dutyRunningChip => 'DE GUARDIA';
 
   @override
@@ -1136,6 +1127,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dutyNobodyOnDuty => 'Nadie está de guardia';
+
+  @override
+  String get dutyAutoHint =>
+      'Al iniciar el tracking toda la tripulación entra de guardia y al detenerlo la guardia termina. Con el interruptor sacas a un tripulante de guardia.';
+
+  @override
+  String get dutyOffDuty => 'fuera de guardia';
 
   @override
   String get dutyInspectionView => 'Mostrar para inspección';
@@ -1176,11 +1174,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dutyNoteLabel => 'Nota';
-
-  @override
-  String dutyLongRunningWarning(int hours) {
-    return 'De guardia $hours h — ¿quedó abierta?';
-  }
 
   @override
   String get dutyFrom => 'Desde';
@@ -1865,10 +1858,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get companyNameLabel => 'Nombre de la empresa';
-
-  @override
-  String get protocolClosedNotice =>
-      'El protocolo está cerrado (ambas partes firmaron) – solo lectura.';
 
   @override
   String get handoverCertTitle => 'Protocolo de entrega de la embarcación';
@@ -2949,7 +2938,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideHandoverBody =>
-      'Registro formal de la entrega y devolución del barco en un charter – icono de manos en el detalle de la travesía.\n\n• Checklist de equipamiento (velas, jarcia, ancla, navegación, chalecos, balsa, botiquín, bote auxiliar, luces, bimini...) – OK / dañado / falta, con nota, posición en el barco y foto\n• Estado de combustible, agua y horas de motor\n• Firma del patrón y del representante de la empresa de charter\n• El protocolo pasa a ser de solo lectura cuando ambos han firmado\n• El check-out se rellena con los datos del check-in y resalta los daños nuevos\n• Exportación PDF con ambas firmas una junto a la otra';
+      'Registro formal de la entrega y devolución del barco en un charter – icono de manos en el detalle de la travesía.\n\n• Checklist de equipamiento (velas, jarcia, ancla, navegación, chalecos, balsa, botiquín, bote auxiliar, luces, bimini...) – OK / dañado / falta, con nota, posición en el barco y foto\n• Estado de combustible, agua y horas de motor\n• Un protocolo guardado se abre en solo lectura; el botón Editar lo desbloquea\n• El check-out se rellena con los datos del check-in y resalta los daños nuevos\n• Las horas de motor del check-out se rellenan con la última entrada de la travesía\n• Exportación a PDF';
 
   @override
   String get guideGpxImportTitle => 'Importar GPX';
@@ -2984,7 +2973,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideDutyBody =>
-      'Un registro de quién estuvo de guardia y cuándo — en Seguridad, sobre la alarma de fondeo.\n\n• Entrar de guardia — elige a una o varias personas a la vez; cada una sale de guardia por separado\n• Los nombres salen de la tripulación de la travesía. Si no hay tripulación, el botón te lleva a la ficha de la travesía\n• La hora de inicio se puede corregir si pulsaste tarde\n• Mostrar para inspección — una tarjeta a pantalla completa para entregar a bordo: quién está de guardia, desde cuándo, hora local y UTC. No permite cambiar nada\n• Rol de guardias — añade una guardia pasada o edítala. Si dejas la hora \"hasta\" vacía, la guardia sigue en curso\n• Una guardia nocturna que cruza medianoche es un solo registro, no dos. En el PDF aparece en ambos días, marcada con una flecha\n• La entrada y la salida de guardia se escriben en el diario y en el PDF\n\nNota: la app nunca cierra una guardia por su cuenta. A las 12 horas solo avisa — una hora de fin que no presenciaste sería un dato inventado.';
+      'Un registro de quién estuvo de guardia y cuándo — en Seguridad, sobre la alarma de fondeo.\n\n• Al iniciar el tracking toda la tripulación queda de guardia automáticamente (así lo exige el derecho marítimo) hasta que detengas el tracking\n• El interruptor junto a un nombre saca a ese tripulante de guardia y lo vuelve a poner del mismo modo. Los cambios manuales se anotan en el diario\n• Reanudar una travesía interrumpida no cambia las guardias — quien estaba fuera de guardia sigue fuera\n• Los nombres salen de la tripulación de la travesía. Si no hay tripulación, el botón te lleva a la ficha de la travesía\n• Mostrar para inspección — una tarjeta a pantalla completa para inspecciones a bordo: quién está de guardia, desde cuándo, hora local y UTC. No permite cambiar nada\n• Cuadro de guardias — añade una guardia pasada o edítala. Si dejas vacía la hora \"hasta\", la guardia sigue abierta\n• Una guardia nocturna que cruza la medianoche es un registro, no dos. En el PDF aparece en ambos días, marcada con una flecha\n• En el PDF cada tripulante tiene una línea con todos sus periodos de guardia del día';
 
   @override
   String get guideCompassTitle => 'Brújula de navegación';
@@ -3693,6 +3682,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get batteryPromptAction => 'Abrir ajustes';
+
+  @override
+  String get saveMissingTitle => 'Falta para guardar';
+
+  @override
+  String briefingMissingSignatures(String names) {
+    return 'Firma: $names';
+  }
+
+  @override
+  String get protocolSavedNotice =>
+      'El protocolo está guardado. Toca Editar para cambiarlo.';
+
+  @override
+  String pdfTrackGapsNote(String spans) {
+    return 'Sin posición registrada: $spans. Las millas de estos tramos son solo una estimación en línea recta.';
+  }
+
+  @override
+  String get trackGapTitle => 'Track interrumpido';
+
+  @override
+  String trackGapBody(String minutes) {
+    return 'El teléfono dejó de entregar posiciones durante $minutes min mientras el barco se movía. Falta ese tramo del track y las millas son una estimación en línea recta.';
+  }
 
   @override
   String get speed => 'Velocidad';

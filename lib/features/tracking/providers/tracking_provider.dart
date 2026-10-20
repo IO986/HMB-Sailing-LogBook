@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../core/services/background_service.dart';
+import '../../../main.dart';
+import '../../duty/providers/duty_provider.dart';
 
 final isTrackingProvider = StateProvider<bool>((ref) => false);
 
@@ -58,6 +60,11 @@ class TrackingNotifier extends Notifier<TrackingState> {
       await BackgroundService.start();
       ref.read(isTrackingProvider.notifier).state = true;
       state = state.copyWith(isLoading: false, isTracking: true);
+      // A resumed voyage keeps the duty state it had: the duties were never
+      // closed, and anyone taken off duty by hand must stay off.
+      if (!isResume && dayLogId != null) {
+        await _syncDuties(dayLogId, start: true);
+      }
     } catch (e, st) {
       debugPrint('[TRACKING] ERROR: $e\n$st');
       state = state.copyWith(isLoading: false, error: _friendly(e.toString()));
@@ -66,12 +73,32 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   Future<void> stopTracking() async {
     state = state.copyWith(isLoading: true);
+    // Read before stopTracking(), which nulls it.
+    final dayLogId = GpsTrackingService().activeDayLogId;
     try {
       await GpsTrackingService().stopTracking();
       await BackgroundService.stop();
     } catch (e) { debugPrint('[TRACKING] Stop err: $e'); }
+    if (dayLogId != null) await _syncDuties(dayLogId, start: false);
     ref.read(isTrackingProvider.notifier).state = false;
     state = state.copyWith(isLoading: false, isTracking: false);
+  }
+
+  /// Crew comes on duty with tracking and goes off with it. Failure is
+  /// logged and swallowed — a duty record must never stop the GPS track.
+  Future<void> _syncDuties(int dayLogId, {required bool start}) async {
+    try {
+      final day = await ref.read(databaseProvider).getDayLogById(dayLogId);
+      if (day == null) return;
+      final duties = ref.read(dutyControllerProvider);
+      if (start) {
+        await duties.startWithTracking(day.charterId);
+      } else {
+        await duties.endWithTracking(day.charterId);
+      }
+    } catch (e, st) {
+      debugPrint('[TRACKING] duty sync failed: $e\n$st');
+    }
   }
 
   String _friendly(String e) {

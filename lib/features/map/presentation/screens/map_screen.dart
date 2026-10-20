@@ -43,6 +43,7 @@ import '../../../../core/utils/geo_polygon.dart';
 import '../../../../core/utils/localized_date.dart';
 import '../widgets/playback_bar.dart';
 import '../../providers/playback_provider.dart';
+import '../../../../core/utils/track_segments.dart';
 import '../../services/track_playback.dart';
 
 /// Ktorá skupina tlačidiel je rozbalená v pravom paneli. Dvanásť tlačidiel
@@ -58,6 +59,10 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
+  /// Výška rýchlych tlačidiel MainScaffoldu (FAB 56 + okraj 16) s malou
+  /// medzerou — pod touto čiarou leží rad kotva/MOB.
+  static const double _playbackBarBottom = 80;
+
   final _mapController = MapController();
   String? _lastMobFocus;
   bool _mapReady = false;
@@ -200,14 +205,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void _onMapReady() {
     _mapReady = true;
-    // Force a fresh TileLayer (all layers, not just the active base map) so
-    // tiles load with the final, correct viewport size after the GoRouter
-    // enter animation settles. A single fixed delay proved unreliable on
-    // slower devices (500ms then 800ms both still left blank tiles on some
-    // phones) – retry twice instead of tuning one magic number forever.
+    // Prvé rozloženie na pomalom telefóne môže skončiť až po onMapReady a
+    // mapa ostane prázdna. Vtedy — a LEN vtedy — vynútime jeden čerstvý
+    // TileLayer. Akonáhle je nejaká dlaždica nakreslená, kľúč vrstvy sa už
+    // nemení: zmena kľúča zruší každú vrstvu a uložené dlaždice by vyzerali,
+    // akoby sa načítavali znova. Dvojitý pokus (800 ms, 2 s) ostáva, lebo
+    // jedno pevné oneskorenie sa na pomalších zariadeniach ukázalo
+    // nespoľahlivé.
     for (final delayMs in [800, 2000]) {
       _tileReloadTimers.add(Timer(Duration(milliseconds: delayMs), () {
-        if (!mounted) return;
+        if (!mounted || !_firstLayoutLooksBlank()) return;
         setState(() => _tileKey++);
         // Force a camera move so flutter_map actually fires tile requests
         // on devices where the initial layout finishes after onMapReady.
@@ -223,6 +230,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         _centerIfFollowing();
       }));
     }
+  }
+
+  /// Prvé rozloženie ešte nedoběhlo: kamera nemá veľkosť, alebo sa zatiaľ
+  /// nenačítala (nenakreslila) ani jedna dlaždica.
+  bool _firstLayoutLooksBlank() {
+    try {
+      final size = _mapController.camera.nonRotatedSize;
+      if (size.isEmpty || size == MapCamera.kImpossibleSize) return true;
+    } catch (_) {
+      return true;
+    }
+    return TileCacheStats.loadedCount == 0;
   }
 
   void _centerIfFollowing() {
@@ -505,6 +524,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     } else {
       trackPoints = liveTrackPoints;
     }
+    // Uložená plavba sa kreslí po úsekoch: diery v zázname prerušovane,
+    // jednotlivé dni a obnovené plavby bez spojnice.
+    final TrackSegments? previewSegments = previewDayLogId != null
+        ? ref.watch(dayTrackSegmentsProvider(previewDayLogId)).valueOrNull
+        : previewCharterId != null
+            ? ref.watch(charterTrackSegmentsProvider(previewCharterId))
+                .valueOrNull
+            : null;
 
     // Centrovanie na MOB pozíciu pri navigácii z MOB karty
     final qp = GoRouterState.of(context).uri.queryParameters;
@@ -818,13 +845,30 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               // ── GPS track (živý tracking, alebo náhľad zvolenej plavby) ──
               if (trackPoints.isNotEmpty)
                 PolylineLayer(polylines: [
-                  Polyline(
-                    points: trackPoints,
-                    color: isPreviewing
-                        ? Colors.orange.shade700
-                        : Colors.blue.shade400,
-                    strokeWidth: 3,
-                  ),
+                  if (previewSegments == null)
+                    Polyline(
+                      points: trackPoints,
+                      color: isPreviewing
+                          ? Colors.orange.shade700
+                          : Colors.blue.shade400,
+                      strokeWidth: 3,
+                    )
+                  else ...[
+                    for (final pts in previewSegments.solidLines)
+                      Polyline(
+                        points: pts,
+                        color: Colors.orange.shade700,
+                        strokeWidth: 3,
+                      ),
+                    for (final pts in previewSegments.gapLines)
+                      Polyline(
+                        points: pts,
+                        color: Colors.orange.shade700,
+                        strokeWidth: 2,
+                        pattern:
+                            StrokePattern.dashed(segments: const [8, 8]),
+                      ),
+                  ],
                   // Prejdená časť pri prehrávaní — sýtejšia, aby bolo vidno,
                   // kde loď v zvolenom okamihu bola a čo má ešte pred sebou.
                   if (playbackPassed.length > 1)
@@ -1432,12 +1476,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // ── Prehrávanie plavby ────────────────────────────────
           // Len pri zapnutej prehliadke: pri živom trackingu sa prehráva
           // to, čo práve beží, a posuvník by nemal čo posúvať.
+          //
+          // Nad radom rýchlych tlačidiel (kotva, MOB) z MainScaffold, nie pod
+          // ním: tie ležia vľavo dole cez celú výšku FAB a prekrývali tlačidlo
+          // Prehrať — prehrávanie sa nedalo spustiť. Schovať ich počas
+          // prehliadky nejde, MOB musí byť po ruke vždy.
           if (mapState.previewLabel != null)
             const Positioned(
               left: 0,
               right: 0,
-              bottom: 0,
-              child: SafeArea(top: false, child: PlaybackBar()),
+              bottom: _playbackBarBottom,
+              child: PlaybackBar(),
             ),
 
           // ── GPS + zoom (vľavo dole, GPS zarovnané nad +) ──────
@@ -1446,7 +1495,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           // rýchlych tlačidiel (kotva, MOB a počas plavby aj ďalšie tri) a
           // kotva prekrývala tlačidlo priblíženia.
           Positioned(
-            bottom: 150,
+            // Počas prehliadky nad prehrávacou lištou, inak by ju GPS a zoom
+            // zakrývali.
+            bottom: mapState.previewLabel != null ? 190 : 150,
             left: 12,
             child: Column(children: [
               // Kotva žila v spodnej lište rýchlych akcií (main_scaffold.dart),

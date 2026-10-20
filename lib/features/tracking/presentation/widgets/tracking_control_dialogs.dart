@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/services/location_service.dart';
@@ -17,6 +19,7 @@ import '../../../../core/services/app_review_service.dart';
 import '../../../../main.dart';
 import '../../../../shared/widgets/tracking_interval_selector.dart';
 import '../../../charter/providers/charter_provider.dart';
+import '../../../duty/providers/duty_provider.dart';
 import '../../providers/tracking_provider.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/utils/localized_date.dart';
@@ -325,6 +328,10 @@ Future<void> maybePromptInterruptedVoyage(
       eventType: Value(LogbookEventType.voyageEnd.code),
       isAutoEntry: const Value(true),
     ));
+    // Služby skončili s plavbou — tým istým časom posledného bodu.
+    await ref
+        .read(dutyControllerProvider)
+        .endWithTracking(dayLog.charterId, at: lastPoint.timestamp);
     return;
   }
 
@@ -388,25 +395,55 @@ Future<void> _startNew(BuildContext context, WidgetRef ref, int intervalSeconds)
   await _beginTracking(context, ref, charter, dayLog, intervalSeconds);
 }
 
-/// Jednorazová pripomienka nastavenia batérie pri prvom spustení plavby.
+/// Pripomienka nastavenia batérie pri štarte plavby, kým appka nemá výnimku
+/// z optimalizácie batérie.
 ///
 /// Foreground service samotný nestačí: Honor, Huawei a Xiaomi zabíjajú appky
 /// na pozadí vlastnou správou napájania a trasovanie sa preruší uprostred
 /// plavby. Zámerne sa nežiada REQUEST_IGNORE_BATTERY_OPTIMIZATIONS — tá je na
 /// Play citlivá; stačí otvoriť systémové nastavenia batérie.
-Future<void> _maybePromptBatterySettings(BuildContext context) async {
-  final prefs = await SharedPreferences.getInstance();
-  if (prefs.getBool('battery_prompted') ?? false) return;
-  await prefs.setBool('battery_prompted', true);
-  if (!context.mounted) return;
+///
+/// Predtým sa pýtala raz za život appky. Na Honore z októbrovej plavby
+/// skiper pripomienku kedysi odklepol, výnimka nikdy nevznikla a po desiatich
+/// dňoch začal systém appke na pozadí brať polohu. Preto sa teraz pýta
+/// znovu, kým výnimka chýba — najviac raz za [_batteryPromptEvery], aby
+/// neotravovala pri každom štarte.
+const _batteryPromptEvery = Duration(days: 3);
 
+Future<void> _maybePromptBatterySettings(BuildContext context) async {
+  if (!Platform.isAndroid) return;
+  try {
+    if (await Permission.ignoreBatteryOptimizations.isGranted) return;
+  } catch (e) {
+    debugPrint('[TRACKING] battery optimization check failed: $e');
+  }
+  final prefs = await SharedPreferences.getInstance();
+  final lastMs = prefs.getInt('battery_prompted_at');
+  final now = DateTime.now();
+  if (lastMs != null &&
+      now.difference(DateTime.fromMillisecondsSinceEpoch(lastMs)) <
+          _batteryPromptEvery) {
+    return;
+  }
+  await prefs.setInt('battery_prompted_at', now.millisecondsSinceEpoch);
+  if (!context.mounted) return;
+  await showBatterySettingsDialog(context);
+}
+
+/// Dialóg s návodom na nastavenie batérie. Verejný — ukazuje ho aj hlásenie
+/// diery v trase ([trackGapBody]), vtedy s textom o tom, čo sa práve stalo.
+Future<void> showBatterySettingsDialog(BuildContext context,
+    {String? title, String? body}) async {
   final l = AppLocalizations.of(context);
   final open = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
       icon: const Icon(Icons.battery_saver_outlined, size: 32),
-      title: Text(l.batteryPromptTitle),
-      content: SingleChildScrollView(child: Text(l.batteryPromptBody)),
+      title: Text(title ?? l.batteryPromptTitle),
+      content: SingleChildScrollView(
+          child: Text(body == null
+              ? l.batteryPromptBody
+              : '$body\n\n${l.batteryPromptBody}')),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),

@@ -24,6 +24,7 @@ import 'signature_pad_dialog.dart';
 import 'pdf_preview_screen.dart';
 import 'widgets/day_map_view.dart';
 import '../../../core/services/units_service.dart';
+import '../../../core/utils/track_segments.dart';
 import '../../../core/utils/localized_date.dart';
 
 /// Prístav pre zobrazenie: prázdny sa ukáže ako otáznik.
@@ -406,6 +407,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           skipperProfile: skipperProfile,
           nightHours:
               await ref.read(databaseProvider).nightHoursForDay(freshDay.id),
+          trackGaps:
+              await ref.read(databaseProvider).trackGapsForDay(freshDay.id),
         );
         previewTitle = '${_portText(_day!.portFrom)} → ${_portText(_day!.portTo)}';
         final dateStr = DateFormat('yyyy-MM-dd').format(_day!.date);
@@ -448,8 +451,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         }
         // Z bodov trasy, teda z toho istého zdroja ako Kniha míľ.
         final nightHoursByDay = <int, double>{};
+        final trackGapsByDay = <int, List<TrackGapSpan>>{};
         for (final d in freshDays) {
           nightHoursByDay[d.id] = await db.nightHoursForDay(d.id);
+          trackGapsByDay[d.id] = await db.trackGapsForDay(d.id);
         }
 
         pdfBytes = await PdfExportService.buildCharterPdfBytes(
@@ -463,6 +468,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
           dutiesByDay: dutiesByDay,
           bearingsByDay: bearingsByDay,
           nightHoursByDay: nightHoursByDay,
+          trackGapsByDay: trackGapsByDay,
           signatureImage: signatureImage,
           skipperProfile: skipperProfile,
           crewSignatures: _crewSignatures,
