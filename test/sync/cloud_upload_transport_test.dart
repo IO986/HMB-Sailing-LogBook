@@ -34,6 +34,9 @@ class _FakeCloudStorageProvider implements CloudStorageProvider {
   Future<void> signOut() async => signedIn = false;
 
   @override
+  Future<bool> ensureAuthorized() async => signedIn;
+
+  @override
   Future<String> upload({
     required File file,
     required String fileName,

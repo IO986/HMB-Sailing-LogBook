@@ -149,6 +149,30 @@ class GoogleDriveStorage implements CloudStorageProvider {
   }
 
   @override
+  Future<bool> ensureAuthorized() async {
+    await _ensureInitialized();
+    var account = _account;
+    if (account == null) {
+      await _rememberedLoad;
+      account = await _attemptSilentSignIn();
+      _account = account;
+    }
+    if (account == null) {
+      // No identity restored at all — full interactive sign-in (which
+      // already requests the Drive scope right after authenticating).
+      return await signIn() != null;
+    }
+    try {
+      await account.authorizationClient.authorizeScopes(_scopes);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) return false;
+      rethrow;
+    }
+    await _remember(account);
+    return true;
+  }
+
+  @override
   Future<void> signOut() async {
     await _ensureInitialized();
     await _googleSignIn.signOut();

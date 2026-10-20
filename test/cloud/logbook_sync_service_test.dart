@@ -46,6 +46,9 @@ class _SharedFakeDrive implements CloudStorageProvider {
   Future<void> signOut() async {}
 
   @override
+  Future<bool> ensureAuthorized() async => true;
+
+  @override
   Future<String> upload({
     required File file,
     required String fileName,

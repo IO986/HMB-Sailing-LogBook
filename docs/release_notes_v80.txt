@@ -1,0 +1,9 @@
+HMB Sailing Log — build 80 (1.39.0+80)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: manual cloud backup/upload in Settings now prompts Google sign-in/consent when needed, instead of silently failing.
+
+=== Slovenčina (sk) ===
+• Opravené: ručná cloud záloha/nahratie v Nastaveniach teraz vyžiada prihlásenie/súhlas, keď treba, namiesto tichého zlyhania.

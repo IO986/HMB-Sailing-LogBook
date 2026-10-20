@@ -1427,6 +1427,11 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
           }
         case _TileAction.uploadCloud:
           final provider = ref.read(cloudStorageProviderProvider);
+          // Interactive: may prompt sign-in / scope consent, unlike the
+          // silent authorization the upload itself relies on — without
+          // this, a first-time or expired grant fails with an opaque
+          // "authorization needs the user" instead of just asking.
+          if (!await provider.ensureAuthorized()) return;
           await BackupService().uploadTileCacheToCloud(
             provider: provider,
             deviceId: await DeviceIdentity.id(),
@@ -1437,6 +1442,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
           }
         case _TileAction.downloadCloud:
           final provider = ref.read(cloudStorageProviderProvider);
+          if (!await provider.ensureAuthorized()) return;
           await BackupService().restoreTileCacheFromCloud(provider);
           final newSize = await TileCacheStore.cacheSizeBytes();
           if (mounted) {
@@ -1636,8 +1642,11 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                 icon: const Icon(Icons.more_vert),
                 onSelected: _exportTiles,
                 itemBuilder: (ctx) {
-                  final cloudReady = ref.read(cloudStorageProviderProvider)
-                      .isSignedInNow;
+                  // Always enabled, even with no cloud account yet —
+                  // ensureAuthorized() inside _exportTiles prompts
+                  // sign-in/consent on demand rather than requiring it
+                  // up front (isSignedInNow can be stale: a remembered
+                  // email with an expired or never-granted Drive scope).
                   return [
                     PopupMenuItem(
                       value: _TileAction.save,
@@ -1649,12 +1658,10 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                     ),
                     PopupMenuItem(
                       value: _TileAction.uploadCloud,
-                      enabled: cloudReady,
                       child: Text(l.mapTilesCloudUpload),
                     ),
                     PopupMenuItem(
                       value: _TileAction.downloadCloud,
-                      enabled: cloudReady,
                       child: Text(l.mapTilesCloudDownload),
                     ),
                   ];

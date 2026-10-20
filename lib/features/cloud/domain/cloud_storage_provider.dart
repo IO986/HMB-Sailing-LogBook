@@ -59,6 +59,15 @@ abstract class CloudStorageProvider {
 
   Future<void> signOut();
 
+  /// Interactive counterpart to the silent authorization [upload]/
+  /// [listFiles]/[downloadFile] rely on internally — may sign the user in
+  /// and/or show the scope-consent UI, so it must only be called from a
+  /// user gesture (a button press), never from background sync. Returns
+  /// `false` if the user cancels. Call this before a manually-triggered
+  /// cloud action (e.g. a Settings "upload now" button) so a missing or
+  /// expired grant prompts instead of failing with an opaque error.
+  Future<bool> ensureAuthorized();
+
   /// Uploads [file] as [fileName] under [folderPath] (created if missing,
   /// e.g. `['HMB_Sailing_Log_DATA', 'Plavba 2026', 'Day_2026-07-20']`). Returns
   /// the provider's id for the uploaded file.
