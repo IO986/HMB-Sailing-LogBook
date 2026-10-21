@@ -1,4 +1,4 @@
-HMB Sailing Log — build 82 (1.41.0+82)
+HMB Sailing Log — build 83 (1.41.0+83)
 
 Play Console limit: 500 characters per language.
 
