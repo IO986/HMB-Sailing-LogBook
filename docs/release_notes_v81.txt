@@ -1,0 +1,9 @@
+HMB Sailing Log — build 81 (1.39.0+81)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: app could hang on the startup logo and never open (stuck waiting for the location service/permission). Startup is now resilient and never blocks on a single step.
+
+=== Slovenčina (sk) ===
+• Opravené: appka mohla ostať visieť na úvodnom logu a nenaštartovať (čakala na službu/povolenie polohy). Štart je odolnejší a už neblokuje na jednom kroku.

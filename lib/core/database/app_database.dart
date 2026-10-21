@@ -973,7 +973,12 @@ class AppDatabase extends _$AppDatabase {
         await _backfillSyncColumns();
       }
       if (from < 36) {
-        await m.addColumn(charters, charters.archived);
+        // Idempotentné: pri opakovanom/prerušenom upgrade by druhé
+        // ALTER TABLE hodilo "duplicate column" a appka by nenaštartovala.
+        final cols = await customSelect('PRAGMA table_info(charters)').get();
+        if (!cols.any((r) => r.read<String>('name') == 'archived')) {
+          await m.addColumn(charters, charters.archived);
+        }
       }
     },
     beforeOpen: (details) async {

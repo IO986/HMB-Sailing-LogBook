@@ -128,25 +128,35 @@ Future<void> _run() async {
     await initializeDateFormatting(locale.languageCode, null);
   }
 
-  final packageInfo = await PackageInfo.fromPlatform();
-  _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+  // Každý krok pred runApp je chránený: výnimka tu (SecureStorage na
+  // Honor/Huawei, migrácia DB, služba na pozadí) inak ostane len v zóne a
+  // appka zostane navždy na logu bez UI. Radšej štartovať s degradovanou
+  // funkciou ako nenaštartovať vôbec.
+  await _startupStep('packageInfo', () async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+  });
 
   final db = _currentDb;
-  await db.fixOrphanedSessions();
-  await purgeDeadBackendSyncItems(db);
+  await _startupStep('db', () async {
+    await db.fixOrphanedSessions();
+    await purgeDeadBackendSyncItems(db);
+  });
 
   // Spusti GPS vždy - nezávisle od trackingu.
   // LocationService interne prioritizuje Raymarine dáta (ak sú pripojené
   // a fresh), inak používa Android GPS.
-  await LocationService().init();
-  wireDatabaseSingletons(db);
-  await AccountService().init();
+  // Nečaká sa: init() môže visieť na systémovom dialógu povolenia polohy
+  // alebo na GNSS službe, a UI sa musí ukázať vždy (inak ostane logo).
+  unawaited(_startupStep('location', () => LocationService().init()));
+  await _startupStep('wire', () async => wireDatabaseSingletons(db));
+  await _startupStep('account', () => AccountService().init());
 
   // Prílivy prešli z WorldTides (platené, kľúč) na Open-Meteo (bez kľúča).
   // Kto si kľúč stihol uložiť, nemá dôvod nechať si ho v zariadení ležať.
-  await purgeLegacyTideApiKey();
+  await _startupStep('tideKey', purgeLegacyTideApiKey);
 
-  await BackgroundService.init();
+  await _startupStep('background', BackgroundService.init);
 
   // Ihneď po štarte synchrónizuj počasie pre aktuálnu polohu.
   // Fire-and-forget: neblokuje štart UI.
@@ -186,6 +196,18 @@ Future<void> _run() async {
     ],
     child: const HmbSailingLogApp(),
   ));
+}
+
+/// Spustí jeden štartovací krok; chybu zapíše do crash logu a štart pokračuje.
+/// Časový limit chráni pred krokom, ktorý nikdy nedobehne (zamknutý
+/// Keystore, zaseknutý platform channel).
+Future<void> _startupStep(String name, Future<void> Function() step) async {
+  try {
+    await step().timeout(const Duration(seconds: 20));
+  } catch (e, st) {
+    debugPrint('[STARTUP] step "$name" failed: $e');
+    CrashLogService().logError(e, st, context: 'startup:$name');
+  }
 }
 
 Future<void> _tryAutoConnectRaymarine() async {
