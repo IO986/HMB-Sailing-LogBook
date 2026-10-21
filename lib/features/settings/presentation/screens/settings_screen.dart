@@ -19,6 +19,7 @@ import '../../../../features/cloud/domain/cloud_storage_provider.dart';
 import '../../../../features/cloud/providers/cloud_provider.dart';
 import '../../../../sync/log_entry_backfill_service.dart';
 import '../../../../core/services/backup_service.dart';
+import '../../../../core/services/crash_log_service.dart';
 import '../../../../core/services/device_identity.dart';
 import '../../../../core/services/tile_cache.dart';
 import '../../../../core/services/anchor_alarm_service.dart';
@@ -1407,6 +1408,14 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
+  void _tilesAuthDeclined(AppLocalizations l) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(l.mapTilesCloudAuthDeclined),
+      backgroundColor: Colors.red,
+    ));
+  }
+
   Future<void> _exportTiles(_TileAction action) async {
     final l = AppLocalizations.of(context);
     setState(() => _tilesBusy = true);
@@ -1425,13 +1434,30 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
             await Share.shareXFiles([XFile(zip.path)],
                 subject: l.mapTilesBackupTitle);
           }
+        case _TileAction.importFile:
+          // FileType.any: the SAF picker cannot map an unknown extension to
+          // a MIME type; content is validated by the restore itself.
+          final picked =
+              await FilePicker.platform.pickFiles(type: FileType.any);
+          final path = picked?.files.single.path;
+          if (path == null) return;
+          await BackupService().restoreTileCacheFromFile(path);
+          final newSize = await TileCacheStore.cacheSizeBytes();
+          if (mounted) {
+            setState(() => _tileCacheBytes = newSize);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l.mapTilesImportDone)));
+          }
         case _TileAction.uploadCloud:
           final provider = ref.read(cloudStorageProviderProvider);
           // Interactive: may prompt sign-in / scope consent, unlike the
           // silent authorization the upload itself relies on — without
           // this, a first-time or expired grant fails with an opaque
           // "authorization needs the user" instead of just asking.
-          if (!await provider.ensureAuthorized()) return;
+          if (!await provider.ensureAuthorized()) {
+            _tilesAuthDeclined(l);
+            return;
+          }
           await BackupService().uploadTileCacheToCloud(
             provider: provider,
             deviceId: await DeviceIdentity.id(),
@@ -1442,7 +1468,10 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
           }
         case _TileAction.downloadCloud:
           final provider = ref.read(cloudStorageProviderProvider);
-          if (!await provider.ensureAuthorized()) return;
+          if (!await provider.ensureAuthorized()) {
+            _tilesAuthDeclined(l);
+            return;
+          }
           await BackupService().restoreTileCacheFromCloud(provider);
           final newSize = await TileCacheStore.cacheSizeBytes();
           if (mounted) {
@@ -1451,7 +1480,8 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                 SnackBar(content: Text(l.mapTilesCloudDownloadDone)));
           }
       }
-    } catch (e) {
+    } catch (e, st) {
+      CrashLogService().logError(e, st, context: 'tileBackup:${action.name}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(l.errorMsg(e.toString())),
@@ -1657,6 +1687,10 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                       child: Text(l.exportBackup),
                     ),
                     PopupMenuItem(
+                      value: _TileAction.importFile,
+                      child: Text(l.mapTilesImportFile),
+                    ),
+                    PopupMenuItem(
                       value: _TileAction.uploadCloud,
                       child: Text(l.mapTilesCloudUpload),
                     ),
@@ -1672,7 +1706,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
   }
 }
 
-enum _TileAction { save, share, uploadCloud, downloadCloud }
+enum _TileAction { save, share, importFile, uploadCloud, downloadCloud }
 
 // ── Prispôsobenie spodného menu ────────────────────────────────
 

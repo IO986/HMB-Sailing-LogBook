@@ -1694,6 +1694,17 @@ class AppLocalizationsIt extends AppLocalizations {
       'Cache delle tessere della mappa ripristinata da Drive';
 
   @override
+  String get mapTilesImportFile => 'Importa da file';
+
+  @override
+  String get mapTilesImportDone =>
+      'Cache delle tessere della mappa ripristinata da file';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Accesso a Google Drive non concesso — non è stato caricato nulla. Riprova e consenti l\'accesso.';
+
+  @override
   String get cloudBackupOfferTitle => 'Nessun backup cloud eseguito';
 
   @override
@@ -3028,7 +3039,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'In Impostazioni → Backup dei dati.\n\n• Esporta il backup – salva l\'intero giornale (navigazioni, annotazioni, impostazioni) in un unico file (.hmbbackup) che puoi condividere via e-mail, nel cloud o salvare in locale\n• Ripristina da backup – sostituisce i dati attuali con il contenuto del backup selezionato; prima viene creato automaticamente un backup di sicurezza dello stato attuale\n• Il ripristino è bloccato mentre il tracciamento GPS della navigazione è attivo\n• Un backup con uno schema più recente di quello supportato dall\'app viene rifiutato con una spiegazione\n• Dopo l\'arresto del tracciamento della navigazione: se hai effettuato l\'accesso con un account Google con la sincronizzazione del giornale attiva, un backup completo viene caricato automaticamente sul tuo Drive (HMB_Sailing_Log_DATA/backups); senza accesso, l\'app propone subito di salvare o condividere un backup';
+      'In Impostazioni → Backup dei dati.\n\n• Esporta il backup – salva l\'intero giornale (navigazioni, annotazioni, impostazioni) in un unico file (.hmbbackup) che puoi condividere via e-mail, nel cloud o salvare in locale\n• Ripristina da backup – sostituisce i dati attuali con il contenuto del backup selezionato; prima viene creato automaticamente un backup di sicurezza dello stato attuale\n• Il ripristino è bloccato mentre il tracciamento GPS della navigazione è attivo\n• Un backup con uno schema più recente di quello supportato dall\'app viene rifiutato con una spiegazione\n• Dopo l\'arresto del tracciamento della navigazione: se hai effettuato l\'accesso con un account Google con la sincronizzazione del giornale attiva, un backup completo viene caricato automaticamente sul tuo Drive (HMB_Sailing_Log_DATA/backups); senza accesso, l\'app propone subito di salvare o condividere un backup\n• Tessere della mappa (Impostazioni → Backup dati): salva o condividi la cache della mappa come file, reimportala da un file, oppure caricala su Drive / scaricala da Drive (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Esportazione del giornale';

@@ -886,3 +886,110 @@ príručka v 5 jazykoch + `docs/SYNC_API.md`.
 - Na Windows pred buildom pozabíjať zvyšné `dart.exe` / `flutter_tester.exe`.
 - Jednorazové skripty písať v Darte, nie v PowerShelli: PS 5.1 číta `.ps1`
   ako ANSI a rozsype diakritiku aj cyriliku ešte pred spustením.
+
+
+# Kde sme skončili — 21. 10. 2026 (visiaci štart + mapové dlaždice)
+
+## 1. Havária: appka visela na úvodnom logu (build 79 z Play)
+
+**Príčina (potvrdená debug logom na Honore):** `main.dart` robil
+`await LocationService().init()` pred `runApp`. `init()` →
+`_initAndroidGps()` → `await _gps.requestPermission()` čaká na odpoveď
+systému, a kým UI nie je, odpovedať nemá kto. Log:
+`[STARTUP] step "location" failed: TimeoutException after 0:00:20`.
+Natívny splash tak ostal navždy (`onPreDraw return false` v logcate, proces
+nečinný, žiadne CPU).
+
+**Oprava — commit `23053a8`, build 81 (1.39.0+81), nahraný na Play
+(production, 100 %):**
+- `lib/main.dart`: `LocationService().init()` beží `unawaited` na pozadí;
+  ostatné kroky pred `runApp` idú cez `_startupStep()` (20 s timeout, chyba
+  do `CrashLogService` ako `startup:<krok>`, štart pokračuje).
+- `app_database.dart`: migrácia v36 (`charters.archived`) je idempotentná
+  (kontrola `PRAGMA table_info`).
+
+**NEOVERENÉ:** Opravu som nestihol vidieť bežať na Honore z *releasu* 81.
+V debug builde (druhá verzia opravy, `unawaited`) sa telefón pred overením
+odpojil. Treba: po schválení 81 v Play aktualizovať telefón a overiť, že
+appka naskočí. Ak nie, pozrieť crash log (záloha → crash log) a hľadať
+`startup:<krok>`.
+
+**Prečo to doteraz nepadalo:** nevieme. V gite od 62cf777 sa
+`LocationService`/`main.dart` nemenili; pravdepodobne iný stav povolení po
+aktualizácii (fresh install firstInstall == lastUpdate 20. 10. 21:20).
+Stojí za to preveriť, či sa `requestPermission()` v inom štarte nezasekáva
+aj mimo `main()` (napr. `retryPermission()` z UI).
+
+## 2. Honor je v inom stave než predtým
+
+Play build 79 som z telefónu **odinštaloval** (podpis Play ≠ upload kľúč,
+`adb install -r` nešlo) a nainštaloval debug build cez `flutter run`.
+Dáta boli zálohované (Drive/lokálne) — **po prechode späť na Play verziu
+obnoviť zo zálohy**. Debug build je podpísaný debug kľúčom; OAuth klient
+pre debug je v Cloud Console zaregistrovaný (viď nižšie), takže prihlásenie
+na Drive funguje aj v debug builde.
+
+## 3. Mapové dlaždice — čo je hotové (necommitnuté pred týmto zápisom,
+##    commitnuté spolu s ním)
+
+Settings → Záloha dát → „Mapové dlaždice" (menu ⋮):
+- Uložiť / Exportovať (zdieľať) — existovalo.
+- **Importovať zo súboru — NOVÉ.** `BackupService.restoreTileCacheFromFile`
+  / `restoreTileCacheFromBytes`: validuje zip (nie zip, prázdny, ani
+  záznamy mimo cache = `FormatException`), chráni pred zip-slip
+  (`p.isWithin`), vracia počet dlaždíc. Picker je `FileType.any`
+  (Android SAF nevie neznámu príponu). Test:
+  `test/services/tile_cache_restore_test.dart` (3 testy, prechádzajú).
+- Nahrať na cloud / Stiahnuť z cloudu — existovalo, teraz volá tú istú
+  `restoreTileCacheFromBytes`.
+- **Ak Drive autorizácia zlyhá/zruší sa, ukáže sa červená hláška**
+  (`mapTilesCloudAuthDeclined`). Predtým `ensureAuthorized() == false`
+  skončilo ticho a nič sa nestalo — pravdepodobne to je „nič sa nevytvorilo,
+  ani nenahralo", čo nahlásil skiper.
+- Chyby tohto menu idú aj do `CrashLogService` (`tileBackup:<akcia>`).
+- Nové l10n kľúče vo všetkých 11 jazykoch (`mapTilesImportFile`,
+  `mapTilesImportDone`, `mapTilesCloudAuthDeclined`) + odsek v
+  `guideBackupBody` (návod). `l10n_consistency_test` prechádza.
+
+## 4. Čo NIE JE hotové / neoverené
+
+1. **Drive upload dlaždíc nikdy nezbehol na reálnom zariadení.** Skiper
+   hlási, že sa na Drive nič nevytvorilo (ani `HMB_Sailing_Log_DATA`).
+   Príčina nepotvrdená. Hypotézy:
+   - `ensureAuthorized()` vrátilo `false` (zrušený/nezobrazený dialóg) —
+     teraz aspoň viditeľná hláška;
+   - `authorizationForScopes` v `_driveApi()` vracia `null` hneď po
+     interaktívnej autorizácii (rozdielne API, tiché vs. interaktívne) →
+     `StateError: authorization needs the user`;
+   - `drive.file` scope je viazaný na OAuth klienta: priečinky vytvorené
+     Play podpisom (iný klient) **nevidí** debug build a opačne — pri
+     prepínaní debug ↔ Play sa môže zdať, že „nič nie je";
+   - upload veľkého zipu (stovky MB) zlyhá/timeoutuje.
+   **Treba:** pripojiť telefón, spustiť upload s `adb logcat`/`flutter run`
+   a zachytiť skutočnú chybu (červený snackbar + crash log záznam
+   `tileBackup:uploadCloud`).
+2. **Import zo súboru nie je vyskúšaný na zariadení** (len unit test).
+   Overiť: Uložiť zip → zmazať cache → Importovať → dlaždice sa vrátia,
+   veľkosť v podtitulku sa aktualizuje.
+3. **Veľký zip v pamäti:** `restoreTileCacheFromFile` číta celý súbor do RAM
+   a `createTileCacheZip` tiež skladá archív v pamäti. Pri cache v stovkách
+   MB hrozí OOM na slabších telefónoch (pozri aj Play požiadavky na pamäť
+   vyššie). Zvážiť streamovanie (`ZipFileEncoder`, `InputFileStream`).
+4. **Auto-záloha po Stope** (`_cloudBackupAfterStop`) v teréne nikdy
+   nepotvrdená — rovnaký Drive problém ako v bode 1 môže platiť aj tu
+   (ticho zlyháva, len `debugPrint`).
+5. Verzia 81 je na Console; ďalšia zmena musí byť **82+**. Release notes
+   pre túto dávku (import dlaždíc) ešte nie sú — vytvoriť
+   `docs/release_notes_v82.txt` pri ďalšom builde.
+
+## 5. Postup na pracovnom PC
+
+```
+git pull            # origin aj academy majú rovnaký main
+flutter pub get
+flutter gen-l10n    # app_localizations*.dart sú v gite, ale pre istotu
+flutter test test/services/tile_cache_restore_test.dart test/l10n_consistency_test.dart
+```
+Pozor: `git checkout lib/l10n/*.arb` nikdy (iná relácia býva v arb
+rozrobená); upravovať chirurgicky. Pri Windows builde najprv zabiť
+`dart.exe` / `flutter_tester.exe`.

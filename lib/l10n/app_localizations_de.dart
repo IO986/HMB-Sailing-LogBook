@@ -1695,6 +1695,17 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kartenkachel-Cache aus Drive wiederhergestellt';
 
   @override
+  String get mapTilesImportFile => 'Aus Datei importieren';
+
+  @override
+  String get mapTilesImportDone =>
+      'Kartenkachel-Cache aus Datei wiederhergestellt';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Zugriff auf Google Drive wurde nicht erteilt — es wurde nichts hochgeladen. Erneut versuchen und Zugriff erlauben.';
+
+  @override
   String get cloudBackupOfferTitle => 'Kein Cloud-Backup erstellt';
 
   @override
@@ -3026,7 +3037,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'In Einstellungen → Datensicherung.\n\n• Sicherung exportieren – speichert das gesamte Logbuch (Fahrten, Einträge, Einstellungen) in einer Datei (.hmbbackup), die du per E-Mail, in die Cloud oder lokal speichern kannst\n• Aus Sicherung wiederherstellen – ersetzt die aktuellen Daten durch den Inhalt der ausgewählten Sicherung; zuvor wird automatisch eine Sicherung des aktuellen Zustands erstellt\n• Die Wiederherstellung ist gesperrt, während das GPS-Tracking einer Fahrt aktiv ist\n• Eine Sicherung mit einer neueren Schema-Version als von der App unterstützt wird abgelehnt, mit Erklärung\n• Nach dem Stoppen des Fahrt-Trackings: bei Anmeldung mit einem Google-Konto und aktivierter Logbuch-Synchronisierung wird automatisch eine vollständige Sicherung in dein Drive (HMB_Sailing_Log_DATA/backups) hochgeladen; ohne Anmeldung bietet die App stattdessen sofort an, eine Sicherung zu speichern oder zu teilen';
+      'In Einstellungen → Datensicherung.\n\n• Sicherung exportieren – speichert das gesamte Logbuch (Fahrten, Einträge, Einstellungen) in einer Datei (.hmbbackup), die du per E-Mail, in die Cloud oder lokal speichern kannst\n• Aus Sicherung wiederherstellen – ersetzt die aktuellen Daten durch den Inhalt der ausgewählten Sicherung; zuvor wird automatisch eine Sicherung des aktuellen Zustands erstellt\n• Die Wiederherstellung ist gesperrt, während das GPS-Tracking einer Fahrt aktiv ist\n• Eine Sicherung mit einer neueren Schema-Version als von der App unterstützt wird abgelehnt, mit Erklärung\n• Nach dem Stoppen des Fahrt-Trackings: bei Anmeldung mit einem Google-Konto und aktivierter Logbuch-Synchronisierung wird automatisch eine vollständige Sicherung in dein Drive (HMB_Sailing_Log_DATA/backups) hochgeladen; ohne Anmeldung bietet die App stattdessen sofort an, eine Sicherung zu speichern oder zu teilen\n• Kartenkacheln (Einstellungen → Datensicherung): den heruntergeladenen Karten-Cache als Datei speichern oder teilen, aus einer Datei wieder importieren oder auf Drive hochladen / von Drive herunterladen (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Logbuch-Export';

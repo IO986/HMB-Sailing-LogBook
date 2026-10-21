@@ -1688,6 +1688,17 @@ class AppLocalizationsSl extends AppLocalizations {
       'Predpomnilnik zemljevidnih ploščic obnovljen iz Drivea';
 
   @override
+  String get mapTilesImportFile => 'Uvozi iz datoteke';
+
+  @override
+  String get mapTilesImportDone =>
+      'Predpomnilnik ploščic zemljevida obnovljen iz datoteke';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Dostop do Google Drive ni bil odobren — nič ni bilo naloženo. Poskusi znova in dovoli dostop.';
+
+  @override
   String get cloudBackupOfferTitle =>
       'Varnostna kopija v oblaku ni bila ustvarjena';
 
@@ -3011,7 +3022,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'V Nastavitve → Varnostna kopija podatkov.\n\n• Izvozi varnostno kopijo – shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko (.hmbbackup), ki jo lahko delite po e-pošti, v oblak ali shranite lokalno\n• Obnovi iz varnostne kopije – zamenja trenutne podatke z vsebino izbrane kopije; varnostna kopija trenutnega stanja se pred tem ustvari samodejno\n• Obnovitev je onemogočena, dokler je aktivno sledenje plovbi prek GPS\n• Kopija z novejšo shemo, kot jo aplikacija podpira, je zavrnjena z razlago\n• Po zaustavitvi sledenja plovbi: če ste prijavljeni v Google račun z vklopljeno sinhronizacijo dnevnika, se samodejno naloži polna varnostna kopija na vaš Drive (HMB_Sailing_Log_DATA/backups); brez prijave aplikacija takoj ponudi shranjevanje ali deljenje kopije';
+      'V Nastavitve → Varnostna kopija podatkov.\n\n• Izvozi varnostno kopijo – shrani celoten dnevnik (plovbe, zapise, nastavitve) v eno datoteko (.hmbbackup), ki jo lahko delite po e-pošti, v oblak ali shranite lokalno\n• Obnovi iz varnostne kopije – zamenja trenutne podatke z vsebino izbrane kopije; varnostna kopija trenutnega stanja se pred tem ustvari samodejno\n• Obnovitev je onemogočena, dokler je aktivno sledenje plovbi prek GPS\n• Kopija z novejšo shemo, kot jo aplikacija podpira, je zavrnjena z razlago\n• Po zaustavitvi sledenja plovbi: če ste prijavljeni v Google račun z vklopljeno sinhronizacijo dnevnika, se samodejno naloži polna varnostna kopija na vaš Drive (HMB_Sailing_Log_DATA/backups); brez prijave aplikacija takoj ponudi shranjevanje ali deljenje kopije\n• Ploščice zemljevida (Nastavitve → Varnostna kopija): prenesen predpomnilnik zemljevida lahko shraniš ali deliš kot datoteko, ga uvoziš nazaj iz datoteke ali naložiš na Drive / preneseš z Drive (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Izvoz dnevnika';

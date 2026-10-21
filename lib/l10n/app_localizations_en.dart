@@ -1685,6 +1685,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapTilesCloudDownloadDone => 'Map tile cache restored from Drive';
 
   @override
+  String get mapTilesImportFile => 'Import from file';
+
+  @override
+  String get mapTilesImportDone => 'Map tile cache restored from file';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Google Drive access was not granted — nothing was uploaded. Try again and allow access.';
+
+  @override
   String get cloudBackupOfferTitle => 'No cloud backup made';
 
   @override
@@ -3005,7 +3015,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation\n• After stopping voyage tracking, if signed in to a Google account with logbook sync turned on, a full backup uploads automatically to your Drive (HMB_Sailing_Log_DATA/backups); without that sign-in, the app offers to save or share a backup there and then instead';
+      'In Settings → Data backup.\n\n• Export backup – saves the whole logbook (voyages, entries, settings) into a single file (.hmbbackup) you can share by email, to the cloud, or save locally\n• Restore from backup – replaces current data with the contents of the selected backup; a safety backup of the current state is created automatically first\n• Restore is blocked while GPS voyage tracking is active\n• A backup with a newer schema than the app supports is rejected with an explanation\n• After stopping voyage tracking, if signed in to a Google account with logbook sync turned on, a full backup uploads automatically to your Drive (HMB_Sailing_Log_DATA/backups); without that sign-in, the app offers to save or share a backup there and then instead\n• Map tiles (Settings → Data backup): save or share the downloaded map cache as a file, import it back from a file, or upload it to / download it from your Drive (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Logbook Export';

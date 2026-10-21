@@ -1686,6 +1686,16 @@ class AppLocalizationsCs extends AppLocalizations {
       'Cache mapových dlaždic obnovena z Drive';
 
   @override
+  String get mapTilesImportFile => 'Importovat ze souboru';
+
+  @override
+  String get mapTilesImportDone => 'Cache mapových dlaždic obnovena ze souboru';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Přístup ke Google Drive nebyl udělen — nic se nenahrálo. Zkus znovu a povol přístup.';
+
+  @override
   String get cloudBackupOfferTitle => 'Cloudová záloha se nevytvořila';
 
   @override
@@ -3006,7 +3016,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'V Nastavení → Záloha dat.\n\n• Exportovat zálohu – uloží celý deník (plavby, záznamy, nastavení) do jednoho souboru (.hmbbackup), který můžeš sdílet e-mailem, do cloudu nebo si ho uložit lokálně\n• Obnovit ze zálohy – nahradí aktuální data obsahem vybrané zálohy; před přepsáním se automaticky vytvoří bezpečnostní záloha současného stavu\n• Obnova je zablokována během aktivního GPS trackingu plavby\n• Zálohu s novějším schématem, než jaké aplikace podporuje, aplikace odmítne s vysvětlením\n• Po zastavení trackingu plavby: pokud jsi přihlášen ke Google účtu a máš zapnutou synchronizaci deníku, na Drive (HMB_Sailing_Log_DATA/backups) se automaticky nahraje plná záloha; bez přihlášení aplikace rovnou nabídne uložení nebo sdílení zálohy';
+      'V Nastavení → Záloha dat.\n\n• Exportovat zálohu – uloží celý deník (plavby, záznamy, nastavení) do jednoho souboru (.hmbbackup), který můžeš sdílet e-mailem, do cloudu nebo si ho uložit lokálně\n• Obnovit ze zálohy – nahradí aktuální data obsahem vybrané zálohy; před přepsáním se automaticky vytvoří bezpečnostní záloha současného stavu\n• Obnova je zablokována během aktivního GPS trackingu plavby\n• Zálohu s novějším schématem, než jaké aplikace podporuje, aplikace odmítne s vysvětlením\n• Po zastavení trackingu plavby: pokud jsi přihlášen ke Google účtu a máš zapnutou synchronizaci deníku, na Drive (HMB_Sailing_Log_DATA/backups) se automaticky nahraje plná záloha; bez přihlášení aplikace rovnou nabídne uložení nebo sdílení zálohy\n• Mapové dlaždice (Nastavení → Záloha dat): stažené mapové cache můžeš uložit nebo sdílet jako soubor, importovat ji zpět ze souboru, nebo nahrát na Drive / stáhnout z Drive (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Export deníku';

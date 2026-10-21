@@ -1690,6 +1690,17 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pamięć podręczna kafelków mapy przywrócona z Dysku';
 
   @override
+  String get mapTilesImportFile => 'Importuj z pliku';
+
+  @override
+  String get mapTilesImportDone =>
+      'Pamięć podręczna kafelków mapy przywrócona z pliku';
+
+  @override
+  String get mapTilesCloudAuthDeclined =>
+      'Nie przyznano dostępu do Google Drive — nic nie zostało wysłane. Spróbuj ponownie i zezwól na dostęp.';
+
+  @override
   String get cloudBackupOfferTitle => 'Nie utworzono kopii w chmurze';
 
   @override
@@ -3012,7 +3023,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideBackupBody =>
-      'W Ustawienia → Kopia zapasowa danych.\n\n• Eksportuj kopię – zapisuje cały dziennik (rejsy, wpisy, ustawienia) do jednego pliku (.hmbbackup), który możesz udostępnić e-mailem, do chmury lub zapisać lokalnie\n• Przywróć z kopii – zastępuje aktualne dane zawartością wybranej kopii; przed nadpisaniem automatycznie powstaje kopia bezpieczeństwa bieżącego stanu\n• Przywracanie jest zablokowane podczas aktywnego śledzenia GPS rejsu\n• Kopię z nowszym schematem niż obsługuje aplikacja, aplikacja odrzuci z wyjaśnieniem\n• Po zatrzymaniu śledzenia rejsu: jeśli jesteś zalogowany na konto Google z włączoną synchronizacją dziennika, pełna kopia zapasowa automatycznie trafia na Twój Dysk (HMB_Sailing_Log_DATA/backups); bez zalogowania aplikacja od razu proponuje zapisanie lub udostępnienie kopii';
+      'W Ustawienia → Kopia zapasowa danych.\n\n• Eksportuj kopię – zapisuje cały dziennik (rejsy, wpisy, ustawienia) do jednego pliku (.hmbbackup), który możesz udostępnić e-mailem, do chmury lub zapisać lokalnie\n• Przywróć z kopii – zastępuje aktualne dane zawartością wybranej kopii; przed nadpisaniem automatycznie powstaje kopia bezpieczeństwa bieżącego stanu\n• Przywracanie jest zablokowane podczas aktywnego śledzenia GPS rejsu\n• Kopię z nowszym schematem niż obsługuje aplikacja, aplikacja odrzuci z wyjaśnieniem\n• Po zatrzymaniu śledzenia rejsu: jeśli jesteś zalogowany na konto Google z włączoną synchronizacją dziennika, pełna kopia zapasowa automatycznie trafia na Twój Dysk (HMB_Sailing_Log_DATA/backups); bez zalogowania aplikacja od razu proponuje zapisanie lub udostępnienie kopii\n• Kafelki mapy (Ustawienia → Kopia danych): pobraną pamięć mapy możesz zapisać lub udostępnić jako plik, zaimportować z pliku albo wysłać na Drive / pobrać z Drive (HMB_Sailing_Log_DATA/map_tiles_backup)';
 
   @override
   String get guideExportTitle => 'Eksport dziennika';

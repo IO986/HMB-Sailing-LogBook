@@ -177,15 +177,44 @@ class BackupService {
     files.sort((a, b) =>
         (b.modifiedTime ?? DateTime(0)).compareTo(a.modifiedTime ?? DateTime(0)));
     final bytes = await provider.downloadFile(files.first.id);
-    final archive = ZipDecoder().decodeBytes(bytes);
+    await restoreTileCacheFromBytes(bytes);
+  }
+
+  /// Obnova mapových dlaždíc zo súboru (záloha uložená na zariadenie alebo
+  /// poslaná zdieľaním). Vráti počet obnovených dlaždíc; nevalidný súbor
+  /// (nie zip, prázdny, alebo s cestami mimo cache) hodí [FormatException].
+  Future<int> restoreTileCacheFromFile(String path) async {
+    return restoreTileCacheFromBytes(await File(path).readAsBytes());
+  }
+
+  Future<int> restoreTileCacheFromBytes(List<int> bytes) async {
+    final Archive archive;
+    try {
+      archive = ZipDecoder().decodeBytes(bytes);
+    } catch (_) {
+      throw const FormatException('Not a map tile backup (zip expected)');
+    }
+    final entries = archive.files.where((e) => e.isFile).toList();
+    if (entries.isEmpty) {
+      throw const FormatException('Map tile backup is empty');
+    }
 
     final tilesDir = await TileCacheStore.directory();
-    for (final entry in archive.files) {
-      if (!entry.isFile) continue;
-      final out = File(p.join(tilesDir.path, entry.name));
-      await out.parent.create(recursive: true);
-      await out.writeAsBytes(entry.content as List<int>);
+    final root = p.normalize(tilesDir.path);
+    var restored = 0;
+    for (final entry in entries) {
+      final out = p.normalize(p.join(tilesDir.path, entry.name));
+      // Zip slip: entry names come from a file we did not write ourselves.
+      if (!p.isWithin(root, out)) continue;
+      final file = File(out);
+      await file.parent.create(recursive: true);
+      await file.writeAsBytes(entry.content as List<int>);
+      restored++;
     }
+    if (restored == 0) {
+      throw const FormatException('Map tile backup has no usable tiles');
+    }
+    return restored;
   }
 
   /// Snapshot celej DB nahraný do `backups` priečinka na cloude, volané po
