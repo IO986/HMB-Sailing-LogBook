@@ -1,0 +1,13 @@
+HMB Sailing Log — build 82 (1.41.0+82)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• Fixed: restoring an older backup (or updating from an older version) could leave the database half-upgraded and the app unable to start. The upgrade now completes, also on databases already affected.
+• New: import the map tile cache from a file (Settings → Backup → Map tiles).
+• Google Drive: a declined authorization now shows an error instead of failing silently.
+
+=== Slovenčina (sk) ===
+• Opravené: obnova staršej zálohy (alebo aktualizácia zo staršej verzie) mohla nechať databázu napoly aktualizovanú a appka sa nespustila. Aktualizácia sa teraz dokončí, aj pri už postihnutej databáze.
+• Nové: import mapových dlaždíc zo súboru (Nastavenia → Záloha → Mapové dlaždice).
+• Google Disk: odmietnutá autorizácia teraz ukáže chybu namiesto tichého zlyhania.
