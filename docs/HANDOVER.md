@@ -993,3 +993,27 @@ flutter test test/services/tile_cache_restore_test.dart test/l10n_consistency_te
 Pozor: `git checkout lib/l10n/*.arb` nikdy (iná relácia býva v arb
 rozrobená); upravovať chirurgicky. Pri Windows builde najprv zabiť
 `dart.exe` / `flutter_tester.exe`.
+
+## 5. Doplnok 21. 10. popoludní — migrácia v34 → v36 rozbíjala DB
+
+Nájdené na Honore pri obnove zálohy z 9. 10. (schéma v34): po obnove
+`[GEO] … failed: Null check operator used on a null value`.
+
+- **Príčina:** `_backfillSyncColumns` (krok v35) čítal riadky typovaným
+  `select(charters)`, ktorý mapuje podľa aktuálnej schémy — stĺpec
+  `archived` (v36) ešte neexistoval → `!` na null. Migrácia spadla po
+  pridaní stĺpcov, `user_version` ostal 34; ďalší štart by padol na
+  `duplicate column name: sync_uuid` a appka by **nenaštartovala**.
+- **Týka sa buildu 81 na Play:** obnova akejkoľvek zálohy ≤ v34, alebo
+  update zo starého buildu priamo na 81.
+- **Oprava:** backfill čistým SQL, kroky v35/v36 cez `_addColumnIfMissing`
+  (dokončí aj napoly zmigrovanú DB). Testy v `migration_test.dart` —
+  v34 s riadkami a napoly zmigrovaná v34; pred opravou padali s presne
+  tými chybami ako telefón.
+- **Overené na Honore:** DB v36, backfill kompletný, štart čistý. Drive
+  sync po oprave funguje (potvrdil skiper).
+- **Treba vydať build 82** čím skôr.
+
+Bokom: Overpass (POI) 21. 10. nedostupný na všetkých 4 mirroroch aj z PC
+— nie chyba appky. Appka ale po zlyhaní všetkých skúša znova pri každom
+posune mapy (4 × 20 s); zvážiť backoff.

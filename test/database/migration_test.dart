@@ -273,6 +273,78 @@ void main() {
     await verifier.migrateAndValidate(db, 36);
   });
 
+  // Rows have to exist before the upgrade: the v35 backfill reads them, and an
+  // empty-table migration never touches that code. Restoring a v34 backup on
+  // build 81 crashed exactly here ("Null check operator used on a null value").
+  void insertV34Rows(dynamic raw) {
+    raw.execute("INSERT INTO charters (title, date_from, date_to, created_at) "
+        "VALUES ('Kornati', 0, 86400, 100)");
+    raw.execute("INSERT INTO day_logs (charter_id, date) VALUES (1, 200)");
+    raw.execute("INSERT INTO logbook_entries (timestamp) VALUES (300)");
+    raw.execute("INSERT INTO waypoints (name, latitude, longitude, created_at) "
+        "VALUES ('Zut', 43.9, 15.3, 400)");
+    raw.execute("INSERT INTO sailing_sessions (session_id, start_time) "
+        "VALUES ('s1', 500)");
+  }
+
+  Future<void> expectSyncColumnsFilled(AppDatabase db) async {
+    for (final (table, source) in const [
+      ('charters', 'created_at'),
+      ('day_logs', 'date'),
+      ('logbook_entries', 'timestamp'),
+      ('waypoints', 'created_at'),
+    ]) {
+      final row = (await db
+              .customSelect('SELECT sync_uuid, updated_at, $source AS src '
+                  'FROM $table')
+              .get())
+          .single;
+      expect(row.read<String?>('sync_uuid'), hasLength(36), reason: table);
+      expect(row.read<int?>('updated_at'), row.read<int>('src'), reason: table);
+    }
+    final session = (await db
+            .customSelect('SELECT updated_at, start_time FROM sailing_sessions')
+            .get())
+        .single;
+    expect(session.read<int?>('updated_at'), session.read<int>('start_time'));
+    expect((await db.getAllCharters()).single.archived, false);
+  }
+
+  test('v34 with rows migrates to current (v36) and backfills sync columns',
+      () async {
+    final schema = await verifier.schemaAt(34);
+    insertV34Rows(schema.rawDatabase);
+
+    final db = AppDatabase.forTesting(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 36);
+
+    await expectSyncColumnsFilled(db);
+  });
+
+  test('v34 left half-migrated by the crashed backfill still upgrades',
+      () async {
+    // What the crash left on the phone: v35 columns added, user_version
+    // still 34. The next start re-runs the v35 step on top of them.
+    final schema = await verifier.schemaAt(34);
+    insertV34Rows(schema.rawDatabase);
+    // Same DDL drift's addColumn wrote on the phone (`"sync_uuid" TEXT NULL`).
+    for (final t in ['charters', 'day_logs', 'logbook_entries', 'waypoints']) {
+      schema.rawDatabase
+          .execute('ALTER TABLE $t ADD COLUMN "sync_uuid" TEXT NULL');
+      schema.rawDatabase
+          .execute('ALTER TABLE $t ADD COLUMN "updated_at" INTEGER NULL');
+    }
+    schema.rawDatabase.execute(
+        'ALTER TABLE sailing_sessions ADD COLUMN "updated_at" INTEGER NULL');
+
+    final db = AppDatabase.forTesting(schema.newConnection());
+    addTearDown(db.close);
+    await verifier.migrateAndValidate(db, 36);
+
+    await expectSyncColumnsFilled(db);
+  });
+
   test('migrate v35 to current (v36): charters.archived', () async {
     final connection = await verifier.startAt(35);
     final db = AppDatabase.forTesting(connection);

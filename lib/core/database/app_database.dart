@@ -960,25 +960,23 @@ class AppDatabase extends _$AppDatabase {
       if (from < 34) {
         await m.addColumn(charters, charters.briefingCheckedJson);
       }
+      // v35 aj v36 idempotentné: build 81 pri obnove v34 zálohy spadol v
+      // backfille až po pridaní stĺpcov, user_version ostal 34 a ďalší štart
+      // by na druhom ALTER TABLE hodil "duplicate column" a nenaštartoval.
       if (from < 35) {
-        await m.addColumn(charters, charters.syncUuid);
-        await m.addColumn(charters, charters.updatedAt);
-        await m.addColumn(dayLogs, dayLogs.syncUuid);
-        await m.addColumn(dayLogs, dayLogs.updatedAt);
-        await m.addColumn(logbookEntries, logbookEntries.syncUuid);
-        await m.addColumn(logbookEntries, logbookEntries.updatedAt);
-        await m.addColumn(waypoints, waypoints.syncUuid);
-        await m.addColumn(waypoints, waypoints.updatedAt);
-        await m.addColumn(sailingSessions, sailingSessions.updatedAt);
+        await _addColumnIfMissing(m, charters, charters.syncUuid);
+        await _addColumnIfMissing(m, charters, charters.updatedAt);
+        await _addColumnIfMissing(m, dayLogs, dayLogs.syncUuid);
+        await _addColumnIfMissing(m, dayLogs, dayLogs.updatedAt);
+        await _addColumnIfMissing(m, logbookEntries, logbookEntries.syncUuid);
+        await _addColumnIfMissing(m, logbookEntries, logbookEntries.updatedAt);
+        await _addColumnIfMissing(m, waypoints, waypoints.syncUuid);
+        await _addColumnIfMissing(m, waypoints, waypoints.updatedAt);
+        await _addColumnIfMissing(m, sailingSessions, sailingSessions.updatedAt);
         await _backfillSyncColumns();
       }
       if (from < 36) {
-        // Idempotentné: pri opakovanom/prerušenom upgrade by druhé
-        // ALTER TABLE hodilo "duplicate column" a appka by nenaštartovala.
-        final cols = await customSelect('PRAGMA table_info(charters)').get();
-        if (!cols.any((r) => r.read<String>('name') == 'archived')) {
-          await m.addColumn(charters, charters.archived);
-        }
+        await _addColumnIfMissing(m, charters, charters.archived);
       }
     },
     beforeOpen: (details) async {
@@ -1010,61 +1008,49 @@ class AppDatabase extends _$AppDatabase {
   /// `updatedAt` sa nastaví na existujúci časový údaj riadku (najlepší odhad,
   /// presný čas poslednej zmeny sa spätne nezistí) — pre sync stačí, aby staré
   /// dáta nevyhrávali nad novšími zmenami po zapnutí syncu.
+  Future<void> _addColumnIfMissing(
+      Migrator m, TableInfo table, GeneratedColumn column) async {
+    final cols =
+        await customSelect('PRAGMA table_info(${table.actualTableName})').get();
+    if (!cols.any((r) => r.read<String>('name') == column.name)) {
+      await m.addColumn(table, column);
+    }
+  }
+
   Future<void> _backfillSyncColumns() async {
     const uuid = Uuid();
 
+    // Čisté SQL, nie `select(charters)`: typovaný select číta riadok podľa
+    // AKTUÁLNEJ schémy, a stĺpce pridané neskoršími verziami (v36
+    // `charters.archived`) v tejto chvíli ešte neexistujú — mapovanie
+    // spadne na "Null check operator used on a null value".
+    //
     // Jedna transakcia, nie stovky/tisícky samostatných commitov: pri
     // mesiacoch denníka (tisícky logbookEntries) bez transaction() každý
     // UPDATE fsyncoval zvlášť na mobilnom úložisku bez WAL (ten sa zapína až
     // v beforeOpen, po migrácii) — appka pri aktualizácii na v35 vyzerala
     // zaseknutá na splash screene, v skutočnosti len dobiehala migráciu.
     await transaction(() async {
-      final allCharters = await select(charters).get();
-      for (final c in allCharters) {
-        await (update(charters)..where((t) => t.id.equals(c.id))).write(
-          ChartersCompanion(
-            syncUuid: Value(uuid.v4()),
-            updatedAt: Value(c.createdAt),
-          ),
-        );
+      for (final (table, source) in const [
+        ('charters', 'created_at'),
+        ('day_logs', 'date'),
+        ('logbook_entries', 'timestamp'),
+        ('waypoints', 'created_at'),
+      ]) {
+        final ids = await customSelect(
+                'SELECT id FROM $table WHERE sync_uuid IS NULL')
+            .get();
+        for (final row in ids) {
+          await customStatement(
+            'UPDATE $table SET sync_uuid = ? WHERE id = ?',
+            [uuid.v4(), row.read<int>('id')],
+          );
+        }
+        await customStatement(
+            'UPDATE $table SET updated_at = $source WHERE updated_at IS NULL');
       }
-
-      final allDayLogs = await select(dayLogs).get();
-      for (final d in allDayLogs) {
-        await (update(dayLogs)..where((t) => t.id.equals(d.id))).write(
-          DayLogsCompanion(
-            syncUuid: Value(uuid.v4()),
-            updatedAt: Value(d.date),
-          ),
-        );
-      }
-
-      final allEntries = await select(logbookEntries).get();
-      for (final e in allEntries) {
-        await (update(logbookEntries)..where((t) => t.id.equals(e.id))).write(
-          LogbookEntriesCompanion(
-            syncUuid: Value(uuid.v4()),
-            updatedAt: Value(e.timestamp),
-          ),
-        );
-      }
-
-      final allWaypoints = await select(waypoints).get();
-      for (final w in allWaypoints) {
-        await (update(waypoints)..where((t) => t.id.equals(w.id))).write(
-          WaypointsCompanion(
-            syncUuid: Value(uuid.v4()),
-            updatedAt: Value(w.createdAt),
-          ),
-        );
-      }
-
-      final allSessions = await select(sailingSessions).get();
-      for (final s in allSessions) {
-        await (update(sailingSessions)..where((t) => t.id.equals(s.id))).write(
-          SailingSessionsCompanion(updatedAt: Value(s.startTime)),
-        );
-      }
+      await customStatement('UPDATE sailing_sessions SET updated_at = '
+          'start_time WHERE updated_at IS NULL');
     });
   }
 
