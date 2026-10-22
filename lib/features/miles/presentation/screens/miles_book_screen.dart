@@ -8,6 +8,10 @@ import '../../providers/miles_provider.dart';
 import '../../services/miles_calculator.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
+import '../../../../core/services/gps_tracking_service.dart';
+import '../../../../main.dart';
+import '../../../charter/providers/charter_provider.dart';
+import '../../../tracking/providers/tracking_provider.dart';
 
 class MilesBookScreen extends ConsumerWidget {
   const MilesBookScreen({super.key});
@@ -108,6 +112,17 @@ class _MilesBody extends ConsumerWidget {
                 subtitle: Text(
                     '${fmt.short(v.dateFrom)} – ${fmt.short(v.dateTo)}'
                     '${v.area != null ? " · ${v.area}" : ""}'),
+                trailing: PopupMenuButton<String>(
+                  onSelected: (action) {
+                    if (action == 'delete') _delete(context, ref, v);
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text(l.delete),
+                    ),
+                  ],
+                ),
                 onTap: v.isManualEntry
                     ? () => context.push('/miles/historical/${v.historicalVoyageId}/edit')
                     : () => context.push('/miles/charter/${v.charterId}/logbook'),
@@ -123,6 +138,84 @@ class _MilesBody extends ConsumerWidget {
     );
   }
 
+  /// Deletes a voyage from the book: a manual entry removes its row, a
+  /// recorded voyage removes the whole charter with its days and entries.
+  Future<void> _delete(BuildContext context, WidgetRef ref, VoyageRow v) async {
+    final l = AppLocalizations.of(context);
+    final db = ref.read(databaseProvider);
+    final charterId = v.charterId;
+
+    if (!v.isManualEntry && charterId != null && ref.read(isTrackingProvider)) {
+      final activeDayLogId = GpsTrackingService().activeDayLogId;
+      if (activeDayLogId != null) {
+        final days = await db.getDayLogs(charterId);
+        if (days.any((d) => d.id == activeDayLogId)) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(l.cannotDeleteWhileTracking),
+              backgroundColor: Colors.red,
+            ));
+          }
+          return;
+        }
+      }
+    }
+
+    if (!context.mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(v.isManualEntry ? l.delete : l.deleteCharterTitle),
+        content: Text(v.isManualEntry
+            ? l.deleteHistoricalVoyageConfirm
+            : l.deleteCharterContent),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel)),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      final historicalId = v.historicalVoyageId;
+      if (v.isManualEntry && historicalId != null) {
+        await db.deleteHistoricalVoyage(historicalId);
+      } else if (charterId != null) {
+        await db.deleteCharter(charterId);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(e.toString().replaceAll('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ));
+      }
+      return;
+    }
+    ref.invalidate(milesAggregateProvider);
+    ref.invalidate(historicalVoyagesProvider);
+    ref.invalidate(milesAvailableYearsProvider);
+    ref.invalidate(chartersProvider);
+    ref.invalidate(activeChartersProvider);
+    ref.invalidate(archivedChartersProvider);
+
+    // A year filter whose last voyage was just deleted would leave an empty
+    // list with no chip to switch back from.
+    final year = ref.read(milesFilterProvider).year;
+    if (year != null) {
+      final years = await ref.read(milesAvailableYearsProvider.future);
+      if (!years.contains(year)) {
+        ref.read(milesFilterProvider.notifier).state = const MilesFilter();
+      }
+    }
+  }
 }
 
 class _SectionTitle extends StatelessWidget {
