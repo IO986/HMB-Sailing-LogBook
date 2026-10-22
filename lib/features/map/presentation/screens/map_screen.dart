@@ -31,6 +31,7 @@ import '../../../../core/models/bearing_kind.dart';
 import '../../../bearing/presentation/widgets/bearing_layers.dart';
 import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/map_provider.dart';
+import '../../services/preview_focus.dart';
 import '../../../../core/providers/sync_provider.dart';
 import '../widgets/marine_poi_sheet.dart';
 import '../widgets/waypoint_dialog.dart';
@@ -64,6 +65,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   static const double _playbackBarBottom = 80;
 
   final _mapController = MapController();
+
+  /// Náhľad (deň alebo plavba) sa dá spustiť aj zvonku (ikona trasy v detaile
+  /// plavby), a tam mapa ostávala tam, kde je loď — nie tam, kde je plavba.
+  final _previewFocus = PreviewFocusTracker();
   String? _lastMobFocus;
   bool _mapReady = false;
   int _tileKey = 0;
@@ -532,6 +537,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ? ref.watch(charterTrackSegmentsProvider(previewCharterId))
                 .valueOrNull
             : null;
+
+    // Náhľad uloženej plavby: kamera sa vycentruje na jej trasu, keď sa body
+    // načítajú. Raz na náhľad — po tom si mapu ovláda človek sám.
+    final previewKey = previewDayLogId != null
+        ? 'd$previewDayLogId'
+        : previewCharterId != null
+            ? 'c$previewCharterId'
+            : null;
+    if (_previewFocus.shouldFocus(previewKey, hasPoints: trackPoints.isNotEmpty)) {
+      _focusPreviewWhenReady(trackPoints);
+    }
 
     // Centrovanie na MOB pozíciu pri navigácii z MOB karty
     final qp = GoRouterState.of(context).uri.queryParameters;
@@ -1949,6 +1965,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         existing: wp,
       ),
     );
+  }
+
+  /// Vycentruje kameru na trasu náhľadu hneď, ako je mapa pripravená. Trasa
+  /// býva v pamäti už pri prvom vykreslení obrazovky, kým mapa ešte nemá
+  /// kameru — vtedy sa počká na ďalší snímok (najviac niekoľkokrát).
+  void _focusPreviewWhenReady(List<LatLng> points, [int attempt = 0]) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (!_mapReady && attempt < 10) {
+        _focusPreviewWhenReady(points, attempt + 1);
+        return;
+      }
+      // Sledovanie GPS by mapu hneď vrátilo k lodi.
+      ref.read(mapNotifierProvider.notifier).setFollowGps(false);
+      _focusOnPoints(points);
+    });
   }
 
   void _focusOnPoints(List<LatLng> points) {
