@@ -34,6 +34,7 @@ import '../../../../core/services/entry_conditions.dart';
 import '../../../../shared/widgets/weather_source_badge.dart';
 import '../../../../shared/widgets/helmsman_picker.dart';
 import '../../../../shared/widgets/coordinate_input.dart';
+import '../../services/track_position.dart';
 import '../../../../shared/widgets/sail_mode_picker.dart';
 
 class LogbookEntryScreen extends ConsumerStatefulWidget {
@@ -94,6 +95,14 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   /// ju ticho neposunie.
   CoordinateEdit? _latEdit, _lonEdit;
 
+  /// Body zmeranej trasy dňa (napr. z importu GPX), usporiadané podľa času.
+  /// Z nich sa dopĺňa poloha záznamu, keď skiper zadá čas.
+  List<TrackPoint> _measuredTrack = const [];
+
+  /// `_lat`/`_lon` boli doplnené z trasy, nie napísané. Zapíše sa to do
+  /// záznamu (`locationSource`), aby bolo vidno, odkiaľ poloha je.
+  bool _positionFromTrack = false;
+
   /// Text polí tak, ako sa naplnili z uloženého záznamu. Pole, ktoré sa
   /// nezmenilo, sa nepreparsuje.
   String _sogInit = '', _cogInit = '';
@@ -138,6 +147,9 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _sailModes.clear();
         _ts = DateTime(day.date.year, day.date.month, day.date.day, 12).toUtc();
       });
+      final track = await _loadMeasuredTrack(db);
+      if (!mounted) return;
+      setState(() => _measuredTrack = track);
     }
 
     if (widget.entryId != null) {
@@ -219,7 +231,42 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     } catch (_) {}
   }
 
+  Future<List<TrackPoint>> _loadMeasuredTrack(AppDatabase db) async {
+    final points = <TrackPoint>[];
+    for (final s in await db.getSessionsForDay(widget.dayLogId,
+        includeAnchorWatch: true)) {
+      // Čiara nakreslená cez samotné záznamy nie je meranie.
+      if (s.isEstimated) continue;
+      points.addAll(await db.getTrackPointsForSession(s.sessionId));
+    }
+    points.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    return points;
+  }
+
+  /// Po zadaní času doplní polohu z trasy. Nikdy neprepíše to, čo skiper
+  /// napísal, ani polohu uloženú v zázname z iného zdroja.
+  void _applyTrackPosition() {
+    if (!_retro || _measuredTrack.isEmpty) return;
+    if (_latEdit != null || _lonEdit != null) return;
+    if (_lat != null && !_positionFromTrack) return;
+
+    final p = TrackPosition.at(_measuredTrack, _ts);
+    setState(() {
+      _lat = p?.lat;
+      _lon = p?.lon;
+      _positionFromTrack = p != null;
+    });
+  }
+
+  /// Čo sa zapíše do `locationSource` pri prepise z papiera.
+  String? get _retroSource {
+    if (_positionFromTrack) return TrackPosition.source;
+    if (_latEdit != null || _lonEdit != null) return null;
+    return _locationSource;
+  }
+
   void _fillRetroFields() {
+    _positionFromTrack = _locationSource == TrackPosition.source;
     _sogInit = _sog == null ? '' : _sog!.toStringAsFixed(1);
     _cogInit = _cog == null ? '' : _cog!.toStringAsFixed(0);
     _sogCtrl.text = _sogInit;
@@ -236,6 +283,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     final d = _dayDate ?? local;
     setState(() => _ts =
         DateTime(d.year, d.month, d.day, picked.hour, picked.minute).toUtc());
+    _applyTrackPosition();
   }
 
   /// Prečíta ručne zadané polia do `_lat`/`_lon`/`_sog`/`_cog`. Vráti `false`
@@ -307,6 +355,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           onEdited: (e) => setState(() {
             _latEdit = e;
             _latError = null;
+            _positionFromTrack = false;
           }),
         ),
         const SizedBox(height: 12),
@@ -320,8 +369,22 @@ class _State extends ConsumerState<LogbookEntryScreen> {
           onEdited: (e) => setState(() {
             _lonEdit = e;
             _lonError = null;
+            _positionFromTrack = false;
           }),
         ),
+        if (_positionFromTrack)
+          Padding(
+            padding: const EdgeInsets.only(top: 8, left: 4),
+            child: Row(children: [
+              const Icon(Icons.timeline, size: 16),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(l.positionFromTrack,
+                    key: const ValueKey('position-from-track'),
+                    style: Theme.of(context).textTheme.bodySmall),
+              ),
+            ]),
+          ),
         const SizedBox(height: 12),
         Row(children: [
           Expanded(child: _retroNumber(_sogCtrl, 'SOG (kn)', _sogError)),
@@ -620,6 +683,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         longitude: _retro ? Value(_lon) : const Value.absent(),
         sog: _retro ? Value(_sog) : const Value.absent(),
         cog: _retro ? Value(_cog) : const Value.absent(),
+        locationSource: _retro ? Value(_retroSource) : const Value.absent(),
       );
       // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
       // Pri vypnutej synchronizácii sa enqueue vôbec nevolá, inak by outbox
@@ -663,7 +727,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         waterLevel: Value(_waterLevel),
         skipperName: Value(_helmsman),
         accuracyMeters: Value(_accuracyMeters),
-        locationSource: Value(_locationSource),
+        locationSource: Value(_retro ? _retroSource : _locationSource),
         isMocked: Value(_isMocked),
         weatherSource: Value(_weatherSource),
         weatherStation: Value(_weatherStation),

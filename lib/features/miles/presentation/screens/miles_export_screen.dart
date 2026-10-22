@@ -315,6 +315,7 @@ class _MilesExportScreenState extends ConsumerState<MilesExportScreen> {
           controller: _qualification,
           decoration: InputDecoration(
             labelText: l.milesExportQualification,
+            hintText: l.captainQualificationHint,
             border: const OutlineInputBorder(),
           ),
         ),

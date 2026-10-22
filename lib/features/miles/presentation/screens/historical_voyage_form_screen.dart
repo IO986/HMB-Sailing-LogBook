@@ -166,9 +166,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
       await db.insertHistoricalVoyage(companion);
     }
 
-    ref.invalidate(milesAggregateProvider);
-    ref.invalidate(historicalVoyagesProvider);
-    ref.invalidate(milesAvailableYearsProvider);
+    invalidateMilesData(ref);
 
     setState(() => _loading = false);
     if (mounted) context.pop();
@@ -194,9 +192,7 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
     if (confirmed != true || _existingId == null) return;
 
     await ref.read(databaseProvider).deleteHistoricalVoyage(_existingId!);
-    ref.invalidate(milesAggregateProvider);
-    ref.invalidate(historicalVoyagesProvider);
-    ref.invalidate(milesAvailableYearsProvider);
+    invalidateMilesData(ref);
     if (mounted) context.pop();
   }
 
@@ -294,7 +290,9 @@ class _HistoricalVoyageFormScreenState extends ConsumerState<HistoricalVoyageFor
           Expanded(child: TextField(controller: _captainLastCtrl, decoration: InputDecoration(labelText: l.captainLastName))),
         ]),
         const SizedBox(height: 12),
-        TextField(controller: _captainQualCtrl, decoration: InputDecoration(labelText: l.captainQualification)),
+        TextField(controller: _captainQualCtrl, decoration: InputDecoration(
+            labelText: l.captainQualification,
+            hintText: l.captainQualificationHint)),
         const SizedBox(height: 12),
         OutlinedButton.icon(
           icon: Icon(_signaturePath == null ? Icons.draw : Icons.edit),

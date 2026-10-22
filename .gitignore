@@ -95,3 +95,5 @@ screenshots/
 *.hmbbackup
 pripomienky/
 realdatafortesting/
+# Osobné vstupné súbory (napr. CSV s plavbami na import) — nepatria do gitu
+files/

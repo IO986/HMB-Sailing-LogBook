@@ -544,16 +544,9 @@ class _EmptyState extends StatelessWidget {
         const SizedBox(height: 16),
         Text(l.noVoyages, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.grey)),
         const SizedBox(height: 8),
+        // Plavbu zakladá plávajúce tlačidlo „Nová plavba“ dole; druhé
+        // rovnaké uprostred prázdneho stavu bolo len duplicita.
         Text(l.createFirstCharter, style: const TextStyle(color: Colors.grey)),
-        const SizedBox(height: 20),
-        // Prázdna obrazovka má povedať, čo robiť ďalej, nie len že je
-        // prázdna. Trasovanie sa dá spustiť aj bez toho — tlačidlo Štart je
-        // o kúsok vyššie v tej istej karte.
-        FilledButton.icon(
-          onPressed: () => context.push('/logbook/new'),
-          icon: const Icon(Icons.add),
-          label: Text(AppLocalizations.of(context).newVoyage),
-        ),
       ]),
     );
   }

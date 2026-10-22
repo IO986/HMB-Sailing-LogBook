@@ -91,8 +91,7 @@ class MilesBookScreen extends ConsumerWidget {
       id: Value(charter.id),
       source: const Value(CharterSource.paper),
     ));
-    ref.invalidate(milesAggregateProvider);
-    ref.invalidate(milesAvailableYearsProvider);
+    invalidateMilesData(ref);
     ref.invalidate(chartersProvider);
     ref.invalidate(activeChartersProvider);
 
@@ -113,8 +112,7 @@ class MilesBookScreen extends ConsumerWidget {
     if (!context.mounted) return;
     if (attach == true) {
       await context.push('/gpx-import', extra: charter.id);
-      ref.invalidate(milesAggregateProvider);
-      ref.invalidate(milesAvailableYearsProvider);
+      invalidateMilesData(ref);
       ref.invalidate(chartersProvider);
     }
     // Days and entries are added on the voyage itself.
@@ -282,9 +280,7 @@ class _MilesBody extends ConsumerWidget {
       }
       return;
     }
-    ref.invalidate(milesAggregateProvider);
-    ref.invalidate(historicalVoyagesProvider);
-    ref.invalidate(milesAvailableYearsProvider);
+    invalidateMilesData(ref);
     ref.invalidate(chartersProvider);
     ref.invalidate(activeChartersProvider);
     ref.invalidate(archivedChartersProvider);

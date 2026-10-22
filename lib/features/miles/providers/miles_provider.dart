@@ -108,6 +108,20 @@ final milesAggregateProvider = FutureProvider.autoDispose<MilesAggregate>((ref) 
   );
 });
 
+/// Zahodí všetko, čo Kniha míľ drží v pamäti.
+///
+/// Samotné `invalidate(milesAggregateProvider)` nestačí: súhrn číta z
+/// [_milesRawDataProvider], ktorý ostane v pamäti, kým je Kniha míľ otvorená,
+/// takže sa prepočíta zo starých dát — plavba zmazaná alebo pridaná z vrchnej
+/// obrazovky sa v zozname neukázala, kým sa neotvoril znova. Tu sa invaliduje
+/// zdroj, a z neho sa prepočíta všetko ostatné.
+void invalidateMilesData(WidgetRef ref) {
+  ref.invalidate(_milesRawDataProvider);
+  ref.invalidate(milesAggregateProvider);
+  ref.invalidate(milesAvailableYearsProvider);
+  ref.invalidate(historicalVoyagesProvider);
+}
+
 /// Zoznam rokov, v ktorých existuje aspoň jedna plavba – na filter chips
 /// (nezávisí od aktuálne zvoleného filtra).
 final milesAvailableYearsProvider = FutureProvider.autoDispose<List<int>>((ref) async {

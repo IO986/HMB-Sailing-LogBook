@@ -20,6 +20,7 @@ import '../../bearing/providers/bearing_provider.dart'
     show bearingLineOf, knownPointOf, latestResectionCluster, sightGroupsFrom;
 import '../../bearing/services/bearing_geometry.dart';
 import '../../miles/services/voyage_miles_summary.dart';
+import '../../miles/services/captain_qualification.dart';
 import '../../../core/models/crew_member_ref.dart';
 import '../../../core/services/night_hours.dart';
 import '../../../core/services/units_service.dart';
@@ -466,6 +467,22 @@ class PdfExportService {
     final crew = (charter.crewNames ?? '').split('|').where((s) => s.isNotEmpty).toList();
     final totalNm = days.fold<double>(0, (s, d) => s + d.distanceNm);
 
+    // Preukazy skipera: profil telefónu + kvalifikácia kapitána tejto plavby
+    // (záznam Knihy míľ, potom karta skipera, potom profil).
+    final sk = skipper ?? const SkipperProfile();
+    final recordedQualification = charter.captainQualification?.trim();
+    final qualification =
+        (recordedQualification != null && recordedQualification.isNotEmpty)
+            ? recordedQualification
+            : suggestedQualification(
+                crew: CrewMemberRef.parse(
+                  charter.crewJson,
+                  skipperName: charter.skipperName,
+                  crewNames: charter.crewNames,
+                ),
+                profile: sk,
+              );
+
     // MultiPage, nie Page: obsah prvej strany rastie s počtom dní, s posádkou
     // aj s fotkami lode, a odkedy je na nej mapa celej plavby, sa na jednu A4
     // zmestiť nemusí. Pevná strana nemá kam pretiecť — obsah by sa orezal.
@@ -555,7 +572,7 @@ class PdfExportService {
         pw.SizedBox(height: 10),
 
         // ── Skipper credentials (only if provided) ──
-        if (skipper != null && !skipper.isEmpty) ...[
+        if (!sk.isEmpty || qualification != null) ...[
           pw.Container(
             width: double.infinity,
             padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -568,31 +585,35 @@ class PdfExportService {
                   color: _navy, fontWeight: pw.FontWeight.bold, fontSize: 8, letterSpacing: 1)),
               pw.SizedBox(height: 4),
               pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                if (skipper.fullName.isNotEmpty) ...[
-                  pw.Expanded(child: _wRow(l.pdfNameLabel, _pdfText(skipper.fullName))),
+                if (sk.fullName.isNotEmpty) ...[
+                  pw.Expanded(child: _wRow(l.pdfNameLabel, _pdfText(sk.fullName))),
                 ],
-                if (skipper.licenseType.isNotEmpty || skipper.licenseNumber.isNotEmpty) ...[
+                if (sk.licenseNumber.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     l.pdfLicenceLabel,
-                    _pdfText('${skipper.licenseType} ${skipper.licenseNumber}'.trim()),
+                    _pdfText(sk.licenseNumber),
                   )),
                 ],
-                if (skipper.licenseAuthority.isNotEmpty || skipper.licenseExpiry.isNotEmpty) ...[
+                if (sk.licenseAuthority.isNotEmpty || sk.licenseExpiry.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     l.pdfIssuedValidLabel,
-                    _pdfText('${skipper.licenseAuthority}  ${skipper.licenseExpiry}'.trim()),
+                    _pdfText('${sk.licenseAuthority}  ${sk.licenseExpiry}'.trim()),
                   )),
                 ],
-                if (skipper.vhfNumber.isNotEmpty || skipper.vhfExpiry.isNotEmpty) ...[
+                if (sk.vhfNumber.isNotEmpty || sk.vhfExpiry.isNotEmpty) ...[
                   pw.Expanded(child: _wRow(
                     'VHF/SRC',
-                    _pdfText('${skipper.vhfNumber}  ${skipper.vhfExpiry}'.trim()),
+                    _pdfText('${sk.vhfNumber}  ${sk.vhfExpiry}'.trim()),
                   )),
                 ],
               ]),
-              if (skipper.otherCerts.isNotEmpty) ...[
+              if (qualification != null) ...[
                 pw.SizedBox(height: 3),
-                _wRow(l.pdfOtherCertsLabel, _pdfText(skipper.otherCerts)),
+                _wRow(l.captainQualification, _pdfText(qualification)),
+              ],
+              if (sk.otherCerts.isNotEmpty) ...[
+                pw.SizedBox(height: 3),
+                _wRow(l.pdfOtherCertsLabel, _pdfText(sk.otherCerts)),
               ],
             ]),
           ),

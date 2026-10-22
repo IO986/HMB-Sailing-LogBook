@@ -7,11 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/crew_member_ref.dart';
 import '../../../../core/providers/skipper_profile_provider.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../export/presentation/signature_pad_dialog.dart';
 import '../../providers/miles_provider.dart';
+import '../../services/captain_qualification.dart';
 import '../../../../core/services/units_service.dart';
 import '../../../../core/utils/localized_date.dart';
 
@@ -79,9 +81,15 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
     }
     if (_captainQualCtrl.text.isEmpty) {
       final profile = await ref.read(skipperProfileProvider.future);
-      if (profile.licenseType.isNotEmpty) {
-        _captainQualCtrl.text = profile.licenseType;
-      }
+      final suggested = suggestedQualification(
+        crew: CrewMemberRef.parse(
+          charter.crewJson,
+          skipperName: charter.skipperName,
+          crewNames: charter.crewNames,
+        ),
+        profile: profile,
+      );
+      if (suggested != null) _captainQualCtrl.text = suggested;
     }
 
     setState(() {
@@ -135,8 +143,7 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
       notes: Value(_noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()),
     ));
 
-    ref.invalidate(milesAggregateProvider);
-    ref.invalidate(milesAvailableYearsProvider);
+    invalidateMilesData(ref);
 
     setState(() => _saving = false);
     if (mounted) context.pop();
@@ -206,7 +213,9 @@ class _CharterLogbookRecordScreenState extends ConsumerState<CharterLogbookRecor
           Expanded(child: TextField(controller: _captainLastCtrl, decoration: InputDecoration(labelText: l.captainLastName))),
         ]),
         const SizedBox(height: 12),
-        TextField(controller: _captainQualCtrl, decoration: InputDecoration(labelText: l.captainQualification)),
+        TextField(controller: _captainQualCtrl, decoration: InputDecoration(
+            labelText: l.captainQualification,
+            hintText: l.captainQualificationHint)),
         const SizedBox(height: 12),
         OutlinedButton.icon(
           icon: Icon(_signaturePath == null ? Icons.draw : Icons.edit),

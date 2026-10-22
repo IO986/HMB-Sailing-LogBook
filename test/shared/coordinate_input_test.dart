@@ -56,6 +56,14 @@ void main() {
   Finder hemisphere(String letter) =>
       find.descendant(of: cell('hem'), matching: find.text(letter));
 
+  testWidgets('the unit signs are visible in empty cells', (t) async {
+    await pump(t, format: CoordFormat.dmm);
+    // Nothing typed and nothing focused: a person must still see what goes
+    // into each cell without typing the sign.
+    expect(find.text('°'), findsOneWidget);
+    expect(find.text("'"), findsOneWidget);
+  });
+
   group('degrees and decimal minutes', () {
     testWidgets('two cells combine into decimal degrees', (t) async {
       await pump(t, format: CoordFormat.dmm);

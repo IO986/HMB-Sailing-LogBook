@@ -14,6 +14,7 @@ class CrewMemberRef {
     this.boatLicence,
     this.radioLicence,
     this.otherCerts,
+    this.qualification,
   });
 
   final String name;
@@ -23,6 +24,10 @@ class CrewMemberRef {
   final String? boatLicence;
   final String? radioLicence;
   final String? otherCerts;
+
+  /// Najvyššia dosiahnutá kvalifikácia (napr. Yachtmaster). Nie je to číslo
+  /// preukazu — to je [boatLicence].
+  final String? qualification;
 
   bool get isSkipper => role == 'skipper';
 
@@ -55,6 +60,7 @@ class CrewMemberRef {
               boatLicence: _text(item['boatLicence']),
               radioLicence: _text(item['radioLicence']),
               otherCerts: _text(item['otherCerts']),
+              qualification: _text(item['qualification']),
             ));
           }
         }

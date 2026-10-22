@@ -33,6 +33,7 @@ class CharterPrefill {
 /// plný detail vrátane preukazov ide do Charters.crewJson.
 class _CrewEntry {
   final nameCtrl = TextEditingController();
+  final qualCtrl = TextEditingController();
   final boatLicCtrl = TextEditingController();
   final radioLicCtrl = TextEditingController();
   final otherCertsCtrl = TextEditingController();
@@ -44,6 +45,7 @@ class _CrewEntry {
   _CrewEntry({this.isSkipper = false});
   void dispose() {
     nameCtrl.dispose();
+    qualCtrl.dispose();
     boatLicCtrl.dispose();
     radioLicCtrl.dispose();
     otherCertsCtrl.dispose();
@@ -191,9 +193,8 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
     setState(() {
       final skipper = _crew.first;
       skipper.nameCtrl.text = chosen!.fullName;
-      skipper.boatLicCtrl.text = [chosen.licenseType, chosen.licenseNumber]
-          .where((s) => s.isNotEmpty)
-          .join(' ');
+      skipper.qualCtrl.text = chosen.licenseType;
+      skipper.boatLicCtrl.text = chosen.licenseNumber;
       skipper.radioLicCtrl.text = chosen.vhfNumber;
       skipper.otherCertsCtrl.text = chosen.otherCerts;
       skipper.idNumCtrl.text = chosen.idNumber;
@@ -228,12 +229,14 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
       if (c.id == widget.charterId) continue;
       for (final m in _decodeMapList(c.crewJson)) {
         String field(String k) => (m[k] as String? ?? '').trim();
-        final hasPapers = field('boatLicence').isNotEmpty ||
+        final hasPapers = field('qualification').isNotEmpty ||
+            field('boatLicence').isNotEmpty ||
             field('radioLicence').isNotEmpty ||
             field('otherCerts').isNotEmpty;
         if (!hasPapers) continue;
         add(SkipperProfile(
           fullName: field('name'),
+          licenseType: field('qualification'),
           licenseNumber: field('boatLicence'),
           vhfNumber: field('radioLicence'),
           otherCerts: field('otherCerts'),
@@ -439,6 +442,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
         for (final m in crewList) {
           final e = _CrewEntry(isSkipper: m['role'] == 'skipper');
           e.nameCtrl.text = m['name'] as String? ?? '';
+          e.qualCtrl.text = m['qualification'] as String? ?? '';
           e.boatLicCtrl.text = m['boatLicence'] as String? ?? '';
           e.radioLicCtrl.text = m['radioLicence'] as String? ?? '';
           e.otherCertsCtrl.text = m['otherCerts'] as String? ?? '';
@@ -978,6 +982,15 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           if (entry.isSkipper) ...[
             const SizedBox(height: 8),
             TextField(
+              controller: entry.qualCtrl,
+              decoration: InputDecoration(
+                labelText: l.captainQualification,
+                hintText: l.captainQualificationHint,
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
               controller: entry.boatLicCtrl,
               decoration: InputDecoration(
                 labelText: l.boatLicenceLabel,
@@ -1109,6 +1122,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
           {
             'name': e.nameCtrl.text.trim(),
             'role': e.isSkipper ? 'skipper' : 'crew',
+            'qualification': _emptyNull(e.qualCtrl.text),
             'boatLicence': _emptyNull(e.boatLicCtrl.text),
             'radioLicence': _emptyNull(e.radioLicCtrl.text),
             'otherCerts': _emptyNull(e.otherCertsCtrl.text),
@@ -1128,7 +1142,7 @@ class _CharterEditScreenState extends ConsumerState<CharterEditScreen> {
             .read(skipperProfileProvider.notifier)
             .save(SkipperProfile(
               fullName: skipper.nameCtrl.text.trim(),
-              licenseType: old.licenseType,
+              licenseType: skipper.qualCtrl.text.trim(),
               licenseNumber: skipper.boatLicCtrl.text.trim(),
               licenseAuthority: old.licenseAuthority,
               licenseExpiry: old.licenseExpiry,

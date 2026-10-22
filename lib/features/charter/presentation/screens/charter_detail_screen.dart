@@ -5,10 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
 import '../../../../core/models/charter_source.dart';
+import '../../../../core/models/crew_member_ref.dart';
+import '../../../../core/models/skipper_profile.dart';
+import '../../../miles/services/captain_qualification.dart';
 import '../../../gpx_import/services/gpx_voyage_reconstructor.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/voyage_progress.dart';
 import '../widgets/edit_day_ports_dialog.dart';
+import '../widgets/voyage_days_header.dart';
 import '../widgets/voyage_reminder_chips.dart';
 import 'package:hmb_sailing_log/l10n/app_localizations.dart';
 import '../../../../core/services/units_service.dart';
@@ -242,6 +246,9 @@ class _Body extends ConsumerWidget {
             const Divider(height: 16),
             if (charter.skipperName != null)
               _InfoRow(Icons.person, AppLocalizations.of(context).captain, charter.skipperName!),
+            if (_captainQualification(charter) case final q?)
+              _InfoRow(Icons.workspace_premium_outlined,
+                  AppLocalizations.of(context).captainQualification, q),
             if (crew.isNotEmpty)
               _InfoRow(Icons.group, AppLocalizations.of(context).crew, crew.join(', ')),
             if (totalNm > 0)
@@ -252,26 +259,11 @@ class _Body extends ConsumerWidget {
         const SizedBox(height: 8),
 
         // Dni plavby
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          child: Row(children: [
-            Text(AppLocalizations.of(context).voyageDaysCount(days.length),
-                style: Theme.of(context).textTheme.titleMedium),
-            const Spacer(),
-            if (CharterSource.isRetrospective(charter.source))
-              TextButton.icon(
-                onPressed: () => _addDay(context, ref),
-                icon: const Icon(Icons.add, size: 18),
-                label: Text(AppLocalizations.of(context).addDay),
-              ),
-            if (days.length > 1)
-              TextButton.icon(
-                onPressed: () => _deleteMultiple(context, ref),
-                icon: const Icon(Icons.delete_sweep, size: 18),
-                label: Text(AppLocalizations.of(context).bulkDelete),
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-              ),
-          ]),
+        VoyageDaysHeader(
+          dayCount: days.length,
+          canAddDay: CharterSource.isRetrospective(charter.source),
+          onAddDay: () => _addDay(context, ref),
+          onBulkDelete: () => _deleteMultiple(context, ref),
         ),
 
         if (days.isEmpty)
@@ -336,6 +328,22 @@ class _Body extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Najvyššia kvalifikácia kapitána plavby: záznam Knihy míľ, inak karta
+/// skipera. Profil telefónu sa tu zámerne nepoužíva — detail patrí plavbe,
+/// nie majiteľovi telefónu.
+String? _captainQualification(Charter charter) {
+  final recorded = charter.captainQualification?.trim();
+  if (recorded != null && recorded.isNotEmpty) return recorded;
+  return suggestedQualification(
+    crew: CrewMemberRef.parse(
+      charter.crewJson,
+      skipperName: charter.skipperName,
+      crewNames: charter.crewNames,
+    ),
+    profile: const SkipperProfile(),
+  );
 }
 
 class _InfoRow extends StatelessWidget {

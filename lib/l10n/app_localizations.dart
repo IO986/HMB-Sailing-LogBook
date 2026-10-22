@@ -5633,7 +5633,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMilesBody.
   ///
   /// In sk, this message translates to:
-  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.\n• Tlačidlo + ponúkne aj prepis z papierového denníka: vytvoríš plavbu a môžeš k nej hneď pripojiť GPX trasu.\n• Na prepísanej plavbe pridáš deň tlačidlom „Pridať deň“. Záznam v takom dni má čas aj súradnice písané ručne; nič sa nedopĺňa z aktuálnej polohy ani počasia.\n• V dni prepísanej plavby vyplň „Údaje dňa“ (míle a nočné hodiny z papiera); zadané číslo má prednosť pred výpočtom. Tlačidlo „Zostaviť trasu zo záznamov“ nakreslí odhadnutú trasu po priamke pre GPX a mapu; do nočných hodín sa nikdy nepočíta a skutočná trasa z GPX ju nahradí.'**
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.\n• Tlačidlo + ponúkne aj prepis z papierového denníka: vytvoríš plavbu a môžeš k nej hneď pripojiť GPX trasu.\n• Na prepísanej plavbe pridáš deň tlačidlom „Pridať deň“. Záznam v takom dni má čas aj súradnice písané ručne; nič sa nedopĺňa z aktuálnej polohy ani počasia.\n• V dni prepísanej plavby vyplň „Údaje dňa“ (míle a nočné hodiny z papiera); zadané číslo má prednosť pred výpočtom. Tlačidlo „Zostaviť trasu zo záznamov“ nakreslí odhadnutú trasu po priamke pre GPX a mapu; do nočných hodín sa nikdy nepočíta a skutočná trasa z GPX ju nahradí.\n• Ak deň už má zmeranú trasu (napr. z importu GPX), po výbere času záznamu sa poloha doplní z trasy; ručne zadaná poloha má vždy prednosť.\n• Najvyššiu dosiahnutú kvalifikáciu kapitána vyplníš raz v karte skipera vo formulári plavby; v zázname Knihy míľ sa potom predvyplní.\n• Kvalifikácia kapitána sa zobrazuje aj v detaile plavby a v hlavičke PDF denníka.'**
   String get guideMilesBody;
 
   /// No description provided for @guideHandoverTitle.
@@ -7747,6 +7747,18 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Deň už má zmeranú trasu.'**
   String get trackRealExists;
+
+  /// No description provided for @positionFromTrack.
+  ///
+  /// In sk, this message translates to:
+  /// **'Poloha z trasy v čase záznamu. Môžeš ju prepísať.'**
+  String get positionFromTrack;
+
+  /// No description provided for @captainQualificationHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. Kapitán jachty, RYA Yachtmaster Offshore'**
+  String get captainQualificationHint;
 }
 
 class _AppLocalizationsDelegate

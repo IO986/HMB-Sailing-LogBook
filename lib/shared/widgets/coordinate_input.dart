@@ -144,6 +144,16 @@ class _CoordinateInputState extends State<CoordinateInput> {
     super.dispose();
   }
 
+  /// The unit sign is drawn as an icon, not as `suffixText`: Flutter shows
+  /// suffix text only while the field is focused or filled, so an empty cell
+  /// would give no hint what goes into it.
+  static Widget _unit(String sign) => Padding(
+        padding: const EdgeInsets.only(right: 12),
+        child: Text(sign, style: const TextStyle(fontSize: 16)),
+      );
+
+  static const _unitConstraints = BoxConstraints(minWidth: 24, minHeight: 0);
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -168,7 +178,8 @@ class _CoordinateInputState extends State<CoordinateInput> {
               onChanged: (_) => _changed(),
               decoration: InputDecoration(
                 labelText: widget.label,
-                suffixText: '°',
+                suffixIcon: _unit('°'),
+                suffixIconConstraints: _unitConstraints,
               ),
             ),
           ),
@@ -185,7 +196,8 @@ class _CoordinateInputState extends State<CoordinateInput> {
                 onChanged: (_) => _changed(),
                 decoration: InputDecoration(
                   labelText: '′',
-                  suffixText: "'",
+                  suffixIcon: _unit("'"),
+                  suffixIconConstraints: _unitConstraints,
                 ),
               ),
             ),
