@@ -4204,9 +4204,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Datei enthält Namen der Crew und Scheinnummern. Sende sie nur Personen, denen du vertraust.';
 
   @override
-  String get csvExportAction => 'Exportieren';
-
-  @override
   String get csvExportFailed => 'Der Export ist fehlgeschlagen.';
 
   @override

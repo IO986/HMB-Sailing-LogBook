@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Συμπερίληψη σημείων διαδρομής",
   "csvExportTrackPoints": "Σημεία διαδρομής",
   "csvExportPrivacy": "Το αρχείο περιέχει ονόματα πληρώματος και αριθμούς διπλωμάτων. Στείλ' το μόνο σε άτομα που εμπιστεύεσαι.",
-  "csvExportAction": "Εξαγωγή",
   "csvExportFailed": "Η εξαγωγή απέτυχε.",
   "importCsvTooltip": "Εισαγωγή πλου από αρχείο",
   "importCsvTitle": "Εισαγωγή πλου (CSV)",

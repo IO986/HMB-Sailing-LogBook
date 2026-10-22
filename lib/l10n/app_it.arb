@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Includi i punti della traccia",
   "csvExportTrackPoints": "Punti della traccia",
   "csvExportPrivacy": "Il file contiene i nomi dell'equipaggio e i numeri dei brevetti. Invialo solo a persone di cui ti fidi.",
-  "csvExportAction": "Esporta",
   "csvExportFailed": "Esportazione non riuscita.",
   "importCsvTooltip": "Importa una traversata da file",
   "importCsvTitle": "Importa traversata (CSV)",

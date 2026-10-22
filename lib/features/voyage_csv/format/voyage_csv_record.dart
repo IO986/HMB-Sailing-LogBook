@@ -1,3 +1,5 @@
+import 'dart:collection' show UnmodifiableMapView;
+
 import 'voyage_csv_schema.dart';
 
 /// Why a file is refused. The screen turns each into a sentence in the
@@ -127,8 +129,13 @@ class VoyageCsvRecord {
         ..set('schema_version', schemaVersion)
         ..set('includes_track', includesTrack);
 
-  /// Columns that hold a value, with the text that stands in the file.
-  Map<String, String> get cells => Map.unmodifiable(_cells);
+  /// Columns that hold a value, with the text that stands in the file. A
+  /// view, not a copy: the writer asks for it once per column of every row, and
+  /// a copy each time made a long track take minutes.
+  Map<String, String> get cells => UnmodifiableMapView(_cells);
+
+  /// The text in [column], or `null` when the cell is empty.
+  String? cell(String column) => _cells[column];
 
   /// Puts [value] into [column]. `null` leaves the cell empty. Throws when the
   /// column does not belong to this record type or [value] is not of the

@@ -1431,7 +1431,6 @@
   "csvExportIncludeTrack": "Zahrnúť body trasy",
   "csvExportTrackPoints": "Body trasy",
   "csvExportPrivacy": "Súbor obsahuje mená posádky a čísla preukazov. Pošli ho len ľuďom, ktorým dôveruješ.",
-  "csvExportAction": "Exportovať",
   "csvExportFailed": "Export sa nepodaril.",
   "importCsvTooltip": "Importovať plavbu zo súboru",
   "importCsvTitle": "Import plavby (CSV)",

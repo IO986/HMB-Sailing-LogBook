@@ -4213,9 +4213,6 @@ class AppLocalizationsEl extends AppLocalizations {
       'Το αρχείο περιέχει ονόματα πληρώματος και αριθμούς διπλωμάτων. Στείλ\' το μόνο σε άτομα που εμπιστεύεσαι.';
 
   @override
-  String get csvExportAction => 'Εξαγωγή';
-
-  @override
   String get csvExportFailed => 'Η εξαγωγή απέτυχε.';
 
   @override

@@ -4189,9 +4189,6 @@ class AppLocalizationsHr extends AppLocalizations {
       'Datoteka sadrži imena posade i brojeve dozvola. Šalji je samo osobama kojima vjeruješ.';
 
   @override
-  String get csvExportAction => 'Izvezi';
-
-  @override
   String get csvExportFailed => 'Izvoz nije uspio.';
 
   @override

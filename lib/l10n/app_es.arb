@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Incluir puntos del track",
   "csvExportTrackPoints": "Puntos del track",
   "csvExportPrivacy": "El archivo contiene nombres de la tripulación y números de titulaciones. Envíalo solo a personas de confianza.",
-  "csvExportAction": "Exportar",
   "csvExportFailed": "La exportación ha fallado.",
   "importCsvTooltip": "Importar travesía desde un archivo",
   "importCsvTitle": "Importar travesía (CSV)",

@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Додати точки траси",
   "csvExportTrackPoints": "Точки траси",
   "csvExportPrivacy": "Файл містить імена екіпажу та номери посвідчень. Надсилай його лише тим, кому довіряєш.",
-  "csvExportAction": "Експортувати",
   "csvExportFailed": "Експорт не вдався.",
   "importCsvTooltip": "Імпорт плавання з файлу",
   "importCsvTitle": "Імпорт плавання (CSV)",

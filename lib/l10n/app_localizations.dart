@@ -7802,12 +7802,6 @@ abstract class AppLocalizations {
   /// **'Súbor obsahuje mená posádky a čísla preukazov. Pošli ho len ľuďom, ktorým dôveruješ.'**
   String get csvExportPrivacy;
 
-  /// No description provided for @csvExportAction.
-  ///
-  /// In sk, this message translates to:
-  /// **'Exportovať'**
-  String get csvExportAction;
-
   /// No description provided for @csvExportFailed.
   ///
   /// In sk, this message translates to:

@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Vključi točke sledi",
   "csvExportTrackPoints": "Točke sledi",
   "csvExportPrivacy": "Datoteka vsebuje imena posadke in številke dovoljenj. Pošlji jo samo osebam, ki jim zaupaš.",
-  "csvExportAction": "Izvozi",
   "csvExportFailed": "Izvoz ni uspel.",
   "importCsvTooltip": "Uvozi plovbo iz datoteke",
   "importCsvTitle": "Uvoz plovbe (CSV)",

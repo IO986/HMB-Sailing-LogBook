@@ -4188,9 +4188,6 @@ class AppLocalizationsPl extends AppLocalizations {
       'Plik zawiera imiona i nazwiska załogi oraz numery uprawnień. Wysyłaj go tylko osobom, którym ufasz.';
 
   @override
-  String get csvExportAction => 'Eksportuj';
-
-  @override
   String get csvExportFailed => 'Eksport się nie powiódł.';
 
   @override

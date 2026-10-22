@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Include track points",
   "csvExportTrackPoints": "Track points",
   "csvExportPrivacy": "The file contains the names of the crew and licence numbers. Send it only to people you trust.",
-  "csvExportAction": "Export",
   "csvExportFailed": "The export failed.",
   "importCsvTooltip": "Import a voyage from a file",
   "importCsvTitle": "Import voyage (CSV)",

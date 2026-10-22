@@ -33,19 +33,24 @@ abstract final class VoyageCsvWriter {
       case VoyageCsvSchema.parentId:
         return r.parentId?.toString() ?? '';
       default:
-        return r.cells[column] ?? '';
+        return r.cell(column) ?? '';
     }
   }
 
+  /// One line, built in memory and handed to [sink] in a single write. A sink
+  /// that is a file does real work on every call, and a row has 139 cells.
   static void line(StringSink sink, List<String> cells) {
+    final sb = StringBuffer();
     for (var i = 0; i < cells.length; i++) {
-      if (i > 0) sink.write(',');
-      sink.write(_quote(cells[i]));
+      if (i > 0) sb.write(',');
+      sb.write(_quote(cells[i]));
     }
-    sink.write('\r\n');
+    sb.write('\r\n');
+    sink.write(sb.toString());
   }
 
   static String _quote(String v) {
+    if (v.isEmpty) return v; // nearly every cell of a row
     final needs = v.contains(',') ||
         v.contains('"') ||
         v.contains('\n') ||
@@ -62,13 +67,18 @@ abstract final class VoyageCsvWriter {
 /// The byte order mark and the header go out on construction; the first record
 /// added must be `meta`; [finish] checks that something was written.
 class VoyageCsvSink {
+  /// How much text is gathered before it goes to the sink. A file sink does
+  /// real work on every call; a track is hundreds of thousands of lines.
+  static const _chunk = 64 * 1024;
+
   final StringSink _sink;
+  final StringBuffer _buffer = StringBuffer();
   final List<String> _header = VoyageCsvSchema.header;
   var _count = 0;
 
   VoyageCsvSink(this._sink) {
-    _sink.write(VoyageCsvWriter.bom);
-    VoyageCsvWriter.line(_sink, _header);
+    _buffer.write(VoyageCsvWriter.bom);
+    VoyageCsvWriter.line(_buffer, _header);
   }
 
   int get count => _count;
@@ -77,14 +87,23 @@ class VoyageCsvSink {
     if (_count == 0 && r.type != 'meta') {
       throw ArgumentError('the first record must be "meta", not "${r.type}"');
     }
-    VoyageCsvWriter.line(_sink, [
+    VoyageCsvWriter.line(_buffer, [
       for (final col in _header) VoyageCsvWriter.cell(r, col),
     ]);
     _count++;
+    if (_buffer.length >= _chunk) _flush();
   }
 
+  void _flush() {
+    _sink.write(_buffer.toString());
+    _buffer.clear();
+  }
+
+  /// Hands over what is still gathered. Must be called, or the end of the file
+  /// is lost.
   void finish() {
     if (_count == 0) throw ArgumentError('no records');
+    _flush();
   }
 }
 

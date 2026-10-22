@@ -4176,9 +4176,6 @@ class AppLocalizationsCs extends AppLocalizations {
       'Soubor obsahuje jména posádky a čísla průkazů. Pošli ho jen lidem, kterým důvěřuješ.';
 
   @override
-  String get csvExportAction => 'Exportovat';
-
-  @override
   String get csvExportFailed => 'Export se nepodařil.';
 
   @override

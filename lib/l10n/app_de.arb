@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Streckenpunkte einbeziehen",
   "csvExportTrackPoints": "Streckenpunkte",
   "csvExportPrivacy": "Die Datei enthält Namen der Crew und Scheinnummern. Sende sie nur Personen, denen du vertraust.",
-  "csvExportAction": "Exportieren",
   "csvExportFailed": "Der Export ist fehlgeschlagen.",
   "importCsvTooltip": "Reise aus Datei importieren",
   "importCsvTitle": "Reise importieren (CSV)",

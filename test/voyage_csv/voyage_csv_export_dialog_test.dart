@@ -113,6 +113,21 @@ void main() {
     expect(find.textContaining('MB'), findsNothing);
   });
 
+  testWidgets('the file can be shared or kept on the device', (t) async {
+    await open(t, await voyageWithTrack(3));
+    expect(find.byKey(const ValueKey('csv-export-go')), findsOneWidget);
+    expect(find.text(l.share), findsOneWidget);
+    expect(find.byKey(const ValueKey('csv-export-save')), findsOneWidget);
+    expect(find.text(l.saveToDevice), findsOneWidget);
+  });
+
+  testWidgets('a tap beside it does not close it', (t) async {
+    await open(t, await voyageWithTrack(3));
+    await t.tapAt(const Offset(4, 4)); // the barrier
+    await t.pumpAndSettle();
+    expect(find.text(l.exportsCsvTitle), findsOneWidget);
+  });
+
   testWidgets('cancel closes it', (t) async {
     await open(t, await voyageWithTrack(3));
     await t.tap(find.text(l.cancel));

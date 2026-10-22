@@ -4182,9 +4182,6 @@ class AppLocalizationsUk extends AppLocalizations {
       'Файл містить імена екіпажу та номери посвідчень. Надсилай його лише тим, кому довіряєш.';
 
   @override
-  String get csvExportAction => 'Експортувати';
-
-  @override
   String get csvExportFailed => 'Експорт не вдався.';
 
   @override

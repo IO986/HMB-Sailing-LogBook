@@ -1400,7 +1400,6 @@
   "csvExportIncludeTrack": "Dołącz punkty trasy",
   "csvExportTrackPoints": "Punkty trasy",
   "csvExportPrivacy": "Plik zawiera imiona i nazwiska załogi oraz numery uprawnień. Wysyłaj go tylko osobom, którym ufasz.",
-  "csvExportAction": "Eksportuj",
   "csvExportFailed": "Eksport się nie powiódł.",
   "importCsvTooltip": "Importuj rejs z pliku",
   "importCsvTitle": "Import rejsu (CSV)",

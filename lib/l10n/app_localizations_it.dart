@@ -4207,9 +4207,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il file contiene i nomi dell\'equipaggio e i numeri dei brevetti. Invialo solo a persone di cui ti fidi.';
 
   @override
-  String get csvExportAction => 'Esporta';
-
-  @override
   String get csvExportFailed => 'Esportazione non riuscita.';
 
   @override

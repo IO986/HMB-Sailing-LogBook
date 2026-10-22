@@ -4181,9 +4181,6 @@ class AppLocalizationsSk extends AppLocalizations {
       'Súbor obsahuje mená posádky a čísla preukazov. Pošli ho len ľuďom, ktorým dôveruješ.';
 
   @override
-  String get csvExportAction => 'Exportovať';
-
-  @override
   String get csvExportFailed => 'Export sa nepodaril.';
 
   @override
