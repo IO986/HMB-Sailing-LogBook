@@ -1171,3 +1171,120 @@ trasu“ → GPX export → mazanie plavby z Knihy míľ.
   `equals(null)` alebo úzky import.
 - **CI gate** presne ako CI, s návratovým kódom, nie `grep -c`:
   `flutter analyze --no-fatal-infos > /dev/null 2>&1; echo $?`
+
+---
+
+# Kde sme skončili — 22. 10. 2026 (večer: CSV celej plavby, opravy po teste na Honore)
+
+`main` = `9a37733`, pushnuté na origin aj academy. **Nič z toho nie je na Play** —
+tam je stále build 83 (1.41.0+83, schéma v36); kód je na schéme v37. Verzia
+v `pubspec.yaml` sa nebumpovala, ďalší upload musí byť 84+ a pred ním sa treba
+spýtať, čo je na Console.
+
+## Nový formát: „HMB voyage CSV“ (hlavná vec dňa)
+
+Jeden súbor so všetkým, čo appka o plavbe vie: loď, skiper a posádka s
+preukazmi a kvalifikáciou, kontakty, náklady, body brífingu, dni, relácie,
+záznamy denníka, body trasy, služby, odovzdávací protokol so zoznamom,
+hodnotenie, podpisy (len meno a čas) a zamerania. **Nie sú v ňom** obrázky
+(fotky, podpisy) ani veci mimo plavby (cache počasia, uložené body, fronta
+synchronizácie).
+
+- **Špecifikácia:** `docs/CSV_FORMAT.md`. Zdroj pravdy je katalóg
+  `lib/features/voyage_csv/format/voyage_csv_schema.dart` (16 typov záznamov,
+  139 stĺpcov) a test `voyage_csv_format_test.dart` zlyhá, keď sa kód a dokument
+  rozídu. Jeden súbor, jedna hlavička, stĺpec `record_type`; väzby cez `id` a
+  `parent_id` (čísla v súbore, nie id z databázy).
+- **Kodek** (`format/`): čisto Dart. Text, ktorý by tabuľka spustila ako vzorec
+  (`=`, `+`, `-`, `@`), dostane apostrof a čítač ho presne vráti. Čítač je
+  prísny k tomu, čo súbor je (cudzí, bez `meta`, novšia verzia → odmietne s
+  kódom `VoyageCsvProblem`), zhovievavý k obsahu (neznámy stĺpec či typ
+  preskočí a ohlási cez `VoyageCsvWarning`). Chyby a upozornenia nesú kód a
+  technický detail, nie slovenský text — obrazovka ich prekladá.
+- **Export** (`services/voyage_csv_exporter.dart`): zapisuje priebežne do
+  `VoyageCsvSink`, trasu číta po jednej relácii, takže dlhá plavba sa nikdy
+  nedrží celá v pamäti. Plavbe bez `syncUuid` ho pridelí a uloží (opakovaný
+  export má tú istú identitu). Obrazovka je riadok „Všetky údaje plavby
+  (CSV)“ v Hube exportov: prepínač bodov trasy (predvolene zapnutý, s odhadom
+  veľkosti), upozornenie na osobné údaje, zdieľanie.
+- **Import** (`services/voyage_csv_importer.dart`): vždy **nová** plavba
+  (`CharterSource.csv`, patrí medzi spätne zapísané). Nič existujúce sa
+  nemení. Plavba si nechá `uuid` zo súboru, takže ten istý súbor druhýkrát,
+  aj do databázy, z ktorej vznikol, sa odmietne
+  (`VoyageAlreadyImportedException`) a obrazovka ponúkne otvorenie existujúcej.
+  Jedna transakcia. Nepoužiteľné záznamy sa preskočia a spočítajú. Zamerania sa
+  kontrolujú rovnakým pravidlom ako CHECK v tabuľke, inak by jeden zlý riadok
+  zhodil celý import. Vstup: ikona hore v zozname plavieb → `/voyage-import`.
+- **Poistka:** test okružnej cesty (export → import do prázdnej DB → export)
+  porovnáva oba súbory bunku po bunke; jediný rozdiel je `source = csv`. Dve
+  úmyselné poruchy importéra (stratený vietor, stratená kotvová stráž) ním
+  prepadli.
+
+Podpisy a fotky po importe chýbajú — podpis ostane ako meno a čas, obrázok sa
+musí nakresliť znova. To je zámer, v CSV nemajú čo robiť.
+
+## Ďalšie veci z dnešného dňa (všetko na `main`)
+
+- **Poloha záznamu z trasy** (`5fd9ae1`): pri prepise z papiera po výbere času
+  záznamu sa poloha doplní z meranej trasy dňa (`TrackPosition`, interpolácia,
+  nikdy cez dieru nad 10 minút, nikdy nad to, čo skiper napísal). Zapíše sa
+  `locationSource = 'track'`. Odhadnutá čiara zo záznamov sa za meranie
+  nepočíta.
+- **Súradnicové bunky** (`CoordinateInput`): stupne a minúty vo vlastných
+  bunkách (alebo jedna bunka pri desatinných stupňoch), N/S a E/W prepínač,
+  znaky ° a ' vidno aj v prázdnej bunke (`suffixIcon`, nie `suffixText`).
+- **Najvyššia kvalifikácia kapitána:** nové pole v karte skipera vo formulári
+  plavby (`crewJson.qualification` + `SkipperProfile.licenseType`). Predvypĺňa
+  sa v zázname Knihy míľ, zobrazuje sa v detaile plavby a v hlavičke PDF.
+  Dôvod: `licenseType` sa po zrušení Profilu skippera nedal nikde vyplniť,
+  prefill nemal z čoho brať.
+- **Kniha míľ — mazanie sa neprejavilo v zozname:** `milesAggregateProvider`
+  číta z privátneho `_milesRawDataProvider`, ktorý ostal v pamäti, kým je
+  obrazovka otvorená. Oprava je `invalidateMilesData(ref)`; používa ju aj
+  vytvorenie prepisovanej plavby a formuláre. Latentná chyba bola aj tam.
+- **Hlavička „Dni plavby“** pretekala (`VoyageDaysHeader`, hromadné mazanie je
+  ikona). Test beží cez všetky jazyky na 320 dp.
+- **Mapa:** náhľad plavby spustený zvonku (ikona trasy v detaile) teraz
+  vycentruje kameru na trasu (`PreviewFocusTracker`, `7c102d4`).
+- Prázdny zoznam plavieb mal dve tlačidlá „Nová plavba“; ostalo plávajúce.
+  `files/` je v `.gitignore` (osobné vstupné súbory).
+
+## Lokálna vetva, ktorú ignorovať
+
+`archive/csv-import-test-DO-NOT-USE` — jednorazový import cudzieho CSV (Garmin
++ počasie z modelu) pre jedného skipera. Nikdy nemergovať ani nepushovať
+(má popis v `git config branch.<názov>.description`). Opravu mapy z nej som
+preniesol na `main` cherry-pickom. Ak skiper pošle ten súbor znova, najčistejšie
+je previesť ho do nášho formátu (skript), nie oživovať tú vetvu.
+
+## Neoverené na zariadení
+
+Testy a analyzér sú zelené (1035 testov, `flutter analyze` kód 0), ale na
+Honore sa neprešlo: **export CSV** (Hub exportov → dialóg → zdieľanie),
+**import** (výber súboru systémovým dialógom je v teste nedosiahnuteľný),
+poloha z trasy po výbere času, kvalifikácia v detaile a PDF, centrovanie mapy
+pri náhľade. Ďalej stále z minulej sekcie: prepis z papiera od začiatku po
+koniec.
+
+## Otvorené
+
+- **Import PDF z denníka** (krok 6 plánu prepisu z papiera) — čaká na
+  skutočný súbor od skipera; najprv zistiť, či nemal auto-zálohu na Drive.
+- **Backoff pre Overpass** a nápad predsťahovať POI spolu s dlaždicami.
+- **Samsung S24 zabíja appku pri nahrávaní** — diagnostická značka pri
+  `AppLifecycleState.detached` stále nezačatá.
+- Texty tej jednorazovej vetvy neboli preložené (len po slovensky) — v `main`
+  nie sú, takže je to bez následku.
+
+## Pasce
+
+- **`watch(...).first` v testoch s `testWidgets` visí**: drift dokončuje prúd
+  cez časovač, ktorý sa vo falošnom čase nespustí. Na jednorazové čítanie
+  použiť `get()`; preto má DAO `getDutiesForCharter`.
+- **Dialóg výberu času v testoch**: prostredie používa 12-hodinový formát, takže
+  „10“ je 22:00; test musí zabaliť `MediaQuery(alwaysUse24HourFormat: true)`.
+- **`isNull` koliduje s driftom** v testoch s plným importom `drift.dart` —
+  použiť `equals(null)`.
+- Dlhý Python/heredoc v Bash nástroji padá; skript zapísať cez Write a spustiť
+  `python -I <cesta>`. Pri `adb push` v Git Bash treba `MSYS_NO_PATHCONV=1`,
+  inak sa `/sdcard/...` prepíše na cestu do Windows.
