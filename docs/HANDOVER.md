@@ -1017,3 +1017,42 @@ Nájdené na Honore pri obnove zálohy z 9. 10. (schéma v34): po obnove
 Bokom: Overpass (POI) 21. 10. nedostupný na všetkých 4 mirroroch aj z PC
 — nie chyba appky. Appka ale po zlyhaní všetkých skúša znova pri každom
 posune mapy (4 × 20 s); zvážiť backoff.
+
+---
+
+# Kde sme skončili — 22. 10. 2026 (build 83 na Play, stabilný)
+
+`main` = `1e706ea` (1.41.0+83), origin aj academy rovnaké, CI zelené. Build
+**83 je na Play** a je to stabilná verzia po problémoch s 79–81. Ďalší
+upload musí byť **84+**.
+
+**Prečo 83:** 81 mal migračný bug (v34 → v36 nechala DB napoly
+zmigrovanú, appka by nenaštartovala — pozri doplnok 21. 10. vyššie), 82
+bol medzikrok s opravou, 83 pridal release notes a import dlaždíc.
+Text pre Console: `docs/release_notes_v83.txt`.
+
+**Prečítať s opatrnosťou:** sekcia „21. 10. 2026 (visiaci štart…)" vyššie
+je zastaraná v týchto bodoch — „verzia 81 je na Console", „treba vydať
+82", `release_notes_v82.txt`. Platí stav z tejto sekcie. Body 1–4 z jej
+časti „Čo NIE JE hotové" (Drive upload dlaždíc, import zo súboru na
+zariadení, OOM pri veľkom zipe, auto-záloha po Stope) tu **nie sú
+potvrdené ako vyriešené** — Drive sync po oprave migrácie funguje, ale
+konkrétne tieto štyri veci neboli znovu overené.
+
+## Otvorené
+
+- **Samsung S24 zabíja appku** pri nahrávaní — diagnostická značka pri
+  `AppLifecycleState.detached` (sekcia 29. 8.) nezačatá.
+- **Overpass (POI)**: po zlyhaní všetkých mirrorov sa skúša znova pri
+  každom posune mapy (4 × 20 s). Treba backoff.
+- Dlhodobé: Zero-Tap Sign-In (apríl 2027), limity pamäte a veľký zip v RAM
+  (február 2027).
+- Git tagy končia na `v1.35.1`; buildy 63–83 nemajú tag.
+
+## Vetvy
+
+Zliate lokálne vetvy sa 22. 10. zmazali. Ostali zámerne:
+`wip/windows-desktop`, `feat/briefing-pdf-map-cache` (bez upstreamu) a
+`feat/pmtiles-offline-basemap` — má nezliaty commit `c929973`
+(`wip(map,desktop)`: offline vektorová mapa, desktopová kamera a kompas),
+upstream na origine je zmazaný. Rozhodnúť, či ho zahodiť.
