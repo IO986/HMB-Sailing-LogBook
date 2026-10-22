@@ -1320,3 +1320,89 @@ Na tabuľke `track_points` **nie je index na `session_id`**, takže
 stovkách tisíc bodov je to zanedbateľné oproti tomu, čo sme opravili, ale ak by
 export veľmi dlhej plavby mal ísť ešte rýchlejšie, je to ďalšie miesto (vyžaduje
 zmenu schémy).
+
+---
+
+# Kde sme skončili — 22. 10. 2026 (build 84 je na Play)
+
+**Build 84 (1.42.0+84) nahral skiper ručne na Play Console** 22. 10. 2026.
+Zodpovedá commitu `aff8cf1` na `main` (origin aj academy). Ďalší upload musí
+byť **85+**; pred bumpom sa vždy spýtať, čo je na Console (git to nevie).
+
+Predošlé sekcie z 22. 10. hovoria „nič z toho nie je na Play“ — to platilo do
+tohto nahratia. Teraz je na Play všetko, čo tie sekcie vymenúvajú: prepis z
+papiera (schéma **v37**), CSV export/import celej plavby, kvalifikácia kapitána,
+poloha záznamu z trasy, oprava Knihy míľ a centrovanie mapy.
+
+- Bundle: `release_builds/HMB-Sailing-Log-v1.42.0-build84.aab` (93,4 MB, kópia
+  presne toho, čo išlo na Play; neprepisovať, rovnako ako pri 63). Podpis
+  uploadovým kľúčom, SHA-1 `01:0C:5E:8C:…:41:2F` zhodný so zápisom vyššie.
+- Poznámky k vydaniu: `docs/release_notes_v84.txt` (en + sk, pod 500 znakov).
+- Pred bundle prešli `flutter analyze --no-fatal-infos` (kód 0) a 1040 testov.
+  Na zariadení sa skúšal **debug** build z toho istého kódu, nie release APK:
+  release APK s iným podpisom než debug by na Honore prepísal dáta.
+- Migrácia v36 → v37 pridáva len stĺpce (`day_logs.night_hours_manual`,
+  `sailing_sessions.is_estimated`) a má test. **Záloha z 84 sa nenaimportuje do
+  starej appky.**
+- Generované `lib/l10n/app_localizations*.dart` sa po buildoch javia ako
+  zmenené, ale líšia sa len koncami riadkov (CRLF/LF), nie obsahom. Nekomitovať.
+
+## Záchrana plavby SOLEOS po strate telefónu (skiper Miroslav Goliáš)
+
+Skiperovi sa utopil telefón. Mal PDF denníka (`5_9_2026.pdf`, Rev.10, export 11. 9.),
+jeden GPX (`…cast_2.gpx`, 8. 9. druhá časť) a **zálohu** `.hmbbackup` z 9. 9.
+13:29 (schéma v33, appka 1.35.2+72). Záloha je **staršia** než PDF, ale má plnú
+presnosť; PDF má novšie úpravy a posledné dni.
+
+Výsledok je v `files/out/` (gitignorované; ide skiperovi ručne):
+
+- `SOLEOS_5-9-2026_hmb-voyage.csv` — plavba v našom formáte, 11 611 záznamov,
+  300 záznamov denníka (55/81/68/39/34/23 po dňoch), 11 207 bodov trasy.
+  Načíta sa až **buildom 84** (ikona importu hore v Denníku).
+- `gpx/SOLEOS_2026-09-06.gpx` … `-11.gpx` — jeden GPX na deň.
+
+Ako sa to poskladalo (ak by sa mala zachrániť ďalšia plavba):
+
+1. **Záloha je základ**: `.hmbbackup` je zip s `sailing_logbook.db` (SQLite),
+   `metadata.json`, `crash_log.txt`. Otvoriť **len na čítanie** (`mode=ro&immutable=1`),
+   rozbaliť do vlastného prázdneho adresára. Dátumy sú unix sekundy. Záloha
+   obsahovala aj iné plavby skipera — do CSV sa nedávali.
+2. **PDF je naša vlastná tlač**, takže špecifikáciou je `PdfExportService`
+   (`_entriesTable`) a slovenské texty z `app_sk.arb`. Spoľahlivo sa číta
+   **PyMuPDF** podľa súradníc (stĺpce Čas, GPS, SOG, COG, Hĺbka, Vietor, hPa, T,
+   Pohon, Počasie, Poznámka). `pypdf` dáva pri tejto tabuľke nespoľahlivé `y`
+   a `pdftotext -layout` zalamuje bunky; Xpdf `pdftotext` nemá `-bbox`.
+   PyMuPDF sa inštaloval do izolovaného venv, nie do systémového Pythonu.
+3. **Overenie parsera**: 221 záznamov je v zálohe aj v PDF → porovnané bunku po
+   bunke. Zhoda všetkých polí v rámci zaokrúhlenia PDF; rozdiely boli len
+   vysvetliteľné (poradie záznamov v tej istej minúte, slovo zalomené v úzkom
+   stĺpci „Split-aerodro m“, parameter v texte „Autopilot ZAP - Auto“, príznak
+   automatického záznamu sa nedá odvodiť z typu udalosti).
+4. **Zlučovanie**: pole po poli sa berie hodnota zo zálohy (presná); ak sa líši
+   od zaokrúhlenej hodnoty z PDF, skiper ju zmenil neskôr a vyhráva PDF. V
+   tejto plavbe išlo len o dva záznamy z 9. 9. (13:25, 13:28: ručne zmenený
+   vietor, odstránený pohon, poznámky „kotva“). Prístavy a míle dní sú z
+   prehľadu v PDF (novšie), licencie skipera tiež.
+5. **CSV sa píše skutočným zapisovačom appky** (`VoyageCsvWriter`) cez Dart
+   skript s importom súborov z `lib/` cez `file:///`; overené importérom appky
+   do prázdnej DB a opätovným exportom: **0 rozdielov**.
+
+Čo sa obnoviť nedalo: fotky, obrázky podpisov, odovzdanie lode (check-out),
+presnosť GPS a sekundy pre záznamy po 13:28 9. 9. (len PDF: poloha na 0,01′,
+čas na minútu; smer vetra len na 16 svetových strán; poradie v rámci minúty
+je zachované doplnenými sekundami). Trasa pre 9. 9. poobede, 10. a 11. 9. je
+len čiara po priamke medzi polohami záznamov (relácia označená `estimated`).
+
+Skripty tejto záchrany boli v dočasnom scratchpade session a po nej zaniknú.
+Ak sa bude opakovať, treba ich napísať znova podľa postupu vyššie; dá sa z nich
+spraviť nástroj v `tool/`, ak to bude treba.
+
+## Pasce (nové)
+
+- **Nahrávanie na Play sa tentoraz robilo ručne.** Skripty typu `upload_play.py`
+  z minulých vydaní v repe ani na disku nie sú a v tejto session neboli k
+  dispozícii ani prihlasovacie údaje k Play API (bezpečnostná kontrola
+  odmietla prehľadávať `key.txt`). Bundle sa teda len postaví a skiper ho nahrá.
+- **Python s `-I` nevidí používateľské balíky** (`pypdf`), použiť `-P`.
+- **Git Bash a Python**: cesta `/tmp/...` z Bashu nie je tá istá ako pre
+  Windows Python; ukladať do scratchpadu a používať plné Windows cesty.
