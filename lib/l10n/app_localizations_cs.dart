@@ -2953,7 +2953,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o naplutých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.\n• Číslo pasu/OP se zadává až při vystavování potvrzení — u každého člena posádky zvlášť. Neukládá se, vytiskne se jen na tom jednom dokumentu; své číslo má skipper uložené v kartě plavby a předvyplní se mu. Kdo číslo nezadá, dostane na potvrzení prázdnou linku na dopsání rukou.\n• Potvrzení se před vystavením podepisuje stejně jako deník: otevře se podpisová plocha a PDF dostane závěrečnou stranu s podpisem, časem, kontrolním součtem SHA-256 a QR kódem k ověření.\n• Menu (tři tečky) u plavby → Smazat: odstraní plavbu i s jejími dny a záznamy, platí to i pro ručně přidanou historickou plavbu. Plavbu, která se právě zaznamenává, smazat nelze.';
+      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o naplutých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.\n• Číslo pasu/OP se zadává až při vystavování potvrzení — u každého člena posádky zvlášť. Neukládá se, vytiskne se jen na tom jednom dokumentu; své číslo má skipper uložené v kartě plavby a předvyplní se mu. Kdo číslo nezadá, dostane na potvrzení prázdnou linku na dopsání rukou.\n• Potvrzení se před vystavením podepisuje stejně jako deník: otevře se podpisová plocha a PDF dostane závěrečnou stranu s podpisem, časem, kontrolním součtem SHA-256 a QR kódem k ověření.\n• Menu (tři tečky) u plavby → Smazat: odstraní plavbu i s jejími dny a záznamy, platí to i pro ručně přidanou historickou plavbu. Plavbu, která se právě zaznamenává, smazat nelze.\n• Tlačítko + nabídne i přepis z papírového deníku: vytvoříš plavbu a můžeš k ní hned připojit GPX trasu.';
 
   @override
   String get guideHandoverTitle => 'Předávací protokol (check-in/check-out)';
@@ -2967,7 +2967,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importuj trasy a waypointy z jiných navigačních aplikací nebo GPS zařízení (ikona na Mapě).\n\n• Vyber .gpx soubor ze zařízení\n• Vícedenní export (více tracků v jednom souboru, např. z Garmin Explore) se automaticky spojí do jedné plavby s dnem pro každý kalendářní den\n• Nalezené tracky můžeš i ručně přiřadit k existující plavbě\n• Waypointy (i z tras/routes) se přidají rovnou na mapu\n• Při poškozeném souboru aplikace zobrazí srozumitelnou chybovou hlášku';
+      'Importuj trasy a waypointy z jiných navigačních aplikací nebo GPS zařízení (ikona na Mapě).\n\n• Vyber .gpx soubor ze zařízení\n• Vícedenní export (více tracků v jednom souboru, např. z Garmin Explore) se automaticky spojí do jedné plavby s dnem pro každý kalendářní den\n• Nalezené tracky můžeš i ručně přiřadit k existující plavbě\n• Waypointy (i z tras/routes) se přidají rovnou na mapu\n• Při poškozeném souboru aplikace zobrazí srozumitelnou chybovou hlášku\n• Trasu lze připojit k plavbě přepsané z papíru nebo dříve importované (volba „Připojit k plavbě“): dny se vytvoří podle dat, už zapsané dny se doplní a opakovaný import téhož souboru míle nezdvojí.';
 
   @override
   String get guideWeatherTitle => 'Počasí';
@@ -4080,4 +4080,27 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB zrušen';
+
+  @override
+  String get gpxTargetVoyage => 'Připojit k plavbě';
+
+  @override
+  String get milesAddSummary => 'Jen souhrn';
+
+  @override
+  String get milesAddSummaryHint => 'Data, míle a loď bez záznamů po dnech';
+
+  @override
+  String get milesAddPaperVoyage => 'Přepsat z papírového deníku';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'Plavba po dnech; trasu lze zrekonstruovat z GPX souboru';
+
+  @override
+  String get paperVoyageGpxTitle => 'Připojit GPX trasu?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'Pokud máš GPX soubor z této plavby (i z jiného zařízení), dny, míle a noční hodiny se z něj zrekonstruují. Můžeš to udělat i později přes import GPX na mapě.';
 }

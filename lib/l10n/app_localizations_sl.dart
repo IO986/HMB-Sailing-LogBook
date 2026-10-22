@@ -2958,7 +2958,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis\n• Potrdilo o miljah se izda prek obrazca (ikona PDF zgoraj): zase ali za člana posadke, z imenom prejemnika, imenom in kvalifikacijo izdajatelja (predizpolnjeno iz profila skiperja) in seznamom plovb s potrditvenimi polji. Dokument nosi plovilo, vodjo plovbe, območje, plimske ali neplimske vode in vlogo, v kateri si plul, ter razdelitev milj po vlogi. Pri plovbah, kjer nisi bil vodja, ostane prostor za njegov podpis z imenom. Potrdilo zase nosi tudi skiperski povzetek. Shrani se tudi v mapo aplikacije, ne le prek sistemskega pogovornega okna.\n• Potrdilo vsebuje tudi progo plovbe po dnevih — Biograd – Žut – Veli Rat – Zadar – Biograd — sestavljeno iz pristanišč posameznih dni; enaka postaja dvakrat zapored se združi, dan brez vpisanega pristanišča pa se preskoči.\n• V obrazcu potrdila polje „Za koga\" ponudi posadko s tvojih plovb — ime izberi, namesto da ga tipkaš; tipkarska napaka bi iz ene osebe naredila dve.\n• Številka potnega lista/osebne se vpiše ob izdaji potrdila, za vsakega člana posadke posebej. Ne shrani se, natisne se le na tem enem dokumentu; skiperjeva lastna številka je v kartici plovbe in se izpolni sama. Brez številke ostane na potrdilu črta za ročni vpis.\n• Potrdilo se pred izvozom podpiše enako kot dnevnik: odpre se podpisna površina, PDF pa dobi zaključno stran s podpisom, časom, kontrolno vsoto SHA-256 in kodo QR za preverjanje.\n• Meni (tri pike) pri plovbi → Izbriši: odstrani plovbo z njenimi dnevi in zapisi, tudi za ročno dodano zgodovinsko plovbo. Plovbe, ki se trenutno beleži, ni mogoče izbrisati.';
+      'Povzetek vseh vaših plovb na enem mestu (ikona v zavihku Dnevnik).\n\n• Skupaj navtičnih milj, dni na morju, število plovb in nočne ure\n• Razčlenitev po letu in po plovilu\n• Filter po letu\n• Tapnite plovbo (vključno s sledeno/uvoženo), da izpolnite njen zapis v dnevniku – pot, zastava plovila, ime in usposobljenost poveljnika, podpis, ki potrjuje milje\n• Gumb + – dodajte preteklo plovbo iz časa pred uporabo aplikacije (v celoti se šteje v povzetke, na seznamu je označena z zvezdico)\n• Izvoz PDF potrdila o preplutih miljah s prostorom za podpis\n• Potrdilo o miljah se izda prek obrazca (ikona PDF zgoraj): zase ali za člana posadke, z imenom prejemnika, imenom in kvalifikacijo izdajatelja (predizpolnjeno iz profila skiperja) in seznamom plovb s potrditvenimi polji. Dokument nosi plovilo, vodjo plovbe, območje, plimske ali neplimske vode in vlogo, v kateri si plul, ter razdelitev milj po vlogi. Pri plovbah, kjer nisi bil vodja, ostane prostor za njegov podpis z imenom. Potrdilo zase nosi tudi skiperski povzetek. Shrani se tudi v mapo aplikacije, ne le prek sistemskega pogovornega okna.\n• Potrdilo vsebuje tudi progo plovbe po dnevih — Biograd – Žut – Veli Rat – Zadar – Biograd — sestavljeno iz pristanišč posameznih dni; enaka postaja dvakrat zapored se združi, dan brez vpisanega pristanišča pa se preskoči.\n• V obrazcu potrdila polje „Za koga\" ponudi posadko s tvojih plovb — ime izberi, namesto da ga tipkaš; tipkarska napaka bi iz ene osebe naredila dve.\n• Številka potnega lista/osebne se vpiše ob izdaji potrdila, za vsakega člana posadke posebej. Ne shrani se, natisne se le na tem enem dokumentu; skiperjeva lastna številka je v kartici plovbe in se izpolni sama. Brez številke ostane na potrdilu črta za ročni vpis.\n• Potrdilo se pred izvozom podpiše enako kot dnevnik: odpre se podpisna površina, PDF pa dobi zaključno stran s podpisom, časom, kontrolno vsoto SHA-256 in kodo QR za preverjanje.\n• Meni (tri pike) pri plovbi → Izbriši: odstrani plovbo z njenimi dnevi in zapisi, tudi za ročno dodano zgodovinsko plovbo. Plovbe, ki se trenutno beleži, ni mogoče izbrisati.\n• Gumb + ponuja tudi prepis papirnatega dnevnika: ustvariš plovbo in ji lahko takoj priložiš sled GPX.';
 
   @override
   String get guideHandoverTitle =>
@@ -2973,7 +2973,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Uvozite sledi in točke poti iz drugih navigacijskih aplikacij ali naprav GPS (ikona na Zemljevidu).\n\n• Izberite datoteko .gpx iz naprave\n• Večdnevni izvoz (več sledi v eni datoteki, npr. iz Garmin Explore) se samodejno združi v eno plovbo z enim dnem na koledarski dan\n• Najdene sledi lahko tudi ročno dodelite obstoječi plovbi\n• Točke poti (vključno s tistimi iz poti) se dodajo neposredno na zemljevid\n• Za poškodovano datoteko se prikaže jasno sporočilo o napaki';
+      'Uvozite sledi in točke poti iz drugih navigacijskih aplikacij ali naprav GPS (ikona na Zemljevidu).\n\n• Izberite datoteko .gpx iz naprave\n• Večdnevni izvoz (več sledi v eni datoteki, npr. iz Garmin Explore) se samodejno združi v eno plovbo z enim dnem na koledarski dan\n• Najdene sledi lahko tudi ročno dodelite obstoječi plovbi\n• Točke poti (vključno s tistimi iz poti) se dodajo neposredno na zemljevid\n• Za poškodovano datoteko se prikaže jasno sporočilo o napaki\n• Sled je mogoče priložiti plovbi, prepisani s papirja ali prej uvoženi (izbira »Dodaj plovbi«): dnevi nastanejo glede na datume, že zapisani dnevi se dopolnijo, ponovni uvoz iste datoteke pa milj ne podvoji.';
 
   @override
   String get guideWeatherTitle => 'Vreme';
@@ -4087,4 +4087,28 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB preklican';
+
+  @override
+  String get gpxTargetVoyage => 'Dodaj plovbi';
+
+  @override
+  String get milesAddSummary => 'Samo povzetek';
+
+  @override
+  String get milesAddSummaryHint =>
+      'Datumi, milje in plovilo brez zapisov po dnevih';
+
+  @override
+  String get milesAddPaperVoyage => 'Prepiši iz papirnatega dnevnika';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'Plovba dan za dnem; sled je mogoče rekonstruirati iz datoteke GPX';
+
+  @override
+  String get paperVoyageGpxTitle => 'Priložiti sled GPX?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'Če imaš datoteko GPX te plovbe (tudi z druge naprave), se iz nje rekonstruirajo dnevi, milje in nočne ure. To lahko storiš tudi pozneje prek uvoza GPX na zemljevidu.';
 }

@@ -139,7 +139,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       charterId: int.parse(s.pathParameters['id']!))),
             ],
           ),
-          GoRoute(path: '/gpx-import', builder: (c, s) => const GpxImportScreen()),
+          GoRoute(
+              path: '/gpx-import',
+              builder: (c, s) => GpxImportScreen(charterId: s.extra as int?)),
           GoRoute(path: '/ocean-currents', builder: (c, s) => const OceanCurrentsScreen()),
           GoRoute(path: '/instruments', builder: (c, s) => const InstrumentsScreen()),
           GoRoute(path: '/weather', builder: (c, s) => const WeatherScreen()),

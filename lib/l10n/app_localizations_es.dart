@@ -2970,7 +2970,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.\n• El certificado se firma antes de exportarlo, igual que el cuaderno: se abre el panel de firma y el PDF recibe una página final con la firma, la hora, una suma de control SHA-256 y un código QR para verificarlo.\n• Menú (tres puntos) en una travesía → Eliminar: borra la travesía con sus días y registros, también si es una travesía histórica añadida a mano. No se puede eliminar una travesía que se está grabando en ese momento.';
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.\n• El certificado se firma antes de exportarlo, igual que el cuaderno: se abre el panel de firma y el PDF recibe una página final con la firma, la hora, una suma de control SHA-256 y un código QR para verificarlo.\n• Menú (tres puntos) en una travesía → Eliminar: borra la travesía con sus días y registros, también si es una travesía histórica añadida a mano. No se puede eliminar una travesía que se está grabando en ese momento.\n• El botón + también permite transcribir un diario en papel: creas la travesía y puedes adjuntarle enseguida un track GPX.';
 
   @override
   String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
@@ -2984,7 +2984,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importa tracks y waypoints desde otras apps de navegación o dispositivos GPS (icono en el Mapa).\n\n• Elige un archivo .gpx del dispositivo\n• Una exportación de varios días (varios tracks en un archivo, p. ej. de Garmin Explore) se combina automáticamente en una sola travesía con un día por cada día del calendario\n• Los tracks encontrados también se pueden asignar manualmente a una travesía existente\n• Los waypoints (también de rutas) se añaden directamente al mapa\n• Se muestra un mensaje de error claro si el archivo está dañado';
+      'Importa tracks y waypoints desde otras apps de navegación o dispositivos GPS (icono en el Mapa).\n\n• Elige un archivo .gpx del dispositivo\n• Una exportación de varios días (varios tracks en un archivo, p. ej. de Garmin Explore) se combina automáticamente en una sola travesía con un día por cada día del calendario\n• Los tracks encontrados también se pueden asignar manualmente a una travesía existente\n• Los waypoints (también de rutas) se añaden directamente al mapa\n• Se muestra un mensaje de error claro si el archivo está dañado\n• Un track se puede adjuntar a una travesía transcrita del papel o importada antes (selector «Añadir a la travesía»): los días se crean según las fechas, los días ya escritos se completan y importar el mismo archivo dos veces no duplica las millas.';
 
   @override
   String get guideWeatherTitle => 'Tiempo';
@@ -4105,4 +4105,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB cancelado';
+
+  @override
+  String get gpxTargetVoyage => 'Añadir a la travesía';
+
+  @override
+  String get milesAddSummary => 'Solo resumen';
+
+  @override
+  String get milesAddSummaryHint =>
+      'Fechas, millas y barco sin registros día a día';
+
+  @override
+  String get milesAddPaperVoyage => 'Transcribir del diario en papel';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'La travesía día a día; el track se puede reconstruir desde un archivo GPX';
+
+  @override
+  String get paperVoyageGpxTitle => '¿Adjuntar un track GPX?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'Si tienes un archivo GPX de esta travesía (incluso de otro dispositivo), los días, las millas y las horas nocturnas se reconstruyen a partir de él. También puedes hacerlo más tarde con la importación GPX del mapa.';
 }

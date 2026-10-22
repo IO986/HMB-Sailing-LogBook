@@ -2960,7 +2960,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.\n• Numer paszportu/dowodu wpisuje się przy wystawianiu zaświadczenia, osobno dla każdego członka załogi. Nie jest zapisywany — trafia tylko na ten jeden dokument; własny numer skippera stoi w karcie rejsu i uzupełnia się sam. Bez numeru zostaje na zaświadczeniu linia do wpisania ręcznie.\n• Zaświadczenie podpisuje się przed wystawieniem tak samo jak dziennik: otwiera się pole podpisu, a PDF dostaje stronę końcową z podpisem, czasem, sumą kontrolną SHA-256 i kodem QR do weryfikacji.\n• Menu (trzy kropki) przy rejsie → Usuń: usuwa rejs razem z jego dniami i wpisami, dotyczy to także ręcznie dodanego rejsu historycznego. Rejsu, który jest właśnie rejestrowany, nie można usunąć.';
+      'Podsumowanie wszystkich rejsów w jednym miejscu (ikona w Dzienniku pokładowym).\n\n• Łączne mile morskie, dni na morzu, liczba rejsów i godziny nocne\n• Podział według roku i według jednostki\n• Filtr według roku\n• Dotknij rejs (także śledzony/importowany) i uzupełnij wpis Książki mil – trasę, banderę jednostki, imię i kwalifikacje skippera, podpis potwierdzający mile\n• Przycisk + – dodaj rejs historyczny sprzed używania aplikacji (liczy się w pełni do podsumowań, na liście oznaczony gwiazdką)\n• Eksport PDF potwierdzenia przepłyniętych mil z miejscem na podpis\n• Zaświadczenie o milach wystawia się przez formularz (ikona PDF u góry): dla siebie albo dla członka załogi, z imieniem odbiorcy, imieniem i kwalifikacją wystawiającego (z profilu skippera) oraz listą rejsów do zaznaczenia. Dokument niesie jacht, kapitana rejsu, akwen, wody pływowe lub bezpływowe i funkcję, w której płynąłeś, plus rozbicie mil według funkcji. Przy rejsach, gdzie nie byłeś kapitanem, zostaje miejsce na jego podpis z nazwiskiem. Zaświadczenie dla siebie ma też podsumowanie skippera. Zapisuje się także do folderu aplikacji, nie tylko przez okno systemowe.\n• Zaświadczenie zawiera też trasę rejsu dzień po dniu — Biograd – Žut – Veli Rat – Zadar – Biograd — złożoną z portów poszczególnych dni; powtórzone przystanki są łączone, a dni bez zapisanego portu pomijane.\n• W formularzu zaświadczenia pole „Dla kogo\" podpowiada załogę z twoich rejsów — wybierz nazwisko zamiast je wpisywać, bo literówka zrobi z jednej osoby dwie.\n• Numer paszportu/dowodu wpisuje się przy wystawianiu zaświadczenia, osobno dla każdego członka załogi. Nie jest zapisywany — trafia tylko na ten jeden dokument; własny numer skippera stoi w karcie rejsu i uzupełnia się sam. Bez numeru zostaje na zaświadczeniu linia do wpisania ręcznie.\n• Zaświadczenie podpisuje się przed wystawieniem tak samo jak dziennik: otwiera się pole podpisu, a PDF dostaje stronę końcową z podpisem, czasem, sumą kontrolną SHA-256 i kodem QR do weryfikacji.\n• Menu (trzy kropki) przy rejsie → Usuń: usuwa rejs razem z jego dniami i wpisami, dotyczy to także ręcznie dodanego rejsu historycznego. Rejsu, który jest właśnie rejestrowany, nie można usunąć.\n• Przycisk + oferuje też przepisanie papierowego dziennika: tworzysz rejs i możesz od razu dołączyć do niego trasę GPX.';
 
   @override
   String get guideHandoverTitle => 'Protokół przekazania (check-in/check-out)';
@@ -2974,7 +2974,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importuj trasy i waypointy z innych aplikacji nawigacyjnych lub urządzeń GPS (ikona na Mapie).\n\n• Wybierz plik .gpx z urządzenia\n• Eksport wielodniowy (wiele tras w jednym pliku, np. z Garmin Explore) automatycznie łączy się w jeden rejs z dniem dla każdego dnia kalendarzowego\n• Znalezione trasy możesz też ręcznie przypisać do istniejącego rejsu\n• Waypointy (także z tras/routes) dodają się wprost na mapę\n• Przy uszkodzonym pliku aplikacja wyświetli zrozumiały komunikat błędu';
+      'Importuj trasy i waypointy z innych aplikacji nawigacyjnych lub urządzeń GPS (ikona na Mapie).\n\n• Wybierz plik .gpx z urządzenia\n• Eksport wielodniowy (wiele tras w jednym pliku, np. z Garmin Explore) automatycznie łączy się w jeden rejs z dniem dla każdego dnia kalendarzowego\n• Znalezione trasy możesz też ręcznie przypisać do istniejącego rejsu\n• Waypointy (także z tras/routes) dodają się wprost na mapę\n• Przy uszkodzonym pliku aplikacja wyświetli zrozumiały komunikat błędu\n• Trasę można dołączyć do rejsu przepisanego z papieru lub zaimportowanego wcześniej (wybór „Dołącz do rejsu”): dni powstają według dat, już zapisane dni są uzupełniane, a ponowny import tego samego pliku nie podwaja mil.';
 
   @override
   String get guideWeatherTitle => 'Pogoda';
@@ -4091,4 +4091,28 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB anulowany';
+
+  @override
+  String get gpxTargetVoyage => 'Dołącz do rejsu';
+
+  @override
+  String get milesAddSummary => 'Tylko podsumowanie';
+
+  @override
+  String get milesAddSummaryHint =>
+      'Daty, mile i jacht bez wpisów dzień po dniu';
+
+  @override
+  String get milesAddPaperVoyage => 'Przepisz z papierowego dziennika';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'Rejs dzień po dniu; trasę można odtworzyć z pliku GPX';
+
+  @override
+  String get paperVoyageGpxTitle => 'Dołączyć trasę GPX?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'Jeśli masz plik GPX z tego rejsu (także z innego urządzenia), dni, mile i godziny nocne zostaną z niego odtworzone. Możesz to zrobić też później przez import GPX na mapie.';
 }

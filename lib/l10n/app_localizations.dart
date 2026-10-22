@@ -5633,7 +5633,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMilesBody.
   ///
   /// In sk, this message translates to:
-  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.'**
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.\n• Tlačidlo + ponúkne aj prepis z papierového denníka: vytvoríš plavbu a môžeš k nej hneď pripojiť GPX trasu.'**
   String get guideMilesBody;
 
   /// No description provided for @guideHandoverTitle.
@@ -5657,7 +5657,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideGpxImportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Importuj trasy a waypointy z iných navigačných aplikácií alebo GPS zariadení (ikona na Mape).\n\n• Vyber .gpx súbor zo zariadenia\n• Viacdňový export (viac trackov v jednom súbore, napr. z Garmin Explore) sa automaticky spojí do jednej plavby s dňom pre každý kalendárny deň\n• Nájdené tracky vieš aj ručne priradiť k existujúcej plavbe\n• Waypointy (aj z trás/routes) sa pridajú rovno na mapu\n• Pri poškodenom súbore appka zobrazí zrozumiteľnú chybovú hlášku'**
+  /// **'Importuj trasy a waypointy z iných navigačných aplikácií alebo GPS zariadení (ikona na Mape).\n\n• Vyber .gpx súbor zo zariadenia\n• Viacdňový export (viac trackov v jednom súbore, napr. z Garmin Explore) sa automaticky spojí do jednej plavby s dňom pre každý kalendárny deň\n• Nájdené tracky vieš aj ručne priradiť k existujúcej plavbe\n• Waypointy (aj z trás/routes) sa pridajú rovno na mapu\n• Pri poškodenom súbore appka zobrazí zrozumiteľnú chybovú hlášku\n• Trasu možno pripojiť k plavbe prepísanej z papiera alebo importovanej skôr (výber „Pripojiť k plavbe“): dni sa vytvoria podľa dátumov, už zapísané dni sa doplnia a opakovaný import toho istého súboru míle nezdvojí.'**
   String get guideGpxImportBody;
 
   /// No description provided for @guideWeatherTitle.
@@ -7633,6 +7633,48 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'MOB zrušený'**
   String get logEventMobCancelled;
+
+  /// No description provided for @gpxTargetVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojiť k plavbe'**
+  String get gpxTargetVoyage;
+
+  /// No description provided for @milesAddSummary.
+  ///
+  /// In sk, this message translates to:
+  /// **'Len súhrn'**
+  String get milesAddSummary;
+
+  /// No description provided for @milesAddSummaryHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Dátumy, míle a loď bez záznamov po dňoch'**
+  String get milesAddSummaryHint;
+
+  /// No description provided for @milesAddPaperVoyage.
+  ///
+  /// In sk, this message translates to:
+  /// **'Prepísať z papierového denníka'**
+  String get milesAddPaperVoyage;
+
+  /// No description provided for @milesAddPaperVoyageHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba po dňoch; trasu možno zrekonštruovať z GPX súboru'**
+  String get milesAddPaperVoyageHint;
+
+  /// No description provided for @paperVoyageGpxTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pripojiť GPX trasu?'**
+  String get paperVoyageGpxTitle;
+
+  /// No description provided for @paperVoyageGpxBody.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ak máš GPX súbor z tejto plavby (aj z iného zariadenia), dni, míle a nočné hodiny sa z neho zrekonštruujú. Môžeš to urobiť aj neskôr cez import GPX na mape.'**
+  String get paperVoyageGpxBody;
 }
 
 class _AppLocalizationsDelegate

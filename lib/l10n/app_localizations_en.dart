@@ -2952,7 +2952,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.\n• The passport/ID number is entered when the certificate is issued, separately for each crew member. It is not stored — it is printed on that one document only; the skipper\'s own number is kept in the voyage card and fills itself in. Leave it empty and the certificate carries a blank line to write on by hand.\n• The certificate is signed before it is exported, the same way the logbook is: the signature pad opens and the PDF gets a closing page with the signature, the time, a SHA-256 checksum of its contents and a QR code for verification.\n• Menu (three dots) on a voyage → Delete: removes the voyage with its days and entries, also for a manually added historical voyage. A voyage that is being recorded right now cannot be deleted.';
+      'A summary of all your voyages in one place (icon in the Logbook tab).\n\n• Total nautical miles, days at sea, voyage count and night hours\n• Breakdown by year and by vessel\n• Filter by year\n• Tap a voyage (including a tracked/imported one) to fill in its logbook record – route, vessel flag, captain\'s name and qualification, signature confirming the miles\n• + button – add a historical voyage from before you started using the app (counts fully into the summaries, shown with an asterisk in the list)\n• PDF export of a certificate of miles sailed with a place to sign\n• The certificate also carries the voyage route, day by day — Biograd – Žut – Veli Rat – Zadar – Biograd — built from the ports of each day; repeated stops are merged and days with no port recorded are skipped.\n• In the certificate form, \"Issued for\" offers the crew from your voyages — pick a name instead of typing it, so one person does not end up as two records through a typo.\n• The passport/ID number is entered when the certificate is issued, separately for each crew member. It is not stored — it is printed on that one document only; the skipper\'s own number is kept in the voyage card and fills itself in. Leave it empty and the certificate carries a blank line to write on by hand.\n• The certificate is signed before it is exported, the same way the logbook is: the signature pad opens and the PDF gets a closing page with the signature, the time, a SHA-256 checksum of its contents and a QR code for verification.\n• Menu (three dots) on a voyage → Delete: removes the voyage with its days and entries, also for a manually added historical voyage. A voyage that is being recorded right now cannot be deleted.\n• The + button also offers transcribing a paper logbook: you create the voyage and can attach a GPX track to it right away.';
 
   @override
   String get guideHandoverTitle => 'Handover Protocol (check-in/check-out)';
@@ -2966,7 +2966,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Import tracks and waypoints from other navigation apps or GPS devices (icon on the Map).\n\n• Choose a .gpx file from your device\n• A multi-day export (several tracks in one file, e.g. from Garmin Explore) is merged automatically into a single voyage with one day per calendar day\n• Found tracks can also be assigned manually to an existing voyage\n• Waypoints (including from routes) are added straight to the map\n• A clear error message is shown for a corrupted file';
+      'Import tracks and waypoints from other navigation apps or GPS devices (icon on the Map).\n\n• Choose a .gpx file from your device\n• A multi-day export (several tracks in one file, e.g. from Garmin Explore) is merged automatically into a single voyage with one day per calendar day\n• Found tracks can also be assigned manually to an existing voyage\n• Waypoints (including from routes) are added straight to the map\n• A clear error message is shown for a corrupted file\n• A track can be attached to a voyage transcribed from paper or imported earlier (the “Add to voyage” selector): days are created from the dates, days already written are extended, and importing the same file twice does not double the miles.';
 
   @override
   String get guideWeatherTitle => 'Weather';
@@ -4082,4 +4082,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB cancelled';
+
+  @override
+  String get gpxTargetVoyage => 'Add to voyage';
+
+  @override
+  String get milesAddSummary => 'Summary only';
+
+  @override
+  String get milesAddSummaryHint =>
+      'Dates, miles and vessel without day-by-day entries';
+
+  @override
+  String get milesAddPaperVoyage => 'Transcribe from a paper logbook';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'The voyage day by day; the track can be rebuilt from a GPX file';
+
+  @override
+  String get paperVoyageGpxTitle => 'Attach a GPX track?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'If you have a GPX file from this voyage (even from another device), the days, miles and night hours are rebuilt from it. You can also do it later through GPX import on the map.';
 }

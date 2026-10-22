@@ -1,9 +1,14 @@
 
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/database/app_database.dart';
+import '../../../../core/models/charter_source.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../charter/presentation/screens/charter_edit_screen.dart'
+    show CharterPrefill;
 import '../../providers/miles_provider.dart';
 import '../../services/miles_calculator.dart';
 import '../../../../core/services/units_service.dart';
@@ -31,11 +36,86 @@ class MilesBookScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/miles/historical/new'),
+        onPressed: () => _chooseKind(context, ref),
         icon: const Icon(Icons.add),
         label: Text(l.addHistoricalVoyage),
       ),
     );
+  }
+
+  /// A historical voyage is either a bare summary (miles and dates) or a
+  /// transcription of the paper logbook, day by day.
+  Future<void> _chooseKind(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            leading: const Icon(Icons.edit_note),
+            title: Text(l.milesAddSummary),
+            subtitle: Text(l.milesAddSummaryHint),
+            onTap: () => Navigator.pop(ctx, 'summary'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.menu_book_outlined),
+            title: Text(l.milesAddPaperVoyage),
+            subtitle: Text(l.milesAddPaperVoyageHint),
+            onTap: () => Navigator.pop(ctx, 'paper'),
+          ),
+        ]),
+      ),
+    );
+    if (!context.mounted) return;
+    if (choice == 'summary') {
+      context.push('/miles/historical/new');
+    } else if (choice == 'paper') {
+      await _createPaperVoyage(context, ref);
+    }
+  }
+
+  /// Opens the ordinary new-voyage form and marks the result as written
+  /// after the fact, so it never asks for check-in/out or receives live
+  /// events. Offers a GPX file right away, since that rebuilds the days.
+  Future<void> _createPaperVoyage(BuildContext context, WidgetRef ref) async {
+    final l = AppLocalizations.of(context);
+    final now = DateTime.now();
+    final charter = await context.push<Charter>(
+      '/logbook/new',
+      extra: CharterPrefill(title: '', dateFrom: now, dateTo: now),
+    );
+    if (charter == null) return;
+
+    final db = ref.read(databaseProvider);
+    await db.updateCharter(ChartersCompanion(
+      id: Value(charter.id),
+      source: const Value(CharterSource.paper),
+    ));
+    ref.invalidate(milesAggregateProvider);
+    ref.invalidate(milesAvailableYearsProvider);
+    ref.invalidate(chartersProvider);
+    ref.invalidate(activeChartersProvider);
+
+    if (!context.mounted) return;
+    final attach = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l.paperVoyageGpxTitle),
+        content: Text(l.paperVoyageGpxBody),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false), child: Text(l.no)),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true), child: Text(l.yes)),
+        ],
+      ),
+    );
+    if (!context.mounted) return;
+    if (attach == true) {
+      await context.push('/gpx-import', extra: charter.id);
+      ref.invalidate(milesAggregateProvider);
+      ref.invalidate(milesAvailableYearsProvider);
+    }
   }
 }
 

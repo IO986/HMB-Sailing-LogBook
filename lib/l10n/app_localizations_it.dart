@@ -2976,7 +2976,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.\n• Il numero di passaporto/carta d\'identità si inserisce al momento di emettere il certificato, per ogni membro dell\'equipaggio. Non viene salvato: compare solo su quel documento; il numero dello skipper sta nella scheda della crociera e si compila da solo. Senza numero resta una riga da riempire a mano.\n• Il certificato si firma prima di esportarlo, come il giornale: si apre il riquadro della firma e il PDF riceve una pagina finale con firma, orario, checksum SHA-256 e un codice QR per la verifica.\n• Menu (tre puntini) su una traversata → Elimina: rimuove la traversata con i suoi giorni e le sue voci, anche per una traversata storica aggiunta a mano. Una traversata in corso di registrazione non può essere eliminata.';
+      'Un riepilogo di tutte le tue navigazioni in un unico posto (icona nella scheda Giornale).\n\n• Miglia nautiche totali, giorni in mare, numero di navigazioni e ore notturne\n• Suddivisione per anno e per imbarcazione\n• Filtro per anno\n• Tocca una navigazione (anche tracciata/importata) per compilarne l\'annotazione – rotta, bandiera dell\'imbarcazione, nome e abilitazione del comandante, firma di conferma delle miglia\n• Pulsante + – aggiungi una navigazione passata, precedente all\'uso dell\'app (conta pienamente nei riepiloghi, nell\'elenco è contrassegnata con un asterisco)\n• Esportazione in PDF di un certificato delle miglia percorse con lo spazio per la firma\n• L\'attestato delle miglia si rilascia da un modulo (icona PDF in alto): per te o per un membro dell\'equipaggio, con il nome del destinatario, nome e qualifica dell\'emittente (precompilati dal profilo skipper) e un elenco di navigazioni con caselle. Il documento riporta l\'imbarcazione, lo skipper responsabile, la zona, acque di marea o senza marea e il ruolo con cui hai navigato, oltre alla ripartizione delle miglia per ruolo. Per le navigazioni in cui non eri al comando resta una riga per la firma dello skipper, col suo nome. L\'attestato per te stesso porta anche un riepilogo dello skipper. Viene salvato anche nella cartella dell\'app, non solo tramite la finestra di sistema.\n• Il certificato riporta anche la rotta della crociera giorno per giorno — Biograd – Žut – Veli Rat – Zadar – Biograd — composta dai porti di ogni giornata; le soste ripetute vengono unite e i giorni senza porto registrato sono saltati.\n• Nel modulo del certificato, il campo \"Per chi\" propone l\'equipaggio delle tue crociere: scegli il nome invece di scriverlo, così un refuso non trasforma una persona in due.\n• Il numero di passaporto/carta d\'identità si inserisce al momento di emettere il certificato, per ogni membro dell\'equipaggio. Non viene salvato: compare solo su quel documento; il numero dello skipper sta nella scheda della crociera e si compila da solo. Senza numero resta una riga da riempire a mano.\n• Il certificato si firma prima di esportarlo, come il giornale: si apre il riquadro della firma e il PDF riceve una pagina finale con firma, orario, checksum SHA-256 e un codice QR per la verifica.\n• Menu (tre puntini) su una traversata → Elimina: rimuove la traversata con i suoi giorni e le sue voci, anche per una traversata storica aggiunta a mano. Una traversata in corso di registrazione non può essere eliminata.\n• Il pulsante + permette anche di trascrivere un giornale di bordo cartaceo: crei la traversata e puoi subito allegarle una traccia GPX.';
 
   @override
   String get guideHandoverTitle => 'Verbale di riconsegna (check-in/check-out)';
@@ -2990,7 +2990,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideGpxImportBody =>
-      'Importa tracce e waypoint da altre app di navigazione o da dispositivi GPS (icona sulla Mappa).\n\n• Scegli un file .gpx dal dispositivo\n• Un\'esportazione di più giorni (più tracce in un unico file, ad es. da Garmin Explore) viene unita automaticamente in un\'unica navigazione con un giorno per giorno di calendario\n• Le tracce trovate si possono anche assegnare manualmente a una navigazione esistente\n• I waypoint (compresi quelli delle rotte) vengono aggiunti direttamente alla mappa\n• Per un file danneggiato viene mostrato un messaggio d\'errore chiaro';
+      'Importa tracce e waypoint da altre app di navigazione o da dispositivi GPS (icona sulla Mappa).\n\n• Scegli un file .gpx dal dispositivo\n• Un\'esportazione di più giorni (più tracce in un unico file, ad es. da Garmin Explore) viene unita automaticamente in un\'unica navigazione con un giorno per giorno di calendario\n• Le tracce trovate si possono anche assegnare manualmente a una navigazione esistente\n• I waypoint (compresi quelli delle rotte) vengono aggiunti direttamente alla mappa\n• Per un file danneggiato viene mostrato un messaggio d\'errore chiaro\n• Una traccia può essere allegata a una traversata trascritta dalla carta o importata prima (selettore «Aggiungi alla traversata»): i giorni vengono creati dalle date, quelli già scritti vengono completati e importare due volte lo stesso file non raddoppia le miglia.';
 
   @override
   String get guideWeatherTitle => 'Meteo';
@@ -4110,4 +4110,28 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get logEventMobCancelled => 'MOB annullato';
+
+  @override
+  String get gpxTargetVoyage => 'Aggiungi alla traversata';
+
+  @override
+  String get milesAddSummary => 'Solo riepilogo';
+
+  @override
+  String get milesAddSummaryHint =>
+      'Date, miglia e barca senza registrazioni giorno per giorno';
+
+  @override
+  String get milesAddPaperVoyage => 'Trascrivi dal giornale di bordo cartaceo';
+
+  @override
+  String get milesAddPaperVoyageHint =>
+      'La traversata giorno per giorno; la traccia si può ricostruire da un file GPX';
+
+  @override
+  String get paperVoyageGpxTitle => 'Allegare una traccia GPX?';
+
+  @override
+  String get paperVoyageGpxBody =>
+      'Se hai un file GPX di questa traversata (anche da un altro dispositivo), giorni, miglia e ore notturne vengono ricostruiti da esso. Puoi farlo anche più tardi con l\'importazione GPX sulla mappa.';
 }

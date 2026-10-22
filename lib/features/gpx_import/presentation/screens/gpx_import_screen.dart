@@ -6,21 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/models/charter_source.dart';
-import '../../../../core/utils/distance_calculator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../charter/presentation/screens/charter_edit_screen.dart' show CharterPrefill;
 import '../../../charter/providers/charter_provider.dart';
 import '../../../map/providers/map_provider.dart';
 import '../../services/gpx_importer.dart';
+import '../../services/gpx_voyage_reconstructor.dart';
 import '../../../../core/utils/localized_date.dart';
 
 class GpxImportScreen extends ConsumerStatefulWidget {
-  const GpxImportScreen({super.key});
+  /// Voyage the tracks should be added to. `null` lets the user choose, with
+  /// a new voyage as the default.
+  final int? charterId;
+  const GpxImportScreen({super.key, this.charterId});
   @override
   ConsumerState<GpxImportScreen> createState() => _GpxImportScreenState();
 }
@@ -30,6 +32,8 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   List<Charter> _charters = [];
   Map<int, List<DayLog>> _dayLogsByCharter = {};
   final Map<int, int?> _targetDayLogId = {}; // trackIndex -> dayLogId (null = nová plavba)
+  /// Whole-file target: every track goes into this voyage, split by day.
+  late int? _targetCharterId = widget.charterId;
   bool _loading = false;
 
   Future<void> _pickAndParse() async {
@@ -67,6 +71,14 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         _charters = charters;
         _dayLogsByCharter = dayLogsByCharter;
         _targetDayLogId.clear();
+        // A preselected voyage that is gone, or not a retrospective one, would
+        // make the selector assert; fall back to a new voyage.
+        final target = _targetCharterId;
+        if (target != null &&
+            !charters.any((c) =>
+                c.id == target && CharterSource.isRetrospective(c.source))) {
+          _targetCharterId = null;
+        }
       });
     } on GpxParseException catch (e) {
       if (mounted) _showError(e.message);
@@ -116,7 +128,16 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       // <trk>. Explicitne priradené tracky (existujúci deň) sa importujú
       // rovno, mimo tohto zoskupenia.
       final newVoyageTracks = <GpxTrack>[];
-      for (var i = 0; i < result.tracks.length; i++) {
+
+      // A voyage chosen for the whole file wins over the per-track targets.
+      final wholeFileCharterId = _targetCharterId;
+      if (wholeFileCharterId != null) {
+        await GpxVoyageReconstructor.addTracksToCharter(
+            db, wholeFileCharterId, result.tracks);
+        touchedCharterIds.add(wholeFileCharterId);
+      }
+
+      for (var i = 0; wholeFileCharterId == null && i < result.tracks.length; i++) {
         final track = result.tracks[i];
         if (track.points.isEmpty) continue;
 
@@ -164,32 +185,10 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               source: const Value(CharterSource.gpx),
             ));
 
-            // Zoskup body naprieč VŠETKÝMI tracks v batchi podľa kalendárneho
-            // dňa (jeden track môže aj sám prekročiť polnoc) – jeden DayLog
-            // na deň, s jednou SailingSession na pôvodný track v ten deň.
-            final byDay = <DateTime, List<(String?, List<GpxTrackPoint>)>>{};
-            for (final track in newVoyageTracks) {
-              final perTrackDay = <DateTime, List<GpxTrackPoint>>{};
-              for (final p in track.points) {
-                final t = (p.time ?? DateTime.now()).toLocal();
-                final dayKey = DateTime(t.year, t.month, t.day);
-                perTrackDay.putIfAbsent(dayKey, () => []).add(p);
-              }
-              perTrackDay.forEach((dayKey, points) {
-                byDay.putIfAbsent(dayKey, () => []).add((track.name, points));
-              });
-            }
-
-            final sortedDays = byDay.keys.toList()..sort();
-            for (final dayKey in sortedDays) {
-              final dayLog = await db.insertDayLog(DayLogsCompanion.insert(
-                charterId: charter.id,
-                date: dayKey,
-              ));
-              for (final (trackName, points) in byDay[dayKey]!) {
-                await _importPointsIntoDayLog(db, dayLog.id, points, trackName);
-              }
-            }
+            // Jeden DayLog na kalendárny deň naprieč VŠETKÝMI tracks v batchi
+            // (jeden track môže aj sám prekročiť polnoc).
+            await GpxVoyageReconstructor.addTracksToCharter(
+                db, charter.id, newVoyageTracks);
           }
         }
       }
@@ -219,35 +218,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   Future<void> _importPointsIntoDayLog(
     AppDatabase db, int dayLogId, List<GpxTrackPoint> points, String? trackName,
   ) async {
-    if (points.isEmpty) return;
-    var nm = 0.0;
-    for (var p = 1; p < points.length; p++) {
-      nm += DistanceCalculator.distanceNm(
-        points[p - 1].lat, points[p - 1].lon,
-        points[p].lat, points[p].lon,
-      );
-    }
-
-    final sessionId = const Uuid().v4();
-    await db.upsertSession(SailingSessionsCompanion.insert(
-      sessionId: sessionId,
-      dayLogId: Value(dayLogId),
-      startTime: points.first.time ?? DateTime.now(),
-      endTime: Value(points.last.time),
-      name: Value(trackName),
-      totalDistanceNm: Value(nm),
-      isActive: const Value(false),
-    ));
-    await db.insertTrackPointsBatch([
-      for (final p in points)
-        TrackPointsCompanion.insert(
-          sessionId: Value(sessionId),
-          timestamp: p.time ?? DateTime.now(),
-          latitude: p.lat,
-          longitude: p.lon,
-          altitude: Value(p.ele),
-        ),
-    ]);
+    final added = await GpxVoyageReconstructor.addPointsToDay(
+        db, dayLogId, points, trackName);
+    if (!added) return;
 
     // DayLogs.distanceNm sa inak dopočíta len pri exporte (fallback) –
     // zapíš ju rovno, nech sa nová plavba prejaví okamžite v Knihe míľ.
@@ -255,7 +228,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     if (day != null && day.distanceNm == 0) {
       await db.updateDayLog(DayLogsCompanion(
         id: Value(dayLogId),
-        distanceNm: Value(nm),
+        distanceNm: Value(GpxVoyageReconstructor.distanceNm(points)),
       ));
     }
   }
@@ -297,7 +270,24 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                 Text('${l.gpxWaypointsFound}: ${result.waypoints.length}'),
                 const SizedBox(height: 16),
 
-                for (var i = 0; i < result.tracks.length; i++)
+                DropdownButtonFormField<int?>(
+                  value: _targetCharterId,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText: l.gpxTargetVoyage),
+                  items: [
+                    DropdownMenuItem<int?>(value: null, child: Text(l.gpxNewVoyage)),
+                    for (final c in _charters)
+                      if (CharterSource.isRetrospective(c.source))
+                        DropdownMenuItem<int?>(
+                          value: c.id,
+                          child: Text(c.title, overflow: TextOverflow.ellipsis),
+                        ),
+                  ],
+                  onChanged: (v) => setState(() => _targetCharterId = v),
+                ),
+                const SizedBox(height: 12),
+
+                for (var i = 0; _targetCharterId == null && i < result.tracks.length; i++)
                   Card(
                     child: ListTile(
                       title: Text(result.tracks[i].name ?? 'Track ${i + 1}'),
