@@ -1055,3 +1055,119 @@ Zliate lokálne vetvy sa 22. 10. zmazali. Zmazaná je aj
 `feat/pmtiles-offline-basemap` (slepá ulička, nezliaty `c929973`
 z offline vektorovej mapy zahodený; sha pre prípad potreby). Ostali
 zámerne: `wip/windows-desktop` a `feat/briefing-pdf-map-cache`.
+
+---
+
+# Kde sme skončili — 22. 10. 2026 (prepis plavby z papiera, schéma v37)
+
+`main` = `b82d5fa`, pushnuté na origin aj academy. **Nič z toho nie je na Play** —
+tam je stále build 83 (1.41.0+83, schéma v36). Verzia v `pubspec.yaml` sa
+nebumpovala; pred ďalším buildom sa najprv spýtať, čo je na Console
+(upload musí byť 84+). Záloha zo schémy v37 sa do staršej appky nenaimportuje.
+
+Cieľ: prepísať plavby z papierových denníkov (alebo z GPX z iného zariadenia)
+tak, aby z nich vznikol plnohodnotný záznam — Kniha míľ, PDF, GPX. Šesť krokov,
+päť hotových:
+
+| krok | commit | čo |
+|---|---|---|
+| 1 | `4cf6685` | mazanie plavby v Knihe míľ (menu na riadku) |
+| 2 | `2a36491` | `CharterSource` + `source = 'paper'` |
+| 3 | `156b869` | rekonštrukcia dní z GPX, voľba „Pripojiť k plavbe“ |
+| 4 | `c81b9e2`, `22d5381` | ručný záznam: čas, súradnice v bunkách |
+| 5 | `b82d5fa` | údaje dňa (míle, noc), odhadnutá trasa, schéma v37 |
+| 6 | — | **import PDF — nezačatý, čaká na vzorku** |
+
+## Ako to celé drží pohromade
+
+- **Prepísaná plavba je obyčajný `Charter`** so `source = 'paper'`, nie
+  `HistoricalVoyage`. Tá ostáva len na súhrn (dátumy, míle, loď). V Knihe míľ
+  + ponúka obe možnosti.
+- **`CharterSource.isRetrospective(source)`** (`lib/core/models/charter_source.dart`)
+  je jediné miesto, ktoré rozhoduje, že plavba je spätne zapísaná (`gpx` aj
+  `paper`): nepýta check-in/briefing/check-out, neponúka sa na pokračovanie
+  trackingu a `dayLogIdForNow` k nej nikdy nedopisuje živé udalosti. Hodnoty
+  sa ukladajú do DB — nepremenúvať.
+- **`GpxVoyageReconstructor`** (`lib/features/gpx_import/services/`) drží celú
+  logiku importu GPX; obrazovka len vyberá súbor a cieľ. Rozdelí body podľa
+  lokálneho dňa, doplní už existujúci deň (nezdvojí), ručne zadané míle a
+  prístavy majú prednosť, rovnaký súbor dvakrát míle nezdvojí, dátumy plavby
+  sa rozšíria. Prístavy číta z názvu tracku v tvare nášho exportu
+  (`dátum: A → B`); súradnice, `?` a cudzie názvy ignoruje.
+- **Režim prepisu v `LogbookEntryScreen`**: zapne sa sám podľa plavby. Čas a
+  poloha sa píšu ručne; **nič sa nedopĺňa z aktuálnej GPS ani z počasia** a
+  záznam sa nepripojí k bežiacej GPS relácii. Spôsob plavby ostáva prázdny.
+- **`CoordinateInput`** (`lib/shared/widgets/`): bunky podľa formátu z
+  Nastavenia → Jednotky — stupne a minúty (dve bunky), alebo desatinné stupne
+  (jedna), prepínač N/S a E/W. Bunka, ktorej sa nikto nedotkol, nič nehlási,
+  takže zaokrúhlenie neposunie uloženú presnú polohu. Pod ním je
+  `CoordinateParser` (čistý Dart) — jediná cesta, ktorá z textu robí číslo.
+
+## Nočné hodiny a míle — prečo je to „ručné“ (dôležité)
+
+Nočné hodiny sa počítajú **výhradne z bodov trasy** a medzera nad 30 min sa
+nerátá (`NightHours.maxGap`, vytlačené na vydaných potvrdeniach). Záznamy
+denníka sú hodiny od seba, takže z nich by vyšla nula — a pravidlo appky je,
+že noc sa nehádá. Preto:
+
+- deň spätnej plavby má **„Údaje dňa“**: míle (`DayLog.distanceNm`, tá istá
+  hodnota, z ktorej Kniha míľ sčítava) a nočné hodiny (**nový stĺpec**
+  `DayLogs.nightHoursManual`). Zadané číslo vyhráva nad výpočtom; prázdne
+  nočné hodiny = „nezadané“, nie nula. Ručná hodnota je napojená v
+  `AppDatabase.nightHoursForDay` (PDF, denník) aj v `MilesCalculator`.
+- **„Zostaviť trasu zo záznamov“** (`EstimatedTrackBuilder`) nakreslí
+  `SailingSession` s `isEstimated = true` (**nový stĺpec**) cez pozície
+  záznamov, priamymi úsečkami. Je na GPX a mapu. **Do nočných hodín sa nikdy
+  nerátá** (vylúčená v `nightHoursForDay` aj v `miles_provider`), zmeranú
+  trasu nikdy neprepíše a reálna trasa z GPX importu ju nahradí.
+- **GPX export** píše odhad ako **jeden súvislý `<trkseg>`**. Bez toho by sa
+  každý pár záznamov (hodiny od seba) bral ako diera v zázname a v GPX
+  prehliadači by ostali samé body. V súbore celej plavby má názov príponu
+  ` (estimated)`, ktorú spätný import odstráni z názvu prístavu.
+- Na mape sa odhad kreslí prerušovanou čiarou (diery sa tam kreslia tak),
+  čo ho dáva čítať ako odhad. Plnú čiaru by chcela samostatná úprava.
+
+## Neoverené na zariadení
+
+Nič z tohto neprešlo Honorom, len testami (903 prešlo, `flutter analyze` kód 0).
+Treba prejsť: vytvorenie plavby cez + → „Prepísať z papierového denníka“ →
+dialóg GPX → „Pridať deň“ → záznam s ručným časom (`showTimePicker` nie je v
+testoch) → bunky súradníc v **oboch** formátoch → „Údaje dňa“ → „Zostaviť
+trasu“ → GPX export → mazanie plavby z Knihy míľ.
+
+## Otvorené
+
+- **Krok 6: import PDF z denníka.** Použitie: skiper utopil telefón, ale
+  predtým si poslal PDF a GPX. GPX sa dá spätne naimportovať už dnes (pozri
+  vyššie). PDF má textovú vrstvu, no tabuľka záznamov sa parsuje len
+  heuristicky a závisí od jazyka a verzie PDF — rozhodnúť až po tom, čo
+  uvidíme **skutočný súbor**. Skôr treba skúsiť zistiť, či skiper nemal
+  zapnutú auto-zálohu na Drive: úplná záloha je lepšia než PDF aj GPX.
+  Lacná poistka do budúcna: vložiť do PDF strojovo čitateľnú prílohu (JSON).
+- **Backoff pre Overpass** (POI sa po zlyhaní všetkých mirrorov skúšajú
+  znova pri každom posune mapy) — odložené, plus nápad predsťahovať POI spolu
+  s mapovými dlaždicami a dať ich do zálohy.
+- **Samsung S24 zabíja appku pri nahrávaní** — diagnostická značka pri
+  `AppLifecycleState.detached` stále nezačatá (pozri sekciu z 29. 8.).
+- GPX bez času na bodoch sa pri hromadnom importe preskočí (nedá sa zaradiť
+  do dňa); služba počet vráti, obrazovka ho zatiaľ nehlási.
+- Míle dňa sa zadávajú v NM bez ohľadu na nastavenú jednotku vzdialenosti.
+
+## Pasce pre ďalšiu session
+
+- **Dlhý Python/heredoc v Bash nástroji padá** na „unexpected EOF while
+  looking for matching `'`“ (a pritom sa nič nespustí). Rob to takto: skript
+  zapísať nástrojom Write do scratchpadu a spustiť `python -I <cesta>`.
+- **Úpravy `.arb` len chirurgicky** (pravidlo z paralelných terminálov).
+  Dlhé príručkové texty sú **jeden riadok**; nový bod sa pripája na jeho
+  koniec ako literál `\n• …`, nie skutočný nový riadok (ten rozbije JSON).
+  Po zmene vždy `flutter gen-l10n` a skontrolovať, že každý `.arb` je platný
+  JSON.
+- **Migrácie:** nový stĺpec vždy cez `_addColumnIfMissing`; po zmene schémy
+  `dart run build_runner build`, `dart run drift_dev schema dump …`,
+  `schema generate …` a všetky `migrateAndValidate(db, N)` v
+  `test/database/migration_test.dart` posunúť na novú verziu (postup je v
+  `docs/migrations.md`). V teste s drift importom koliduje `isNull` — použiť
+  `equals(null)` alebo úzky import.
+- **CI gate** presne ako CI, s návratovým kódom, nie `grep -c`:
+  `flutter analyze --no-fatal-infos > /dev/null 2>&1; echo $?`
