@@ -1288,3 +1288,35 @@ koniec.
 - Dlhý Python/heredoc v Bash nástroji padá; skript zapísať cez Write a spustiť
   `python -I <cesta>`. Pri `adb push` v Git Bash treba `MSYS_NO_PATHCONV=1`,
   inak sa `/sdcard/...` prepíše na cestu do Windows.
+
+## Doplnok: CSV overené na Honore (`990840b`)
+
+Export aj import prešli na telefóne bez chyby; okružná cesta (export, zmazanie
+plavby, import) funguje. Export vie aj **„Uložiť do zariadenia“** (systémový
+dialóg „uložiť ako“, ako pri PDF), nielen zdieľať; súbor sa vždy zapíše aj do
+`HMB_LOGBOOK/Sail_Logs/<plavba>` v súkromnom úložisku appky.
+
+Prvý beh na telefóne sa točil minúty. Tri veci, ktoré sa neukázali v testoch s
+málo dátami a ktoré treba mať na pamäti pri každom exporte veľkých dát:
+
+- **Getter, ktorý kopíruje.** `VoyageCsvRecord.cells` robil
+  `Map.unmodifiable(_cells)`, čo je kópia, a zapisovač ho volal pre každú z 139
+  buniek každého riadka. Teraz je to `UnmodifiableMapView` a zapisovač berie
+  `cell(column)`.
+- **Zápis po bunkách do `IOSink`.** Každé `write` na súbore je skutočná práca.
+  Riadok sa skladá v pamäti a `VoyageCsvSink` posiela dáta po 64 kB; **`finish()`
+  sa musí zavolať**, inak sa stratí koniec súboru.
+- **Dialóg sa dal zavrieť počas zápisu** (ťuknutie mimo okna, tlačidlo späť), a
+  hotový export potom zavolal `pop()` na inej obrazovke (`popped the last page
+  off the stack`). Dialóg je `barrierDismissible: false` a `PopScope(canPop:
+  !_busy)`.
+
+Poistka: `test/voyage_csv/voyage_csv_performance_test.dart` zapíše 100 000
+bodov trasy (aj priamo do súboru) a čaká max. 20 s; pôvodný kód potreboval na
+zápis do súboru 45 s, teraz asi sekundu.
+
+Na tabuľke `track_points` **nie je index na `session_id`**, takže
+`getTrackPointsForSession` skenuje celú tabuľku. Pri desiatkach relácií a
+stovkách tisíc bodov je to zanedbateľné oproti tomu, čo sme opravili, ale ak by
+export veľmi dlhej plavby mal ísť ešte rýchlejšie, je to ďalšie miesto (vyžaduje
+zmenu schémy).
