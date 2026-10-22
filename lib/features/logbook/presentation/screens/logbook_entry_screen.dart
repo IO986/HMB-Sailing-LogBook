@@ -21,7 +21,6 @@ import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
-import '../../../../core/utils/coordinate_parser.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import '../../../../core/models/sail_mode.dart';
@@ -34,6 +33,7 @@ import '../../../../core/services/dhmz_observation_service.dart';
 import '../../../../core/services/entry_conditions.dart';
 import '../../../../shared/widgets/weather_source_badge.dart';
 import '../../../../shared/widgets/helmsman_picker.dart';
+import '../../../../shared/widgets/coordinate_input.dart';
 import '../../../../shared/widgets/sail_mode_picker.dart';
 
 class LogbookEntryScreen extends ConsumerStatefulWidget {
@@ -86,15 +86,17 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   /// počasia — "teraz" nie je čas, ktorý stojí na papieri.
   bool _retro = false;
   DateTime? _dayDate;
-  final _latCtrl = TextEditingController();
-  final _lonCtrl = TextEditingController();
   final _sogCtrl = TextEditingController();
   final _cogCtrl = TextEditingController();
 
+  /// Čo sa do súradnicových buniek napísalo. `null` = bunky sa nikto
+  /// nedotkol a platí uložená poloha — zaokrúhlenie, ktoré bunky ukazujú,
+  /// ju ticho neposunie.
+  CoordinateEdit? _latEdit, _lonEdit;
+
   /// Text polí tak, ako sa naplnili z uloženého záznamu. Pole, ktoré sa
-  /// nezmenilo, sa nepreparsuje — inak by zaokrúhlenie pri formátovaní
-  /// ticho posunulo presnú uloženú polohu.
-  String _latInit = '', _lonInit = '', _sogInit = '', _cogInit = '';
+  /// nezmenilo, sa nepreparsuje.
+  String _sogInit = '', _cogInit = '';
   String? _latError, _lonError, _sogError, _cogError;
 
   // Spôsob plavby - multi-select
@@ -218,13 +220,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   }
 
   void _fillRetroFields() {
-    final units = ref.read(unitsSyncProvider);
-    _latInit = _lat == null ? '' : units.formatLat(_lat);
-    _lonInit = _lon == null ? '' : units.formatLon(_lon);
     _sogInit = _sog == null ? '' : _sog!.toStringAsFixed(1);
     _cogInit = _cog == null ? '' : _cog!.toStringAsFixed(0);
-    _latCtrl.text = _latInit;
-    _lonCtrl.text = _lonInit;
     _sogCtrl.text = _sogInit;
     _cogCtrl.text = _cogInit;
   }
@@ -248,15 +245,15 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     String? latErr, lonErr, sogErr, cogErr;
     var lat = _lat, lon = _lon, sog = _sog, cog = _cog;
 
-    final latText = _latCtrl.text.trim();
-    if (latText != _latInit) {
-      lat = latText.isEmpty ? null : CoordinateParser.parseLatitude(latText);
-      if (latText.isNotEmpty && lat == null) latErr = l.coordinateInvalid;
+    final latEdit = _latEdit;
+    if (latEdit != null) {
+      lat = latEdit.value;
+      if (latEdit.invalid) latErr = l.coordinateInvalid;
     }
-    final lonText = _lonCtrl.text.trim();
-    if (lonText != _lonInit) {
-      lon = lonText.isEmpty ? null : CoordinateParser.parseLongitude(lonText);
-      if (lonText.isNotEmpty && lon == null) lonErr = l.coordinateInvalid;
+    final lonEdit = _lonEdit;
+    if (lonEdit != null) {
+      lon = lonEdit.value;
+      if (lonEdit.invalid) lonErr = l.coordinateInvalid;
     }
     // Pol poloha je horšia než žiadna: bod na mape by skončil na rovníku.
     if (latErr == null && lonErr == null && (lat == null) != (lon == null)) {
@@ -297,29 +294,42 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     return true;
   }
 
-  List<Widget> _retroNavFields(AppLocalizations l) => [
-        TextFormField(
-          controller: _latCtrl,
-          decoration: InputDecoration(
-              labelText: l.latitude,
-              hintText: l.coordinateHint,
-              errorText: _latError),
+  List<Widget> _retroNavFields(AppLocalizations l) {
+    final format = ref.watch(unitsSyncProvider).coordFormat;
+    return [
+        CoordinateInput(
+          keyPrefix: 'lat',
+          isLatitude: true,
+          initial: _lat,
+          format: format,
+          label: l.latitude,
+          errorText: _latError,
+          onEdited: (e) => setState(() {
+            _latEdit = e;
+            _latError = null;
+          }),
         ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: _lonCtrl,
-          decoration: InputDecoration(
-              labelText: l.longitude,
-              hintText: l.coordinateHint,
-              errorText: _lonError),
+        const SizedBox(height: 12),
+        CoordinateInput(
+          keyPrefix: 'lon',
+          isLatitude: false,
+          initial: _lon,
+          format: format,
+          label: l.longitude,
+          errorText: _lonError,
+          onEdited: (e) => setState(() {
+            _lonEdit = e;
+            _lonError = null;
+          }),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Row(children: [
           Expanded(child: _retroNumber(_sogCtrl, 'SOG (kn)', _sogError)),
           const SizedBox(width: 12),
           Expanded(child: _retroNumber(_cogCtrl, 'COG (°)', _cogError)),
         ]),
-      ];
+    ];
+  }
 
   Widget _retroNumber(TextEditingController ctrl, String label, String? error) =>
       TextFormField(
@@ -754,7 +764,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     _waveCtrl.dispose(); _fuelCtrl.dispose(); _engineCtrl.dispose();
     _airTempCtrl.dispose(); _waterTempCtrl.dispose(); _pressureCtrl.dispose();
     _depthCtrl.dispose();
-    _latCtrl.dispose(); _lonCtrl.dispose(); _sogCtrl.dispose(); _cogCtrl.dispose();
+    _sogCtrl.dispose(); _cogCtrl.dispose();
     super.dispose();
   }
 }

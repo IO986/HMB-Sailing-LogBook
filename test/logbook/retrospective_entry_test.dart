@@ -72,14 +72,18 @@ void main() {
   }
 
   Finder field(String label) => find.widgetWithText(TextFormField, label);
+  Finder cell(String key) => find.byKey(ValueKey(key));
 
   testWidgets('saves the typed time and position, and nothing from "now"',
       (t) async {
     final dayId = await makeDay(CharterSource.paper);
     await pumpEntry(t, dayId);
 
-    await t.enterText(field('Šírka'), "43° 30.738' N");
-    await t.enterText(field('Dĺžka'), '15,4410 E');
+    // Degrees and minutes in their own cells, no symbols typed.
+    await t.enterText(cell('lat-deg'), '43');
+    await t.enterText(cell('lat-min'), '30,738');
+    await t.enterText(cell('lon-deg'), '15');
+    await t.enterText(cell('lon-min'), '26.46');
     await t.enterText(field('SOG (kn)'), '5,5');
     await t.enterText(field('COG (°)'), '270');
 
@@ -90,7 +94,7 @@ void main() {
 
     final entry = (await db.getEntriesForDay(dayId)).single;
     expect(entry.latitude, closeTo(43 + 30.738 / 60, 1e-9));
-    expect(entry.longitude, closeTo(15.441, 1e-9));
+    expect(entry.longitude, closeTo(15 + 26.46 / 60, 1e-9));
     expect(entry.sog, 5.5);
     expect(entry.cog, 270);
 
@@ -113,8 +117,10 @@ void main() {
     final dayId = await makeDay(CharterSource.paper);
     await pumpEntry(t, dayId);
 
-    await t.enterText(field('Šírka'), 'abc');
-    await t.enterText(field('Dĺžka'), '15.4410 E');
+    await t.enterText(cell('lat-deg'), '43');
+    await t.enterText(cell('lat-min'), '75'); // 75 minutes
+    await t.enterText(cell('lon-deg'), '15');
+    await t.enterText(cell('lon-min'), '26.46');
 
     final l = await AppLocalizations.delegate.load(const Locale('sk'));
     await t.tap(find.text(l.save));
@@ -124,12 +130,35 @@ void main() {
     expect(await db.getEntriesForDay(dayId), isEmpty);
   });
 
+  testWidgets('the southern and western hemispheres are a toggle, not a sign',
+      (t) async {
+    final dayId = await makeDay(CharterSource.paper);
+    await pumpEntry(t, dayId);
+
+    await t.enterText(cell('lat-deg'), '34');
+    await t.enterText(cell('lat-min'), '0');
+    await t.enterText(cell('lon-deg'), '18');
+    await t.enterText(cell('lon-min'), '30');
+    await t.tap(find.descendant(of: cell('lat-hem'), matching: find.text('S')));
+    await t.tap(find.descendant(of: cell('lon-hem'), matching: find.text('W')));
+
+    final l = await AppLocalizations.delegate.load(const Locale('sk'));
+    await t.tap(find.text(l.save));
+    await t.pump(const Duration(milliseconds: 300));
+    await t.pump(const Duration(milliseconds: 300));
+
+    final entry = (await db.getEntriesForDay(dayId)).single;
+    expect(entry.latitude, -34);
+    expect(entry.longitude, -18.5);
+  });
+
   testWidgets('half a position is refused rather than put on the equator',
       (t) async {
     final dayId = await makeDay(CharterSource.paper);
     await pumpEntry(t, dayId);
 
-    await t.enterText(field('Šírka'), '43.5');
+    await t.enterText(cell('lat-deg'), '43');
+    await t.enterText(cell('lat-min'), '30');
 
     final l = await AppLocalizations.delegate.load(const Locale('sk'));
     await t.tap(find.text(l.save));
