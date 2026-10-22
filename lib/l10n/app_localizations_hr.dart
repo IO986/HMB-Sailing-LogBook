@@ -2964,7 +2964,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Sažetak svih vaših plovidbi na jednom mjestu (ikona u kartici Dnevnik).\n\n• Ukupno nautičkih milja, dana na moru, broj plovidbi i noćni sati\n• Raščlamba po godini i po plovilu\n• Filtar po godini\n• Dodirnite plovidbu (uključujući praćenu/uvezenu) da ispunite njezin zapis u dnevniku – ruta, zastava plovila, ime i ovlaštenje zapovjednika, potpis kojim se potvrđuju milje\n• Tipka + – dodajte prošlu plovidbu od prije nego što ste počeli koristiti aplikaciju (u potpunosti se uračunava u sažetke, u popisu je označena zvjezdicom)\n• PDF izvoz potvrde o preplovljenim miljama s mjestom za potpis\n• Potvrda o miljama izdaje se kroz obrazac (ikona PDF gore): za sebe ili za člana posade, s imenom primatelja, imenom i kvalifikacijom izdavatelja (popunjeno iz profila skipera) i popisom plovidbi s kvačicama. Dokument nosi brod, zapovjednika plovidbe, područje, plimne ili neplimne vode i funkciju u kojoj si plovio, uz razradu milja po funkciji. Za plovidbe u kojima nisi bio zapovjednik ostaje crta za njegov potpis s imenom. Potvrda za sebe nosi i skiperski sažetak. Sprema se i u mapu aplikacije, ne samo kroz sustavni dijalog.\n• Potvrda nosi i rutu plovidbe po danima — Biograd – Žut – Veli Rat – Zadar – Biograd — složenu od luka pojedinih dana; ista postaja dvaput zaredom spaja se, a dan bez upisane luke preskače.\n• U obrascu potvrde polje „Za koga\" nudi posadu s tvojih plovidbi — ime odaberi umjesto da ga tipkaš, jer bi tipfeler od jedne osobe napravio dvije.\n• Broj putovnice/osobne upisuje se pri izdavanju potvrde, za svakog člana posade posebno. Ne sprema se, ispisuje se samo na toj jednoj potvrdi; skiperov vlastiti broj stoji u kartici plovidbe i sam se popuni. Bez broja ostaje na potvrdi crta za upis rukom.\n• Potvrda se prije izdavanja potpisuje kao i dnevnik: otvara se površina za potpis, a PDF dobiva završnu stranicu s potpisom, vremenom, SHA-256 kontrolnim zbrojem i QR kodom za provjeru.\n• Izbornik (tri točkice) uz plovidbu → Izbriši: uklanja plovidbu s njezinim danima i zapisima, i za ručno dodanu povijesnu plovidbu. Plovidbu koja se upravo bilježi nije moguće izbrisati.\n• Gumb + nudi i prepisivanje papirnatog dnevnika: stvoriš plovidbu i odmah joj možeš priložiti GPX trasu.';
+      'Sažetak svih vaših plovidbi na jednom mjestu (ikona u kartici Dnevnik).\n\n• Ukupno nautičkih milja, dana na moru, broj plovidbi i noćni sati\n• Raščlamba po godini i po plovilu\n• Filtar po godini\n• Dodirnite plovidbu (uključujući praćenu/uvezenu) da ispunite njezin zapis u dnevniku – ruta, zastava plovila, ime i ovlaštenje zapovjednika, potpis kojim se potvrđuju milje\n• Tipka + – dodajte prošlu plovidbu od prije nego što ste počeli koristiti aplikaciju (u potpunosti se uračunava u sažetke, u popisu je označena zvjezdicom)\n• PDF izvoz potvrde o preplovljenim miljama s mjestom za potpis\n• Potvrda o miljama izdaje se kroz obrazac (ikona PDF gore): za sebe ili za člana posade, s imenom primatelja, imenom i kvalifikacijom izdavatelja (popunjeno iz profila skipera) i popisom plovidbi s kvačicama. Dokument nosi brod, zapovjednika plovidbe, područje, plimne ili neplimne vode i funkciju u kojoj si plovio, uz razradu milja po funkciji. Za plovidbe u kojima nisi bio zapovjednik ostaje crta za njegov potpis s imenom. Potvrda za sebe nosi i skiperski sažetak. Sprema se i u mapu aplikacije, ne samo kroz sustavni dijalog.\n• Potvrda nosi i rutu plovidbe po danima — Biograd – Žut – Veli Rat – Zadar – Biograd — složenu od luka pojedinih dana; ista postaja dvaput zaredom spaja se, a dan bez upisane luke preskače.\n• U obrascu potvrde polje „Za koga\" nudi posadu s tvojih plovidbi — ime odaberi umjesto da ga tipkaš, jer bi tipfeler od jedne osobe napravio dvije.\n• Broj putovnice/osobne upisuje se pri izdavanju potvrde, za svakog člana posade posebno. Ne sprema se, ispisuje se samo na toj jednoj potvrdi; skiperov vlastiti broj stoji u kartici plovidbe i sam se popuni. Bez broja ostaje na potvrdi crta za upis rukom.\n• Potvrda se prije izdavanja potpisuje kao i dnevnik: otvara se površina za potpis, a PDF dobiva završnu stranicu s potpisom, vremenom, SHA-256 kontrolnim zbrojem i QR kodom za provjeru.\n• Izbornik (tri točkice) uz plovidbu → Izbriši: uklanja plovidbu s njezinim danima i zapisima, i za ručno dodanu povijesnu plovidbu. Plovidbu koja se upravo bilježi nije moguće izbrisati.\n• Gumb + nudi i prepisivanje papirnatog dnevnika: stvoriš plovidbu i odmah joj možeš priložiti GPX trasu.\n• U prepisanoj plovidbi dan dodaješ gumbom „Dodaj dan“. Zapis u takvom danu ima vrijeme i koordinate upisane ručno (npr. 43° 30.738\' N ili 43.5123); ništa se ne popunjava iz trenutačnog položaja ni vremena.';
 
   @override
   String get guideHandoverTitle =>
@@ -4116,4 +4116,19 @@ class AppLocalizationsHr extends AppLocalizations {
   @override
   String get paperVoyageGpxBody =>
       'Ako imaš GPX datoteku ove plovidbe (i s drugog uređaja), iz nje se rekonstruiraju dani, milje i noćni sati. To možeš učiniti i kasnije putem uvoza GPX-a na karti.';
+
+  @override
+  String get entryTimeLabel => 'Vrijeme zapisa';
+
+  @override
+  String get coordinateHint => 'npr. 43° 30.738\' N ili 43.5123';
+
+  @override
+  String get coordinateInvalid => 'Koordinatu nije moguće pročitati';
+
+  @override
+  String get numberInvalid => 'Neispravan broj';
+
+  @override
+  String get addDay => 'Dodaj dan';
 }

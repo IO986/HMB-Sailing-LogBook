@@ -5633,7 +5633,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideMilesBody.
   ///
   /// In sk, this message translates to:
-  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.\n• Tlačidlo + ponúkne aj prepis z papierového denníka: vytvoríš plavbu a môžeš k nej hneď pripojiť GPX trasu.'**
+  /// **'Súhrn všetkých plavieb na jednom mieste (ikona v Denníku plavby).\n\n• Celkové námorné míle, dni na mori, počet plavieb a nočné hodiny\n• Rozpad podľa roka a podľa lode\n• Filter podľa roka\n• Klikni na plavbu (aj trackovanú/importovanú) a doplň záznam Knihy míľ – trasu, vlajku lode, meno a kvalifikáciu skippera, podpis potvrdzujúci míle\n• Tlačidlo + – pridaj historickú plavbu spred používania appky (počíta sa plne do súhrnov, v zozname označená hviezdičkou)\n• Export PDF potvrdenia o naplávaných míľach s miestom na podpis\n• Potvrdenie nesie aj trasu plavby po dňoch — Biograd – Žut – Veli Rat – Zadar – Biograd — poskladanú z prístavov jednotlivých dní; rovnaká zastávka dvakrát po sebe sa spojí a deň bez zapísaného prístavu sa preskočí.\n• Vo formulári potvrdenia ponúka pole „Pre koho\" posádku z tvojich plavieb — meno vyber, netreba ho písať; preklep by z jedného človeka spravil dva záznamy.\n• Číslo pasu/OP sa zadáva až pri vystavovaní potvrdenia — pri každom členovi posádky zvlášť. Neukladá sa, vytlačí sa len na tom jednom dokumente; svoje číslo má skiper uložené v karte plavby a predvyplní sa mu. Kto číslo nezadá, dostane na potvrdení prázdnu linku na dopísanie rukou.\n• Potvrdenie sa pred vystavením podpisuje rovnako ako denník: otvorí sa podpisová plocha a PDF dostane záverečnú stranu s podpisom, časom, kontrolným súčtom SHA-256 a QR kódom na overenie.\n• Menu (tri bodky) pri plavbe → Zmazať: odstráni plavbu aj s jej dňami a záznamami, platí to aj pre ručne pridanú historickú plavbu. Plavbu, ktorá sa práve zaznamenáva, zmazať nemožno.\n• Tlačidlo + ponúkne aj prepis z papierového denníka: vytvoríš plavbu a môžeš k nej hneď pripojiť GPX trasu.\n• Na prepísanej plavbe pridáš deň tlačidlom „Pridať deň“. Záznam v takom dni má čas aj súradnice písané ručne (napr. 43° 30.738\' N alebo 43.5123); nič sa nedopĺňa z aktuálnej polohy ani počasia.'**
   String get guideMilesBody;
 
   /// No description provided for @guideHandoverTitle.
@@ -7675,6 +7675,36 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Ak máš GPX súbor z tejto plavby (aj z iného zariadenia), dni, míle a nočné hodiny sa z neho zrekonštruujú. Môžeš to urobiť aj neskôr cez import GPX na mape.'**
   String get paperVoyageGpxBody;
+
+  /// No description provided for @entryTimeLabel.
+  ///
+  /// In sk, this message translates to:
+  /// **'Čas záznamu'**
+  String get entryTimeLabel;
+
+  /// No description provided for @coordinateHint.
+  ///
+  /// In sk, this message translates to:
+  /// **'napr. 43° 30.738\' N alebo 43.5123'**
+  String get coordinateHint;
+
+  /// No description provided for @coordinateInvalid.
+  ///
+  /// In sk, this message translates to:
+  /// **'Súradnicu sa nepodarilo prečítať'**
+  String get coordinateInvalid;
+
+  /// No description provided for @numberInvalid.
+  ///
+  /// In sk, this message translates to:
+  /// **'Neplatné číslo'**
+  String get numberInvalid;
+
+  /// No description provided for @addDay.
+  ///
+  /// In sk, this message translates to:
+  /// **'Pridať deň'**
+  String get addDay;
 }
 
 class _AppLocalizationsDelegate

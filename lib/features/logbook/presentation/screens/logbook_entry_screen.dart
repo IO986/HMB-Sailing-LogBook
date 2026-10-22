@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart' show Value;
@@ -9,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:hmb_core/hmb_core.dart' hide LocationService;
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/charter_source.dart';
 import '../../../../core/models/crew_member_ref.dart';
 import '../../../../core/providers/sync_provider.dart';
 import '../../../../core/providers/sync_settings_provider.dart';
@@ -19,6 +21,7 @@ import '../../../../core/services/udp_receiver_service.dart';
 import '../../../../core/services/weather_repository.dart';
 import '../../../../core/services/weather_service.dart';
 import '../../../../core/services/units_service.dart';
+import '../../../../core/utils/coordinate_parser.dart';
 import '../../../../main.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
 import '../../../../core/models/sail_mode.dart';
@@ -78,6 +81,22 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   final _pressureCtrl = TextEditingController();
   final _depthCtrl = TextEditingController();
 
+  /// Prepis z papierového denníka: záznam patrí spätne zapísanej plavbe, takže
+  /// čas a poloha sa píšu ručne. Nič sa nedopĺňa z aktuálnej GPS ani z
+  /// počasia — "teraz" nie je čas, ktorý stojí na papieri.
+  bool _retro = false;
+  DateTime? _dayDate;
+  final _latCtrl = TextEditingController();
+  final _lonCtrl = TextEditingController();
+  final _sogCtrl = TextEditingController();
+  final _cogCtrl = TextEditingController();
+
+  /// Text polí tak, ako sa naplnili z uloženého záznamu. Pole, ktoré sa
+  /// nezmenilo, sa nepreparsuje — inak by zaokrúhlenie pri formátovaní
+  /// ticho posunulo presnú uloženú polohu.
+  String _latInit = '', _lonInit = '', _sogInit = '', _cogInit = '';
+  String? _latError, _lonError, _sogError, _cogError;
+
   // Spôsob plavby - multi-select
   final Set<String> _sailModes = {'motor'};
 
@@ -97,7 +116,33 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.entryId != null) _loadEntry(); else _autoFill();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final db = ref.read(databaseProvider);
+    final day = await db.getDayLogById(widget.dayLogId);
+    final charter = day == null ? null : await db.getCharterById(day.charterId);
+    if (!mounted) return;
+
+    final retro =
+        charter != null && CharterSource.isRetrospective(charter.source);
+    if (retro && day != null) {
+      setState(() {
+        _retro = true;
+        _dayDate = day.date;
+        // Nič nie je predvyplnené odhadom: spôsob plavby ostane prázdny, kým
+        // ho skiper neprepíše z papiera. Čas je len začiatok dňa na výber.
+        _sailModes.clear();
+        _ts = DateTime(day.date.year, day.date.month, day.date.day, 12).toUtc();
+      });
+    }
+
+    if (widget.entryId != null) {
+      await _loadEntry();
+    } else if (!retro) {
+      await _autoFill();
+    }
     _loadCrew();
   }
 
@@ -168,8 +213,121 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         _waterLevel = e.waterLevel;
         _helmsman = e.skipperName;
       });
+      if (_retro) _fillRetroFields();
     } catch (_) {}
   }
+
+  void _fillRetroFields() {
+    final units = ref.read(unitsSyncProvider);
+    _latInit = _lat == null ? '' : units.formatLat(_lat);
+    _lonInit = _lon == null ? '' : units.formatLon(_lon);
+    _sogInit = _sog == null ? '' : _sog!.toStringAsFixed(1);
+    _cogInit = _cog == null ? '' : _cog!.toStringAsFixed(0);
+    _latCtrl.text = _latInit;
+    _lonCtrl.text = _lonInit;
+    _sogCtrl.text = _sogInit;
+    _cogCtrl.text = _cogInit;
+  }
+
+  Future<void> _pickTime() async {
+    final local = _ts.toLocal();
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(local),
+    );
+    if (picked == null || !mounted) return;
+    final d = _dayDate ?? local;
+    setState(() => _ts =
+        DateTime(d.year, d.month, d.day, picked.hour, picked.minute).toUtc());
+  }
+
+  /// Prečíta ručne zadané polia do `_lat`/`_lon`/`_sog`/`_cog`. Vráti `false`
+  /// a ukáže chybu pri políčku, keď niečo nevie prečítať s istotou.
+  bool _commitRetroFields() {
+    final l = AppLocalizations.of(context);
+    String? latErr, lonErr, sogErr, cogErr;
+    var lat = _lat, lon = _lon, sog = _sog, cog = _cog;
+
+    final latText = _latCtrl.text.trim();
+    if (latText != _latInit) {
+      lat = latText.isEmpty ? null : CoordinateParser.parseLatitude(latText);
+      if (latText.isNotEmpty && lat == null) latErr = l.coordinateInvalid;
+    }
+    final lonText = _lonCtrl.text.trim();
+    if (lonText != _lonInit) {
+      lon = lonText.isEmpty ? null : CoordinateParser.parseLongitude(lonText);
+      if (lonText.isNotEmpty && lon == null) lonErr = l.coordinateInvalid;
+    }
+    // Pol poloha je horšia než žiadna: bod na mape by skončil na rovníku.
+    if (latErr == null && lonErr == null && (lat == null) != (lon == null)) {
+      if (lat == null) {
+        latErr = l.coordinateInvalid;
+      } else {
+        lonErr = l.coordinateInvalid;
+      }
+    }
+
+    // Nezmenené pole sa nepreparsuje; prázdne znamená "nezaznamenané".
+    (double?, String?) number(
+        String text, String init, double? current, double max) {
+      if (text.trim() == init) return (current, null);
+      final t = text.trim().replaceAll(',', '.');
+      if (t.isEmpty) return (null, null);
+      final v = double.tryParse(t);
+      if (v == null || v < 0 || v > max) return (null, l.numberInvalid);
+      return (v, null);
+    }
+
+    (sog, sogErr) = number(_sogCtrl.text, _sogInit, sog, 100);
+    (cog, cogErr) = number(_cogCtrl.text, _cogInit, cog, 360);
+
+    setState(() {
+      _latError = latErr;
+      _lonError = lonErr;
+      _sogError = sogErr;
+      _cogError = cogErr;
+    });
+    if (latErr != null || lonErr != null || sogErr != null || cogErr != null) {
+      return false;
+    }
+    _lat = lat;
+    _lon = lon;
+    _sog = sog;
+    _cog = cog;
+    return true;
+  }
+
+  List<Widget> _retroNavFields(AppLocalizations l) => [
+        TextFormField(
+          controller: _latCtrl,
+          decoration: InputDecoration(
+              labelText: l.latitude,
+              hintText: l.coordinateHint,
+              errorText: _latError),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _lonCtrl,
+          decoration: InputDecoration(
+              labelText: l.longitude,
+              hintText: l.coordinateHint,
+              errorText: _lonError),
+        ),
+        const SizedBox(height: 8),
+        Row(children: [
+          Expanded(child: _retroNumber(_sogCtrl, 'SOG (kn)', _sogError)),
+          const SizedBox(width: 12),
+          Expanded(child: _retroNumber(_cogCtrl, 'COG (°)', _cogError)),
+        ]),
+      ];
+
+  Widget _retroNumber(TextEditingController ctrl, String label, String? error) =>
+      TextFormField(
+        controller: ctrl,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
+        decoration: InputDecoration(labelText: label, errorText: error),
+      );
 
   Future<void> _autoFill() async {
     final pos = GpsTrackingService().lastPosition
@@ -254,8 +412,22 @@ class _State extends ConsumerState<LogbookEntryScreen> {
       ),
       body: ListView(padding: const EdgeInsets.all(16), children: [
 
-        // Časová pečiatka záznamu (UTC, needitovateľná)
-        _TimestampBadge(_ts, isEdit: isEdit),
+        // Časová pečiatka záznamu (UTC, needitovateľná); pri prepise z papiera
+        // sa čas píše ručne.
+        if (_retro)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.schedule),
+              title: Text(l.entryTimeLabel),
+              subtitle: Text(
+                  '${AppDate.of(context, ref).short(_dayDate ?? _ts.toLocal())}'
+                  '  ${TimeOfDay.fromDateTime(_ts.toLocal()).format(context)}'),
+              trailing: const Icon(Icons.edit_outlined),
+              onTap: _pickTime,
+            ),
+          )
+        else
+          _TimestampBadge(_ts, isEdit: isEdit),
         const SizedBox(height: 16),
 
         // Spôsob plavby - multi-select chips
@@ -289,6 +461,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         ],
 
         _Sec(l.navigationSection),
+        if (_retro) ..._retroNavFields(l) else ...[
         _NavRow(l.latitude, ref.watch(unitsSyncProvider).formatLat(_lat)),
         _NavRow(l.longitude, ref.watch(unitsSyncProvider).formatLon(_lon)),
         _NavRow('SOG', ref.watch(unitsSyncProvider).formatSpeed(_sog)),
@@ -301,6 +474,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
             isMocked: _isMocked,
             timestamp: _ts,
           ),
+        ],
         ],
         const SizedBox(height: 16),
 
@@ -381,6 +555,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
   }
 
   Future<void> _save() async {
+    if (_retro && !_commitRetroFields()) return;
     setState(() => _loading = true);
     final db = ref.read(databaseProvider);
     final engine = ref.read(syncEngineProvider);
@@ -427,6 +602,14 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         fuelLevel: Value(_fuelLevel),
         waterLevel: Value(_waterLevel),
         skipperName: Value(_helmsman),
+      ).copyWith(
+        // Pri prepise z papiera sú čas a poloha ručné údaje, ktoré sa dajú
+        // opraviť; živý záznam ich po zápise nemení.
+        timestamp: _retro ? Value(_ts) : const Value.absent(),
+        latitude: _retro ? Value(_lat) : const Value.absent(),
+        longitude: _retro ? Value(_lon) : const Value.absent(),
+        sog: _retro ? Value(_sog) : const Value.absent(),
+        cog: _retro ? Value(_cog) : const Value.absent(),
       );
       // Lokálny zápis a enqueue() musia byť atomické — buď oboje, alebo nič.
       // Pri vypnutej synchronizácii sa enqueue vôbec nevolá, inak by outbox
@@ -446,7 +629,8 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     } else {
       final companion = LogbookEntriesCompanion.insert(
         dayLogId: Value(widget.dayLogId),
-        sessionId: Value(GpsTrackingService().currentSession?.sessionId),
+        // Spätne zapísaný záznam nepatrí do práve bežiacej GPS relácie.
+        sessionId: Value(_retro ? null : GpsTrackingService().currentSession?.sessionId),
         timestamp: _ts,
         latitude: Value(_lat), longitude: Value(_lon),
         sog: Value(_sog), cog: Value(_cog),
@@ -489,7 +673,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
         }
       });
 
-      if (mounted && _lat != null) {
+      if (mounted && _lat != null && !_retro) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: LocationQualityBadge(
             accuracyMeters: _accuracyMeters,
@@ -570,6 +754,7 @@ class _State extends ConsumerState<LogbookEntryScreen> {
     _waveCtrl.dispose(); _fuelCtrl.dispose(); _engineCtrl.dispose();
     _airTempCtrl.dispose(); _waterTempCtrl.dispose(); _pressureCtrl.dispose();
     _depthCtrl.dispose();
+    _latCtrl.dispose(); _lonCtrl.dispose(); _sogCtrl.dispose(); _cogCtrl.dispose();
     super.dispose();
   }
 }

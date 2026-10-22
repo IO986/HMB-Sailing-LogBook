@@ -2974,7 +2974,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.\n• Die Ausweis-/Passnummer wird beim Ausstellen der Bescheinigung eingegeben, für jedes Crewmitglied einzeln. Sie wird nicht gespeichert und steht nur auf diesem einen Dokument; die eigene Nummer des Skippers liegt in der Reisekarte und wird automatisch eingesetzt. Ohne Nummer bleibt eine Linie zum Eintragen von Hand.\n• Die Bescheinigung wird vor dem Export unterschrieben wie das Logbuch: Das Unterschriftfeld öffnet sich und das PDF bekommt eine Schlussseite mit Unterschrift, Zeit, SHA-256-Prüfsumme und QR-Code zur Überprüfung.\n• Menü (drei Punkte) an einer Reise → Löschen: entfernt die Reise samt Tagen und Einträgen, auch bei einer manuell hinzugefügten historischen Reise. Eine Reise, die gerade aufgezeichnet wird, lässt sich nicht löschen.\n• Die Taste + bietet auch das Übertragen eines Papierlogbuchs an: Du legst die Reise an und kannst sofort eine GPX-Strecke anhängen.';
+      'Zusammenfassung aller Reisen an einem Ort (Symbol im Fahrtenbuch).\n\n• Gesamt-Seemeilen, Tage auf See, Anzahl Fahrten und Nachtstunden\n• Aufschlüsselung nach Jahr und Schiff\n• Filter nach Jahr\n• Tippe auf eine Fahrt (auch eine getrackte/importierte), um den Logbucheintrag auszufüllen – Route, Flagge, Name und Qualifikation des Skippers, Unterschrift zur Bestätigung der Meilen\n• +-Taste – historische Fahrt vor der Nutzung der App hinzufügen (wird voll in die Zusammenfassungen eingerechnet, in der Liste mit Sternchen markiert)\n• PDF-Export einer Bescheinigung der gesegelten Meilen mit Unterschriftsfeld\n• Die Bescheinigung führt auch die Route der Reise Tag für Tag — Biograd – Žut – Veli Rat – Zadar – Biograd — aus den Häfen der einzelnen Tage; gleiche Stopps hintereinander werden zusammengefasst, Tage ohne eingetragenen Hafen übersprungen.\n• Im Formular der Bescheinigung bietet das Feld \"Für wen\" die Crew deiner Reisen an — Namen auswählen statt tippen, sonst wird aus einer Person durch einen Tippfehler zwei.\n• Die Ausweis-/Passnummer wird beim Ausstellen der Bescheinigung eingegeben, für jedes Crewmitglied einzeln. Sie wird nicht gespeichert und steht nur auf diesem einen Dokument; die eigene Nummer des Skippers liegt in der Reisekarte und wird automatisch eingesetzt. Ohne Nummer bleibt eine Linie zum Eintragen von Hand.\n• Die Bescheinigung wird vor dem Export unterschrieben wie das Logbuch: Das Unterschriftfeld öffnet sich und das PDF bekommt eine Schlussseite mit Unterschrift, Zeit, SHA-256-Prüfsumme und QR-Code zur Überprüfung.\n• Menü (drei Punkte) an einer Reise → Löschen: entfernt die Reise samt Tagen und Einträgen, auch bei einer manuell hinzugefügten historischen Reise. Eine Reise, die gerade aufgezeichnet wird, lässt sich nicht löschen.\n• Die Taste + bietet auch das Übertragen eines Papierlogbuchs an: Du legst die Reise an und kannst sofort eine GPX-Strecke anhängen.\n• In einer übertragenen Reise fügst du einen Tag mit „Tag hinzufügen“ hinzu. Ein Eintrag in so einem Tag hat Zeit und Koordinaten von Hand eingetragen (z. B. 43° 30.738\' N oder 43.5123); nichts wird aus aktueller Position oder Wetter ergänzt.';
 
   @override
   String get guideHandoverTitle => 'Übergabeprotokoll (Check-in/Check-out)';
@@ -4130,4 +4130,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get paperVoyageGpxBody =>
       'Wenn du eine GPX-Datei dieser Reise hast (auch von einem anderen Gerät), werden Tage, Meilen und Nachtstunden daraus rekonstruiert. Du kannst das auch später über den GPX-Import auf der Karte tun.';
+
+  @override
+  String get entryTimeLabel => 'Zeit des Eintrags';
+
+  @override
+  String get coordinateHint => 'z. B. 43° 30.738\' N oder 43.5123';
+
+  @override
+  String get coordinateInvalid => 'Koordinate konnte nicht gelesen werden';
+
+  @override
+  String get numberInvalid => 'Ungültige Zahl';
+
+  @override
+  String get addDay => 'Tag hinzufügen';
 }

@@ -115,7 +115,10 @@ class MilesBookScreen extends ConsumerWidget {
       await context.push('/gpx-import', extra: charter.id);
       ref.invalidate(milesAggregateProvider);
       ref.invalidate(milesAvailableYearsProvider);
+      ref.invalidate(chartersProvider);
     }
+    // Days and entries are added on the voyage itself.
+    if (context.mounted) context.push('/logbook/${charter.id}');
   }
 }
 

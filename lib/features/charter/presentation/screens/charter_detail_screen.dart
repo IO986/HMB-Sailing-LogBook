@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../main.dart';
+import '../../../../core/models/charter_source.dart';
+import '../../../gpx_import/services/gpx_voyage_reconstructor.dart';
 import '../../providers/charter_provider.dart';
 import '../../services/voyage_progress.dart';
 import '../widgets/edit_day_ports_dialog.dart';
@@ -256,6 +258,12 @@ class _Body extends ConsumerWidget {
             Text(AppLocalizations.of(context).voyageDaysCount(days.length),
                 style: Theme.of(context).textTheme.titleMedium),
             const Spacer(),
+            if (CharterSource.isRetrospective(charter.source))
+              TextButton.icon(
+                onPressed: () => _addDay(context, ref),
+                icon: const Icon(Icons.add, size: 18),
+                label: Text(AppLocalizations.of(context).addDay),
+              ),
             if (days.length > 1)
               TextButton.icon(
                 onPressed: () => _deleteMultiple(context, ref),
@@ -280,6 +288,39 @@ class _Body extends ConsumerWidget {
         const SizedBox(height: 80),
       ],
     );
+  }
+
+  /// A voyage written after the fact has no tracking that would start its
+  /// days, so they are added by hand, one per date on the paper log.
+  Future<void> _addDay(BuildContext context, WidgetRef ref) async {
+    final now = DateTime.now();
+    final next = days.isEmpty
+        ? charter.dateFrom
+        : days.last.date.add(const Duration(days: 1));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: next.isAfter(now) ? now : next,
+      firstDate: DateTime(1990),
+      lastDate: now,
+    );
+    if (picked == null) return;
+
+    final key = DateTime(picked.year, picked.month, picked.day);
+    final db = ref.read(databaseProvider);
+    final existing = days
+        .where((d) =>
+            d.date.year == key.year &&
+            d.date.month == key.month &&
+            d.date.day == key.day)
+        .firstOrNull;
+    final dayId = existing?.id ??
+        (await db.insertDayLog(
+                DayLogsCompanion.insert(charterId: charter.id, date: key)))
+            .id;
+    await GpxVoyageReconstructor.widenCharterDates(db, charter.id, [key]);
+    ref.invalidate(dayLogsProvider(charter.id));
+    ref.invalidate(chartersProvider);
+    if (context.mounted) context.go('/logbook/${charter.id}/day/$dayId');
   }
 
   void _deleteMultiple(BuildContext context, WidgetRef ref) {

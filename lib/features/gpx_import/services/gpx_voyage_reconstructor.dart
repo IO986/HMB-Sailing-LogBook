@@ -103,7 +103,7 @@ class GpxVoyageReconstructor {
       await _fillDay(db, day, isNewDay, byDay[dayKey]!.first.$1);
     }
 
-    await _widenCharterDates(db, charterId, sortedDays);
+    await widenCharterDates(db, charterId, sortedDays);
 
     return ReconstructionSummary(
       daysCreated: created,
@@ -192,7 +192,8 @@ class GpxVoyageReconstructor {
     ));
   }
 
-  static Future<void> _widenCharterDates(
+  /// Stretches the voyage's from/to dates to cover [days] (sorted).
+  static Future<void> widenCharterDates(
     AppDatabase db,
     int charterId,
     List<DateTime> days,
