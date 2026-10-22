@@ -81,7 +81,7 @@ abstract final class VoyageCsvExporter {
       }
     }
 
-    final duties = await db.watchDutiesForCharter(charterId).first;
+    final duties = await db.getDutiesForCharter(charterId);
     final protocols = <HandoverProtocol>[
       for (final type in ['checkIn', 'checkOut'])
         if (await db.getHandoverProtocol(charterId, type)

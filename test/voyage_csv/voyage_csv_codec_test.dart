@@ -246,30 +246,35 @@ void main() {
     });
 
     test('a file that is not ours is refused with a reason', () {
-      void refuses(String text, String fragment) {
+      void refuses(String text, VoyageCsvProblem problem) {
         expect(
           () => VoyageCsvReader.read(text),
           throwsA(isA<VoyageCsvFormatException>()
-              .having((e) => e.message, 'message', contains(fragment))),
+              .having((e) => e.problem, 'problem', problem)),
           reason: text,
         );
       }
 
-      refuses('', 'prázdny');
-      refuses('a,b,c\n1,2,3\n', 'record_type');
-      refuses('record_type,format,version\nday,,\n', 'meta');
-      refuses('record_type,format,version\nmeta,something-else,1\n', 'formát');
-      refuses('record_type,format,version\nmeta,hmb-voyage,\n', 'verzi');
-      refuses('record_type,format,version\nmeta,hmb-voyage,0\n', 'verzi');
-      refuses('record_type,format,version\nmeta,hmb-voyage,2\n', 'Aktualizuj');
-      refuses('record_type,format,version\n', 'žiadne záznamy');
+      refuses('', VoyageCsvProblem.empty);
+      refuses('a,b,c\n1,2,3\n', VoyageCsvProblem.notOurs);
+      refuses('record_type,format,version\nday,,\n', VoyageCsvProblem.notOurs);
+      refuses('record_type,format,version\nmeta,something-else,1\n',
+          VoyageCsvProblem.otherFormat);
+      refuses('record_type,format,version\nmeta,hmb-voyage,\n',
+          VoyageCsvProblem.noVersion);
+      refuses('record_type,format,version\nmeta,hmb-voyage,0\n',
+          VoyageCsvProblem.noVersion);
+      refuses('record_type,format,version\nmeta,hmb-voyage,2\n',
+          VoyageCsvProblem.newerVersion);
+      refuses('record_type,format,version\n', VoyageCsvProblem.noRecords);
     });
 
     test('unknown columns are ignored and named once', () {
       final doc = VoyageCsvReader.read(
           '${VoyageCsvSchema.header.join(',')},zeta,alpha\r\n'
           '${metaFull.replaceFirst('meta', 'meta')},x,y\r\n');
-      expect(doc.warnings.single, contains('alpha, zeta'));
+      expect(doc.warnings.single.kind, VoyageCsvWarningKind.unknownColumns);
+      expect(doc.warnings.single.detail, 'alpha, zeta');
     });
 
     test('unknown record types are skipped and counted', () {
@@ -280,7 +285,8 @@ void main() {
         row('day', {'date': '2026-07-10'}, id: '1'),
       ]));
       expect(doc.records.map((r) => r.type), ['meta', 'day']);
-      expect(doc.warnings.single, allOf(contains('spaceship'), contains('2')));
+      expect(doc.warnings.single.kind, VoyageCsvWarningKind.unknownType);
+      expect(doc.warnings.single.detail, 'spaceship ×2');
     });
 
     test('a second meta is skipped, a repeated id is reported', () {
@@ -291,7 +297,10 @@ void main() {
         row('day', {'date': '2026-07-11'}, id: '1'),
       ]));
       expect(doc.ofType('meta').length, 1);
-      expect(doc.warnings.length, 2);
+      expect(doc.warnings.map((w) => w.kind), [
+        VoyageCsvWarningKind.extraMeta,
+        VoyageCsvWarningKind.repeatedId,
+      ]);
     });
 
     test('a value in a column the type does not use is ignored', () {
@@ -313,7 +322,8 @@ void main() {
       expect(day.date('date'), isNull);
       expect(day.real('distance_nm'), isNull);
       expect(day.id, isNull);
-      expect(doc.warnings.single, contains('one'));
+      expect(doc.warnings.single.kind, VoyageCsvWarningKind.badNumber);
+      expect(doc.warnings.single.detail, contains('one'));
     });
 
     test('rows shorter than the header and blank lines are fine', () {

@@ -75,6 +75,11 @@ class CharterListScreen extends ConsumerWidget {
         title: const Text('HMB Sailing Log'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.upload_file),
+            tooltip: l.importCsvTooltip,
+            onPressed: () => context.push('/voyage-import'),
+          ),
+          IconButton(
             icon: const Icon(Icons.archive_outlined),
             tooltip: l.voyageArchiveTitle,
             onPressed: () => context.push('/logbook/archive'),

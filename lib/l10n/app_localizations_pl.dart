@@ -3030,7 +3030,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.\n• Szkolenie bezpieczeństwa można wyeksportować osobno — własny PDF z podpisami załogi i listą omówionych punktów. Znajdziesz go w Eksportach i na ekranie szkolenia; w podsumowaniu rejsu szkolenie pozostaje bez zmian.\n• Pierwsza strona eksportu rejsu niesie teraz mapę całego rejsu, nad listą dni. Mapy dzienne zostają tam, gdzie były — to jest ta jedna linia od początku do końca, której z nich złożyć się nie dało.\n• W Centrum eksportów jest „Wszystkie dane rejsu (CSV)”: jeden plik z jachtem, załogą, dniami, wpisami, trasą, wachtami i protokołem. Przed eksportem możesz wyłączyć punkty trasy, jeśli plik byłby zbyt duży.';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.\n• Szkolenie bezpieczeństwa można wyeksportować osobno — własny PDF z podpisami załogi i listą omówionych punktów. Znajdziesz go w Eksportach i na ekranie szkolenia; w podsumowaniu rejsu szkolenie pozostaje bez zmian.\n• Pierwsza strona eksportu rejsu niesie teraz mapę całego rejsu, nad listą dni. Mapy dzienne zostają tam, gdzie były — to jest ta jedna linia od początku do końca, której z nich złożyć się nie dało.\n• W Centrum eksportów jest „Wszystkie dane rejsu (CSV)”: jeden plik z jachtem, załogą, dniami, wpisami, trasą, wachtami i protokołem. Przed eksportem możesz wyłączyć punkty trasy, jeśli plik byłby zbyt duży.\n• Rejs wyeksportowany jako CSV wczytasz z powrotem ikoną importu u góry Dziennika. Powstanie nowy rejs i nic, co masz w aplikacji, się nie zmieni. Jeśli ten rejs jest już w aplikacji, aplikacja go rozpozna i nie zdubluje.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -4192,4 +4192,76 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'Eksport się nie powiódł.';
+
+  @override
+  String get importCsvTooltip => 'Importuj rejs z pliku';
+
+  @override
+  String get importCsvTitle => 'Import rejsu (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Wybierz plik CSV utworzony przez tę aplikację (Eksporty → Wszystkie dane rejsu). Zostanie wczytany jako nowy rejs; nic, co już masz w aplikacji, się nie zmieni.';
+
+  @override
+  String get importCsvPick => 'Wybierz plik';
+
+  @override
+  String get importCsvPickAnother => 'Wybierz inny plik';
+
+  @override
+  String get importCsvAction => 'Importuj';
+
+  @override
+  String get importCsvAlready => 'Ten rejs jest już w aplikacji';
+
+  @override
+  String get importCsvOpenExisting => 'Otwórz';
+
+  @override
+  String get importCsvDone => 'Rejs został zaimportowany.';
+
+  @override
+  String get importCsvFailed => 'Import się nie powiódł, nic nie zapisano.';
+
+  @override
+  String get importCsvNoTrack => 'Bez punktów trasy';
+
+  @override
+  String get importCsvWarnings => 'Ostrzeżenia';
+
+  @override
+  String get csvProblemNoData => 'W pliku nie ma danych rejsu.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'To nie jest plik utworzony przez tę aplikację (CSV z Eksportów).';
+
+  @override
+  String get csvProblemNewer =>
+      'Plik pochodzi z nowszej wersji formatu. Zaktualizuj aplikację.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Pominięte kolumny';
+
+  @override
+  String get csvWarnUnknownType => 'Pominięte rekordy nieznanego typu';
+
+  @override
+  String get csvWarnExtraMeta => 'Pominięto kolejny rekord meta (wiersz)';
+
+  @override
+  String get csvWarnBadNumber => 'Nieczytelna liczba';
+
+  @override
+  String get csvWarnRepeatedId => 'Powtórzony numer rekordu';
+
+  @override
+  String get csvWarnOrphan => 'Pominięto, brak rekordu nadrzędnego';
+
+  @override
+  String get csvWarnInvalid => 'Pominięto, rekord jest niekompletny';
+
+  @override
+  String get csvWarnDuplicate => 'Pominięto powtórzony protokół';
 }

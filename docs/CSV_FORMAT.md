@@ -285,6 +285,40 @@ Zameranie. `parent_id` je `id` dňa, alebo prázdne.
 | `bearing` | `day` (nepovinné) |
 | ostatné | — (patria plavbe) |
 
+## Import
+
+Súbor sa načíta vždy ako **nová plavba** (`source` = `csv`, hotová kópia bez
+check-inu a pokračovania trackingu). Nič, čo už v appke je, sa nemení.
+
+- **Identita:** plavba si nechá `uuid` zo súboru. Ak sa plavba s tým `uuid` už
+  v appke nachádza (tá istá, alebo už raz načítaná), import sa odmietne.
+  Plavba s chýbajúcim `uuid` dostane nové.
+- **Všetko alebo nič:** zápis ide v jednej transakcii.
+- **Čo sa preskočí a spočíta:** záznam, ktorý nemožno použiť, sa preskočí
+  a v náhľade a výsledku je upozornenie s druhom a počtom. Nezastaví zvyšok.
+- **Čísla v súbore** (`id`, `parent_id`, `session_ref`) hovoria len, čo patrí
+  k čomu. Import pridelí vlastné id a vlastné GPS identifikátory relácií;
+  skupiny zameraní (`sight_group`) dostanú nové názvy, aby sa nezrazili
+  s existujúcimi.
+- **Obrázky** (podpisy, fotky) súbor nenesie. Podpis zostane ako meno a čas;
+  obrázok treba nakresliť znova.
+
+Čo záznam musí mať, aby sa prevzal:
+
+| typ | povinné |
+|---|---|
+| `charter` | presne jeden; chýbajúci názov sa nahradí `Import CSV`, chýbajúce dátumy rozsahom dní, inak dneškom |
+| `crew` | `name` |
+| `day` | `id` a `date` |
+| `session` | `id`, `parent_id` (existujúci deň) a `from_utc` |
+| `entry` | `parent_id` (existujúci deň) a `time_utc` |
+| `track` | `parent_id` (existujúca relácia), `time_utc`, `lat` a `lon` |
+| `duty` | `name` a `from_utc` |
+| `handover` | `id`, `handover_type` (`checkIn` alebo `checkOut`) a `time_utc`; druhý protokol rovnakého druhu sa preskočí |
+| `checklist` | `item_key` a existujúci protokol; neznámy `status` sa berie ako `ok` |
+| `assessment`, `signature` | `name` |
+| `bearing` | `magnetic_bearing_deg`, `declination_deg`, `true_bearing_deg`, `time_utc`; `resection` navyše `target_lat`, `target_lon` a bez `sight_group`, `intersection` navyše `lat`, `lon` a `sight_group` |
+
 ## Verzovanie a čítanie
 
 - Zmeny, ktoré nič nerozbijú (nový stĺpec, nový typ záznamu), verziu

@@ -3040,7 +3040,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'El diario se puede exportar como documento PDF profesional.\n\n1. En el Diario, pulsa el chip Exportaciones arriba\n2. Elige qué exportas: la travesía completa, un día, el acta de entrega, los certificados de tripulación, las millas o las demoras\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes\n• Todas las exportaciones están en un solo sitio: el chip Exportaciones del Diario. La única excepción es la copia de seguridad de la base de datos, que sigue en Ajustes junto a la restauración, porque no es un documento para nadie sino una imagen de los datos.\n• Antes de exportar puedes elegir la capa del recorte: satélite o mapa normal. La elección se recuerda. El recorte es siempre algo más amplio que la traza para que se vea el entorno; un día en un mismo sitio recibe una ventana de al menos un kilómetro, o el documento solo mostraría tejados.\n• La instrucción de seguridad también se puede exportar por separado: un PDF propio con las firmas de la tripulación y la lista de puntos tratados. Está en Exportaciones y en la propia pantalla de la instrucción; en el resumen del viaje todo queda igual.\n• La primera página de la exportación lleva ahora un mapa de toda la travesía, sobre la lista de días. Los mapas diarios siguen donde estaban: esta es la línea entera, de principio a fin, que de ellos no salía.\n• En el centro de exportación está «Todos los datos de la travesía (CSV)»: un archivo con el barco, la tripulación, los días, los registros, el track, las guardias y el protocolo. Antes de exportar puedes quitar los puntos del track si el archivo sería demasiado grande.';
+      'El diario se puede exportar como documento PDF profesional.\n\n1. En el Diario, pulsa el chip Exportaciones arriba\n2. Elige qué exportas: la travesía completa, un día, el acta de entrega, los certificados de tripulación, las millas o las demoras\n3. Firmar como patrón → se genera el PDF\n4. El PDF incluye: ruta, entradas, fotos, portada con la foto del barco de la ficha del barco (si está subida), briefing de seguridad con firmas de tripulación\n5. Compartir por email, imprimir o guardar en el teléfono\n\nCada PDF recibe un ID único de documento (p.ej. HMBSL-5-2026) y un número de revisión (Rev. 1, Rev. 2...) visible en el pie de cada página. Cada nueva exportación incrementa automáticamente el número — es visible cuántas veces se generó el documento.\n\nEl código QR en la página de firma contiene el ID, revisión y una huella criptográfica del contenido. Cualquier cambio en los datos cambia el código QR.\n\nEl PDF se genera en el idioma de la app, con los nombres y su acentuación. Cada página diaria incluye además un resumen de las guardias.\n• Si el seguimiento se detuvo y se reanudó durante el día, cada tramo genera su propio archivo GPX\n• Las distancias, velocidades y temperaturas del PDF siguen las unidades definidas en Ajustes\n• Todas las exportaciones están en un solo sitio: el chip Exportaciones del Diario. La única excepción es la copia de seguridad de la base de datos, que sigue en Ajustes junto a la restauración, porque no es un documento para nadie sino una imagen de los datos.\n• Antes de exportar puedes elegir la capa del recorte: satélite o mapa normal. La elección se recuerda. El recorte es siempre algo más amplio que la traza para que se vea el entorno; un día en un mismo sitio recibe una ventana de al menos un kilómetro, o el documento solo mostraría tejados.\n• La instrucción de seguridad también se puede exportar por separado: un PDF propio con las firmas de la tripulación y la lista de puntos tratados. Está en Exportaciones y en la propia pantalla de la instrucción; en el resumen del viaje todo queda igual.\n• La primera página de la exportación lleva ahora un mapa de toda la travesía, sobre la lista de días. Los mapas diarios siguen donde estaban: esta es la línea entera, de principio a fin, que de ellos no salía.\n• En el centro de exportación está «Todos los datos de la travesía (CSV)»: un archivo con el barco, la tripulación, los días, los registros, el track, las guardias y el protocolo. Antes de exportar puedes quitar los puntos del track si el archivo sería demasiado grande.\n• Una travesía exportada como CSV se vuelve a leer con el icono de importación en la parte superior del Diario. Se crea una travesía nueva y nada de lo que tienes en la app cambia. Si esa travesía ya está en la app, la app la reconoce y no la duplica.';
 
   @override
   String get safetyBriefingScreenTitle => 'Instrucción de seguridad';
@@ -4206,4 +4206,77 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'La exportación ha fallado.';
+
+  @override
+  String get importCsvTooltip => 'Importar travesía desde un archivo';
+
+  @override
+  String get importCsvTitle => 'Importar travesía (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Elige un archivo CSV creado por esta app (Exportaciones → Todos los datos de la travesía). Se lee como una travesía nueva; nada de lo que ya tienes en la app cambia.';
+
+  @override
+  String get importCsvPick => 'Elegir archivo';
+
+  @override
+  String get importCsvPickAnother => 'Elegir otro archivo';
+
+  @override
+  String get importCsvAction => 'Importar';
+
+  @override
+  String get importCsvAlready => 'Esta travesía ya está en la app';
+
+  @override
+  String get importCsvOpenExisting => 'Abrir';
+
+  @override
+  String get importCsvDone => 'La travesía está importada.';
+
+  @override
+  String get importCsvFailed =>
+      'La importación ha fallado, no se escribió nada.';
+
+  @override
+  String get importCsvNoTrack => 'Sin puntos del track';
+
+  @override
+  String get importCsvWarnings => 'Avisos';
+
+  @override
+  String get csvProblemNoData => 'El archivo no contiene datos de la travesía.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'Este no es un archivo creado por esta app (un CSV de Exportaciones).';
+
+  @override
+  String get csvProblemNewer =>
+      'El archivo es de una versión más nueva del formato. Actualiza la app.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Columnas ignoradas';
+
+  @override
+  String get csvWarnUnknownType => 'Registros de tipo desconocido omitidos';
+
+  @override
+  String get csvWarnExtraMeta => 'Se omitió otro registro meta (línea)';
+
+  @override
+  String get csvWarnBadNumber => 'Número ilegible';
+
+  @override
+  String get csvWarnRepeatedId => 'Número de registro repetido';
+
+  @override
+  String get csvWarnOrphan => 'Omitido, falta el registro superior';
+
+  @override
+  String get csvWarnInvalid => 'Omitido, el registro está incompleto';
+
+  @override
+  String get csvWarnDuplicate => 'Se omitió un protocolo repetido';
 }

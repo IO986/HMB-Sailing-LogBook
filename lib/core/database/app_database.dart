@@ -2028,6 +2028,14 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(w) => OrderingTerm(expression: w.fromUtc)]))
           .get();
 
+  /// To isté ako [watchDutiesForCharter], jednorazovo — pre export, ktorý
+  /// nepotrebuje prúd.
+  Future<List<DutyPeriod>> getDutiesForCharter(int charterId) =>
+      (select(dutyPeriods)
+            ..where((w) => w.charterId.equals(charterId))
+            ..orderBy([(w) => OrderingTerm.desc(w.fromUtc)]))
+          .get();
+
   Stream<List<DutyPeriod>> watchDutiesForCharter(int charterId) =>
       (select(dutyPeriods)
             ..where((w) => w.charterId.equals(charterId))

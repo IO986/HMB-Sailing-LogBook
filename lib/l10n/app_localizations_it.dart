@@ -3046,7 +3046,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Il giornale si può esportare come documento PDF professionale.\n\n1. Nel Giornale tocca il chip Esportazioni in alto\n2. Scegli cosa esportare: l\'intera crociera, un giorno, il verbale di consegna, i certificati dell\'equipaggio, le miglia o i rilevamenti\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni\n• Tutte le esportazioni stanno in un unico posto: il chip Esportazioni nel Giornale. L\'unica eccezione è il backup dell\'intero database, che resta nelle Impostazioni accanto al ripristino, perché non è un documento per qualcuno ma un\'immagine dei dati.\n• Prima dell\'esportazione puoi scegliere lo sfondo del riquadro: satellite o mappa normale. La scelta viene ricordata. Il riquadro è sempre un po\' più largo della traccia per mostrare i dintorni; una giornata ferma in un punto riceve almeno un chilometro, altrimenti nel documento si vedrebbero solo i tetti.\n• Il briefing di sicurezza si può esportare anche da solo: un PDF dedicato con le firme dell\'equipaggio e l\'elenco dei punti trattati. Si trova in Esportazioni e sulla schermata del briefing; nel riepilogo della navigazione resta tutto com\'era.\n• La prima pagina dell’esportazione porta ora una mappa dell’intera navigazione, sopra l’elenco dei giorni. Le mappe giornaliere restano dove erano: questa è l’unica linea dall’inizio alla fine, che da loro non veniva fuori.\n• Nell\'hub delle esportazioni c\'è «Tutti i dati della traversata (CSV)»: un file con barca, equipaggio, giorni, registrazioni, traccia, turni e verbale. Prima di esportare puoi escludere i punti della traccia se il file fosse troppo grande.';
+      'Il giornale si può esportare come documento PDF professionale.\n\n1. Nel Giornale tocca il chip Esportazioni in alto\n2. Scegli cosa esportare: l\'intera crociera, un giorno, il verbale di consegna, i certificati dell\'equipaggio, le miglia o i rilevamenti\n3. Firma come skipper → il PDF viene generato\n4. Il PDF comprende: traccia, annotazioni, foto, briefing di sicurezza con le firme dell\'equipaggio; l\'intestazione della copertina mostra la foto dell\'imbarcazione dalla scheda imbarcazione (se caricata)\n5. Condividi via e-mail, stampa o salva sul telefono\n\nOgni PDF riceve un identificativo univoco (ad es. HMBSL-5-2026) e un numero di revisione (Rev. 1, Rev. 2...) visibile nel piè di pagina di ogni pagina. Ogni nuova esportazione incrementa automaticamente il numero — rendendo visibile quante volte il documento è stato generato.\n\nIl codice QR sulla pagina delle firme contiene l\'identificativo, la revisione e un\'impronta crittografica del contenuto. Qualsiasi modifica dei dati cambia il codice QR.\n\nIl PDF viene generato nella lingua dell\'app, nomi e segni diacritici compresi. Ogni pagina del giorno riporta anche una fascia con l\'equipaggio di guardia.\n• Se il tracciamento si è interrotto ed è ripartito durante la giornata, ogni tratta ottiene il proprio file GPX\n• Distanze, velocità e temperature nel PDF seguono le unità impostate nelle Impostazioni\n• Tutte le esportazioni stanno in un unico posto: il chip Esportazioni nel Giornale. L\'unica eccezione è il backup dell\'intero database, che resta nelle Impostazioni accanto al ripristino, perché non è un documento per qualcuno ma un\'immagine dei dati.\n• Prima dell\'esportazione puoi scegliere lo sfondo del riquadro: satellite o mappa normale. La scelta viene ricordata. Il riquadro è sempre un po\' più largo della traccia per mostrare i dintorni; una giornata ferma in un punto riceve almeno un chilometro, altrimenti nel documento si vedrebbero solo i tetti.\n• Il briefing di sicurezza si può esportare anche da solo: un PDF dedicato con le firme dell\'equipaggio e l\'elenco dei punti trattati. Si trova in Esportazioni e sulla schermata del briefing; nel riepilogo della navigazione resta tutto com\'era.\n• La prima pagina dell’esportazione porta ora una mappa dell’intera navigazione, sopra l’elenco dei giorni. Le mappe giornaliere restano dove erano: questa è l’unica linea dall’inizio alla fine, che da loro non veniva fuori.\n• Nell\'hub delle esportazioni c\'è «Tutti i dati della traversata (CSV)»: un file con barca, equipaggio, giorni, registrazioni, traccia, turni e verbale. Prima di esportare puoi escludere i punti della traccia se il file fosse troppo grande.\n• Una traversata esportata come CSV si rilegge con l\'icona di importazione in alto nel Giornale. Diventa una traversata nuova e nulla di ciò che hai nell\'app cambia. Se quella traversata è già nell\'app, l\'app la riconosce e non la duplica.';
 
   @override
   String get safetyBriefingScreenTitle => 'Briefing di sicurezza';
@@ -4211,4 +4211,77 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'Esportazione non riuscita.';
+
+  @override
+  String get importCsvTooltip => 'Importa una traversata da file';
+
+  @override
+  String get importCsvTitle => 'Importa traversata (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Scegli un file CSV creato da questa app (Esportazioni → Tutti i dati della traversata). Viene letto come una nuova traversata; nulla di ciò che hai già nell\'app cambia.';
+
+  @override
+  String get importCsvPick => 'Scegli il file';
+
+  @override
+  String get importCsvPickAnother => 'Scegli un altro file';
+
+  @override
+  String get importCsvAction => 'Importa';
+
+  @override
+  String get importCsvAlready => 'Questa traversata è già nell\'app';
+
+  @override
+  String get importCsvOpenExisting => 'Apri';
+
+  @override
+  String get importCsvDone => 'La traversata è stata importata.';
+
+  @override
+  String get importCsvFailed =>
+      'Importazione non riuscita, non è stato scritto nulla.';
+
+  @override
+  String get importCsvNoTrack => 'Senza punti della traccia';
+
+  @override
+  String get importCsvWarnings => 'Avvisi';
+
+  @override
+  String get csvProblemNoData => 'Il file non contiene dati di traversata.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'Questo non è un file creato da questa app (un CSV dalle Esportazioni).';
+
+  @override
+  String get csvProblemNewer =>
+      'Il file proviene da una versione più recente del formato. Aggiorna l\'app.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Colonne ignorate';
+
+  @override
+  String get csvWarnUnknownType => 'Record di tipo sconosciuto saltati';
+
+  @override
+  String get csvWarnExtraMeta => 'Saltato un altro record meta (riga)';
+
+  @override
+  String get csvWarnBadNumber => 'Numero illeggibile';
+
+  @override
+  String get csvWarnRepeatedId => 'Numero di record ripetuto';
+
+  @override
+  String get csvWarnOrphan => 'Saltato, manca il record superiore';
+
+  @override
+  String get csvWarnInvalid => 'Saltato, il record è incompleto';
+
+  @override
+  String get csvWarnDuplicate => 'Saltato un verbale ripetuto';
 }

@@ -25,6 +25,7 @@ import 'features/miles/presentation/screens/historical_voyage_form_screen.dart';
 import 'features/miles/presentation/screens/miles_export_screen.dart';
 import 'features/miles/presentation/screens/charter_logbook_record_screen.dart';
 import 'features/gpx_import/presentation/screens/gpx_import_screen.dart';
+import 'features/voyage_csv/presentation/voyage_csv_import_screen.dart';
 import 'features/bearing/presentation/screens/bearing_session_screen.dart';
 import 'features/sync/presentation/screens/sync_queue_screen.dart';
 import 'shared/widgets/main_scaffold.dart';
@@ -139,6 +140,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       charterId: int.parse(s.pathParameters['id']!))),
             ],
           ),
+          GoRoute(path: '/voyage-import', builder: (c, s) => const VoyageCsvImportScreen()),
           GoRoute(
               path: '/gpx-import',
               builder: (c, s) => GpxImportScreen(charterId: s.extra as int?)),

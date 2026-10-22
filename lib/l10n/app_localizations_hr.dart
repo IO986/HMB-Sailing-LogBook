@@ -3035,7 +3035,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. U Dnevniku dodirnite chip Izvozi na vrhu\n2. Odaberite što izvozite — cijelu plovidbu, jedan dan, zapisnik o primopredaji, potvrde posade, milje ili azimute\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama\n• Svi izvozi su na jednom mjestu — pod chipom Izvozi u Dnevniku. Jedina iznimka je sigurnosna kopija cijele baze: ostaje u Postavkama uz vraćanje, jer to nije dokument za nekoga nego preslika podataka.\n• Prije izvoza možeš odabrati podlogu isječka karte — satelit ili običnu kartu. Odabir se pamti. Isječak je uvijek nešto širi od same rute da se vidi okolina; dan proveden na jednom mjestu dobiva prozor od barem kilometra, inače bi na dokumentu bili samo krovovi.\n• Sigurnosna obuka može se izvesti i zasebno — vlastiti PDF s potpisima posade i popisom obrađenih točaka. Nalazi se u Izvozima i na samom zaslonu obuke; u sažetku plovidbe obuka ostaje kakva je bila.\n• Prva stranica izvoza plovidbe sada nosi kartu cijele plovidbe, iznad popisa dana. Dnevni isječci ostaju gdje su bili — ovo je ona jedna linija od početka do kraja koju se iz njih nije dalo složiti.\n• U središtu za izvoz je „Svi podaci plovidbe (CSV)“: jedna datoteka s plovilom, posadom, danima, zapisima, trasom, stražama i zapisnikom. Prije izvoza možeš isključiti točke trase ako bi datoteka bila prevelika.';
+      'Dnevnik se može izvesti kao profesionalan PDF dokument.\n\n1. U Dnevniku dodirnite chip Izvozi na vrhu\n2. Odaberite što izvozite — cijelu plovidbu, jedan dan, zapisnik o primopredaji, potvrde posade, milje ili azimute\n3. Potpišite se kao skiper → PDF se generira\n4. PDF sadrži: trag, zapise iz dnevnika, fotografije, sigurnosnu instruktažu s potpisima posade; zaglavlje naslovnice prikazuje fotografiju plovila s kartice plovila (ako je učitana)\n5. Podijelite e-poštom, ispišite ili spremite na telefon\n\nSvaki PDF dobiva jedinstvenu oznaku dokumenta (npr. HMBSL-5-2026) i broj revizije (Rev. 1, Rev. 2...) vidljiv u podnožju svake stranice. Svaki novi izvoz automatski povećava broj — čime je vidljivo koliko je puta dokument generiran.\n\nQR kod na stranici s potpisima sadrži oznaku, reviziju i kriptografski otisak sadržaja. Svaka promjena podataka mijenja QR kod.\n\nPDF se generira na jeziku aplikacije, uključujući imena i dijakritičke znakove. Svaka stranica dana nosi i traku s posadom na straži.\n• Ako se praćenje tijekom dana prekinulo i ponovno pokrenulo, svaka dionica dobiva vlastitu GPX datoteku\n• Udaljenosti, brzine i temperature u PDF-u prate jedinice postavljene u Postavkama\n• Svi izvozi su na jednom mjestu — pod chipom Izvozi u Dnevniku. Jedina iznimka je sigurnosna kopija cijele baze: ostaje u Postavkama uz vraćanje, jer to nije dokument za nekoga nego preslika podataka.\n• Prije izvoza možeš odabrati podlogu isječka karte — satelit ili običnu kartu. Odabir se pamti. Isječak je uvijek nešto širi od same rute da se vidi okolina; dan proveden na jednom mjestu dobiva prozor od barem kilometra, inače bi na dokumentu bili samo krovovi.\n• Sigurnosna obuka može se izvesti i zasebno — vlastiti PDF s potpisima posade i popisom obrađenih točaka. Nalazi se u Izvozima i na samom zaslonu obuke; u sažetku plovidbe obuka ostaje kakva je bila.\n• Prva stranica izvoza plovidbe sada nosi kartu cijele plovidbe, iznad popisa dana. Dnevni isječci ostaju gdje su bili — ovo je ona jedna linija od početka do kraja koju se iz njih nije dalo složiti.\n• U središtu za izvoz je „Svi podaci plovidbe (CSV)“: jedna datoteka s plovilom, posadom, danima, zapisima, trasom, stražama i zapisnikom. Prije izvoza možeš isključiti točke trase ako bi datoteka bila prevelika.\n• Plovidbu izvezenu kao CSV učitavaš natrag ikonom uvoza na vrhu Dnevnika. Nastaje nova plovidba i ništa što imaš u aplikaciji se ne mijenja. Ako je ta plovidba već u aplikaciji, aplikacija je prepoznaje i ne udvostručuje.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sigurnosna instruktaža';
@@ -4193,4 +4193,76 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'Izvoz nije uspio.';
+
+  @override
+  String get importCsvTooltip => 'Uvezi plovidbu iz datoteke';
+
+  @override
+  String get importCsvTitle => 'Uvoz plovidbe (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Odaberi CSV datoteku koju je izradila ova aplikacija (Izvozi → Svi podaci plovidbe). Učitat će se kao nova plovidba; ništa što već imaš u aplikaciji neće se promijeniti.';
+
+  @override
+  String get importCsvPick => 'Odaberi datoteku';
+
+  @override
+  String get importCsvPickAnother => 'Odaberi drugu datoteku';
+
+  @override
+  String get importCsvAction => 'Uvezi';
+
+  @override
+  String get importCsvAlready => 'Ova plovidba već je u aplikaciji';
+
+  @override
+  String get importCsvOpenExisting => 'Otvori';
+
+  @override
+  String get importCsvDone => 'Plovidba je uvezena.';
+
+  @override
+  String get importCsvFailed => 'Uvoz nije uspio, ništa nije zapisano.';
+
+  @override
+  String get importCsvNoTrack => 'Bez točaka trase';
+
+  @override
+  String get importCsvWarnings => 'Upozorenja';
+
+  @override
+  String get csvProblemNoData => 'U datoteci nema podataka o plovidbi.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'Ovo nije datoteka koju je izradila ova aplikacija (CSV iz Izvoza).';
+
+  @override
+  String get csvProblemNewer =>
+      'Datoteka je iz novije verzije formata. Ažuriraj aplikaciju.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Zanemareni stupci';
+
+  @override
+  String get csvWarnUnknownType => 'Preskočeni zapisi nepoznate vrste';
+
+  @override
+  String get csvWarnExtraMeta => 'Preskočen još jedan zapis meta (redak)';
+
+  @override
+  String get csvWarnBadNumber => 'Nečitljiv broj';
+
+  @override
+  String get csvWarnRepeatedId => 'Ponovljen broj zapisa';
+
+  @override
+  String get csvWarnOrphan => 'Preskočeno, nedostaje nadređeni zapis';
+
+  @override
+  String get csvWarnInvalid => 'Preskočeno, zapis je nepotpun';
+
+  @override
+  String get csvWarnDuplicate => 'Preskočen ponovljeni zapisnik';
 }

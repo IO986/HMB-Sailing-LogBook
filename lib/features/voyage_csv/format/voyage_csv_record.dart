@@ -1,11 +1,92 @@
 import 'voyage_csv_schema.dart';
 
+/// Why a file is refused. The screen turns each into a sentence in the
+/// language of the app; [VoyageCsvFormatException.message] is a plain fallback
+/// for logs and tests.
+enum VoyageCsvProblem {
+  /// Nothing in the file.
+  empty,
+
+  /// Not a voyage CSV: no `record_type` column, or the first record is not
+  /// `meta`.
+  notOurs,
+
+  /// A voyage CSV with a header and nothing under it.
+  noRecords,
+
+  /// `meta` names another format.
+  otherFormat,
+
+  /// `meta` has no usable version.
+  noVersion,
+
+  /// The file is from a newer format than this app reads.
+  newerVersion,
+
+  /// A voyage CSV without the voyage itself (no `charter` record).
+  noVoyage,
+}
+
 /// The file is not a voyage CSV this app can read.
 class VoyageCsvFormatException implements Exception {
-  final String message;
-  const VoyageCsvFormatException(this.message);
+  final VoyageCsvProblem problem;
+
+  /// Technical detail for the message, e.g. the versions involved.
+  final String? detail;
+
+  const VoyageCsvFormatException(this.problem, [this.detail]);
+
+  String get message => switch (problem) {
+        VoyageCsvProblem.empty => 'The file is empty.',
+        VoyageCsvProblem.notOurs => 'Not a HMB voyage CSV.',
+        VoyageCsvProblem.noRecords => 'The file has no records.',
+        VoyageCsvProblem.otherFormat => 'The file is in another format.',
+        VoyageCsvProblem.noVersion => 'The format version is missing.',
+        VoyageCsvProblem.newerVersion =>
+          'The file is from a newer format version${detail == null ? '' : ' ($detail)'}.',
+        VoyageCsvProblem.noVoyage => 'The file has no voyage in it.',
+      };
+
   @override
   String toString() => message;
+}
+
+enum VoyageCsvWarningKind {
+  /// Columns the reader does not know; detail lists their names.
+  unknownColumns,
+
+  /// Records of a type the reader does not know; detail is `type ×count`.
+  unknownType,
+
+  /// A second `meta` record; detail is the line.
+  extraMeta,
+
+  /// An `id` or `parent_id` that is not a number; detail names it.
+  badNumber,
+
+  /// Two records of one type with the same id; detail names them.
+  repeatedId,
+
+  /// A record whose parent is not in the file; detail names the record.
+  orphan,
+
+  /// A record without something it cannot do without (a time, a name);
+  /// detail names the record.
+  invalid,
+
+  /// A second handover protocol of the same type; detail names the type.
+  duplicate,
+}
+
+/// Something the reader or the importer left out or could not use. Shown
+/// before an import and after it.
+class VoyageCsvWarning {
+  final VoyageCsvWarningKind kind;
+  final String detail;
+  const VoyageCsvWarning(this.kind, this.detail);
+
+  @override
+  String toString() => '${kind.name}: $detail';
 }
 
 /// One row of the file: a record type, its numbers and its cells.
@@ -184,7 +265,7 @@ class VoyageCsvDocument {
   final List<VoyageCsvRecord> records;
 
   /// Things the reader skipped or could not use. Shown before an import.
-  final List<String> warnings;
+  final List<VoyageCsvWarning> warnings;
 
   const VoyageCsvDocument(this.version, this.records, this.warnings);
 

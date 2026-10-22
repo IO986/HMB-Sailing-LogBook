@@ -12,8 +12,13 @@ abstract final class CharterSource {
   /// Transcribed afterwards from a paper logbook.
   static const paper = 'paper';
 
+  /// Read in from a voyage CSV exported by this app (possibly on another
+  /// phone). A finished copy: whatever it was before, it is no longer being
+  /// sailed from this device.
+  static const csv = 'csv';
+
   /// Sources that describe a finished voyage written after the fact.
-  static const retrospective = [gpx, paper];
+  static const retrospective = [gpx, paper, csv];
 
   /// A retrospective voyage exists for the map and the mile book only:
   /// check-in, safety briefing and check-out will never happen for it, it is

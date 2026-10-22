@@ -5753,7 +5753,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideExportBody.
   ///
   /// In sk, this message translates to:
-  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.\n• Pred exportom sa dá vybrať podklad výrezu mapy — satelit alebo bežná mapa. Voľba sa pamätá. Výrez je vždy o kus širší než samotná trasa, aby bolo vidieť okolie; deň strávený na jednom mieste dostane okno aspoň kilometer, inak by v doklade boli len strechy.\n• Bezpečnostný brífing sa dá vyexportovať aj samostatne — vlastné PDF s podpismi posádky a zoznamom bodov, ktoré sa preberali. Nájdeš ho v Exportoch aj priamo na obrazovke brífingu; v súhrne plavby ostal brífing tak, ako bol.\n• Prvá strana exportu plavby teraz nesie mapu celej plavby, nad zoznamom dní. Denné výrezy ostávajú, kde boli — toto je tá jedna čiara od začiatku po koniec, ktorú z nich poskladať nešlo.\n• V Hube exportov je „Všetky údaje plavby (CSV)“: jeden súbor s lodou, posádkou, dňami, záznamami, trasou, službami a protokolom. Pred exportom si môžeš vypnúť body trasy, keď je súbor príliš veľký.'**
+  /// **'Denník možno exportovať ako profesionálny PDF dokument.\n\n1. V Denníku klepni hore na chip Exporty\n2. Vyber, čo exportuješ — celú plavbu, jeden deň, odovzdávací protokol, potvrdenia posádky, míle alebo zamerania\n3. Podpíš ako skipér → vygeneruje sa PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety brífing s podpismi posádky; titulná strana má v hlavičke fotku lode z karty lode (ak je nahratá)\n5. Zdieľaj cez email, tlač alebo ulož do telefónu\n\nKaždý PDF dostane jedinečné ID dokumentu (napr. HMBSL-5-2026) a číslo revízie (Rev. 1, Rev. 2...) viditeľné v pätičke každej strany. Pri každom novom exporte sa číslo automaticky zvýši – je tak viditeľné, koľkokrát bol dokument vygenerovaný.\n\nQR kód na podpisovej strane obsahuje ID, revíziu a kryptografický odtlačok obsahu. Akákoľvek zmena dát zmení QR kód.\n\nPDF sa vytvorí v jazyku, ktorý má appka nastavený, vrátane mien a diakritiky. Na dennej strane je aj prehľad služby posádky.\n• Ak sa trasovanie počas dňa prerušilo a znova spustilo, každý úsek dostane vlastný GPX súbor\n• Vzdialenosti, rýchlosti a teploty v PDF sa riadia jednotkami z Nastavení\n• Všetky exporty sú na jednom mieste — pod chipom Exporty v Denníku. Jedinou výnimkou je záloha celej databázy: tá ostáva v Nastaveniach vedľa obnovy, lebo to nie je dokument pre niekoho, ale obraz dát.\n• Pred exportom sa dá vybrať podklad výrezu mapy — satelit alebo bežná mapa. Voľba sa pamätá. Výrez je vždy o kus širší než samotná trasa, aby bolo vidieť okolie; deň strávený na jednom mieste dostane okno aspoň kilometer, inak by v doklade boli len strechy.\n• Bezpečnostný brífing sa dá vyexportovať aj samostatne — vlastné PDF s podpismi posádky a zoznamom bodov, ktoré sa preberali. Nájdeš ho v Exportoch aj priamo na obrazovke brífingu; v súhrne plavby ostal brífing tak, ako bol.\n• Prvá strana exportu plavby teraz nesie mapu celej plavby, nad zoznamom dní. Denné výrezy ostávajú, kde boli — toto je tá jedna čiara od začiatku po koniec, ktorú z nich poskladať nešlo.\n• V Hube exportov je „Všetky údaje plavby (CSV)“: jeden súbor s lodou, posádkou, dňami, záznamami, trasou, službami a protokolom. Pred exportom si môžeš vypnúť body trasy, keď je súbor príliš veľký.\n• Plavbu exportovanú ako CSV načítaš späť ikonou importu hore v Denníku. Vznikne nová plavba a nič, čo v appke máš, sa nezmení. Ak tá plavba už v appke je, appka ju rozpozná a nezdvojí.'**
   String get guideExportBody;
 
   /// No description provided for @safetyBriefingScreenTitle.
@@ -7813,6 +7813,144 @@ abstract class AppLocalizations {
   /// In sk, this message translates to:
   /// **'Export sa nepodaril.'**
   String get csvExportFailed;
+
+  /// No description provided for @importCsvTooltip.
+  ///
+  /// In sk, this message translates to:
+  /// **'Importovať plavbu zo súboru'**
+  String get importCsvTooltip;
+
+  /// No description provided for @importCsvTitle.
+  ///
+  /// In sk, this message translates to:
+  /// **'Import plavby (CSV)'**
+  String get importCsvTitle;
+
+  /// No description provided for @importCsvIntro.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vyber súbor CSV, ktorý vytvorila táto appka (Exporty → Všetky údaje plavby). Načíta sa ako nová plavba; nič, čo už v appke máš, sa nezmení.'**
+  String get importCsvIntro;
+
+  /// No description provided for @importCsvPick.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať súbor'**
+  String get importCsvPick;
+
+  /// No description provided for @importCsvPickAnother.
+  ///
+  /// In sk, this message translates to:
+  /// **'Vybrať iný súbor'**
+  String get importCsvPickAnother;
+
+  /// No description provided for @importCsvAction.
+  ///
+  /// In sk, this message translates to:
+  /// **'Importovať'**
+  String get importCsvAction;
+
+  /// No description provided for @importCsvAlready.
+  ///
+  /// In sk, this message translates to:
+  /// **'Táto plavba už v appke je'**
+  String get importCsvAlready;
+
+  /// No description provided for @importCsvOpenExisting.
+  ///
+  /// In sk, this message translates to:
+  /// **'Otvoriť'**
+  String get importCsvOpenExisting;
+
+  /// No description provided for @importCsvDone.
+  ///
+  /// In sk, this message translates to:
+  /// **'Plavba je importovaná.'**
+  String get importCsvDone;
+
+  /// No description provided for @importCsvFailed.
+  ///
+  /// In sk, this message translates to:
+  /// **'Import sa nepodaril, nič sa nezapísalo.'**
+  String get importCsvFailed;
+
+  /// No description provided for @importCsvNoTrack.
+  ///
+  /// In sk, this message translates to:
+  /// **'Bez bodov trasy'**
+  String get importCsvNoTrack;
+
+  /// No description provided for @importCsvWarnings.
+  ///
+  /// In sk, this message translates to:
+  /// **'Upozornenia'**
+  String get importCsvWarnings;
+
+  /// No description provided for @csvProblemNoData.
+  ///
+  /// In sk, this message translates to:
+  /// **'V súbore nie sú žiadne údaje plavby.'**
+  String get csvProblemNoData;
+
+  /// No description provided for @csvProblemNotOurs.
+  ///
+  /// In sk, this message translates to:
+  /// **'Toto nie je súbor, ktorý vytvorila táto appka (CSV z Exportov).'**
+  String get csvProblemNotOurs;
+
+  /// No description provided for @csvProblemNewer.
+  ///
+  /// In sk, this message translates to:
+  /// **'Súbor je z novšej verzie formátu. Aktualizuj appku.'**
+  String get csvProblemNewer;
+
+  /// No description provided for @csvWarnUnknownColumns.
+  ///
+  /// In sk, this message translates to:
+  /// **'Ignorované stĺpce'**
+  String get csvWarnUnknownColumns;
+
+  /// No description provided for @csvWarnUnknownType.
+  ///
+  /// In sk, this message translates to:
+  /// **'Preskočené záznamy neznámeho typu'**
+  String get csvWarnUnknownType;
+
+  /// No description provided for @csvWarnExtraMeta.
+  ///
+  /// In sk, this message translates to:
+  /// **'Preskočený ďalší záznam meta (riadok)'**
+  String get csvWarnExtraMeta;
+
+  /// No description provided for @csvWarnBadNumber.
+  ///
+  /// In sk, this message translates to:
+  /// **'Nečitateľné číslo'**
+  String get csvWarnBadNumber;
+
+  /// No description provided for @csvWarnRepeatedId.
+  ///
+  /// In sk, this message translates to:
+  /// **'Opakované číslo záznamu'**
+  String get csvWarnRepeatedId;
+
+  /// No description provided for @csvWarnOrphan.
+  ///
+  /// In sk, this message translates to:
+  /// **'Preskočené, chýba nadradený záznam'**
+  String get csvWarnOrphan;
+
+  /// No description provided for @csvWarnInvalid.
+  ///
+  /// In sk, this message translates to:
+  /// **'Preskočené, záznam je neúplný'**
+  String get csvWarnInvalid;
+
+  /// No description provided for @csvWarnDuplicate.
+  ///
+  /// In sk, this message translates to:
+  /// **'Preskočený opakovaný protokol'**
+  String get csvWarnDuplicate;
 }
 
 class _AppLocalizationsDelegate

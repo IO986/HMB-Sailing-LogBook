@@ -3022,7 +3022,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.\n• Before exporting you can choose the map layer for the excerpt — satellite or plain map. The choice is remembered. The excerpt is always a little wider than the track itself so the surroundings show; a day spent in one place gets a window of at least a kilometre, or the document would show nothing but rooftops.\n• The safety briefing can also be exported on its own — a separate PDF with the crew signatures and the list of points that were covered. It sits in Exports and on the briefing screen itself; the voyage summary keeps the briefing exactly as it was.\n• The first page of a voyage export now carries a map of the whole voyage, above the day-by-day list. The per-day maps stay where they were; this is the one line from start to finish that they could never add up to.\n• The export hub has “All voyage data (CSV)”: one file with the vessel, crew, days, entries, track, duties and protocol. You can leave the track points out before exporting if the file would be too large.';
+      'The logbook can be exported as a professional PDF document.\n\n1. In the Logbook, tap the Exports chip at the top\n2. Pick what you are exporting — the whole voyage, one day, the handover protocol, crew certificates, miles or bearings\n3. Sign as skipper → PDF is generated\n4. PDF includes: track, log entries, photos, safety briefing with crew signatures; the title page header shows the vessel photo from the vessel card (if uploaded)\n5. Share via email, print or save to phone\n\nEach PDF receives a unique document ID (e.g. HMBSL-5-2026) and a revision number (Rev. 1, Rev. 2...) visible in the footer of every page. Each new export automatically increments the number — making it visible how many times the document was generated.\n\nThe QR code on the signature page contains the ID, revision and a cryptographic fingerprint of the content. Any change to the data changes the QR code.\n\nThe PDF is generated in the app\'s language, names and diacritics included. Each day page also carries a crew-on-duty band.\n• If tracking stopped and restarted during the day, each leg gets its own GPX file\n• Distances, speeds and temperatures in the PDF follow the units set in Settings\n• Every export lives in one place — the Exports chip in the Logbook. The single exception is the whole-database backup: it stays in Settings next to restore, because it is not a document for someone but an image of the data.\n• Before exporting you can choose the map layer for the excerpt — satellite or plain map. The choice is remembered. The excerpt is always a little wider than the track itself so the surroundings show; a day spent in one place gets a window of at least a kilometre, or the document would show nothing but rooftops.\n• The safety briefing can also be exported on its own — a separate PDF with the crew signatures and the list of points that were covered. It sits in Exports and on the briefing screen itself; the voyage summary keeps the briefing exactly as it was.\n• The first page of a voyage export now carries a map of the whole voyage, above the day-by-day list. The per-day maps stay where they were; this is the one line from start to finish that they could never add up to.\n• The export hub has “All voyage data (CSV)”: one file with the vessel, crew, days, entries, track, duties and protocol. You can leave the track points out before exporting if the file would be too large.\n• A voyage exported as CSV is read back with the import icon at the top of the Logbook. It becomes a new voyage and nothing you have in the app changes. If that voyage is already in the app, the app recognises it and does not duplicate it.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -4183,4 +4183,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'The export failed.';
+
+  @override
+  String get importCsvTooltip => 'Import a voyage from a file';
+
+  @override
+  String get importCsvTitle => 'Import voyage (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Pick a CSV file made by this app (Exports → All voyage data). It is read in as a new voyage; nothing you already have in the app changes.';
+
+  @override
+  String get importCsvPick => 'Pick a file';
+
+  @override
+  String get importCsvPickAnother => 'Pick another file';
+
+  @override
+  String get importCsvAction => 'Import';
+
+  @override
+  String get importCsvAlready => 'This voyage is already in the app';
+
+  @override
+  String get importCsvOpenExisting => 'Open';
+
+  @override
+  String get importCsvDone => 'The voyage is imported.';
+
+  @override
+  String get importCsvFailed => 'The import failed, nothing was written.';
+
+  @override
+  String get importCsvNoTrack => 'No track points';
+
+  @override
+  String get importCsvWarnings => 'Warnings';
+
+  @override
+  String get csvProblemNoData => 'The file holds no voyage data.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'This is not a file made by this app (a CSV from Exports).';
+
+  @override
+  String get csvProblemNewer =>
+      'The file is from a newer format version. Update the app.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Ignored columns';
+
+  @override
+  String get csvWarnUnknownType => 'Skipped records of an unknown type';
+
+  @override
+  String get csvWarnExtraMeta => 'Skipped another meta record (line)';
+
+  @override
+  String get csvWarnBadNumber => 'Unreadable number';
+
+  @override
+  String get csvWarnRepeatedId => 'Repeated record number';
+
+  @override
+  String get csvWarnOrphan => 'Skipped, the parent record is missing';
+
+  @override
+  String get csvWarnInvalid => 'Skipped, the record is incomplete';
+
+  @override
+  String get csvWarnDuplicate => 'Skipped a repeated protocol';
 }

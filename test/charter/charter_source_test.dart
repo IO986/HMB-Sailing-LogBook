@@ -9,6 +9,7 @@ void main() {
     test('gpx and paper are written after the fact, live is not', () {
       expect(CharterSource.isRetrospective(CharterSource.gpx), isTrue);
       expect(CharterSource.isRetrospective(CharterSource.paper), isTrue);
+      expect(CharterSource.isRetrospective(CharterSource.csv), isTrue);
       expect(CharterSource.isRetrospective(CharterSource.live), isFalse);
     });
 
@@ -16,6 +17,7 @@ void main() {
       expect(CharterSource.live, 'live');
       expect(CharterSource.gpx, 'gpx');
       expect(CharterSource.paper, 'paper');
+      expect(CharterSource.csv, 'csv');
     });
   });
 

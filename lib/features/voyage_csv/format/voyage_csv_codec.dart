@@ -96,19 +96,18 @@ abstract final class VoyageCsvReader {
   static VoyageCsvDocument read(String text) {
     final rows = _rows(text);
     if (rows.isEmpty) {
-      throw const VoyageCsvFormatException('Súbor je prázdny.');
+      throw const VoyageCsvFormatException(VoyageCsvProblem.empty);
     }
 
     final header = [for (final h in rows.first) h.trim().toLowerCase()];
     final typeCol = header.indexOf(VoyageCsvSchema.recordType);
     if (typeCol < 0) {
-      throw const VoyageCsvFormatException(
-          'Toto nie je súbor HMB voyage CSV (chýba stĺpec record_type).');
+      throw const VoyageCsvFormatException(VoyageCsvProblem.notOurs);
     }
     final idCol = header.indexOf(VoyageCsvSchema.id);
     final parentCol = header.indexOf(VoyageCsvSchema.parentId);
 
-    final warnings = <String>[];
+    final warnings = <VoyageCsvWarning>[];
     final unknownColumns = <String>{
       for (final h in header)
         if (h.isNotEmpty &&
@@ -119,7 +118,8 @@ abstract final class VoyageCsvReader {
           h,
     };
     if (unknownColumns.isNotEmpty) {
-      warnings.add('Ignorované stĺpce: ${(unknownColumns.toList()..sort()).join(', ')}.');
+      warnings.add(VoyageCsvWarning(VoyageCsvWarningKind.unknownColumns,
+          (unknownColumns.toList()..sort()).join(', ')));
     }
 
     String cellAt(List<String> row, int i) =>
@@ -140,12 +140,11 @@ abstract final class VoyageCsvReader {
 
       if (!metaSeen) {
         if (type != 'meta') {
-          throw const VoyageCsvFormatException(
-              'Toto nie je súbor HMB voyage CSV (prvý záznam nie je meta).');
+          throw const VoyageCsvFormatException(VoyageCsvProblem.notOurs);
         }
         metaSeen = true;
       } else if (type == 'meta') {
-        warnings.add('Riadok $line: ďalší záznam meta, preskočený.');
+        warnings.add(VoyageCsvWarning(VoyageCsvWarningKind.extraMeta, '$line'));
         continue;
       }
 
@@ -175,7 +174,8 @@ abstract final class VoyageCsvReader {
         if (v.isEmpty) return null;
         final parsed = int.tryParse(v);
         if (parsed == null) {
-          warnings.add('Riadok $line: $what "$v" nie je číslo.');
+          warnings.add(VoyageCsvWarning(
+              VoyageCsvWarningKind.badNumber, '$what "$v" (line $line)'));
         }
         return parsed;
       }
@@ -183,7 +183,8 @@ abstract final class VoyageCsvReader {
       final id = number(idCol, 'id');
       final parentId = number(parentCol, 'parent_id');
       if (id != null && !seen.add('$type#$id')) {
-        warnings.add('Riadok $line: $type s id $id sa opakuje.');
+        warnings.add(VoyageCsvWarning(
+            VoyageCsvWarningKind.repeatedId, '$type #$id (line $line)'));
       }
 
       final record = VoyageCsvRecord.raw(type, id, parentId, cells);
@@ -192,29 +193,27 @@ abstract final class VoyageCsvReader {
       if (type == 'meta') {
         final format = record.text('format');
         if (format != VoyageCsvSchema.formatName) {
-          throw const VoyageCsvFormatException(
-              'Toto nie je súbor HMB voyage CSV (iný formát).');
+          throw const VoyageCsvFormatException(VoyageCsvProblem.otherFormat);
         }
         final v = record.integer('version');
         if (v == null || v < 1) {
-          throw const VoyageCsvFormatException(
-              'V súbore chýba platná verzia formátu.');
+          throw const VoyageCsvFormatException(VoyageCsvProblem.noVersion);
         }
         if (v > VoyageCsvSchema.version) {
-          throw VoyageCsvFormatException(
-              'Súbor je vo verzii $v formátu, táto appka číta najviac verziu '
-              '${VoyageCsvSchema.version}. Aktualizuj appku.');
+          throw VoyageCsvFormatException(VoyageCsvProblem.newerVersion,
+              '$v > ${VoyageCsvSchema.version}');
         }
         version = v;
       }
     }
 
     if (!metaSeen) {
-      throw const VoyageCsvFormatException('Súbor nemá žiadne záznamy.');
+      throw const VoyageCsvFormatException(VoyageCsvProblem.noRecords);
     }
 
     for (final e in skippedTypes.entries) {
-      warnings.add('Preskočené záznamy neznámeho typu "${e.key}": ${e.value}.');
+      warnings.add(VoyageCsvWarning(
+          VoyageCsvWarningKind.unknownType, '${e.key} ×${e.value}'));
     }
     return VoyageCsvDocument(version, records, warnings);
   }

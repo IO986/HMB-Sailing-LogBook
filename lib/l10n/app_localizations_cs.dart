@@ -3023,7 +3023,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.\n• Před exportem lze vybrat podklad výřezu mapy — satelit nebo běžnou mapu. Volba se pamatuje. Výřez je vždy o kus širší než samotná trasa, aby bylo vidět okolí; den strávený na jednom místě dostane okno aspoň kilometr, jinak by v dokladu byly jen střechy.\n• Bezpečnostní brífink lze vyexportovat i samostatně — vlastní PDF s podpisy posádky a seznamem probraných bodů. Najdeš ho v Exportech i přímo na obrazovce brífinku; v souhrnu plavby zůstává brífink beze změny.\n• První strana exportu plavby teď nese mapu celé plavby, nad seznamem dní. Denní výřezy zůstávají, kde byly — tohle je ta jedna čára od začátku do konce, kterou z nich poskládat nešlo.\n• V Hubu exportů je „Všechna data plavby (CSV)“: jeden soubor s lodí, posádkou, dny, záznamy, trasou, službami a protokolem. Před exportem můžeš vypnout body trasy, když je soubor příliš velký.';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.\n• Před exportem lze vybrat podklad výřezu mapy — satelit nebo běžnou mapu. Volba se pamatuje. Výřez je vždy o kus širší než samotná trasa, aby bylo vidět okolí; den strávený na jednom místě dostane okno aspoň kilometr, jinak by v dokladu byly jen střechy.\n• Bezpečnostní brífink lze vyexportovat i samostatně — vlastní PDF s podpisy posádky a seznamem probraných bodů. Najdeš ho v Exportech i přímo na obrazovce brífinku; v souhrnu plavby zůstává brífink beze změny.\n• První strana exportu plavby teď nese mapu celé plavby, nad seznamem dní. Denní výřezy zůstávají, kde byly — tohle je ta jedna čára od začátku do konce, kterou z nich poskládat nešlo.\n• V Hubu exportů je „Všechna data plavby (CSV)“: jeden soubor s lodí, posádkou, dny, záznamy, trasou, službami a protokolem. Před exportem můžeš vypnout body trasy, když je soubor příliš velký.\n• Plavbu exportovanou jako CSV načteš zpět ikonou importu nahoře v Deníku. Vznikne nová plavba a nic, co v aplikaci máš, se nezmění. Pokud ta plavba už v aplikaci je, aplikace ji pozná a nezdvojí.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -4180,4 +4180,76 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get csvExportFailed => 'Export se nepodařil.';
+
+  @override
+  String get importCsvTooltip => 'Importovat plavbu ze souboru';
+
+  @override
+  String get importCsvTitle => 'Import plavby (CSV)';
+
+  @override
+  String get importCsvIntro =>
+      'Vyber soubor CSV, který vytvořila tato aplikace (Exporty → Všechna data plavby). Načte se jako nová plavba; nic, co už v aplikaci máš, se nezmění.';
+
+  @override
+  String get importCsvPick => 'Vybrat soubor';
+
+  @override
+  String get importCsvPickAnother => 'Vybrat jiný soubor';
+
+  @override
+  String get importCsvAction => 'Importovat';
+
+  @override
+  String get importCsvAlready => 'Tato plavba už v aplikaci je';
+
+  @override
+  String get importCsvOpenExisting => 'Otevřít';
+
+  @override
+  String get importCsvDone => 'Plavba je importována.';
+
+  @override
+  String get importCsvFailed => 'Import se nepodařil, nic se nezapsalo.';
+
+  @override
+  String get importCsvNoTrack => 'Bez bodů trasy';
+
+  @override
+  String get importCsvWarnings => 'Upozornění';
+
+  @override
+  String get csvProblemNoData => 'V souboru nejsou žádná data plavby.';
+
+  @override
+  String get csvProblemNotOurs =>
+      'Toto není soubor, který vytvořila tato aplikace (CSV z Exportů).';
+
+  @override
+  String get csvProblemNewer =>
+      'Soubor je z novější verze formátu. Aktualizuj aplikaci.';
+
+  @override
+  String get csvWarnUnknownColumns => 'Ignorované sloupce';
+
+  @override
+  String get csvWarnUnknownType => 'Přeskočené záznamy neznámého typu';
+
+  @override
+  String get csvWarnExtraMeta => 'Přeskočen další záznam meta (řádek)';
+
+  @override
+  String get csvWarnBadNumber => 'Nečitelné číslo';
+
+  @override
+  String get csvWarnRepeatedId => 'Opakované číslo záznamu';
+
+  @override
+  String get csvWarnOrphan => 'Přeskočeno, chybí nadřazený záznam';
+
+  @override
+  String get csvWarnInvalid => 'Přeskočeno, záznam je neúplný';
+
+  @override
+  String get csvWarnDuplicate => 'Přeskočen opakovaný protokol';
 }
