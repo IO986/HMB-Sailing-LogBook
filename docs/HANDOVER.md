@@ -1051,8 +1051,7 @@ konkrétne tieto štyri veci neboli znovu overené.
 
 ## Vetvy
 
-Zliate lokálne vetvy sa 22. 10. zmazali. Ostali zámerne:
-`wip/windows-desktop`, `feat/briefing-pdf-map-cache` (bez upstreamu) a
-`feat/pmtiles-offline-basemap` — má nezliaty commit `c929973`
-(`wip(map,desktop)`: offline vektorová mapa, desktopová kamera a kompas),
-upstream na origine je zmazaný. Rozhodnúť, či ho zahodiť.
+Zliate lokálne vetvy sa 22. 10. zmazali. Zmazaná je aj
+`feat/pmtiles-offline-basemap` (slepá ulička, nezliaty `c929973`
+z offline vektorovej mapy zahodený; sha pre prípad potreby). Ostali
+zámerne: `wip/windows-desktop` a `feat/briefing-pdf-map-cache`.
