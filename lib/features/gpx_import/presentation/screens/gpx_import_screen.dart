@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/models/charter_source.dart';
 import '../../../../core/utils/distance_calculator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
@@ -160,7 +161,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
             // pokračovanie trackingu.
             await db.updateCharter(ChartersCompanion(
               id: Value(charter.id),
-              source: const Value('gpx'),
+              source: const Value(CharterSource.gpx),
             ));
 
             // Zoskup body naprieč VŠETKÝMI tracks v batchi podľa kalendárneho

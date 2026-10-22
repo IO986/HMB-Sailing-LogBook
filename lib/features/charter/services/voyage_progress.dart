@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../core/models/charter_source.dart';
 import '../../../core/services/gps_tracking_service.dart';
 import '../../../main.dart';
 import '../../tracking/providers/tracking_provider.dart';
@@ -70,9 +71,10 @@ final voyageProgressProvider = FutureProvider.family<VoyageProgress, int>((ref, 
     );
   }
 
-  // GPX-importovaná staršia plavba: existuje len pre mapu a Knihu míľ.
-  // Check-in/SB/check-out už nikdy nevzniknú — nič nepripomínaj.
-  if (charter.source == 'gpx') {
+  // Spätne zapísaná plavba (GPX import, prepis z papiera): existuje len
+  // pre mapu a Knihu míľ. Check-in/SB/check-out už nikdy nevzniknú — nič
+  // nepripomínaj.
+  if (CharterSource.isRetrospective(charter.source)) {
     return const VoyageProgress(
       step: VoyageStep.closed,
       checkInClosed: true,

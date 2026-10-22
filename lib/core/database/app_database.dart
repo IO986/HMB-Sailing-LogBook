@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/night_hours.dart';
+import '../models/charter_source.dart';
 import '../utils/track_segments.dart';
 import '../utils/distance_calculator.dart';
 
@@ -1283,14 +1284,15 @@ class AppDatabase extends _$AppDatabase {
   ///     dátum inej, dávno uzavretej plavby. Nezaradený riadok s časom a
   ///     polohou je pravdivý; zaradený pod cudzí deň nie je.
   ///
-  /// Importované plavby (`source == 'gpx'`) sú hotová história, do tej sa
-  /// nedopisuje.
+  /// Spätne zapísané plavby ([CharterSource.retrospective]: GPX import,
+  /// prepis z papiera) sú hotová história, do tej sa nedopisuje.
   Future<int?> dayLogIdForNow({int? trackingDayLogId}) async {
     if (trackingDayLogId != null) return trackingDayLogId;
     try {
       final open = await (select(charters)
             ..where((c) =>
-                c.checkOutDone.equals(false) & c.source.equals('gpx').not())
+                c.checkOutDone.equals(false) &
+                c.source.isNotIn(CharterSource.retrospective))
             ..orderBy([(c) => OrderingTerm.desc(c.dateFrom)])
             ..limit(1))
           .getSingleOrNull();

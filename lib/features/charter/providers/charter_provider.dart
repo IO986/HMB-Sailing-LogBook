@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/models/charter_source.dart';
 import '../../safety/presentation/screens/safety_screen.dart';
 import '../../../main.dart';
 
@@ -46,7 +47,7 @@ final openVoyageProvider = FutureProvider<Charter?>((ref) async {
 final openVoyagesProvider = FutureProvider<List<Charter>>((ref) async {
   final charters = await ref.watch(chartersProvider.future);
   return charters
-      .where((c) => !c.checkOutDone && !c.archived && c.source != 'gpx')
+      .where((c) => !c.checkOutDone && !c.archived && !CharterSource.isRetrospective(c.source))
       .toList()
     ..sort((a, b) => b.dateFrom.compareTo(a.dateFrom));
 });
