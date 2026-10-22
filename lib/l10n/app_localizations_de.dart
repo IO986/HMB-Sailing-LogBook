@@ -3044,7 +3044,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Im Logbuch oben auf den Chip Exporte tippen\n2. Wählen, was exportiert wird — die ganze Reise, einen Tag, das Übergabeprotokoll, Crew-Bescheinigungen, Meilen oder Peilungen\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen\n• Alle Exporte sitzen an einer Stelle — unter dem Chip Exporte im Logbuch. Einzige Ausnahme ist die Sicherung der ganzen Datenbank: sie bleibt in den Einstellungen neben der Wiederherstellung, denn sie ist kein Dokument für jemanden, sondern ein Abbild der Daten.\n• Vor dem Export lässt sich die Kartengrundlage des Ausschnitts wählen — Satellit oder normale Karte. Die Wahl bleibt gespeichert. Der Ausschnitt ist immer etwas weiter als der Track, damit die Umgebung sichtbar wird; ein Tag an einem Ort bekommt mindestens einen Kilometer, sonst zeigt das Dokument nur Dächer.\n• Die Sicherheitseinweisung lässt sich auch einzeln exportieren — ein eigenes PDF mit den Unterschriften der Crew und der Liste der behandelten Punkte. Zu finden unter Exporte und direkt auf dem Einweisungs-Bildschirm; in der Reiseübersicht bleibt die Einweisung unverändert.\n• Die erste Seite des Fahrtenexports trägt jetzt eine Karte der gesamten Fahrt, über der Tagesliste. Die Tageskarten bleiben, wo sie waren — dies ist die eine Linie von Anfang bis Ende, die sich aus ihnen nie ergab.';
+      'Das Logbuch kann als professionelles PDF-Dokument exportiert werden.\n\n1. Im Logbuch oben auf den Chip Exporte tippen\n2. Wählen, was exportiert wird — die ganze Reise, einen Tag, das Übergabeprotokoll, Crew-Bescheinigungen, Meilen oder Peilungen\n3. Als Skipper unterschreiben → PDF wird erstellt\n4. PDF enthält: Route, Einträge, Fotos, Titelseite mit Schiffsfoto aus der Schiffskarte (falls hochgeladen), Sicherheitseinweisung mit Crew-Unterschriften\n5. Per E-Mail teilen, drucken oder auf dem Telefon speichern\n\nJedes PDF erhält eine eindeutige Dokument-ID (z.B. HMBSL-5-2026) und eine Revisionsnummer (Rev. 1, Rev. 2...) in der Fußzeile jeder Seite. Bei jedem neuen Export wird die Nummer automatisch erhöht – so ist sichtbar, wie oft das Dokument erstellt wurde.\n\nDer QR-Code auf der Unterschriftsseite enthält ID, Revision und einen kryptografischen Fingerabdruck des Inhalts. Jede Datenänderung ändert den QR-Code.\n\nDas PDF wird in der eingestellten App-Sprache erzeugt, samt Namen und Diakritika. Jede Tagesseite enthält zudem eine Übersicht des Wachdiensts.\n• Wurde die Aufzeichnung während des Tages unterbrochen und neu gestartet, erhält jeder Abschnitt eine eigene GPX-Datei\n• Entfernungen, Geschwindigkeiten und Temperaturen im PDF richten sich nach den Einheiten aus den Einstellungen\n• Alle Exporte sitzen an einer Stelle — unter dem Chip Exporte im Logbuch. Einzige Ausnahme ist die Sicherung der ganzen Datenbank: sie bleibt in den Einstellungen neben der Wiederherstellung, denn sie ist kein Dokument für jemanden, sondern ein Abbild der Daten.\n• Vor dem Export lässt sich die Kartengrundlage des Ausschnitts wählen — Satellit oder normale Karte. Die Wahl bleibt gespeichert. Der Ausschnitt ist immer etwas weiter als der Track, damit die Umgebung sichtbar wird; ein Tag an einem Ort bekommt mindestens einen Kilometer, sonst zeigt das Dokument nur Dächer.\n• Die Sicherheitseinweisung lässt sich auch einzeln exportieren — ein eigenes PDF mit den Unterschriften der Crew und der Liste der behandelten Punkte. Zu finden unter Exporte und direkt auf dem Einweisungs-Bildschirm; in der Reiseübersicht bleibt die Einweisung unverändert.\n• Die erste Seite des Fahrtenexports trägt jetzt eine Karte der gesamten Fahrt, über der Tagesliste. Die Tageskarten bleiben, wo sie waren — dies ist die eine Linie von Anfang bis Ende, die sich aus ihnen nie ergab.\n• Im Export-Hub gibt es „Alle Reisedaten (CSV)“: eine Datei mit Schiff, Crew, Tagen, Einträgen, Strecke, Wachen und Protokoll. Vor dem Export kannst du die Streckenpunkte weglassen, wenn die Datei zu groß wäre.';
 
   @override
   String get safetyBriefingScreenTitle => 'Sicherheitseinweisung';
@@ -4178,4 +4178,34 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get captainQualificationHint =>
       'z. B. SKS, SSS, RYA Yachtmaster Offshore';
+
+  @override
+  String get exportsCsvTitle => 'Alle Reisedaten (CSV)';
+
+  @override
+  String get exportsCsvDescShort =>
+      'Schiff, Crew, Tage, Einträge, Strecke, Wachen, Protokoll';
+
+  @override
+  String get exportsCsvDesc =>
+      'Eine Datei mit allen Daten der Reise: Schiff, Skipper und Crew, Tage, Logbucheinträge, Strecke, Wachen, Übergabeprotokoll, Bewertungen und Peilungen. Sie lässt sich in einer Tabelle öffnen und wieder in die App einlesen. Fotos und Unterschriften sind nicht enthalten.';
+
+  @override
+  String get exportsFormatCsv => 'CSV';
+
+  @override
+  String get csvExportIncludeTrack => 'Streckenpunkte einbeziehen';
+
+  @override
+  String get csvExportTrackPoints => 'Streckenpunkte';
+
+  @override
+  String get csvExportPrivacy =>
+      'Die Datei enthält Namen der Crew und Scheinnummern. Sende sie nur Personen, denen du vertraust.';
+
+  @override
+  String get csvExportAction => 'Exportieren';
+
+  @override
+  String get csvExportFailed => 'Der Export ist fehlgeschlagen.';
 }

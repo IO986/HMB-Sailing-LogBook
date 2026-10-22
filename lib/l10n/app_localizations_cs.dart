@@ -3023,7 +3023,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.\n• Před exportem lze vybrat podklad výřezu mapy — satelit nebo běžnou mapu. Volba se pamatuje. Výřez je vždy o kus širší než samotná trasa, aby bylo vidět okolí; den strávený na jednom místě dostane okno aspoň kilometr, jinak by v dokladu byly jen střechy.\n• Bezpečnostní brífink lze vyexportovat i samostatně — vlastní PDF s podpisy posádky a seznamem probraných bodů. Najdeš ho v Exportech i přímo na obrazovce brífinku; v souhrnu plavby zůstává brífink beze změny.\n• První strana exportu plavby teď nese mapu celé plavby, nad seznamem dní. Denní výřezy zůstávají, kde byly — tohle je ta jedna čára od začátku do konce, kterou z nich poskládat nešlo.';
+      'Deník lze exportovat jako profesionální PDF dokument.\n\n1. V Deníku klepni nahoře na chip Exporty\n2. Vyber, co exportuješ — celou plavbu, jeden den, předávací protokol, potvrzení posádky, míle nebo zaměření\n3. Podepiš jako skipper → vygeneruje se PDF\n4. PDF obsahuje: trasu, záznamy, fotky, safety briefing s podpisy posádky; titulní strana má v hlavičce fotku lodi z karty lodi (pokud je nahrána)\n5. Sdílej e-mailem, tiskni nebo ulož do telefonu\n\nKaždé PDF dostane jedinečné ID dokumentu (např. HMBSL-5-2026) a číslo revize (Rev. 1, Rev. 2...) viditelné v patičce každé strany. Při každém novém exportu se číslo automaticky zvýší – je tak vidět, kolikrát byl dokument vygenerován.\n\nQR kód na podpisové straně obsahuje ID, revizi a kryptografický otisk obsahu. Jakákoli změna dat změní QR kód.\n\nPDF se vytvoří v jazyce, který má aplikace nastaven, včetně jmen a diakritiky. Na denní straně je i přehled služby posádky.\n• Pokud se trasování během dne přerušilo a znovu spustilo, každý úsek dostane vlastní GPX soubor\n• Vzdálenosti, rychlosti a teploty v PDF se řídí jednotkami z Nastavení\n• Všechny exporty jsou na jednom místě — pod chipem Exporty v Deníku. Jedinou výjimkou je záloha celé databáze: zůstává v Nastavení vedle obnovy, protože to není dokument pro někoho, ale obraz dat.\n• Před exportem lze vybrat podklad výřezu mapy — satelit nebo běžnou mapu. Volba se pamatuje. Výřez je vždy o kus širší než samotná trasa, aby bylo vidět okolí; den strávený na jednom místě dostane okno aspoň kilometr, jinak by v dokladu byly jen střechy.\n• Bezpečnostní brífink lze vyexportovat i samostatně — vlastní PDF s podpisy posádky a seznamem probraných bodů. Najdeš ho v Exportech i přímo na obrazovce brífinku; v souhrnu plavby zůstává brífink beze změny.\n• První strana exportu plavby teď nese mapu celé plavby, nad seznamem dní. Denní výřezy zůstávají, kde byly — tohle je ta jedna čára od začátku do konce, kterou z nich poskládat nešlo.\n• V Hubu exportů je „Všechna data plavby (CSV)“: jeden soubor s lodí, posádkou, dny, záznamy, trasou, službami a protokolem. Před exportem můžeš vypnout body trasy, když je soubor příliš velký.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -4150,4 +4150,34 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get captainQualificationHint =>
       'např. Kapitán jachty, RYA Yachtmaster Offshore';
+
+  @override
+  String get exportsCsvTitle => 'Všechna data plavby (CSV)';
+
+  @override
+  String get exportsCsvDescShort =>
+      'Loď, posádka, dny, záznamy, trasa, služby, protokol';
+
+  @override
+  String get exportsCsvDesc =>
+      'Jeden soubor se všemi údaji plavby: loď, skipper a posádka, dny, záznamy deníku, trasa, služby, předávací protokol, hodnocení a zaměření. Dá se otevřít v tabulce a načíst zpět do aplikace. Fotky a podpisy v něm nejsou.';
+
+  @override
+  String get exportsFormatCsv => 'CSV';
+
+  @override
+  String get csvExportIncludeTrack => 'Zahrnout body trasy';
+
+  @override
+  String get csvExportTrackPoints => 'Body trasy';
+
+  @override
+  String get csvExportPrivacy =>
+      'Soubor obsahuje jména posádky a čísla průkazů. Pošli ho jen lidem, kterým důvěřuješ.';
+
+  @override
+  String get csvExportAction => 'Exportovat';
+
+  @override
+  String get csvExportFailed => 'Export se nepodařil.';
 }

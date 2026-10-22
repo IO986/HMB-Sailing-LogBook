@@ -17,24 +17,14 @@ abstract final class VoyageCsvWriter {
   /// Writes to [sink] as [records] are produced. The first record must be the
   /// `meta` record: a reader needs it to know what it is looking at.
   static void writeTo(StringSink sink, Iterable<VoyageCsvRecord> records) {
-    final header = VoyageCsvSchema.header;
-    sink.write(bom);
-    _line(sink, header);
-
-    var first = true;
+    final out = VoyageCsvSink(sink);
     for (final r in records) {
-      if (first && r.type != 'meta') {
-        throw ArgumentError('the first record must be "meta", not "${r.type}"');
-      }
-      first = false;
-      _line(sink, [
-        for (final col in header) _cell(r, col),
-      ]);
+      out.add(r);
     }
-    if (first) throw ArgumentError('no records');
+    out.finish();
   }
 
-  static String _cell(VoyageCsvRecord r, String column) {
+  static String cell(VoyageCsvRecord r, String column) {
     switch (column) {
       case VoyageCsvSchema.recordType:
         return r.type;
@@ -47,7 +37,7 @@ abstract final class VoyageCsvWriter {
     }
   }
 
-  static void _line(StringSink sink, List<String> cells) {
+  static void line(StringSink sink, List<String> cells) {
     for (var i = 0; i < cells.length; i++) {
       if (i > 0) sink.write(',');
       sink.write(_quote(cells[i]));
@@ -63,6 +53,38 @@ abstract final class VoyageCsvWriter {
         v.startsWith(' ') ||
         v.endsWith(' ');
     return needs ? '"${v.replaceAll('"', '""')}"' : v;
+  }
+}
+
+/// Writes records one at a time, for an export that reads its data
+/// asynchronously and is too large to hold as a list (a long track).
+///
+/// The byte order mark and the header go out on construction; the first record
+/// added must be `meta`; [finish] checks that something was written.
+class VoyageCsvSink {
+  final StringSink _sink;
+  final List<String> _header = VoyageCsvSchema.header;
+  var _count = 0;
+
+  VoyageCsvSink(this._sink) {
+    _sink.write(VoyageCsvWriter.bom);
+    VoyageCsvWriter.line(_sink, _header);
+  }
+
+  int get count => _count;
+
+  void add(VoyageCsvRecord r) {
+    if (_count == 0 && r.type != 'meta') {
+      throw ArgumentError('the first record must be "meta", not "${r.type}"');
+    }
+    VoyageCsvWriter.line(_sink, [
+      for (final col in _header) VoyageCsvWriter.cell(r, col),
+    ]);
+    _count++;
+  }
+
+  void finish() {
+    if (_count == 0) throw ArgumentError('no records');
   }
 }
 

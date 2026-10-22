@@ -3030,7 +3030,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.\n• Szkolenie bezpieczeństwa można wyeksportować osobno — własny PDF z podpisami załogi i listą omówionych punktów. Znajdziesz go w Eksportach i na ekranie szkolenia; w podsumowaniu rejsu szkolenie pozostaje bez zmian.\n• Pierwsza strona eksportu rejsu niesie teraz mapę całego rejsu, nad listą dni. Mapy dzienne zostają tam, gdzie były — to jest ta jedna linia od początku do końca, której z nich złożyć się nie dało.';
+      'Dziennik można wyeksportować jako profesjonalny dokument PDF.\n\n1. W Dzienniku dotknij chipa Eksporty u góry\n2. Wybierz, co eksportujesz — cały rejs, jeden dzień, protokół zdawczo-odbiorczy, zaświadczenia załogi, mile lub namiary\n3. Podpisz jako skipper → wygeneruje się PDF\n4. PDF zawiera: trasę, wpisy, zdjęcia, safety briefing z podpisami załogi; strona tytułowa ma w nagłówku zdjęcie jachtu z karty jachtu (jeśli wgrane)\n5. Udostępnij e-mailem, wydrukuj lub zapisz w telefonie\n\nKażdy PDF otrzymuje unikalne ID dokumentu (np. HMBSL-5-2026) i numer rewizji (Rev. 1, Rev. 2...) widoczny w stopce każdej strony. Przy każdym nowym eksporcie numer automatycznie rośnie – widać więc, ile razy dokument wygenerowano.\n\nKod QR na stronie podpisu zawiera ID, rewizję i kryptograficzny odcisk zawartości. Każda zmiana danych zmienia kod QR.\n\nPDF tworzy się w języku ustawionym w aplikacji, wraz z imionami i znakami diakrytycznymi. Na stronie dnia jest też przegląd wachty załogi.\n• Jeśli śledzenie w ciągu dnia zostało przerwane i wznowione, każdy odcinek dostaje własny plik GPX\n• Odległości, prędkości i temperatury w PDF wynikają z jednostek ustawionych w Ustawieniach\n• Wszystkie eksporty są w jednym miejscu — pod chipem Eksporty w Dzienniku. Jedynym wyjątkiem jest kopia zapasowa całej bazy: zostaje w Ustawieniach obok przywracania, bo to nie dokument dla kogoś, tylko obraz danych.\n• Przed eksportem można wybrać podkład wycinka mapy — satelitę albo zwykłą mapę. Wybór jest zapamiętany. Wycinek jest zawsze nieco szerszy niż sama trasa, żeby było widać okolicę; dzień spędzony w jednym miejscu dostaje okno co najmniej kilometra, inaczej w dokumencie byłyby same dachy.\n• Szkolenie bezpieczeństwa można wyeksportować osobno — własny PDF z podpisami załogi i listą omówionych punktów. Znajdziesz go w Eksportach i na ekranie szkolenia; w podsumowaniu rejsu szkolenie pozostaje bez zmian.\n• Pierwsza strona eksportu rejsu niesie teraz mapę całego rejsu, nad listą dni. Mapy dzienne zostają tam, gdzie były — to jest ta jedna linia od początku do końca, której z nich złożyć się nie dało.\n• W Centrum eksportów jest „Wszystkie dane rejsu (CSV)”: jeden plik z jachtem, załogą, dniami, wpisami, trasą, wachtami i protokołem. Przed eksportem możesz wyłączyć punkty trasy, jeśli plik byłby zbyt duży.';
 
   @override
   String get safetyBriefingScreenTitle => 'Safety Briefing';
@@ -4162,4 +4162,34 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get captainQualificationHint =>
       'np. Kapitan jachtowy, RYA Yachtmaster Offshore';
+
+  @override
+  String get exportsCsvTitle => 'Wszystkie dane rejsu (CSV)';
+
+  @override
+  String get exportsCsvDescShort =>
+      'Jacht, załoga, dni, wpisy, trasa, wachty, protokół';
+
+  @override
+  String get exportsCsvDesc =>
+      'Jeden plik ze wszystkimi danymi rejsu: jacht, skipper i załoga, dni, wpisy dziennika, trasa, wachty, protokół zdawczo-odbiorczy, oceny i namiary. Można go otworzyć w arkuszu i wczytać z powrotem do aplikacji. Zdjęć i podpisów w nim nie ma.';
+
+  @override
+  String get exportsFormatCsv => 'CSV';
+
+  @override
+  String get csvExportIncludeTrack => 'Dołącz punkty trasy';
+
+  @override
+  String get csvExportTrackPoints => 'Punkty trasy';
+
+  @override
+  String get csvExportPrivacy =>
+      'Plik zawiera imiona i nazwiska załogi oraz numery uprawnień. Wysyłaj go tylko osobom, którym ufasz.';
+
+  @override
+  String get csvExportAction => 'Eksportuj';
+
+  @override
+  String get csvExportFailed => 'Eksport się nie powiódł.';
 }

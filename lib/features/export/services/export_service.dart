@@ -390,13 +390,22 @@ class ExportService {
   /// export ukladal do rovnakej štruktúry ako ručný export.
   Future<File> saveBytesLocally(Uint8List bytes, String docName, String ext,
       {String? charterTitle, DateTime? dayDate}) async {
+    final dest = await exportFile(docName, ext,
+        charterTitle: charterTitle, dayDate: dayDate);
+    await dest.writeAsBytes(bytes);
+    return dest;
+  }
+
+  /// Cesta k súboru v štruktúrovanom priečinku exportov, bez zápisu. Pre
+  /// export, ktorý je príliš veľký na to, aby sa držal celý v pamäti (CSV
+  /// s dlhou trasou) a zapisuje sa priebežne.
+  Future<File> exportFile(String docName, String ext,
+      {String? charterTitle, DateTime? dayDate}) async {
     final dir = await _buildExportDir(charterTitle ?? docName, dayDate);
     final safe = docName
         .replaceAll(RegExp(r'[^\w\s\-]'), '')
         .replaceAll(RegExp(r'\s+'), '_');
-    final dest = File('${dir.path}/$safe.$ext');
-    await dest.writeAsBytes(bytes);
-    return dest;
+    return File('${dir.path}/$safe.$ext');
   }
 
   /// Uloží súbor do štruktúrovaného priečinka.

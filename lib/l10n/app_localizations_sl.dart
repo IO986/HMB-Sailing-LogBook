@@ -3029,7 +3029,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get guideExportBody =>
-      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. V Dnevniku zgoraj tapnite chip Izvozi\n2. Izberite, kaj izvažate — celotno plovbo, en dan, primopredajni zapisnik, potrdila posadke, milje ali azimute\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah\n• Vsi izvozi so na enem mestu — pod chipom Izvozi v Dnevniku. Edina izjema je varnostna kopija celotne zbirke: ostane v Nastavitvah ob obnovitvi, saj to ni dokument za nekoga, ampak slika podatkov.\n• Pred izvozom lahko izbereš podlago izreza — satelit ali navadno karto. Izbira se zapomni. Izrez je vedno nekoliko širši od same proge, da se vidi okolica; dan na enem mestu dobi okno vsaj kilometer, sicer bi bile na dokumentu same strehe.\n• Varnostno usposabljanje lahko izvoziš tudi posebej — svoj PDF s podpisi posadke in seznamom obravnavanih točk. Najdeš ga v Izvozih in na zaslonu usposabljanja; v povzetku plovbe ostane usposabljanje nespremenjeno.\n• Prva stran izvoza plovbe zdaj nosi zemljevid celotne plovbe, nad seznamom dni. Dnevni izseki ostajajo, kjer so bili — to je tista ena črta od začetka do konca, ki je iz njih ni bilo mogoče sestaviti.';
+      'Dnevnik lahko izvozite kot profesionalen dokument PDF.\n\n1. V Dnevniku zgoraj tapnite chip Izvozi\n2. Izberite, kaj izvažate — celotno plovbo, en dan, primopredajni zapisnik, potrdila posadke, milje ali azimute\n3. Podpišite se kot skiper → PDF se ustvari\n4. PDF vsebuje: sled, zapise iz dnevnika, fotografije, varnostni brifing s podpisi posadke; glava naslovnice prikazuje fotografijo plovila s kartice plovila (če je naložena)\n5. Delite po e-pošti, natisnite ali shranite v telefon\n\nVsak PDF dobi enolično oznako dokumenta (npr. HMBSL-5-2026) in številko revizije (Rev. 1, Rev. 2...), vidno v nogi vsake strani. Vsak nov izvoz številko samodejno poveča — s čimer je vidno, kolikokrat je bil dokument ustvarjen.\n\nKoda QR na strani s podpisi vsebuje oznako, revizijo in kriptografski odtis vsebine. Vsaka sprememba podatkov spremeni kodo QR.\n\nPDF se ustvari v jeziku aplikacije, vključno z imeni in diakritičnimi znaki. Vsaka stran dneva nosi tudi trak s posadko na straži.\n• Če se je sledenje čez dan prekinilo in znova zagnalo, vsak odsek dobi svojo datoteko GPX\n• Razdalje, hitrosti in temperature v PDF sledijo enotam, nastavljenim v Nastavitvah\n• Vsi izvozi so na enem mestu — pod chipom Izvozi v Dnevniku. Edina izjema je varnostna kopija celotne zbirke: ostane v Nastavitvah ob obnovitvi, saj to ni dokument za nekoga, ampak slika podatkov.\n• Pred izvozom lahko izbereš podlago izreza — satelit ali navadno karto. Izbira se zapomni. Izrez je vedno nekoliko širši od same proge, da se vidi okolica; dan na enem mestu dobi okno vsaj kilometer, sicer bi bile na dokumentu same strehe.\n• Varnostno usposabljanje lahko izvoziš tudi posebej — svoj PDF s podpisi posadke in seznamom obravnavanih točk. Najdeš ga v Izvozih in na zaslonu usposabljanja; v povzetku plovbe ostane usposabljanje nespremenjeno.\n• Prva stran izvoza plovbe zdaj nosi zemljevid celotne plovbe, nad seznamom dni. Dnevni izseki ostajajo, kjer so bili — to je tista ena črta od začetka do konca, ki je iz njih ni bilo mogoče sestaviti.\n• V središču za izvoz je »Vsi podatki plovbe (CSV)«: ena datoteka s plovilom, posadko, dnevi, zapisi, sledjo, stražami in zapisnikom. Pred izvozom lahko izklopiš točke sledi, če bi bila datoteka prevelika.';
 
   @override
   String get safetyBriefingScreenTitle => 'Varnostni brifing';
@@ -4158,4 +4158,34 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get captainQualificationHint =>
       'npr. Poveljnik jahte, RYA Yachtmaster Offshore';
+
+  @override
+  String get exportsCsvTitle => 'Vsi podatki plovbe (CSV)';
+
+  @override
+  String get exportsCsvDescShort =>
+      'Plovilo, posadka, dnevi, zapisi, sled, straže, zapisnik';
+
+  @override
+  String get exportsCsvDesc =>
+      'Ena datoteka z vsemi podatki plovbe: plovilo, skiper in posadka, dnevi, zapisi dnevnika, sled, straže, primopredajni zapisnik, ocene in pelengi. Odpre se v preglednici in jo je mogoče znova prebrati v aplikacijo. Fotografij in podpisov v njej ni.';
+
+  @override
+  String get exportsFormatCsv => 'CSV';
+
+  @override
+  String get csvExportIncludeTrack => 'Vključi točke sledi';
+
+  @override
+  String get csvExportTrackPoints => 'Točke sledi';
+
+  @override
+  String get csvExportPrivacy =>
+      'Datoteka vsebuje imena posadke in številke dovoljenj. Pošlji jo samo osebam, ki jim zaupaš.';
+
+  @override
+  String get csvExportAction => 'Izvozi';
+
+  @override
+  String get csvExportFailed => 'Izvoz ni uspel.';
 }

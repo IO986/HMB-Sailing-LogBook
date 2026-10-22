@@ -10,6 +10,7 @@ import '../../../core/utils/localized_date.dart';
 import '../../../main.dart';
 import '../../bearing/providers/bearing_provider.dart';
 import '../../charter/providers/charter_provider.dart';
+import '../../voyage_csv/presentation/voyage_csv_export_dialog.dart';
 import '../services/handover_export.dart';
 import '../services/safety_briefing_export.dart';
 
@@ -109,6 +110,13 @@ class _ExportHubScreenState extends ConsumerState<ExportHubScreen> {
                   trailing: l.exportsFormatPdf,
                   onTap: () =>
                       context.push('/logbook/${charter.id}/crew-certificates'),
+                ),
+                _ExportRow(
+                  icon: Icons.table_chart_outlined,
+                  title: l.exportsCsvTitle,
+                  subtitle: l.exportsCsvDescShort,
+                  trailing: l.exportsFormatCsv,
+                  onTap: () => showVoyageCsvExport(context, charter),
                 ),
               ],
               _SectionHeader(l.exportsAcrossVoyages),

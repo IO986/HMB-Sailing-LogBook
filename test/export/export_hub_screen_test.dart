@@ -86,6 +86,7 @@ void main() {
       l.exportsDay,
       l.handoverMenuTitle,
       l.crewCertTitle,
+      l.exportsCsvTitle,
       l.milesExportTitle,
       l.bearingsTitle,
       l.exportsCloudTitle,
