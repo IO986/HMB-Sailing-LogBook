@@ -11,6 +11,8 @@ import '../../../../core/models/bearing_kind.dart';
 import '../../../bearing/providers/bearing_provider.dart';
 import '../../providers/charter_provider.dart';
 import '../widgets/edit_day_ports_dialog.dart';
+import '../widgets/paper_day_figures.dart';
+import '../../../../core/models/charter_source.dart';
 import '../../../tracking/providers/tracking_provider.dart';
 import '../../../tracking/presentation/widgets/tracking_control_dialogs.dart';
 import '../../../../shared/utils/weather_condition_lookup.dart';
@@ -37,6 +39,10 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
   DayLog? _day;
   bool _loading = true;
 
+  /// Plavba zapísaná spätne (prepis z papiera, import GPX): jej deň má
+  /// ručné údaje a nemá živé trasovanie.
+  bool _retro = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,13 +52,24 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
   Future<void> _loadDay() async {
     final db = ref.read(databaseProvider);
     final days = await db.getDayLogs(widget.charterId);
+    final charter = await db.getCharterById(widget.charterId);
     try {
       final d = days.firstWhere((d) => d.id == widget.dayLogId);
       setState(() {
         _day = d;
+        _retro =
+            charter != null && CharterSource.isRetrospective(charter.source);
         _loading = false;
       });
     } catch (_) { setState(() => _loading = false); }
+  }
+
+  /// Míle, nočné hodiny alebo odhadnutá trasa sa zmenili — načítaj znova to,
+  /// čo z nich obrazovka ukazuje.
+  Future<void> _figuresChanged() async {
+    ref.invalidate(_nightHoursForDayProvider(widget.dayLogId));
+    ref.invalidate(dayLogsProvider(widget.charterId));
+    await _loadDay();
   }
 
   @override
@@ -80,6 +97,8 @@ class _DayLogScreenState extends ConsumerState<DayLogScreen>
           day: _day!,
           onSaved: (updated) => setState(() => _day = updated),
         ),
+        if (_retro)
+          PaperDayFigures(day: _day!, onChanged: _figuresChanged),
         Expanded(
           child: _EntriesTab(
             dayLogId: widget.dayLogId,

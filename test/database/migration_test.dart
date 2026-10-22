@@ -25,128 +25,128 @@ void main() {
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v7 to current (v36)', () async {
+  test('migrate v7 to current (v37)', () async {
     final connection = await verifier.startAt(7);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v8 to current (v36)', () async {
+  test('migrate v8 to current (v37)', () async {
     final connection = await verifier.startAt(8);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v9 to current (v36)', () async {
+  test('migrate v9 to current (v37)', () async {
     final connection = await verifier.startAt(9);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v10 to current (v36): handoverProtocols.extraNotes', () async {
+  test('migrate v10 to current (v37): handoverProtocols.extraNotes', () async {
     final connection = await verifier.startAt(10);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v11 to current (v36): logbook record fields', () async {
+  test('migrate v11 to current (v37): logbook record fields', () async {
     final connection = await verifier.startAt(11);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v12 to current (v36): Charters.source', () async {
+  test('migrate v12 to current (v37): Charters.source', () async {
     final connection = await verifier.startAt(12);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v13 to current (v36): extended charter form fields', () async {
+  test('migrate v13 to current (v37): extended charter form fields', () async {
     final connection = await verifier.startAt(13);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v14 to current (v36): trackPoints location metadata', () async {
+  test('migrate v14 to current (v37): trackPoints location metadata', () async {
     final connection = await verifier.startAt(14);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v15 to current (v36): logbookEntries location metadata', () async {
+  test('migrate v15 to current (v37): logbookEntries location metadata', () async {
     final connection = await verifier.startAt(15);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v16 to current (v36): outbox table', () async {
+  test('migrate v16 to current (v37): outbox table', () async {
     final connection = await verifier.startAt(16);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v17 to current (v36): tideSnapshots table', () async {
+  test('migrate v17 to current (v37): tideSnapshots table', () async {
     final connection = await verifier.startAt(17);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v18 to current (v36): tide location label + manual flag',
+  test('migrate v18 to current (v37): tide location label + manual flag',
       () async {
     final connection = await verifier.startAt(18);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v19 to current (v36): dutyPeriods table', () async {
+  test('migrate v19 to current (v37): dutyPeriods table', () async {
     final connection = await verifier.startAt(19);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v20 to current (v36): logbookEntries.eventType', () async {
+  test('migrate v20 to current (v37): logbookEntries.eventType', () async {
     final connection = await verifier.startAt(20);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v21 to current (v36): logbookEntries.sailMode', () async {
+  test('migrate v21 to current (v37): logbookEntries.sailMode', () async {
     final connection = await verifier.startAt(21);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
   test('v22 moves the old [motor,main] note prefix into sailMode', () async {
@@ -164,7 +164,7 @@ void main() {
 
     final db = AppDatabase.forTesting(schema.newConnection());
     addTearDown(db.close);
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
 
     final rows = await db.select(db.logbookEntries).get();
     final withPrefix =
@@ -177,77 +177,77 @@ void main() {
     expect(plain.sailMode, null, reason: 'a note without a prefix is left alone');
   });
 
-  test('migrate v22 to current (v36): crewAssessments table', () async {
+  test('migrate v22 to current (v37): crewAssessments table', () async {
     final connection = await verifier.startAt(22);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v23 to current (v36): charters.tidalWaters', () async {
+  test('migrate v23 to current (v37): charters.tidalWaters', () async {
     final connection = await verifier.startAt(23);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v24 to current (v36): bearings table', () async {
+  test('migrate v24 to current (v37): bearings table', () async {
     final connection = await verifier.startAt(24);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v25 to current (v36): bearings.hiddenFromMap', () async {
+  test('migrate v25 to current (v37): bearings.hiddenFromMap', () async {
     final connection = await verifier.startAt(25);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v28 to current (v36): sail direction columns', () async {
+  test('migrate v28 to current (v37): sail direction columns', () async {
     final connection = await verifier.startAt(28);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v29 to current (v36): depth + engine hours', () async {
+  test('migrate v29 to current (v37): depth + engine hours', () async {
     final connection = await verifier.startAt(29);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v30 to current (v36): anchor watch flag on sessions', () async {
+  test('migrate v30 to current (v37): anchor watch flag on sessions', () async {
     final connection = await verifier.startAt(30);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v31 to current (v36): tidal waters on historical voyages',
+  test('migrate v31 to current (v37): tidal waters on historical voyages',
       () async {
     final connection = await verifier.startAt(31);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v32 to current (v36): vessels table', () async {
+  test('migrate v32 to current (v37): vessels table', () async {
     final connection = await verifier.startAt(32);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
   // PRAVIDLO: pri každom zvýšení schemaVersion pridaj nový
@@ -256,21 +256,21 @@ void main() {
   // `migrateAndValidate(db, <NOVÁ_NAJNOVŠIA_VERZIA>)` – vždy cieľ na aktuálne
   // najnovšiu verziu, nie na medzikrok. Postup: docs/migrations.md
 
-  test('migrate v33 to current (v36)', () async {
+  test('migrate v33 to current (v37)', () async {
     final connection = await verifier.startAt(33);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
-  test('migrate v34 to current (v36): sync uuid + updatedAt columns',
+  test('migrate v34 to current (v37): sync uuid + updatedAt columns',
       () async {
     final connection = await verifier.startAt(34);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
   });
 
   // Rows have to exist before the upgrade: the v35 backfill reads them, and an
@@ -310,14 +310,14 @@ void main() {
     expect((await db.getAllCharters()).single.archived, false);
   }
 
-  test('v34 with rows migrates to current (v36) and backfills sync columns',
+  test('v34 with rows migrates to current (v37) and backfills sync columns',
       () async {
     final schema = await verifier.schemaAt(34);
     insertV34Rows(schema.rawDatabase);
 
     final db = AppDatabase.forTesting(schema.newConnection());
     addTearDown(db.close);
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
 
     await expectSyncColumnsFilled(db);
   });
@@ -340,16 +340,42 @@ void main() {
 
     final db = AppDatabase.forTesting(schema.newConnection());
     addTearDown(db.close);
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
 
     await expectSyncColumnsFilled(db);
   });
 
-  test('migrate v35 to current (v36): charters.archived', () async {
+  test('migrate v35 to current (v37): charters.archived', () async {
     final connection = await verifier.startAt(35);
     final db = AppDatabase.forTesting(connection);
     addTearDown(db.close);
 
-    await verifier.migrateAndValidate(db, 36);
+    await verifier.migrateAndValidate(db, 37);
+  });
+
+  test('migrate v36 to current (v37): night hours by hand + estimated track',
+      () async {
+    final connection = await verifier.startAt(36);
+    final db = AppDatabase.forTesting(connection);
+    addTearDown(db.close);
+
+    await verifier.migrateAndValidate(db, 37);
+
+    // Old rows keep working and the new columns start empty / false.
+    final c = await db.insertCharter(ChartersCompanion.insert(
+      title: 'x',
+      dateFrom: DateTime(2026, 7, 1),
+      dateTo: DateTime(2026, 7, 1),
+      createdAt: DateTime(2026, 7, 1),
+    ));
+    final d = await db.insertDayLog(DayLogsCompanion.insert(
+        charterId: c.id, date: DateTime(2026, 7, 1)));
+    expect(d.nightHoursManual, equals(null)); // drift also exports isNull
+    await db.upsertSession(SailingSessionsCompanion.insert(
+      sessionId: 's',
+      dayLogId: Value(d.id),
+      startTime: DateTime(2026, 7, 1),
+    ));
+    expect((await db.getSessionsForDay(d.id)).single.isEstimated, isFalse);
   });
 }

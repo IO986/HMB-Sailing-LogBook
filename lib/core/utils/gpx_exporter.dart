@@ -23,7 +23,7 @@ class GpxExporter {
     sb.writeln('  </metadata>');
     sb.writeln('  <trk>');
     sb.writeln('    <name>${_esc(session.name ?? "Track")}</name>');
-    _writeSegments(sb, points);
+    _writeSegments(sb, points, continuous: session.isEstimated);
     sb.writeln('  </trk>');
     sb.writeln('</gpx>');
 
@@ -65,8 +65,8 @@ class GpxExporter {
         if (points.isEmpty) continue;
 
         sb.writeln('  <trk>');
-        sb.writeln('    <name>${_esc("$dayName: $route")}</name>');
-        _writeSegments(sb, points);
+        sb.writeln('    <name>${_esc("$dayName: $route${_estimateTag(session)}")}</name>');
+        _writeSegments(sb, points, continuous: session.isEstimated);
         sb.writeln('  </trk>');
       }
     }
@@ -106,7 +106,7 @@ class GpxExporter {
       if (pts.isEmpty) continue;
       sb.writeln('  <trk>');
       sb.writeln('    <name>${_esc(s.name ?? "Track")}</name>');
-      _writeSegments(sb, pts);
+      _writeSegments(sb, pts, continuous: s.isEstimated);
       sb.writeln('  </trk>');
     }
     sb.writeln('</gpx>');
@@ -142,8 +142,8 @@ class GpxExporter {
         final pts = pointsBySession[s.sessionId] ?? [];
         if (pts.isEmpty) continue;
         sb.writeln('  <trk>');
-        sb.writeln('    <name>${_esc("$dayName: $route")}</name>');
-        _writeSegments(sb, pts);
+        sb.writeln('    <name>${_esc("$dayName: $route${_estimateTag(s)}")}</name>');
+        _writeSegments(sb, pts, continuous: s.isEstimated);
         sb.writeln('  </trk>');
       }
     }
@@ -154,8 +154,17 @@ class GpxExporter {
   /// Body trasy ako `<trkseg>` úseky — nový úsek po každej diere v zázname
   /// (pozri [TrackSegments]). Jeden úsek cez dieru by v každom prehliadači
   /// GPX nakreslil priamku, ktorá loď previezla aj cez ostrov.
-  static void _writeSegments(StringBuffer sb, List<TrackPoint> points) {
-    for (final seg in TrackSegments.of(points).segments) {
+  ///
+  /// Odhadnutá trasa zo záznamov ([SailingSessions.isEstimated]) má body hodiny
+  /// od seba, takže každý pár by bol „diera“ a z trasy by ostali osamelé body
+  /// bez čiary. Tá sa píše ako jeden súvislý úsek; že ide o odhad, hovorí jej
+  /// názov.
+  static void _writeSegments(StringBuffer sb, List<TrackPoint> points,
+      {bool continuous = false}) {
+    final segments = continuous
+        ? [([...points]..sort((a, b) => a.timestamp.compareTo(b.timestamp)))]
+        : TrackSegments.of(points).segments;
+    for (final seg in segments) {
       sb.writeln('    <trkseg>');
       for (final p in seg) {
         sb.write('      <trkpt lat="${p.latitude}" lon="${p.longitude}">');
@@ -192,6 +201,13 @@ class GpxExporter {
     return '${side(day.portFrom, last: false)} → '
         '${side(day.portTo, last: true)}';
   }
+
+  /// Suffix of a track name that tells whoever opens the file in another app
+  /// that the line is drawn through log entries, not measured.
+  static const estimateSuffix = ' (estimated)';
+
+  static String _estimateTag(SailingSession s) =>
+      s.isEstimated ? estimateSuffix : '';
 
   static String _esc(String s) => s
       .replaceAll('&', '&amp;').replaceAll('<', '&lt;')

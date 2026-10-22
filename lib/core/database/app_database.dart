@@ -171,6 +171,12 @@ class DayLogs extends Table {
   TextColumn get skipperNote => text().nullable()();
   BoolColumn get isComplete => boolean().withDefault(const Constant(false))();
 
+  /// Nočné hodiny dňa tak, ako ich skiper napísal do papierového denníka.
+  ///
+  /// `null` = nezadané, počítajú sa z bodov trasy. Zadaná hodnota má prednosť:
+  /// pri prepise z papiera nie je z čoho rátať a hádať noc sa nemá.
+  RealColumn get nightHoursManual => real().nullable()();
+
   /// Motohodiny za deň, počítané z otáčok z NMEA (RPM veta).
   ///
   /// Doteraz sa zapisovali len ručne do záznamu. Keď motor hlási otáčky,
@@ -314,6 +320,13 @@ class SailingSessions extends Table {
   /// mlčal. Ale hojdanie na reťazi nie je plavba: bez tohto príznaku by sa
   /// načítalo do prejdených míľ, do vzdialenosti dňa aj do nočných hodín.
   BoolColumn get isAnchorWatch => boolean().withDefault(const Constant(false))();
+
+  /// Trasa poskladaná zo záznamov denníka priamymi úsečkami, nie zmeraná.
+  ///
+  /// Vzniká pri prepise z papierového denníka, kde sa GPS nezapisovalo. Slúži
+  /// na GPX a mapu. Do nočných hodín sa nikdy nerátajú — body sú hodiny od
+  /// seba, takže by sa noc hádala — a skutočná trasa ju pri importe nahradí.
+  BoolColumn get isEstimated => boolean().withDefault(const Constant(false))();
 
   /// Pozri [Charters.updatedAt]. Vlastné [syncUuid] netreba — [sessionId] je
   /// už stabilná identita naprieč zariadeniami.
@@ -766,7 +779,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 36;
+  int get schemaVersion => 37;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -979,6 +992,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 36) {
         await _addColumnIfMissing(m, charters, charters.archived);
       }
+      if (from < 37) {
+        await _addColumnIfMissing(m, dayLogs, dayLogs.nightHoursManual);
+        await _addColumnIfMissing(m, sailingSessions, sailingSessions.isEstimated);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -1175,6 +1192,29 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> updateDayLog(DayLogsCompanion d) =>
       (update(dayLogs)..where((t) => t.id.equals(d.id.value))).write(d);
+
+  /// Míle a nočné hodiny dňa tak, ako stoja v papierovom denníku. Prázdne
+  /// nočné hodiny (`null`) znamenajú „nezadané“, nie nula.
+  Future<void> setDayFigures(int dayLogId,
+          {required double distanceNm, double? nightHours}) =>
+      updateDayLog(DayLogsCompanion(
+        id: Value(dayLogId),
+        distanceNm: Value(distanceNm),
+        nightHoursManual: Value(nightHours),
+      ));
+
+  /// Zmaže odhadnutú trasu dňa aj jej body. Skutočná (zmeraná) trasa ostáva.
+  Future<void> deleteEstimatedSessionsForDay(int dayLogId) async {
+    final ids = selectOnly(sailingSessions)
+      ..addColumns([sailingSessions.sessionId])
+      ..where(sailingSessions.dayLogId.equals(dayLogId) &
+          sailingSessions.isEstimated.equals(true));
+    await (delete(trackPoints)..where((t) => t.sessionId.isInQuery(ids))).go();
+    await (delete(sailingSessions)
+          ..where((s) =>
+              s.dayLogId.equals(dayLogId) & s.isEstimated.equals(true)))
+        .go();
+  }
 
   Future<void> deleteDayLog(int id) async {
     // Služby sa NEmažú — patria charteru, nie dňu, a sú dôkazný záznam.
@@ -1591,8 +1631,15 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<double> nightHoursForDay(int dayLogId) async {
+    // Číslo z papierového denníka má prednosť pred výpočtom.
+    final manual = (await getDayLogById(dayLogId))?.nightHoursManual;
+    if (manual != null) return manual;
+
     final samples = <NightSample>[];
     for (final session in await getSessionsForDay(dayLogId)) {
+      // Odhadnutá trasa zo záznamov má body hodiny od seba — noc by sa z nej
+      // hádala.
+      if (session.isEstimated) continue;
       for (final p in await getTrackPointsForSession(session.sessionId)) {
         samples.add(NightSample(
           timeUtc: p.timestamp,

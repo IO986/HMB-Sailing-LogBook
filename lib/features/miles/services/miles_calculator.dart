@@ -142,7 +142,8 @@ class MilesCalculator {
       for (final day in matchingDays) {
         charterNm += day.distanceNm;
         final points = trackPointsByDayLog[day.id] ?? const <TrackPoint>[];
-        charterNightHours += nightHoursForPoints(points);
+        // Číslo z papierového denníka má prednosť pred výpočtom z trasy.
+        charterNightHours += day.nightHoursManual ?? nightHoursForPoints(points);
       }
 
       totalNm += charterNm;

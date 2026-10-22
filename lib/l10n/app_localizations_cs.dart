@@ -2953,7 +2953,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o naplutých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.\n• Číslo pasu/OP se zadává až při vystavování potvrzení — u každého člena posádky zvlášť. Neukládá se, vytiskne se jen na tom jednom dokumentu; své číslo má skipper uložené v kartě plavby a předvyplní se mu. Kdo číslo nezadá, dostane na potvrzení prázdnou linku na dopsání rukou.\n• Potvrzení se před vystavením podepisuje stejně jako deník: otevře se podpisová plocha a PDF dostane závěrečnou stranu s podpisem, časem, kontrolním součtem SHA-256 a QR kódem k ověření.\n• Menu (tři tečky) u plavby → Smazat: odstraní plavbu i s jejími dny a záznamy, platí to i pro ručně přidanou historickou plavbu. Plavbu, která se právě zaznamenává, smazat nelze.\n• Tlačítko + nabídne i přepis z papírového deníku: vytvoříš plavbu a můžeš k ní hned připojit GPX trasu.\n• Na přepsané plavbě přidáš den tlačítkem „Přidat den“. Záznam v takovém dni má čas i souřadnice psané ručně; nic se nedoplňuje z aktuální polohy ani počasí.';
+      'Souhrn všech plaveb na jednom místě (ikona v Deníku plavby).\n\n• Celkové námořní míle, dny na moři, počet plaveb a noční hodiny\n• Rozpad podle roku a podle lodi\n• Filtr podle roku\n• Klepni na plavbu (i trackovanou/importovanou) a doplň záznam Knihy mil – trasu, vlajku lodi, jméno a kvalifikaci skippera, podpis potvrzující míle\n• Tlačítko + – přidej historickou plavbu z doby před používáním aplikace (počítá se plně do souhrnů, v seznamu označena hvězdičkou)\n• Export PDF potvrzení o naplutých mílích s místem na podpis\n• Potvrzení nese i trasu plavby po dnech — Biograd – Žut – Veli Rat – Zadar – Biograd — složenou z přístavů jednotlivých dnů; stejná zastávka dvakrát po sobě se spojí a den bez zapsaného přístavu se přeskočí.\n• Ve formuláři potvrzení nabízí pole „Pro koho\" posádku z tvých plaveb — jméno vyber, nemusíš ho psát; překlep by z jednoho člověka udělal dva záznamy.\n• Číslo pasu/OP se zadává až při vystavování potvrzení — u každého člena posádky zvlášť. Neukládá se, vytiskne se jen na tom jednom dokumentu; své číslo má skipper uložené v kartě plavby a předvyplní se mu. Kdo číslo nezadá, dostane na potvrzení prázdnou linku na dopsání rukou.\n• Potvrzení se před vystavením podepisuje stejně jako deník: otevře se podpisová plocha a PDF dostane závěrečnou stranu s podpisem, časem, kontrolním součtem SHA-256 a QR kódem k ověření.\n• Menu (tři tečky) u plavby → Smazat: odstraní plavbu i s jejími dny a záznamy, platí to i pro ručně přidanou historickou plavbu. Plavbu, která se právě zaznamenává, smazat nelze.\n• Tlačítko + nabídne i přepis z papírového deníku: vytvoříš plavbu a můžeš k ní hned připojit GPX trasu.\n• Na přepsané plavbě přidáš den tlačítkem „Přidat den“. Záznam v takovém dni má čas i souřadnice psané ručně; nic se nedoplňuje z aktuální polohy ani počasí.\n• V dni přepsané plavby vyplň „Údaje dne“ (míle a noční hodiny z papíru); zadané číslo má přednost před výpočtem. Tlačítko „Sestavit trasu ze záznamů“ nakreslí odhadnutou trasu po přímce pro GPX a mapu; do nočních hodin se nikdy nepočítá a skutečná trasa z GPX ji nahradí.';
 
   @override
   String get guideHandoverTitle => 'Předávací protokol (check-in/check-out)';
@@ -4115,4 +4115,31 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get addDay => 'Přidat den';
+
+  @override
+  String get dayFiguresTitle => 'Údaje dne';
+
+  @override
+  String get dayFiguresHint =>
+      'Z papírového deníku. Prázdné = nezadáno, počítá se z trasy; zadané číslo má přednost.';
+
+  @override
+  String get dayMilesLabel => 'Míle dne';
+
+  @override
+  String get straightLineLabel => 'Po přímce ze záznamů';
+
+  @override
+  String get buildTrackFromEntries => 'Sestavit trasu ze záznamů';
+
+  @override
+  String get trackBuiltFromEntries =>
+      'Trasa sestavena ze záznamů (odhad po přímce).';
+
+  @override
+  String get trackNeedsTwoEntries =>
+      'Na trasu jsou potřeba alespoň dva záznamy s polohou.';
+
+  @override
+  String get trackRealExists => 'Den už má změřenou trasu.';
 }

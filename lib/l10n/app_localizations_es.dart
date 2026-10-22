@@ -2970,7 +2970,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideMilesBody =>
-      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.\n• El certificado se firma antes de exportarlo, igual que el cuaderno: se abre el panel de firma y el PDF recibe una página final con la firma, la hora, una suma de control SHA-256 y un código QR para verificarlo.\n• Menú (tres puntos) en una travesía → Eliminar: borra la travesía con sus días y registros, también si es una travesía histórica añadida a mano. No se puede eliminar una travesía que se está grabando en ese momento.\n• El botón + también permite transcribir un diario en papel: creas la travesía y puedes adjuntarle enseguida un track GPX.\n• En una travesía transcrita añades un día con el botón «Añadir día». Un registro de ese día tiene la hora y las coordenadas escritas a mano; nada se rellena con la posición o el tiempo actuales.';
+      'Resumen de todas las travesías en un solo lugar (icono en el Diario).\n\n• Millas náuticas totales, días en el mar, número de travesías y horas nocturnas\n• Desglose por año y por embarcación\n• Filtro por año\n• Toca una travesía (incluida una rastreada/importada) para completar su registro del cuaderno – ruta, bandera del barco, nombre y titulación del patrón, firma que confirma las millas\n• Botón + – añade una travesía histórica de antes de usar la app (se cuenta plenamente en los resúmenes, marcada con asterisco en la lista)\n• Exportación PDF de un certificado de millas navegadas con espacio para firmar\n• El certificado incluye también la ruta de la travesía día a día — Biograd – Žut – Veli Rat – Zadar – Biograd — a partir de los puertos de cada día; las paradas repetidas se unen y los días sin puerto registrado se omiten.\n• En el formulario del certificado, el campo \"Para quién\" ofrece la tripulación de tus travesías: elige el nombre en vez de escribirlo, para que un error tipográfico no convierta a una persona en dos.\n• El número de pasaporte/DNI se introduce al emitir el certificado, por separado para cada tripulante. No se guarda: solo se imprime en ese documento; el número del patrón está en la ficha de la travesía y se rellena solo. Si se deja vacío, el certificado lleva una línea para escribirlo a mano.\n• El certificado se firma antes de exportarlo, igual que el cuaderno: se abre el panel de firma y el PDF recibe una página final con la firma, la hora, una suma de control SHA-256 y un código QR para verificarlo.\n• Menú (tres puntos) en una travesía → Eliminar: borra la travesía con sus días y registros, también si es una travesía histórica añadida a mano. No se puede eliminar una travesía que se está grabando en ese momento.\n• El botón + también permite transcribir un diario en papel: creas la travesía y puedes adjuntarle enseguida un track GPX.\n• En una travesía transcrita añades un día con el botón «Añadir día». Un registro de ese día tiene la hora y las coordenadas escritas a mano; nada se rellena con la posición o el tiempo actuales.\n• En un día de una travesía transcrita rellena «Datos del día» (millas y horas nocturnas del papel); un número que escribas tiene prioridad sobre el cálculo. El botón «Crear track desde los registros» dibuja un track estimado en línea recta para GPX y el mapa; nunca cuenta en las horas nocturnas y un track real de GPX lo sustituye.';
 
   @override
   String get guideHandoverTitle => 'Protocolo de entrega (check-in/check-out)';
@@ -4141,4 +4141,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addDay => 'Añadir día';
+
+  @override
+  String get dayFiguresTitle => 'Datos del día';
+
+  @override
+  String get dayFiguresHint =>
+      'Del diario en papel. Vacío = sin indicar, se calcula del track; un número que escribas tiene prioridad.';
+
+  @override
+  String get dayMilesLabel => 'Millas del día';
+
+  @override
+  String get straightLineLabel => 'Línea recta por los registros';
+
+  @override
+  String get buildTrackFromEntries => 'Crear track desde los registros';
+
+  @override
+  String get trackBuiltFromEntries =>
+      'Track creado desde los registros (estimación en línea recta).';
+
+  @override
+  String get trackNeedsTwoEntries =>
+      'Un track necesita al menos dos registros con posición.';
+
+  @override
+  String get trackRealExists => 'Este día ya tiene un track medido.';
 }

@@ -76,6 +76,8 @@ final _milesRawDataProvider = FutureProvider.autoDispose<_MilesRawData>((ref) as
         // Úseky kotvovej stráže sa do Knihy míľ nerátajú: sú to hodiny na
         // reťazi, nie odplávaná trasa. V GPX exporte zostávajú.
         if (session.isAnchorWatch) continue;
+        // Odhadnutá trasa zo záznamov sa do nočných hodín nepočíta.
+        if (session.isEstimated) continue;
         points.addAll(await db.getTrackPointsForSession(session.sessionId));
       }
       trackPointsByDayLog[day.id] = points;

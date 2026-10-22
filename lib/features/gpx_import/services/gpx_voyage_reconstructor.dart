@@ -130,6 +130,9 @@ class GpxVoyageReconstructor {
         s.startTime.isAtSameMomentAs(start) && s.name == trackName);
     if (duplicate) return false;
 
+    // A measured track replaces the line drawn from the log entries.
+    await db.deleteEstimatedSessionsForDay(dayLogId);
+
     final nm = distanceNm(points);
     final sessionId = const Uuid().v4();
     await db.upsertSession(SailingSessionsCompanion.insert(
@@ -223,7 +226,11 @@ class GpxVoyageReconstructor {
   static (String?, String?) portsFromTrackName(String? name) {
     if (name == null) return (null, null);
     final colon = name.indexOf(': ');
-    final route = colon < 0 ? name : name.substring(colon + 2);
+    var route = colon < 0 ? name : name.substring(colon + 2);
+    // A track drawn through log entries is tagged on export; the tag is not
+    // part of a port name.
+    const tag = ' (estimated)';
+    if (route.endsWith(tag)) route = route.substring(0, route.length - tag.length);
     final arrow = route.split(' → ');
     if (arrow.length != 2) return (null, null);
 
