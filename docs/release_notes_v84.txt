@@ -1,0 +1,17 @@
+HMB Sailing Log — build 84 (1.42.0+84)
+
+Play Console limit: 500 characters per language.
+
+=== English (en-US) ===
+• New: transcribe a voyage from a paper logbook (Mile Book → +): add days, type the time and position of each entry, enter the day's miles and night hours, attach a GPX.
+• New: export a whole voyage as one CSV file (Exports) and import it back (icon at the top of the Logbook).
+• New: the captain's highest qualification shows in the voyage and in the PDF.
+• New: delete a voyage from the Mile Book.
+• The map centres on a previewed voyage.
+
+=== Slovenčina (sk) ===
+• Nové: prepis plavby z papierového denníka (Kniha míľ → +): pridávaj dni, píš čas a polohu záznamov, zadaj míle a nočné hodiny dňa, pripoj GPX.
+• Nové: export celej plavby do jedného súboru CSV (Exporty) a jeho načítanie späť (ikona hore v Denníku).
+• Nové: najvyššia kvalifikácia kapitána sa ukáže v plavbe aj v PDF.
+• Nové: zmazanie plavby v Knihe míľ.
+• Mapa sa pri náhľade plavby vycentruje na jej trasu.
