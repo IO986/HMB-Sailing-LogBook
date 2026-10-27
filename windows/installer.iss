@@ -3,7 +3,7 @@
 ; Then compile: iscc windows\installer.iss
 
 #define MyAppName "HMB Sailing Logbook"
-#define MyAppVersion "1.35.1"
+#define MyAppVersion "1.42.0"
 #define MyAppPublisher "HMB Sailing Academy"
 #define MyAppURL "https://hmba.boats"
 #define MyAppExeName "hmb_sailing_log.exe"
